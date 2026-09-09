@@ -9,7 +9,10 @@
     "build": "npm --prefix vendor/toubkal run build",
     "lint": "npm --prefix vendor/toubkal run lint",
     "test": "npm --prefix vendor/toubkal test",
-    "check": "npm run build && npm run lint && npm test"
+    "check": "npm run build && npm run lint && npm test",
+    "docker:build": "docker compose build",
+    "docker:up": "docker compose up --build",
+    "docker:down": "docker compose down"
   },
   "engines": {
     "node": ">=20.19.0",
