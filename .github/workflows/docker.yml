@@ -1,0 +1,28 @@
+name: ASA-CAD Docker
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - Dockerfile
+      - compose.yaml
+      - docker/**
+      - vendor/toubkal/package.json
+      - vendor/toubkal/package-lock.json
+      - vendor/toubkal/src/**
+  pull_request:
+    paths:
+      - Dockerfile
+      - compose.yaml
+      - docker/**
+      - vendor/toubkal/package.json
+      - vendor/toubkal/package-lock.json
+      - vendor/toubkal/src/**
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build standalone image
+        run: docker build -t asa-cad:ci .
