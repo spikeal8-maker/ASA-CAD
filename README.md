@@ -38,6 +38,42 @@ CadDocument
 
 See [`docs/DOCUMENT_TYPES.md`](docs/DOCUMENT_TYPES.md).
 
+## UI/button contract
+
+The KOMPAS-oriented interface is specified command-by-command in [`docs/UI_COMMAND_SPEC.md`](docs/UI_COMMAND_SPEC.md).
+
+That document defines:
+
+- application shell regions;
+- workspace tabs;
+- every first-wave button/group/dropdown in target scope;
+- Russian command labels;
+- context/enabling rules;
+- parameter-panel lifecycle;
+- milestone when each command appears;
+- the rule for retiring the visible Toubkal shell.
+
+A machine-readable initial command registry lives at [`spec/ui/command-registry.v1.json`](spec/ui/command-registry.v1.json). New ASA UI code must use stable ASA command IDs rather than inventing labels or calling vendor UI/store internals directly.
+
+### UI implementation strategy
+
+We **do not** gradually repaint ToubkalCAD into the final product.
+
+The imported Toubkal UI remains a temporary diagnostic/reference surface until the protected Part workflow works through the ASA shell. The permanent UI is built from scratch as reusable ASA components over `CadApplication`.
+
+Rollout is vertical-slice based:
+
+```text
+ASA command/API
+-> parameter contract
+-> visible ASA control
+-> deterministic demo fixture
+-> browser/visual regression
+-> mark implemented
+```
+
+Production must not contain clickable controls that do nothing. Planned commands may appear disabled only in development/roadmap fixtures.
+
 ## What Part and Assembly mean
 
 **Деталь / Part** owns one component's parametric construction history: sketches, constraints, dimensions, features and bodies.
@@ -171,25 +207,27 @@ Exports are derived outputs. Formats/settings are defined in [`docs/FILES_SETTIN
 
 - **M0 ACTIVE** — pinned/reproducible runtime + protected Part CI fixture.
 - **M0D ACTIVE** — standalone Docker; static build/boot checks green, browser E2E remains.
-- **M1 NEXT** — six-kind `CadDocument` union + stable `CadApplication` boundary.
+- **M1 NEXT** — six-kind `CadDocument` union + stable `CadApplication` boundary + stable command IDs/registry contract.
 - **M1B** — standalone/ASA Lab host-container contract.
-- **M2** — ASA-owned KOMPAS-oriented shell and six-kind new-document routing.
+- **M2** — new ASA-owned KOMPAS-oriented shell; first working Part vertical slice; vendor shell retirement begins only after parity gate.
 - **M2A** — stable demo routes/visual fixtures/owner review loop.
-- **M3** — parametric sketcher.
-- **M4** — Part Design + stable references.
+- **M3** — complete first-wave parametric sketcher command groups.
+- **M4** — Part Design + stable references + remaining Part command groups.
 - **M4A** — Assembly + mates + in-context component design.
 - **M4B** — standalone beta/release hardening.
 - **M5** — native ASA Lab integration via pinned `asa-cad-web` container.
-- **M6** — shared 2D engine + Drawing + Fragment.
-- **M6A** — Specification + Text documents.
+- **M6** — shared 2D engine + Drawing + Fragment UI/commands.
+- **M6A** — Specification + Text document UI/commands.
 - **M7** — broader KOMPAS parity/settings/exchange/templates.
 
-See [`docs/ROADMAP.md`](docs/ROADMAP.md).
+See [`docs/ROADMAP.md`](docs/ROADMAP.md) and [`docs/UI_COMMAND_SPEC.md`](docs/UI_COMMAND_SPEC.md).
 
 ## Documentation map
 
 - [`docs/SYSTEM_SPEC.md`](docs/SYSTEM_SPEC.md) — complete end-state/system contract.
 - [`docs/DOCUMENT_TYPES.md`](docs/DOCUMENT_TYPES.md) — six document kinds and tool scopes.
+- [`docs/UI_COMMAND_SPEC.md`](docs/UI_COMMAND_SPEC.md) — button-by-button UI, dropdowns, parameter panels and rollout order.
+- [`spec/ui/command-registry.v1.json`](spec/ui/command-registry.v1.json) — machine-readable first command registry.
 - [`docs/ASSEMBLIES.md`](docs/ASSEMBLIES.md) — Assembly/in-context/version semantics.
 - [`docs/FILES_SETTINGS_AND_EXPORT.md`](docs/FILES_SETTINGS_AND_EXPORT.md) — saving, formats, settings, appearance.
 - [`docs/DEVELOPMENT_WORKFLOW.md`](docs/DEVELOPMENT_WORKFLOW.md) — how to run, inspect and correct UI separately.
