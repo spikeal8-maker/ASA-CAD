@@ -1,11 +1,12 @@
 # ASA-CAD
 
-ASA-CAD is a browser-native parametric CAD module intended for later integration into ASA Lab.
+ASA-CAD is a browser-native parametric CAD module intended for integration into ASA Lab.
 
 ## Current state
 
 ToubkalCAD is already imported as a pinned subtree under `vendor/toubkal/`.
 The exact imported upstream commit is recorded in `UPSTREAM_BASELINE`.
+The imported baseline currently passes build, lint, and its supported CAD regression suite in GitHub Actions.
 
 Root commands:
 
@@ -21,9 +22,13 @@ npm run check
 ## Product target
 
 - Separate CAD module; it does not replace the current ASA Lab `three-d` editor.
-- Browser-only execution: geometry is computed on the learner's computer.
-- UI/workflows will be rebuilt to closely follow the educational workflow of KOMPAS-3D.
-- Projects will later use ASA Lab identity, project storage, versions, assignments, and previews.
+- Browser-only execution: interactive CAD mathematics runs on the active learner device.
+- Desktop UI/workflows are rebuilt to follow KOMPAS-3D teaching workflows as closely as practical.
+- The same parametric document opens on supported desktop/tablet/phone devices.
+- ASA Lab owns identity, classes, assignments, projects, versions, submissions and teacher review.
+- ASA Lab is not a geometry-compute server.
+
+See `docs/PRODUCT_TARGET.md`.
 
 ## Technical decision
 
@@ -57,7 +62,23 @@ CAD runtime adapters
 Toubkal/OpenCascade/solver implementation
 ```
 
-This boundary is what allows us to replace the whole interface while still importing selected upstream CAD fixes later.
+When hosted by ASA Lab:
+
+```text
+ASA Lab project
+    ↓ lazy-load
+ASA-CAD editor + kernel
+    ↓
+geometry calculated in browser CPU/RAM
+
+ASA-CAD CadDocument
+    ↓ save/version
+ASA Lab Project Core
+```
+
+The heavy CAD/WASM runtime must load only when a CAD project opens, not during normal ASA Lab startup.
+
+See `docs/ASA_LAB_INTEGRATION.md`.
 
 ## Repository strategy
 
@@ -66,8 +87,9 @@ This repository is independent from `asa-lab` during CAD development.
 1. Keep the pinned Toubkal baseline reproducible.
 2. Freeze baseline regression tests.
 3. Extract the ASA-owned application/runtime boundary.
-4. Rebuild UI on that boundary.
-5. Integrate ASA-CAD into ASA Lab only after standalone CAD workflows are stable.
+4. Prove the client runtime + ASA Lab host contract.
+5. Rebuild UI on that boundary.
+6. Integrate a pinned ASA-CAD release into ASA Lab.
 
 Do not auto-update from upstream. Every upstream update is reviewed, tested, and imported intentionally.
 
@@ -90,4 +112,4 @@ The first release gate is one complete parametric workflow:
 
 No UI redesign is considered successful until this workflow remains green.
 
-See `docs/ARCHITECTURE.md`, `docs/ROADMAP.md`, and `docs/UPSTREAM.md`.
+See `docs/ARCHITECTURE.md`, `docs/ROADMAP.md`, `docs/UPSTREAM.md`, `docs/PRODUCT_TARGET.md`, and `docs/ASA_LAB_INTEGRATION.md`.
