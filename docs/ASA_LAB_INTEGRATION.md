@@ -2,75 +2,119 @@
 
 ## Decision
 
-ASA-CAD remains a separate repository during development, but its released editor is embedded as a native lazy-loaded ASA Lab module. It is not an iframe and does not require a separate CAD application server.
+ASA-CAD remains a separate repository **and a separate versioned frontend Docker image**.
 
-## Runtime loading
+In production it becomes a first-class ASA Lab module by being reverse-proxied through the same public ASA Lab origin under `/cad/*`.
 
-Target loading sequence:
+It is:
+
+- not an iframe;
+- not a second login/account system;
+- not a CAD compute server;
+- not bundled into every normal ASA Lab page.
+
+The separate container serves only the ASA-CAD frontend/runtime assets. Geometry still executes in the learner browser.
+
+## Production topology
 
 ```text
-Learner opens ASA Lab project with moduleKey = cad
-        |
-        v
-ASA Lab ModuleEditorHost lazy-imports ASA-CAD editor bundle
-        |
-        v
-ASA-CAD performs device capability check
-        |
-        v
-ASA-CAD loads OpenCascade WASM from same-origin static assets
-        |
-        v
-WASM is instantiated in browser memory
-        |
-        v
-All sketch/feature/recompute operations execute on this device
+browser
+  |
+  v
+ASA Lab public origin / front door
+  |
+  +---- /api/* -----> asa-api
+  |
+  +---- /cad/* -----> asa-cad-web
+  |
+  `---- other UI ---> asa-web
 ```
 
-The CAD JavaScript/WASM payload must not be part of the normal ASA Lab boot bundle. A learner who opens electronics, chess or the current beginner 3D editor must not pay the CAD payload cost.
+The existing ASA Lab web image already uses Caddy and reverse-proxies `/api/*` to `api:4611`. M5 adds the more-specific `/cad/*` route before the generic SPA route.
 
-Runtime assets use content-hashed filenames and long-lived immutable browser caching. A normal reopen should reuse the cached kernel until the ASA-CAD runtime version changes.
+The user remains on the ASA Lab domain. Existing HttpOnly session cookies and the normal ASA Lab APIs remain authoritative.
 
-## Distribution boundary
+## Why separate frontend container
 
-ASA-CAD will eventually produce a versioned release artifact consumed by ASA Lab at build time.
+This is the preferred integration because it gives us:
 
-The release must expose:
+- independent ASA-CAD build/release/rollback;
+- exactly the same image for standalone and ASA Lab testing;
+- no OpenCascade payload in the normal ASA Lab bundle;
+- CAD-specific COOP/COEP/runtime headers without imposing them on every ASA Lab page;
+- independent CAD cache/versioning;
+- no iframe or cross-origin authentication bridge.
 
-- the React editor entry point;
-- ASA-owned `CadApplication` API/types;
-- ASA-owned `CadDocument` schema/parser/migrations;
-- runtime/kernel loader;
-- required WASM/static assets;
-- read-only viewer entry point;
-- version metadata.
+## Module registration
 
-ASA Lab pins an explicit ASA-CAD release. ASA Lab never consumes `main` automatically.
-
-The exact package transport (release tarball/package registry/workspace import) can be selected when the public boundary exists in M1. The contract is more important than the transport: no runtime dependency on a separately deployed Toubkal site.
-
-## ASA Lab module registration
-
-Target server manifest:
+Target manifest:
 
 ```text
 moduleKey: cad
-projectType: cad-part
+projectType: cad-document
 schemaVersion: 1
-editorRoute: /projects/:projectId/cad
-viewerRoute: /view/projects/:versionId/cad
+editorRoute: /cad/projects/:projectId
+viewerRoute: /cad/view/:versionId
 availability: active
 previewKind: scene
 categories: design, engineering
 ```
 
-ASA Lab already resolves editors by `moduleKey` and lazy loads editor components. CAD will be registered through the same module registry/host path as the existing subject modules.
+`CadDocument` itself declares:
+
+```text
+kind: part | assembly
+```
+
+A single ASA Lab CAD module therefore supports both **Деталь** and **Сборка**.
+
+## Runtime loading
+
+Target sequence:
+
+```text
+learner opens CAD project
+        |
+        v
+browser navigates to same-origin /cad/projects/<projectId>
+        |
+        v
+asa-cad-web returns ASA-CAD HTML/JS
+        |
+        v
+ASA-CAD performs capability check
+        |
+        v
+browser downloads content-hashed OpenCascade WASM
+        |
+        v
+WASM is instantiated in browser RAM
+        |
+        v
+Part/Assembly calculations run on that device
+```
+
+Opening ordinary ASA Lab pages/modules must not fetch the CAD JS/WASM payload.
+
+## Client-compute invariant
+
+Production ASA-CAD must have no normal endpoint such as `/compute`, `/rebuild`, `/boolean`, `/fillet`, `/solve` or `/assembly-solve` that executes learner CAD mathematics on a server.
+
+The browser performs:
+
+- sketch solving;
+- Part feature construction/recompute;
+- assembly mate solving and occurrence placement;
+- B-Rep operations;
+- tessellation;
+- picking/measurement support;
+- normal export generation where practical.
+
+Server traffic is for product persistence/education only.
 
 ## Persistence adapter
 
-ASA-CAD itself must not know tenant IDs, classroom database tables or ASA Lab authentication internals.
-
-The host supplies a small storage adapter:
+ASA-CAD owns the public project contract, not ASA Lab internals:
 
 ```ts
 interface CadProjectHost {
@@ -84,79 +128,118 @@ interface CadProjectHost {
 }
 ```
 
-In standalone development this interface can use local storage/fixtures. Inside ASA Lab it maps to the existing project open/draft/snapshot/version APIs.
+In standalone mode this is backed by fixtures/local storage/IndexedDB.
 
-The ASA Lab server stores the `CadDocument`, not live OpenCascade objects and not Three.js scene state.
+In ASA Lab mode it maps to existing Project Core open/draft/snapshot/version APIs.
 
-## Save and recovery flow
+For Assembly documents the ASA Lab host also resolves pinned component project versions referenced by the assembly document.
+
+## Part/Assembly persistence
+
+### Part
+
+A Part project saves its parametric sketch/feature document and engine/schema metadata.
+
+### Assembly
+
+An Assembly project saves:
+
+- component occurrence IDs;
+- source project/document identity;
+- pinned component revision/version;
+- occurrence transforms;
+- assembly mates/constraints;
+- assembly state required for deterministic reopen.
+
+A submitted/published Assembly version must pin the component versions needed to reproduce that exact submission.
+
+Editing a source Part later must not silently alter an already pinned Assembly submission.
+
+## Save/recovery flow
 
 1. User command changes the in-memory `CadDocument`.
-2. Local recompute runs on the device.
-3. After a debounce/meaningful command boundary, the editor sends the serializable document to ASA Lab.
+2. Local Part/Assembly recompute runs on the device.
+3. After a safe command boundary/debounce the serialized document is sent to ASA Lab.
 4. ASA Lab saves with `baseRevision` + `mutationId` conflict protection.
-5. Editor updates the displayed saved revision only after server acknowledgement.
-6. A small local IndexedDB recovery journal may retain the latest unsent document in case of tab/browser/network loss.
-7. Server remains the cross-device authority; IndexedDB is recovery, not identity or classroom storage.
+5. Editor reports saved state only after server acknowledgement.
+6. Local IndexedDB may retain unsent recovery state after crash/network loss.
+7. ASA Lab remains cross-device authority.
+8. Opening on another device reloads the document and recomputes locally.
 
-## Classes, assignments and submissions
+## Classes, courses, assignments and submissions
 
 ASA Lab owns the educational workflow.
 
 - A teacher assignment references `moduleKey = cad`.
-- Opening/starting that assignment creates or resolves the learner project using the normal Project Core flow.
-- The editor receives only `projectId`, current user context and assignment context from the host.
+- Assignment/template metadata may specify initial document kind: `part` or `assembly`.
+- Starting work creates/resolves the learner CAD project through normal Project Core.
 - Autosave writes to that project.
-- Submission pins a project revision/version through ASA Lab.
-- Teacher review opens the pinned submitted document in the ASA-CAD viewer/editor according to permissions.
+- Submission pins a project revision/version.
+- For Assembly submission, all required component versions are also reproducible/pinned.
+- Teacher review opens the submitted version through `/cad/view/:versionId` or editable route according to permissions.
 
-ASA-CAD does not implement its own class roster, user system, assignment database or submission system.
+ASA-CAD does not implement its own roster, class, account, assignment or submission database.
 
-## Client-compute invariant
+## Container deployment
 
-Production ASA-CAD must have no endpoint such as `/compute`, `/rebuild`, `/boolean`, `/fillet` or `/solve` whose normal purpose is to execute learner CAD mathematics on the server.
+ASA Lab production deploys a pinned image, conceptually:
 
-Allowed server traffic:
+```text
+asa-web:<ASA version>
+asa-api:<ASA version>
+asa-cad-web:<ASA-CAD version>
+```
 
-- project/document read/write;
-- versions and submissions;
-- preview/snapshot uploads;
-- import/export file persistence where required;
-- telemetry/errors without project geometry secrets beyond what product policy allows.
+The exact Compose/Coolify deployment lives in the ASA Lab repository, not ASA-CAD.
 
-Geometry creation, sketch solving, recomputation, tessellation and normal export generation execute locally.
+ASA Lab never points production at `asa-cad-web:latest` or ASA-CAD `main`. It pins an explicit tested version/tag/digest.
 
-## Browser/kernel isolation issue
+Upgrade flow:
 
-The imported Toubkal baseline currently requires `SharedArrayBuffer`/cross-origin isolation and runs OpenCascade on the main browser thread. That is an upstream implementation detail, not the final host contract.
+```text
+ASA-CAD release
+-> standalone Docker/browser tests
+-> document compatibility tests
+-> protected Part + Assembly workflows
+-> ASA Lab staging
+-> integration tests
+-> update pinned asa-cad-web version
+```
 
-Before ASA Lab integration we must decide and regression-test one of these runtime forms:
+Rollback means restoring the previous compatible CAD image version.
 
-1. preferred if viable: client-side kernel execution that does not force cross-origin isolation on the whole ASA Lab application;
-2. otherwise: a narrowly isolated CAD runtime delivery strategy proven compatible with ASA Lab authentication and other modules.
+## Browser/kernel isolation
 
-Do not globally change ASA Lab security headers merely to make the imported baseline boot. Runtime requirements must first be isolated behind the ASA-CAD kernel loader and validated on target browsers.
+The imported Toubkal baseline currently requires SharedArrayBuffer/cross-origin isolation and runs OpenCascade on the main browser thread.
+
+A separate `/cad/*` frontend route lets us put current COOP/COEP headers on the CAD document without changing the normal ASA Lab pages.
+
+Later runtime/threading improvements may remove this requirement, but the public deployment boundary stays the same.
 
 ## Device capability tiers
 
-The same project format is used on every device.
+The same project format is used on every supported device.
 
-- Full-capability device: editable CAD environment.
-- Lower-capability but supported device: same document and commands, potentially reduced visual quality/tessellation or conservative operation limits.
-- Unsupported device: clear message and read-only/project access where possible; never silently send geometry computation to the ASA Lab server as a fallback.
+- Full-capability desktop/laptop: reference editable CAD environment.
+- Supported tablet/phone: same Part/Assembly documents and local calculation, with responsive panels and possibly lower visual tessellation/complexity limits.
+- Unsupported device: explicit failure/read-only access where possible.
 
-This preserves the rule that CAD compute belongs to the active client.
+No device silently falls back to server-side CAD compute.
 
 ## Integration acceptance gate
 
-The integration is accepted only when all of the following are proven:
+Integration is accepted only when:
 
-- opening ordinary ASA Lab pages does not load OpenCascade WASM;
-- opening a CAD project lazy-loads ASA-CAD and the kernel;
-- browser CPU/RAM perform the geometry work;
+- `/cad/*` is served from the pinned `asa-cad-web` container through the ASA Lab origin;
+- ordinary ASA Lab pages do not download OpenCascade WASM;
+- one ASA Lab session/login works in CAD without second authentication;
+- browser CPU/RAM perform Part and Assembly mathematics;
 - server requests during modeling are persistence/education requests, not geometry RPCs;
-- a project saves with revision protection;
-- the same project opens and recomputes on another computer;
-- assignment/submission/teacher review work through the existing ASA Lab flow;
-- a supported phone/tablet executes the same document locally;
-- unsupported hardware fails safely without document corruption;
-- the KOMPAS-oriented UI does not import Toubkal UI internals.
+- Part save/reopen works cross-device;
+- Assembly save/reopen preserves exact component versions and mates;
+- assignments/submissions/teacher review use existing ASA Lab flows;
+- supported phone/tablet computes locally;
+- unsupported hardware fails safely;
+- the KOMPAS-oriented UI remains independent from Toubkal UI internals.
+
+See `docs/RUN_AND_DEPLOY.md`, `docs/ASSEMBLIES.md` and `docs/SYSTEM_SPEC.md`.
