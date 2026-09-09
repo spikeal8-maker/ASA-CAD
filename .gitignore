@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Generated production build
+dist/
+
+# Test scratch builds
+.tk-*-build/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor / OS
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# Env
+.env
+.env.*
+!.env.example

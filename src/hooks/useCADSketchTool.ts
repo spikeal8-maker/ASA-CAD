@@ -1,0 +1,964 @@
+// ============================================================
+// ToubkalCAD – useCADSketchTool.ts
+//
+// Handles all SKETCH_* interaction modes.
+// Mouse clicks AND overlay-injected points both funnel through
+// processClick() so the step counter and store stay in sync.
+// ============================================================
+
+import { useEffect, useRef, useCallback } from 'react';
+import * as THREE from 'three';
+import { useCADStore } from '../store/cadStore';
+import type { Workplane, SketchConstraint } from '../store/cadStore';
+import { OccSketchService, workplaneBasis, toLocal2D, fromLocal2D } from '../services/OccSketchService';
+import { buildSketchDims } from '../utils/sketchDraftDims';
+import { CADGeometryRegistry } from '../services/CADGeometryRegistry';
+
+// ─── Constants ────────────────────────────────────────────────────────────────
+// Industry-standard (Fusion/SolidWorks) sketch status palette — cool, high-contrast
+// colours that pop against the neutral-grey grid instead of blending into it:
+//   active/unconstrained → vibrant blue (the line can still move)
+//   fully constrained    → near-black   (geometry is locked down)
+//   selected             → vibrant orange (warm reserved exclusively for selection)
+//   construction         → dashed grey  (recedes into the background)
+const COLOR_RUBBER       = 0x1a8cff;   // live rubber-band while drawing
+const COLOR_COMMIT       = 0x1a8cff;   // committed, unconstrained sketch geometry
+const COLOR_SELECTED     = 0xff9900;   // selected entity
+const COLOR_CONSTRAINED  = 0x222222;   // fully-constrained sketch (solver "full")
+
+// ─── Curve-sampling for preview ───────────────────────────────────────────────
+
+function mkLine(pts: THREE.Vector3[], color: number): THREE.Line {
+  const geo = new THREE.BufferGeometry().setFromPoints(pts);
+  return new THREE.Line(geo, new THREE.LineBasicMaterial({ color, depthTest: false }));
+}
+
+const COLOR_CONSTRUCTION = 0x777777;   // neutral grey — recedes as "reference"
+
+/** Dashed, dimmed line for projected reference / construction geometry. */
+function mkConstructionLine(pts: THREE.Vector3[]): THREE.Line {
+  const geo  = new THREE.BufferGeometry().setFromPoints(pts);
+  const line = new THREE.Line(geo, new THREE.LineDashedMaterial(
+    { color: COLOR_CONSTRUCTION, dashSize: 1.2, gapSize: 0.7, depthTest: false, transparent: true, opacity: 0.9 }));
+  line.computeLineDistances();   // required for dashes to render
+  return line;
+}
+
+function sampleCircle3D(center: THREE.Vector3, rim: THREE.Vector3, wp: Workplane, segs = 72): THREE.Vector3[] {
+  const r   = center.distanceTo(rim);
+  const { uAxis, vAxis } = workplaneBasis(wp);
+  return Array.from({ length: segs+1 }, (_, i) => {
+    const a = (2*Math.PI*i)/segs;
+    return center.clone().addScaledVector(uAxis, r*Math.cos(a)).addScaledVector(vAxis, r*Math.sin(a));
+  });
+}
+
+function sampleArc3D(
+  center: THREE.Vector3, startPt: THREE.Vector3, endPt: THREE.Vector3,
+  wp: Workplane, segs = 48,
+): THREE.Vector3[] {
+  const { uAxis, vAxis } = workplaneBasis(wp);
+  const r   = center.distanceTo(startPt);
+  const lc  = toLocal2D(center, wp);
+  const ls  = toLocal2D(startPt, wp);
+  const le  = toLocal2D(endPt, wp);
+  const a1  = Math.atan2(ls.v - lc.v, ls.u - lc.u);
+  let   a2  = Math.atan2(le.v - lc.v, le.u - lc.u);
+  if (a2 < a1) a2 += 2*Math.PI;
+  return Array.from({ length: segs+1 }, (_, i) => {
+    const a = a1 + ((a2 - a1) * i) / segs;
+    return center.clone().addScaledVector(uAxis, r*Math.cos(a)).addScaledVector(vAxis, r*Math.sin(a));
+  });
+}
+
+// Preview for the 3-point arc, where p2 is the MID (bulge) point and the arc runs
+// start=p1 → end=p3 THROUGH p2. Uses the exact same parameters as the committed
+// OCC edge (OccSketchService.arcParams3P) so the rubber-band preview, the
+// committed THREE.Line, and the real arc geometry always agree — including which
+// way the arc bulges (the raw CCW p1→p3 sweep would ignore p2's side).
+function sampleArc3PPreview(p1: THREE.Vector3, p2: THREE.Vector3, p3: THREE.Vector3, wp: Workplane, segs = 48): THREE.Vector3[] | null {
+  const ap = OccSketchService.arcParams3P(p1, p2, p3, wp);
+  if (!ap) return null;   // collinear → caller falls back to a chord line
+  const center = fromLocal2D(ap.c[0], ap.c[1], wp);
+  const { uAxis, vAxis } = workplaneBasis(wp);
+  return Array.from({ length: segs + 1 }, (_, i) => {
+    const a = ap.a1 + ((ap.a2 - ap.a1) * i) / segs;
+    return center.clone().addScaledVector(uAxis, ap.r * Math.cos(a)).addScaledVector(vAxis, ap.r * Math.sin(a));
+  });
+}
+
+/** Project sampled 3D curve points to local-2D — stored as a `polyline` cutter. */
+function localPts2D(pts3: THREE.Vector3[], wp: Workplane): [number, number][] {
+  return pts3.map((p) => { const l = toLocal2D(p, wp); return [l.u, l.v]; });
+}
+
+function sampleEllipse3D(
+  center: THREE.Vector3, majorEnd: THREE.Vector3, minorEnd: THREE.Vector3,
+  wp: Workplane, segs = 72,
+): THREE.Vector3[] {
+  const lc = toLocal2D(center, wp);
+  const lm = toLocal2D(majorEnd, wp);
+  const ln = toLocal2D(minorEnd, wp);
+  let   major = Math.hypot(lm.u-lc.u, lm.v-lc.v);
+  let   minor = Math.hypot(ln.u-lc.u, ln.v-lc.v);
+  if (major < minor) { [major, minor] = [minor, major]; }
+  const { uAxis, vAxis } = workplaneBasis(wp);
+  return Array.from({ length: segs+1 }, (_, i) => {
+    const a = (2*Math.PI*i)/segs;
+    return center.clone().addScaledVector(uAxis, major*Math.cos(a)).addScaledVector(vAxis, minor*Math.sin(a));
+  });
+}
+
+function samplePolygon3D(center: THREE.Vector3, rim: THREE.Vector3, sides: number, wp: Workplane): THREE.Vector3[] {
+  const lc = toLocal2D(center, wp); const lr = toLocal2D(rim, wp);
+  const r  = Math.hypot(lr.u-lc.u, lr.v-lc.v);
+  const { uAxis, vAxis } = workplaneBasis(wp);
+  const pts = Array.from({ length: sides+1 }, (_, i) => {
+    const a = (2*Math.PI*i)/sides;
+    return center.clone().addScaledVector(uAxis, r*Math.cos(a)).addScaledVector(vAxis, r*Math.sin(a));
+  });
+  pts[sides] = pts[0].clone();
+  return pts;
+}
+
+function sampleRect3D(c1: THREE.Vector3, c2: THREE.Vector3, wp: Workplane): THREE.Vector3[] {
+  const l1 = toLocal2D(c1, wp); const l2 = toLocal2D(c2, wp);
+  return [
+    fromLocal2D(l1.u, l1.v, wp), fromLocal2D(l2.u, l1.v, wp),
+    fromLocal2D(l2.u, l2.v, wp), fromLocal2D(l1.u, l2.v, wp),
+    fromLocal2D(l1.u, l1.v, wp),
+  ];
+}
+
+/**
+ * Visual outline for the rounded rectangle — straight edges + faceted corner arcs.
+ * Mirrors OccSketchService.createRoundedRectangleWire's geometry (same r clamp and
+ * corner centres) so the drawn sketch matches the OCC wire that gets extruded.
+ * Each arc's first point closes the straight edge from the previous arc's last point;
+ * the final arc returns to the start, so the strip is a closed loop.
+ */
+function sampleRoundedRect3D(
+  c1: THREE.Vector3, c2: THREE.Vector3, cornerRadius: number, wp: Workplane, segs = 8,
+): THREE.Vector3[] {
+  const l1 = toLocal2D(c1, wp); const l2 = toLocal2D(c2, wp);
+  let u1 = l1.u, v1 = l1.v, u2 = l2.u, v2 = l2.v;
+  if (u1 > u2) { [u1, u2] = [u2, u1]; } if (v1 > v2) { [v1, v2] = [v2, v1]; }
+  const r = Math.min(cornerRadius, Math.min(u2 - u1, v2 - v1) / 2 - 1e-4);
+  if (r <= 1e-4) return sampleRect3D(c1, c2, wp);
+  const PI = Math.PI;
+  const pts: THREE.Vector3[] = [fromLocal2D(u1 + r, v1, wp)];
+  const arc = (cu: number, cv: number, a1: number, a2: number) => {
+    for (let i = 0; i <= segs; i++) {
+      const t = a1 + (a2 - a1) * (i / segs);
+      pts.push(fromLocal2D(cu + r * Math.cos(t), cv + r * Math.sin(t), wp));
+    }
+  };
+  arc(u2 - r, v1 + r, -PI / 2, 0);      // bottom edge + bottom-right corner
+  arc(u2 - r, v2 - r, 0, PI / 2);       // right edge  + top-right corner
+  arc(u1 + r, v2 - r, PI / 2, PI);      // top edge    + top-left corner
+  arc(u1 + r, v1 + r, PI, 3 * PI / 2);  // left edge   + bottom-left corner (back to start)
+  return pts;
+}
+
+/** Corner radius for the rounded rect — shared by preview and commit so they match. */
+function roundedRectRadius(c1: THREE.Vector3, rPt: THREE.Vector3, c2: THREE.Vector3, wp: Workplane): number {
+  const l1 = toLocal2D(c1, wp); const l2 = toLocal2D(c2, wp);
+  return Math.max(0.1, Math.min(rPt.distanceTo(c1), Math.min(Math.abs(l2.u - l1.u), Math.abs(l2.v - l1.v)) / 2 - 0.001));
+}
+
+function sampleBezier3D(pts: THREE.Vector3[], segs = 60): THREE.Vector3[] {
+  return Array.from({ length: segs+1 }, (_, k) => {
+    const t = k/segs;
+    let p = pts.map(v => v.clone());
+    for (let r = 1; r < pts.length; r++)
+      p = p.slice(0,-1).map((v,i) => v.clone().lerp(p[i+1], t));
+    return p[0];
+  });
+}
+
+function sampleCatmullRom3D(pts: THREE.Vector3[], segs = 60): THREE.Vector3[] {
+  if (pts.length < 2) return pts;
+  const result: THREE.Vector3[] = [];
+  const n = pts.length;
+  for (let seg = 0; seg < n-1; seg++) {
+    const p0=pts[Math.max(0,seg-1)], p1=pts[seg], p2=pts[Math.min(n-1,seg+1)], p3=pts[Math.min(n-1,seg+2)];
+    for (let k=0; k<=segs; k++) {
+      const t=k/segs, t2=t*t, t3=t2*t;
+      result.push(new THREE.Vector3(
+        0.5*((-t3+2*t2-t)*p0.x+(3*t3-5*t2+2)*p1.x+(-3*t3+4*t2+t)*p2.x+(t3-t2)*p3.x),
+        0.5*((-t3+2*t2-t)*p0.y+(3*t3-5*t2+2)*p1.y+(-3*t3+4*t2+t)*p2.y+(t3-t2)*p3.y),
+        0.5*((-t3+2*t2-t)*p0.z+(3*t3-5*t2+2)*p1.z+(-3*t3+4*t2+t)*p2.z+(t3-t2)*p3.z),
+      ));
+    }
+  }
+  return result;
+}
+
+// ─── Hook ─────────────────────────────────────────────────────────────────────
+
+export function useCADSketchTool(
+  containerRef: React.RefObject<HTMLDivElement | null>,
+  sceneRef:     React.RefObject<THREE.Scene | null>,
+  cameraRef:    React.RefObject<THREE.PerspectiveCamera | THREE.OrthographicCamera | null>,
+) {
+  const interactionMode    = useCADStore((s) => s.interactionMode);
+  const activeWorkplane    = useCADStore((s) => s.activeWorkplane);
+  const sketchPolygonSides = useCADStore((s) => s.sketchPolygonSides);
+
+  const clicksRef      = useRef<THREE.Vector3[]>([]);
+  const previewRef     = useRef<THREE.Line | null>(null);
+  const committedRef   = useRef<THREE.Line[]>([]);
+  const wireVisualsRef = useRef<Map<string, THREE.Line[]>>(new Map());
+  const dimGroupRef    = useRef<THREE.Group | null>(null);   // live draft-dimension lines
+
+  // ─── Project mouse onto the active workplane ────────────────────────────────
+
+  const project = useCallback((e: MouseEvent, wp: Workplane): THREE.Vector3 | null => {
+    const container = containerRef.current;
+    const camera    = cameraRef.current;
+    if (!container || !camera) return null;
+
+    const rect = container.getBoundingClientRect();
+    const ndc  = new THREE.Vector2(
+      ((e.clientX - rect.left) / rect.width)  *  2 - 1,
+      ((e.clientY - rect.top)  / rect.height) * -2 + 1,
+    );
+    const ray  = new THREE.Raycaster();
+    ray.setFromCamera(ndc, camera);
+
+    const n    = new THREE.Vector3(...wp.normal).normalize();
+    const o    = new THREE.Vector3(...wp.origin);
+    const d    = -n.dot(o);
+    const pl   = new THREE.Plane(n, d);
+    const hit  = new THREE.Vector3();
+    if (!ray.ray.intersectPlane(pl, hit)) return null;
+
+    const { snapEnabled, snapStep } = useCADStore.getState();
+    if (snapEnabled) {
+      const lc  = toLocal2D(hit, wp);
+      const su  = Math.round(lc.u / snapStep) * snapStep;
+      const sv  = Math.round(lc.v / snapStep) * snapStep;
+      return fromLocal2D(su, sv, wp);
+    }
+    return hit;
+  }, [containerRef, cameraRef]);
+
+  // ─── Preview helpers ─────────────────────────────────────────────────────────
+
+  const clearPreview = useCallback(() => {
+    const s = sceneRef.current;
+    if (s && previewRef.current) {
+      s.remove(previewRef.current);
+      previewRef.current.geometry.dispose();
+      (previewRef.current.material as THREE.Material).dispose();
+    }
+    previewRef.current = null;
+  }, [sceneRef]);
+
+  const setPreview = useCallback((pts: THREE.Vector3[], color = COLOR_RUBBER) => {
+    const s = sceneRef.current;
+    if (!s || pts.length < 2) { clearPreview(); return; }
+    clearPreview();
+    previewRef.current = mkLine(pts, color);
+    s.add(previewRef.current);
+  }, [sceneRef, clearPreview]);
+
+  // ─── Live draft dimensions (THREE.Line engineering draft, in the workplane) ───
+
+  const clearDims = useCallback(() => {
+    const s = sceneRef.current;
+    if (s && dimGroupRef.current) {
+      s.remove(dimGroupRef.current);
+      dimGroupRef.current.traverse((o) => {
+        const m = o as THREE.LineSegments;
+        if (m.geometry) m.geometry.dispose();
+        if (m.material) (m.material as THREE.Material).dispose();
+      });
+    }
+    dimGroupRef.current = null;
+  }, [sceneRef]);
+
+  /** Pixel→world scale at the workplane (so draft lines are screen-constant size). */
+  const computeScale = useCallback((wp: Workplane): number => {
+    const cam = cameraRef.current, container = containerRef.current;
+    if (!cam || !container) return 1;
+    const h = container.clientHeight || 1;
+    const o = new THREE.Vector3(...wp.origin);
+    if ((cam as any).isOrthographicCamera) {
+      const oc = cam as unknown as THREE.OrthographicCamera;
+      return (oc.top - oc.bottom) / oc.zoom / h;
+    }
+    const pc = cam as unknown as THREE.PerspectiveCamera;
+    const distCam = pc.position.distanceTo(o);
+    return (2 * distCam * Math.tan((pc.fov * Math.PI / 180) / 2)) / h;
+  }, [cameraRef, containerRef]);
+
+  /** Rebuild the dimension-line group for the current tool/step + cursor. */
+  const updateDims = useCallback((priors2D: { x: number; y: number }[], cursor2D: { x: number; y: number }, wp: Workplane, scale: number) => {
+    const s = sceneRef.current;
+    if (!s) return;
+    clearDims();
+    const { interactionMode: mode, sketchInputStep: step } = useCADStore.getState();
+    const set = buildSketchDims(mode, step, priors2D, cursor2D, scale);
+    if (!set) { window.cadRequestRender?.(); return; }
+
+    const to3 = (p: { x: number; y: number }) => fromLocal2D(p.x, p.y, wp);
+    const solid: THREE.Vector3[] = [];   // dimension lines + arrowheads
+    const witness: THREE.Vector3[] = [];  // extension lines (dashed)
+    for (const dm of set.dims) {
+      for (const [a, b] of dm.dim)     solid.push(to3(a), to3(b));
+      for (const [a, b] of dm.arrows)  solid.push(to3(a), to3(b));
+      for (const [a, b] of dm.witness) witness.push(to3(a), to3(b));
+    }
+
+    const group = new THREE.Group();
+    group.userData.isWorkplaneHelper = true;   // excluded from picks (see useCADSketchTool onDown)
+    if (solid.length) {
+      const ls = new THREE.LineSegments(
+        new THREE.BufferGeometry().setFromPoints(solid),
+        new THREE.LineBasicMaterial({ color: 0x2a3340, transparent: true, opacity: 0.95, depthTest: false }),
+      );
+      ls.renderOrder = 999;   // always on top of geometry + grid
+      group.add(ls);
+    }
+    if (witness.length) {
+      const ls = new THREE.LineSegments(
+        new THREE.BufferGeometry().setFromPoints(witness),
+        new THREE.LineDashedMaterial({ color: 0x6a7785, transparent: true, opacity: 0.7, dashSize: 5 * scale, gapSize: 3 * scale, depthTest: false }),
+      );
+      ls.computeLineDistances();
+      ls.renderOrder = 999;
+      group.add(ls);
+    }
+    s.add(group);
+    dimGroupRef.current = group;
+    window.cadRequestRender?.();
+  }, [sceneRef, clearDims]);
+
+  // ── Shared preview path (used by mousemove AND typed-value changes) ───────────
+  // The "effective" cursor = the raw cursor, OR — when the user has typed a value
+  // into the dimension box — the point that value implies (typed magnitude along
+  // the cursor direction). Drawing from the effective point makes both the
+  // rubber-band preview and the dimension lines reflect a typed value live.
+
+  const dimLockRef = useRef<Record<string, number> | null>(null);   // typed dimension values
+
+  const drawPreview = useCallback((mode: string, clicks: THREE.Vector3[], pt: THREE.Vector3, wp: Workplane) => {
+    switch (mode) {
+      case 'SKETCH_LINE':
+        if (clicks.length === 1) setPreview([clicks[0].clone(), pt.clone()]);
+        break;
+      case 'SKETCH_CIRCLE':
+        if (clicks.length === 1 && clicks[0].distanceTo(pt) > 0.01) setPreview(sampleCircle3D(clicks[0], pt, wp));
+        break;
+      case 'SKETCH_RECTANGLE':
+        if (clicks.length === 1) setPreview(sampleRect3D(clicks[0], pt, wp));
+        break;
+      case 'SKETCH_ARC':
+        if (clicks.length === 1 && clicks[0].distanceTo(pt) > 0.01) setPreview(sampleCircle3D(clicks[0], pt, wp), 0x4488ff);
+        else if (clicks.length === 2 && clicks[0].distanceTo(clicks[1]) > 0.01) setPreview(sampleArc3D(clicks[0], clicks[1], pt, wp));
+        break;
+      case 'SKETCH_ARC_3P':
+        // Fusion-style order: click 1 = start, click 2 = end, click 3 = a point on
+        // the arc (bulge). After the 2nd click BOTH endpoints are fixed and only the
+        // bulge tracks the cursor. arc helpers take (start, mid, end), so the cursor
+        // (prospective bulge) goes in the MIDDLE slot.
+        if (clicks.length === 1) setPreview([clicks[0].clone(), pt.clone()]);
+        else if (clicks.length === 2) setPreview(sampleArc3PPreview(clicks[0], pt, clicks[1], wp) ?? [clicks[0].clone(), clicks[1].clone()]);
+        break;
+      case 'SKETCH_ELLIPSE':
+        if (clicks.length === 1 && clicks[0].distanceTo(pt) > 0.01) setPreview(sampleCircle3D(clicks[0], pt, wp));
+        else if (clicks.length === 2) setPreview(sampleEllipse3D(clicks[0], clicks[1], pt, wp));
+        break;
+      case 'SKETCH_POLYGON':
+        if (clicks.length === 1 && clicks[0].distanceTo(pt) > 0.01) setPreview(samplePolygon3D(clicks[0], pt, useCADStore.getState().sketchPolygonSides, wp));
+        break;
+      case 'SKETCH_ROUNDED_RECT':
+        if (clicks.length === 1) setPreview(sampleRect3D(clicks[0], pt, wp));
+        else if (clicks.length === 2)
+          setPreview(sampleRoundedRect3D(clicks[0], clicks[1], roundedRectRadius(clicks[0], pt, clicks[1], wp), wp));
+        break;
+      case 'SKETCH_BEZIER':
+        if (clicks.length >= 1) setPreview(sampleBezier3D([...clicks, pt]));
+        break;
+      case 'SKETCH_SPLINE':
+        if (clicks.length >= 1) setPreview(sampleCatmullRom3D([...clicks, pt]));
+        break;
+      default: break;
+    }
+  }, [setPreview]);
+
+  /** Redraw preview + dimensions for a raw cursor point (local 2D), honouring any typed lock. */
+  const rebuildPreview = useCallback((rawLocal: { x: number; y: number }) => {
+    const { interactionMode: mode, sketchInputStep: step, sketchPoints: priors, activeWorkplane: wp } = useCADStore.getState();
+    if (!mode.startsWith('SKETCH_')) return;
+    const scale = computeScale(wp);
+    let effLocal = rawLocal;
+    const lock = dimLockRef.current;
+    if (lock) {
+      const set = buildSketchDims(mode, step, priors, rawLocal, scale);
+      if (set) effLocal = set.resolve(lock, priors, rawLocal);
+    }
+    const effPt = fromLocal2D(effLocal.x, effLocal.y, wp);
+    drawPreview(mode, clicksRef.current, effPt, wp);
+    updateDims(priors, effLocal, wp, scale);
+  }, [computeScale, drawPreview, updateDims]);
+
+  const addCommitted = useCallback((pts: THREE.Vector3[]) => {
+    const s = sceneRef.current;
+    if (!s || pts.length < 2) return;
+    const l = mkLine(pts, COLOR_COMMIT);
+    s.add(l); committedRef.current.push(l);
+  }, [sceneRef]);
+
+  const cancelAll = useCallback(() => {
+    clearPreview();
+    clearDims();
+    const s = sceneRef.current;
+    if (s) committedRef.current.forEach((l) => {
+      s.remove(l); l.geometry.dispose(); (l.material as THREE.Material).dispose();
+    });
+    committedRef.current = [];
+    clicksRef.current    = [];
+    useCADStore.getState().resetSketchInput();
+  }, [sceneRef, clearPreview, clearDims]);
+
+  // ─── Cancel last registered point (Esc step-back) ────────────────────────────
+
+  const cancelLastPoint = useCallback(() => {
+    if (clicksRef.current.length === 0) return;
+    clicksRef.current.pop();
+    clearPreview(); // preview will refresh on next mousemove
+    const wp      = useCADStore.getState().activeWorkplane;
+    const localPts = clicksRef.current.map((c) => {
+      const loc = toLocal2D(c, wp);
+      return { x: loc.u, y: loc.v };
+    });
+    useCADStore.getState().setSketchInputStep(clicksRef.current.length);
+    useCADStore.getState().setSketchPoints(localPts);
+  }, [clearPreview]);
+
+  // ─── Register finalized sketch ───────────────────────────────────────────────
+
+  // ─── Register a decomposed straight-edge shape (rectangle / polygon) ─────────
+  // Emits one `line` sketch_wire per edge plus auto-constraints (corner
+  // coincidences, and edge Horizontal/Vertical for rectangles) on the active
+  // sketch container, so the shape is a first-class constrainable/draggable set
+  // of lines instead of an opaque polyline. Returns false (caller falls back to
+  // the single-polyline path) when there's no sketch session to host the
+  // constraints. `hv[i]` optionally pins edge i Horizontal ('H') or Vertical ('V').
+  const registerStraightShape = useCallback((
+    oc: any, wp: Workplane, corners2D: [number, number][], baseName: string,
+    hv?: (('H' | 'V') | null)[],
+  ): boolean => {
+    const { sketchSession } = useCADStore.getState();
+    if (!sketchSession) return false;
+    const N = corners2D.length;
+    if (N < 3) return false;
+
+    const reg = CADGeometryRegistry.getInstance();
+    const ids = corners2D.map(() => crypto.randomUUID());
+    const nodes: any[] = [];
+    const visuals: { id: string; pts: number[][] }[] = [];
+    const constraints: SketchConstraint[] = [];
+
+    for (let i = 0; i < N; i++) {
+      const a2 = corners2D[i], b2 = corners2D[(i + 1) % N];
+      const a3 = fromLocal2D(a2[0], a2[1], wp), b3 = fromLocal2D(b2[0], b2[1], wp);
+      const wire = OccSketchService.createClosedWireFromEdges(oc, [OccSketchService.createLineEdge(oc, a3, b3)]);
+      reg.registerShape(ids[i], wire);
+      nodes.push({
+        id: ids[i], name: `${baseName} ${i + 1}`, type: 'sketch_wire',
+        visible: true, locked: false, parentId: sketchSession.id, notes: '',
+        transform: { position: [0,0,0], rotation: [0,0,0], scale: [1,1,1] },
+        material: { color: COLOR_COMMIT, roughness: 0.5, metalness: 0, wireframe: true, opacity: 1, transparent: false },
+        params: { workplane: wp, sketchGeom: { kind: 'line', a: a2, b: b2 } },
+      });
+      visuals.push({ id: ids[i], pts: [[a3.x, a3.y, a3.z], [b3.x, b3.y, b3.z]] });
+    }
+    // Corner coincidences: edge[i].b ≡ edge[i+1].a (closing the loop).
+    for (let i = 0; i < N; i++) {
+      constraints.push({ id: crypto.randomUUID(), type: 'COINCIDENT',
+        refs: [{ kind: 'point', id: ids[i], pt: 'b' }, { kind: 'point', id: ids[(i + 1) % N], pt: 'a' }] });
+    }
+    if (hv) for (let i = 0; i < N; i++) {
+      if (hv[i] === 'H') constraints.push({ id: crypto.randomUUID(), type: 'HORIZONTAL', refs: [{ kind: 'entity', id: ids[i] }] });
+      if (hv[i] === 'V') constraints.push({ id: crypto.randomUUID(), type: 'VERTICAL',   refs: [{ kind: 'entity', id: ids[i] }] });
+    }
+
+    useCADStore.getState().addSketchEntities(nodes, sketchSession.id, constraints, baseName);
+    for (const v of visuals) window.dispatchEvent(new CustomEvent('cad-sketch-add-visual', { detail: v }));
+
+    clearPreview();
+    clearDims();
+    committedRef.current = [];
+    clicksRef.current = [];
+    useCADStore.getState().resetSketchInput();
+    useCADStore.getState().setSelectedIds(ids);
+    useCADStore.getState().setInteractionMode('SELECT');
+    return true;
+  }, [clearPreview, clearDims]);
+
+  const registerWire = useCallback((oc: any, wire: any, shapeLabel: string, wp: Workplane, geom?: any) => {
+    const id = crypto.randomUUID();
+    CADGeometryRegistry.getInstance().registerShape(id, wire);
+
+    const lines = [...committedRef.current];
+    lines.forEach((l) => { l.userData.cadNodeId = id; });
+    wireVisualsRef.current.set(id, lines);
+    committedRef.current = [];
+    clearPreview();
+    clearDims();
+    clicksRef.current = [];
+
+    useCADStore.getState().resetSketchInput();
+
+    const { sketchSession } = useCADStore.getState();
+
+    useCADStore.getState().addNode({
+      id, name: shapeLabel, type: 'sketch_wire',
+      visible: true, locked: false,
+      parentId: sketchSession?.id ?? null,
+      notes: '',
+      transform: { position:[0,0,0], rotation:[0,0,0], scale:[1,1,1] },
+      material:  { color:COLOR_COMMIT, roughness:0.5, metalness:0, wireframe:true, opacity:1, transparent:false },
+      // sketchGeom (local-2D defining points) lets Phase-8 constraints re-solve this entity.
+      params: geom ? { workplane: wp, sketchGeom: geom } : { workplane: wp },
+    });
+    useCADStore.getState().setSelectedIds([id]);
+    useCADStore.getState().log(
+      sketchSession
+        ? `Added "${shapeLabel}" to ${sketchSession.name}.`
+        : `Sketch "${shapeLabel}" on ${wp.label} plane. Click Extrude to create solid.`,
+      'success',
+    );
+    useCADStore.getState().setInteractionMode('SELECT');
+  }, [clearPreview, clearDims]);
+
+  // ─── Process a single confirmed click (mouse or overlay) ─────────────────────
+  // Reads mode/workplane from store at call-time to avoid stale closures.
+
+  const processClick = useCallback((pt: THREE.Vector3) => {
+    const oc = window.oc;
+    if (!oc) { useCADStore.getState().log('OCC kernel not ready.', 'error'); return; }
+
+    const { interactionMode: mode, activeWorkplane: wp, sketchPolygonSides: sides } = useCADStore.getState();
+    if (!mode.startsWith('SKETCH_')) return;
+
+    const clicks = clicksRef.current;
+
+    // If the user typed a dimension value, finish where the LIVE PREVIEW shows it:
+    // resolve the typed magnitude along the cursor direction so a viewport click
+    // commits the same point Enter would (preview == placement). No typed value →
+    // the raw cursor point is used unchanged.
+    let placed = pt;
+    const lock = dimLockRef.current;
+    if (lock) {
+      const scale = computeScale(wp);
+      const raw   = toLocal2D(pt, wp);
+      const priorsLocal = clicks.map((c) => { const l = toLocal2D(c, wp); return { x: l.u, y: l.v }; });
+      const set   = buildSketchDims(mode, clicks.length, priorsLocal, { x: raw.u, y: raw.v }, scale);
+      if (set) { const eff = set.resolve(lock, priorsLocal, { x: raw.u, y: raw.v }); placed = fromLocal2D(eff.x, eff.y, wp); }
+    }
+
+    dimLockRef.current = null;   // a placed point ends the current step's typed lock
+
+    clicks.push(placed.clone());
+
+    // Sync step counter and local-2D points with store (for overlay)
+    const localPts = clicks.map((c) => { const l = toLocal2D(c, wp); return { x: l.u, y: l.v }; });
+    useCADStore.getState().setSketchInputStep(clicks.length);
+    useCADStore.getState().setSketchPoints(localPts);
+
+    try {
+      switch (mode) {
+
+        case 'SKETCH_LINE': {
+          if (clicks.length === 2) {
+            const [a, b] = clicks;
+            const edge = OccSketchService.createLineEdge(oc, a, b);
+            const wire = OccSketchService.createClosedWireFromEdges(oc, [edge]);
+            addCommitted([a.clone(), b.clone()]);
+            const la = toLocal2D(a, wp); const lb = toLocal2D(b, wp);
+            registerWire(oc, wire, 'Line', wp,
+              { kind: 'line', a: [la.u, la.v], b: [lb.u, lb.v] });
+          }
+          break;
+        }
+
+        case 'SKETCH_CIRCLE': {
+          if (clicks.length === 2) {
+            const [c, rim] = clicks;
+            const r = c.distanceTo(rim);
+            if (r < 0.01) { clicks.pop(); break; }
+            const wire = OccSketchService.createCircleWire(oc, c, rim, wp);
+            addCommitted(sampleCircle3D(c, rim, wp));
+            const lc = toLocal2D(c, wp);
+            registerWire(oc, wire, `Circle-r${r.toFixed(1)}`, wp,
+              { kind: 'circle', c: [lc.u, lc.v], r });
+          }
+          break;
+        }
+
+        case 'SKETCH_RECTANGLE': {
+          if (clicks.length === 2) {
+            const [c1, c2] = clicks;
+            const l1 = toLocal2D(c1, wp), l2 = toLocal2D(c2, wp);
+            if (Math.abs(l2.u - l1.u) < 0.01 || Math.abs(l2.v - l1.v) < 0.01) { clicks.pop(); break; }
+            // Decompose into 4 constrained lines (bottom-H, right-V, top-H, left-V)
+            // so the rectangle is fully constrainable/draggable. Falls back to a
+            // single closed polyline when there's no sketch container.
+            const corners: [number, number][] = [[l1.u, l1.v], [l2.u, l1.v], [l2.u, l2.v], [l1.u, l2.v]];
+            if (!registerStraightShape(oc, wp, corners, 'Rectangle', ['H', 'V', 'H', 'V'])) {
+              const wire = OccSketchService.createRectangleWire(oc, c1, c2, wp);
+              const samp = sampleRect3D(c1, c2, wp);
+              addCommitted(samp);
+              registerWire(oc, wire, 'Rectangle', wp, { kind: 'polyline', pts: localPts2D(samp, wp) });
+            }
+          }
+          break;
+        }
+
+        case 'SKETCH_ARC': {
+          if (clicks.length === 3) {
+            const [center, startPt, endPt] = clicks;
+            const edge = OccSketchService.createArcEdge(oc, center, startPt, endPt, wp);
+            const wire = OccSketchService.createClosedWireFromEdges(oc, [edge]);
+            addCommitted(sampleArc3D(center, startPt, endPt, wp));
+            const lc = toLocal2D(center, wp); const ls = toLocal2D(startPt, wp); const le = toLocal2D(endPt, wp);
+            const r  = Math.hypot(ls.u - lc.u, ls.v - lc.v);
+            const a1 = Math.atan2(ls.v - lc.v, ls.u - lc.u);
+            let   a2 = Math.atan2(le.v - lc.v, le.u - lc.u);
+            if (a2 <= a1) a2 += 2 * Math.PI;
+            registerWire(oc, wire, 'Arc', wp, { kind: 'arc', c: [lc.u, lc.v], r, a1, a2 });
+          }
+          break;
+        }
+
+        case 'SKETCH_ARC_3P': {
+          if (clicks.length === 3) {
+            // Clicks are [start, end, bulge]; the arc helpers want (start, mid, end),
+            // so pass (start, bulge, end) = (clicks[0], clicks[2], clicks[1]).
+            const [start, end, bulge] = clicks;
+            const edge = OccSketchService.createArcByThreePoints(oc, start, bulge, end, wp);
+            const wire = OccSketchService.createClosedWireFromEdges(oc, [edge]);
+            const preview = sampleArc3PPreview(start, bulge, end, wp);
+            addCommitted(preview ?? [start.clone(), bulge.clone(), end.clone()]);
+            const ap = OccSketchService.arcParams3P(start, bulge, end, wp);
+            registerWire(oc, wire, 'Arc-3P', wp,
+              ap ? { kind: 'arc', c: ap.c, r: ap.r, a1: ap.a1, a2: ap.a2 } : undefined);
+          }
+          break;
+        }
+
+        case 'SKETCH_ELLIPSE': {
+          if (clicks.length === 3) {
+            const [c, majPt, minPt] = clicks;
+            const wire = OccSketchService.createEllipseWire(oc, c, majPt, minPt, wp);
+            const samp = sampleEllipse3D(c, majPt, minPt, wp);
+            addCommitted(samp);
+            // Store the polyline (for region detection / constraints) AND an analytic
+            // ellipse descriptor in local-2D: rx along uAxis, ry along vAxis, matching
+            // createEllipseWire (major forced along uAxis, major≥minor). The descriptor
+            // lets the profile be rebuilt as ONE gp_Elips edge instead of a 72-segment
+            // polyline — keeping lofts/extrudes 1-edge so they don't trigger the slow
+            // ThruSections.CheckCompatibility reconciliation (~24s for circle+ellipses).
+            const lc = toLocal2D(c, wp), lm = toLocal2D(majPt, wp), ln = toLocal2D(minPt, wp);
+            let rx = Math.hypot(lm.u - lc.u, lm.v - lc.v);
+            let ry = Math.hypot(ln.u - lc.u, ln.v - lc.v);
+            if (rx < ry) { const t = rx; rx = ry; ry = t; }
+            registerWire(oc, wire, 'Ellipse', wp, {
+              kind: 'polyline', pts: localPts2D(samp, wp), ellipse: { c: [lc.u, lc.v], rx, ry },
+            });
+          }
+          break;
+        }
+
+        case 'SKETCH_POLYGON': {
+          if (clicks.length === 2) {
+            const [c, rim] = clicks;
+            const lc = toLocal2D(c, wp), lr = toLocal2D(rim, wp);
+            const r = Math.hypot(lr.u - lc.u, lr.v - lc.v);
+            if (r < 0.01) { clicks.pop(); break; }
+            // Decompose into `sides` constrained lines (corner coincidences only —
+            // the polygon stays a closed loop but its vertices are individually
+            // constrainable). Corners match samplePolygon3D (angle 0 start).
+            const corners: [number, number][] = Array.from({ length: sides }, (_, i) => {
+              const ang = (2 * Math.PI * i) / sides;
+              return [lc.u + r * Math.cos(ang), lc.v + r * Math.sin(ang)] as [number, number];
+            });
+            if (!registerStraightShape(oc, wp, corners, `Polygon-${sides}`)) {
+              const wire = OccSketchService.createPolygonWire(oc, c, rim, sides, wp);
+              const samp = samplePolygon3D(c, rim, sides, wp);
+              addCommitted(samp);
+              registerWire(oc, wire, `Polygon-${sides}`, wp, { kind: 'polyline', pts: localPts2D(samp, wp) });
+            }
+          }
+          break;
+        }
+
+        case 'SKETCH_ROUNDED_RECT': {
+          if (clicks.length === 3) {
+            const [c1, c2, rPt] = clicks;
+            const cornerRadius = roundedRectRadius(c1, rPt, c2, wp);
+            const wire = OccSketchService.createRoundedRectangleWire(oc, c1, c2, cornerRadius, wp);
+            addCommitted(sampleRoundedRect3D(c1, c2, cornerRadius, wp));
+            registerWire(oc, wire, `RndRect-r${cornerRadius.toFixed(1)}`, wp);
+          }
+          break;
+        }
+
+        case 'SKETCH_BEZIER':
+        case 'SKETCH_SPLINE':
+          // Accumulate; finish on Enter key or Finish button
+          break;
+
+        default: break;
+      }
+    } catch (err: any) {
+      useCADStore.getState().log(`Sketch error: ${err.message}`, 'error');
+      cancelAll();
+    }
+  }, [addCommitted, registerWire, registerStraightShape, cancelAll, computeScale]);
+
+  // ─── Cleanup wires when nodes are deleted ────────────────────────────────────
+
+  useEffect(() => {
+    const unsub = useCADStore.subscribe((curr, prev) => {
+      if (curr.nodes === prev.nodes) return;
+      for (const [id, lines] of wireVisualsRef.current) {
+        if (!curr.nodes[id]) {
+          const s = sceneRef.current;
+          if (s) lines.forEach((l) => {
+            s.remove(l); l.geometry.dispose(); (l.material as THREE.Material).dispose();
+          });
+          wireVisualsRef.current.delete(id);
+        }
+      }
+    });
+    return unsub;
+  }, [sceneRef]);
+
+  useEffect(() => {
+    const unsub = useCADStore.subscribe((curr, prev) => {
+      if (curr.nodes === prev.nodes) return;
+      for (const [id, lines] of wireVisualsRef.current) {
+        const node = curr.nodes[id];
+        if (node) lines.forEach((l) => { l.visible = node.visible; });
+      }
+    });
+    return unsub;
+  }, []);
+
+  // ─── Status colour: blue (unconstrained) / black (fully constrained) / orange (selected) ──
+  // Recolour committed sketch wires from the live selection + solver state so the
+  // viewport mirrors Fusion's status palette. Construction lines (dashed) are left
+  // grey — they're reference geometry, not driving entities.
+  useEffect(() => {
+    const applyColours = () => {
+      const { selectedIds, constraintStatus, nodes } = useCADStore.getState();
+      const sel  = new Set(selectedIds);
+      const full = constraintStatus?.state === 'full';
+      for (const [id, lines] of wireVisualsRef.current) {
+        if (nodes[id]?.params?.construction) continue;             // dashed reference — leave grey
+        const color = sel.has(id) ? COLOR_SELECTED : (full ? COLOR_CONSTRAINED : COLOR_COMMIT);
+        lines.forEach((l) => {
+          const m = l.material as THREE.LineBasicMaterial;
+          if (!(m instanceof THREE.LineDashedMaterial)) m.color.setHex(color);
+        });
+      }
+      window.cadRequestRender?.();
+    };
+    applyColours();
+    const unsub = useCADStore.subscribe((c, p) => {
+      if (c.selectedIds !== p.selectedIds || c.constraintStatus !== p.constraintStatus || c.nodes !== p.nodes)
+        applyColours();
+    });
+    return unsub;
+  }, []);
+
+  // ─── Replace a committed wire's visual after a constraint solve (Phase 8) ────
+  // The constraint panel rebuilds the OCC wire from solved 2D geometry and asks
+  // us to swap the THREE.Line polyline so the viewport reflects the new shape.
+  useEffect(() => {
+    const onReplace = (e: Event) => {
+      const { id, pts } = (e as CustomEvent).detail as { id: string; pts: number[][] };
+      const s = sceneRef.current;
+      if (!s || !pts?.length) return;
+      const old = wireVisualsRef.current.get(id) ?? [];
+      const visible = old[0]?.visible ?? true;
+      old.forEach((l) => { s.remove(l); l.geometry.dispose(); (l.material as THREE.Material).dispose(); });
+      const v3 = pts.map((p) => new THREE.Vector3(p[0], p[1], p[2]));
+      const isConstr = !!useCADStore.getState().nodes[id]?.params?.construction;
+      const line = isConstr ? mkConstructionLine(v3) : mkLine(v3, COLOR_COMMIT);
+      line.userData.cadNodeId = id;
+      line.visible = visible;
+      s.add(line);
+      wireVisualsRef.current.set(id, [line]);
+    };
+    // S1 — sketch-edit (trim/extend/split) creates brand-new wire nodes outside
+    // the draw flow; this gives them a viewport line tracked in wireVisualsRef
+    // (so visibility-sync and delete-cleanup subscriptions handle them too).
+    const onAddVisual = (e: Event) => {
+      const { id, pts, construction } = (e as CustomEvent).detail as { id: string; pts: number[][]; construction?: boolean };
+      const s = sceneRef.current;
+      if (!s || !pts?.length) return;
+      const v3 = pts.map((p) => new THREE.Vector3(p[0], p[1], p[2]));
+      const line = construction ? mkConstructionLine(v3) : mkLine(v3, COLOR_COMMIT);
+      line.userData.cadNodeId = id;
+      s.add(line);
+      const existing = wireVisualsRef.current.get(id) ?? [];
+      wireVisualsRef.current.set(id, [...existing, line]);
+    };
+    window.addEventListener('cad-sketch-replace-visual', onReplace);
+    window.addEventListener('cad-sketch-add-visual', onAddVisual);
+    return () => {
+      window.removeEventListener('cad-sketch-replace-visual', onReplace);
+      window.removeEventListener('cad-sketch-add-visual', onAddVisual);
+    };
+  }, [sceneRef]);
+
+  // ─── Main event loop ─────────────────────────────────────────────────────────
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const getWP = () => useCADStore.getState().activeWorkplane;
+
+    // Mouse click → project to plane → processClick
+    // IMPORTANT: skip if the click landed on an HTML overlay element marked
+    // [data-sketch-overlay] (the SketchDimensionInput box). Without this guard the
+    // capture listener fires BEFORE the input, producing a spurious extra click at
+    // the raw mouse position — injecting a stray point while the user edits a value.
+    const onDown = (e: MouseEvent) => {
+      if (e.button !== 0) return;
+      if ((e.target as HTMLElement).closest('[data-sketch-overlay]')) return;
+      const mode = useCADStore.getState().interactionMode;
+      if (!mode.startsWith('SKETCH_')) return;
+      e.stopPropagation();
+      const wp = getWP();
+      const pt = project(e, wp);
+      if (!pt) return;
+      processClick(pt);
+    };
+
+    const onDblClick = (e: MouseEvent) => {
+      const mode = useCADStore.getState().interactionMode;
+      if (mode !== 'SKETCH_BEZIER' && mode !== 'SKETCH_SPLINE') return;
+      e.stopPropagation();
+      finishCurve(mode);
+    };
+
+    const finishCurve = (mode: string) => {
+      const oc = window.oc; const wp = getWP(); const clicks = clicksRef.current;
+      if (!oc || clicks.length < 2) { useCADStore.getState().log('Need ≥ 2 points', 'warn'); return; }
+      try {
+        if (mode === 'SKETCH_BEZIER') {
+          const wire = OccSketchService.createBezierWire(oc, clicks);
+          const samp = sampleBezier3D(clicks);
+          addCommitted(samp);
+          registerWire(oc, wire, `Bezier-${clicks.length}pts`, wp, { kind: 'polyline', pts: localPts2D(samp, wp) });
+        } else {
+          const wire = OccSketchService.createSplineWire(oc, clicks, wp);
+          const samp = sampleCatmullRom3D(clicks);
+          addCommitted(samp);
+          registerWire(oc, wire, `Spline-${clicks.length}pts`, wp, { kind: 'polyline', pts: localPts2D(samp, wp) });
+        }
+      } catch (err: any) {
+        useCADStore.getState().log(`Curve error: ${err.message}`, 'error');
+        cancelAll();
+      }
+    };
+
+    const onMove = (e: MouseEvent) => {
+      const mode = useCADStore.getState().interactionMode;
+      if (!mode.startsWith('SKETCH_')) {
+        clearPreview();
+        clearDims();
+        useCADStore.getState().setSketchPreviewPoint(null);
+        return;
+      }
+      const wp = getWP();
+      const pt = project(e, wp);
+      if (!pt) return;
+
+      // Update the overlay's live coordinate display, then redraw preview + dims
+      // (the shared path applies any typed dimension lock).
+      const loc = toLocal2D(pt, wp);
+      useCADStore.getState().setSketchPreviewPoint({ x: loc.u, y: loc.v });
+      rebuildPreview({ x: loc.u, y: loc.v });
+    };
+
+    const onKey = (e: KeyboardEvent) => {
+      const mode = useCADStore.getState().interactionMode;
+      if (!mode.startsWith('SKETCH_')) return;
+
+      if (e.key === 'Escape') {
+        const { sketchInputStep } = useCADStore.getState();
+        if (sketchInputStep > 0) {
+          // Roll back one step — the overlay Esc triggers this path too
+          cancelLastPoint();
+        } else {
+          cancelAll();
+          useCADStore.getState().log('Sketch cancelled.', 'warn');
+          useCADStore.getState().setInteractionMode('SELECT');
+        }
+      } else if (e.key === 'Enter') {
+        if (mode === 'SKETCH_BEZIER' || mode === 'SKETCH_SPLINE') finishCurve(mode);
+      }
+    };
+
+    // Overlay injects a local-2D point → convert to world 3D → processClick
+    const onInjectPoint = (e: Event) => {
+      const { localX, localY } = (e as CustomEvent).detail as { localX: number; localY: number };
+      const wp = useCADStore.getState().activeWorkplane;
+      // The overlay already resolved the typed value into this point — clear the
+      // lock so processClick places it as-is instead of resolving a second time.
+      dimLockRef.current = null;
+      const pt = fromLocal2D(localX, localY, wp);
+      processClick(pt);
+    };
+
+    // Overlay's Finish button (Bezier / Spline)
+    const onFinishCurve = () => {
+      const mode = useCADStore.getState().interactionMode;
+      finishCurve(mode);
+    };
+
+    // Typed dimension value(s) from SketchDimensionInput → lock + redraw live.
+    const onDimLock = (e: Event) => {
+      dimLockRef.current = ((e as CustomEvent).detail?.vals as Record<string, number> | null) ?? null;
+      const c = useCADStore.getState().sketchPreviewPoint;
+      if (c) rebuildPreview(c);
+    };
+
+    // Hide the cursor annotation + draft dimensions when the mouse leaves
+    const onLeave = () => { useCADStore.getState().setSketchPreviewPoint(null); clearDims(); };
+
+    container.addEventListener('mousedown', onDown, true);
+    container.addEventListener('dblclick',  onDblClick, true);
+    container.addEventListener('mousemove', onMove);
+    container.addEventListener('mouseleave', onLeave);
+    window.addEventListener('keydown', onKey);
+    window.addEventListener('cad-sketch-inject-point', onInjectPoint);
+    window.addEventListener('cad-sketch-finish-curve', onFinishCurve);
+    window.addEventListener('cad-sketch-dim-lock', onDimLock);
+
+    return () => {
+      container.removeEventListener('mousedown', onDown, true);
+      container.removeEventListener('dblclick',  onDblClick, true);
+      container.removeEventListener('mousemove', onMove);
+      container.removeEventListener('mouseleave', onLeave);
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('cad-sketch-inject-point', onInjectPoint);
+      window.removeEventListener('cad-sketch-finish-curve', onFinishCurve);
+      window.removeEventListener('cad-sketch-dim-lock', onDimLock);
+      clearPreview();
+      clearDims();
+      useCADStore.getState().setSketchPreviewPoint(null);
+    };
+  }, [interactionMode, activeWorkplane, sketchPolygonSides,
+      project, setPreview, clearPreview, clearDims, addCommitted, cancelAll, cancelLastPoint,
+      processClick, registerWire, rebuildPreview]);
+}

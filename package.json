@@ -1,0 +1,84 @@
+{
+  "name": "toubkalcad",
+  "version": "1.0.0",
+  "description": "Browser-based 3D parametric CAD application powered by OpenCascade",
+  "type": "module",
+  "main": "src/index.tsx",
+  "scripts": {
+    "dev": "rspack serve --config rspack.config.ts",
+    "build": "tsc --noEmit && rspack build --config rspack.config.ts",
+    "lint": "eslint src rspack.config.ts",
+    "preview": "rspack serve --config rspack.config.ts --mode production",
+    "clean": "rimraf dist",
+    "test": "npm run test:assembly && npm run test:assembly-references && npm run test:assembly-constraints && npm run test:assembly-tools && npm run test:extrude && npm run test:nested && npm run test:region-pick && npm run test:candidate-durability && npm run test:loft && npm run test:recompute && npm run test:stableref && npm run test:stableref-face && npm run test:stableref-datum && npm run test:stableref-sketch && npm run test:history-delta && npm run test:region-backfill && npm run test:solver && npm run test:distance",
+    "test:assembly": "tsx scripts/test-assembly-phase-a.ts",
+    "test:assembly-references": "tsx scripts/test-assembly-phase-b.ts",
+    "test:assembly-constraints": "tsx scripts/test-assembly-phase-c.ts",
+    "test:assembly-tools": "tsx scripts/test-assembly-phase-d.ts",
+    "test:extrude": "node scripts/test-extrude.mjs",
+    "test:nested": "tsx scripts/test-nested-profile.ts",
+    "test:region-pick": "tsx scripts/test-region-pick.ts",
+    "test:candidate-durability": "node scripts/test-profile-candidate-durability.mjs",
+    "test:loft": "node scripts/test-loft.mjs",
+    "test:recompute": "node scripts/test-recompute.mjs",
+    "test:stableref": "node scripts/test-stableref-blend.mjs",
+    "test:stableref-face": "node scripts/test-stableref-face.mjs",
+    "test:stableref-datum": "node scripts/test-stableref-datum.mjs",
+    "test:stableref-sketch": "node scripts/test-stableref-sketch.mjs",
+    "test:history-delta": "node scripts/test-history-delta.mjs",
+    "test:region-backfill": "node scripts/test-region-backfill.mjs",
+    "test:solver": "tsx native/slvs/test/crosscheck.ts",
+    "test:planegcs": "tsx native/slvs/test/crosscheck.ts",
+    "test:distance": "tsx scripts/test-distance-lineline.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JNaruto-mar/ToubkalCAD.git"
+  },
+  "bugs": {
+    "url": "https://github.com/JNaruto-mar/ToubkalCAD/issues"
+  },
+  "homepage": "https://github.com/JNaruto-mar/ToubkalCAD#readme",
+  "keywords": [
+    "cad",
+    "opencascade",
+    "parametric-modeling",
+    "react",
+    "threejs",
+    "webassembly"
+  ],
+  "dependencies": {
+    "@salusoft89/planegcs": "^1.1.7",
+    "dockview": "^1.11.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-draggable": "^4.6.0",
+    "three": "^0.170.0",
+    "tweakpane": "^4.0.5",
+    "zustand": "^5.0.3"
+  },
+  "devDependencies": {
+    "@rspack/cli": "^2.0.2",
+    "@rspack/core": "^2.0.0",
+    "@rspack/dev-server": "^2.0.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@types/three": "^0.170.0",
+    "eslint": "^10.8.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "file-loader": "^6.2.0",
+    "globals": "^17.7.0",
+    "opencascade.js": "2.0.0-beta.b5ff984",
+    "playwright-core": "^1.60.0",
+    "rimraf": "^6.0.1",
+    "tsx": "^4.22.4",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.65.0"
+  },
+  "engines": {
+    "node": ">=20.19.0",
+    "npm": ">=10.0.0"
+  },
+  "private": true,
+  "license": "MIT"
+}
