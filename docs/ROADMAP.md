@@ -12,12 +12,14 @@ This file defines the implementation order. `docs/SYSTEM_SPEC.md` defines the re
 
 ## Program-level rules
 
-1. Preserve the protected reference part through every milestone.
-2. UI work must use ASA-owned APIs, never raw vendor internals.
-3. Geometry computation stays on the active client device.
-4. ASA Lab remains identity/class/project/version/submission infrastructure, not a CAD compute server.
-5. Saved `CadDocument` compatibility is a release boundary.
-6. Upstream updates are intentional and pinned; never auto-merge upstream `main`.
+1. Preserve the protected Part workflow through every milestone.
+2. Once Assembly foundation exists, preserve the protected Assembly workflow too.
+3. UI work must use ASA-owned APIs, never raw vendor internals.
+4. Geometry and assembly calculations stay on the active client device.
+5. ASA Lab remains identity/class/project/version/submission infrastructure, not a CAD compute server.
+6. Saved `CadDocument` compatibility is a release boundary.
+7. Upstream updates are intentional and pinned; never auto-merge upstream `main`.
+8. ASA-CAD must remain independently runnable/testable in its own Docker image.
 
 ---
 
@@ -41,16 +43,51 @@ Own a pinned, reproducible browser CAD baseline before product divergence.
 
 ### Remaining gate
 
-- Add ASA-owned protected reference workflow fixture:
+- Add ASA-owned protected Part workflow fixture:
   `Sketch 60x40 -> Extrude 10 -> centered diameter-12 cut -> Fillet -> edit 60 to 80 -> recompute -> save -> reopen`.
 - Verify required upstream license/third-party notices remain present in the imported baseline.
-- Make the protected workflow part of CI.
+- Make the protected Part workflow part of CI.
 
 ### Acceptance
 
-M0 is DONE only when a clean checkout passes build/lint/regressions and the protected reference part is reproducible in CI.
+M0 is DONE only when a clean checkout passes build/lint/regressions and the protected Part is reproducible in CI.
 
 Tracking: #1.
+
+---
+
+## M0D — Standalone Docker execution surface
+
+**Status: ACTIVE, initial container scaffold added**
+
+### Goal
+
+Make ASA-CAD independently launchable and inspectable without ASA Lab using the same frontend-container model planned for production.
+
+### Already added
+
+- root `Dockerfile`;
+- `docker/Caddyfile`;
+- `compose.yaml`;
+- default standalone address `http://localhost:8088`;
+- CAD-local COOP/COEP headers for the current imported runtime;
+- Docker image build workflow in GitHub Actions.
+
+### Remaining gate
+
+- prove Docker image build in CI;
+- start the image and verify `/health/live`;
+- start a real browser against the container and verify the editor boots;
+- make standalone persistence use a defined local/mock `CadProjectHost` boundary as M1 stabilizes;
+- add browser smoke/E2E test entry point.
+
+### Acceptance
+
+`docker compose up --build` starts a usable ASA-CAD editor without ASA Lab, and CI proves the actual image boots in a browser-compatible configuration.
+
+Tracking: #12.
+
+See `docs/RUN_AND_DEPLOY.md`.
 
 ---
 
@@ -60,21 +97,23 @@ Tracking: #1.
 
 ### Goal
 
-Stop future ASA product code from depending on Toubkal implementation details.
+Stop future ASA product code from depending on Toubkal implementation details and define both Part and Assembly document families.
 
 ### Deliverables
 
-- `CadDocument` v1 schema, parser and serializer.
-- document `schemaVersion` + ASA-CAD `engineVersion`.
-- stable ASA-owned feature/sketch/entity IDs.
-- explicit document migration contract.
-- `CadApplication` typed command/state API.
-- adapters around geometry, recompute, solver, picking and measurement.
-- undo/redo through ASA-owned commands.
-- architecture checks forbidding product UI imports from vendor internals.
-- deterministic rebuild of a document from serialized data.
+- `CadDocument = CadPartDocument | CadAssemblyDocument`;
+- `document.kind = part | assembly`;
+- document `schemaVersion` + ASA-CAD `engineVersion`;
+- stable ASA-owned feature/sketch/entity/occurrence IDs;
+- explicit document migration contract;
+- `CadApplication` typed command/state API;
+- adapters around geometry, recompute, solver, picking and measurement;
+- initial adapter boundary for assembly occurrences/mates even if M4A implements full assembly behavior later;
+- undo/redo through ASA-owned commands;
+- architecture checks forbidding product UI imports from vendor internals;
+- deterministic rebuild of serialized documents.
 
-### First required command surface
+### First required Part command surface
 
 - create sketch on origin plane;
 - rectangle;
@@ -92,7 +131,7 @@ Stop future ASA product code from depending on Toubkal implementation details.
 
 ### Acceptance
 
-The protected reference part is created, edited, serialized, destroyed, restored and recomputed **through `CadApplication` only**.
+The protected Part is created, edited, serialized, destroyed, restored and recomputed **through `CadApplication` only**.
 
 No acceptance test reaches `window.oc`, raw `TopoDS_Shape`, vendor Zustand internals, raw vendor events or Toubkal UI components.
 
@@ -100,42 +139,44 @@ Tracking: #2.
 
 ---
 
-## M1B — Client runtime and ASA Lab host contract
+## M1B — Client runtime, container and ASA Lab host contract
 
-**Status: BLOCKED by the stable M1 document/application boundary; design already defined**
+**Status: BLOCKED by stable M1 public boundary; deployment design already defined**
 
 ### Goal
 
-Prove that ASA-CAD can be loaded by ASA Lab while all interactive CAD mathematics remains on the learner device.
+Prove that the same ASA-CAD release/container can run standalone and behind ASA Lab while all CAD mathematics remains on the learner device.
 
 ### Deliverables
 
-- versioned ASA-CAD release artifact;
-- public editor and read-only viewer entry points;
+- versioned `asa-cad-web` image/release artifact;
+- public editor and read-only viewer routes;
 - `CadProjectHost` persistence interface;
-- lazy editor loading for `moduleKey = cad`;
-- lazy content-hashed CAD/WASM loading;
-- browser cache policy for runtime assets;
-- capability probe before kernel start;
+- same-origin production route under `/cad/*`;
+- content-hashed CAD/WASM loading and caching;
+- device capability probe before kernel start;
 - local IndexedDB unsent-work recovery;
-- explicit production strategy for current SharedArrayBuffer/COOP/COEP requirements;
-- standalone host fixture and ASA Lab-like host fixture using the same public API;
-- network test proving no normal geometry RPC/server compute path.
+- isolated production handling for SharedArrayBuffer/COOP/COEP;
+- standalone host and ASA Lab host using the same ASA-owned document/application APIs;
+- network test proving no normal geometry/assembly compute RPC path.
 
 ### Device rule
 
-Supported desktop/tablet/phone devices execute the same `CadDocument` locally. Lower capability may reduce tessellation or impose safe complexity limits; it must not transparently move geometry computation to the server.
+Supported desktop/tablet/phone devices execute the same `CadDocument` locally. Lower capability may reduce tessellation or impose safe complexity limits; it must not transparently move computation to the server.
 
 ### Acceptance
 
-- ordinary ASA Lab boot does not load CAD WASM;
-- opening CAD lazy-loads editor + kernel;
-- geometry/recompute/solver work is observable on the active client;
+- standalone container and ASA Lab-routed container run the same released application;
+- ordinary ASA Lab pages do not load CAD WASM;
+- opening `/cad/*` loads the pinned CAD frontend/runtime;
+- Part/Assembly calculations are observable on the active client;
 - host traffic during modeling is persistence/education traffic, not geometry RPCs;
 - same document opens on a second device;
 - unsupported device fails safely.
 
 Tracking: #4.
+
+See `docs/RUN_AND_DEPLOY.md` and `docs/ASA_LAB_INTEGRATION.md`.
 
 ---
 
@@ -145,18 +186,20 @@ Tracking: #4.
 
 ### Goal
 
-Remove the visible Toubkal product shell and establish the final ASA-CAD interaction architecture.
+Remove the visible Toubkal product shell and establish the final ASA-CAD interaction architecture for both Part and Assembly documents.
 
 ### Desktop reference shell
 
 - document tabs/application top bar;
+- new-document choice: **Деталь / Сборка**;
 - KOMPAS-oriented top command/ribbon organization;
-- model/history tree;
+- Part model/history tree;
+- Assembly component/mate tree;
 - contextual parameters/task panel;
 - central 3D viewport;
 - command confirm/cancel controls;
 - status bar;
-- sketch constraint state/DOF feedback;
+- sketch/assembly constraint state feedback;
 - Russian engineering terminology aligned to the KOMPAS teaching workflow;
 - keyboard/mouse selection and camera behavior suitable for desktop CAD.
 
@@ -170,10 +213,11 @@ Every visible control dispatches ASA `CadApplication` commands. No new product c
 
 ### Acceptance
 
-- old Toubkal shell is not required for the protected workflow;
-- protected workflow stays green;
+- old Toubkal shell is not required for protected workflows;
+- protected Part workflow stays green;
+- shell can switch Part/Assembly document command groups without vendor UI dependencies;
 - visual regression fixtures cover the shell and first command states;
-- UI can be changed without editing the kernel/recompute implementation.
+- UI can be changed without editing kernel/recompute implementation.
 
 Tracking: #3.
 
@@ -232,7 +276,9 @@ Make sketching suitable for actual parametric CAD teaching rather than demo geom
 
 ### Acceptance
 
-A learner can reproduce the first set of teaching sketches using the same conceptual workflow expected in KOMPAS-3D, and those sketches remain parametric after reopen.
+A learner can reproduce the first set of KOMPAS-oriented teaching sketches and those sketches remain parametric after reopen.
+
+Tracking: #5.
 
 ---
 
@@ -273,17 +319,72 @@ Provide the main school-level parametric solid-modeling workflow with reliable d
 - persistent/stable logical references to faces/edges;
 - explicit unresolved-reference state;
 - no silent topology rebinding;
-- compatibility fixtures for documents created by earlier engine releases.
+- compatibility fixtures for earlier Part documents.
 
 ### Acceptance
 
 Editing an early sketch/feature correctly updates downstream features or produces an explicit rebuild error. A changed topology never silently attaches a feature to a different face/edge.
 
+Tracking: #6.
+
+---
+
+## M4A — Assembly foundation
+
+**Status: BLOCKED by M1 + M2; implementation should start after Part/reference semantics are stable in M4**
+
+### Goal
+
+Make **Сборка** a real second CAD document mode before ASA-CAD is declared standalone beta or integrated into ASA Lab.
+
+### Initial commands/behavior
+
+- create Assembly document;
+- insert Part;
+- insert subassembly;
+- multiple occurrences of same Part;
+- fix/unfix component;
+- move/rotate occurrence;
+- replace component;
+- explicitly update component version;
+- hide/show/suppress occurrence;
+- Assembly tree.
+
+### Initial mates
+
+- coincident/planar;
+- concentric;
+- parallel;
+- perpendicular;
+- distance;
+- angle;
+- fixed component.
+
+### Cloud/version semantics
+
+- Assembly occurrence references a known Part/subassembly project revision/version;
+- newer source Part drafts do not silently mutate pinned Assembly versions;
+- component update is explicit;
+- submitted Assembly pins all required component versions;
+- circular assembly references are rejected.
+
+### Protected Assembly workflow
+
+`create Parts -> create Assembly -> insert occurrences -> fix base -> add concentric + coincident/distance mates -> solve -> save -> reopen -> explicitly update/replace component -> recompute -> pin version -> reopen exact pinned version`
+
+### Acceptance
+
+Assembly reopens with the same component versions, occurrence identities and mate intent, and solves locally on the active device.
+
+Tracking: #11.
+
+See `docs/ASSEMBLIES.md`.
+
 ---
 
 ## M4B — Standalone product hardening and release packaging
 
-**Status: BLOCKED by M4**
+**Status: BLOCKED by M4 + M4A**
 
 ### Goal
 
@@ -291,63 +392,79 @@ Turn the standalone repository into a release that ASA Lab can safely pin and co
 
 ### Deliverables
 
-- documented public package/release surface;
-- editor entry point;
-- viewer entry point;
-- document parser/migrations;
+- versioned `asa-cad-web:<version>` image;
+- documented public editor/viewer/document/application surface;
+- document parser/migrations for Part + Assembly;
 - runtime/kernel loader;
 - content-hashed WASM/static assets;
 - version metadata;
-- compatibility test corpus;
+- Part + Assembly compatibility corpus;
 - memory/runtime cleanup tests;
 - representative desktop/tablet/phone capability matrix;
 - startup and representative-operation performance measurements;
-- crash/network recovery tests.
+- crash/network recovery tests;
+- real-browser E2E against the Docker image.
 
 ### Acceptance
 
-A released ASA-CAD version can be consumed without importing `vendor/toubkal` paths directly and can open all compatibility fixtures for its supported document schema range.
+A released ASA-CAD image can run standalone, opens supported Part/Assembly compatibility fixtures, and exposes no required direct `vendor/toubkal` dependency to its host.
+
+Tracking: #7.
 
 ---
 
-## M5 — Native ASA Lab integration
+## M5 — ASA Lab integration using separate CAD frontend container
 
 **Status: BLOCKED by M1B + M4B**
 
 ### Goal
 
-Make ASA-CAD a normal first-class subject module inside ASA Lab.
+Make ASA-CAD a first-class subject module inside ASA Lab while keeping the CAD frontend independently versioned/deployed.
 
 ### Module identity
 
 ```text
 moduleKey: cad
-projectType: cad-part
+projectType: cad-document
 schemaVersion: 1
-editorRoute: /projects/:projectId/cad
-viewerRoute: /view/projects/:versionId/cad
+editorRoute: /cad/projects/:projectId
+viewerRoute: /cad/view/:versionId
 ```
 
-### ASA Lab work
+`CadDocument.kind` is `part` or `assembly`.
 
-- register CAD in module registry;
-- lazy-load pinned ASA-CAD editor in `ModuleEditorHost`;
-- implement ASA Lab `CadProjectHost` adapter;
-- map project open/save to existing Project Core;
+### ASA Lab deployment work
+
+- add `asa-cad-web:<pinned version>` to production Compose/Coolify stack;
+- route `/cad/*` to `asa-cad-web` before generic ASA Lab SPA handling;
+- keep `/api/*` on existing ASA API;
+- keep CAD frontend under same public origin/session;
+- do not expose a second login;
+- do not create a CAD compute backend.
+
+### ASA Lab product work
+
+- register `cad` in module registry;
+- navigate CAD projects to `/cad/projects/:projectId`;
+- implement ASA Lab `CadProjectHost` adapter using existing Project Core;
 - autosave with `baseRevision` + `mutationId` protection;
 - snapshot/project-card preview;
 - versions/checkpoints/restore;
 - assignment/course workflow with `moduleKey = cad`;
+- Part/Assembly new-document/template selection;
 - submission version pinning;
+- Assembly component-version pinning/resolution;
 - teacher viewer/review flow;
 - permission/read-only handling;
-- production runtime headers/assets verified without breaking other modules.
+- production headers/assets verified without breaking other modules.
 
 ### Acceptance
 
-A learner can receive a CAD assignment, create/edit/save the model locally, reopen it on another supported device, submit a specific version and have the teacher open exactly that submitted version.
+A learner can receive a Part or Assembly assignment, edit/save using local device compute, reopen on another supported device, submit a reproducible version and have the teacher open exactly that submitted version.
 
 No unrelated ASA Lab page downloads the CAD kernel.
+
+Tracking: #8.
 
 ---
 
@@ -357,20 +474,23 @@ No unrelated ASA Lab page downloads the CAD kernel.
 
 ### Goal
 
-Expand from the proven Part Design foundation toward broader KOMPAS-oriented teaching coverage.
+Expand from proven Part + Assembly foundations toward broader KOMPAS-oriented teaching coverage.
 
 Possible later lanes:
 
-- additional sketch/feature commands;
-- more precise command grouping/shortcuts/selection behavior;
-- technical drawing workflows;
-- assemblies and mates;
+- additional sketch/Part/Assembly commands;
+- closer command grouping/shortcuts/selection behavior;
+- component patterns/exploded views/interference;
 - variables/expressions;
 - measurements/analysis;
+- technical drawing workflows;
+- BOM-oriented data;
 - import/export coverage;
 - curriculum-specific templates/exercises.
 
 Every new capability must use ASA APIs/documents and preserve compatibility.
+
+Tracking: #9.
 
 ---
 
@@ -385,11 +505,12 @@ For every Toubkal update:
 1. record baseline and target SHA;
 2. inspect the diff by subsystem;
 3. normally ignore vendor UI changes;
-4. port useful kernel/solver/recompute/picking fixes through adapters;
+4. port useful kernel/solver/recompute/picking/assembly fixes through adapters;
 5. run upstream baseline regressions;
-6. run ASA protected reference part;
-7. run saved-document compatibility corpus;
-8. merge only after all gates pass.
+6. run ASA protected Part workflow;
+7. run protected Assembly workflow once M4A exists;
+8. run saved-document compatibility corpus;
+9. merge only after all gates pass.
 
 See `docs/UPSTREAM.md`.
 
@@ -399,27 +520,27 @@ See `docs/UPSTREAM.md`.
 
 ## Gate A — ASA CAD Core
 
-Requires M0 + M1.
+Requires M0 + M0D + M1.
 
-Result: we own the document/application boundary and can rebuild the protected part without vendor UI.
+Result: reproducible standalone baseline, Docker execution surface and ASA-owned document/application boundary.
 
 ## Gate B — ASA CAD Editor Alpha
 
 Requires M1B + M2 + M3.
 
-Result: KOMPAS-oriented shell + real parametric sketching + client-side runtime delivery.
+Result: KOMPAS-oriented shell + real parametric sketching + client-side runtime/container contract.
 
 ## Gate C — ASA CAD Standalone Beta
 
-Requires M4 + M4B.
+Requires M4 + M4A + M4B.
 
-Result: useful Part Design CAD, stable references, compatibility and release packaging.
+Result: useful Part + Assembly CAD, stable references, compatibility and versioned standalone Docker release.
 
 ## Gate D — ASA Lab CAD Module
 
 Requires M5.
 
-Result: native ASA Lab module with classes/projects/versions/submission and local device computation.
+Result: first-class ASA Lab CAD module using a pinned same-origin `asa-cad-web` container with classes/projects/versions/submissions and local device computation.
 
 ## Gate E — Broader KOMPAS Teaching Coverage
 
@@ -429,8 +550,10 @@ M6 iterative releases.
 
 # Immediate next work
 
-1. Finish M0 by adding the ASA-owned protected reference workflow to CI.
-2. Start M1: define `CadDocument` v1 and `CadApplication` public contracts before touching the product UI.
-3. Implement the first reference workflow entirely through that API.
-4. In parallel after the document boundary stabilizes, prove the M1B lazy client-runtime/host contract.
-5. Only then begin the KOMPAS-oriented visible shell in M2.
+1. Finish M0 protected Part workflow CI fixture.
+2. Finish M0D Docker build/boot/browser smoke gate.
+3. Start M1: define `CadDocument` union (`part | assembly`) and `CadApplication` public contracts.
+4. Implement protected Part workflow entirely through that API.
+5. Prove M1B standalone + same-origin ASA Lab container/host contract.
+6. Begin the KOMPAS-oriented visible shell in M2.
+7. Complete sketcher (M3), Part Design (M4), then Assembly foundation (M4A) before standalone beta/integration.
