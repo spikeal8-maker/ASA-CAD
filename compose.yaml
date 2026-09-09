@@ -1,0 +1,9 @@
+services:
+  asa-cad:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: asa-cad:dev
+    ports:
+      - "${ASA_CAD_PORT:-8088}:8080"
+    restart: unless-stopped
