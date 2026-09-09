@@ -1,0 +1,43 @@
+name: Bootstrap Toubkal baseline
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/bootstrap-toubkal.yml
+
+permissions:
+  contents: write
+
+jobs:
+  import-upstream:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ASA-CAD
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Import pinned ToubkalCAD subtree
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -f vendor/toubkal/package.json ]; then
+            echo "vendor/toubkal already exists; bootstrap is complete"
+            exit 0
+          fi
+
+          git config user.name "ASA-CAD Bootstrap"
+          git config user.email "actions@users.noreply.github.com"
+          git remote remove toubkal 2>/dev/null || true
+          git remote add toubkal https://github.com/ToubkalCAD/ToubkalCAD.git
+          git fetch --no-tags toubkal main
+
+          UPSTREAM_SHA="$(git rev-parse toubkal/main)"
+          echo "Importing ToubkalCAD ${UPSTREAM_SHA}"
+          git subtree add --prefix=vendor/toubkal toubkal main --squash
+
+          printf '%s\n' "${UPSTREAM_SHA}" > UPSTREAM_BASELINE
+          git add UPSTREAM_BASELINE
+          git commit -m "chore: record ToubkalCAD upstream baseline"
+          git push origin HEAD:main
