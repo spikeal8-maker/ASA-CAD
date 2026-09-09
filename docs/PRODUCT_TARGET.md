@@ -2,72 +2,118 @@
 
 ## What we are building
 
-ASA-CAD is a new, independent engineering CAD module for ASA Lab.
+ASA-CAD is a new browser-native engineering CAD module for ASA Lab.
 
-It is not a replacement for the existing beginner ASA 3D editor. It is a separate parametric CAD environment intended to teach workflows that transfer directly to KOMPAS-3D.
+It is separate from the existing beginner ASA 3D editor. It is intended to teach workflows that transfer directly to KOMPAS-3D.
 
-## End-state
+ASA-CAD has two first-class document modes:
 
-When a learner opens a CAD project inside ASA Lab, the learner sees an ASA-owned CAD interface whose desktop information architecture and command workflow follow KOMPAS-3D as closely as practical:
+- **Деталь / Part** — sketches, dimensions, feature history and bodies;
+- **Сборка / Assembly** — Part/subassembly occurrences, placement and mates/constraints.
+
+## End-state interface
+
+The ASA-owned desktop interface follows the KOMPAS-3D teaching workflow as closely as practical:
 
 - document tabs;
+- Part/Assembly new-document choice;
 - top command/ribbon area;
-- model/history tree;
+- Part model/history tree;
+- Assembly component/mate tree;
 - contextual parameter panel;
 - central 3D viewport;
-- sketch constraints and driving dimensions;
+- sketch constraints/driving dimensions;
+- assembly mates;
 - confirm/cancel command lifecycle;
 - status/constraint feedback;
-- Russian engineering terminology matching the taught KOMPAS workflow.
+- Russian engineering terminology aligned with the taught KOMPAS workflow.
 
-The UI is recreated by ASA-CAD. We do not depend on the visible ToubkalCAD UI and do not copy proprietary KOMPAS binaries or artwork.
+The UI is recreated by ASA-CAD. We do not depend on the visible ToubkalCAD UI and do not ship proprietary KOMPAS binaries/source/artwork.
 
-## Non-negotiable execution model
+## Execution model
 
-All interactive CAD mathematics runs on the learner device.
+All interactive CAD mathematics runs on the active learner device.
 
-- desktop/laptop -> CPU/RAM of that computer;
-- tablet -> CPU/RAM of that tablet;
-- phone -> CPU/RAM of that phone, subject to capability checks;
-- ASA Lab server does not calculate the model for the learner.
+- desktop/laptop -> that computer;
+- tablet -> that tablet;
+- supported phone -> that phone;
+- ASA Lab server does not calculate the Part or Assembly for the learner.
 
-The browser downloads the ASA-CAD JavaScript and OpenCascade WebAssembly only when a CAD project is opened. The WASM module is instantiated in browser memory and performs geometry operations locally. Hashed runtime assets are cacheable, so they are not downloaded again on every normal open.
+The browser downloads/instantiates OpenCascade WebAssembly and solver/runtime code and uses local device resources.
 
-## Server responsibility
+## Standalone product
 
-ASA Lab provides product and classroom services only:
+ASA-CAD must be independently runnable/testable without ASA Lab.
 
-- authentication and learner identity;
-- classes and assignments;
+```bash
+docker compose up --build
+```
+
+Default standalone address:
+
+```text
+http://localhost:8088
+```
+
+The Docker image is frontend-only: no own database and no CAD compute backend.
+
+## ASA Lab deployment
+
+Production uses a separate pinned frontend image under the same ASA Lab public origin:
+
+```text
+/api/* -> asa-api
+/cad/* -> asa-cad-web
+other UI -> asa-web
+```
+
+This gives one domain/session/product to the learner while keeping CAD independently buildable, testable, cacheable and rollbackable.
+
+Target module:
+
+```text
+moduleKey: cad
+projectType: cad-document
+CadDocument.kind: part | assembly
+```
+
+## ASA Lab responsibility
+
+ASA Lab owns:
+
+- authentication/learner identity;
+- classes/assignments/courses;
 - project ownership/access;
 - draft saving;
 - versions/checkpoints;
-- submissions and teacher review;
-- project snapshots/previews;
-- optional imported CAD attachments.
+- submissions/teacher review;
+- snapshots/previews;
+- Assembly component-version storage/resolution.
 
-The server stores a serializable parametric `CadDocument`; B-Rep/WASM pointers and Three.js meshes are runtime caches and are not project authority.
+ASA Lab stores serialized `CadDocument` intent. B-Rep/WASM pointers/Three.js meshes are runtime caches, not project authority.
+
+## Assembly reproducibility
+
+A saved/submitted Assembly must identify the exact component revisions/versions needed to reproduce it. Later edits to a source Part must not silently mutate an already pinned Assembly submission.
 
 ## Device policy
 
-ASA-CAD must perform an explicit capability probe before starting the kernel.
+ASA-CAD performs a capability probe before starting the kernel. Unsupported devices fail clearly/read-only where possible rather than corrupting projects or switching silently to server-side compute.
 
-Required checks include the browser features needed by the selected WASM build, available rendering support and a practical memory floor. Unsupported devices must fail clearly rather than partially corrupting a document.
-
-Desktop remains the reference UI for KOMPAS workflow parity. Smaller screens keep the same document/commands and local mathematics, while panels may collapse into drawers/tabs so the editor remains usable.
+Desktop is the reference KOMPAS-oriented interface. Smaller screens use the same document/command model with responsive panel presentation.
 
 ## Definition of success
 
 A learner can:
 
-1. open ASA Lab;
-2. create or receive a `cad` assignment/project;
-3. open the CAD editor without installing desktop software;
-4. build a parametric part;
-5. change an early dimension and recompute downstream features;
-6. save the work to ASA Lab;
-7. open the same project on another device and continue editing;
-8. submit a version to a teacher;
-9. have the teacher open the exact submitted version.
+1. run ASA-CAD standalone for development/testing;
+2. create/edit/reopen a parametric Part;
+3. create/edit/reopen an Assembly with pinned components and mates;
+4. open ASA Lab and create/receive a CAD Part or Assembly project;
+5. work without installing desktop CAD;
+6. save to ASA Lab;
+7. reopen on another supported device;
+8. submit a reproducible version;
+9. have the teacher open exactly the submitted Part/Assembly version.
 
-Geometry calculation during steps 4-5 happens on the active client device, not on the ASA Lab server.
+During CAD work, the active client device performs the mathematics.
