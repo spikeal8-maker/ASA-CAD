@@ -7,6 +7,7 @@ on:
       - Dockerfile
       - compose.yaml
       - docker/**
+      - .github/workflows/docker.yml
       - vendor/toubkal/package.json
       - vendor/toubkal/package-lock.json
       - vendor/toubkal/src/**
@@ -15,14 +16,47 @@ on:
       - Dockerfile
       - compose.yaml
       - docker/**
+      - .github/workflows/docker.yml
       - vendor/toubkal/package.json
       - vendor/toubkal/package-lock.json
       - vendor/toubkal/src/**
 
 jobs:
-  build:
+  build-and-smoke:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Build standalone image
         run: docker build -t asa-cad:ci .
+
+      - name: Start standalone image
+        run: docker run -d --name asa-cad-ci -p 8088:8080 asa-cad:ci
+
+      - name: Wait for health endpoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:8088/health/live >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          docker logs asa-cad-ci
+          exit 1
+
+      - name: Smoke application document and isolation headers
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent http://127.0.0.1:8088/ >/tmp/asa-cad-index.html
+          test -s /tmp/asa-cad-index.html
+          headers="$(curl --silent --dump-header - --output /dev/null http://127.0.0.1:8088/)"
+          printf '%s\n' "$headers"
+          grep -qi '^Cross-Origin-Opener-Policy: same-origin' <<<"$headers"
+          grep -qi '^Cross-Origin-Embedder-Policy: require-corp' <<<"$headers"
+
+      - name: Show container logs on failure
+        if: failure()
+        run: docker logs asa-cad-ci || true
