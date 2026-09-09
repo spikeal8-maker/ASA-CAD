@@ -4,115 +4,211 @@ This document is the primary product and system contract for ASA-CAD. If another
 
 ## 1. What ASA-CAD is
 
-ASA-CAD is a new browser-native parametric engineering CAD module for ASA Lab.
+ASA-CAD is a browser-native parametric engineering CAD module for ASA Lab.
 
-It is a separate module. It does not replace the existing beginner `three-d` editor.
+It is a separate engineering module and does not replace the existing beginner `three-d` editor.
 
-The product goal is to give learners a browser CAD environment whose desktop layout, command organization, terminology and modeling workflow are as close as practical to KOMPAS-3D, so that skills learned in ASA Lab transfer directly to KOMPAS-3D.
+The product goal is to give learners a browser CAD environment whose desktop information architecture, command organization, terminology and modeling workflow are as close as practical to KOMPAS-3D, so that skills learned in ASA Lab transfer to professional KOMPAS workflows.
 
-The interface is implemented by ASA-CAD. We do not depend on the visible ToubkalCAD interface and we do not ship proprietary KOMPAS binaries, source code, icons or other protected assets.
+The visible interface is ASA-owned. We do not ship proprietary KOMPAS binaries, source code, icons or protected artwork.
 
-ASA-CAD must support two first-class engineering document modes:
+ASA-CAD end state includes six first-class document kinds:
 
 - **Деталь / Part**;
-- **Сборка / Assembly**.
+- **Сборка / Assembly**;
+- **Чертеж / Drawing**;
+- **Фрагмент / Fragment**;
+- **Спецификация / Specification**;
+- **Текстовый документ / Text document**.
+
+See `docs/DOCUMENT_TYPES.md` for the detailed document contract.
 
 ## 2. End-user experience
 
-A learner opens ASA Lab and creates or receives a CAD project. When creating a new CAD document, the learner can choose **Деталь** or **Сборка**.
+A learner opens ASA-CAD standalone during development/testing or opens a CAD project through ASA Lab.
 
-The reference desktop interface contains:
+The application-level `Новый документ` command eventually exposes:
+
+```text
+[ Деталь ]       [ Сборка ]
+[ Чертеж ]       [ Фрагмент ]
+[ Спецификация ] [ Текстовый документ ]
+```
+
+All document kinds use one ASA-CAD application shell with:
 
 - document tabs and application commands;
-- a top KOMPAS-oriented command/ribbon area;
-- model/history or assembly tree;
-- contextual parameters/task panel;
-- central 3D viewport;
-- sketch mode with constraints and driving dimensions;
-- assembly mode with components and mates;
-- in-command confirm/cancel lifecycle;
-- status and constraint feedback;
-- Russian engineering terminology aligned with the taught KOMPAS workflow;
-- standard selection, camera, zoom and model-navigation behavior expected from desktop CAD.
+- KOMPAS-oriented top command/ribbon organization;
+- document-specific tree;
+- contextual parameter/task panel;
+- central working area/viewport/page canvas;
+- confirm/cancel command lifecycle;
+- status and diagnostics;
+- Russian engineering terminology aligned with the taught KOMPAS workflow.
 
-Desktop is the reference interface. Tablet/phone use the same document and command model, but panels may collapse into drawers/tabs because the screen is smaller.
+The active document kind changes tools and tree semantics:
 
-## 3. Part versus Assembly
+- Part -> sketches/features/bodies;
+- Assembly -> components/subassemblies/mates;
+- Drawing -> sheets/views/annotations;
+- Fragment -> reusable 2D geometry;
+- Specification -> structured product table;
+- Text -> pages/paragraphs/tables/document formatting.
 
-### Part / Деталь
+Desktop is the reference interface. Smaller screens use the same document/application model but may collapse panels into drawers/tabs.
+
+## 3. Part / Деталь
 
 A Part is one component with its own parametric construction history:
 
 `plane/face -> sketch -> constraints/dimensions -> feature -> downstream features -> recompute`
 
-The first protected Part regression is:
+Protected Part regression:
 
 `Sketch 60x40 -> Extrude 10 -> centered diameter-12 cut -> Fillet -> edit 60 to 80 -> recompute -> save -> close -> reopen -> edit again`
 
-The model/history tree is functional history, not decoration. Changing an upstream sketch or feature must recompute downstream operations or surface an explicit rebuild error.
+The model tree is functional history, not decoration. Changing an upstream sketch or feature must recompute downstream operations or show an explicit rebuild error.
 
 Silent rebinding to a different face/edge after topology changes is forbidden.
 
-### Assembly / Сборка
+## 4. Assembly / Сборка
 
-An Assembly contains occurrences of Parts and/or subassemblies. It positions them and constrains their relative movement using assembly mates/constraints. It does not normally merge all components into one Part.
+An Assembly contains occurrences of Parts and/or subassemblies and stores their relative placement, component state and mates/constraints.
 
-Example:
+It supports both:
 
-```text
-Part: bracket
-Part: bolt
-Part: washer
-Part: nut
-        |
-        v
-Assembly: bracket + bolt + washer + nut
-```
+- bottom-up design: insert already created Parts/subassemblies;
+- top-down design: create/edit a Part or subassembly in the context of the Assembly.
 
-Initial assembly behavior must include:
+When context-editing a component:
 
-- create assembly;
-- insert Part;
-- insert subassembly;
-- multiple occurrences of the same component;
-- fix/unfix component;
-- move/rotate occurrence;
-- coincident/planar mate;
-- concentric mate;
-- parallel/perpendicular mate;
-- distance mate;
-- angle mate;
+- the active component uses the normal Part toolset;
+- surrounding components remain visible/read-only;
+- surrounding faces/edges/planes may be used as references;
+- contextual dependencies are explicit and diagnosable;
+- reference breakage must never silently rebind to unrelated geometry.
+
+Initial Assembly behavior includes:
+
+- create Assembly;
+- insert existing Part/subassembly;
+- create Part/subassembly in place;
+- multiple occurrences;
+- fix/unfix;
+- move/rotate;
+- coincident/planar, concentric, parallel, perpendicular, distance and angle mates;
 - replace component;
 - explicit component-version update;
-- assembly tree;
-- save/reopen with the same component versions and mate intent.
+- hide/show/suppress;
+- Assembly tree;
+- save/reopen preserving component versions and mate intent.
 
-A submitted/published assembly must be reproducible: referenced component revisions/versions are pinned, not silently replaced by newer drafts.
+A submitted/published Assembly is reproducible: required referenced component revisions/versions are pinned.
 
 See `docs/ASSEMBLIES.md`.
 
-## 4. CAD implementation base
+## 5. Drawing / Чертеж
 
-ASA-CAD starts from a pinned ToubkalCAD source baseline already imported under `vendor/toubkal/`.
+Drawing is a sheet-based 2D engineering document. The primary teaching workflow is associative Drawing creation from a Part or Assembly.
 
-We reuse and harden useful implementation layers:
+Required direction:
 
-- OpenCascade WebAssembly geometry kernel;
+- one or more sheets;
+- standard/custom formats and orientation;
+- frame/title block/template profile;
+- base/projected/isometric views;
+- cuts/sections;
+- 2D drafting geometry;
+- dimensions;
+- hatching;
+- center marks/lines;
+- leaders/text/annotations;
+- layers;
+- explicit update/rebuild from referenced model versions;
+- PDF/SVG/DXF output.
+
+Drawing must not be implemented as a screenshot of the 3D viewport. It stores structured 2D objects, associative view definitions and explicit model references.
+
+## 6. Fragment / Фрагмент
+
+Fragment is a reusable 2D graphic document without required sheet frame/title block.
+
+It is used for:
+
+- rough/draft 2D work;
+- reusable typical geometry;
+- educational 2D exercises;
+- insertion/reuse in supported 2D contexts.
+
+Drawing and Fragment reuse one ASA-owned 2D drafting engine rather than duplicating geometry implementations.
+
+## 7. Specification / Спецификация
+
+Specification is a structured product-composition/BOM document, normally linked to an Assembly and optionally its Drawing.
+
+It stores:
+
+- source document references/versions;
+- sections;
+- component rows;
+- designation/name/quantity/properties;
+- position numbers;
+- grouping/sorting rules;
+- controlled user notes/overrides.
+
+Generation/update from Assembly must be explicit and diagnosable. Specification is not just a manually typed disconnected table.
+
+Outputs include PDF/XLSX/CSV while the structured ASA document remains authoritative.
+
+## 8. Text document / Текстовый документ
+
+Text document is a page-based engineering documentation document for explanatory notes, requirements, instructions and related project text.
+
+It supports structured text, tables, engineering symbols, pages, headers/footers, title-block/profile data and links to other CAD documents. Normal text editing does not require OpenCascade.
+
+## 9. Cross-document model
+
+The engineering workflow is a graph of linked documents, not six isolated editors.
+
+```text
+Part ---------------------> Drawing
+  \                           |
+   \                          v
+    +-----> Assembly ------> Specification
+              |               ^
+              +----> Drawing -+
+
+Fragment ----> Drawing / reusable 2D content
+
+Text document <---- links to any engineering document
+```
+
+Cross-document references use ASA project/document identity plus explicit revision/version semantics.
+
+A submitted learning result must reopen reproducibly, including linked component/model documents required by that submission.
+
+## 10. CAD implementation base
+
+ASA-CAD starts from a pinned ToubkalCAD source baseline imported under `vendor/toubkal/`.
+
+We reuse/harden implementation layers that prove suitable:
+
+- OpenCascade WebAssembly geometry;
 - sketch constraint solving;
-- feature/history and recompute behavior;
-- assembly implementation/solver behavior that proves reliable;
+- feature/history/recompute behavior;
+- assembly solver/occurrence behavior;
 - exact B-Rep operations;
-- tessellation and Three.js rendering;
+- tessellation/Three.js rendering;
 - picking/measurement;
-- STEP/IGES/import/export capabilities that prove reliable.
+- import/export capabilities.
 
-ToubkalCAD is an implementation source, not the ASA-CAD public architecture and not the ASA-CAD product UI.
+Toubkal is implementation source, not the ASA product architecture or visible product UI.
 
-The visible product must be able to evolve independently from upstream ToubkalCAD.
+Drawing/Fragment/Specification/Text are ASA product layers and are not required to inherit the vendor UI architecture.
 
-## 5. Mandatory architecture boundary
+## 11. Mandatory application boundary
 
-All ASA product code talks to an ASA-owned application API.
+All product UI talks to ASA-owned application/document APIs.
 
 ```text
 ASA CAD UI
@@ -121,182 +217,169 @@ ASA CAD UI
 CadApplication / CadDocument
     |
     v
-ASA runtime adapters
+ASA document/runtime adapters
     |
-    v
-Toubkal-derived runtime
+    +-- Part/Assembly runtime
+    |    `-- OpenCascade + solvers + Three.js
     |
-    +-- OpenCascade WASM
-    +-- sketch / assembly solvers
-    +-- Three.js presentation
+    +-- shared 2D drafting runtime
+    |
+    +-- Specification document logic
+    `-- Text document logic
 ```
 
-The product UI must not directly use:
+Product UI must not directly use:
 
 - `window.oc`;
 - raw `TopoDS_Shape` objects;
-- upstream Zustand store internals;
-- upstream `CustomEvent` names;
-- concrete upstream `Occ*Service` classes;
-- upstream component paths.
+- vendor Zustand internals;
+- vendor `CustomEvent` names;
+- concrete vendor `Occ*Service` classes;
+- vendor component paths.
 
-This boundary is what lets us replace the entire UI and still selectively import future upstream geometry/recompute/assembly fixes.
+## 12. Public document union
 
-## 6. Project document model
-
-ASA-CAD has one public document union:
+ASA-CAD defines one public serializable union:
 
 ```ts
-type CadDocument = CadPartDocument | CadAssemblyDocument;
-type CadDocumentKind = 'part' | 'assembly';
+type CadDocument =
+  | CadPartDocument
+  | CadAssemblyDocument
+  | CadDrawingDocument
+  | CadFragmentDocument
+  | CadSpecificationDocument
+  | CadTextDocument;
+
+type CadDocumentKind =
+  | 'part'
+  | 'assembly'
+  | 'drawing'
+  | 'fragment'
+  | 'specification'
+  | 'text';
 ```
 
-Conceptually:
+The union and document routing exist before every editor is complete so future document kinds do not require a destructive persistence/application rewrite.
 
-```text
-CadPartDocument
-|- kind: part
-|- schemaVersion / engineVersion
-|- units / variables
-|- origin / datum geometry
-|- sketches / constraints / dimensions
-|- features / bodies
-|- stable references
-`- optional editor state
+OpenCascade objects, WASM pointers, Three.js meshes and tessellations are runtime caches. They are never project authority.
 
-CadAssemblyDocument
-|- kind: assembly
-|- schemaVersion / engineVersion
-|- units
-|- component occurrences
-|  |- component source project/version
-|  |- occurrence transform
-|  `- instance metadata
-|- subassemblies
-|- mates / assembly constraints
-|- assembly references
-`- optional editor state
-```
+Saved-document compatibility is a hard release boundary.
 
-OpenCascade native objects, WASM pointers, Three.js meshes and tessellations are runtime caches. They are never the authoritative saved project.
+## 13. Where calculation runs
 
-Saved-document compatibility is a hard product boundary. New ASA-CAD releases must explicitly migrate or continue to open documents created by previous released versions.
+Interactive CAD calculation runs on the active user's device.
 
-## 7. Where calculations run
-
-Interactive CAD computation must run on the active user's device.
-
-```text
-Desktop/laptop -> that computer CPU/RAM/GPU
-Tablet         -> that tablet CPU/RAM/GPU
-Phone          -> that phone CPU/RAM/GPU, if supported
-```
-
-Normal modeling must not use a server geometry service.
-
-The following execute locally in the browser:
+Local browser/client work includes where applicable:
 
 - sketch solving;
-- Part feature construction;
+- Part features and booleans;
 - assembly mate solving/placement;
-- component geometry loading/rebuild;
-- boolean operations;
-- fillet/chamfer and other B-Rep operations;
-- history recompute;
+- component geometry rebuild;
+- stable-reference resolution;
 - tessellation;
-- picking/measurement support;
+- picking/measurement;
+- 2D projection generation from models;
 - normal export generation where practical.
 
-The GPU is primarily presentation/rendering. The geometry kernel is WebAssembly code instantiated in browser memory and consumes local device resources.
+The server is not a normal geometry-compute service.
 
-Unsupported devices must fail clearly or offer read-only access where possible. ASA-CAD must not silently fall back to server-side geometry calculation.
+Unsupported devices fail clearly or offer read-only behavior where possible; they do not silently fall back to server-side CAD compute.
 
-## 8. Standalone product and Docker
+## 14. Native saving, files and export
 
-ASA-CAD must run independently of ASA Lab throughout development and testing.
+Inside ASA Lab, authoritative state is the structured `CadDocument` saved through Project Core revisions/versions.
 
-The repository produces a standalone frontend Docker image:
+Standalone native exchange starts with versioned ASA JSON such as `*.asacad.json`.
 
-```text
-asa-cad-web
-|- static web server
-|- ASA-CAD HTML/JS/CSS
-|- OpenCascade WASM
-`- static runtime assets
+Derived/export formats include, according to document kind:
 
-NO own database
-NO CAD compute backend
-NO geometry RPC service
+- Part/Assembly: STEP, IGES, STL and other proven exchange formats;
+- Drawing/Fragment: PDF, SVG, DXF and raster previews;
+- Specification: PDF, XLSX, CSV;
+- Text: PDF and other deliberately supported document outputs.
+
+Export files never replace native project authority.
+
+See `docs/FILES_SETTINGS_AND_EXPORT.md`.
+
+## 15. Settings and appearance
+
+Settings are separated into:
+
+- user/application settings;
+- engineering document settings;
+- optional session/view settings.
+
+ASA-owned UI uses shared design tokens for typography, density, panels, command states, selection, sketch status, tree rows, viewport/page backgrounds and diagnostics.
+
+This lets visual/layout changes be made independently from kernel algorithms.
+
+## 16. Standalone development and Docker
+
+ASA-CAD must remain independently runnable throughout development.
+
+### Fast development
+
+```bash
+npm run install:vendor
+npm run dev
 ```
 
-Developer/test launch:
+Current imported baseline dev address:
+
+```text
+http://localhost:8080
+```
+
+This is the fast hot-reload loop for UI work.
+
+### Production-like standalone Docker
+
+```bash
+npm run docker:up
+```
+
+or:
 
 ```bash
 docker compose up --build
 ```
 
-Default local address:
+Default address:
 
 ```text
 http://localhost:8088
 ```
 
-The standalone host uses fixtures/local storage/IndexedDB through the same ASA-owned project-host boundary that production later maps to ASA Lab.
+Stop with:
 
-The same Docker image form must be usable for browser E2E tests and later ASA Lab deployment.
-
-See `docs/RUN_AND_DEPLOY.md`.
-
-## 9. Runtime loading and performance
-
-ASA Lab must not download the CAD engine for users who are not opening CAD.
-
-In standalone mode the browser downloads runtime assets from the standalone ASA-CAD container. In ASA Lab mode the browser downloads them only after entering `/cad/*`.
-
-Target runtime path:
-
-```text
-user opens CAD document
-    v
-device capability probe
-    v
-load content-hashed CAD JS/WASM
-    v
-instantiate kernel in browser memory
-    v
-open/recompute CadDocument locally
+```bash
+npm run docker:down
 ```
 
-The CAD/WASM payload is cached by the browser using versioned/content-hashed immutable assets.
+Docker serves HTML/JS/CSS/WASM/static assets. It has no CAD compute backend and no own database.
 
-A normal ASA Lab page, electronics project, chess project or current beginner 3D project must not fetch OpenCascade WASM.
+Stable development fixtures/routes are required as the ASA-owned UI appears so the owner can open exact Part/Assembly/Drawing/etc. states and give precise visual correction tasks.
 
-Current upstream SharedArrayBuffer/cross-origin-isolation requirements are isolated to the CAD frontend/runtime. They must not accidentally become a global requirement of every ASA Lab page.
+See `docs/DEVELOPMENT_WORKFLOW.md` and `docs/RUN_AND_DEPLOY.md`.
 
-## 10. ASA Lab deployment/integration
+## 17. Production ASA Lab integration
 
-ASA-CAD remains a separate repository and separate versioned frontend Docker image in production.
+ASA-CAD remains separately versioned/containerized in production but behaves as a first-class ASA Lab module under one public origin/session.
 
-It is still a first-class ASA Lab module: there is one ASA Lab domain/session, one project system and one classroom flow. ASA-CAD is **not an iframe and not a second login/application account**.
-
-Recommended deployment:
+Recommended routing:
 
 ```text
 public ASA Lab origin
         |
-        v
-ASA Lab web/reverse proxy
-        |
         +---- /api/* -----> asa-api
-        |
         +---- /cad/* -----> asa-cad-web
-        |
         `---- other UI ---> asa-web
 ```
 
-The browser sees the same public origin. The CAD container only serves frontend/runtime assets. It does not calculate geometry for users.
+No iframe. No second login. No CAD compute backend.
 
-Target module identity:
+Target identity:
 
 ```text
 moduleKey: cad
@@ -306,210 +389,129 @@ editorRoute: /cad/projects/:projectId
 viewerRoute: /cad/view/:versionId
 ```
 
-This separate frontend route is deliberate because it provides:
+ASA Lab pins an explicit `asa-cad-web:<version>` release.
 
-- independent CAD deployment/rollback;
-- no CAD payload in normal ASA Lab web bundle;
-- CAD-specific runtime headers without changing every ASA Lab page;
-- the exact same image for standalone and integrated testing.
+## 18. ASA Lab host/persistence boundary
 
-ASA Lab pins an explicit ASA-CAD image/release version. It never consumes `main` or `latest` automatically.
+ASA-CAD does not know ASA tenant/classroom/database internals.
 
-## 11. ASA Lab persistence boundary
-
-ASA-CAD must not know ASA Lab tenant tables, classroom tables, authentication internals or database implementation.
-
-The ASA Lab host maps the ASA-owned persistence contract to existing Project Core APIs:
-
-```ts
-interface CadProjectHost {
-  load(): Promise<{ document: CadDocument; revision: number }>;
-  save(input: {
-    document: CadDocument;
-    baseRevision: number;
-    mutationId: string;
-  }): Promise<{ revision: number }>;
-  saveSnapshot(imageDataUrl: string, sourceRevision: number): Promise<void>;
-}
-```
-
-For assemblies the host also resolves pinned component project versions required by `CadAssemblyDocument`.
-
-## 12. ASA Lab responsibilities
+The host supplies project persistence and linked-document resolution through ASA-owned interfaces, including load/save/snapshot/version operations and resolution of pinned external documents required by Assembly/Drawing/Specification.
 
 ASA Lab remains responsible for:
 
-- account/session identity;
-- learner identity;
+- identity;
 - classes;
 - assignments/courses;
-- project ownership and permissions;
-- Part/Assembly component project/version resolution;
+- project ownership/permissions;
 - draft saving;
-- version/checkpoint history;
+- versions/checkpoints;
+- linked document/component resolution;
 - submissions;
 - teacher review;
-- gallery/project previews if enabled;
-- storage of imported CAD attachments when required.
+- snapshots/previews;
+- imported attachment persistence when required.
 
-ASA Lab stores `CadDocument` and project metadata. It does not become a CAD compute server.
+## 19. Save/recovery/cross-device rules
 
-## 13. Save, recovery and cross-device behavior
+1. User command changes in-memory document state.
+2. Local calculation/recompute runs where required.
+3. Native serializable document is saved after safe boundaries/debounce.
+4. ASA Lab uses `baseRevision` + `mutationId` conflict protection.
+5. UI reports `Сохранено` only after host acknowledgement.
+6. IndexedDB may hold unsent crash/network recovery state.
+7. Server remains cross-device authority.
+8. Linked external documents required by pinned versions are resolved explicitly.
+9. Opening on another supported device reconstructs the editable document, not only a screenshot/mesh.
 
-1. A command changes the in-memory `CadDocument`.
-2. ASA-CAD recomputes locally.
-3. After a safe command boundary/debounce, the document is sent to ASA Lab.
-4. ASA Lab saves it using existing `baseRevision` + `mutationId` conflict protection.
-5. The editor reports saved state only after server acknowledgement.
-6. Local IndexedDB may hold unsent recovery state after crash/network loss.
-7. IndexedDB is recovery only; ASA Lab remains the cross-device authority.
-8. Opening the project on another device downloads the same `CadDocument` and rebuilds geometry locally there.
-9. An Assembly loads the exact pinned component versions needed to reproduce it.
+## 20. Classroom behavior
 
-## 14. Classroom behavior
+All CAD document kinds participate in the normal learning workflow where appropriate:
 
-A teacher creates an assignment whose module is `cad` and whose initial document may be a Part or Assembly.
+`class -> assignment -> learner CAD document/project -> autosave -> pinned submission -> teacher review`
 
-The normal ASA Lab learning workflow remains unchanged:
+Assignments may eventually start from templates such as:
 
-`class -> assignment -> learner CAD project -> edit/autosave -> submit pinned version -> teacher review`
+- Part template;
+- Assembly template;
+- A4 Drawing template;
+- provided Fragment;
+- partially completed Specification;
+- technical note template.
 
-ASA-CAD does not implement a second user system, classroom system, assignment system or database.
+ASA-CAD does not implement a second classroom/user system.
 
-## 15. Upstream update policy
+## 21. Upstream policy
 
-The imported Toubkal baseline is pinned to a known commit.
+Toubkal baseline is pinned. We never automatically merge upstream `main` into release code.
 
-We never automatically merge upstream `main` into ASA-CAD release code.
+For upstream changes:
 
-For an upstream update:
+1. identify exact source/target SHA;
+2. classify by subsystem;
+3. normally ignore vendor UI changes;
+4. port useful kernel/solver/recompute/assembly fixes through adapters;
+5. run imported regressions;
+6. run ASA protected workflows and saved-document compatibility;
+7. accept only after gates pass.
 
-1. identify the exact upstream range;
-2. classify changes by UI/runtime/geometry/solver/recompute/assembly;
-3. ignore upstream UI changes unless deliberately useful;
-4. port useful runtime fixes through ASA adapters;
-5. run baseline CAD regressions;
-6. run ASA Part and Assembly compatibility fixtures;
-7. run protected Part/Assembly workflows;
-8. accept only after all gates pass.
+## 22. Required implementation order
 
-The long-term product belongs to ASA-CAD. Upstream is a source of selected implementation improvements.
+The end-state contains all six document kinds, but implementation follows risk/dependency order:
 
-## 16. Initial command scope
+1. reproducible CAD/runtime baseline + Docker boot;
+2. ASA `CadDocument`/`CadApplication` boundary with all document-kind routing reserved;
+3. KOMPAS-oriented application shell and deterministic review fixtures;
+4. parametric sketcher;
+5. Part Design + stable references;
+6. Assembly + contextual component editing + pinned component semantics;
+7. standalone release hardening + native ASA Lab integration;
+8. shared 2D drafting engine + Drawing + Fragment;
+9. Specification + Text document;
+10. broader KOMPAS parity/templates/standards.
 
-### Sketch
+See `docs/ROADMAP.md` for milestone gates.
 
-- line;
-- circle;
-- arc;
-- rectangle;
-- polygon;
-- trim/extend;
-- construction/centerline geometry;
-- projected geometry where supported.
+## 23. Definition of product success
 
-### Constraints
+The complete product is successful when a learner can:
 
-- coincident;
-- horizontal;
-- vertical;
-- parallel;
-- perpendicular;
-- tangent;
-- concentric;
-- equal;
-- symmetric;
-- fixed;
-- point on curve.
+1. run/review ASA-CAD standalone;
+2. create/edit a parametric Part;
+3. create/edit an Assembly from Parts/subassemblies, including in-context component creation/editing;
+4. create an associative Drawing from Part/Assembly;
+5. use Fragment for reusable/draft 2D work;
+6. generate/edit a structured Specification;
+7. create linked engineering Text documentation;
+8. save/reopen all implemented document kinds without losing design intent;
+9. open them through ASA Lab on another supported device;
+10. submit a reproducible version and have the teacher open exactly that submitted engineering state.
 
-### Dimensions
-
-- linear;
-- horizontal;
-- vertical;
-- angular;
-- radius;
-- diameter.
-
-### Part features
-
-First wave:
-
-- extrusion;
-- cut extrusion;
-- revolution;
-- cut revolution;
-- hole;
-- fillet;
-- chamfer;
-- mirror;
-- linear pattern;
-- circular pattern.
-
-Later:
-
-- sweep;
-- loft;
-- shell;
-- rib;
-- draft;
-- datum planes/axes/points.
-
-### Assembly features
-
-Required assembly foundation:
-
-- insert Part/subassembly;
-- occurrence transforms;
-- fixed component;
-- coincident/planar;
-- concentric;
-- parallel/perpendicular;
-- distance;
-- angle;
-- replace/update component;
-- assembly tree;
-- deterministic save/reopen using pinned component versions.
-
-## 17. Definition of product success
-
-ASA-CAD is successful when a learner can:
-
-1. open/run ASA-CAD standalone for development/testing without ASA Lab;
-2. create and edit a parametric Part;
-3. change an early dimension and correctly recompute downstream features;
-4. create an Assembly from Parts/subassemblies and constrain component placement;
-5. save, close and reopen both Part and Assembly documents without losing intent;
-6. open ASA Lab in a supported browser;
-7. create or receive a CAD Part/Assembly project;
-8. enter the KOMPAS-oriented engineering interface without installing desktop CAD;
-9. save work into ASA Lab;
-10. reopen the same project on another supported device;
-11. submit a specific reproducible version to a teacher;
-12. have the teacher open exactly that submitted version and, for assemblies, the exact referenced component versions.
-
-During modeling, the active learner device performs the CAD mathematics.
-
-## 18. Non-negotiable project rules
+## 24. Non-negotiable rules
 
 - Do not rewrite the geometry kernel from scratch.
-- Do not build the new product UI directly on vendor UI/store internals.
-- Do not save only mesh/STL as project authority.
-- Do not introduce normal server-side geometry RPCs.
+- Do not build product UI directly on vendor UI/store internals.
+- Do not save only STL/mesh/screenshot as authority.
+- Do not flatten Assembly as the only native representation.
+- Do not implement Drawing as only an image export.
+- Do not implement Specification as only a disconnected table.
+- Do not duplicate separate 2D geometry engines for Drawing and Fragment.
+- Do not introduce normal server geometry RPCs.
 - Do not auto-update upstream.
-- Do not break saved-document compatibility silently.
-- Do not treat Assembly as an optional afterthought; it has its own document semantics and regression lane.
-- Do not require ASA Lab in order to run/test core ASA-CAD.
-- Keep the production CAD frontend independently containerized/versioned.
-- Every milestone must preserve protected Part regressions; assembly milestones add protected Assembly regressions.
+- Do not silently break/migrate saved documents.
+- Do not require ASA Lab to inspect/test core ASA-CAD.
+- Keep production CAD frontend independently versioned/containerized.
+- Keep visual/UI work independently editable from kernel algorithms.
 
-## 19. Source-of-truth documents
+## 25. Source-of-truth documents
 
-- `docs/SYSTEM_SPEC.md` — what the complete system is and what must remain true.
-- `docs/ARCHITECTURE.md` — technical boundaries and runtime architecture.
-- `docs/ASSEMBLIES.md` — Part versus Assembly semantics and component-version rules.
-- `docs/RUN_AND_DEPLOY.md` — standalone run/test/Docker and ASA Lab deployment model.
-- `docs/ASA_LAB_INTEGRATION.md` — host/persistence/classroom integration contract.
+- `docs/SYSTEM_SPEC.md` — complete system/end-state contract.
+- `docs/DOCUMENT_TYPES.md` — all six document kinds, tools and cross-document relationships.
+- `docs/ASSEMBLIES.md` — Assembly semantics and component-version rules.
+- `docs/FILES_SETTINGS_AND_EXPORT.md` — native saving, formats, settings and appearance contract.
+- `docs/DEVELOPMENT_WORKFLOW.md` — standalone visual editing/review workflow.
+- `docs/ARCHITECTURE.md` — technical boundaries/runtime architecture.
+- `docs/RUN_AND_DEPLOY.md` — standalone/Docker/production deployment.
+- `docs/ASA_LAB_INTEGRATION.md` — ASA Lab host/persistence/classroom integration.
 - `docs/ROADMAP.md` — implementation order and acceptance gates.
 - `docs/UPSTREAM.md` — upstream import/update procedure.
 - `AGENTS.md` — coding-agent rules.
