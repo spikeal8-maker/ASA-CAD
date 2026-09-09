@@ -2,6 +2,22 @@
 
 ASA-CAD is a browser-native parametric CAD module intended for later integration into ASA Lab.
 
+## Current state
+
+ToubkalCAD is already imported as a pinned subtree under `vendor/toubkal/`.
+The exact imported upstream commit is recorded in `UPSTREAM_BASELINE`.
+
+Root commands:
+
+```bash
+npm run install:vendor
+npm run dev
+npm run build
+npm run lint
+npm test
+npm run check
+```
+
 ## Product target
 
 - Separate CAD module; it does not replace the current ASA Lab `three-d` editor.
@@ -11,7 +27,7 @@ ASA-CAD is a browser-native parametric CAD module intended for later integration
 
 ## Technical decision
 
-ASA-CAD will start from **ToubkalCAD** as an upstream CAD implementation, not from a blank CAD editor.
+ASA-CAD starts from **ToubkalCAD** as an upstream CAD implementation, not from a blank CAD editor.
 
 We keep and harden the useful CAD layers:
 
@@ -47,12 +63,11 @@ This boundary is what allows us to replace the whole interface while still impor
 
 This repository is independent from `asa-lab` during CAD development.
 
-1. Track ToubkalCAD as an explicit upstream source.
-2. Import a pinned baseline.
-3. Freeze baseline regression tests.
-4. Extract the ASA-owned application/runtime boundary.
-5. Rebuild UI on that boundary.
-6. Integrate ASA-CAD into ASA Lab only after standalone CAD workflows are stable.
+1. Keep the pinned Toubkal baseline reproducible.
+2. Freeze baseline regression tests.
+3. Extract the ASA-owned application/runtime boundary.
+4. Rebuild UI on that boundary.
+5. Integrate ASA-CAD into ASA Lab only after standalone CAD workflows are stable.
 
 Do not auto-update from upstream. Every upstream update is reviewed, tested, and imported intentionally.
 
