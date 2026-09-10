@@ -1,0 +1,76 @@
+name: ASA-CAD M2 browser
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - src/web/**
+      - src/application/**
+      - src/contracts/**
+      - build/**
+      - tests/m2/**
+      - spec/ui/command-registry.v1.json
+      - package.json
+      - .github/workflows/m2-browser.yml
+  pull_request:
+    paths:
+      - src/web/**
+      - src/application/**
+      - src/contracts/**
+      - build/**
+      - tests/m2/**
+      - spec/ui/command-registry.v1.json
+      - package.json
+      - .github/workflows/m2-browser.yml
+
+permissions:
+  contents: read
+
+jobs:
+  browser-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.19.0'
+          cache: npm
+          cache-dependency-path: vendor/toubkal/package-lock.json
+
+      - name: Install pinned frontend toolchain
+        run: npm --prefix vendor/toubkal ci
+
+      - name: Build ASA shell
+        run: npm run build:asa
+
+      - name: Verify static shell boundary
+        run: node tests/m2/shell-build.mjs
+
+      - name: Install Chromium
+        run: npx --yes playwright@1.60.0 install --with-deps chromium
+
+      - name: Start static shell server
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8090 --directory dist/asa >/tmp/asa-m2-http.log 2>&1 &
+          echo $! >/tmp/asa-m2-http.pid
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:8090/ >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/asa-m2-http.log
+          exit 1
+
+      - name: Exercise desktop and phone ASA shell
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
+        run: node tests/m2/shell-browser.mjs
+
+      - name: Show server log on failure
+        if: failure()
+        run: cat /tmp/asa-m2-http.log || true
