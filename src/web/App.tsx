@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import commandRegistryJson from '../../spec/ui/command-registry.v1.json';
 import { CadApplicationImpl } from '../application/CadApplicationImpl';
 import { BrowserPartRuntimeAdapter } from '../browser/BrowserPartRuntimeAdapter';
 import { parseCadClientRoute } from '../browser/routes';
@@ -20,91 +19,24 @@ import { applyPartDevFixture } from './devFixtures';
 import { CadEditorPersistence } from './CadEditorPersistence';
 import { useUiScaleSettings } from './UiScaleSettings';
 import {
+  commandById,
+  commandLabel,
+  dimensionLabel,
+  documentDescriptions,
+  documentNames,
+  hasCircle,
+  hasRectangle,
+  kindIcon,
+  latestSketch,
+  partDocument,
+  searchCommands,
+  viewportViewByLabel,
+} from './presentation/CadEditorPresentation';
+import {
   ShortcutRegistry,
   shortcutInputKind,
   type ShortcutActionId,
 } from './ShortcutRegistry';
-
-interface RegistryCommand {
-  id: string;
-  labelRu: string;
-  milestone: string;
-  status: string;
-}
-
-const registry = commandRegistryJson as { commands: RegistryCommand[] };
-const commandById = new Map(registry.commands.map((command) => [command.id, command]));
-
-const documentNames: Record<CadDocumentKind, string> = {
-  part: 'Деталь',
-  assembly: 'Сборка',
-  drawing: 'Чертеж',
-  fragment: 'Фрагмент',
-  specification: 'Спецификация',
-  text: 'Текстовый документ',
-};
-
-const documentDescriptions: Record<CadDocumentKind, string> = {
-  part: 'Параметрическая трехмерная деталь',
-  assembly: 'Сборка деталей и подсборок',
-  drawing: 'Листовой ассоциативный чертеж',
-  fragment: 'Свободный двумерный фрагмент',
-  specification: 'Состав изделия и позиции',
-  text: 'Инженерный текстовый документ',
-};
-
-const viewportViewByLabel: Record<string, CadViewportViewName> = {
-  'Показать всё': 'fit',
-  'Спереди': 'front',
-  'Сзади': 'back',
-  'Сверху': 'top',
-  'Снизу': 'bottom',
-  'Слева': 'left',
-  'Справа': 'right',
-  'Изометрия': 'isometric',
-};
-
-function commandLabel(id: string, fallback: string): string {
-  return commandById.get(id)?.labelRu ?? fallback;
-}
-
-function kindIcon(kind: CadDocumentKind): string {
-  switch (kind) {
-    case 'part': return '◇';
-    case 'assembly': return '⬡';
-    case 'drawing': return '▱';
-    case 'fragment': return '⌗';
-    case 'specification': return '≣';
-    case 'text': return '¶';
-  }
-}
-
-function partDocument(document: CadDocument): CadPartDocument | null {
-  return document.kind === 'part' ? document : null;
-}
-
-function latestSketch(part: CadPartDocument | null) {
-  return part?.sketches.at(-1) ?? null;
-}
-
-function hasRectangle(sketch: ReturnType<typeof latestSketch>): boolean {
-  return Boolean(
-    sketch?.entities.filter(
-      (entity) => entity.type === 'line' && String(entity.data.role ?? '').startsWith('rectangle-edge-'),
-    ).length === 4,
-  );
-}
-
-function hasCircle(sketch: ReturnType<typeof latestSketch>): boolean {
-  return Boolean(sketch?.entities.some((entity) => entity.type === 'circle'));
-}
-
-function dimensionLabel(name: string | undefined, type: string): string {
-  if (name === 'width') return 'Ширина';
-  if (name === 'height') return 'Высота';
-  if (name === 'diameter' || type === 'diameter') return 'Диаметр';
-  return name || type;
-}
 
 export function App() {
   const { openSettings } = useUiScaleSettings();
@@ -171,11 +103,7 @@ export function App() {
     ? part.bodies.find((body) => body.id === selectedBodyId) ?? null
     : null;
 
-  const searchableCommands = search.trim()
-    ? registry.commands
-        .filter((command) => command.labelRu.toLocaleLowerCase('ru').includes(search.toLocaleLowerCase('ru')))
-        .slice(0, 8)
-    : [];
+  const searchableCommands = searchCommands(search, document.kind);
 
   const clearTransientSelection = useCallback(() => {
     setSelectionMode('none');
