@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import commandRegistryJson from '../../spec/ui/command-registry.v1.json';
 import { CadApplicationImpl } from '../application/CadApplicationImpl';
-import type { CadRuntimeAdapter, CadRuntimeRecomputeResult, CadRuntimeReferenceCaptureResult } from '../contracts/runtime';
+import { BrowserPartRuntimeAdapter } from '../browser/BrowserPartRuntimeAdapter';
 import {
   createEmptyCadDocument,
   parseCadDocument,
@@ -10,7 +10,8 @@ import {
   type CadDocumentKind,
   type CadPartDocument,
 } from '../contracts/document';
-import type { CadSketchId } from '../contracts/ids';
+import type { CadSketchEntityId, CadSketchId } from '../contracts/ids';
+import { CadViewport } from './CadViewport';
 
 interface RegistryCommand {
   id: string;
@@ -40,18 +41,6 @@ const documentDescriptions: Record<CadDocumentKind, string> = {
   text: 'Инженерный текстовый документ',
 };
 
-class ShellRuntime implements CadRuntimeAdapter {
-  async recompute(): Promise<CadRuntimeRecomputeResult> {
-    return { ok: true, diagnostics: [], runtimeRevision: 'm2-shell-preview' };
-  }
-
-  async captureReference(): Promise<CadRuntimeReferenceCaptureResult> {
-    throw new Error('Geometry picking is connected in the next M2 runtime slice');
-  }
-
-  dispose(): void {}
-}
-
 function commandLabel(id: string, fallback: string): string {
   return commandById.get(id)?.labelRu ?? fallback;
 }
@@ -71,10 +60,23 @@ function partDocument(document: CadDocument): CadPartDocument | null {
   return document.kind === 'part' ? document : null;
 }
 
+function latestSketch(part: CadPartDocument | null) {
+  return part?.sketches.at(-1) ?? null;
+}
+
+function hasRectangle(sketch: ReturnType<typeof latestSketch>): boolean {
+  return Boolean(
+    sketch?.entities.filter(
+      (entity) => entity.type === 'line' && String(entity.data.role ?? '').startsWith('rectangle-edge-'),
+    ).length === 4,
+  );
+}
+
 export function App() {
+  const runtime = useMemo(() => new BrowserPartRuntimeAdapter(), []);
   const app = useMemo(
-    () => new CadApplicationImpl(createEmptyCadDocument('part', { title: 'Деталь 1' }), new ShellRuntime()),
-    [],
+    () => new CadApplicationImpl(createEmptyCadDocument('part', { title: 'Деталь 1' }), runtime),
+    [runtime],
   );
   const [, setRevisionToken] = useState(0);
   const [activePanel, setActivePanel] = useState<'tree' | 'parameters'>('tree');
@@ -82,6 +84,9 @@ export function App() {
   const [activeWorkspace, setActiveWorkspace] = useState('solid');
   const [activeCommand, setActiveCommand] = useState<string | null>(null);
   const [sketchPlane, setSketchPlane] = useState<'XY' | 'XZ' | 'YZ'>('XY');
+  const [rectangleWidth, setRectangleWidth] = useState(60);
+  const [rectangleHeight, setRectangleHeight] = useState(40);
+  const [extrudeDistance, setExtrudeDistance] = useState(10);
   const [notice, setNotice] = useState('Готово');
   const [viewName, setViewName] = useState('Изометрия');
   const [search, setSearch] = useState('');
@@ -97,6 +102,11 @@ export function App() {
   const document = app.getDocument();
   const state = app.getState();
   const part = partDocument(document);
+  const sketch = latestSketch(part);
+  const rectangleReady = hasRectangle(sketch);
+  const canExtrude = Boolean(sketch && rectangleReady && part?.bodies.length === 0);
+  const renderModel = runtime.getRenderModel(document);
+  const runtimeState = runtime.getLoadState();
 
   const searchableCommands = search.trim()
     ? registry.commands
@@ -125,9 +135,11 @@ export function App() {
       return;
     }
     try {
+      setNotice('Открытие документа…');
       await app.replaceDocument(parseCadDocument(saved));
       setActivePanel('tree');
       setActiveCommand(null);
+      setActiveWorkspace(app.getDocument().kind === 'part' ? 'solid' : app.getDocument().kind);
       setNotice('Локальный документ открыт');
     } catch (error) {
       setNotice(error instanceof Error ? error.message : String(error));
@@ -150,14 +162,144 @@ export function App() {
     }
     setActiveCommand(null);
     setActivePanel('tree');
+    setActiveWorkspace('sketch');
     setNotice(`Создан эскиз на плоскости ${sketchPlane}`);
   }
 
-  function cancelCommand() {
+  function beginRectangle() {
+    if (!sketch) return;
+    setActiveCommand('sketch.rectangle');
+    setActivePanel('parameters');
+    setNotice('Задайте ширину и высоту прямоугольника');
+  }
+
+  async function commitRectangle() {
+    const currentPart = partDocument(app.getDocument());
+    const currentSketch = latestSketch(currentPart);
+    if (!currentSketch) {
+      setNotice('Сначала создайте эскиз');
+      return;
+    }
+    if (!(rectangleWidth > 0) || !(rectangleHeight > 0)) {
+      setNotice('Размеры прямоугольника должны быть больше нуля');
+      return;
+    }
+
+    const rectangle = await app.execute({
+      id: 'sketch.rectangle',
+      payload: {
+        sketchId: currentSketch.id,
+        origin: [-rectangleWidth / 2, -rectangleHeight / 2],
+        width: rectangleWidth,
+        height: rectangleHeight,
+      },
+    });
+    if (!rectangle.ok || !rectangle.createdIds || rectangle.createdIds.length < 2) {
+      setNotice(rectangle.error?.message ?? 'Не удалось создать прямоугольник');
+      return;
+    }
+
+    const edges = rectangle.createdIds as CadSketchEntityId[];
+    const widthDimension = await app.execute({
+      id: 'dimension.linear',
+      payload: {
+        sketchId: currentSketch.id,
+        entityIds: [edges[0]],
+        value: rectangleWidth,
+        name: 'width',
+      },
+    });
+    const heightDimension = await app.execute({
+      id: 'dimension.linear',
+      payload: {
+        sketchId: currentSketch.id,
+        entityIds: [edges[1]],
+        value: rectangleHeight,
+        name: 'height',
+      },
+    });
+    if (!widthDimension.ok || !heightDimension.ok) {
+      setNotice(widthDimension.error?.message ?? heightDimension.error?.message ?? 'Не удалось создать размеры');
+      return;
+    }
+
     setActiveCommand(null);
     setActivePanel('tree');
-    setActiveWorkspace(document.kind === 'part' ? 'solid' : document.kind);
+    setNotice(`Прямоугольник ${rectangleWidth}×${rectangleHeight} мм создан`);
+  }
+
+  async function finishSketch() {
+    const currentPart = partDocument(app.getDocument());
+    const currentSketch = latestSketch(currentPart);
+    if (!currentSketch) return;
+    const result = await app.execute({ id: 'sketch.finish', payload: { sketchId: currentSketch.id } });
+    if (!result.ok) {
+      setNotice(result.error?.message ?? 'Не удалось завершить эскиз');
+      return;
+    }
+    setActiveCommand(null);
+    setActivePanel('tree');
+    setActiveWorkspace('solid');
+    setNotice('Эскиз завершен');
+  }
+
+  function beginExtrude() {
+    if (!canExtrude || !sketch) return;
+    setActiveCommand('part.extrude');
+    setActivePanel('parameters');
+    setNotice('Задайте расстояние выдавливания');
+  }
+
+  async function commitExtrude() {
+    const currentPart = partDocument(app.getDocument());
+    const currentSketch = latestSketch(currentPart);
+    if (!currentSketch || !hasRectangle(currentSketch)) {
+      setNotice('Для выдавливания нужен прямоугольный эскиз');
+      return;
+    }
+    if (!(extrudeDistance > 0)) {
+      setNotice('Расстояние выдавливания должно быть больше нуля');
+      return;
+    }
+
+    const feature = await app.execute({
+      id: 'feature.extrude',
+      payload: { sketchId: currentSketch.id, distance: extrudeDistance },
+    });
+    if (!feature.ok) {
+      setNotice(feature.error?.message ?? 'Не удалось создать выдавливание');
+      return;
+    }
+
+    setNotice('Загрузка OpenCascade и перестроение детали…');
+    const rebuildResult = await app.execute({ id: 'document.rebuild', payload: {} });
+    if (!rebuildResult.ok) {
+      setNotice(rebuildResult.error?.message ?? 'Ошибка перестроения');
+      return;
+    }
+
+    setActiveCommand(null);
+    setActivePanel('tree');
+    setActiveWorkspace('solid');
+    setNotice(`Выдавливание ${extrudeDistance} мм построено локально`);
+  }
+
+  function cancelCommand() {
+    const stayInSketch = activeCommand === 'sketch.rectangle';
+    setActiveCommand(null);
+    setActivePanel('tree');
+    setActiveWorkspace(
+      document.kind === 'part'
+        ? stayInSketch ? 'sketch' : 'solid'
+        : document.kind,
+    );
     setNotice('Команда отменена');
+  }
+
+  async function commitActiveCommand() {
+    if (activeCommand === 'part.sketch.create') return commitCreateSketch();
+    if (activeCommand === 'sketch.rectangle') return commitRectangle();
+    if (activeCommand === 'part.extrude') return commitExtrude();
   }
 
   async function undo() {
@@ -171,12 +313,13 @@ export function App() {
   }
 
   async function rebuild() {
+    setNotice('Перестроение…');
     const result = await app.execute({ id: 'document.rebuild', payload: {} });
     setNotice(result.ok ? 'Перестроено' : result.error?.message ?? 'Ошибка перестроения');
   }
 
   return (
-    <div className="cad-app" data-document-kind={document.kind}>
+    <div className="cad-app" data-document-kind={document.kind} data-runtime-status={runtimeState.status}>
       <header className="main-menu-bar">
         <button className="brand-button" type="button" onClick={() => setNewDialogOpen(true)} aria-label="ASA-CAD">
           <span className="brand-mark">A</span>
@@ -241,15 +384,33 @@ export function App() {
         </div>
 
         <div className="command-ribbon">
-          {document.kind === 'part' && activeWorkspace !== 'view' ? (
+          {document.kind === 'part' && activeWorkspace === 'sketch' ? (
+            <>
+              <CommandGroup label="Геометрия">
+                <CommandButton id="sketch.rectangle" large active disabled={!sketch} reason="Сначала создайте эскиз" onClick={beginRectangle} />
+                <CommandButton id="sketch.circle" disabled reason="Окружность включается в следующем cut-срезе" />
+              </CommandGroup>
+              <CommandGroup label="Размеры">
+                <RibbonTextButton label={rectangleReady ? `${rectangleWidth} × ${rectangleHeight} мм` : 'Размеры'} symbol="↔" disabled />
+              </CommandGroup>
+              <CommandGroup label="Эскиз" compact>
+                <RibbonTextButton label="Завершить эскиз" symbol="✓" onClick={finishSketch} disabled={!sketch} />
+              </CommandGroup>
+            </>
+          ) : document.kind === 'part' && activeWorkspace !== 'view' ? (
             <>
               <CommandGroup label="Эскиз">
                 <CommandButton id="part.sketch.create" large active onClick={beginCreateSketch} />
               </CommandGroup>
               <CommandGroup label="Элементы тела">
-                <CommandButton id="part.extrude" disabled reason="Подключение B-Rep к ASA shell — следующий срез" />
-                <CommandButton id="part.cutExtrude" disabled reason="Подключение B-Rep к ASA shell — следующий срез" />
-                <CommandButton id="part.fillet" disabled reason="Подключение B-Rep к ASA shell — следующий срез" />
+                <CommandButton
+                  id="part.extrude"
+                  disabled={!canExtrude}
+                  reason="Завершите прямоугольный эскиз"
+                  onClick={beginExtrude}
+                />
+                <CommandButton id="part.cutExtrude" disabled reason="Подключается после stable-face sketch" />
+                <CommandButton id="part.fillet" disabled reason="Подключается после stable-edge picking" />
               </CommandGroup>
               <CommandGroup label="Сервис модели" compact>
                 <RibbonTextButton label="Перестроить" symbol="↻" onClick={rebuild} />
@@ -301,7 +462,15 @@ export function App() {
               activeCommand={activeCommand}
               sketchPlane={sketchPlane}
               setSketchPlane={setSketchPlane}
+              rectangleWidth={rectangleWidth}
+              rectangleHeight={rectangleHeight}
+              setRectangleWidth={setRectangleWidth}
+              setRectangleHeight={setRectangleHeight}
+              extrudeDistance={extrudeDistance}
+              setExtrudeDistance={setExtrudeDistance}
               onCreateSketch={commitCreateSketch}
+              onCreateRectangle={commitRectangle}
+              onExtrude={commitExtrude}
               onCancel={cancelCommand}
             />
           )}
@@ -316,7 +485,7 @@ export function App() {
             {activeCommand && (
               <>
                 <span className="quick-separator" />
-                <button className="quick-accept" type="button" onClick={commitCreateSketch} title="Создать">✓</button>
+                <button className="quick-accept" type="button" onClick={commitActiveCommand} title="Применить">✓</button>
                 <button className="quick-cancel" type="button" onClick={cancelCommand} title="Отмена">×</button>
               </>
             )}
@@ -331,12 +500,20 @@ export function App() {
                   <span className="axis-y">Y</span>
                 </div>
                 <div className="stage-grid" />
-                <div className="stage-message">
-                  <div className="stage-symbol">◇</div>
-                  <strong>{part && part.sketches.length > 0 ? `${part.sketches.length} эскиз(а)` : 'Новая деталь'}</strong>
-                  <span>ASA-owned M2 shell</span>
-                  <small>Реальный OpenCascade runtime уже проходит M1 CI; Three.js viewport подключается к этой рабочей области следующим вертикальным срезом.</small>
-                </div>
+                {renderModel ? (
+                  <CadViewport model={renderModel} />
+                ) : (
+                  <div className="stage-message">
+                    <div className="stage-symbol">◇</div>
+                    <strong>{part && part.sketches.length > 0 ? `${part.sketches.length} эскиз(а)` : 'Новая деталь'}</strong>
+                    <span>{runtimeState.status === 'loading' ? 'Загрузка OpenCascade…' : 'ASA-CAD'}</span>
+                    <small>
+                      {rectangleReady
+                        ? 'Эскиз параметрический. Завершите его и выполните выдавливание — B-Rep будет построен локально в браузере.'
+                        : 'Создайте эскиз и прямоугольник. OpenCascade не загружается до первой твердотельной операции.'}
+                    </small>
+                  </div>
+                )}
               </>
             ) : (
               <div className="stage-message">
@@ -357,6 +534,7 @@ export function App() {
         </div>
         <div className="status-right">
           <span>{documentNames[document.kind]}</span>
+          <span>{runtimeState.status === 'ready' ? 'OCC локально' : 'ядро по требованию'}</span>
           <span>мм</span>
           <span>UI 100%</span>
           <span>M2</span>
@@ -491,8 +669,8 @@ function DocumentTree({ document }: { document: CadDocument }) {
             <TreeRow depth={2} icon="▱" label="Плоскость XY" muted />
             <TreeRow depth={2} icon="▱" label="Плоскость XZ" muted />
             <TreeRow depth={2} icon="▱" label="Плоскость YZ" muted />
-            {document.sketches.map((sketch) => (
-              <TreeRow key={sketch.id} depth={1} icon="⌗" label={sketch.name} />
+            {document.sketches.map((item) => (
+              <TreeRow key={item.id} depth={1} icon="⌗" label={item.name} />
             ))}
             {document.features.map((feature) => (
               <TreeRow key={feature.id} depth={1} icon="◇" label={feature.name} />
@@ -530,7 +708,15 @@ function ParameterPanel(props: {
   activeCommand: string | null;
   sketchPlane: 'XY' | 'XZ' | 'YZ';
   setSketchPlane: (plane: 'XY' | 'XZ' | 'YZ') => void;
+  rectangleWidth: number;
+  rectangleHeight: number;
+  setRectangleWidth: (value: number) => void;
+  setRectangleHeight: (value: number) => void;
+  extrudeDistance: number;
+  setExtrudeDistance: (value: number) => void;
   onCreateSketch: () => void;
+  onCreateRectangle: () => void;
+  onExtrude: () => void;
   onCancel: () => void;
 }) {
   if (props.activeCommand === 'part.sketch.create') {
@@ -572,6 +758,53 @@ function ParameterPanel(props: {
     );
   }
 
+  if (props.activeCommand === 'sketch.rectangle') {
+    return (
+      <div className="parameter-panel">
+        <div className="panel-title-row">
+          <div>
+            <small>Эскиз</small>
+            <strong>{commandLabel('sketch.rectangle', 'Прямоугольник')}</strong>
+          </div>
+          <button type="button" onClick={props.onCancel} title="Закрыть">×</button>
+        </div>
+        <section className="parameter-section">
+          <h3>Размеры</h3>
+          <NumericField label="Ширина" value={props.rectangleWidth} onChange={props.setRectangleWidth} suffix="мм" />
+          <NumericField label="Высота" value={props.rectangleHeight} onChange={props.setRectangleHeight} suffix="мм" />
+          <p>Прямоугольник создается относительно начала координат и получает два управляющих размера.</p>
+        </section>
+        <div className="parameter-actions">
+          <button className="primary" type="button" onClick={props.onCreateRectangle}>Создать</button>
+          <button type="button" onClick={props.onCancel}>Отмена</button>
+        </div>
+      </div>
+    );
+  }
+
+  if (props.activeCommand === 'part.extrude') {
+    return (
+      <div className="parameter-panel">
+        <div className="panel-title-row">
+          <div>
+            <small>Элемент тела</small>
+            <strong>{commandLabel('part.extrude', 'Элемент выдавливания')}</strong>
+          </div>
+          <button type="button" onClick={props.onCancel} title="Закрыть">×</button>
+        </div>
+        <section className="parameter-section">
+          <h3>Параметры</h3>
+          <NumericField label="Расстояние" value={props.extrudeDistance} onChange={props.setExtrudeDistance} suffix="мм" />
+          <p>При применении впервые загружается OpenCascade WASM и строится точный B-Rep на этом устройстве.</p>
+        </section>
+        <div className="parameter-actions">
+          <button className="primary" type="button" onClick={props.onExtrude}>Создать</button>
+          <button type="button" onClick={props.onCancel}>Отмена</button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="parameter-panel empty-parameters">
       <div className="panel-title-row"><strong>Параметры</strong></div>
@@ -581,5 +814,28 @@ function ParameterPanel(props: {
         <p>При запуске операции эта панель автоматически показывает её параметры.</p>
       </div>
     </div>
+  );
+}
+
+function NumericField(props: {
+  label: string;
+  value: number;
+  suffix: string;
+  onChange: (value: number) => void;
+}) {
+  return (
+    <label className="numeric-field">
+      <span>{props.label}</span>
+      <span className="numeric-control">
+        <input
+          type="number"
+          min="0.01"
+          step="1"
+          value={Number.isFinite(props.value) ? props.value : 0}
+          onChange={(event) => props.onChange(Number(event.target.value))}
+        />
+        <small>{props.suffix}</small>
+      </span>
+    </label>
   );
 }
