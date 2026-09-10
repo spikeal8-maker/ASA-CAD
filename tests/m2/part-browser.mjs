@@ -86,6 +86,13 @@ async function applyPrimary() {
   await button.click();
 }
 
+async function finishSketch() {
+  const button = page.getByRole('button', { name: /Завершить эскиз/ });
+  await button.waitFor();
+  await button.click();
+  await page.getByText('Эскиз завершен', { exact: true }).waitFor();
+}
+
 async function createProtectedExtrude() {
   await page.goto(url, { waitUntil: 'networkidle' });
   await page.getByRole('button', { name: 'ASA-CAD', exact: true }).waitFor();
@@ -110,8 +117,7 @@ async function createProtectedExtrude() {
 
   assert.deepEqual(await loadedWasmResources(), [], 'OpenCascade WASM loaded during 2D rectangle authoring');
 
-  await page.getByRole('button', { name: 'Завершить эскиз', exact: true }).click();
-  await page.getByText('Эскиз завершен', { exact: true }).waitFor();
+  await finishSketch();
 
   const extrudeButton = page.getByRole('button', { name: /Элемент выдавливания/i });
   assert.equal(await extrudeButton.isEnabled(), true, 'Extrude should be enabled after the rectangle sketch is finished');
@@ -165,8 +171,7 @@ async function createHoleAndFillet() {
   assert.equal(await diameter.inputValue(), '12');
   await applyPrimary();
   await page.getByText('Окружность Ø12 мм создана', { exact: true }).waitFor();
-  await page.getByRole('button', { name: 'Завершить эскиз', exact: true }).click();
-  await page.getByText('Эскиз завершен', { exact: true }).waitFor();
+  await finishSketch();
 
   const cutButton = page.getByRole('button', { name: /Вырезать выдавливанием/i });
   assert.equal(await cutButton.isEnabled(), true, 'Cut should be enabled after the circle sketch is finished');
