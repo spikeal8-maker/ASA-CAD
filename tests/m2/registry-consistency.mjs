@@ -65,6 +65,8 @@ for (const id of implementedIds) {
 
 const acceptedM2Commands = [
   'system.new',
+  'system.open',
+  'system.save',
   'system.undo',
   'system.redo',
   'system.rebuild',
