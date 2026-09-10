@@ -1,9 +1,10 @@
 const path = require('node:path');
-const rspack = require(path.resolve(__dirname, '../vendor/toubkal/node_modules/@rspack/core'));
-const { HtmlRspackPlugin } = rspack;
+const { createRequire } = require('node:module');
 
 const root = path.resolve(__dirname, '..');
 const vendorModules = path.join(root, 'vendor/toubkal/node_modules');
+const vendorRequire = createRequire(path.join(root, 'vendor/toubkal/package.json'));
+const { HtmlRspackPlugin } = vendorRequire('@rspack/core');
 const isDev = process.argv.includes('serve');
 
 module.exports = {
