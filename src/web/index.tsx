@@ -2,6 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
 import { installUiScaleController } from './UiScale';
+import { UiScaleSettings } from './UiScaleSettings';
 import './styles.css';
 import './responsive.css';
 import './ui-scale.css';
@@ -18,4 +19,9 @@ window.__ASA_CAD_UI_SCALE__ = installUiScaleController();
 // browser regression coverage. Do not wrap the entire runtime root in
 // React.StrictMode: its development-only mount/effect replay duplicates
 // OpenCascade/fixture initialization and is not representative of production.
-createRoot(root).render(<App />);
+createRoot(root).render(
+  <>
+    <App />
+    <UiScaleSettings />
+  </>,
+);
