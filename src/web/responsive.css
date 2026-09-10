@@ -1,0 +1,70 @@
+/*
+ * ASA-CAD responsive composition overrides.
+ *
+ * Keep these rules separate from the base KOMPAS-oriented shell so responsive
+ * changes can be reviewed/tested without rewriting desktop geometry.
+ */
+
+/*
+ * Portrait tablets cannot afford a 40px rail + 250px permanent side panel.
+ * Preserve readable controls and move the management panel below the viewport
+ * instead of shrinking typography or the 3D work area horizontally.
+ */
+@media (min-width: 600px) and (max-width: 899px) and (orientation: portrait) {
+  .content-area {
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) 210px;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .management-rail {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    min-width: 0;
+    min-height: 0;
+    border-right: 1px solid var(--border-strong);
+  }
+
+  .management-panel {
+    grid-column: 2;
+    grid-row: 2;
+    min-width: 0;
+    min-height: 0;
+    border-right: 0;
+    border-top: 1px solid var(--border-strong);
+  }
+
+  .work-area {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .tree-root {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-content: start;
+  }
+
+  .tree-row {
+    min-width: 0;
+  }
+
+  .parameter-panel {
+    overflow: auto;
+  }
+
+  .parameter-section {
+    padding-block: 8px;
+  }
+}
+
+/* On very short portrait tablets, preserve the model before panel height. */
+@media (min-width: 600px) and (max-width: 899px) and (orientation: portrait) and (max-height: 820px) {
+  .content-area {
+    grid-template-rows: minmax(0, 1fr) 176px;
+  }
+}
