@@ -27,6 +27,10 @@ export class CadEditorPersistence {
     return this.bundle.projectKey;
   }
 
+  hasStoredProject(): boolean {
+    return this.bundle.host.hasStoredProject();
+  }
+
   getStandaloneStorageKey(): string {
     return this.bundle.host.getStorageKey();
   }
