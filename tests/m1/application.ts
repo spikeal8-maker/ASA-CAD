@@ -118,6 +118,10 @@ assert.equal(invalid.ok, false);
 
 app.dispose();
 assert.equal(runtime.disposed, true);
-assert.throws(() => app.getCommandAvailability('document.rebuild'), /disposed/i);
+assert.equal(app.getCommandAvailability('document.rebuild').enabled, false);
+await assert.rejects(
+  () => app.execute({ id: 'document.rebuild', payload: {} }),
+  /disposed/i,
+);
 
 console.log('ASA-CAD M1 CadApplication behavior PASS');
