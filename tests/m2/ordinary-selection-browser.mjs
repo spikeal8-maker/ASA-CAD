@@ -114,13 +114,21 @@ try {
   console.log('  ✓ tree -> viewport selection synchronized through ASA state');
 
   // A command-specific selection mode must clear ordinary body selection rather
-  // than mixing body selection with face/edge command input.
+  // than mixing body selection with face/edge command input. The command opens
+  // Parameters, so the Tree row is intentionally absent until the command exits.
   await page.getByRole('button', { name: /Создать эскиз/i }).click();
   await page.locator('[data-testid="cad-viewport"][data-selection-mode="face"]').waitFor();
   assert.equal(await page.locator('.cad-app').getAttribute('data-selected-body-id'), '');
   assert.equal((await viewportState()).selectedBodyId, '');
-  assert.equal(await selectedTreeRow.getAttribute('aria-pressed'), 'false');
   assert.equal((await viewportState()).revision, before.revision, 'entering face-pick mode triggered CAD recompute');
+
+  await page.locator('.cad-app').focus();
+  await page.keyboard.press('Escape');
+  await page.getByText('Команда отменена', { exact: true }).waitFor();
+  const restoredTreeRow = page.locator(`.tree-row[data-body-id="${appBodyId}"]`);
+  await restoredTreeRow.waitFor();
+  assert.equal(await restoredTreeRow.getAttribute('aria-pressed'), 'false');
+  assert.equal((await viewportState()).revision, before.revision, 'leaving face-pick mode triggered CAD recompute');
   console.log('  ✓ command-specific face picking remains separate from ordinary body selection');
 
   assert.deepEqual(pageErrors, [], `page errors: ${pageErrors.join('; ')}`);
