@@ -14,6 +14,11 @@
   outline: none;
 }
 
+.cad-viewport canvas.selection-face,
+.cad-viewport canvas.selection-edge {
+  cursor: crosshair;
+}
+
 .cad-viewport-error {
   position: absolute;
   left: 50%;
@@ -40,6 +45,66 @@
 .model-stage .origin-widget {
   z-index: 5;
   pointer-events: none;
+}
+
+.selection-caption {
+  margin-left: 4px;
+  padding: 2px 7px;
+  border: 1px solid #85b9d7;
+  border-radius: 3px;
+  color: #126c9c;
+  background: #eef8fd;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.selection-value {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 2px 8px;
+  align-items: center;
+  min-height: 46px;
+  margin: 8px 0 10px;
+  padding: 8px 9px;
+  border: 1px dashed #b9c2ca;
+  border-radius: 4px;
+  background: #fafbfc;
+  color: #66717b;
+}
+
+.selection-value > span {
+  grid-row: 1 / span 2;
+  align-self: center;
+  text-align: center;
+  font-size: 18px;
+}
+
+.selection-value strong {
+  color: #37414a;
+  font-size: 12px;
+}
+
+.selection-value small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #7d8790;
+  font-size: 10px;
+}
+
+.selection-value.selected {
+  border-style: solid;
+  border-color: #7eb7d9;
+  background: #eef8fd;
+}
+
+.tree-row.interactive:hover,
+.tree-row.interactive:focus-visible {
+  background: #e9f4fa;
+}
+
+.tree-row.interactive .tree-label {
+  color: #1f6690;
 }
 
 .numeric-field {
