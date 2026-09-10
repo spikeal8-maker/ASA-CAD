@@ -83,6 +83,10 @@ export function installUiScaleController(): CadUiScaleController {
     document.documentElement.dataset.uiScaleMode = String(preference);
     document.documentElement.dataset.uiScale = String(resolved);
     document.documentElement.style.setProperty('--ui-scale-factor', String(resolved / 100));
+    // Base shell declares :root { font-size: 14px }. Keep the user scale token
+    // authoritative without CSS transforms: inline font-size references the
+    // current token and therefore tracks 90/100/110/125/150 data-state rules.
+    document.documentElement.style.fontSize = 'var(--ui-root-font)';
   };
 
   const onResize = () => {
