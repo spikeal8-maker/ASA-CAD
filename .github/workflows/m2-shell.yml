@@ -64,6 +64,9 @@ jobs:
       - name: Verify shared UI action model
         run: npm run test:m2:actions
 
+      - name: Verify editor persistence host seam
+        run: npm run test:m2:persistence
+
       - name: Verify neutral OpenCascade render bridge
         run: npm run test:m2:render
 
