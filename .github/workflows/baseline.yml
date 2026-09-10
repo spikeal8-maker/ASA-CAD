@@ -71,6 +71,9 @@ jobs:
       - name: ASA M1 document contracts
         run: npm run test:m1:contracts
 
+      - name: ASA M1 migration contract
+        run: npm run test:m1:migrations
+
       - name: ASA M1 application behavior
         run: npm run test:m1:application
 
