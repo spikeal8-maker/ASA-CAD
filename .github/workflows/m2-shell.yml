@@ -1,0 +1,49 @@
+name: ASA-CAD M2 shell
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - src/web/**
+      - src/application/**
+      - src/contracts/**
+      - spec/ui/command-registry.v1.json
+      - build/rspack.asa.config.cjs
+      - tests/m2/**
+      - package.json
+      - .github/workflows/m2-shell.yml
+  pull_request:
+    paths:
+      - src/web/**
+      - src/application/**
+      - src/contracts/**
+      - spec/ui/command-registry.v1.json
+      - build/rspack.asa.config.cjs
+      - tests/m2/**
+      - package.json
+      - .github/workflows/m2-shell.yml
+
+permissions:
+  contents: read
+
+jobs:
+  shell-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.19.0'
+          cache: npm
+          cache-dependency-path: vendor/toubkal/package-lock.json
+
+      - name: Install pinned frontend toolchain
+        run: npm --prefix vendor/toubkal ci
+
+      - name: Build ASA-owned shell
+        run: npm run build:asa
+
+      - name: Verify shell/vendor/runtime boundary
+        run: node tests/m2/shell-build.mjs
