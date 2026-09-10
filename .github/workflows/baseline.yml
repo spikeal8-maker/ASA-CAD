@@ -91,3 +91,31 @@ jobs:
 
       - name: ASA M1 protected Part on OpenCascade runtime
         run: npm run test:m1:runtime
+
+  asa-m1b:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.19.0'
+          cache: npm
+          cache-dependency-path: vendor/toubkal/package-lock.json
+
+      - name: Install runtime/tooling dependencies
+        run: npm --prefix vendor/toubkal ci
+
+      - name: ASA public typecheck
+        run: npm run typecheck:asa
+
+      - name: Capability, lazy runtime and route contracts
+        run: npm run test:m1b:client
+
+      - name: ASA Lab Project Core host mapping
+        run: npm run test:m1b:asa-host
+
+      - name: Local recovery and retry contract
+        run: npm run test:m1b:recovery
