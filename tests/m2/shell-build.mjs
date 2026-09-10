@@ -1,9 +1,11 @@
 import assert from 'node:assert/strict';
 import { readFile, readdir, stat } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
 
-const dist = new URL('../../dist/asa/', import.meta.url);
-const index = await readFile(new URL('index.html', dist), 'utf8');
+const distUrl = new URL('../../dist/asa/', import.meta.url);
+const dist = fileURLToPath(distUrl);
+const index = await readFile(join(dist, 'index.html'), 'utf8');
 assert.match(index, /<title>ASA-CAD<\/title>/i, 'ASA shell HTML title is missing');
 assert.match(index, /\.js/i, 'ASA shell index has no JS bundle');
 
@@ -18,7 +20,7 @@ async function files(dir) {
   return result;
 }
 
-const outputFiles = await files(new URL('.', dist));
+const outputFiles = await files(dist);
 assert.ok(outputFiles.some((file) => file.endsWith('.js')), 'ASA shell emitted no JavaScript');
 assert.ok(outputFiles.some((file) => file.endsWith('.css')), 'ASA shell emitted no CSS');
 assert.equal(
