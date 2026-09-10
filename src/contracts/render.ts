@@ -37,6 +37,21 @@ export interface CadRenderModel {
   meshes: CadRenderMesh[];
 }
 
+/**
+ * One transient viewport hit. `faceIndex` and `segmentIndex` are presentation
+ * details only; persistent modeling commands must convert the world-space point
+ * to an ASA stable reference through CadApplication.captureReference().
+ */
+export interface CadViewportPick {
+  kind: 'face' | 'edge';
+  meshId: string;
+  bodyId?: CadBodyId;
+  sourceFeatureId?: CadFeatureId;
+  point: readonly [number, number, number];
+  faceIndex?: number;
+  segmentIndex?: number;
+}
+
 export interface CadRenderModelProvider {
   getRenderModel(
     document: Readonly<CadDocument>,
