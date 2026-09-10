@@ -25,6 +25,7 @@ export type CadDocumentKind =
   | 'text';
 
 export type CadLengthUnit = 'mm' | 'cm' | 'm' | 'inch';
+export type CadPoint2 = readonly [number, number];
 
 export interface CadDocumentReference {
   documentId: CadDocumentId;
@@ -49,11 +50,29 @@ export interface CadOrigin {
   planes: readonly ['XY', 'XZ', 'YZ'];
 }
 
-export interface CadSketchEntity {
+interface CadSketchEntityBase {
   id: CadSketchEntityId;
-  type: string;
-  data: Record<string, unknown>;
 }
+
+export interface CadLineSketchEntity extends CadSketchEntityBase {
+  type: 'line';
+  data: {
+    from: CadPoint2;
+    to: CadPoint2;
+    role?: string;
+  };
+}
+
+export interface CadCircleSketchEntity extends CadSketchEntityBase {
+  type: 'circle';
+  data: {
+    center: CadPoint2;
+    diameter: number;
+  };
+}
+
+/** Current schema-v1 Sketch entity set. M3 extends this union deliberately. */
+export type CadSketchEntity = CadLineSketchEntity | CadCircleSketchEntity;
 
 export interface CadSketch {
   id: CadSketchId;
@@ -64,21 +83,61 @@ export interface CadSketch {
   dimensionIds: CadDimensionId[];
 }
 
-export interface CadConstraint {
-  id: CadConstraintId;
-  type: string;
-  entityIds: CadSketchEntityId[];
-  data?: Record<string, unknown>;
+export interface CadSketchPointReference {
+  entityId: CadSketchEntityId;
+  point?: 'a' | 'b' | 'c';
 }
 
-export interface CadDimension {
+interface CadConstraintBase {
+  id: CadConstraintId;
+  entityIds: CadSketchEntityId[];
+}
+
+export interface CadHorizontalConstraint extends CadConstraintBase {
+  type: 'horizontal';
+  data?: undefined;
+}
+
+export interface CadVerticalConstraint extends CadConstraintBase {
+  type: 'vertical';
+  data?: undefined;
+}
+
+export interface CadFixedConstraint extends CadConstraintBase {
+  type: 'fixed';
+  data?: undefined;
+}
+
+export interface CadCoincidentConstraint extends CadConstraintBase {
+  type: 'coincident';
+  data: { refs: [CadSketchPointReference, CadSketchPointReference] };
+}
+
+/** Current schema-v1 constraint set. M3 extends this union deliberately. */
+export type CadConstraint =
+  | CadHorizontalConstraint
+  | CadVerticalConstraint
+  | CadFixedConstraint
+  | CadCoincidentConstraint;
+
+interface CadDimensionBase {
   id: CadDimensionId;
-  type: string;
   entityIds: CadSketchEntityId[];
   value: number;
   driving: boolean;
   name?: string;
 }
+
+export interface CadLinearDimension extends CadDimensionBase {
+  type: 'linear';
+}
+
+export interface CadDiameterDimension extends CadDimensionBase {
+  type: 'diameter';
+}
+
+/** Current schema-v1 dimension set. M3 extends this union deliberately. */
+export type CadDimension = CadLinearDimension | CadDiameterDimension;
 
 export interface CadFeature {
   id: CadFeatureId;
@@ -284,5 +343,66 @@ export function validateCadDocument(value: unknown): asserts value is CadDocumen
   if (typeof document.title !== 'string') throw new Error('CadDocument.title must be a string');
   if (!['mm', 'cm', 'm', 'inch'].includes(String(document.units))) {
     throw new Error(`Unsupported CadDocument units: ${String(document.units)}`);
+  }
+
+  if (document.kind === 'part') validatePartDocument(document as CadPartDocument);
+}
+
+function validatePartDocument(part: CadPartDocument): void {
+  for (const field of ['sketches', 'constraints', 'dimensions', 'features', 'bodies', 'stableReferences'] as const) {
+    if (!Array.isArray(part[field])) throw new Error(`CadPartDocument.${field} must be an array`);
+  }
+
+  const entityIds = new Set<string>();
+  for (const sketch of part.sketches) {
+    if (!Array.isArray(sketch.entities)) throw new Error(`${sketch.id}.entities must be an array`);
+    for (const entity of sketch.entities) {
+      if (entityIds.has(entity.id)) throw new Error(`Duplicate sketch entity id: ${entity.id}`);
+      entityIds.add(entity.id);
+      if (entity.type === 'line') {
+        validatePoint2(entity.data.from, `${entity.id}.from`);
+        validatePoint2(entity.data.to, `${entity.id}.to`);
+      } else if (entity.type === 'circle') {
+        validatePoint2(entity.data.center, `${entity.id}.center`);
+        if (!(typeof entity.data.diameter === 'number' && Number.isFinite(entity.data.diameter) && entity.data.diameter > 0)) {
+          throw new Error(`${entity.id}.diameter must be a positive finite number`);
+        }
+      } else {
+        const unreachable: never = entity;
+        throw new Error(`Unsupported schema-v1 sketch entity: ${String((unreachable as { type?: unknown }).type)}`);
+      }
+    }
+  }
+
+  for (const constraint of part.constraints) {
+    if (!['horizontal', 'vertical', 'fixed', 'coincident'].includes(constraint.type)) {
+      throw new Error(`Unsupported schema-v1 constraint: ${String(constraint.type)}`);
+    }
+    if (!constraint.entityIds.every((id) => entityIds.has(id))) {
+      throw new Error(`${constraint.id}: constraint references unknown sketch entity`);
+    }
+    if (constraint.type === 'coincident') {
+      if (!constraint.data || !Array.isArray(constraint.data.refs) || constraint.data.refs.length !== 2) {
+        throw new Error(`${constraint.id}: coincident constraint requires two point refs`);
+      }
+    }
+  }
+
+  for (const dimension of part.dimensions) {
+    if (!['linear', 'diameter'].includes(dimension.type)) {
+      throw new Error(`Unsupported schema-v1 dimension: ${String(dimension.type)}`);
+    }
+    if (!(Number.isFinite(dimension.value) && dimension.value > 0)) {
+      throw new Error(`${dimension.id}: dimension value must be a positive finite number`);
+    }
+    if (!dimension.entityIds.every((id) => entityIds.has(id))) {
+      throw new Error(`${dimension.id}: dimension references unknown sketch entity`);
+    }
+  }
+}
+
+function validatePoint2(value: unknown, label: string): asserts value is CadPoint2 {
+  if (!Array.isArray(value) || value.length !== 2 || !value.every((item) => typeof item === 'number' && Number.isFinite(item))) {
+    throw new Error(`${label} must be a finite [x,y] tuple`);
   }
 }
