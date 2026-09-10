@@ -9,75 +9,77 @@ Read in this order:
 1. `docs/SYSTEM_SPEC.md` — primary system/end-state contract.
 2. `docs/ROADMAP.md` — implementation order/current milestone.
 3. `docs/ARCHITECTURE.md` — dependency/runtime boundaries.
-4. `docs/UI_COMMAND_SPEC.md` — binding button/group/dropdown/parameter-panel and UI rollout contract.
-5. `spec/ui/command-registry.v1.json` — stable machine-readable command IDs/labels/placement/milestones.
-6. `spec/ui/layout-registry-v2-requirements.md` — required deterministic order/collapse/mobile metadata before M2 visual freeze.
-7. `docs/WORKSPACE_INTERACTION_SPEC.md` — central 3D/2D work-area selection/navigation/preview/interaction contract.
-8. `docs/SHORTCUTS_SPEC.md` — keyboard, focus and remappable-shortcut contract.
-9. `docs/MOBILE_RESPONSIVE_SPEC.md` — tablet/phone layout, touch gestures and capability-tier contract.
-10. `docs/DISPLAY_LAYOUT_SPEC.md` — HD/FHD/2K/4K/ultrawide, DPI, browser zoom, typography and panel-layout contract.
-11. `spec/ui/viewport-matrix.v1.json` — required responsive/DPI/zoom regression matrix.
-12. `docs/VISUAL_REFERENCE_SPEC.md` + `spec/ui/visual-reference-manifest.v1.json` — KOMPAS reference mapping and deliberate-difference contract.
-13. `docs/M2_VISUAL_ACCEPTANCE.md` — final M2 visual acceptance gate.
-14. `docs/DOCUMENT_TYPES.md` — six document kinds and document-specific tool scopes.
-15. `docs/ASSEMBLIES.md` when touching Part/Assembly semantics, component references or mates.
-16. `docs/RUN_AND_DEPLOY.md` when touching Docker, runtime loading, browser headers or deployment.
-17. `docs/ASA_LAB_INTEGRATION.md` when touching persistence/classroom/ASA Lab integration.
-18. `docs/UPSTREAM.md` when touching `vendor/toubkal` or importing upstream changes.
-19. the GitHub issue for the active milestone.
+4. `docs/README_UI_SPECS.md` — UI-spec index and precedence.
+5. `docs/UI_COMMAND_SPEC.md` — button/group/dropdown/parameter-panel contract.
+6. `spec/ui/command-registry.v1.json` — stable product command IDs already admitted to implementation.
+7. `spec/ui/kompas-command-inventory.v25.json` — maintained broader KOMPAS v25 functional inventory/classification.
+8. `spec/ui/layout-registry.v2.json` — binding workspace/group order, collapse/overflow and mobile placement.
+9. `docs/KOMPAS_SHELL_LAYOUT_SPEC.md` — binding default KOMPAS-oriented desktop shell composition.
+10. `docs/WORKSPACE_INTERACTION_SPEC.md` — central work-area interaction.
+11. `docs/SHORTCUTS_SPEC.md` — keyboard/remapping.
+12. `docs/MOBILE_RESPONSIVE_SPEC.md` — phone/tablet/touch/hybrid behavior.
+13. `docs/DISPLAY_LAYOUT_SPEC.md` + `spec/ui/viewport-matrix.v1.json` — HD/FHD/2K/4K/DPI/zoom/UI Scale.
+14. `docs/VISUAL_REFERENCE_SPEC.md` + `spec/ui/visual-reference-manifest.v1.json` — reference mapping/visual acceptance.
+15. `docs/DOCUMENT_TYPES.md` — six document kinds/tool scopes.
+16. `docs/ASSEMBLIES.md` when touching Assembly.
+17. `docs/RUN_AND_DEPLOY.md` for Docker/runtime/deployment.
+18. `docs/ASA_LAB_INTEGRATION.md` for persistence/classroom/ASA integration.
+19. `docs/UPSTREAM.md` for `vendor/toubkal`/upstream work.
+20. the GitHub issue for the active milestone.
 
 Do not reinterpret the product from scratch when these contracts already answer the question.
 
 ## Product intent
 
-ASA-CAD is a browser-native engineering CAD system and future first-class ASA Lab module.
+ASA-CAD is a browser-native engineering CAD system and future first-class ASA Lab module with six document kinds:
 
-The end-state product has six document kinds: Part / Деталь, Assembly / Сборка, Drawing / Чертеж, Fragment / Фрагмент, Specification / Спецификация, Text / Текстовый документ.
+- Part / Деталь;
+- Assembly / Сборка;
+- Drawing / Чертеж;
+- Fragment / Фрагмент;
+- Specification / Спецификация;
+- Text / Текстовый документ.
 
-The visible desktop workflow is ASA-owned and KOMPAS-oriented. Interactive CAD mathematics runs on the active learner device. ASA Lab owns identity, classes, projects, persistence, versions, assignments, submissions and teacher review; it is not a CAD compute server.
+The visible workflow is ASA-owned and KOMPAS-oriented. Interactive CAD mathematics runs on the learner device. ASA Lab owns identity/classes/projects/persistence/versions/assignments/submissions/teacher review and is not a CAD compute server.
 
 ## Never do these
 
 - Do not rewrite the geometry kernel from scratch.
-- Do not replace authoritative exact B-Rep behavior with mesh-only approximations.
-- Do not make ASA UI depend directly on `window.oc`, raw OCC objects, vendor Zustand layout, vendor events or vendor component paths.
-- Do not gradually repaint the vendor Toubkal shell and call it the final ASA product UI.
-- Do not invent button labels/grouping/milestones when the UI specs/registries define them.
-- Do not invent independent group order, collapse/overflow or mobile placement inside React components.
-- Do not use raw physical screen resolution as the primary layout breakpoint; use effective CSS viewport width/height.
-- Do not double-scale 4K after OS/browser DPI scaling.
-- Do not solve narrow screens by shrinking all fonts/icons below readability floors.
-- Do not stretch side panels/command groups indefinitely on 2K/4K/ultrawide; additional width belongs primarily to the work area.
-- Do not apply a whole-app visual transform that desynchronizes 3D/2D pointer/picking coordinates.
-- Do not declare visual completion from one Full-HD screenshot; required M2 viewport/DPI/zoom/mobile gates must pass.
-- Do not copy proprietary KOMPAS icons/artwork; use ASA-owned vector assets.
-- Do not invent viewport mouse/touch behavior inside feature components; use the centralized workspace interaction contract.
-- Do not add ad-hoc global key handlers; shortcuts go through the centralized shortcut registry and respect text/browser focus.
-- Do not make essential phone/tablet behavior depend on hover.
+- Do not replace authoritative exact B-Rep with mesh-only approximations.
+- Do not make ASA UI depend directly on `window.oc`, raw OCC objects, vendor Zustand layout/events/component paths.
+- Do not gradually repaint the visible Toubkal shell and call it the final product UI.
+- Do not invent command names/group order/collapse behavior/mobile placement when the registries define them.
+- Do not expose production controls that execute no implemented command.
+- Do not copy proprietary KOMPAS icons/artwork; create ASA-owned vector assets.
+- Do not invent viewport mouse/touch behavior inside individual features.
+- Do not add ad-hoc global shortcut handlers.
+- Do not require hover for essential phone/tablet behavior.
 - Do not create a separate mobile document/command model.
-- Do not hide an implemented desktop command on phone without a defined alternate discovery path.
-- Do not expose production buttons that appear usable but execute no implemented command.
-- Do not store native WASM pointers or Three.js meshes in authoritative documents.
-- Do not silently repair ambiguous Part topology references by choosing another subshape.
-- Do not silently update Assembly occurrences to newer component drafts/versions.
-- Do not introduce normal server geometry/assembly solve endpoints for learner CAD math.
-- Do not bundle CAD/WASM runtime into normal ASA Lab pages.
-- Do not collapse production deployment back into main `asa-web` without deliberate architecture revision.
-- Do not require ASA Lab merely to run/test core ASA-CAD.
+- Do not decide responsive layout from physical resolution alone.
+- Do not shrink normal text below the documented readability floor merely to fit a toolbar.
+- Do not apply whole-app CSS scaling that breaks 3D/2D pointer coordinates.
+- Do not store WASM pointers or Three.js meshes in authoritative documents.
+- Do not silently repair ambiguous topology references by choosing another subshape.
+- Do not silently update Assembly occurrences to newer component versions.
+- Do not introduce normal server geometry/solver RPC endpoints.
+- Do not bundle CAD/WASM into unrelated ASA Lab startup pages.
+- Do not require ASA Lab to run/test core ASA-CAD.
 - Do not update Toubkal upstream automatically on `main`.
-- Do not perform broad refactors while implementing one narrow CAD behavior.
-- Do not begin broad permanent KOMPAS UI wiring before M1 establishes ASA-owned `CadApplication`/`CadDocument` boundaries.
 - Do not break saved-document compatibility silently.
 
-## Architecture dependency direction
+## Dependency direction
 
 Allowed:
 
 ```text
-ASA UI -> CommandRegistry/CadApplication/CadDocument -> ASA runtime adapters -> vendor/toubkal + kernel/solver
+ASA UI
+  -> command/layout registries
+  -> CadApplication / CadDocument
+  -> ASA runtime adapters
+  -> vendor-derived runtime / OpenCascade / solvers
 ```
 
-Production deployment:
+Production routing:
 
 ```text
 ASA Lab public origin
@@ -86,62 +88,61 @@ ASA Lab public origin
   other  -> asa-web
 ```
 
-The CAD container serves frontend/runtime assets only. Browser-side WASM performs CAD computation.
-
-Forbidden:
-
-```text
-ui -> vendor/toubkal/services/*
-ui -> window.oc
-ui -> raw TopoDS_Shape
-ASA Lab -> OpenCascade/Toubkal internals
-vendor/toubkal -> ASA Lab
-browser CAD command -> server geometry/assembly RPC
-```
+The CAD container serves frontend/runtime assets only. Browser-side WASM performs CAD calculation.
 
 ## UI implementation rule
 
-The permanent product shell is new ASA-owned code. The visible Toubkal shell is a temporary diagnostic/reference surface until the protected Part workflow is migrated.
+Permanent UI is new ASA-owned code. Toubkal visible UI remains a temporary diagnostic/reference surface until the protected Part workflow is migrated.
 
-Implement UI commands as vertical slices:
+Implement each command as a vertical slice:
 
 1. stable ASA command/API;
 2. parameter/selection contract;
 3. command registry entry;
-4. layout/mobile/reference metadata;
+4. layout/mobile metadata;
 5. visible ASA control;
 6. deterministic dev fixture;
 7. behavior/browser/visual test;
-8. mark command implemented.
+8. mark implemented.
 
-Do not implement long-term visual corrections by continually editing `vendor/toubkal` components.
+Product layout obeys `spec/ui/layout-registry.v2.json`. If an implementation requires a new command/group/layout behavior, update the registry/spec deliberately rather than hard-coding a local exception.
 
-## Workspace/input/display rule
+## KOMPAS inventory rule
 
-The central work area is a product subsystem, not a passive canvas.
+`spec/ui/kompas-command-inventory.v25.json` is the maintained current-reference inventory, not the production command registry.
 
-- selection/preselection, typed picking, tree synchronization, orbit/pan/zoom and preview follow `WORKSPACE_INTERACTION_SPEC.md`;
-- desktop keyboard input follows `SHORTCUTS_SPEC.md`;
-- touch/responsive behavior follows `MOBILE_RESPONSIVE_SPEC.md`;
-- display/DPI/zoom/panel geometry follows `DISPLAY_LAYOUT_SPEC.md`;
-- required automated viewport cases come from `spec/ui/viewport-matrix.v1.json`;
-- KOMPAS comparison follows `VISUAL_REFERENCE_SPEC.md`;
-- command-specific code may request selection/input modes but must not redefine global semantics.
+A KOMPAS command can remain `advanced` or explicitly out-of-scope. It becomes a visible ASA product command only after deliberate promotion into the ASA command/parameter/layout contracts and its roadmap milestone.
 
-## M2 visual acceptance rule
+Future KOMPAS versions/application extensions may add inventory work; agents do not automatically chase upstream product UI changes during unrelated implementation.
 
-M2 has coordinated subtracks:
+## Workspace/input rule
 
-- #15 M2A — deterministic fixtures/owner review;
-- #17 M2I — workspace, keyboard, touch, mobile;
-- #18 M2R — HD/FHD/2K/4K/DPI/zoom/UI Scale;
-- #19 M2V — KOMPAS visual reference mapping/layout parity.
+- selection/preselection, typed picking, tree sync, orbit/pan/zoom and preview follow `WORKSPACE_INTERACTION_SPEC.md`;
+- keyboard follows `SHORTCUTS_SPEC.md`;
+- touch/mobile follows `MOBILE_RESPONSIVE_SPEC.md`;
+- command-specific code can request modes but cannot redefine global input semantics;
+- every interaction receives deterministic browser fixtures/tests when implemented.
 
-M2 may be functionally implemented while a subtrack is still open, but it cannot be declared **visual-complete** until `docs/M2_VISUAL_ACCEPTANCE.md` passes.
+## Display/visual acceptance rule
+
+M2 is not visually complete because it renders at one resolution.
+
+It must pass the applicable M2A/M2I/M2R/M2V gates, including:
+
+- baseline 1920x1080 effective viewport;
+- HD/small desktop;
+- 2K/4K/HiDPI;
+- ultrawide/short-height cases;
+- browser zoom;
+- phone/tablet portrait/landscape;
+- KOMPAS reference-state mapping;
+- owner screenshot comparison where exact installed-KOMPAS appearance is requested.
+
+Extra 2K/4K space expands the work area first; panels/groups remain bounded.
 
 ## Document rules
 
-The public document family is:
+Authoritative public family:
 
 ```ts
 type CadDocument =
@@ -153,63 +154,67 @@ type CadDocument =
   | CadTextDocument;
 ```
 
-Part authority includes sketches/features/bodies/stable references. Assembly authority includes occurrence identities, pinned component versions, transforms and mates. Drawing/Fragment authority is structured 2D data, not screenshots. Specification authority is structured BOM data. Text authority is structured page content.
-
-Runtime B-Rep and rendered meshes are derived caches. Schema changes require explicit compatibility handling and fixtures; stored project data must not be silently rewritten on read.
+Runtime B-Rep/meshes are derived caches. Schema changes require explicit compatibility assessment/migration/fixtures and must never silently rewrite stored projects on read.
 
 ## Protected workflows
 
-Part workflow must remain green:
+Part:
 
 `Sketch 60x40 -> Extrude 10 -> centered diameter-12 cut -> Fillet -> edit 60 to 80 -> recompute -> save -> close -> reopen -> edit again`
 
-After M4A exists, Assembly workflow must also remain green:
+Assembly after M4A:
 
 `create Parts -> create Assembly -> insert/create occurrences -> fix base -> add mates -> context-edit Part -> solve -> save -> reopen -> explicitly update/replace component -> pin version -> reopen exact pinned version`
 
-Tests verify parametric intent/identity/exact geometry where practical, not screenshots only.
-
 ## Current implementation order
 
-`M0 baseline + M0D Docker -> M1 ASA document/application/command boundary + M1U inventory -> M1B client runtime/container/host -> M2 ASA KOMPAS shell + M2A/M2I/M2R/M2V gates -> M3 sketcher -> M4 Part Design -> M4A Assembly -> M4B release/device matrix -> M5 ASA Lab -> M6 Drawing/Fragment -> M6A Specification/Text -> M7 parity expansion`
+`M0/M0D -> M1 -> M1B -> M2 program (M2/M2A/M2I/M2R/M2V) -> M3 -> M4 -> M4A -> M4B -> M5 -> M6 -> M6A -> M7+`
 
-Agents must not skip ahead by wiring product UI directly to vendor internals.
+The KOMPAS v25 baseline inventory (M1U/#16) is complete and becomes a maintained reference lane rather than a blocker.
 
 ## Standalone/Docker rule
 
-Core ASA-CAD remains independently runnable:
+Core ASA-CAD must remain independently runnable:
 
 ```bash
 docker compose up --build
 ```
 
-Default local address: `http://localhost:8088`.
+Default standalone address:
 
-Docker remains frontend-only unless the primary system contract is deliberately changed. CI progressively proves image build/boot and real-browser protected workflows.
+```text
+http://localhost:8088
+```
 
-## Client-compute invariant
-
-Normal sketch solving, Part features, Assembly mate solving, booleans, recompute, tessellation and applicable 2D projection math execute in the browser on the active device. Moving normal CAD math to the server is not an acceptable shortcut.
+CI progressively proves image build/boot and real-browser protected workflows.
 
 ## Upstream changes
 
-Treat `vendor/toubkal` as imported implementation source, not product architecture. Upstream sync uses a dedicated branch/PR, exact SHAs, subsystem inspection, ASA adapters and protected regression/compatibility gates. Normally ignore vendor UI changes and keep attribution/notices intact.
+Treat `vendor/toubkal` as imported implementation source, not product architecture.
+
+- upstream sync in dedicated change/PR;
+- record source/target SHA;
+- inspect by subsystem;
+- normally ignore vendor UI changes;
+- port useful kernel/solver/recompute/picking/assembly fixes through ASA adapters;
+- preserve attribution/notices;
+- run protected/compatibility gates before acceptance.
 
 ## Change discipline
 
-For every behavior change:
+For every change:
 
-1. identify the narrow subsystem/milestone;
-2. state affected invariant;
-3. add/update the smallest regression;
-4. preserve applicable protected workflows;
-5. run typecheck/build/lint plus affected tests;
-6. run Docker smoke for deployment changes;
-7. run applicable viewport/interaction fixture for UI changes;
-8. record schema changes explicitly;
-9. do not mix upstream import with product-feature changes;
-10. do not widen scope because adjacent vendor code is inconvenient.
+1. identify active milestone/subsystem;
+2. identify affected invariant;
+3. update the narrowest relevant spec/registry if product contract changes;
+4. add/update smallest regression test;
+5. preserve protected workflows;
+6. run build/lint/affected CAD tests;
+7. run Docker smoke for deployment changes;
+8. run relevant viewport/input/visual fixtures for UI changes;
+9. record schema compatibility changes explicitly;
+10. do not mix upstream import and product-feature changes in one commit/PR.
 
-## Efficiency for coding agents
+## Efficiency
 
-Inspect only files owned by the active milestone and the minimum vendor implementation needed for the adapter. Prefer narrow patches, typed boundaries and explicit tests over speculative refactors.
+Inspect files owned by the active milestone plus the minimum vendor code required for its adapter. Prefer typed boundaries, registries and explicit tests over repository-wide speculative refactors.
