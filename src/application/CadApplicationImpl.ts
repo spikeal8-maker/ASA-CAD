@@ -8,9 +8,11 @@ import type {
   CadCommandAvailability,
   CadCommandId,
   CadCommandResult,
+  CadSketchCommandReference,
 } from '../contracts/commands';
 import type {
   CadBody,
+  CadConstraint,
   CadDimension,
   CadDocument,
   CadFeature,
@@ -21,6 +23,7 @@ import type {
 } from '../contracts/document';
 import type {
   CadBodyId,
+  CadConstraintId,
   CadDimensionId,
   CadFeatureId,
   CadSketchEntityId,
@@ -92,6 +95,10 @@ export class CadApplicationImpl implements CadApplication {
       case 'sketch.rectangle':
       case 'sketch.circle':
       case 'sketch.finish':
+      case 'constraint.coincident':
+      case 'constraint.horizontal':
+      case 'constraint.vertical':
+      case 'constraint.fixed':
       case 'dimension.linear':
       case 'dimension.diameter':
         return part.sketches.length > 0
@@ -328,9 +335,30 @@ export class CadApplicationImpl implements CadApplication {
         this.requireSketch(part, command.payload.sketchId);
         return { ok: true, changed: false };
 
+      case 'constraint.horizontal':
+        return this.addConstraint(part, command.payload.sketchId, 'horizontal', [command.payload.entityId]);
+
+      case 'constraint.vertical':
+        return this.addConstraint(part, command.payload.sketchId, 'vertical', [command.payload.entityId]);
+
+      case 'constraint.fixed':
+        return this.addConstraint(part, command.payload.sketchId, 'fixed', [command.payload.entityId]);
+
+      case 'constraint.coincident': {
+        const refs: CadSketchCommandReference[] = [command.payload.a, command.payload.b];
+        return this.addConstraint(
+          part,
+          command.payload.sketchId,
+          'coincident',
+          refs.map((ref) => ref.entityId),
+          { refs: refs.map((ref) => ({ ...ref })) },
+        );
+      }
+
       case 'dimension.linear': {
         const sketch = this.requireSketch(part, command.payload.sketchId);
         if (command.payload.value <= 0) throw new Error('Dimension value must be positive');
+        for (const entityId of command.payload.entityIds) this.requireSketchEntity(sketch, entityId);
         const id = createCadId<CadDimensionId>('dimension');
         const dimension: CadDimension = {
           id,
@@ -348,6 +376,7 @@ export class CadApplicationImpl implements CadApplication {
       case 'dimension.diameter': {
         const sketch = this.requireSketch(part, command.payload.sketchId);
         if (command.payload.value <= 0) throw new Error('Diameter must be positive');
+        this.requireSketchEntity(sketch, command.payload.entityId);
         const id = createCadId<CadDimensionId>('dimension');
         const dimension: CadDimension = {
           id,
@@ -432,6 +461,22 @@ export class CadApplicationImpl implements CadApplication {
     }
   }
 
+  private addConstraint(
+    part: CadPartDocument,
+    sketchId: CadSketchId,
+    type: string,
+    entityIds: CadSketchEntityId[],
+    data?: Record<string, unknown>,
+  ): CadCommandResult {
+    const sketch = this.requireSketch(part, sketchId);
+    for (const entityId of entityIds) this.requireSketchEntity(sketch, entityId);
+    const id = createCadId<CadConstraintId>('constraint');
+    const constraint: CadConstraint = { id, type, entityIds: [...entityIds], data };
+    part.constraints.push(constraint);
+    sketch.constraintIds.push(id);
+    return { ok: true, changed: true, createdIds: [id] };
+  }
+
   private async recompute(): Promise<CadCommandResult> {
     this.state = { ...this.state, mode: 'rebuilding', recompute: { status: 'running' } };
     this.emit();
@@ -485,6 +530,12 @@ export class CadApplicationImpl implements CadApplication {
     const sketch = part.sketches.find((item) => item.id === id);
     if (!sketch) throw new Error(`Unknown sketch: ${id}`);
     return sketch;
+  }
+
+  private requireSketchEntity(sketch: CadSketch, id: CadSketchEntityId): CadSketchEntity {
+    const entity = sketch.entities.find((item) => item.id === id);
+    if (!entity) throw new Error(`Unknown sketch entity: ${id}`);
+    return entity;
   }
 
   private emit(): void {
