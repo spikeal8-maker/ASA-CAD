@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 2,
+  "product": "ASA-CAD",
+  "reference": "KOMPAS-3D v25 oriented shell",
+  "rules": {
+    "sourceOfCommandLabels": "spec/ui/command-registry.v1.json + spec/ui/kompas-command-inventory.v25.json",
+    "desktopBaseline": "1920x1080 effective CSS viewport at UI Scale 100%",
+    "layoutUses": "effective CSS width + height, not physical pixels",
+    "overflowRule": "groups collapse before text shrinks below readability floor",
+    "productionDeadCommands": "hidden",
+    "mobileRule": "same command IDs; presentation changes to workspace/tool sheets",
+    "iconRule": "ASA-owned SVG/vector assets"
+  },
+  "shell": {
+    "desktopOrder": ["main-menu", "document-tabs", "instrument-area", "content", "status-bar"],
+    "content": ["management-panel-rail", "management-panel", "work-area"],
+    "viewportOverlay": ["viewport-quick-access", "orientation-widget", "command-prompt", "selection-diagnostics"],
+    "idlePartManagementPanel": "tree",
+    "activeCommandManagementPanel": "parameters",
+    "restorePreviousPanelAfterCommand": true
+  },
+  "managementPanels": {
+    "part": ["parameters", "tree", "variables"],
+    "assembly": ["parameters", "tree", "variables", "component-groups"],
+    "drawing": ["parameters", "tree", "layers"],
+    "fragment": ["parameters", "tree", "layers"],
+    "specification": ["parameters", "tree", "composition"],
+    "text": ["parameters", "tree"]
+  },
+  "presentation": {
+    "large": {"priority": 100, "preferred": "icon-label-large"},
+    "primary": {"priority": 90, "preferred": "icon-label"},
+    "secondary": {"priority": 60, "preferred": "icon-label", "compact": "icon"},
+    "overflow": {"priority": 20, "preferred": "overflow-menu"}
+  },
+  "workspaces": {
+    "part": {
+      "order": ["solid", "sketch-context", "surfaces", "diagnostics", "view"],
+      "groups": {
+        "solid": [
+          {"id": "sketch", "label": "Эскиз", "order": 10, "collapsePriority": 100, "mobile": "tools/modeling", "commands": ["part.sketch.create"]},
+          {"id": "features-primary", "label": "Элементы тела", "order": 20, "collapsePriority": 100, "mobile": "tools/modeling", "commands": ["part.extrude", "part.cutExtrude", "part.revolve", "part.cutRevolve", "part.hole.simple", "part.fillet", "part.chamfer", "part.shell", "part.rib", "part.draft", "part.sweep", "part.loft"]},
+          {"id": "patterns", "label": "Массив, копирование", "order": 30, "collapsePriority": 55, "mobile": "tools/transform", "commands": ["part.pattern.grid", "part.pattern.circular", "part.pattern.mirror", "part.pattern.path", "part.collection"]},
+          {"id": "datum", "label": "Вспомогательные объекты", "order": 40, "collapsePriority": 45, "mobile": "tools/reference", "commands": ["part.datum.plane", "part.datum.axis", "part.datum.point", "part.controlPoint", "part.connectionPoint"]},
+          {"id": "document-links", "label": "Чертеж", "order": 50, "collapsePriority": 20, "mobile": "more/document", "commands": ["part.linkedDrawings"]}
+        ],
+        "diagnostics": [
+          {"id": "measure", "label": "Измерения", "order": 10, "collapsePriority": 70, "mobile": "tools/measure", "commands": ["part.measureDistanceAngle", "part.measureEdge", "part.measureArea"]},
+          {"id": "check", "label": "Диагностика", "order": 20, "collapsePriority": 60, "mobile": "tools/diagnostics", "commands": ["part.checkGeometry"]}
+        ],
+        "view": [
+          {"id": "orientation", "label": "Ориентация", "order": 10, "collapsePriority": 90, "mobile": "viewport/orientation", "commands": ["view.front", "view.back", "view.top", "view.bottom", "view.left", "view.right", "view.iso", "view.normalAligned"]},
+          {"id": "display", "label": "Отображение", "order": 20, "collapsePriority": 50, "mobile": "tools/view", "commands": ["view.fit", "view.projection", "view.display"]}
+        ]
+      }
+    },
+    "sketch": {
+      "order": ["geometry", "edit", "constraints", "dimensions", "projection", "finish"],
+      "groups": [
+        {"id": "geometry", "label": "Геометрия", "order": 10, "collapsePriority": 100, "mobile": "tools/sketch-geometry", "commands": ["sketch.line", "sketch.polyline", "sketch.circle", "sketch.arc", "sketch.rectangle", "sketch.polygon", "sketch.ellipse", "sketch.spline", "sketch.point", "sketch.construction"]},
+        {"id": "edit", "label": "Редактирование", "order": 20, "collapsePriority": 70, "mobile": "tools/sketch-edit", "commands": ["sketch.trim", "sketch.extend", "sketch.split", "sketch.offset", "sketch.fillet", "sketch.chamfer", "sketch.mirror", "sketch.move", "sketch.rotate", "sketch.scale"]},
+        {"id": "constraints", "label": "Ограничения", "order": 30, "collapsePriority": 85, "mobile": "tools/constraints", "commands": ["constraint.coincident", "constraint.horizontal", "constraint.vertical", "constraint.parallel", "constraint.perpendicular", "constraint.tangent", "constraint.concentric", "constraint.equal", "constraint.symmetric", "constraint.fixed", "constraint.pointOnCurve"]},
+        {"id": "dimensions", "label": "Размеры", "order": 40, "collapsePriority": 90, "mobile": "tools/dimensions", "commands": ["dimension.auto", "dimension.linear", "dimension.radius", "dimension.diameter", "dimension.angular"]},
+        {"id": "projection", "label": "Проекция", "order": 50, "collapsePriority": 45, "mobile": "tools/reference", "commands": ["sketch.project"]},
+        {"id": "finish", "label": "Завершение", "order": 60, "collapsePriority": 100, "mobile": "active-command", "commands": ["sketch.finish", "command.cancel"]}
+      ]
+    },
+    "assembly": {
+      "order": ["assembly", "component-edit-context", "diagnostics", "view"],
+      "groups": [
+        {"id": "components", "label": "Компоненты", "order": 10, "collapsePriority": 100, "mobile": "tools/components", "commands": ["assembly.component.insert", "assembly.component.createPart", "assembly.component.createAssembly", "assembly.component.createLocalPart", "assembly.component.edit", "assembly.component.replace", "assembly.component.update"]},
+        {"id": "placement", "label": "Размещение компонентов", "order": 20, "collapsePriority": 95, "mobile": "tools/placement", "commands": ["assembly.move", "assembly.rotate", "assembly.changePosition", "assembly.fix", "assembly.unfix"]},
+        {"id": "mates", "label": "Сопряжения", "order": 30, "collapsePriority": 100, "mobile": "tools/mates", "commands": ["assembly.mate.coincident", "assembly.mate.concentric", "assembly.mate.parallel", "assembly.mate.perpendicular", "assembly.mate.distance", "assembly.mate.angle", "assembly.mate.dependent"]},
+        {"id": "patterns", "label": "Массив, копирование", "order": 40, "collapsePriority": 40, "mobile": "more/patterns", "commands": ["assembly.pattern.grid", "assembly.pattern.circular", "assembly.pattern.path"]},
+        {"id": "diagnostics", "label": "Диагностика", "order": 50, "collapsePriority": 30, "mobile": "tools/diagnostics", "commands": ["assembly.checkGeometry", "assembly.interference"]},
+        {"id": "documentation", "label": "Чертеж, спецификация", "order": 60, "collapsePriority": 20, "mobile": "more/document", "commands": ["assembly.linkedDrawings", "assembly.specification"]}
+      ]
+    },
+    "drawing": {
+      "order": ["draft", "views", "dimensions", "annotations", "sheets", "view"],
+      "groups": [
+        {"id": "geometry", "label": "Геометрия", "order": 10, "collapsePriority": 90, "mobile": "tools/draft", "commands": ["draft.line", "draft.polyline", "draft.circle", "draft.arc", "draft.rectangle", "draft.polygon", "draft.trim", "draft.extend", "draft.offset", "drawing.hatch"]},
+        {"id": "views", "label": "Виды", "order": 20, "collapsePriority": 100, "mobile": "tools/views", "commands": ["drawing.view.new", "drawing.view.base", "drawing.view.projected", "drawing.view.isometric", "drawing.view.section", "drawing.view.detail", "drawing.view.update"]},
+        {"id": "dimensions", "label": "Размеры", "order": 30, "collapsePriority": 90, "mobile": "tools/dimensions", "commands": ["draft.dimension.linear", "draft.dimension.angular", "draft.dimension.radius", "draft.dimension.diameter"]},
+        {"id": "annotations", "label": "Обозначения", "order": 40, "collapsePriority": 65, "mobile": "tools/annotations", "commands": ["drawing.annotation.centerline", "drawing.annotation.centerMark", "drawing.annotation.leader", "drawing.annotation.roughness", "drawing.annotation.formTolerance", "drawing.annotation.position", "drawing.annotation.base", "drawing.annotation.table"]},
+        {"id": "sheets", "label": "Листы / Оформление", "order": 50, "collapsePriority": 70, "mobile": "tools/sheets", "commands": ["drawing.sheet", "drawing.layer"]}
+      ]
+    },
+    "fragment": {
+      "order": ["draft", "dimensions", "annotations", "layers", "view"],
+      "reuseFrom": "drawing.geometry/dimensions/annotations",
+      "excluded": ["drawing.views", "drawing.sheets"]
+    },
+    "specification": {
+      "order": ["specification", "product-data", "format", "view"],
+      "groups": [
+        {"id": "objects", "label": "Объекты", "order": 10, "collapsePriority": 100, "mobile": "tools/spec-objects", "commands": ["spec.addSection", "spec.addBaseObject", "spec.addAuxObject"]},
+        {"id": "source", "label": "Состав изделия", "order": 20, "collapsePriority": 90, "mobile": "tools/spec-source", "commands": ["spec.linkComposition", "spec.positions", "spec.sortGroup"]}
+      ]
+    },
+    "text": {
+      "order": ["text", "insert", "format", "page"],
+      "groups": [
+        {"id": "insert", "label": "Вставка", "order": 20, "collapsePriority": 70, "mobile": "tools/text-insert", "commands": ["text.insertFragment", "text.insertImage", "text.table"]},
+        {"id": "page", "label": "Страница", "order": 40, "collapsePriority": 60, "mobile": "tools/text-page", "commands": ["text.pageBreak", "text.headerFooter"]}
+      ]
+    }
+  },
+  "collapseSequence": [
+    "reduce optional spacing",
+    "compact secondary icon+label controls",
+    "collapse predefined command families into split/dropdown controls",
+    "move lower-priority groups to workspace overflow",
+    "move management panel to overlay/rail when work area is threatened",
+    "switch to compact-height presentation when height is constrained",
+    "never shrink normal text below readability floor just to fit controls"
+  ],
+  "mobile": {
+    "persistent": ["document title/back", "save/status", "work area", "active command confirm/cancel"],
+    "drawers": ["tree", "parameters", "tools"],
+    "commandDiscovery": ["current workspace strip", "Tools sheet", "command search"],
+    "minimumTouchTargetCssPx": 44,
+    "preferredPrimaryTouchTargetCssPx": 48
+  }
+}
