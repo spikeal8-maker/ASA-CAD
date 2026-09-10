@@ -1,11 +1,19 @@
 import type {
   CadBodyId,
+  CadConstraintId,
   CadDimensionId,
   CadFeatureId,
   CadSketchEntityId,
   CadSketchId,
   CadStableReferenceId,
 } from './ids';
+
+export type CadSketchPointName = 'a' | 'b' | 'c';
+
+export interface CadSketchCommandReference {
+  entityId: CadSketchEntityId;
+  point?: CadSketchPointName;
+}
 
 export type CadCommandId =
   | 'document.rebuild'
@@ -14,6 +22,10 @@ export type CadCommandId =
   | 'sketch.rectangle'
   | 'sketch.circle'
   | 'sketch.finish'
+  | 'constraint.coincident'
+  | 'constraint.horizontal'
+  | 'constraint.vertical'
+  | 'constraint.fixed'
   | 'dimension.linear'
   | 'dimension.diameter'
   | 'feature.extrude'
@@ -47,6 +59,23 @@ export interface CadCommandMap {
   };
   'sketch.finish': {
     sketchId: CadSketchId;
+  };
+  'constraint.coincident': {
+    sketchId: CadSketchId;
+    a: CadSketchCommandReference;
+    b: CadSketchCommandReference;
+  };
+  'constraint.horizontal': {
+    sketchId: CadSketchId;
+    entityId: CadSketchEntityId;
+  };
+  'constraint.vertical': {
+    sketchId: CadSketchId;
+    entityId: CadSketchEntityId;
+  };
+  'constraint.fixed': {
+    sketchId: CadSketchId;
+    entityId: CadSketchEntityId;
   };
   'dimension.linear': {
     sketchId: CadSketchId;
@@ -91,6 +120,7 @@ export interface CadCommandResult {
   createdIds?: Array<
     | CadSketchId
     | CadSketchEntityId
+    | CadConstraintId
     | CadDimensionId
     | CadFeatureId
     | CadBodyId
