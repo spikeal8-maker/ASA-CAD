@@ -9,6 +9,8 @@ on:
       - docker/**
       - package.json
       - tests/m0d/**
+      - src/browser/**
+      - src/host/**
       - .github/workflows/docker.yml
       - vendor/toubkal/package.json
       - vendor/toubkal/package-lock.json
@@ -20,6 +22,8 @@ on:
       - docker/**
       - package.json
       - tests/m0d/**
+      - src/browser/**
+      - src/host/**
       - .github/workflows/docker.yml
       - vendor/toubkal/package.json
       - vendor/toubkal/package-lock.json
@@ -63,20 +67,30 @@ jobs:
           docker logs asa-cad-ci
           exit 1
 
-      - name: Smoke application document and isolation headers
+      - name: Smoke root and production mount documents
         shell: bash
         run: |
           set -euo pipefail
           curl --fail --silent http://127.0.0.1:8088/ >/tmp/asa-cad-index.html
-          test -s /tmp/asa-cad-index.html
-          headers="$(curl --silent --dump-header - --output /dev/null http://127.0.0.1:8088/)"
-          printf '%s\n' "$headers"
-          grep -qi '^Cross-Origin-Opener-Policy: same-origin' <<<"$headers"
-          grep -qi '^Cross-Origin-Embedder-Policy: require-corp' <<<"$headers"
+          grep -qi '<base href="/cad/">' /tmp/asa-cad-index.html
+          curl --fail --silent http://127.0.0.1:8088/cad/projects/m1b-smoke >/tmp/asa-cad-project.html
+          grep -qi '<base href="/cad/">' /tmp/asa-cad-project.html
 
-      - name: Real Chromium OpenCascade/WASM boot smoke
+          for url in http://127.0.0.1:8088/ http://127.0.0.1:8088/cad/projects/m1b-smoke; do
+            headers="$(curl --silent --dump-header - --output /dev/null "$url")"
+            printf '%s\n' "$headers"
+            grep -qi '^Cross-Origin-Opener-Policy: same-origin' <<<"$headers"
+            grep -qi '^Cross-Origin-Embedder-Policy: require-corp' <<<"$headers"
+          done
+
+      - name: Real Chromium boot at standalone root
         env:
           ASA_CAD_URL: http://127.0.0.1:8088/
+        run: node tests/m0d/browser-smoke.mjs
+
+      - name: Real Chromium boot at ASA Lab /cad project route
+        env:
+          ASA_CAD_URL: http://127.0.0.1:8088/cad/projects/m1b-smoke
         run: node tests/m0d/browser-smoke.mjs
 
       - name: Show container logs on failure
