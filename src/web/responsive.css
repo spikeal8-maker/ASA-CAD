@@ -68,3 +68,74 @@
     grid-template-rows: minmax(0, 1fr) 176px;
   }
 }
+
+/*
+ * Wide phones commonly report 700–900 effective CSS px in landscape. Width
+ * alone would classify them as a tablet, but their ~390px height cannot carry
+ * normal tablet chrome. Keep readable text, compact vertical chrome and narrow
+ * the side management block before sacrificing the model.
+ */
+@media (min-width: 600px) and (max-width: 899px) and (max-height: 599px) and (orientation: landscape) {
+  :root {
+    --mainbar-h: 38px;
+    --tabs-h: 30px;
+    --workspace-h: 32px;
+    --ribbon-h: 52px;
+    --status-h: 22px;
+  }
+
+  .cad-app {
+    grid-template-rows:
+      var(--mainbar-h)
+      var(--tabs-h)
+      calc(var(--workspace-h) + var(--ribbon-h))
+      minmax(0, 1fr)
+      var(--status-h);
+  }
+
+  .command-search-wrap {
+    display: none;
+  }
+
+  .content-area {
+    grid-template-columns: 36px minmax(176px, 188px) minmax(0, 1fr);
+  }
+
+  .management-rail button {
+    min-height: 44px;
+  }
+
+  .command-ribbon {
+    padding-block: 2px;
+  }
+
+  .command-group {
+    grid-template-rows: 1fr;
+    min-width: 82px;
+    padding-inline: 4px;
+  }
+
+  .command-group-label {
+    display: none;
+  }
+
+  .ribbon-command {
+    min-width: 54px;
+    max-width: 78px;
+    padding-block: 2px;
+    font-size: 12px;
+  }
+
+  .ribbon-command-icon {
+    min-height: 19px;
+    font-size: 19px;
+  }
+
+  .viewport-quick-access {
+    top: 5px;
+  }
+
+  .status-right {
+    display: none;
+  }
+}
