@@ -142,9 +142,11 @@
 
 /*
  * Phone layout must use the actual CSS viewport as its containing block.
- * The work area is absolutely positioned, so left/right constraints are used
- * instead of percentage width. This prevents an intrinsic-width descendant
- * from creating a hidden 600px+ canvas inside a 360–430px clipped viewport.
+ * The app's base grid defines only rows, so without an explicit phone column
+ * CSS Grid is allowed to size the implicit auto column from wide toolbar
+ * max-content. That was the source of the hidden ~603px work surface inside a
+ * 360px viewport. Lock the single app column to minmax(0, 1fr) first, then let
+ * the absolute CAD work area fill that real visible column.
  */
 @media (max-width: 599px) {
   html,
@@ -154,6 +156,10 @@
     width: 100vw;
     max-width: 100vw;
     min-width: 0;
+  }
+
+  .cad-app {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .cad-app,
