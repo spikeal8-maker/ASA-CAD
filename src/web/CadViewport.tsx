@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import type { CadRenderModel } from '../contracts/render';
+import './runtime.css';
 
 export function CadViewport({ model }: { model: CadRenderModel | null }) {
   const hostRef = useRef<HTMLDivElement | null>(null);
