@@ -37,3 +37,11 @@ jobs:
 
       - name: Supported CAD regression suite
         run: npm test
+
+      - name: ASA M0 protected Part regression
+        working-directory: .
+        run: node tests/m0/protected-part.mjs
+
+      - name: ASA M0 license and notices regression
+        working-directory: .
+        run: node tests/m0/license-baseline.mjs
