@@ -1,0 +1,87 @@
+.cad-viewport {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.cad-viewport canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: none;
+}
+
+.cad-viewport-error {
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  max-width: min(620px, calc(100% - 32px));
+  padding: 8px 12px;
+  border: 1px solid #c55;
+  border-radius: 4px;
+  background: rgba(255, 245, 245, .96);
+  color: #922;
+  font-size: 12px;
+}
+
+.model-stage .stage-grid {
+  z-index: 0;
+  pointer-events: none;
+}
+
+.model-stage .stage-message {
+  z-index: 1;
+}
+
+.model-stage .origin-widget {
+  z-index: 5;
+  pointer-events: none;
+}
+
+.numeric-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 118px;
+  align-items: center;
+  gap: 10px;
+  min-height: 36px;
+  margin-bottom: 7px;
+  color: #555f69;
+  font-size: 12px;
+}
+
+.numeric-control {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  overflow: hidden;
+  min-height: 31px;
+  border: 1px solid #bfc5cc;
+  border-radius: 4px;
+  background: white;
+}
+
+.numeric-control input {
+  width: 100%;
+  min-width: 0;
+  height: 29px;
+  padding: 0 7px;
+  outline: none;
+  font: inherit;
+  color: #20262d;
+  background: transparent;
+}
+
+.numeric-control input:focus {
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.numeric-control small {
+  padding: 0 7px;
+  color: #7a828b;
+  border-left: 1px solid #d5d9de;
+  line-height: 20px;
+}
