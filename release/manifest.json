@@ -1,0 +1,25 @@
+{
+  "product": "ASA-CAD",
+  "releaseVersion": "0.1.0-m1b",
+  "releaseChannel": "development",
+  "cadDocumentSchemaVersion": 1,
+  "engineVersion": "0.1.0-m1",
+  "mountPath": "/cad",
+  "editorRoute": "/cad/projects/:projectId",
+  "viewerRoute": "/cad/view/:versionId",
+  "runtime": {
+    "compute": "client-browser",
+    "requiresWebAssembly": true,
+    "currentRequiresSharedArrayBuffer": true,
+    "currentRequiresCrossOriginIsolation": true
+  },
+  "upstream": {
+    "name": "ToubkalCAD",
+    "commit": "ccb503144e07c384aa1255c16c17bbe6906aa213"
+  },
+  "host": {
+    "geometryComputeBackend": false,
+    "persistence": "CadProjectHost",
+    "asaLabProjectCore": true
+  }
+}
