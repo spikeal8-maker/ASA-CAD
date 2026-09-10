@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  toubkal-baseline:
+  vendor-baseline:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -46,22 +46,33 @@ jobs:
         working-directory: .
         run: node tests/m0/license-baseline.mjs
 
+  asa-m1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.19.0'
+          cache: npm
+          cache-dependency-path: vendor/toubkal/package-lock.json
+
+      - name: Install vendor runtime/tooling dependencies
+        run: npm --prefix vendor/toubkal ci
+
       - name: ASA M1 public typecheck
-        working-directory: .
         run: npm run typecheck:asa
 
       - name: ASA M1 architecture boundary
-        working-directory: .
         run: npm run test:m1:architecture
 
       - name: ASA M1 document contracts
-        working-directory: .
         run: npm run test:m1:contracts
 
       - name: ASA M1 application behavior
-        working-directory: .
         run: npm run test:m1:application
 
       - name: ASA M1 protected Part on OpenCascade runtime
-        working-directory: .
         run: npm run test:m1:runtime
