@@ -2,31 +2,34 @@
 
 ## Goal
 
-Build an ASA-owned browser CAD application with **Part** and **Assembly** documents, a replaceable KOMPAS-oriented product UI, local browser computation, and an independently deployable frontend container that integrates with ASA Lab through the same public origin and Project Core APIs.
+Build an ASA-owned browser CAD application with six first-class engineering document kinds — **Part, Assembly, Drawing, Fragment, Specification and Text** — a replaceable KOMPAS-oriented product UI, local browser computation where CAD math is required, and an independently deployable frontend container that integrates with ASA Lab through the same public origin and Project Core APIs.
 
 ## Internal layer model
 
 ```text
 ┌──────────────────────────────────────────────┐
 │ ASA CAD UI                                  │
-│ KOMPAS-oriented Part/Assembly shell         │
+│ KOMPAS-oriented multi-document shell        │
 └──────────────────────┬───────────────────────┘
-                       │ stable typed API
+                       │ typed presentation/actions
 ┌──────────────────────▼───────────────────────┐
 │ ASA CAD Application API                     │
 │ commands, selection, document, undo, status │
 └──────────────────────┬───────────────────────┘
                        │ adapters
 ┌──────────────────────▼───────────────────────┐
-│ ASA CAD Runtime                             │
-│ sketch, features, assembly, recompute       │
+│ ASA CAD domain/runtime services             │
+│ sketch, part, assembly, 2D/docs, persistence│
 └──────────────────────┬───────────────────────┘
                        │ implementation boundary
 ┌──────────────────────▼───────────────────────┐
-│ Upstream-derived implementation             │
-│ Toubkal + OpenCascade + solver(s) + Three   │
+│ Runtime implementations                     │
+│ OpenCascade + PlaneGCS + Three + isolated   │
+│ vendor-derived services where appropriate   │
 └──────────────────────────────────────────────┘
 ```
+
+Not every document kind needs OpenCascade. Drawing/Fragment use the shared ASA 2D drafting layer; Specification/Text use document-specific ASA layers. OpenCascade is loaded only for operations that require the exact 3D kernel.
 
 ## Deployment boundary
 
@@ -45,38 +48,55 @@ ASA Lab public origin
 
 `asa-cad-web` serves HTML/JS/WASM/static assets only. It has no CAD compute backend and no database.
 
-The browser performs sketch solving, Part recompute, Assembly mate solving, B-Rep operations and tessellation locally.
+Sketch solving, Part recompute, Assembly mate solving, B-Rep operations and tessellation execute locally on the supported client device. Drawing/Fragment/Specification/Text editing also stays client-side except for persistence/collaboration APIs owned by ASA Lab.
 
 ## Public document model
 
+The code-level public family is the six-kind union in `src/contracts/document.ts`:
+
 ```ts
-type CadDocument = CadPartDocument | CadAssemblyDocument;
-type CadDocumentKind = 'part' | 'assembly';
+type CadDocument =
+  | CadPartDocument
+  | CadAssemblyDocument
+  | CadDrawingDocument
+  | CadFragmentDocument
+  | CadSpecificationDocument
+  | CadTextDocument;
+
+type CadDocumentKind =
+  | 'part'
+  | 'assembly'
+  | 'drawing'
+  | 'fragment'
+  | 'specification'
+  | 'text';
 ```
 
 ### Part
 
-Owns:
-
-- origin/datum geometry;
-- sketches;
-- constraints/dimensions;
-- feature history;
-- bodies;
-- persistent/stable topology references.
+Owns origin/datum geometry, sketches, constraints/dimensions, feature history, bodies and persistent topology references.
 
 ### Assembly
 
-Owns:
+Owns component occurrences, references to pinned component versions, occurrence transforms, mates, subassembly hierarchy and assembly-level state. See `docs/ASSEMBLIES.md`.
 
-- component occurrences;
-- references to pinned component project versions;
-- occurrence transforms;
-- mates/assembly constraints;
-- subassembly hierarchy;
-- assembly-level state.
+### Drawing
 
-See `docs/ASSEMBLIES.md`.
+Owns sheets, associative model-view definitions, 2D drafting/annotation state and explicit references to Part/Assembly versions. It is not a screenshot of the 3D viewport.
+
+### Fragment
+
+Owns reusable/free 2D geometry and layers using the same 2D drafting primitives as Drawing, without requiring sheet/title-block semantics.
+
+### Specification
+
+Owns structured product-composition/BOM state and explicit source document references/versions.
+
+### Text
+
+Owns engineering-document pages/content/formatting and explicit links to other engineering documents. Normal Text editing has no OpenCascade dependency.
+
+Detailed semantics live in `docs/DOCUMENT_TYPES.md`.
 
 ## Mandatory dependency boundaries
 
@@ -84,8 +104,8 @@ See `docs/ASSEMBLIES.md`.
 
 - `CadApplication`;
 - ASA-owned document/view DTOs;
-- ASA command IDs;
-- ASA view models.
+- ASA command IDs and typed `CadUiAction`/presentation view models;
+- machine UI registries.
 
 ### UI must not depend on
 
@@ -114,7 +134,7 @@ See `docs/ASSEMBLIES.md`.
 
 ## Public application API direction
 
-Exact M1 signatures can evolve, but the dependency direction is fixed:
+Exact signatures can evolve, but the dependency direction is fixed:
 
 ```ts
 interface CadApplication {
@@ -127,25 +147,35 @@ interface CadApplication {
 }
 ```
 
-Command families include:
-
-```text
-sketch.*
-constraint.*
-dimension.*
-feature.*
-assembly.*
-document.*
-view.*
-```
+Command families include `sketch.*`, `constraint.*`, `dimension.*`, `feature.*`, `assembly.*`, `drawing.*`, `fragment.*`, `spec.*`, `text.*`, `document.*` and `view.*` as those document lanes are implemented.
 
 The UI never invokes OpenCascade or vendor services directly.
+
+## UI presentation boundary
+
+Desktop, tablet and phone are presentations of one application/command model.
+
+```text
+command-registry + layout-registry
+             |
+             v
+      CadUiAction/ViewModel
+        /            \
+DesktopShell       MobileShell
+        \            /
+             v
+        CadApplication
+```
+
+Rules:
+- no mobile-to-desktop DOM delegation;
+- command labels/identity/placement come from machine registries where defined;
+- one visible command ID maps to one typed action lifecycle;
+- responsive presentation may change grouping/drawers but not command/document semantics.
 
 ## Host/persistence boundary
 
 ASA-CAD does not import ASA Lab networking/database code.
-
-Conceptual host contract:
 
 ```ts
 interface CadProjectHost {
@@ -159,39 +189,48 @@ interface CadProjectHost {
 }
 ```
 
-Additional Assembly host capability resolves referenced/pinned component project versions without exposing ASA Lab persistence internals to geometry code.
+`CadProjectSession` owns the editor persistence/recovery lifecycle above this host contract. Product UI must not bypass it with ad-hoc localStorage/network persistence. Standalone provides a local host; production provides the ASA Lab adapter.
 
-Standalone mode provides a local/mock host. Production provides an ASA Lab adapter.
+Additional Assembly host capability resolves referenced/pinned component project versions without exposing ASA Lab persistence internals to geometry code.
 
 ## Document authority
 
-The authoritative state is serialized ASA-owned intent.
-
-Runtime OpenCascade B-Rep and rendered Three.js geometry are derived caches.
+The authoritative state is serialized ASA-owned intent. Runtime OpenCascade B-Rep and rendered Three.js geometry are derived caches.
 
 Rules:
-
 1. every Part feature has stable ASA-owned identity;
 2. every Assembly occurrence/mate has stable ASA-owned identity;
-3. Part topology references fail explicitly if no longer resolvable;
-4. Assembly component updates are explicit, never silent;
-5. submitted Assembly versions pin component versions;
-6. identical document + compatible engine version must rebuild deterministically;
-7. failed recompute/assembly solve must not corrupt the last valid saved document.
+3. 2D/document objects receive stable ASA-owned identities as their lanes mature;
+4. Part topology references fail explicitly if no longer resolvable;
+5. Assembly component updates are explicit, never silent;
+6. submitted Assembly versions pin component versions;
+7. identical document + compatible engine version must rebuild deterministically;
+8. failed recompute/solve/update must not corrupt the last valid saved document.
 
 ## Runtime principles
 
-1. OpenCascade provides exact geometry.
-2. Three.js is presentation/picking support, not project authority.
-3. sketch solver state is represented in ASA documents, not hidden only in WASM memory.
-4. normal Part/Assembly computation executes on the active client device.
-5. ASA Lab is persistence/education infrastructure, not a CAD compute service.
-6. CAD runtime assets are loaded only on CAD routes.
-7. standalone and production use the same release/container form.
+1. OpenCascade provides exact 3D geometry where required.
+2. PlaneGCS or its replacement sits behind an ASA sketch-solver adapter.
+3. Three.js is presentation/picking support, not project authority.
+4. sketch/assembly solver state is represented in ASA documents, not hidden only in WASM memory.
+5. normal CAD computation executes on the active supported client device.
+6. Drawing/Fragment/Specification/Text do not load OpenCascade unless a concrete operation requires it.
+7. ASA Lab is persistence/education infrastructure, not a CAD compute service.
+8. CAD runtime assets load only on CAD routes and heavy kernel assets load lazily.
+9. standalone and production use the same release/container form.
 
 ## Standalone runtime
 
-Development can run without Docker using root scripts.
+Primary ASA development:
+
+```bash
+npm run install:vendor
+npm run dev
+```
+
+Default dev address: `http://localhost:8090`.
+
+Vendor diagnostic surface is explicit: `npm run dev:vendor`.
 
 Container run:
 
@@ -199,49 +238,40 @@ Container run:
 docker compose up --build
 ```
 
-Default:
-
-```text
-http://localhost:8088
-```
+Default Docker address: `http://localhost:8088`.
 
 See `docs/RUN_AND_DEPLOY.md`.
 
 ## Production runtime delivery
 
-Target sequence:
-
 1. ASA Lab resolves a `cad` project/document.
-2. Browser navigates to same-origin `/cad/projects/:projectId`.
-3. ASA Lab front door proxies the request to pinned `asa-cad-web`.
-4. ASA-CAD performs capability checks.
-5. Browser loads content-hashed OpenCascade WASM/runtime assets.
-6. WASM is instantiated in browser memory.
-7. ASA-CAD loads `CadDocument` through ASA Lab APIs.
-8. Part/Assembly geometry is rebuilt/solved locally.
-9. Autosave sends serialized document revisions back to Project Core.
+2. Browser navigates to same-origin `/cad/projects/:projectId` or the appropriate viewer route.
+3. ASA Lab front door proxies `/cad/*` to pinned `asa-cad-web`.
+4. ASA-CAD performs capability checks for the active document/runtime need.
+5. Heavy OpenCascade WASM is loaded only if the operation/document requires it.
+6. ASA-CAD loads `CadDocument` through `CadProjectSession`/`CadProjectHost`.
+7. Document-specific computation/update runs locally.
+8. Saves send serialized document revisions back through Project Core.
 
-Opening other ASA Lab modules never downloads the CAD kernel.
+Opening unrelated ASA Lab modules never downloads the CAD kernel.
 
 ## Threading and browser isolation
 
-The imported baseline currently uses OpenCascade on the main thread and requires SharedArrayBuffer/cross-origin isolation.
+The imported OpenCascade baseline currently runs on the main thread and requires SharedArrayBuffer/cross-origin isolation.
 
-Do not redesign threading during baseline import.
+The separate `/cad/*` frontend/container allows current COOP/COEP requirements to remain local to CAD instead of becoming global ASA Lab requirements.
 
-The separate `/cad/*` document/container allows current COOP/COEP requirements to remain local to CAD instead of becoming global ASA Lab requirements.
-
-Future worker/single-thread/custom-WASM changes are independent regression-tested runtime migrations. Client-side execution is mandatory; the exact threading implementation is not part of the public contract.
+Future worker/single-thread/custom-WASM changes are independent regression-tested runtime migrations. Client-side execution is mandatory; exact threading is not a public document contract.
 
 ## Device model
 
 The same `CadDocument` is portable across supported devices.
 
 - desktop/laptop: reference full UI;
-- tablet/phone: same document/commands/local compute, responsive panel presentation and safe complexity/rendering limits;
+- tablet/phone: same document/commands/local computation with responsive presentation and safe complexity limits;
 - unsupported device: explicit failure/read-only where possible.
 
-No unsupported device silently switches to server compute.
+No unsupported device silently switches to server CAD computation.
 
 ## ASA Lab module identity
 
@@ -253,24 +283,11 @@ editorRoute: /cad/projects/:projectId
 viewerRoute: /cad/view/:versionId
 ```
 
-`CadDocument.kind` determines Part versus Assembly behavior.
+`CadDocument.kind` selects the document-specific editor/workspace.
 
-ASA Lab owns:
+ASA Lab owns session/identity, projects/permissions, classes/assignments/courses, versions/checkpoints, submissions/review and resolution of linked/pinned document versions.
 
-- session/identity;
-- projects and permissions;
-- classes/assignments/courses;
-- versions/checkpoints;
-- submissions/review;
-- Assembly component-version resolution.
-
-ASA-CAD owns:
-
-- editor/viewer;
-- Part/Assembly document semantics;
-- CAD commands;
-- geometry/solver runtime adapters;
-- local compute and rendering.
+ASA-CAD owns the editor/viewer, all six document semantics, CAD/document commands, local runtime adapters and presentation.
 
 ## Compatibility policy
 
@@ -280,13 +297,13 @@ Saved project compatibility is a hard release boundary.
 - migrations are explicit/tested;
 - read does not silently rewrite stored documents;
 - every document records schema + engine version;
-- Part and Assembly fixtures are both maintained;
+- compatibility fixtures expand with every implemented document lane;
 - ASA Lab pins an explicit ASA-CAD image/version, never `main` or `latest`.
 
 ## Upstream isolation
 
 Toubkal is imported implementation source, not product architecture.
 
-M1 wraps useful geometry/solver/recompute/picking/assembly behavior behind ASA adapters. Vendor UI changes do not force ASA UI changes.
+Useful geometry/solver/recompute/picking/assembly behavior is wrapped behind ASA adapters. Drawing/Fragment/Specification/Text are ASA-owned product layers and need not inherit vendor UI/runtime structure.
 
 Upstream updates happen only through the controlled lane in `docs/UPSTREAM.md`.
