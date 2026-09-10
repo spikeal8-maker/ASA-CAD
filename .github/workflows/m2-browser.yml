@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - src/web/**
+      - src/browser/**
+      - src/runtime/**
       - src/application/**
       - src/contracts/**
       - build/**
@@ -15,6 +17,8 @@ on:
   pull_request:
     paths:
       - src/web/**
+      - src/browser/**
+      - src/runtime/**
       - src/application/**
       - src/contracts/**
       - build/**
@@ -51,11 +55,11 @@ jobs:
       - name: Install Chromium
         run: npx --yes playwright@1.60.0 install --with-deps chromium
 
-      - name: Start static shell server
+      - name: Start isolated static shell server
         shell: bash
         run: |
           set -euo pipefail
-          python3 -m http.server 8090 --directory dist/asa >/tmp/asa-m2-http.log 2>&1 &
+          node tests/m2/static-server.mjs >/tmp/asa-m2-http.log 2>&1 &
           echo $! >/tmp/asa-m2-http.pid
           for attempt in $(seq 1 30); do
             if curl --fail --silent http://127.0.0.1:8090/ >/dev/null; then
