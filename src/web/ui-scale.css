@@ -1,0 +1,182 @@
+/* ASA-CAD user UI Scale tokens. Geometry/model units are intentionally absent. */
+:root {
+  --ui-scale-factor: 1;
+  --ui-root-font: 14px;
+  --ui-workspace-font: 13px;
+  --ui-command-font: 12px;
+  --ui-tree-font: 13px;
+  --ui-panel-font: 12.5px;
+  --ui-status-font: 11.5px;
+  --ui-global-action: 30px;
+  --ui-brand-mark: 25px;
+  --ui-quick-action: 28px;
+  --ui-ribbon-icon: 25px;
+  --ui-ribbon-command-min: 62px;
+  --ui-tree-row: 28px;
+  --ui-panel-title: 37px;
+}
+
+html[data-ui-scale="90"] {
+  --ui-root-font: 12.6px;
+  --ui-workspace-font: 12px;
+  --ui-command-font: 11px;
+  --ui-tree-font: 12px;
+  --ui-panel-font: 12px;
+  --ui-status-font: 10.5px;
+  --ui-global-action: 28px;
+  --ui-brand-mark: 23px;
+  --ui-quick-action: 26px;
+  --ui-ribbon-icon: 22px;
+  --ui-ribbon-command-min: 56px;
+  --ui-tree-row: 26px;
+  --ui-panel-title: 34px;
+}
+
+html[data-ui-scale="110"] {
+  --ui-root-font: 15.4px;
+  --ui-workspace-font: 14.3px;
+  --ui-command-font: 13.2px;
+  --ui-tree-font: 14.3px;
+  --ui-panel-font: 13.8px;
+  --ui-status-font: 12.6px;
+  --ui-global-action: 33px;
+  --ui-brand-mark: 28px;
+  --ui-quick-action: 31px;
+  --ui-ribbon-icon: 28px;
+  --ui-ribbon-command-min: 68px;
+  --ui-tree-row: 31px;
+  --ui-panel-title: 41px;
+}
+
+html[data-ui-scale="125"] {
+  --ui-root-font: 17.5px;
+  --ui-workspace-font: 16.25px;
+  --ui-command-font: 15px;
+  --ui-tree-font: 16.25px;
+  --ui-panel-font: 15.6px;
+  --ui-status-font: 14.4px;
+  --ui-global-action: 38px;
+  --ui-brand-mark: 31px;
+  --ui-quick-action: 35px;
+  --ui-ribbon-icon: 31px;
+  --ui-ribbon-command-min: 76px;
+  --ui-tree-row: 35px;
+  --ui-panel-title: 46px;
+}
+
+html[data-ui-scale="150"] {
+  --ui-root-font: 21px;
+  --ui-workspace-font: 19.5px;
+  --ui-command-font: 18px;
+  --ui-tree-font: 19.5px;
+  --ui-panel-font: 18.75px;
+  --ui-status-font: 17.25px;
+  --ui-global-action: 45px;
+  --ui-brand-mark: 38px;
+  --ui-quick-action: 42px;
+  --ui-ribbon-icon: 38px;
+  --ui-ribbon-command-min: 92px;
+  --ui-tree-row: 42px;
+  --ui-panel-title: 56px;
+}
+
+html {
+  font-size: var(--ui-root-font);
+}
+
+.workspace-tabs button { font-size: var(--ui-workspace-font); }
+.ribbon-command { min-width: var(--ui-ribbon-command-min); font-size: var(--ui-command-font); }
+.ribbon-command-icon { font-size: var(--ui-ribbon-icon); }
+.tree-row { height: var(--ui-tree-row); }
+.tree-label { font-size: var(--ui-tree-font); }
+.tree-search input,
+.panel-title-row strong,
+.parameter-section h3,
+.parameter-section p,
+.property-row,
+.numeric-field { font-size: var(--ui-panel-font); }
+.status-bar { font-size: var(--ui-status-font); }
+.global-actions button { width: var(--ui-global-action); height: var(--ui-global-action); }
+.brand-mark { width: var(--ui-brand-mark); height: var(--ui-brand-mark); }
+.viewport-quick-access button { width: var(--ui-quick-action); }
+.panel-title-row { min-height: var(--ui-panel-title); }
+
+/*
+ * Major chrome/panel geometry is explicit per supported scale. This is
+ * deliberately token-based rather than transform/zoom based, so Three.js
+ * picking continues to use normal CSS coordinates.
+ */
+@media (min-width: 900px) {
+  html[data-ui-scale="90"] {
+    --mainbar-h: 34px;
+    --tabs-h: 29px;
+    --workspace-h: 28px;
+    --ribbon-h: 70px;
+    --status-h: 24px;
+    --rail-w: 42px;
+    --panel-w: 263px;
+  }
+
+  html[data-ui-scale="110"] {
+    --mainbar-h: 42px;
+    --tabs-h: 35px;
+    --workspace-h: 34px;
+    --ribbon-h: 86px;
+    --status-h: 29px;
+    --rail-w: 51px;
+    --panel-w: 321px;
+  }
+
+  html[data-ui-scale="125"] {
+    --mainbar-h: 48px;
+    --tabs-h: 40px;
+    --workspace-h: 39px;
+    --ribbon-h: 98px;
+    --status-h: 33px;
+    --rail-w: 58px;
+    --panel-w: 365px;
+  }
+
+  html[data-ui-scale="150"] {
+    --mainbar-h: 57px;
+    --tabs-h: 48px;
+    --workspace-h: 47px;
+    --ribbon-h: 117px;
+    --status-h: 39px;
+    --rail-w: 69px;
+    --panel-w: 438px;
+  }
+}
+
+@media (min-width: 2560px) {
+  html[data-ui-scale="90"] { --panel-w: 288px; }
+  html[data-ui-scale="110"] { --panel-w: 352px; }
+  html[data-ui-scale="125"] { --panel-w: 400px; }
+  html[data-ui-scale="150"] { --panel-w: 440px; }
+}
+
+/* Keep manual enlargement bounded on compact-height screens. */
+@media (min-width: 900px) and (max-height: 899px) {
+  html[data-ui-scale="110"],
+  html[data-ui-scale="125"],
+  html[data-ui-scale="150"] {
+    --ribbon-h: 72px;
+    --workspace-h: 31px;
+    --mainbar-h: 38px;
+    --tabs-h: 32px;
+    --status-h: 26px;
+  }
+}
+
+/* Phone/tablet composition owns touch target sizing; UI Scale must not shrink it. */
+@media (max-width: 899px) {
+  html[data-ui-scale="90"] {
+    --ui-root-font: 14px;
+    --ui-workspace-font: 12px;
+    --ui-command-font: 12px;
+    --ui-tree-font: 13px;
+    --ui-panel-font: 12.5px;
+    --ui-status-font: 11.5px;
+    --ui-global-action: 40px;
+  }
+}
