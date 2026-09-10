@@ -12,6 +12,7 @@
     "test:m0:part": "node tests/m0/protected-part.mjs",
     "test:m0:licenses": "node tests/m0/license-baseline.mjs",
     "test:m0": "npm run test:m0:part && npm run test:m0:licenses",
+    "test:m0d:browser": "node tests/m0d/browser-smoke.mjs",
     "test": "npm run test:vendor && npm run test:m0",
     "check": "npm run build && npm run lint && npm test",
     "docker:build": "docker compose build",
