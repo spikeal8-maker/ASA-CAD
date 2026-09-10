@@ -1,38 +1,58 @@
 # ASA-CAD UI specification index
 
-Read these together for product UI work:
+Do **not** read every UI document for every change. Start with `STATUS.md`, `SYSTEM_SPEC.md`, `ARCHITECTURE.md` and the active GitHub issue, then use the smallest relevant set below. Repository-wide reading policy: [`DOCS_POLICY.md`](DOCS_POLICY.md).
 
-1. `UI_COMMAND_SPEC.md` — commands/buttons/groups/parameter panels.
-2. `KOMPAS_SHELL_LAYOUT_SPEC.md` — binding default desktop placement of Main Menu, tabs, instrument area, management-panel rail/block and viewport quick-access bar.
-3. `WORKSPACE_INTERACTION_SPEC.md` — model/drawing work area and selection/navigation.
-4. `SHORTCUTS_SPEC.md` — keyboard and remapping.
-5. `MOBILE_RESPONSIVE_SPEC.md` — phone/tablet/touch/hybrid input.
-6. `DISPLAY_LAYOUT_SPEC.md` — HD/FHD/2K/4K/ultrawide, DPI, browser zoom, typography and layout geometry.
-7. `VISUAL_REFERENCE_SPEC.md` — KOMPAS reference mapping; structural reference baseline is prepared, actual visual acceptance waits for implemented ASA fixtures.
-8. `M2_VISUAL_ACCEPTANCE.md` — M2 acceptance gates.
-9. `TZ_CRITICAL_AUDIT.md` — critical gap analysis; known architecture-level UI-spec blockers are resolved.
-10. `KOMPAS_UI_INVENTORY.md` — completed KOMPAS v25 built-in engineering baseline; maintained when reference version/scope changes.
+## By task
 
-Machine-readable UI contracts:
+### Buttons / commands / ribbon
+- `UI_COMMAND_SPEC.md`
+- `../spec/ui/command-registry.v1.json`
+- `../spec/ui/layout-registry.v2.json`
+- `KOMPAS_SHELL_LAYOUT_SPEC.md` when shell placement changes.
 
-- `../spec/ui/command-registry.v1.json` — stable ASA product command IDs currently admitted to implementation;
-- `../spec/ui/kompas-command-inventory.v25.json` — 211-row KOMPAS v25 audit/classification baseline;
-- `../spec/ui/layout-registry.v2.json` — deterministic workspace/group order, collapse priority, overflow and mobile placement;
-- `../spec/ui/viewport-matrix.v1.json` — required display/DPI/zoom/device regression matrix;
-- `../spec/ui/visual-reference-manifest.v1.json` — populated official-help reference states mapped to planned deterministic ASA fixtures.
+### Viewport / selection / mouse
+- `WORKSPACE_INTERACTION_SPEC.md`
 
-`../spec/ui/layout-registry-v2-requirements.md` is retained only as design history. It is not an active implementation contract now that `layout-registry.v2.json` exists.
+### Keyboard
+- `SHORTCUTS_SPEC.md`
+
+### Phone / tablet / touch
+- `MOBILE_RESPONSIVE_SPEC.md`
+- `WORKSPACE_INTERACTION_SPEC.md` only when viewport gestures/picking are involved.
+
+### HD / FHD / 2K / 4K / DPI / browser zoom
+- `DISPLAY_LAYOUT_SPEC.md`
+- `../spec/ui/viewport-matrix.v1.json`
+
+### KOMPAS visual matching
+- `VISUAL_REFERENCE_SPEC.md`
+- `M2_VISUAL_ACCEPTANCE.md`
+- `../spec/ui/visual-reference-manifest.v1.json`
+- `KOMPAS_SHELL_LAYOUT_SPEC.md`
+
+### Full KOMPAS command lookup
+- `KOMPAS_UI_INVENTORY.md`
+- `../spec/ui/kompas-command-inventory.v25.json`
+
+This inventory is reference material, not mandatory context for an unrelated UI change.
+
+## Machine sources
+
+- `command-registry.v1.json` — ASA commands admitted to product implementation;
+- `layout-registry.v2.json` — deterministic workspace/group/order/collapse/mobile placement;
+- `viewport-matrix.v1.json` — display/device regression cases;
+- `visual-reference-manifest.v1.json` — visual reference states;
+- `kompas-command-inventory.v25.json` — broader KOMPAS audit/classification.
 
 ## Precedence
 
-When documents appear to conflict:
+For current status use `STATUS.md` + the active GitHub issue.
 
-1. `SYSTEM_SPEC.md` defines product/system invariants.
-2. `KOMPAS_SHELL_LAYOUT_SPEC.md` defines the default KOMPAS-oriented desktop composition.
-3. `UI_COMMAND_SPEC.md` + command registry define command identity and behavior.
-4. `layout-registry.v2.json` defines deterministic visual ordering/collapse/mobile placement.
-5. `DISPLAY_LAYOUT_SPEC.md` defines responsive geometry/scaling.
-6. `MOBILE_RESPONSIVE_SPEC.md` defines phone/tablet presentation and touch behavior.
-7. `M2_VISUAL_ACCEPTANCE.md` defines the acceptance gate.
+For product/layout behavior:
+1. `SYSTEM_SPEC.md`;
+2. `ARCHITECTURE.md`;
+3. applicable machine registry;
+4. focused subsystem specification;
+5. historical audits/reference notes.
 
-The visible Toubkal shell is not a product-layout authority. It is temporary diagnostic/reference UI only.
+Visible Toubkal UI is never a product-layout authority.
