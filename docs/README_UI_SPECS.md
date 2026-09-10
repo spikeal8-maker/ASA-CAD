@@ -8,9 +8,9 @@ Read these together for product UI work:
 4. `SHORTCUTS_SPEC.md` — keyboard and remapping.
 5. `MOBILE_RESPONSIVE_SPEC.md` — phone/tablet/touch/hybrid input.
 6. `DISPLAY_LAYOUT_SPEC.md` — HD/FHD/2K/4K/ultrawide, DPI, browser zoom, typography and layout geometry.
-7. `VISUAL_REFERENCE_SPEC.md` — KOMPAS reference mapping and visual acceptance policy.
+7. `VISUAL_REFERENCE_SPEC.md` — KOMPAS reference mapping; structural reference baseline is prepared, actual visual acceptance waits for implemented ASA fixtures.
 8. `M2_VISUAL_ACCEPTANCE.md` — M2 acceptance gates.
-9. `TZ_CRITICAL_AUDIT.md` — critical gap analysis and resolved/remaining risks.
+9. `TZ_CRITICAL_AUDIT.md` — critical gap analysis; known architecture-level UI-spec blockers are resolved.
 10. `KOMPAS_UI_INVENTORY.md` — completed KOMPAS v25 built-in engineering baseline; maintained when reference version/scope changes.
 
 Machine-readable UI contracts:
@@ -19,7 +19,7 @@ Machine-readable UI contracts:
 - `../spec/ui/kompas-command-inventory.v25.json` — 211-row KOMPAS v25 audit/classification baseline;
 - `../spec/ui/layout-registry.v2.json` — deterministic workspace/group order, collapse priority, overflow and mobile placement;
 - `../spec/ui/viewport-matrix.v1.json` — required display/DPI/zoom/device regression matrix;
-- `../spec/ui/visual-reference-manifest.v1.json` — official-help/owner-reference states mapped to future deterministic ASA fixtures.
+- `../spec/ui/visual-reference-manifest.v1.json` — populated official-help reference states mapped to planned deterministic ASA fixtures.
 
 `../spec/ui/layout-registry-v2-requirements.md` is retained only as design history. It is not an active implementation contract now that `layout-registry.v2.json` exists.
 
