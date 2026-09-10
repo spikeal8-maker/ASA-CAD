@@ -85,6 +85,11 @@ jobs:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m2/navigation-browser.mjs
 
+      - name: Exercise Fit and standard views
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
+        run: node tests/m2/views-browser.mjs
+
       - name: Show server log on failure
         if: failure()
         run: cat /tmp/asa-m2-http.log || true
