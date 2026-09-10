@@ -112,12 +112,18 @@ Primary ASA dev UI:
 
 ```bash
 npm run install:vendor
-npm run dev:asa
+npm run dev
 ```
 
-Default dev address: `http://localhost:8090`.
+`npm run dev:asa` is an explicit alias for the same ASA product shell. Default dev address: `http://localhost:8090`.
 
-`npm run dev` is vendor/Toubkal diagnostic UI only.
+Vendor/Toubkal diagnostic UI is explicit:
+
+```bash
+npm run dev:vendor
+```
+
+Default `npm run build` builds ASA-CAD; use `npm run build:vendor` only for vendor validation.
 
 Release-like test:
 
