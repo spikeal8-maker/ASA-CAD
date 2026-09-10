@@ -60,6 +60,8 @@ export interface CadLineSketchEntity extends CadSketchEntityBase {
     from: CadPoint2;
     to: CadPoint2;
     role?: string;
+    center?: never;
+    diameter?: never;
   };
 }
 
@@ -68,6 +70,9 @@ export interface CadCircleSketchEntity extends CadSketchEntityBase {
   data: {
     center: CadPoint2;
     diameter: number;
+    from?: never;
+    to?: never;
+    role?: never;
   };
 }
 
@@ -375,23 +380,17 @@ function validatePartDocument(part: CadPartDocument): void {
   }
 
   for (const constraint of part.constraints) {
-    if (!['horizontal', 'vertical', 'fixed', 'coincident'].includes(constraint.type)) {
-      throw new Error(`Unsupported schema-v1 constraint: ${String(constraint.type)}`);
-    }
     if (!constraint.entityIds.every((id) => entityIds.has(id))) {
       throw new Error(`${constraint.id}: constraint references unknown sketch entity`);
     }
     if (constraint.type === 'coincident') {
-      if (!constraint.data || !Array.isArray(constraint.data.refs) || constraint.data.refs.length !== 2) {
+      if (!Array.isArray(constraint.data.refs) || constraint.data.refs.length !== 2) {
         throw new Error(`${constraint.id}: coincident constraint requires two point refs`);
       }
     }
   }
 
   for (const dimension of part.dimensions) {
-    if (!['linear', 'diameter'].includes(dimension.type)) {
-      throw new Error(`Unsupported schema-v1 dimension: ${String(dimension.type)}`);
-    }
     if (!(Number.isFinite(dimension.value) && dimension.value > 0)) {
       throw new Error(`${dimension.id}: dimension value must be a positive finite number`);
     }
