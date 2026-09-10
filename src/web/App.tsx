@@ -12,7 +12,11 @@ import {
 } from '../contracts/document';
 import type { CadDimensionId, CadSketchEntityId } from '../contracts/ids';
 import type { CadViewportPick } from '../contracts/render';
-import { CadViewport } from './CadViewport';
+import {
+  CadViewport,
+  type CadViewportViewCommand,
+  type CadViewportViewName,
+} from './CadViewport';
 
 interface RegistryCommand {
   id: string;
@@ -40,6 +44,17 @@ const documentDescriptions: Record<CadDocumentKind, string> = {
   fragment: 'Свободный двумерный фрагмент',
   specification: 'Состав изделия и позиции',
   text: 'Инженерный текстовый документ',
+};
+
+const viewportViewByLabel: Record<string, CadViewportViewName> = {
+  'Показать всё': 'fit',
+  'Спереди': 'front',
+  'Сзади': 'back',
+  'Сверху': 'top',
+  'Снизу': 'bottom',
+  'Слева': 'left',
+  'Справа': 'right',
+  'Изометрия': 'isometric',
 };
 
 function commandLabel(id: string, fallback: string): string {
@@ -107,6 +122,7 @@ export function App() {
   const [dimensionEditValue, setDimensionEditValue] = useState(0);
   const [notice, setNotice] = useState('Готово');
   const [viewName, setViewName] = useState('Изометрия');
+  const [viewCommand, setViewCommand] = useState<CadViewportViewCommand>({ sequence: 0, view: 'isometric' });
   const [search, setSearch] = useState('');
 
   useEffect(() => {
@@ -143,6 +159,13 @@ export function App() {
   const clearTransientSelection = useCallback(() => {
     setSelectionMode('none');
     setSelectedPick(null);
+  }, []);
+
+  const requestView = useCallback((label: string) => {
+    const view = viewportViewByLabel[label];
+    if (!view) return;
+    setViewName(label);
+    setViewCommand((current) => ({ sequence: current.sequence + 1, view }));
   }, []);
 
   const handleViewportPick = useCallback((pick: CadViewportPick) => {
@@ -709,7 +732,7 @@ export function App() {
               </CommandGroup>
             </>
           ) : document.kind === 'part' ? (
-            <ViewCommandGroups viewName={viewName} setViewName={setViewName} />
+            <ViewCommandGroups viewName={viewName} requestView={requestView} />
           ) : (
             <div className="planned-workspace-note">
               <strong>{documentNames[document.kind]}</strong>
@@ -781,8 +804,8 @@ export function App() {
 
         <section className="work-area" aria-label="Рабочая область">
           <div className="viewport-quick-access" aria-label="Быстрый доступ рабочей области">
-            <button type="button" title="Показать всё" onClick={() => setViewName('Показать всё')}>⌗</button>
-            <button type="button" title="Изометрия" onClick={() => setViewName('Изометрия')}>◇</button>
+            <button type="button" title="Показать всё" onClick={() => requestView('Показать всё')}>⌗</button>
+            <button type="button" title="Изометрия" onClick={() => requestView('Изометрия')}>◇</button>
             <span className="quick-separator" />
             <span className="view-caption">{viewName}</span>
             {selectionMode !== 'none' && <span className="selection-caption">{selectionMode === 'face' ? 'Выбор грани' : 'Выбор ребра'}</span>}
@@ -805,7 +828,12 @@ export function App() {
                 </div>
                 <div className="stage-grid" />
                 {renderModel ? (
-                  <CadViewport model={renderModel} selectionMode={selectionMode} onPick={handleViewportPick} />
+                  <CadViewport
+                    model={renderModel}
+                    selectionMode={selectionMode}
+                    onPick={handleViewportPick}
+                    viewCommand={viewCommand}
+                  />
                 ) : (
                   <div className="stage-message">
                     <div className="stage-symbol">◇</div>
@@ -940,8 +968,8 @@ function commandSymbol(id: string): string {
   return '◇';
 }
 
-function ViewCommandGroups(props: { viewName: string; setViewName: (value: string) => void }) {
-  const views = ['Спереди', 'Сверху', 'Слева', 'Справа', 'Изометрия'];
+function ViewCommandGroups(props: { viewName: string; requestView: (value: string) => void }) {
+  const views = ['Спереди', 'Сзади', 'Сверху', 'Снизу', 'Слева', 'Справа', 'Изометрия'];
   return (
     <CommandGroup label="Ориентация">
       {views.map((view) => (
@@ -949,7 +977,7 @@ function ViewCommandGroups(props: { viewName: string; setViewName: (value: strin
           className={`ribbon-command view-command ${props.viewName === view ? 'selected' : ''}`}
           type="button"
           key={view}
-          onClick={() => props.setViewName(view)}
+          onClick={() => props.requestView(view)}
         >
           <span className="ribbon-command-icon">◇</span>
           <span>{view}</span>
