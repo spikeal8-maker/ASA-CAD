@@ -4,6 +4,10 @@ import { chromium } from '../../vendor/toubkal/node_modules/playwright-core/inde
 const url = process.env.ASA_CAD_SHELL_URL ?? 'http://127.0.0.1:8090/';
 const browser = await chromium.launch({ headless: true });
 
+async function waitForShell(page) {
+  await page.getByRole('button', { name: 'ASA-CAD', exact: true }).waitFor();
+}
+
 async function runDesktop() {
   const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
   const pageErrors = [];
@@ -14,7 +18,7 @@ async function runDesktop() {
   });
 
   await page.goto(url, { waitUntil: 'networkidle' });
-  await page.getByText('ASA-CAD', { exact: true }).first().waitFor();
+  await waitForShell(page);
   await page.getByText('Твердотельное моделирование', { exact: true }).waitFor();
   await page.locator('.management-panel .panel-title-row strong').filter({ hasText: 'Дерево' }).waitFor();
   await page.getByText('Новая деталь', { exact: true }).waitFor();
@@ -51,7 +55,7 @@ async function runPhone() {
   const pageErrors = [];
   page.on('pageerror', (error) => pageErrors.push(error.message));
   await page.goto(url, { waitUntil: 'networkidle' });
-  await page.getByText('ASA-CAD', { exact: true }).first().waitFor();
+  await waitForShell(page);
 
   const layout = await page.evaluate(() => {
     const ribbon = document.querySelector('.command-ribbon');
