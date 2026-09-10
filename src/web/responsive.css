@@ -141,23 +141,53 @@
 }
 
 /*
- * Phone layout is clipped by design at the app root, so intrinsic widths must
- * be constrained explicitly. A work area wider than the CSS viewport is not
- * acceptable: it makes pointer-to-world projection depend on invisible clipped
- * pixels and can desynchronize CAD picking.
+ * Phone layout must use the actual CSS viewport as its containing block.
+ * The work area is absolutely positioned, so left/right constraints are used
+ * instead of percentage width. This prevents an intrinsic-width descendant
+ * from creating a hidden 600px+ canvas inside a 360–430px clipped viewport.
  */
 @media (max-width: 599px) {
-  .cad-app,
-  .content-area,
-  .work-area,
-  .model-stage,
-  .cad-viewport {
-    width: 100%;
-    max-width: 100%;
+  html,
+  body,
+  #root,
+  .cad-app {
+    width: 100vw;
+    max-width: 100vw;
     min-width: 0;
   }
 
+  .cad-app,
+  .content-area,
+  .model-stage,
+  .cad-viewport {
+    min-width: 0;
+    max-width: 100%;
+  }
+
   .content-area {
+    width: 100%;
     overflow: hidden;
+    contain: inline-size;
+  }
+
+  .work-area {
+    left: 0;
+    right: 0;
+    width: auto;
+    max-width: none;
+    min-width: 0;
+  }
+
+  .model-stage,
+  .cad-viewport {
+    left: 0;
+    right: 0;
+    width: auto;
+  }
+
+  .viewport-quick-access {
+    max-width: calc(100% - 16px);
+    overflow-x: auto;
+    overflow-y: hidden;
   }
 }
