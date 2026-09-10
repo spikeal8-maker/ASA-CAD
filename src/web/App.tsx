@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import commandRegistryJson from '../../spec/ui/command-registry.v1.json';
 import { CadApplicationImpl } from '../application/CadApplicationImpl';
 import { BrowserPartRuntimeAdapter } from '../browser/BrowserPartRuntimeAdapter';
@@ -10,7 +10,8 @@ import {
   type CadDocumentKind,
   type CadPartDocument,
 } from '../contracts/document';
-import type { CadSketchEntityId, CadSketchId } from '../contracts/ids';
+import type { CadDimensionId, CadSketchEntityId } from '../contracts/ids';
+import type { CadViewportPick } from '../contracts/render';
 import { CadViewport } from './CadViewport';
 
 interface RegistryCommand {
@@ -72,6 +73,17 @@ function hasRectangle(sketch: ReturnType<typeof latestSketch>): boolean {
   );
 }
 
+function hasCircle(sketch: ReturnType<typeof latestSketch>): boolean {
+  return Boolean(sketch?.entities.some((entity) => entity.type === 'circle'));
+}
+
+function dimensionLabel(name: string | undefined, type: string): string {
+  if (name === 'width') return 'Ширина';
+  if (name === 'height') return 'Высота';
+  if (name === 'diameter' || type === 'diameter') return 'Диаметр';
+  return name || type;
+}
+
 export function App() {
   const runtime = useMemo(() => new BrowserPartRuntimeAdapter(), []);
   const app = useMemo(
@@ -83,10 +95,16 @@ export function App() {
   const [newDialogOpen, setNewDialogOpen] = useState(false);
   const [activeWorkspace, setActiveWorkspace] = useState('solid');
   const [activeCommand, setActiveCommand] = useState<string | null>(null);
+  const [selectionMode, setSelectionMode] = useState<'none' | 'face' | 'edge'>('none');
+  const [selectedPick, setSelectedPick] = useState<CadViewportPick | null>(null);
   const [sketchPlane, setSketchPlane] = useState<'XY' | 'XZ' | 'YZ'>('XY');
   const [rectangleWidth, setRectangleWidth] = useState(60);
   const [rectangleHeight, setRectangleHeight] = useState(40);
+  const [circleDiameter, setCircleDiameter] = useState(12);
   const [extrudeDistance, setExtrudeDistance] = useState(10);
+  const [filletRadius, setFilletRadius] = useState(1);
+  const [editingDimensionId, setEditingDimensionId] = useState<CadDimensionId | null>(null);
+  const [dimensionEditValue, setDimensionEditValue] = useState(0);
   const [notice, setNotice] = useState('Готово');
   const [viewName, setViewName] = useState('Изометрия');
   const [search, setSearch] = useState('');
@@ -104,9 +122,17 @@ export function App() {
   const part = partDocument(document);
   const sketch = latestSketch(part);
   const rectangleReady = hasRectangle(sketch);
-  const canExtrude = Boolean(sketch && rectangleReady && part?.bodies.length === 0);
+  const circleReady = hasCircle(sketch);
+  const hasSolid = Boolean(part?.bodies.length);
+  const lastFeature = part?.features.at(-1);
+  const canExtrude = Boolean(sketch && rectangleReady && !hasSolid && part?.features.length === 0);
+  const canCut = Boolean(sketch && circleReady && hasSolid && lastFeature?.type === 'extrude');
+  const canFillet = Boolean(hasSolid && lastFeature?.type === 'cut-extrude');
   const renderModel = runtime.getRenderModel(document);
   const runtimeState = runtime.getLoadState();
+  const selectedPointText = selectedPick
+    ? selectedPick.point.map((value) => Number(value).toFixed(2)).join(', ')
+    : '';
 
   const searchableCommands = search.trim()
     ? registry.commands
@@ -114,11 +140,27 @@ export function App() {
         .slice(0, 8)
     : [];
 
+  const clearTransientSelection = useCallback(() => {
+    setSelectionMode('none');
+    setSelectedPick(null);
+  }, []);
+
+  const handleViewportPick = useCallback((pick: CadViewportPick) => {
+    setSelectedPick(pick);
+    if (pick.kind === 'face') {
+      setNotice(`Грань выбрана: ${pick.point.map((value) => value.toFixed(1)).join(', ')}`);
+    } else {
+      setNotice(`Ребро выбрано: ${pick.point.map((value) => value.toFixed(1)).join(', ')}`);
+    }
+  }, []);
+
   async function createDocument(kind: CadDocumentKind) {
     await app.replaceDocument(createEmptyCadDocument(kind, { title: `${documentNames[kind]} 1` }));
     setNewDialogOpen(false);
     setActivePanel('tree');
     setActiveCommand(null);
+    setEditingDimensionId(null);
+    clearTransientSelection();
     setActiveWorkspace(kind === 'part' ? 'solid' : kind);
     setNotice(`Создан документ «${documentNames[kind]}»`);
   }
@@ -139,6 +181,8 @@ export function App() {
       await app.replaceDocument(parseCadDocument(saved));
       setActivePanel('tree');
       setActiveCommand(null);
+      setEditingDimensionId(null);
+      clearTransientSelection();
       setActiveWorkspace(app.getDocument().kind === 'part' ? 'solid' : app.getDocument().kind);
       setNotice('Локальный документ открыт');
     } catch (error) {
@@ -150,26 +194,58 @@ export function App() {
     if (document.kind !== 'part') return;
     setActiveCommand('part.sketch.create');
     setActivePanel('parameters');
-    setActiveWorkspace('sketch');
-    setNotice('Выберите плоскость и создайте эскиз');
+    setSelectedPick(null);
+    if (hasSolid && renderModel) {
+      setSelectionMode('face');
+      setActiveWorkspace('solid');
+      setNotice('Выберите плоскую грань в рабочей области');
+    } else {
+      setSelectionMode('none');
+      setActiveWorkspace('sketch');
+      setNotice('Выберите плоскость и создайте эскиз');
+    }
   }
 
   async function commitCreateSketch() {
-    const result = await app.execute({ id: 'sketch.create', payload: { support: sketchPlane } });
+    let support: 'XY' | 'XZ' | 'YZ' | string = sketchPlane;
+    const currentPart = partDocument(app.getDocument());
+
+    if (currentPart?.bodies.length) {
+      if (selectedPick?.kind !== 'face' || !selectedPick.sourceFeatureId) {
+        setNotice('Выберите грань модели для нового эскиза');
+        return;
+      }
+      try {
+        support = await app.captureReference({
+          kind: 'face',
+          sourceFeatureId: selectedPick.sourceFeatureId,
+          point: [...selectedPick.point] as [number, number, number],
+          semanticRole: 'sketch-support-face',
+        });
+      } catch (error) {
+        setNotice(error instanceof Error ? error.message : String(error));
+        return;
+      }
+    }
+
+    const result = await app.execute({ id: 'sketch.create', payload: { support } });
     if (!result.ok) {
       setNotice(result.error?.message ?? 'Не удалось создать эскиз');
       return;
     }
+    const supportText = currentPart?.bodies.length ? 'выбранной грани' : `плоскости ${sketchPlane}`;
     setActiveCommand(null);
     setActivePanel('tree');
     setActiveWorkspace('sketch');
-    setNotice(`Создан эскиз на плоскости ${sketchPlane}`);
+    clearTransientSelection();
+    setNotice(`Создан эскиз на ${supportText}`);
   }
 
   function beginRectangle() {
     if (!sketch) return;
     setActiveCommand('sketch.rectangle');
     setActivePanel('parameters');
+    clearTransientSelection();
     setNotice('Задайте ширину и высоту прямоугольника');
   }
 
@@ -228,6 +304,54 @@ export function App() {
     setNotice(`Прямоугольник ${rectangleWidth}×${rectangleHeight} мм создан`);
   }
 
+  function beginCircle() {
+    if (!sketch) return;
+    setActiveCommand('sketch.circle');
+    setActivePanel('parameters');
+    clearTransientSelection();
+    setNotice('Задайте диаметр окружности');
+  }
+
+  async function commitCircle() {
+    const currentPart = partDocument(app.getDocument());
+    const currentSketch = latestSketch(currentPart);
+    if (!currentSketch) {
+      setNotice('Сначала создайте эскиз');
+      return;
+    }
+    if (!(circleDiameter > 0)) {
+      setNotice('Диаметр должен быть больше нуля');
+      return;
+    }
+
+    const circle = await app.execute({
+      id: 'sketch.circle',
+      payload: { sketchId: currentSketch.id, center: [0, 0], diameter: circleDiameter },
+    });
+    if (!circle.ok || !circle.createdIds?.[0]) {
+      setNotice(circle.error?.message ?? 'Не удалось создать окружность');
+      return;
+    }
+    const circleEntityId = circle.createdIds[0] as CadSketchEntityId;
+    const diameter = await app.execute({
+      id: 'dimension.diameter',
+      payload: {
+        sketchId: currentSketch.id,
+        entityId: circleEntityId,
+        value: circleDiameter,
+        name: 'diameter',
+      },
+    });
+    if (!diameter.ok) {
+      setNotice(diameter.error?.message ?? 'Не удалось создать диаметральный размер');
+      return;
+    }
+
+    setActiveCommand(null);
+    setActivePanel('tree');
+    setNotice(`Окружность Ø${circleDiameter} мм создана`);
+  }
+
   async function finishSketch() {
     const currentPart = partDocument(app.getDocument());
     const currentSketch = latestSketch(currentPart);
@@ -240,6 +364,7 @@ export function App() {
     setActiveCommand(null);
     setActivePanel('tree');
     setActiveWorkspace('solid');
+    clearTransientSelection();
     setNotice('Эскиз завершен');
   }
 
@@ -247,6 +372,7 @@ export function App() {
     if (!canExtrude || !sketch) return;
     setActiveCommand('part.extrude');
     setActivePanel('parameters');
+    clearTransientSelection();
     setNotice('Задайте расстояние выдавливания');
   }
 
@@ -281,13 +407,151 @@ export function App() {
     setActiveCommand(null);
     setActivePanel('tree');
     setActiveWorkspace('solid');
+    clearTransientSelection();
     setNotice(`Выдавливание ${extrudeDistance} мм построено локально`);
   }
 
-  function cancelCommand() {
-    const stayInSketch = activeCommand === 'sketch.rectangle';
+  function beginCut() {
+    if (!canCut) return;
+    setActiveCommand('part.cutExtrude');
+    setActivePanel('parameters');
+    clearTransientSelection();
+    setNotice('Вырез будет выполнен сквозь всё тело');
+  }
+
+  async function commitCut() {
+    const currentPart = partDocument(app.getDocument());
+    const currentSketch = latestSketch(currentPart);
+    if (!currentSketch || !hasCircle(currentSketch)) {
+      setNotice('Для выреза нужен эскиз с окружностью');
+      return;
+    }
+    const feature = await app.execute({
+      id: 'feature.cutExtrude',
+      payload: { sketchId: currentSketch.id, end: 'through-all' },
+    });
+    if (!feature.ok) {
+      setNotice(feature.error?.message ?? 'Не удалось создать вырез');
+      return;
+    }
+    setNotice('Перестроение сквозного выреза…');
+    const rebuildResult = await app.execute({ id: 'document.rebuild', payload: {} });
+    if (!rebuildResult.ok) {
+      setNotice(rebuildResult.error?.message ?? 'Ошибка перестроения выреза');
+      return;
+    }
     setActiveCommand(null);
     setActivePanel('tree');
+    setActiveWorkspace('solid');
+    clearTransientSelection();
+    setNotice('Сквозной вырез построен локально');
+  }
+
+  function beginFillet() {
+    if (!canFillet || !renderModel) return;
+    setActiveCommand('part.fillet');
+    setActivePanel('parameters');
+    setSelectionMode('edge');
+    setSelectedPick(null);
+    setNotice('Выберите ребро в рабочей области');
+  }
+
+  async function commitFillet() {
+    if (selectedPick?.kind !== 'edge' || !selectedPick.sourceFeatureId) {
+      setNotice('Выберите ребро модели для скругления');
+      return;
+    }
+    if (!(filletRadius > 0)) {
+      setNotice('Радиус скругления должен быть больше нуля');
+      return;
+    }
+
+    let referenceId;
+    try {
+      referenceId = await app.captureReference({
+        kind: 'edge',
+        sourceFeatureId: selectedPick.sourceFeatureId,
+        point: [...selectedPick.point] as [number, number, number],
+        semanticRole: 'fillet-edge',
+      });
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : String(error));
+      return;
+    }
+
+    const feature = await app.execute({
+      id: 'feature.fillet',
+      payload: { references: [referenceId], radius: filletRadius },
+    });
+    if (!feature.ok) {
+      setNotice(feature.error?.message ?? 'Не удалось создать скругление');
+      return;
+    }
+    setNotice('Перестроение скругления…');
+    const rebuildResult = await app.execute({ id: 'document.rebuild', payload: {} });
+    if (!rebuildResult.ok) {
+      setNotice(rebuildResult.error?.message ?? 'Ошибка перестроения скругления');
+      return;
+    }
+    setActiveCommand(null);
+    setActivePanel('tree');
+    setActiveWorkspace('solid');
+    clearTransientSelection();
+    setNotice(`Скругление R${filletRadius} построено локально`);
+  }
+
+  function beginDimensionEdit(id: CadDimensionId) {
+    const currentPart = partDocument(app.getDocument());
+    const dimension = currentPart?.dimensions.find((item) => item.id === id);
+    if (!dimension || !dimension.driving) return;
+    setEditingDimensionId(id);
+    setDimensionEditValue(dimension.value);
+    setActiveCommand('dimension.edit');
+    setActivePanel('parameters');
+    setActiveWorkspace('solid');
+    clearTransientSelection();
+    setNotice(`Изменение размера «${dimensionLabel(dimension.name, dimension.type)}»`);
+  }
+
+  async function commitDimensionEdit() {
+    if (!editingDimensionId || !(dimensionEditValue > 0)) {
+      setNotice('Введите положительное значение размера');
+      return;
+    }
+    const before = partDocument(app.getDocument())?.dimensions.find((item) => item.id === editingDimensionId);
+    const result = await app.execute({
+      id: 'part.dimension.setValue',
+      payload: { dimensionId: editingDimensionId, value: dimensionEditValue },
+    });
+    if (!result.ok) {
+      setNotice(result.error?.message ?? 'Не удалось изменить размер');
+      return;
+    }
+
+    setNotice('Перестроение истории после изменения размера…');
+    const rebuildResult = await app.execute({ id: 'document.rebuild', payload: {} });
+    if (!rebuildResult.ok) {
+      setNotice(rebuildResult.error?.message ?? 'Ошибка перестроения после изменения размера');
+      return;
+    }
+
+    if (before?.name === 'width') setRectangleWidth(dimensionEditValue);
+    if (before?.name === 'height') setRectangleHeight(dimensionEditValue);
+    if (before?.name === 'diameter') setCircleDiameter(dimensionEditValue);
+    const label = dimensionLabel(before?.name, before?.type ?? 'Размер');
+    setEditingDimensionId(null);
+    setActiveCommand(null);
+    setActivePanel('tree');
+    clearTransientSelection();
+    setNotice(`${label} изменен на ${dimensionEditValue} мм; модель перестроена`);
+  }
+
+  function cancelCommand() {
+    const stayInSketch = activeCommand === 'sketch.rectangle' || activeCommand === 'sketch.circle';
+    setActiveCommand(null);
+    setEditingDimensionId(null);
+    setActivePanel('tree');
+    clearTransientSelection();
     setActiveWorkspace(
       document.kind === 'part'
         ? stayInSketch ? 'sketch' : 'solid'
@@ -299,27 +563,40 @@ export function App() {
   async function commitActiveCommand() {
     if (activeCommand === 'part.sketch.create') return commitCreateSketch();
     if (activeCommand === 'sketch.rectangle') return commitRectangle();
+    if (activeCommand === 'sketch.circle') return commitCircle();
     if (activeCommand === 'part.extrude') return commitExtrude();
+    if (activeCommand === 'part.cutExtrude') return commitCut();
+    if (activeCommand === 'part.fillet') return commitFillet();
+    if (activeCommand === 'dimension.edit') return commitDimensionEdit();
   }
 
   async function undo() {
+    clearTransientSelection();
     const result = await app.undo();
     setNotice(result.changed ? 'Отменено' : 'Нечего отменять');
   }
 
   async function redo() {
+    clearTransientSelection();
     const result = await app.redo();
     setNotice(result.changed ? 'Повторено' : 'Нечего повторять');
   }
 
   async function rebuild() {
+    clearTransientSelection();
     setNotice('Перестроение…');
     const result = await app.execute({ id: 'document.rebuild', payload: {} });
     setNotice(result.ok ? 'Перестроено' : result.error?.message ?? 'Ошибка перестроения');
   }
 
   return (
-    <div className="cad-app" data-document-kind={document.kind} data-runtime-status={runtimeState.status}>
+    <div
+      className="cad-app"
+      data-document-kind={document.kind}
+      data-runtime-status={runtimeState.status}
+      data-selected-kind={selectedPick?.kind ?? ''}
+      data-selected-point={selectedPointText}
+    >
       <header className="main-menu-bar">
         <button className="brand-button" type="button" onClick={() => setNewDialogOpen(true)} aria-label="ASA-CAD">
           <span className="brand-mark">A</span>
@@ -388,10 +665,14 @@ export function App() {
             <>
               <CommandGroup label="Геометрия">
                 <CommandButton id="sketch.rectangle" large active disabled={!sketch} reason="Сначала создайте эскиз" onClick={beginRectangle} />
-                <CommandButton id="sketch.circle" disabled reason="Окружность включается в следующем cut-срезе" />
+                <CommandButton id="sketch.circle" disabled={!sketch} reason="Сначала создайте эскиз" onClick={beginCircle} />
               </CommandGroup>
               <CommandGroup label="Размеры">
-                <RibbonTextButton label={rectangleReady ? `${rectangleWidth} × ${rectangleHeight} мм` : 'Размеры'} symbol="↔" disabled />
+                <RibbonTextButton
+                  label={rectangleReady ? `${rectangleWidth} × ${rectangleHeight} мм` : circleReady ? `Ø${circleDiameter} мм` : 'Размеры'}
+                  symbol="↔"
+                  disabled
+                />
               </CommandGroup>
               <CommandGroup label="Эскиз" compact>
                 <RibbonTextButton label="Завершить эскиз" symbol="✓" onClick={finishSketch} disabled={!sketch} />
@@ -409,8 +690,18 @@ export function App() {
                   reason="Завершите прямоугольный эскиз"
                   onClick={beginExtrude}
                 />
-                <CommandButton id="part.cutExtrude" disabled reason="Подключается после stable-face sketch" />
-                <CommandButton id="part.fillet" disabled reason="Подключается после stable-edge picking" />
+                <CommandButton
+                  id="part.cutExtrude"
+                  disabled={!canCut}
+                  reason="Создайте окружность на грани и завершите эскиз"
+                  onClick={beginCut}
+                />
+                <CommandButton
+                  id="part.fillet"
+                  disabled={!canFillet}
+                  reason="Сначала постройте сквозной вырез"
+                  onClick={beginFillet}
+                />
               </CommandGroup>
               <CommandGroup label="Сервис модели" compact>
                 <RibbonTextButton label="Перестроить" symbol="↻" onClick={rebuild} />
@@ -456,21 +747,33 @@ export function App() {
 
         <aside className="management-panel">
           {activePanel === 'tree' ? (
-            <DocumentTree document={document} />
+            <DocumentTree document={document} onEditDimension={beginDimensionEdit} />
           ) : (
             <ParameterPanel
               activeCommand={activeCommand}
+              requiresFaceSelection={hasSolid && activeCommand === 'part.sketch.create'}
+              selectedPick={selectedPick}
               sketchPlane={sketchPlane}
               setSketchPlane={setSketchPlane}
               rectangleWidth={rectangleWidth}
               rectangleHeight={rectangleHeight}
               setRectangleWidth={setRectangleWidth}
               setRectangleHeight={setRectangleHeight}
+              circleDiameter={circleDiameter}
+              setCircleDiameter={setCircleDiameter}
               extrudeDistance={extrudeDistance}
               setExtrudeDistance={setExtrudeDistance}
+              filletRadius={filletRadius}
+              setFilletRadius={setFilletRadius}
+              dimensionEditValue={dimensionEditValue}
+              setDimensionEditValue={setDimensionEditValue}
               onCreateSketch={commitCreateSketch}
               onCreateRectangle={commitRectangle}
+              onCreateCircle={commitCircle}
               onExtrude={commitExtrude}
+              onCut={commitCut}
+              onFillet={commitFillet}
+              onDimensionEdit={commitDimensionEdit}
               onCancel={cancelCommand}
             />
           )}
@@ -482,6 +785,7 @@ export function App() {
             <button type="button" title="Изометрия" onClick={() => setViewName('Изометрия')}>◇</button>
             <span className="quick-separator" />
             <span className="view-caption">{viewName}</span>
+            {selectionMode !== 'none' && <span className="selection-caption">{selectionMode === 'face' ? 'Выбор грани' : 'Выбор ребра'}</span>}
             {activeCommand && (
               <>
                 <span className="quick-separator" />
@@ -501,7 +805,7 @@ export function App() {
                 </div>
                 <div className="stage-grid" />
                 {renderModel ? (
-                  <CadViewport model={renderModel} />
+                  <CadViewport model={renderModel} selectionMode={selectionMode} onPick={handleViewportPick} />
                 ) : (
                   <div className="stage-message">
                     <div className="stage-symbol">◇</div>
@@ -510,7 +814,7 @@ export function App() {
                     <small>
                       {rectangleReady
                         ? 'Эскиз параметрический. Завершите его и выполните выдавливание — B-Rep будет построен локально в браузере.'
-                        : 'Создайте эскиз и прямоугольник. OpenCascade не загружается до первой твердотельной операции.'}
+                        : 'Создайте эскиз и геометрию. OpenCascade не загружается до первой твердотельной операции.'}
                     </small>
                   </div>
                 )}
@@ -533,6 +837,7 @@ export function App() {
           <span>{notice}</span>
         </div>
         <div className="status-right">
+          {selectedPick && <span>{selectedPick.kind === 'face' ? 'Грань' : 'Ребро'}: {selectedPointText}</span>}
           <span>{documentNames[document.kind]}</span>
           <span>{runtimeState.status === 'ready' ? 'OCC локально' : 'ядро по требованию'}</span>
           <span>мм</span>
@@ -628,6 +933,7 @@ function RibbonTextButton(props: { label: string; symbol: string; disabled?: boo
 
 function commandSymbol(id: string): string {
   if (id.includes('sketch')) return '▱';
+  if (id.includes('circle')) return '○';
   if (id.includes('cut')) return '▣';
   if (id.includes('extrude')) return '▤';
   if (id.includes('fillet')) return '◜';
@@ -653,7 +959,13 @@ function ViewCommandGroups(props: { viewName: string; setViewName: (value: strin
   );
 }
 
-function DocumentTree({ document }: { document: CadDocument }) {
+function DocumentTree({
+  document,
+  onEditDimension,
+}: {
+  document: CadDocument;
+  onEditDimension: (id: CadDimensionId) => void;
+}) {
   return (
     <div className="tree-panel">
       <div className="panel-title-row">
@@ -671,6 +983,15 @@ function DocumentTree({ document }: { document: CadDocument }) {
             <TreeRow depth={2} icon="▱" label="Плоскость YZ" muted />
             {document.sketches.map((item) => (
               <TreeRow key={item.id} depth={1} icon="⌗" label={item.name} />
+            ))}
+            {document.dimensions.map((dimension) => (
+              <TreeRow
+                key={dimension.id}
+                depth={2}
+                icon={dimension.type === 'diameter' ? 'Ø' : '↔'}
+                label={`${dimensionLabel(dimension.name, dimension.type)}: ${dimension.value} мм`}
+                onClick={() => onEditDimension(dimension.id)}
+              />
             ))}
             {document.features.map((feature) => (
               <TreeRow key={feature.id} depth={1} icon="◇" label={feature.name} />
@@ -690,12 +1011,20 @@ function DocumentTree({ document }: { document: CadDocument }) {
   );
 }
 
-function TreeRow(props: { depth: number; icon: string; label: string; muted?: boolean; bold?: boolean }) {
+function TreeRow(props: {
+  depth: number;
+  icon: string;
+  label: string;
+  muted?: boolean;
+  bold?: boolean;
+  onClick?: () => void;
+}) {
   return (
     <button
-      className={`tree-row ${props.muted ? 'muted' : ''} ${props.bold ? 'bold' : ''}`}
+      className={`tree-row ${props.muted ? 'muted' : ''} ${props.bold ? 'bold' : ''} ${props.onClick ? 'interactive' : ''}`}
       type="button"
       style={{ paddingInlineStart: 10 + props.depth * 18 }}
+      onClick={props.onClick}
     >
       <span className="tree-chevron">{props.depth < 2 ? '›' : ''}</span>
       <span className="tree-icon">{props.icon}</span>
@@ -706,17 +1035,29 @@ function TreeRow(props: { depth: number; icon: string; label: string; muted?: bo
 
 function ParameterPanel(props: {
   activeCommand: string | null;
+  requiresFaceSelection: boolean;
+  selectedPick: CadViewportPick | null;
   sketchPlane: 'XY' | 'XZ' | 'YZ';
   setSketchPlane: (plane: 'XY' | 'XZ' | 'YZ') => void;
   rectangleWidth: number;
   rectangleHeight: number;
   setRectangleWidth: (value: number) => void;
   setRectangleHeight: (value: number) => void;
+  circleDiameter: number;
+  setCircleDiameter: (value: number) => void;
   extrudeDistance: number;
   setExtrudeDistance: (value: number) => void;
+  filletRadius: number;
+  setFilletRadius: (value: number) => void;
+  dimensionEditValue: number;
+  setDimensionEditValue: (value: number) => void;
   onCreateSketch: () => void;
   onCreateRectangle: () => void;
+  onCreateCircle: () => void;
   onExtrude: () => void;
+  onCut: () => void;
+  onFillet: () => void;
+  onDimensionEdit: () => void;
   onCancel: () => void;
 }) {
   if (props.activeCommand === 'part.sketch.create') {
@@ -730,21 +1071,34 @@ function ParameterPanel(props: {
           <button type="button" onClick={props.onCancel} title="Закрыть">×</button>
         </div>
         <section className="parameter-section">
-          <h3>Плоскость построения</h3>
-          <p>Выберите базовую плоскость. Выбор грани будет подключен через stable reference.</p>
-          <div className="plane-grid">
-            {(['XY', 'XZ', 'YZ'] as const).map((plane) => (
-              <button
-                type="button"
-                key={plane}
-                className={props.sketchPlane === plane ? 'selected' : ''}
-                onClick={() => props.setSketchPlane(plane)}
-              >
-                <span>▱</span>
-                <strong>{plane}</strong>
-              </button>
-            ))}
-          </div>
+          <h3>{props.requiresFaceSelection ? 'Грань построения' : 'Плоскость построения'}</h3>
+          {props.requiresFaceSelection ? (
+            <>
+              <p>Щёлкните по плоской грани модели. После подтверждения будет сохранён StableRef, а не временный индекс грани.</p>
+              <div className={`selection-value ${props.selectedPick?.kind === 'face' ? 'selected' : ''}`}>
+                <span>{props.selectedPick?.kind === 'face' ? '✓' : '◇'}</span>
+                <strong>{props.selectedPick?.kind === 'face' ? 'Грань выбрана' : 'Ожидание выбора грани'}</strong>
+                {props.selectedPick?.kind === 'face' && <small>{props.selectedPick.point.map((value) => value.toFixed(2)).join(', ')}</small>}
+              </div>
+            </>
+          ) : (
+            <>
+              <p>Выберите базовую плоскость.</p>
+              <div className="plane-grid">
+                {(['XY', 'XZ', 'YZ'] as const).map((plane) => (
+                  <button
+                    type="button"
+                    key={plane}
+                    className={props.sketchPlane === plane ? 'selected' : ''}
+                    onClick={() => props.setSketchPlane(plane)}
+                  >
+                    <span>▱</span>
+                    <strong>{plane}</strong>
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
         </section>
         <section className="parameter-section collapsed-preview">
           <h3>Ориентация</h3>
@@ -772,10 +1126,33 @@ function ParameterPanel(props: {
           <h3>Размеры</h3>
           <NumericField label="Ширина" value={props.rectangleWidth} onChange={props.setRectangleWidth} suffix="мм" />
           <NumericField label="Высота" value={props.rectangleHeight} onChange={props.setRectangleHeight} suffix="мм" />
-          <p>Прямоугольник создается относительно начала координат и получает два управляющих размера.</p>
+          <p>Прямоугольник создаётся относительно начала координат и получает два управляющих размера.</p>
         </section>
         <div className="parameter-actions">
           <button className="primary" type="button" onClick={props.onCreateRectangle}>Создать</button>
+          <button type="button" onClick={props.onCancel}>Отмена</button>
+        </div>
+      </div>
+    );
+  }
+
+  if (props.activeCommand === 'sketch.circle') {
+    return (
+      <div className="parameter-panel">
+        <div className="panel-title-row">
+          <div>
+            <small>Эскиз</small>
+            <strong>{commandLabel('sketch.circle', 'Окружность')}</strong>
+          </div>
+          <button type="button" onClick={props.onCancel} title="Закрыть">×</button>
+        </div>
+        <section className="parameter-section">
+          <h3>Окружность</h3>
+          <NumericField label="Диаметр" value={props.circleDiameter} onChange={props.setCircleDiameter} suffix="мм" />
+          <div className="property-row"><span>Центр</span><strong>0, 0</strong></div>
+        </section>
+        <div className="parameter-actions">
+          <button className="primary" type="button" onClick={props.onCreateCircle}>Создать</button>
           <button type="button" onClick={props.onCancel}>Отмена</button>
         </div>
       </div>
@@ -799,6 +1176,82 @@ function ParameterPanel(props: {
         </section>
         <div className="parameter-actions">
           <button className="primary" type="button" onClick={props.onExtrude}>Создать</button>
+          <button type="button" onClick={props.onCancel}>Отмена</button>
+        </div>
+      </div>
+    );
+  }
+
+  if (props.activeCommand === 'part.cutExtrude') {
+    return (
+      <div className="parameter-panel">
+        <div className="panel-title-row">
+          <div>
+            <small>Вырез</small>
+            <strong>{commandLabel('part.cutExtrude', 'Вырезать выдавливанием')}</strong>
+          </div>
+          <button type="button" onClick={props.onCancel} title="Закрыть">×</button>
+        </div>
+        <section className="parameter-section">
+          <h3>Условие окончания</h3>
+          <div className="selection-value selected">
+            <span>↕</span>
+            <strong>Сквозь всё</strong>
+            <small>Вдоль нормали эскиза</small>
+          </div>
+        </section>
+        <div className="parameter-actions">
+          <button className="primary" type="button" onClick={props.onCut}>Создать</button>
+          <button type="button" onClick={props.onCancel}>Отмена</button>
+        </div>
+      </div>
+    );
+  }
+
+  if (props.activeCommand === 'part.fillet') {
+    return (
+      <div className="parameter-panel">
+        <div className="panel-title-row">
+          <div>
+            <small>Элемент тела</small>
+            <strong>{commandLabel('part.fillet', 'Скругление')}</strong>
+          </div>
+          <button type="button" onClick={props.onCancel} title="Закрыть">×</button>
+        </div>
+        <section className="parameter-section">
+          <h3>Ребро</h3>
+          <div className={`selection-value ${props.selectedPick?.kind === 'edge' ? 'selected' : ''}`}>
+            <span>{props.selectedPick?.kind === 'edge' ? '✓' : '⌁'}</span>
+            <strong>{props.selectedPick?.kind === 'edge' ? 'Ребро выбрано' : 'Выберите ребро в модели'}</strong>
+            {props.selectedPick?.kind === 'edge' && <small>{props.selectedPick.point.map((value) => value.toFixed(2)).join(', ')}</small>}
+          </div>
+          <NumericField label="Радиус" value={props.filletRadius} onChange={props.setFilletRadius} suffix="мм" />
+        </section>
+        <div className="parameter-actions">
+          <button className="primary" type="button" onClick={props.onFillet}>Создать</button>
+          <button type="button" onClick={props.onCancel}>Отмена</button>
+        </div>
+      </div>
+    );
+  }
+
+  if (props.activeCommand === 'dimension.edit') {
+    return (
+      <div className="parameter-panel">
+        <div className="panel-title-row">
+          <div>
+            <small>Управляющий размер</small>
+            <strong>Изменить размер</strong>
+          </div>
+          <button type="button" onClick={props.onCancel} title="Закрыть">×</button>
+        </div>
+        <section className="parameter-section">
+          <h3>Значение</h3>
+          <NumericField label="Размер" value={props.dimensionEditValue} onChange={props.setDimensionEditValue} suffix="мм" />
+          <p>После применения вся история детали перестраивается от изменённого эскиза вниз.</p>
+        </section>
+        <div className="parameter-actions">
+          <button className="primary" type="button" onClick={props.onDimensionEdit}>Применить</button>
           <button type="button" onClick={props.onCancel}>Отмена</button>
         </div>
       </div>
