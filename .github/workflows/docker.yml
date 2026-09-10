@@ -7,6 +7,7 @@ on:
       - Dockerfile
       - compose.yaml
       - docker/**
+      - release/**
       - package.json
       - tests/m0d/**
       - src/browser/**
@@ -20,6 +21,7 @@ on:
       - Dockerfile
       - compose.yaml
       - docker/**
+      - release/**
       - package.json
       - tests/m0d/**
       - src/browser/**
@@ -67,14 +69,18 @@ jobs:
           docker logs asa-cad-ci
           exit 1
 
-      - name: Smoke root and production mount documents
+      - name: Smoke root, production mount and release metadata
         shell: bash
         run: |
           set -euo pipefail
           curl --fail --silent http://127.0.0.1:8088/ >/tmp/asa-cad-index.html
           grep -qi '<base href="/cad/">' /tmp/asa-cad-index.html
+
           curl --fail --silent http://127.0.0.1:8088/cad/projects/m1b-smoke >/tmp/asa-cad-project.html
           grep -qi '<base href="/cad/">' /tmp/asa-cad-project.html
+
+          curl --fail --silent http://127.0.0.1:8088/cad/asa-cad-release.json >/tmp/asa-cad-release.json
+          node -e "const m=require('/tmp/asa-cad-release.json'); if(m.releaseVersion!=='0.1.0-m1b'||m.mountPath!=='/cad'||m.runtime?.compute!=='client-browser'||m.host?.geometryComputeBackend!==false) process.exit(1)"
 
           for url in http://127.0.0.1:8088/ http://127.0.0.1:8088/cad/projects/m1b-smoke; do
             headers="$(curl --silent --dump-header - --output /dev/null "$url")"
