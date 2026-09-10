@@ -139,3 +139,25 @@
     display: none;
   }
 }
+
+/*
+ * Phone layout is clipped by design at the app root, so intrinsic widths must
+ * be constrained explicitly. A work area wider than the CSS viewport is not
+ * acceptable: it makes pointer-to-world projection depend on invisible clipped
+ * pixels and can desynchronize CAD picking.
+ */
+@media (max-width: 599px) {
+  .cad-app,
+  .content-area,
+  .work-area,
+  .model-stage,
+  .cad-viewport {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .content-area {
+    overflow: hidden;
+  }
+}
