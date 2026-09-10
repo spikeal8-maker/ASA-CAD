@@ -50,6 +50,10 @@ jobs:
         working-directory: .
         run: npm run typecheck:asa
 
+      - name: ASA M1 architecture boundary
+        working-directory: .
+        run: npm run test:m1:architecture
+
       - name: ASA M1 document contracts
         working-directory: .
         run: npm run test:m1:contracts
