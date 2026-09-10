@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 0,
+  "kind": "part-baseline-fixture",
+  "name": "M0 protected part",
+  "units": "mm",
+  "sketch": {
+    "plane": "XY",
+    "width": 60,
+    "height": 40,
+    "fullyConstrained": true
+  },
+  "features": [
+    {
+      "id": "extrude-1",
+      "type": "extrude",
+      "depth": 10
+    },
+    {
+      "id": "hole-1",
+      "type": "through-hole",
+      "diameter": 12,
+      "position": "center"
+    },
+    {
+      "id": "fillet-1",
+      "type": "fillet",
+      "radius": 1,
+      "selector": "outer-vertical-edge"
+    }
+  ]
+}
