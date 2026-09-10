@@ -12,6 +12,12 @@ interface OpenCascadeRuntimeInternals {
   finalShape: any | null;
 }
 
+interface RenderCacheEntry {
+  runtimeRevision: number;
+  deflection: number;
+  model: CadRenderModel;
+}
+
 /**
  * M2 presentation adapter. Native OpenCascade and Three.js objects stay inside
  * this runtime layer; callers receive only ASA IDs plus structured-cloneable
@@ -22,6 +28,8 @@ interface OpenCascadeRuntimeInternals {
  * place instead of exposing native shapes through the public product API.
  */
 export class OpenCascadePartRenderAdapter implements CadRenderModelProvider {
+  private cache: RenderCacheEntry | null = null;
+
   constructor(private readonly runtime: OpenCascadePartRuntime) {}
 
   getRenderModel(
@@ -33,13 +41,21 @@ export class OpenCascadePartRenderAdapter implements CadRenderModelProvider {
     const analysis = this.runtime.getLastAnalysis();
     if (!analysis) return null;
 
+    const deflection = options.deflection ?? 0.1;
+    if (
+      this.cache?.runtimeRevision === analysis.runtimeRevision &&
+      this.cache.deflection === deflection
+    ) {
+      return this.cache.model;
+    }
+
     const internals = this.runtime as unknown as OpenCascadeRuntimeInternals;
     if (!internals.oc || !internals.finalShape) return null;
 
     const geometry = OccConverter.shapeToThreeGeometry(
       internals.oc,
       internals.finalShape,
-      options.deflection ?? 0.1,
+      deflection,
     );
 
     try {
@@ -60,7 +76,7 @@ export class OpenCascadePartRenderAdapter implements CadRenderModelProvider {
         faceIndex: group.face,
       }));
 
-      return {
+      const model: CadRenderModel = {
         runtimeRevision: `occ-${analysis.runtimeRevision}`,
         bounds: { ...analysis.bounds },
         meshes: [{
@@ -73,6 +89,9 @@ export class OpenCascadePartRenderAdapter implements CadRenderModelProvider {
           faceGroups,
         }],
       };
+
+      this.cache = { runtimeRevision: analysis.runtimeRevision, deflection, model };
+      return model;
     } finally {
       geometry.dispose();
     }
