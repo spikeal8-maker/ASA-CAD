@@ -26,12 +26,15 @@ export const CAD_IMPLEMENTED_COMMAND_IDS = [
 const implemented = new Set<string>(CAD_IMPLEMENTED_COMMAND_IDS);
 
 /**
- * Temporary compatibility aliases for planning-registry names that predate the
- * final ASA backend command name. These aliases live in one place instead of
- * leaking into UI components.
+ * Product/UI IDs do not need to equal lower-level CadApplication command IDs.
+ * The mapping is centralized here so React components never invent aliases.
  */
 export const CAD_BACKEND_COMMAND_ALIASES = {
+  'system.rebuild': 'document.rebuild',
   'part.sketch.create': 'sketch.create',
+  'part.extrude': 'feature.extrude',
+  'part.cutExtrude': 'feature.cutExtrude',
+  'part.fillet': 'feature.fillet',
 } as const satisfies Record<string, CadCommandId>;
 
 export function resolveCadBackendCommandId(value: string): CadCommandId | null {
