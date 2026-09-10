@@ -1,17 +1,28 @@
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
-import { extname, join, relative } from 'node:path';
+import { extname, join } from 'node:path';
 
 const WEB_ROOT = 'src/web';
 const APP_PATH = join(WEB_ROOT, 'App.tsx');
+const VIEWPORT_PATH = join(WEB_ROOT, 'CadViewport.tsx');
 
-// App.tsx is already too large. Freeze growth immediately; M2O must shrink it
-// before M3 adds broad sketch command families.
-const MAX_APP_BYTES = 62_500;
+// M2O has already extracted presentation metadata and editor panels. Preserve
+// that gain: new feature families must go to focused owners instead of growing
+// App.tsx back toward its former ~62 KB state.
+const MAX_APP_BYTES = 46_000;
 const appBytes = statSync(APP_PATH).size;
 assert.ok(
   appBytes <= MAX_APP_BYTES,
-  `App.tsx grew to ${appBytes} bytes (limit ${MAX_APP_BYTES}). Extract a focused controller/component instead of growing the god-object.`,
+  `App.tsx grew to ${appBytes} bytes (limit ${MAX_APP_BYTES}). Extract a focused controller/component instead of growing the editor composition root.`,
+);
+
+// Freeze viewport growth before ambiguity/rectangle-selection/preview work. A
+// dedicated interaction extraction can lower this budget further later.
+const MAX_VIEWPORT_BYTES = 26_000;
+const viewportBytes = statSync(VIEWPORT_PATH).size;
+assert.ok(
+  viewportBytes <= MAX_VIEWPORT_BYTES,
+  `CadViewport.tsx grew to ${viewportBytes} bytes (limit ${MAX_VIEWPORT_BYTES}). Move camera/input/selection/preview responsibility into focused viewport modules.`,
 );
 
 function filesRecursively(directory) {
@@ -52,4 +63,4 @@ assert.match(
   'App.tsx must use the editor persistence facade until persistence ownership is moved into a higher editor controller',
 );
 
-console.log(`ASA-CAD M2 UI architecture PASS (App.tsx ${appBytes}/${MAX_APP_BYTES} bytes; ${presentationFiles.length} TS/TSX presentation files checked)`);
+console.log(`ASA-CAD M2 UI architecture PASS (App.tsx ${appBytes}/${MAX_APP_BYTES}; CadViewport.tsx ${viewportBytes}/${MAX_VIEWPORT_BYTES}; ${presentationFiles.length} TS/TSX presentation files checked)`);
