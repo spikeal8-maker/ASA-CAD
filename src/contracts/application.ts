@@ -1,6 +1,7 @@
 import type { CadCommand, CadCommandAvailability, CadCommandId, CadCommandResult } from './commands';
 import type { CadDocument } from './document';
 import type { CadObjectId, CadStableReferenceId } from './ids';
+import type { CadMeasurementRequest, CadMeasurementResult } from './measurement';
 import type { CadReferenceCaptureRequest } from './runtime';
 
 export type CadApplicationMode = 'idle' | 'command' | 'rebuilding' | 'error';
@@ -37,6 +38,7 @@ export interface CadApplication {
   getCommandAvailability(id: CadCommandId): CadCommandAvailability;
   execute(command: CadCommand): Promise<CadCommandResult>;
   captureReference(request: CadReferenceCaptureRequest): Promise<CadStableReferenceId>;
+  measure(request: CadMeasurementRequest): Promise<CadMeasurementResult>;
   undo(): Promise<CadCommandResult>;
   redo(): Promise<CadCommandResult>;
   replaceDocument(document: CadDocument): Promise<void>;
