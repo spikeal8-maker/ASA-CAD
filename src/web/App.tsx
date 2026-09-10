@@ -17,6 +17,11 @@ import {
   type CadViewportViewCommand,
   type CadViewportViewName,
 } from './CadViewport';
+import {
+  ShortcutRegistry,
+  shortcutInputKind,
+  type ShortcutActionId,
+} from './ShortcutRegistry';
 
 interface RegistryCommand {
   id: string;
@@ -105,6 +110,7 @@ export function App() {
     () => new CadApplicationImpl(createEmptyCadDocument('part', { title: 'Деталь 1' }), runtime),
     [runtime],
   );
+  const shortcutRegistry = useMemo(() => new ShortcutRegistry(), []);
   const [, setRevisionToken] = useState(0);
   const [activePanel, setActivePanel] = useState<'tree' | 'parameters'>('tree');
   const [newDialogOpen, setNewDialogOpen] = useState(false);
@@ -161,12 +167,16 @@ export function App() {
     setSelectedPick(null);
   }, []);
 
+  const requestViewportCommand = useCallback((view: CadViewportViewName) => {
+    setViewCommand((current) => ({ sequence: current.sequence + 1, view }));
+  }, []);
+
   const requestView = useCallback((label: string) => {
     const view = viewportViewByLabel[label];
     if (!view) return;
     setViewName(label);
-    setViewCommand((current) => ({ sequence: current.sequence + 1, view }));
-  }, []);
+    requestViewportCommand(view);
+  }, [requestViewportCommand]);
 
   const handleViewportPick = useCallback((pick: CadViewportPick) => {
     setSelectedPick(pick);
@@ -612,6 +622,97 @@ export function App() {
     setNotice(result.ok ? 'Перестроено' : result.error?.message ?? 'Ошибка перестроения');
   }
 
+  async function dispatchShortcutAction(action: ShortcutActionId) {
+    switch (action) {
+      case 'system.save':
+        await saveLocal();
+        return;
+      case 'system.undo':
+        await undo();
+        return;
+      case 'system.redo':
+        await redo();
+        return;
+      case 'system.rebuild':
+        await rebuild();
+        return;
+      case 'interaction.cancel':
+        if (activeCommand && selectedPick) {
+          setSelectedPick(null);
+          setNotice('Выбор очищен; команда остаётся активной');
+          return;
+        }
+        if (activeCommand) {
+          cancelCommand();
+          return;
+        }
+        clearTransientSelection();
+        return;
+      case 'interaction.commit':
+        await commitActiveCommand();
+        return;
+      case 'interaction.delete':
+        setNotice('Удаление доступно после ordinary-selection среза M2I');
+        return;
+      case 'view.fit':
+        requestView('Показать всё');
+        return;
+      case 'view.iso':
+        requestView('Изометрия');
+        return;
+      case 'view.front':
+        requestView('Спереди');
+        return;
+      case 'view.top':
+        requestView('Сверху');
+        return;
+      case 'view.left':
+        requestView('Слева');
+        return;
+      case 'view.zoomIn':
+        requestViewportCommand('zoom-in');
+        return;
+      case 'view.zoomOut':
+        requestViewportCommand('zoom-out');
+        return;
+      case 'view.panLeft':
+        requestViewportCommand('pan-left');
+        return;
+      case 'view.panRight':
+        requestViewportCommand('pan-right');
+        return;
+      case 'view.panUp':
+        requestViewportCommand('pan-up');
+        return;
+      case 'view.panDown':
+        requestViewportCommand('pan-down');
+        return;
+    }
+  }
+
+  function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    const resolved = shortcutRegistry.resolve(
+      {
+        key: event.key,
+        code: event.code,
+        ctrlKey: event.ctrlKey,
+        metaKey: event.metaKey,
+        shiftKey: event.shiftKey,
+        altKey: event.altKey,
+      },
+      {
+        documentKind: document.kind,
+        activeCommand,
+        hasSelection: Boolean(selectedPick) && !activeCommand,
+        cadEditorFocused: true,
+        inputKind: shortcutInputKind(event.target),
+      },
+    );
+    if (!resolved) return;
+    if (resolved.preventDefault) event.preventDefault();
+    void dispatchShortcutAction(resolved.action);
+  }
+
   return (
     <div
       className="cad-app"
@@ -619,6 +720,9 @@ export function App() {
       data-runtime-status={runtimeState.status}
       data-selected-kind={selectedPick?.kind ?? ''}
       data-selected-point={selectedPointText}
+      data-shortcuts="central"
+      tabIndex={-1}
+      onKeyDown={handleKeyDown}
     >
       <header className="main-menu-bar">
         <button className="brand-button" type="button" onClick={() => setNewDialogOpen(true)} aria-label="ASA-CAD">
@@ -651,9 +755,9 @@ export function App() {
         </div>
         <div className="global-actions">
           <button type="button" title="Открыть" onClick={openLocal}>⌂</button>
-          <button type="button" title="Сохранить" onClick={saveLocal}>▣</button>
-          <button type="button" title="Отменить" onClick={undo} disabled={!state.canUndo}>↶</button>
-          <button type="button" title="Повторить" onClick={redo} disabled={!state.canRedo}>↷</button>
+          <button type="button" title="Сохранить (Ctrl+S)" onClick={saveLocal}>▣</button>
+          <button type="button" title="Отменить (Ctrl+Z)" onClick={undo} disabled={!state.canUndo}>↶</button>
+          <button type="button" title="Повторить (Ctrl+Y / Ctrl+Shift+Z)" onClick={redo} disabled={!state.canRedo}>↷</button>
           <button type="button" title="Настройки">⚙</button>
         </div>
       </header>
@@ -727,7 +831,7 @@ export function App() {
                 />
               </CommandGroup>
               <CommandGroup label="Сервис модели" compact>
-                <RibbonTextButton label="Перестроить" symbol="↻" onClick={rebuild} />
+                <RibbonTextButton label="Перестроить" symbol="↻" onClick={rebuild} title="Перестроить (F5)" />
                 <RibbonTextButton label="Свойства" symbol="ⓘ" disabled />
               </CommandGroup>
             </>
@@ -804,16 +908,16 @@ export function App() {
 
         <section className="work-area" aria-label="Рабочая область">
           <div className="viewport-quick-access" aria-label="Быстрый доступ рабочей области">
-            <button type="button" title="Показать всё" onClick={() => requestView('Показать всё')}>⌗</button>
-            <button type="button" title="Изометрия" onClick={() => requestView('Изометрия')}>◇</button>
+            <button type="button" title="Показать всё (F)" onClick={() => requestView('Показать всё')}>⌗</button>
+            <button type="button" title="Изометрия (0)" onClick={() => requestView('Изометрия')}>◇</button>
             <span className="quick-separator" />
             <span className="view-caption">{viewName}</span>
             {selectionMode !== 'none' && <span className="selection-caption">{selectionMode === 'face' ? 'Выбор грани' : 'Выбор ребра'}</span>}
             {activeCommand && (
               <>
                 <span className="quick-separator" />
-                <button className="quick-accept" type="button" onClick={commitActiveCommand} title="Применить">✓</button>
-                <button className="quick-cancel" type="button" onClick={cancelCommand} title="Отмена">×</button>
+                <button className="quick-accept" type="button" onClick={commitActiveCommand} title="Применить (Ctrl+Enter)">✓</button>
+                <button className="quick-cancel" type="button" onClick={cancelCommand} title="Отмена (Esc)">×</button>
               </>
             )}
           </div>
@@ -950,9 +1054,9 @@ function CommandButton(props: {
   );
 }
 
-function RibbonTextButton(props: { label: string; symbol: string; disabled?: boolean; onClick?: () => void }) {
+function RibbonTextButton(props: { label: string; symbol: string; disabled?: boolean; onClick?: () => void; title?: string }) {
   return (
-    <button className="ribbon-command text-command" type="button" disabled={props.disabled} onClick={props.onClick}>
+    <button className="ribbon-command text-command" type="button" disabled={props.disabled} onClick={props.onClick} title={props.title}>
       <span className="ribbon-command-icon">{props.symbol}</span>
       <span>{props.label}</span>
     </button>
@@ -970,6 +1074,12 @@ function commandSymbol(id: string): string {
 
 function ViewCommandGroups(props: { viewName: string; requestView: (value: string) => void }) {
   const views = ['Спереди', 'Сзади', 'Сверху', 'Снизу', 'Слева', 'Справа', 'Изометрия'];
+  const shortcuts: Record<string, string> = {
+    'Спереди': '1',
+    'Сверху': '2',
+    'Слева': '3',
+    'Изометрия': '0',
+  };
   return (
     <CommandGroup label="Ориентация">
       {views.map((view) => (
@@ -978,6 +1088,7 @@ function ViewCommandGroups(props: { viewName: string; requestView: (value: strin
           type="button"
           key={view}
           onClick={() => props.requestView(view)}
+          title={shortcuts[view] ? `${view} (${shortcuts[view]})` : view}
         >
           <span className="ribbon-command-icon">◇</span>
           <span>{view}</span>
