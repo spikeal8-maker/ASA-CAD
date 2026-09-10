@@ -5,8 +5,8 @@ import { extname, join, relative } from 'node:path';
 const WEB_ROOT = 'src/web';
 const APP_PATH = join(WEB_ROOT, 'App.tsx');
 
-// App.tsx is already too large. Freeze growth immediately; new feature families
-// must move responsibilities into focused modules before adding more orchestration.
+// App.tsx is already too large. Freeze growth immediately; M2O must shrink it
+// before M3 adds broad sketch command families.
 const MAX_APP_BYTES = 62_500;
 const appBytes = statSync(APP_PATH).size;
 assert.ok(
@@ -21,18 +21,35 @@ function filesRecursively(directory) {
   });
 }
 
-const mobileSourceFiles = filesRecursively(WEB_ROOT).filter((path) => {
+const presentationFiles = filesRecursively(WEB_ROOT).filter((path) => {
   const extension = extname(path);
-  return /mobile/i.test(relative(WEB_ROOT, path)) && (extension === '.ts' || extension === '.tsx');
+  return extension === '.ts' || extension === '.tsx';
 });
 
-for (const path of mobileSourceFiles) {
+for (const path of presentationFiles) {
   const source = readFileSync(path, 'utf8');
   assert.doesNotMatch(
     source,
-    /document\.querySelector|document\.querySelectorAll|\.click\(\)/,
-    `${path}: mobile presentation must consume typed actions/state, not discover or click desktop DOM controls`,
+    /document\.querySelector|document\.querySelectorAll/,
+    `${path}: presentation must communicate through typed React/actions/refs, not discover sibling UI through document queries`,
+  );
+  assert.doesNotMatch(
+    source,
+    /from\s+['"][^'"]*vendor\/toubkal|from\s+['"][^'"]*opencascade/i,
+    `${path}: product presentation must not import vendor/OpenCascade implementation directly`,
   );
 }
 
-console.log(`ASA-CAD M2 UI architecture PASS (App.tsx ${appBytes}/${MAX_APP_BYTES} bytes; ${mobileSourceFiles.length} mobile TS/TSX files checked)`);
+const appSource = readFileSync(APP_PATH, 'utf8');
+assert.doesNotMatch(
+  appSource,
+  /localStorage\.|indexedDB|asa-cad-project:/,
+  'App.tsx must persist through CadEditorPersistence/CadProjectSession, not own storage keys or browser persistence APIs',
+);
+assert.match(
+  appSource,
+  /CadEditorPersistence/,
+  'App.tsx must use the editor persistence facade until persistence ownership is moved into a higher editor controller',
+);
+
+console.log(`ASA-CAD M2 UI architecture PASS (App.tsx ${appBytes}/${MAX_APP_BYTES} bytes; ${presentationFiles.length} TS/TSX presentation files checked)`);
