@@ -5,20 +5,24 @@ on:
     branches: [main]
     paths:
       - src/web/**
+      - src/browser/**
+      - src/runtime/**
       - src/application/**
       - src/contracts/**
       - spec/ui/command-registry.v1.json
-      - build/rspack.asa.config.cjs
+      - build/**
       - tests/m2/**
       - package.json
       - .github/workflows/m2-shell.yml
   pull_request:
     paths:
       - src/web/**
+      - src/browser/**
+      - src/runtime/**
       - src/application/**
       - src/contracts/**
       - spec/ui/command-registry.v1.json
-      - build/rspack.asa.config.cjs
+      - build/**
       - tests/m2/**
       - package.json
       - .github/workflows/m2-shell.yml
@@ -41,6 +45,12 @@ jobs:
 
       - name: Install pinned frontend toolchain
         run: npm --prefix vendor/toubkal ci
+
+      - name: Typecheck ASA M2 presentation boundary
+        run: npm run typecheck:asa
+
+      - name: Verify neutral OpenCascade render bridge
+        run: npm run test:m2:render
 
       - name: Build ASA-owned shell
         run: npm run build:asa
