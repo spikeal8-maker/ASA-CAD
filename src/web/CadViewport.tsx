@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import type { CadRenderModel, CadViewportPick } from '../contracts/render';
+import type { CadBodyId } from '../contracts/ids';
 import { VIEWPORT_VISUAL_TOKENS } from './viewportTokens';
 import './runtime.css';
 
@@ -29,11 +30,14 @@ export interface CadViewportProps {
   selectionMode?: 'none' | 'face' | 'edge';
   onPick?: (pick: CadViewportPick) => void;
   viewCommand?: CadViewportViewCommand;
+  selectedBodyId?: CadBodyId | null;
+  onBodySelect?: (bodyId: CadBodyId | null) => void;
 }
 
 interface ViewportInteractionBridge {
   setSelectionMode(mode: 'none' | 'face' | 'edge'): void;
   setView(view: CadViewportViewName): void;
+  setSelectedBodyId(bodyId: CadBodyId | null): void;
 }
 
 interface StoredCameraState {
@@ -42,10 +46,19 @@ interface StoredCameraState {
   up: readonly [number, number, number];
 }
 
-export function CadViewport({ model, selectionMode = 'none', onPick, viewCommand }: CadViewportProps) {
+export function CadViewport({
+  model,
+  selectionMode = 'none',
+  onPick,
+  viewCommand,
+  selectedBodyId = null,
+  onBodySelect,
+}: CadViewportProps) {
   const hostRef = useRef<HTMLDivElement | null>(null);
   const selectionModeRef = useRef(selectionMode);
   const onPickRef = useRef(onPick);
+  const selectedBodyIdRef = useRef<CadBodyId | null>(selectedBodyId);
+  const onBodySelectRef = useRef(onBodySelect);
   const viewCommandRef = useRef(viewCommand);
   const appliedViewSequenceRef = useRef<number | null>(null);
   const interactionRef = useRef<ViewportInteractionBridge | null>(null);
@@ -57,9 +70,18 @@ export function CadViewport({ model, selectionMode = 'none', onPick, viewCommand
   }, [onPick]);
 
   useEffect(() => {
+    onBodySelectRef.current = onBodySelect;
+  }, [onBodySelect]);
+
+  useEffect(() => {
     selectionModeRef.current = selectionMode;
     interactionRef.current?.setSelectionMode(selectionMode);
   }, [selectionMode]);
+
+  useEffect(() => {
+    selectedBodyIdRef.current = selectedBodyId;
+    interactionRef.current?.setSelectedBodyId(selectedBodyId);
+  }, [selectedBodyId]);
 
   useEffect(() => {
     viewCommandRef.current = viewCommand;
@@ -241,6 +263,7 @@ export function CadViewport({ model, selectionMode = 'none', onPick, viewCommand
 
         let selectedFace: { meshId: string; faceIndex: number } | null = null;
         let hoverFace: { meshId: string; faceIndex: number } | null = null;
+        let hoverBodyId: CadBodyId | null = null;
         let viewChangeCount = 0;
 
         const writeCameraState = () => {
@@ -344,32 +367,49 @@ export function CadViewport({ model, selectionMode = 'none', onPick, viewCommand
           ) ?? null;
         };
 
-        const refreshFaceMaterials = () => {
+        const refreshMaterials = () => {
+          const ordinaryMode = selectionModeRef.current === 'none';
           for (const record of meshRecords) {
+            const bodySelected = ordinaryMode
+              && Boolean(record.source.bodyId)
+              && selectedBodyIdRef.current === record.source.bodyId;
+            const bodyHovered = ordinaryMode
+              && Boolean(record.source.bodyId)
+              && hoverBodyId === record.source.bodyId;
             for (let index = 0; index < record.source.faceGroups.length; index++) {
               const face = record.source.faceGroups[index];
-              const selected = selectedFace?.meshId === record.source.meshId && selectedFace.faceIndex === face.faceIndex;
-              const hovered = hoverFace?.meshId === record.source.meshId && hoverFace.faceIndex === face.faceIndex;
-              record.mesh.geometry.groups[index].materialIndex = selected ? 2 : hovered ? 1 : 0;
+              const faceSelected = selectedFace?.meshId === record.source.meshId && selectedFace.faceIndex === face.faceIndex;
+              const faceHovered = hoverFace?.meshId === record.source.meshId && hoverFace.faceIndex === face.faceIndex;
+              record.mesh.geometry.groups[index].materialIndex = bodySelected || faceSelected
+                ? 2
+                : bodyHovered || faceHovered ? 1 : 0;
             }
           }
         };
 
-        const resetSelectionVisuals = () => {
+        const resetCommandSelectionVisuals = () => {
           selectedFace = null;
           hoverFace = null;
+          hoverBodyId = null;
           hoverMarker.visible = false;
           selectedMarker.visible = false;
-          refreshFaceMaterials();
+          refreshMaterials();
           renderer.domElement.style.cursor = 'default';
           render();
         };
 
         const setSelectionMode = (mode: 'none' | 'face' | 'edge') => {
           renderer.domElement.className = `cad-viewport-canvas selection-${mode}`;
-          resetSelectionVisuals();
+          resetCommandSelectionVisuals();
         };
-        interactionRef.current = { setSelectionMode, setView };
+        const setSelectedBodyId = (bodyId: CadBodyId | null) => {
+          selectedBodyIdRef.current = bodyId;
+          hoverBodyId = null;
+          refreshMaterials();
+          render();
+        };
+        interactionRef.current = { setSelectionMode, setView, setSelectedBodyId };
+        refreshMaterials();
         const pendingViewCommand = viewCommandRef.current;
         if (pendingViewCommand && appliedViewSequenceRef.current !== pendingViewCommand.sequence) {
           setView(pendingViewCommand.view);
@@ -383,17 +423,22 @@ export function CadViewport({ model, selectionMode = 'none', onPick, viewCommand
           raycaster.setFromCamera(pointer, camera);
         };
 
-        const faceHit = (event: PointerEvent) => {
+        const meshHit = (event: PointerEvent) => {
           setPointer(event);
           const hits = raycaster.intersectObjects(meshRecords.map((record) => record.mesh), false);
           for (const hit of hits) {
             const record = meshRecords.find((item) => item.mesh === hit.object);
-            if (!record || hit.faceIndex == null) continue;
-            const face = faceGroupAtTriangle(record.source, hit.faceIndex);
-            if (!face) continue;
-            return { hit, record, face };
+            if (record) return { hit, record };
           }
           return null;
+        };
+
+        const faceHit = (event: PointerEvent) => {
+          const found = meshHit(event);
+          if (!found || found.hit.faceIndex == null) return null;
+          const face = faceGroupAtTriangle(found.record.source, found.hit.faceIndex);
+          if (!face) return null;
+          return { ...found, face };
         };
 
         const edgeHit = (event: PointerEvent) => {
@@ -409,8 +454,9 @@ export function CadViewport({ model, selectionMode = 'none', onPick, viewCommand
         const onPointerMove = (event: PointerEvent) => {
           if (event.buttons !== 0) {
             hoverFace = null;
+            hoverBodyId = null;
             hoverMarker.visible = false;
-            refreshFaceMaterials();
+            refreshMaterials();
             renderer.domElement.style.cursor = 'grabbing';
             render();
             return;
@@ -419,17 +465,19 @@ export function CadViewport({ model, selectionMode = 'none', onPick, viewCommand
           const mode = selectionModeRef.current;
           if (mode === 'face') {
             const found = faceHit(event);
+            hoverBodyId = null;
             hoverFace = found ? { meshId: found.record.source.meshId, faceIndex: found.face.faceIndex } : null;
             hoverMarker.visible = false;
-            refreshFaceMaterials();
+            refreshMaterials();
             renderer.domElement.style.cursor = found ? 'crosshair' : 'default';
             render();
             return;
           }
           if (mode === 'edge') {
             const found = edgeHit(event);
+            hoverBodyId = null;
             hoverFace = null;
-            refreshFaceMaterials();
+            refreshMaterials();
             if (found) {
               hoverMarker.position.copy(found.hit.point);
               hoverMarker.visible = true;
@@ -441,17 +489,20 @@ export function CadViewport({ model, selectionMode = 'none', onPick, viewCommand
             return;
           }
 
+          const found = meshHit(event);
           hoverFace = null;
           hoverMarker.visible = false;
-          refreshFaceMaterials();
-          renderer.domElement.style.cursor = 'default';
+          hoverBodyId = found?.record.source.bodyId ?? null;
+          refreshMaterials();
+          renderer.domElement.style.cursor = hoverBodyId ? 'pointer' : 'default';
           render();
         };
 
         const onPointerLeave = () => {
           hoverFace = null;
+          hoverBodyId = null;
           hoverMarker.visible = false;
-          refreshFaceMaterials();
+          refreshMaterials();
           renderer.domElement.style.cursor = 'default';
           render();
         };
@@ -467,8 +518,9 @@ export function CadViewport({ model, selectionMode = 'none', onPick, viewCommand
               faceIndex: found.face.faceIndex,
             };
             hoverFace = null;
+            hoverBodyId = null;
             hoverMarker.visible = false;
-            refreshFaceMaterials();
+            refreshMaterials();
             render();
             onPickRef.current?.({
               kind: 'face',
@@ -496,7 +548,16 @@ export function CadViewport({ model, selectionMode = 'none', onPick, viewCommand
               segmentIndex: found.hit.index ?? undefined,
               point: [found.hit.point.x, found.hit.point.y, found.hit.point.z],
             });
+            return;
           }
+
+          const found = meshHit(event);
+          const bodyId = found?.record.source.bodyId ?? null;
+          selectedBodyIdRef.current = bodyId;
+          hoverBodyId = null;
+          refreshMaterials();
+          render();
+          onBodySelectRef.current?.(bodyId);
         };
 
         const onPointerDown = (event: PointerEvent) => {
@@ -578,6 +639,7 @@ export function CadViewport({ model, selectionMode = 'none', onPick, viewCommand
       data-testid="cad-viewport"
       data-runtime-revision={model?.runtimeRevision ?? ''}
       data-selection-mode={selectionMode}
+      data-selected-body-id={selectedBodyId ?? ''}
       data-bounds={bounds}
     >
       {error && <div className="cad-viewport-error">{error}</div>}
