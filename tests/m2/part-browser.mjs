@@ -28,6 +28,14 @@ function near(actual, expected, tolerance = 0.2, label = 'value') {
   assert.ok(Math.abs(actual - expected) <= tolerance, `${label}: expected ${expected}, got ${actual}`);
 }
 
+function parseVector(value, label) {
+  assert.ok(value, `missing ${label}`);
+  const result = value.split(',').map(Number);
+  assert.equal(result.length, 3, `invalid ${label}: ${value}`);
+  assert.ok(result.every(Number.isFinite), `non-finite ${label}: ${value}`);
+  return result;
+}
+
 async function currentBounds() {
   const raw = await page.locator('[data-testid="cad-viewport"]').getAttribute('data-bounds');
   assert.ok(raw, 'viewport has no data-bounds');
@@ -51,22 +59,27 @@ async function clickProjectedWorldPoint(worldPoint) {
   const box = await canvas.boundingBox();
   assert.ok(box && box.width > 0 && box.height > 0, 'CAD viewport canvas has no usable bounds');
 
+  // Project through the viewport's actual camera state. This deliberately does
+  // not reproduce CadViewport's camera-placement formula: Fit/standard views
+  // are allowed to change that formula without making topology-pick E2E stale.
+  const cameraState = await viewport.evaluate((node) => ({
+    position: node.getAttribute('data-camera-position'),
+    target: node.getAttribute('data-camera-target'),
+    up: node.getAttribute('data-camera-up'),
+  }));
+  const position = parseVector(cameraState.position, 'camera position');
+  const target = parseVector(cameraState.target, 'camera target');
+  const up = parseVector(cameraState.up, 'camera up');
   const bounds = await currentBounds();
-  const [minX, minY, minZ, maxX, maxY, maxZ] = bounds;
-  const center = new THREE.Vector3(
-    (minX + maxX) / 2,
-    (minY + maxY) / 2,
-    (minZ + maxZ) / 2,
+  const diagonal = Math.max(
+    Math.hypot(bounds[3] - bounds[0], bounds[4] - bounds[1], bounds[5] - bounds[2]),
+    10,
   );
-  const diagonal = Math.max(Math.hypot(maxX - minX, maxY - minY, maxZ - minZ), 10);
+
   const camera = new THREE.PerspectiveCamera(34, box.width / box.height, Math.max(diagonal / 1000, 0.01), diagonal * 100);
-  camera.up.set(0, 0, 1);
-  camera.position.set(
-    center.x + diagonal * 0.95,
-    center.y - diagonal * 1.15,
-    center.z + diagonal * 0.8,
-  );
-  camera.lookAt(center);
+  camera.position.set(...position);
+  camera.up.set(...up);
+  camera.lookAt(new THREE.Vector3(...target));
   camera.updateMatrixWorld(true);
   camera.updateProjectionMatrix();
 
