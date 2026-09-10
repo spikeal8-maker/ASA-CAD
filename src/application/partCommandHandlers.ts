@@ -7,6 +7,7 @@ import type {
 } from '../contracts/commands';
 import type {
   CadBody,
+  CadCoincidentConstraint,
   CadConstraint,
   CadDimension,
   CadFeature,
@@ -25,6 +26,7 @@ import type {
 import { createCadId } from '../contracts/ids';
 
 export type PartDocumentCommand = Exclude<CadCommand, { id: 'document.rebuild' }>;
+type SingleEntityConstraintType = 'horizontal' | 'vertical' | 'fixed';
 
 export function getPartCommandAvailability(
   part: Readonly<CadPartDocument>,
@@ -106,12 +108,11 @@ export function applyPartDocumentCommand(
       const ids: CadSketchEntityId[] = [];
       for (let index = 0; index < 4; index++) {
         const id = createCadId<CadSketchEntityId>('entity');
-        const entity: CadSketchEntity = {
+        sketch.entities.push({
           id,
           type: 'line',
           data: { from: points[index], to: points[(index + 1) % 4], role: `rectangle-edge-${index}` },
-        };
-        sketch.entities.push(entity);
+        });
         ids.push(id);
       }
       return { ok: true, changed: true, createdIds: ids };
@@ -134,24 +135,13 @@ export function applyPartDocumentCommand(
       return { ok: true, changed: false };
 
     case 'constraint.horizontal':
-      return addConstraint(part, command.payload.sketchId, 'horizontal', [command.payload.entityId]);
-
+      return addSingleEntityConstraint(part, command.payload.sketchId, 'horizontal', command.payload.entityId);
     case 'constraint.vertical':
-      return addConstraint(part, command.payload.sketchId, 'vertical', [command.payload.entityId]);
-
+      return addSingleEntityConstraint(part, command.payload.sketchId, 'vertical', command.payload.entityId);
     case 'constraint.fixed':
-      return addConstraint(part, command.payload.sketchId, 'fixed', [command.payload.entityId]);
-
-    case 'constraint.coincident': {
-      const refs: CadSketchCommandReference[] = [command.payload.a, command.payload.b];
-      return addConstraint(
-        part,
-        command.payload.sketchId,
-        'coincident',
-        refs.map((ref) => ref.entityId),
-        { refs: refs.map((ref) => ({ ...ref })) },
-      );
-    }
+      return addSingleEntityConstraint(part, command.payload.sketchId, 'fixed', command.payload.entityId);
+    case 'constraint.coincident':
+      return addCoincidentConstraint(part, command.payload.sketchId, [command.payload.a, command.payload.b]);
 
     case 'dimension.linear': {
       const sketch = requireSketch(part, command.payload.sketchId);
@@ -259,17 +249,39 @@ export function applyPartDocumentCommand(
   }
 }
 
-function addConstraint(
+function addSingleEntityConstraint(
   part: CadPartDocument,
   sketchId: CadSketchId,
-  type: string,
-  entityIds: CadSketchEntityId[],
-  data?: Record<string, unknown>,
+  type: SingleEntityConstraintType,
+  entityId: CadSketchEntityId,
 ): CadCommandResult {
   const sketch = requireSketch(part, sketchId);
-  for (const entityId of entityIds) requireSketchEntity(sketch, entityId);
+  requireSketchEntity(sketch, entityId);
   const id = createCadId<CadConstraintId>('constraint');
-  const constraint: CadConstraint = { id, type, entityIds: [...entityIds], data };
+  const constraint: CadConstraint = type === 'horizontal'
+    ? { id, type: 'horizontal', entityIds: [entityId] }
+    : type === 'vertical'
+      ? { id, type: 'vertical', entityIds: [entityId] }
+      : { id, type: 'fixed', entityIds: [entityId] };
+  part.constraints.push(constraint);
+  sketch.constraintIds.push(id);
+  return { ok: true, changed: true, createdIds: [id] };
+}
+
+function addCoincidentConstraint(
+  part: CadPartDocument,
+  sketchId: CadSketchId,
+  refs: [CadSketchCommandReference, CadSketchCommandReference],
+): CadCommandResult {
+  const sketch = requireSketch(part, sketchId);
+  for (const ref of refs) requireSketchEntity(sketch, ref.entityId);
+  const id = createCadId<CadConstraintId>('constraint');
+  const constraint: CadCoincidentConstraint = {
+    id,
+    type: 'coincident',
+    entityIds: refs.map((ref) => ref.entityId),
+    data: { refs: [{ ...refs[0] }, { ...refs[1] }] },
+  };
   part.constraints.push(constraint);
   sketch.constraintIds.push(id);
   return { ok: true, changed: true, createdIds: [id] };
