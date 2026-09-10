@@ -47,10 +47,10 @@ export class PlaneGCSSketchSolverRuntime implements CadSketchSolverAdapter {
       const entities = sketch.entities.map((entity) => {
         const solved = result.geoms[entity.id];
         if (!solved) return { id: entity.id, data: structuredClone(entity.data) };
-        if (solved.kind === 'line') {
+        if (entity.type === 'line' && solved.kind === 'line') {
           return { id: entity.id, data: { ...entity.data, from: [...solved.a], to: [...solved.b] } };
         }
-        if (solved.kind === 'circle') {
+        if (entity.type === 'circle' && solved.kind === 'circle') {
           return { id: entity.id, data: { ...entity.data, center: [...solved.c], diameter: solved.r * 2 } };
         }
         return { id: entity.id, data: structuredClone(entity.data) };
@@ -81,17 +81,16 @@ export class PlaneGCSSketchSolverRuntime implements CadSketchSolverAdapter {
         return [{
           id: entity.id,
           kind: 'line',
-          a: this.point2(entity.data.from, `${entity.id}.from`),
-          b: this.point2(entity.data.to, `${entity.id}.to`),
+          a: [...entity.data.from] as [number, number],
+          b: [...entity.data.to] as [number, number],
         }];
       }
       if (entity.type === 'circle') {
-        const diameter = this.number(entity.data.diameter, `${entity.id}.diameter`);
         return [{
           id: entity.id,
           kind: 'circle',
-          c: this.point2(entity.data.center, `${entity.id}.center`),
-          r: diameter / 2,
+          c: [...entity.data.center] as [number, number],
+          r: entity.data.diameter / 2,
         }];
       }
       return [];
@@ -113,13 +112,13 @@ export class PlaneGCSSketchSolverRuntime implements CadSketchSolverAdapter {
         return this.vendorConstraint(constraint, 'VERTICAL', [{ entityId: constraint.entityIds[0] }]);
       case 'fixed':
         return this.vendorConstraint(constraint, 'FIXED', [{ entityId: constraint.entityIds[0] }]);
-      case 'coincident': {
-        const refs = constraint.data?.refs;
-        if (!Array.isArray(refs) || refs.length !== 2) throw new Error(`Constraint ${constraint.id} has no coincident refs`);
-        return this.vendorConstraint(constraint, 'COINCIDENT', refs as StoredPointRef[]);
+      case 'coincident':
+        return this.vendorConstraint(constraint, 'COINCIDENT', constraint.data.refs);
+      default: {
+        const unreachable: never = constraint;
+        void unreachable;
+        throw new Error('M1 PlaneGCS adapter received an unsupported typed constraint');
       }
-      default:
-        throw new Error(`M1 PlaneGCS adapter does not support constraint type ${constraint.type}`);
     }
   }
 
@@ -153,7 +152,7 @@ export class PlaneGCSSketchSolverRuntime implements CadSketchSolverAdapter {
   private vendorConstraint(
     constraint: CadConstraint,
     type: SketchConstraint['type'],
-    refs: StoredPointRef[],
+    refs: readonly StoredPointRef[],
   ): SketchConstraint {
     return {
       id: constraint.id,
@@ -164,16 +163,6 @@ export class PlaneGCSSketchSolverRuntime implements CadSketchSolverAdapter {
         pt: ref.point,
       })),
     };
-  }
-
-  private point2(value: unknown, label: string): [number, number] {
-    if (!Array.isArray(value) || value.length < 2) throw new Error(`${label} must be [x,y]`);
-    return [this.number(value[0], `${label}[0]`), this.number(value[1], `${label}[1]`)];
-  }
-
-  private number(value: unknown, label: string): number {
-    if (typeof value !== 'number' || !Number.isFinite(value)) throw new Error(`${label} must be finite`);
-    return value;
   }
 
   private failure(code: string, message: string): CadSketchSolveResult {
