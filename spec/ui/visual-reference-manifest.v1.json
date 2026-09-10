@@ -11,186 +11,30 @@
     "ownerScreenshotPriority": "When the owner supplies a KOMPAS screenshot for the exact state, it becomes the primary visual measurement reference; official help remains the behavioral/structural reference.",
     "deliberateDifferenceRequired": true
   },
+  "referenceBaselineStatus": "complete",
+  "visualImplementationStatus": "pending-m2",
   "references": [
-    {
-      "id": "kompas25-shell-management-panels",
-      "documentKind": "all",
-      "workspace": "shell",
-      "state": "management-panel-block",
-      "status": "official-help-bound",
-      "officialHelp": "https://help.ascon.ru/KOMPAS/25/ru-RU/ae1730271.html",
-      "asaFixture": "/dev/part/empty",
-      "measures": ["management panel rail", "single active panel behavior", "automatic Parameters panel activation", "panel hide/show hierarchy"]
-    },
-    {
-      "id": "kompas25-viewport-quick-access",
-      "documentKind": "part",
-      "workspace": "viewport",
-      "state": "quick-access-idle-and-command",
-      "status": "official-help-bound",
-      "officialHelp": "https://help.ascon.ru/KOMPAS/25/ru-RU/ae1730953.html",
-      "asaFixture": "/dev/part/reference",
-      "measures": ["bar attached to upper edge of graphical area", "horizontal placement", "context-dependent contents", "confirm/finish controls during operations"]
-    },
-    {
-      "id": "kompas25-part-shell",
-      "documentKind": "part",
-      "workspace": "solid",
-      "state": "idle-part-tree",
-      "status": "official-structure-owner-shot-preferred",
-      "officialHelp": "https://help.ascon.ru/KOMPAS/25/ru-RU/ae1730271.html",
-      "asaFixture": "/dev/part/empty",
-      "ownerScreenshotSlot": "part-shell-primary",
-      "measures": ["main menu", "document tabs", "instrument area", "Tree panel", "graphical area", "status hierarchy"]
-    },
-    {
-      "id": "kompas25-sketch-active",
-      "documentKind": "part",
-      "workspace": "sketch",
-      "state": "sketch-editing",
-      "status": "official-structure-owner-shot-preferred",
-      "officialHelp": "https://help.ascon.ru/KOMPAS/25/ru-RU/1396_vspomogatelnye.html",
-      "asaFixture": "/dev/part/sketch",
-      "ownerScreenshotSlot": "sketch-active-primary",
-      "measures": ["Sketch command grouping", "geometry controls", "parameter panel", "constraint feedback", "finish/cancel visibility"]
-    },
-    {
-      "id": "kompas25-extrude-active",
-      "documentKind": "part",
-      "workspace": "solid",
-      "state": "extrude-active",
-      "status": "official-help-bound",
-      "officialHelp": "https://help.ascon.ru/KOMPAS/25/ru-RU/cm_base_extrusion_solid.html",
-      "asaFixture": "/dev/part/extrude",
-      "ownerScreenshotSlot": "extrude-parameters-primary",
-      "measures": ["command header", "profile selector", "direction/depth controls", "second direction", "preview", "Create/Finish lifecycle"]
-    },
-    {
-      "id": "kompas25-cut-extrude-active",
-      "documentKind": "part",
-      "workspace": "solid",
-      "state": "cut-extrude-active",
-      "status": "official-help-bound",
-      "officialHelp": "https://help.ascon.ru/KOMPAS/25/ru-RU/cm_base_extrusion_solid.html",
-      "asaFixture": "/dev/part/cut-extrude",
-      "measures": ["cut operation parameter hierarchy", "selection", "depth/result", "preview", "confirm/cancel"]
-    },
-    {
-      "id": "kompas25-shell-operation-active",
-      "documentKind": "part",
-      "workspace": "solid",
-      "state": "shell-active",
-      "status": "official-help-bound",
-      "officialHelp": "https://help.ascon.ru/KOMPAS/25/ru-RU/cm_make_shell.html",
-      "asaFixture": "/dev/part/shell",
-      "measures": ["selected faces register", "direction", "thickness", "variable thickness", "preview"]
-    },
-    {
-      "id": "kompas25-assembly-shell",
-      "documentKind": "assembly",
-      "workspace": "assembly",
-      "state": "assembly-idle",
-      "status": "official-structure-owner-shot-preferred",
-      "officialHelp": "https://help.ascon.ru/KOMPAS/25/ru-RU/892_glava104_dobavlenie_kompone.html",
-      "asaFixture": "/dev/assembly/reference",
-      "ownerScreenshotSlot": "assembly-shell-primary",
-      "measures": ["Components group", "assembly tree", "mate section", "work area", "component state hierarchy"]
-    },
-    {
-      "id": "kompas25-assembly-replace-component",
-      "documentKind": "assembly",
-      "workspace": "assembly",
-      "state": "replace-component-active",
-      "status": "official-help-bound",
-      "officialHelp": "https://help.ascon.ru/KOMPAS/25/ru-RU/cm_instance_change_sources.html",
-      "asaFixture": "/dev/assembly/replace-component",
-      "measures": ["component selection", "source replacement", "context menu path", "parameter process"]
-    },
-    {
-      "id": "kompas25-assembly-context-edit",
-      "documentKind": "assembly",
-      "workspace": "component-edit",
-      "state": "part-in-context",
-      "status": "official-v25-structure-owner-shot-required-for-final-measurement",
-      "officialHelp": "https://help.ascon.ru/KOMPAS/25/ru-RU/892_glava104_dobavlenie_kompone.html",
-      "asaFixture": "/dev/assembly/context-edit",
-      "ownerScreenshotSlot": "assembly-context-edit-primary",
-      "measures": ["active component emphasis", "surrounding read-only components", "return/finish affordance", "tree state"]
-    },
-    {
-      "id": "kompas25-drawing-new-view",
-      "documentKind": "drawing",
-      "workspace": "drawing",
-      "state": "new-view-active",
-      "status": "official-help-bound",
-      "officialHelp": "https://help.ascon.ru/KOMPAS/25/ru-RU/cm_createsheetview.html",
-      "asaFixture": "/dev/drawing/new-view",
-      "measures": ["Views group", "parameter panel", "view placement cursor", "tree integration"]
-    },
-    {
-      "id": "kompas25-drawing-projected-view",
-      "documentKind": "drawing",
-      "workspace": "drawing",
-      "state": "projected-view-active",
-      "status": "official-help-bound",
-      "officialHelp": "https://help.ascon.ru/KOMPAS/25/ru-RU/cm_create_projection_view.html",
-      "asaFixture": "/dev/drawing/projected-view",
-      "measures": ["support view prerequisite", "projected view placement", "parameter controls", "associative behavior"]
-    },
-    {
-      "id": "kompas25-drawing-roughness",
-      "documentKind": "drawing",
-      "workspace": "drawing",
-      "state": "roughness-active",
-      "status": "official-help-bound",
-      "officialHelp": "https://help.ascon.ru/KOMPAS/25/ru-RU/cm_rough.html",
-      "asaFixture": "/dev/drawing/roughness",
-      "measures": ["Annotations group", "symbol parameter panel", "placement", "preview"]
-    },
-    {
-      "id": "kompas25-spec-add-object",
-      "documentKind": "specification",
-      "workspace": "specification",
-      "state": "add-section-object",
-      "status": "official-help-bound",
-      "officialHelp": "https://help.ascon.ru/KOMPAS/25/ru-RU/cm_spc_insert.html",
-      "asaFixture": "/dev/specification/reference",
-      "measures": ["Objects instrumental area", "Add section", "Add base/aux object", "table editing hierarchy"]
-    },
-    {
-      "id": "kompas25-text-insert-illustration",
-      "documentKind": "text",
-      "workspace": "text",
-      "state": "insert-illustration",
-      "status": "official-help-bound",
-      "officialHelp": "https://help.ascon.ru/KOMPAS/25/ru-RU/z_news_text.html",
-      "asaFixture": "/dev/text/reference",
-      "measures": ["text work area", "insertion via Parameter panel", "document-page behavior"]
-    },
-    {
-      "id": "kompas25-surfaces-workspace",
-      "documentKind": "part",
-      "workspace": "surfaces",
-      "state": "surface-command-active",
-      "status": "advanced-reference-bound",
-      "officialHelp": "https://help.ascon.ru/KOMPAS/25/ru-RU/884_glava103_poverkhnosti.html",
-      "asaFixture": null,
-      "measures": ["Каркас и поверхности workspace", "surface command families", "selection/parameter-panel lifecycle"]
-    },
-    {
-      "id": "kompas25-sheet-metal-workspace",
-      "documentKind": "part",
-      "workspace": "sheet-metal",
-      "state": "sheet-metal-command-family",
-      "status": "advanced-reference-bound",
-      "officialHelp": "https://help.ascon.ru/KOMPAS/25/ru-RU/cm_shmt_bend_unfold.html",
-      "asaFixture": null,
-      "measures": ["Листовое моделирование workspace", "sheet element lifecycle", "unfold quick-access behavior"]
-    }
+    {"id":"kompas25-shell-management-panels","documentKind":"all","workspace":"shell","state":"management-panel-block","status":"reference-bound","officialHelp":"https://help.ascon.ru/KOMPAS/25/ru-RU/ae1730271.html","asaFixture":"/dev/part/empty","fixtureStatus":"pending-m2","measures":["management panel rail","single active panel behavior","automatic Parameters panel activation","panel hide/show hierarchy"]},
+    {"id":"kompas25-viewport-quick-access","documentKind":"part","workspace":"viewport","state":"quick-access-idle-and-command","status":"reference-bound","officialHelp":"https://help.ascon.ru/KOMPAS/25/ru-RU/ae1730953.html","asaFixture":"/dev/part/reference","fixtureStatus":"pending-m2","measures":["bar attached to graphical area","context-dependent contents","confirm/finish controls"]},
+    {"id":"kompas25-part-shell","documentKind":"part","workspace":"solid","state":"idle-part-tree","status":"reference-bound","officialHelp":"https://help.ascon.ru/KOMPAS/25/ru-RU/ae1730271.html","asaFixture":"/dev/part/empty","fixtureStatus":"pending-m2","ownerScreenshotSlot":"part-shell-primary","measures":["main menu","document tabs","instrument area","Tree panel","graphical area","status hierarchy"]},
+    {"id":"kompas25-sketch-active","documentKind":"part","workspace":"sketch","state":"sketch-editing","status":"reference-bound","officialHelp":"https://help.ascon.ru/KOMPAS/25/ru-RU/1396_vspomogatelnye.html","asaFixture":"/dev/part/sketch","fixtureStatus":"pending-m2","ownerScreenshotSlot":"sketch-active-primary","measures":["Sketch command grouping","geometry controls","parameter panel","constraint feedback","finish/cancel"]},
+    {"id":"kompas25-extrude-active","documentKind":"part","workspace":"solid","state":"extrude-active","status":"reference-bound","officialHelp":"https://help.ascon.ru/KOMPAS/25/ru-RU/cm_base_extrusion_solid.html","asaFixture":"/dev/part/extrude","fixtureStatus":"pending-m2","ownerScreenshotSlot":"extrude-parameters-primary","measures":["command header","profile selector","direction/depth","second direction","preview","Create/Finish lifecycle"]},
+    {"id":"kompas25-cut-extrude-active","documentKind":"part","workspace":"solid","state":"cut-extrude-active","status":"reference-bound","officialHelp":"https://help.ascon.ru/KOMPAS/25/ru-RU/cm_base_extrusion_solid.html","asaFixture":"/dev/part/cut-extrude","fixtureStatus":"pending-m2","measures":["cut parameter hierarchy","selection","depth/result","preview","confirm/cancel"]},
+    {"id":"kompas25-shell-operation-active","documentKind":"part","workspace":"solid","state":"shell-active","status":"reference-bound","officialHelp":"https://help.ascon.ru/KOMPAS/25/ru-RU/cm_make_shell.html","asaFixture":"/dev/part/shell","fixtureStatus":"pending-m4","measures":["selected faces","direction","thickness","variable thickness","preview"]},
+    {"id":"kompas25-assembly-shell","documentKind":"assembly","workspace":"assembly","state":"assembly-idle","status":"reference-bound","officialHelp":"https://help.ascon.ru/KOMPAS/25/ru-RU/892_glava104_dobavlenie_kompone.html","asaFixture":"/dev/assembly/reference","fixtureStatus":"pending-m4a","ownerScreenshotSlot":"assembly-shell-primary","measures":["Components group","assembly tree","mate section","work area","component states"]},
+    {"id":"kompas25-assembly-replace-component","documentKind":"assembly","workspace":"assembly","state":"replace-component-active","status":"reference-bound","officialHelp":"https://help.ascon.ru/KOMPAS/25/ru-RU/cm_instance_change_sources.html","asaFixture":"/dev/assembly/replace-component","fixtureStatus":"pending-m4a","measures":["component selection","source replacement","context path","parameter process"]},
+    {"id":"kompas25-assembly-context-edit","documentKind":"assembly","workspace":"component-edit","state":"part-in-context","status":"reference-bound","officialHelp":"https://help.ascon.ru/KOMPAS/25/ru-RU/892_glava104_dobavlenie_kompone.html","asaFixture":"/dev/assembly/context-edit","fixtureStatus":"pending-m4a","ownerScreenshotSlot":"assembly-context-edit-primary","measures":["active component emphasis","surrounding read-only components","finish affordance","tree state"]},
+    {"id":"kompas25-drawing-new-view","documentKind":"drawing","workspace":"drawing","state":"new-view-active","status":"reference-bound","officialHelp":"https://help.ascon.ru/KOMPAS/25/ru-RU/cm_createsheetview.html","asaFixture":"/dev/drawing/new-view","fixtureStatus":"pending-m6","measures":["Views group","parameter panel","view placement cursor","tree integration"]},
+    {"id":"kompas25-drawing-projected-view","documentKind":"drawing","workspace":"drawing","state":"projected-view-active","status":"reference-bound","officialHelp":"https://help.ascon.ru/KOMPAS/25/ru-RU/cm_create_projection_view.html","asaFixture":"/dev/drawing/projected-view","fixtureStatus":"pending-m6","measures":["support view prerequisite","projected view placement","parameter controls","associativity"]},
+    {"id":"kompas25-drawing-roughness","documentKind":"drawing","workspace":"drawing","state":"roughness-active","status":"reference-bound","officialHelp":"https://help.ascon.ru/KOMPAS/25/ru-RU/cm_rough.html","asaFixture":"/dev/drawing/roughness","fixtureStatus":"pending-m6","measures":["Annotations group","symbol parameter panel","placement","preview"]},
+    {"id":"kompas25-spec-add-object","documentKind":"specification","workspace":"specification","state":"add-section-object","status":"reference-bound","officialHelp":"https://help.ascon.ru/KOMPAS/25/ru-RU/cm_spc_insert.html","asaFixture":"/dev/specification/reference","fixtureStatus":"pending-m6a","measures":["Objects area","Add section","base/aux object","table hierarchy"]},
+    {"id":"kompas25-text-insert-illustration","documentKind":"text","workspace":"text","state":"insert-illustration","status":"reference-bound","officialHelp":"https://help.ascon.ru/KOMPAS/25/ru-RU/z_news_text.html","asaFixture":"/dev/text/reference","fixtureStatus":"pending-m6a","measures":["text work area","Parameters insertion","page behavior"]},
+    {"id":"kompas25-surfaces-workspace","documentKind":"part","workspace":"surfaces","state":"surface-command-active","status":"reference-bound-advanced","officialHelp":"https://help.ascon.ru/KOMPAS/25/ru-RU/884_glava103_poverkhnosti.html","asaFixture":null,"fixtureStatus":"deferred-m7-plus","measures":["surface workspace","command families","selection/parameter lifecycle"]},
+    {"id":"kompas25-sheet-metal-workspace","documentKind":"part","workspace":"sheet-metal","state":"sheet-metal-command-family","status":"reference-bound-advanced","officialHelp":"https://help.ascon.ru/KOMPAS/25/ru-RU/listovye_tela_general.html","asaFixture":null,"fixtureStatus":"deferred-m7-plus","measures":["sheet-metal workspace","sheet element lifecycle","unfold behavior"]}
   ],
   "completion": {
-    "m2ReferenceCoverage": "bound",
-    "ownerScreenshots": "optional for structural implementation, required for pixel/spacing tuning when the owner wants a specific installed KOMPAS appearance",
-    "advancedWorkspaceReferences": "recorded; implementation deferred by roadmap"
+    "structuralReferenceCoverage": "complete-for-current-planning-baseline",
+    "ownerScreenshots": "optional for structural implementation; required only for exact owner-specific spacing/appearance tuning",
+    "actualAsaFixtureAndVisualReview": "pending implementation milestones"
   }
 }
