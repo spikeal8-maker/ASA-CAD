@@ -1,7 +1,8 @@
 {
   "product": "ASA-CAD",
-  "releaseVersion": "0.1.0-m1b",
+  "releaseVersion": "0.2.0-m2",
   "releaseChannel": "development",
+  "productShell": "asa-m2",
   "cadDocumentSchemaVersion": 1,
   "engineVersion": "0.1.0-m1",
   "mountPath": "/cad",
@@ -9,6 +10,7 @@
   "viewerRoute": "/cad/view/:versionId",
   "runtime": {
     "compute": "client-browser",
+    "loading": "lazy-on-first-solid-operation",
     "requiresWebAssembly": true,
     "currentRequiresSharedArrayBuffer": true,
     "currentRequiresCrossOriginIsolation": true
