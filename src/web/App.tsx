@@ -18,6 +18,7 @@ import {
 } from './CadViewport';
 import { applyPartDevFixture } from './devFixtures';
 import { CadEditorPersistence } from './CadEditorPersistence';
+import { useUiScaleSettings } from './UiScaleSettings';
 import {
   ShortcutRegistry,
   shortcutInputKind,
@@ -106,6 +107,7 @@ function dimensionLabel(name: string | undefined, type: string): string {
 }
 
 export function App() {
+  const { openSettings } = useUiScaleSettings();
   const route = useMemo(() => parseCadClientRoute(window.location.pathname), []);
   const devFixture = route.kind === 'dev-part' ? route.fixture : null;
   const fixtureStartedRef = useRef(false);
@@ -827,7 +829,7 @@ export function App() {
           <button type="button" title="Сохранить (Ctrl+S)" onClick={saveLocal}>▣</button>
           <button type="button" title="Отменить (Ctrl+Z)" onClick={undo} disabled={!state.canUndo}>↶</button>
           <button type="button" title="Повторить (Ctrl+Y / Ctrl+Shift+Z)" onClick={redo} disabled={!state.canRedo}>↷</button>
-          <button type="button" title="Настройки">⚙</button>
+          <button type="button" title="Настройки" onClick={openSettings} aria-haspopup="dialog" aria-controls="asa-cad-interface-settings">⚙</button>
         </div>
       </header>
 
