@@ -9,9 +9,17 @@ on:
       - docker/**
       - release/**
       - package.json
-      - tests/m0d/**
+      - tsconfig.json
+      - build/**
+      - spec/ui/**
+      - src/web/**
       - src/browser/**
+      - src/runtime/**
+      - src/application/**
+      - src/contracts/**
       - src/host/**
+      - tests/m0d/**
+      - tests/m2/part-browser.mjs
       - .github/workflows/docker.yml
       - vendor/toubkal/package.json
       - vendor/toubkal/package-lock.json
@@ -23,13 +31,24 @@ on:
       - docker/**
       - release/**
       - package.json
-      - tests/m0d/**
+      - tsconfig.json
+      - build/**
+      - spec/ui/**
+      - src/web/**
       - src/browser/**
+      - src/runtime/**
+      - src/application/**
+      - src/contracts/**
       - src/host/**
+      - tests/m0d/**
+      - tests/m2/part-browser.mjs
       - .github/workflows/docker.yml
       - vendor/toubkal/package.json
       - vendor/toubkal/package-lock.json
       - vendor/toubkal/src/**
+
+permissions:
+  contents: read
 
 jobs:
   build-and-smoke:
@@ -76,28 +95,33 @@ jobs:
           curl --fail --silent http://127.0.0.1:8088/ >/tmp/asa-cad-index.html
           grep -qi '<base href="/cad/">' /tmp/asa-cad-index.html
 
-          curl --fail --silent http://127.0.0.1:8088/cad/projects/m1b-smoke >/tmp/asa-cad-project.html
+          curl --fail --silent http://127.0.0.1:8088/cad/projects/m0d-protected >/tmp/asa-cad-project.html
           grep -qi '<base href="/cad/">' /tmp/asa-cad-project.html
 
           curl --fail --silent http://127.0.0.1:8088/cad/asa-cad-release.json >/tmp/asa-cad-release.json
-          node -e "const m=require('/tmp/asa-cad-release.json'); if(m.releaseVersion!=='0.1.0-m1b'||m.mountPath!=='/cad'||m.runtime?.compute!=='client-browser'||m.host?.geometryComputeBackend!==false) process.exit(1)"
+          node -e "const m=require('/tmp/asa-cad-release.json'); if(m.releaseVersion!=='0.2.0-m2'||m.productShell!=='asa-m2'||m.mountPath!=='/cad'||m.runtime?.compute!=='client-browser'||m.runtime?.loading!=='lazy-on-first-solid-operation'||m.host?.geometryComputeBackend!==false) process.exit(1)"
 
-          for url in http://127.0.0.1:8088/ http://127.0.0.1:8088/cad/projects/m1b-smoke; do
+          for url in http://127.0.0.1:8088/ http://127.0.0.1:8088/cad/projects/m0d-protected; do
             headers="$(curl --silent --dump-header - --output /dev/null "$url")"
             printf '%s\n' "$headers"
             grep -qi '^Cross-Origin-Opener-Policy: same-origin' <<<"$headers"
             grep -qi '^Cross-Origin-Embedder-Policy: require-corp' <<<"$headers"
           done
 
-      - name: Real Chromium boot at standalone root
+      - name: Real Chromium lazy ASA shell boot at standalone root
         env:
           ASA_CAD_URL: http://127.0.0.1:8088/
         run: node tests/m0d/browser-smoke.mjs
 
-      - name: Real Chromium boot at ASA Lab /cad project route
+      - name: Real Chromium lazy ASA shell boot at /cad project route
         env:
-          ASA_CAD_URL: http://127.0.0.1:8088/cad/projects/m1b-smoke
+          ASA_CAD_URL: http://127.0.0.1:8088/cad/projects/m0d-protected
         run: node tests/m0d/browser-smoke.mjs
+
+      - name: Protected Part workflow in released Docker /cad route
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8088/cad/projects/m0d-protected
+        run: node tests/m2/part-browser.mjs
 
       - name: Show container logs on failure
         if: failure()
