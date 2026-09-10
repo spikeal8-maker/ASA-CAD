@@ -8,3 +8,4 @@ export * from './sketchSolver';
 export * from './migrations';
 export * from './measurement';
 export * from './assembly';
+export * from './render';
