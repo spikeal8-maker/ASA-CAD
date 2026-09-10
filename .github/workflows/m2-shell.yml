@@ -9,7 +9,9 @@ on:
       - src/runtime/**
       - src/application/**
       - src/contracts/**
+      - src/host/**
       - spec/ui/command-registry.v1.json
+      - spec/ui/layout-registry.v2.json
       - spec/ui/viewport-matrix.v1.json
       - build/**
       - tests/m2/**
@@ -22,7 +24,9 @@ on:
       - src/runtime/**
       - src/application/**
       - src/contracts/**
+      - src/host/**
       - spec/ui/command-registry.v1.json
+      - spec/ui/layout-registry.v2.json
       - spec/ui/viewport-matrix.v1.json
       - build/**
       - tests/m2/**
@@ -50,6 +54,15 @@ jobs:
 
       - name: Typecheck ASA M2 presentation boundary
         run: npm run typecheck:asa
+
+      - name: Verify UI architecture boundaries
+        run: npm run test:m2:architecture
+
+      - name: Verify command/layout registry consistency
+        run: npm run test:m2:registry
+
+      - name: Verify shared UI action model
+        run: npm run test:m2:actions
 
       - name: Verify neutral OpenCascade render bridge
         run: npm run test:m2:render
