@@ -7,6 +7,8 @@ on:
       - Dockerfile
       - compose.yaml
       - docker/**
+      - package.json
+      - tests/m0d/**
       - .github/workflows/docker.yml
       - vendor/toubkal/package.json
       - vendor/toubkal/package-lock.json
@@ -16,6 +18,8 @@ on:
       - Dockerfile
       - compose.yaml
       - docker/**
+      - package.json
+      - tests/m0d/**
       - .github/workflows/docker.yml
       - vendor/toubkal/package.json
       - vendor/toubkal/package-lock.json
@@ -26,6 +30,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.19.0'
+          cache: npm
+          cache-dependency-path: vendor/toubkal/package-lock.json
+
+      - name: Install browser-test dependencies
+        run: npm --prefix vendor/toubkal ci
+
+      - name: Install Chromium for Playwright
+        run: npx --yes playwright@1.60.0 install --with-deps chromium
 
       - name: Build standalone image
         run: docker build -t asa-cad:ci .
@@ -56,6 +73,11 @@ jobs:
           printf '%s\n' "$headers"
           grep -qi '^Cross-Origin-Opener-Policy: same-origin' <<<"$headers"
           grep -qi '^Cross-Origin-Embedder-Policy: require-corp' <<<"$headers"
+
+      - name: Real Chromium OpenCascade/WASM boot smoke
+        env:
+          ASA_CAD_URL: http://127.0.0.1:8088/
+        run: node tests/m0d/browser-smoke.mjs
 
       - name: Show container logs on failure
         if: failure()
