@@ -6,6 +6,7 @@ import {
   serializeCadDocument,
   type CadDimensionId,
   type CadFeatureId,
+  type CadPartDocument,
   type CadReferenceCaptureRequest,
   type CadRuntimeAdapter,
   type CadRuntimeRecomputeResult,
@@ -46,7 +47,13 @@ class RecordingRuntime implements CadRuntimeAdapter {
 const runtime = new RecordingRuntime();
 const app = new CadApplicationImpl(createEmptyCadDocument('part', { title: 'M1 application test' }), runtime);
 
-assert.equal(app.getDocument().kind, 'part');
+function getPart(): Readonly<CadPartDocument> {
+  const document = app.getDocument();
+  assert.equal(document.kind, 'part');
+  if (document.kind !== 'part') throw new Error('Expected Part document');
+  return document;
+}
+
 assert.equal(app.getCommandAvailability('feature.extrude').enabled, false);
 
 const createSketch = await app.execute({ id: 'sketch.create', payload: { support: 'XY' } });
@@ -82,12 +89,9 @@ const extrude = await app.execute({
 assert.equal(extrude.ok, true);
 const extrudeFeatureId = extrude.createdIds?.[0] as CadFeatureId;
 assert.ok(extrudeFeatureId);
-if (app.getDocument().kind === 'part') {
-  assert.equal(app.getDocument().features.at(-1)?.type, 'extrude');
-  assert.equal(app.getDocument().bodies.length, 1);
-}
+assert.equal(getPart().features.at(-1)?.type, 'extrude');
+assert.equal(getPart().bodies.length, 1);
 
-// Reference capture must go through CadApplication/runtime and persist only plain ASA data.
 const edgeReferenceId = await app.captureReference({
   kind: 'edge',
   sourceFeatureId: extrudeFeatureId,
@@ -96,10 +100,8 @@ const edgeReferenceId = await app.captureReference({
 });
 assert.equal(runtime.recomputeCount, 1, 'dirty document is rebuilt before reference capture');
 assert.equal(runtime.captureCount, 1);
-if (app.getDocument().kind === 'part') {
-  assert.equal(app.getDocument().stableReferences.length, 1);
-  assert.deepEqual(app.getDocument().stableReferences[0].locator, { kind: 'edge', point: [0, 0, 0] });
-}
+assert.equal(getPart().stableReferences.length, 1);
+assert.deepEqual(getPart().stableReferences[0].locator, { kind: 'edge', point: [0, 0, 0] });
 assert.equal(app.getCommandAvailability('feature.fillet').enabled, true);
 
 const fillet = await app.execute({
@@ -107,19 +109,15 @@ const fillet = await app.execute({
   payload: { references: [edgeReferenceId], radius: 1 },
 });
 assert.equal(fillet.ok, true);
-if (app.getDocument().kind === 'part') {
-  assert.equal(app.getDocument().features.at(-1)?.type, 'fillet');
-  assert.deepEqual(app.getDocument().features.at(-1)?.inputReferences, [edgeReferenceId]);
-}
+assert.equal(getPart().features.at(-1)?.type, 'fillet');
+assert.deepEqual(getPart().features.at(-1)?.inputReferences, [edgeReferenceId]);
 
 const editWidth = await app.execute({
   id: 'part.dimension.setValue',
   payload: { dimensionId: widthDimensionId, value: 80 },
 });
 assert.equal(editWidth.ok, true);
-if (app.getDocument().kind === 'part') {
-  assert.equal(app.getDocument().dimensions.find((item) => item.id === widthDimensionId)?.value, 80);
-}
+assert.equal(getPart().dimensions.find((item) => item.id === widthDimensionId)?.value, 80);
 assert.equal(app.getState().dirty, true);
 assert.equal(app.getState().recompute.status, 'dirty');
 
@@ -132,17 +130,13 @@ assert.match(runtime.lastSerializedDocument, /\"width\"/);
 const undo = await app.undo();
 assert.equal(undo.ok, true);
 assert.equal(runtime.recomputeCount, 3);
-if (app.getDocument().kind === 'part') {
-  assert.equal(app.getDocument().dimensions.find((item) => item.id === widthDimensionId)?.value, 60);
-}
+assert.equal(getPart().dimensions.find((item) => item.id === widthDimensionId)?.value, 60);
 assert.equal(app.getState().canRedo, true);
 
 const redo = await app.redo();
 assert.equal(redo.ok, true);
 assert.equal(runtime.recomputeCount, 4);
-if (app.getDocument().kind === 'part') {
-  assert.equal(app.getDocument().dimensions.find((item) => item.id === widthDimensionId)?.value, 80);
-}
+assert.equal(getPart().dimensions.find((item) => item.id === widthDimensionId)?.value, 80);
 
 const serialized = serializeCadDocument(app.getDocument());
 const reopened = parseCadDocument(serialized);
