@@ -21,9 +21,10 @@ COPY spec/ ./spec/
 
 RUN npm run build:asa
 
-# Production is mounted below /cad/*. Keep the product source mount-neutral and
-# inject the deployment base only into the release HTML artifact.
-RUN node -e "const fs=require('node:fs'); const p='dist/asa/index.html'; const s=fs.readFileSync(p,'utf8'); if(!s.includes('<base ')){fs.writeFileSync(p,s.replace(/<head([^>]*)>/i,'<head$1><base href=\"/cad/\">'));}"
+# Source HTML is standalone-rooted with <base href="/">. Production mounts the
+# exact same artifact below /cad/*, so replace only the deployment base instead
+# of rewriting application/runtime URLs.
+RUN node -e "const fs=require('node:fs'); const p='dist/asa/index.html'; const s=fs.readFileSync(p,'utf8'); const re=/<base\s+href=[\"']\/[\"']\s*\/?\s*>/i; if(!re.test(s)) throw new Error('standalone base href missing'); fs.writeFileSync(p,s.replace(re,'<base href=\"/cad/\">'));"
 
 FROM ${CADDY_IMAGE} AS runtime
 ENV XDG_CONFIG_HOME=/tmp/caddy-config
