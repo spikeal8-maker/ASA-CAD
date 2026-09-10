@@ -7,9 +7,9 @@
   "scripts": {
     "install:vendor": "npm --prefix vendor/toubkal ci",
     "dev": "npm --prefix vendor/toubkal run dev",
-    "dev:asa": "cd vendor/toubkal && npx --no-install rspack serve --config ../../build/rspack.asa.config.cjs",
+    "dev:asa": "node build/run-asa-dev.cjs",
     "build": "npm --prefix vendor/toubkal run build",
-    "build:asa": "cd vendor/toubkal && npx --no-install rspack --config ../../build/rspack.asa.config.cjs",
+    "build:asa": "node build/run-asa-build.cjs",
     "lint": "npm --prefix vendor/toubkal run lint",
     "typecheck:asa": "node vendor/toubkal/node_modules/typescript/bin/tsc -p tsconfig.json --noEmit",
     "test:vendor": "npm --prefix vendor/toubkal test",
