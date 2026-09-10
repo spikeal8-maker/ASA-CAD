@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "product": "ASA-CAD",
+  "referenceProduct": "KOMPAS-3D v25",
+  "policy": {
+    "copyProprietaryIcons": false,
+    "primaryBaselineEffectiveViewport": "1920x1080",
+    "recordOsScaleWhenKnown": true,
+    "recordBrowserZoomWhenKnown": true
+  },
+  "references": [
+    {"id":"kompas25-shell-part","documentKind":"part","workspace":"solid","state":"shell","status":"reference-required","source":"official-help-or-owner-screenshot"},
+    {"id":"kompas25-part-tree","documentKind":"part","workspace":"solid","state":"tree","status":"reference-required","source":"official-help-or-owner-screenshot"},
+    {"id":"kompas25-sketch","documentKind":"part","workspace":"sketch","state":"active","status":"reference-required","source":"official-help-or-owner-screenshot"},
+    {"id":"kompas25-extrude-parameters","documentKind":"part","workspace":"solid","state":"extrude-active","status":"reference-required","source":"official-help-or-owner-screenshot"},
+    {"id":"kompas25-assembly-shell","documentKind":"assembly","workspace":"assembly","state":"shell","status":"reference-required","source":"official-help-or-owner-screenshot"},
+    {"id":"kompas25-assembly-mate","documentKind":"assembly","workspace":"assembly","state":"mate-active","status":"reference-required","source":"official-help-or-owner-screenshot"},
+    {"id":"kompas25-drawing-shell","documentKind":"drawing","workspace":"drawing","state":"shell","status":"reference-required","source":"official-help-or-owner-screenshot"}
+  ]
+}
