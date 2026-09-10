@@ -1,9 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import {
   CAD_UI_SCALE_OPTIONS,
   type CadUiScalePreference,
   type CadUiScaleResolved,
 } from './UiScale';
+
+interface UiScaleSettingsContextValue {
+  openSettings(): void;
+  closeSettings(): void;
+  preference: CadUiScalePreference;
+  resolved: CadUiScaleResolved;
+}
+
+const UiScaleSettingsContext = createContext<UiScaleSettingsContextValue | null>(null);
 
 function readControllerState(): { preference: CadUiScalePreference; resolved: CadUiScaleResolved } {
   const controller = window.__ASA_CAD_UI_SCALE__;
@@ -17,57 +26,53 @@ function optionLabel(value: CadUiScalePreference): string {
   return value === 'auto' ? 'Авто' : `${value}%`;
 }
 
-export function UiScaleSettings() {
+export function useUiScaleSettings(): UiScaleSettingsContextValue {
+  const value = useContext(UiScaleSettingsContext);
+  if (!value) throw new Error('useUiScaleSettings must be used inside UiScaleSettingsProvider');
+  return value;
+}
+
+/**
+ * Owns interface-settings state. Shell controls call a typed React action;
+ * presentation no longer discovers or clicks another component's DOM.
+ */
+export function UiScaleSettingsProvider({ children }: React.PropsWithChildren) {
   const initial = readControllerState();
   const [open, setOpen] = useState(false);
   const [preference, setPreferenceState] = useState<CadUiScalePreference>(initial.preference);
   const [resolved, setResolved] = useState<CadUiScaleResolved>(initial.resolved);
 
-  const openSettings = () => {
+  const sync = useCallback(() => {
     const next = readControllerState();
     setPreferenceState(next.preference);
     setResolved(next.resolved);
-    setOpen(true);
-  };
-
-  useEffect(() => {
-    const settingsButton = document.querySelector<HTMLButtonElement>('.global-actions button[title="Настройки"]');
-    if (!settingsButton) return;
-    const onOpen = (event: Event) => {
-      event.preventDefault();
-      openSettings();
-    };
-    settingsButton.addEventListener('click', onOpen);
-    settingsButton.setAttribute('aria-haspopup', 'dialog');
-    settingsButton.setAttribute('aria-controls', 'asa-cad-interface-settings');
-    return () => settingsButton.removeEventListener('click', onOpen);
   }, []);
 
+  const openSettings = useCallback(() => {
+    sync();
+    setOpen(true);
+  }, [sync]);
+  const closeSettings = useCallback(() => setOpen(false), []);
+
   useEffect(() => {
-    const sync = () => {
-      const next = readControllerState();
-      setPreferenceState(next.preference);
-      setResolved(next.resolved);
-    };
     window.addEventListener('asa-cad-ui-scale-change', sync as EventListener);
     window.addEventListener('resize', sync, { passive: true });
     return () => {
       window.removeEventListener('asa-cad-ui-scale-change', sync as EventListener);
       window.removeEventListener('resize', sync);
     };
-  }, []);
+  }, [sync]);
 
   useEffect(() => {
     if (!open) return;
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        event.stopPropagation();
-        setOpen(false);
-      }
+      if (event.key !== 'Escape') return;
+      event.stopPropagation();
+      closeSettings();
     };
     window.addEventListener('keydown', onKeyDown, true);
     return () => window.removeEventListener('keydown', onKeyDown, true);
-  }, [open]);
+  }, [closeSettings, open]);
 
   const applyPreference = (next: CadUiScalePreference) => {
     const controller = window.__ASA_CAD_UI_SCALE__;
@@ -77,8 +82,17 @@ export function UiScaleSettings() {
     setResolved(controller.getResolved());
   };
 
+  const context = useMemo<UiScaleSettingsContextValue>(() => ({
+    openSettings,
+    closeSettings,
+    preference,
+    resolved,
+  }), [closeSettings, openSettings, preference, resolved]);
+
   return (
-    <>
+    <UiScaleSettingsContext.Provider value={context}>
+      {children}
+
       <div className="ui-scale-status" data-testid="ui-scale-status" aria-label={`Масштаб интерфейса ${resolved}%`}>
         UI {resolved}%
       </div>
@@ -99,7 +113,7 @@ export function UiScaleSettings() {
           className="interface-settings-backdrop"
           role="presentation"
           onMouseDown={(event) => {
-            if (event.target === event.currentTarget) setOpen(false);
+            if (event.target === event.currentTarget) closeSettings();
           }}
         >
           <section
@@ -114,7 +128,7 @@ export function UiScaleSettings() {
                 <h2 id="asa-cad-interface-settings-title">Настройки интерфейса</h2>
                 <p>Масштабирует панели, текст и команды. Геометрия CAD и координаты модели не меняются.</p>
               </div>
-              <button type="button" onClick={() => setOpen(false)} aria-label="Закрыть настройки">×</button>
+              <button type="button" onClick={closeSettings} aria-label="Закрыть настройки">×</button>
             </header>
 
             <div className="interface-settings-body">
@@ -159,6 +173,6 @@ export function UiScaleSettings() {
           </section>
         </div>
       )}
-    </>
+    </UiScaleSettingsContext.Provider>
   );
 }
