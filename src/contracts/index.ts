@@ -4,3 +4,4 @@ export * from './commands';
 export * from './application';
 export * from './runtime';
 export * from './sketchSolver';
+export * from './migrations';
