@@ -107,6 +107,16 @@
   color: #1f6690;
 }
 
+.tree-row.selected {
+  background: #dceff9;
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.tree-row.selected .tree-label {
+  color: #11638f;
+  font-weight: 600;
+}
+
 .numeric-field {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 118px;
