@@ -11,12 +11,15 @@ Read in this order:
 3. `docs/ARCHITECTURE.md` — dependency/runtime boundaries.
 4. `docs/UI_COMMAND_SPEC.md` — binding button/group/dropdown/parameter-panel and UI rollout contract for any product UI work.
 5. `spec/ui/command-registry.v1.json` — stable machine-readable command IDs/labels/placement/milestones.
-6. `docs/DOCUMENT_TYPES.md` — six document kinds and document-specific tool scopes.
-7. `docs/ASSEMBLIES.md` when touching Part/Assembly document semantics, component references or mates.
-8. `docs/RUN_AND_DEPLOY.md` when touching Docker, runtime loading, browser headers or deployment.
-9. `docs/ASA_LAB_INTEGRATION.md` when touching persistence/classroom/ASA Lab integration.
-10. `docs/UPSTREAM.md` when touching `vendor/toubkal` or importing upstream changes.
-11. the GitHub issue for the active milestone.
+6. `docs/WORKSPACE_INTERACTION_SPEC.md` — central 3D/2D work-area selection/navigation/preview/interaction contract.
+7. `docs/SHORTCUTS_SPEC.md` — keyboard, focus and remappable-shortcut contract.
+8. `docs/MOBILE_RESPONSIVE_SPEC.md` — tablet/phone layout, touch gestures and capability-tier contract.
+9. `docs/DOCUMENT_TYPES.md` — six document kinds and document-specific tool scopes.
+10. `docs/ASSEMBLIES.md` when touching Part/Assembly document semantics, component references or mates.
+11. `docs/RUN_AND_DEPLOY.md` when touching Docker, runtime loading, browser headers or deployment.
+12. `docs/ASA_LAB_INTEGRATION.md` when touching persistence/classroom/ASA Lab integration.
+13. `docs/UPSTREAM.md` when touching `vendor/toubkal` or importing upstream changes.
+14. the GitHub issue for the active milestone.
 
 Do not reinterpret the product from scratch when these contracts already answer the question.
 
@@ -42,6 +45,10 @@ The visible desktop workflow is ASA-owned and KOMPAS-oriented. Interactive CAD m
 - Do not make ASA UI depend directly on `window.oc`, raw OCC objects, vendor Zustand layout, vendor events or vendor component paths.
 - Do not gradually repaint the vendor Toubkal shell and call it the final ASA product UI.
 - Do not invent button labels, command grouping or milestone placement when `docs/UI_COMMAND_SPEC.md` / `spec/ui/command-registry.v1.json` already define them.
+- Do not invent viewport mouse/touch behavior inside feature components; use the centralized workspace interaction contract.
+- Do not add ad-hoc global key handlers; shortcuts go through the centralized shortcut registry and must respect text-input/browser focus.
+- Do not make essential phone/tablet behavior depend on hover.
+- Do not create a separate mobile document/command model; phone/tablet use the same `CadDocument` and ASA commands.
 - Do not expose production buttons that appear usable but execute no implemented command.
 - Do not copy proprietary KOMPAS icons/artwork; use ASA-owned visual assets while preserving intended workflow/organization.
 - Do not store native WASM pointers or Three.js meshes in authoritative documents.
@@ -102,6 +109,16 @@ Implement UI commands as vertical slices:
 
 Do not implement long-term visual corrections by continually editing `vendor/toubkal` components.
 
+## Workspace/input rule
+
+The central work area is a product subsystem, not a passive Three.js canvas.
+
+- selection/preselection, typed picking, tree synchronization, orbit/pan/zoom and preview state follow `docs/WORKSPACE_INTERACTION_SPEC.md`;
+- desktop keyboard input follows `docs/SHORTCUTS_SPEC.md`;
+- touch/responsive behavior follows `docs/MOBILE_RESPONSIVE_SPEC.md`;
+- command-specific components may request selection/input modes, but they do not redefine global mouse/touch/keyboard semantics;
+- every implemented interaction receives deterministic browser fixtures/E2E in the appropriate milestone.
+
 ## Document rules
 
 The public document family is:
@@ -142,7 +159,7 @@ Tests verify parametric intent/identity/exact geometry where practical, not scre
 
 The order in `docs/ROADMAP.md` is binding unless deliberately revised:
 
-`M0 baseline + M0D Docker -> M1 ASA document/application/command boundary -> M1B client runtime/container/host -> M2 new ASA KOMPAS shell -> M2A review fixtures -> M3 sketcher -> M4 Part Design -> M4A Assembly -> M4B release -> M5 ASA Lab -> M6 Drawing/Fragment -> M6A Specification/Text -> M7 parity expansion`
+`M0 baseline + M0D Docker -> M1 ASA document/application/command boundary -> M1B client runtime/container/host -> M2 new ASA KOMPAS shell + workspace/input/mobile foundation -> M2A review/input fixtures -> M3 sketcher -> M4 Part Design -> M4A Assembly -> M4B release/device matrix -> M5 ASA Lab -> M6 Drawing/Fragment -> M6A Specification/Text -> M7 parity expansion`
 
 Agents must not skip ahead by wiring product UI directly to vendor internals.
 
@@ -191,7 +208,7 @@ The ASA UI owns command names, panel layout, workflow, selection prompts, confir
 
 The reference command/button contract is `docs/UI_COMMAND_SPEC.md`; stable IDs are in `spec/ui/command-registry.v1.json`.
 
-The reference desktop shell is KOMPAS-oriented. Smaller screens may reorganize panels but use the same documents/commands.
+The reference desktop shell is KOMPAS-oriented. Smaller screens reorganize panels but use the same documents/commands and local compute runtime.
 
 ## Change discipline
 
