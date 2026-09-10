@@ -113,7 +113,8 @@ export class AsaLabCadProjectHost implements CadProjectHost {
     if (response.status === 409 && code === 'project_revision_conflict') {
       throw new AsaLabCadRevisionConflictError(message ?? 'Project revision conflict');
     }
-    throw new CadHostHttpError(response.status, code, message ?? response.statusText || 'ASA Lab request failed');
+    const fallbackMessage = response.statusText || 'ASA Lab request failed';
+    throw new CadHostHttpError(response.status, code, message ?? fallbackMessage);
   }
 
   private readDraft(value: unknown, operation: string): DraftEnvelope {
