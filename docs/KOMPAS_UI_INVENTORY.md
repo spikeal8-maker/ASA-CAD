@@ -9,14 +9,14 @@ Tracking issue: #16.
 
 **Baseline inventory complete for the built-in engineering workspaces required by ASA-CAD planning.**
 
-The current machine inventory contains **205 command/control rows** classified as:
+The current machine inventory contains **211 command/control rows** classified as:
 
 - `core-now` — required for the protected/near-term workflows;
 - `planned` — part of the intended ASA-CAD product at a defined milestone;
 - `advanced` — retained explicitly for broader KOMPAS parity after the Part/Assembly/documentation foundations;
 - `not-in-ASA-scope` — explicit exclusion with reason when such a decision is made.
 
-The audit is intentionally broader than the first school release. It includes the advanced **Каркас и поверхности** and **Листовое моделирование** workspaces so these capabilities cannot disappear from the roadmap by accident.
+The audit is intentionally broader than the first school release. It includes the advanced **Каркас и поверхности** and **Листовое моделирование** workspaces, Boolean solid operations and advanced Assembly mate families so these capabilities cannot disappear from the roadmap by accident.
 
 This is a maintained baseline, not a promise that a future KOMPAS update cannot introduce another command. New official-help discoveries are appended and classified; they are never silently ignored.
 
@@ -30,7 +30,7 @@ The audit is cross-checked against the official KOMPAS SDK v25 object model wher
 
 `https://help.ascon.ru/KOMPAS_SDK/25/ru-RU/kompasapiobjecttypeenum.html`
 
-The SDK is especially useful for confirming document families and underlying engineering object families such as associative views, specification objects, holes, chamfers, fillets, shells, booleans, loft/evolution operations, surfaces and assembly-related types.
+The SDK is especially useful for confirming document families and underlying engineering object families such as associative views, specification objects, holes, chamfers, fillets, shells, Boolean operations, loft/evolution operations, surfaces, sheet-metal objects and assembly-related types.
 
 KOMPAS proprietary icons/artwork are not imported. ASA copies interaction concepts, terminology/grouping where useful, and implements its own visual assets.
 
@@ -91,6 +91,7 @@ Covered:
 - Revolve / Cut Revolve;
 - Sweep / Cut Sweep;
 - Loft / Cut Loft;
+- Boolean union/subtract/intersect lane;
 - Hole family;
 - Fillet / Chamfer;
 - Shell / Rib / Draft;
@@ -104,7 +105,7 @@ Covered:
 - variables;
 - linked drawing management.
 
-Official v25 help confirms the command/parameter-panel/fantom/Create/Finish lifecycle for key Part operations, including Extrude and Shell.
+Official v25 help confirms the command/parameter-panel/phantom/Create/Finish lifecycle for key Part operations, including Extrude and Shell.
 
 ### Assembly
 
@@ -116,12 +117,14 @@ Covered:
 - replace/update component source/version;
 - move/rotate/change position;
 - fix/unfix;
-- coincidence, concentricity, parallelism, perpendicularity, distance, angle and dependent-position mates;
+- coincidence, concentricity, parallelism, perpendicularity, tangency, distance and angle mates;
+- dependent position;
+- advanced symmetric/transmission/cam mate families retained for later parity;
 - component pattern families;
 - geometry/interference diagnostics;
 - linked drawings/specification.
 
-The inventory also records advanced mate families discovered through official SDK/help as future parity candidates rather than silently treating the first six mates as the complete professional set.
+The first ASA Assembly milestone intentionally implements a smaller stable mate set. Advanced families remain explicit inventory rows rather than being forgotten.
 
 ### Drawing / Fragment
 
@@ -237,4 +240,4 @@ KOMPAS v25 is the reference baseline for the first ASA-CAD UI program. When the 
 4. do not reorder existing ASA product commands automatically;
 5. promote a command into the ASA command registry only through a deliberate roadmap/spec change.
 
-The inventory is therefore complete enough to stop M2/M3/M4/M4A/M6/M6A from rediscovering the product surface from memory, while remaining safely updateable as KOMPAS itself evolves.
+The inventory is complete enough for the current ASA-CAD planning baseline: M2/M3/M4/M4A/M6/M6A no longer need to rediscover the built-in engineering surface from memory. Application-specific extensions/plugins and future KOMPAS versions are audited only when ASA deliberately adopts them.
