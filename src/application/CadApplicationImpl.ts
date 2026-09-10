@@ -17,6 +17,7 @@ import type {
   CadPartDocument,
   CadSketch,
   CadSketchEntity,
+  CadStableReference,
 } from '../contracts/document';
 import type {
   CadBodyId,
@@ -24,9 +25,10 @@ import type {
   CadFeatureId,
   CadSketchEntityId,
   CadSketchId,
+  CadStableReferenceId,
 } from '../contracts/ids';
 import { createCadId } from '../contracts/ids';
-import type { CadRuntimeAdapter } from '../contracts/runtime';
+import type { CadReferenceCaptureRequest, CadRuntimeAdapter } from '../contracts/runtime';
 
 function cloneDocument<T extends CadDocument>(document: T): T {
   return structuredClone(document);
@@ -108,8 +110,6 @@ export class CadApplicationImpl implements CadApplication {
         return part.dimensions.length > 0
           ? { enabled: true }
           : { enabled: false, reason: 'No driving dimensions exist' };
-      default:
-        return { enabled: false, reason: `Unsupported command: ${id satisfies never}` };
     }
   }
 
@@ -151,6 +151,39 @@ export class CadApplicationImpl implements CadApplication {
       this.document = before;
       return errorResult(error);
     }
+  }
+
+  async captureReference(request: CadReferenceCaptureRequest): Promise<CadStableReferenceId> {
+    this.assertAlive();
+    const part = this.requirePart();
+
+    if (this.state.recompute.status === 'dirty' || this.state.recompute.status === 'error') {
+      const rebuild = await this.recompute();
+      if (!rebuild.ok) {
+        throw new Error(rebuild.error?.message ?? 'Cannot capture reference from an invalid model');
+      }
+    }
+
+    const captured = await this.runtime.captureReference(this.document, request);
+    const before = cloneDocument(this.document);
+    const id = createCadId<CadStableReferenceId>('ref');
+    const reference: CadStableReference = {
+      id,
+      ownerFeatureId: captured.ownerFeatureId,
+      semanticRole: captured.semanticRole,
+      locator: structuredClone(captured.locator),
+    };
+    part.stableReferences.push(reference);
+    this.undoStack.push(before);
+    this.redoStack = [];
+    this.state = {
+      ...this.state,
+      dirty: true,
+      canUndo: true,
+      canRedo: false,
+    };
+    this.emit();
+    return id;
   }
 
   async undo(): Promise<CadCommandResult> {
@@ -371,6 +404,11 @@ export class CadApplicationImpl implements CadApplication {
 
       case 'feature.fillet': {
         if (command.payload.radius <= 0) throw new Error('Fillet radius must be positive');
+        for (const referenceId of command.payload.references) {
+          if (!part.stableReferences.some((reference) => reference.id === referenceId)) {
+            throw new Error(`Unknown stable reference: ${referenceId}`);
+          }
+        }
         const id = createCadId<CadFeatureId>('feature');
         part.features.push({
           id,
@@ -412,7 +450,13 @@ export class CadApplicationImpl implements CadApplication {
       };
       this.emit();
       return result.ok
-        ? { ok: true, changed: false, warnings: result.diagnostics.filter((item) => item.severity === 'warning').map((item) => item.message) }
+        ? {
+            ok: true,
+            changed: false,
+            warnings: result.diagnostics
+              .filter((item) => item.severity === 'warning')
+              .map((item) => item.message),
+          }
         : {
             ok: false,
             changed: false,
