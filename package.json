@@ -2,6 +2,7 @@
   "name": "asa-cad",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "description": "Browser-native parametric CAD for ASA Lab",
   "scripts": {
     "install:vendor": "npm --prefix vendor/toubkal ci",
