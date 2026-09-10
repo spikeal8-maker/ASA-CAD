@@ -12,6 +12,7 @@ on:
       - build/**
       - tests/m2/**
       - spec/ui/command-registry.v1.json
+      - spec/ui/viewport-matrix.v1.json
       - package.json
       - .github/workflows/m2-browser.yml
   pull_request:
@@ -24,6 +25,7 @@ on:
       - build/**
       - tests/m2/**
       - spec/ui/command-registry.v1.json
+      - spec/ui/viewport-matrix.v1.json
       - package.json
       - .github/workflows/m2-browser.yml
 
@@ -104,6 +106,11 @@ jobs:
         env:
           ASA_CAD_FIXTURE_BASE_URL: http://127.0.0.1:8090
         run: node tests/m2/fixtures-browser.mjs
+
+      - name: Exercise required effective viewport matrix
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
+        run: node tests/m2/responsive-browser.mjs
 
       - name: Show server log on failure
         if: failure()
