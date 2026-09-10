@@ -19,8 +19,9 @@ Machine-readable UI contracts:
 - `../spec/ui/kompas-command-inventory.v25.json` — broader KOMPAS v25 audit/classification baseline;
 - `../spec/ui/layout-registry.v2.json` — deterministic workspace/group order, collapse priority, overflow and mobile placement;
 - `../spec/ui/viewport-matrix.v1.json` — required display/DPI/zoom/device regression matrix;
-- `../spec/ui/visual-reference-manifest.v1.json` — official-help/owner-reference states mapped to future deterministic ASA fixtures;
-- `../spec/ui/layout-registry-v2-requirements.md` — historical requirements used to create the v2 layout registry; the JSON registry is the machine contract when they overlap.
+- `../spec/ui/visual-reference-manifest.v1.json` — official-help/owner-reference states mapped to future deterministic ASA fixtures.
+
+`../spec/ui/layout-registry-v2-requirements.md` is retained only as design history. It is not an active implementation contract now that `layout-registry.v2.json` exists.
 
 ## Precedence
 
