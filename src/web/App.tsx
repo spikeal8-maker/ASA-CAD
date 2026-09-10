@@ -1,7 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import commandRegistryJson from '../../spec/ui/command-registry.v1.json';
 import { CadApplicationImpl } from '../application/CadApplicationImpl';
 import { BrowserPartRuntimeAdapter } from '../browser/BrowserPartRuntimeAdapter';
+import { parseCadClientRoute } from '../browser/routes';
 import {
   createEmptyCadDocument,
   parseCadDocument,
@@ -17,6 +18,7 @@ import {
   type CadViewportViewCommand,
   type CadViewportViewName,
 } from './CadViewport';
+import { applyPartDevFixture } from './devFixtures';
 import {
   ShortcutRegistry,
   shortcutInputKind,
@@ -105,6 +107,9 @@ function dimensionLabel(name: string | undefined, type: string): string {
 }
 
 export function App() {
+  const route = useMemo(() => parseCadClientRoute(window.location.pathname), []);
+  const devFixture = route.kind === 'dev-part' ? route.fixture : null;
+  const fixtureStartedRef = useRef(false);
   const runtime = useMemo(() => new BrowserPartRuntimeAdapter(), []);
   const app = useMemo(
     () => new CadApplicationImpl(createEmptyCadDocument('part', { title: 'Деталь 1' }), runtime),
@@ -127,7 +132,8 @@ export function App() {
   const [filletRadius, setFilletRadius] = useState(1);
   const [editingDimensionId, setEditingDimensionId] = useState<CadDimensionId | null>(null);
   const [dimensionEditValue, setDimensionEditValue] = useState(0);
-  const [notice, setNotice] = useState('Готово');
+  const [notice, setNotice] = useState(devFixture ? `Fixture ${devFixture}: загрузка…` : 'Готово');
+  const [fixtureStatus, setFixtureStatus] = useState<'none' | 'loading' | 'ready' | 'error'>(devFixture ? 'loading' : 'none');
   const [viewName, setViewName] = useState('Изометрия');
   const [viewCommand, setViewCommand] = useState<CadViewportViewCommand>({ sequence: 0, view: 'isometric' });
   const [search, setSearch] = useState('');
@@ -171,6 +177,40 @@ export function App() {
     setSelectedPick(null);
     setSelectedBodyId(null);
   }, []);
+
+  useEffect(() => {
+    if (!devFixture || fixtureStartedRef.current) return;
+    fixtureStartedRef.current = true;
+    let active = true;
+
+    setFixtureStatus('loading');
+    setActivePanel('tree');
+    setActiveCommand(null);
+    setEditingDimensionId(null);
+    clearTransientSelection();
+    setNotice(`Fixture ${devFixture}: загрузка…`);
+
+    void applyPartDevFixture(app, devFixture)
+      .then((result) => {
+        if (!active) return;
+        setActiveWorkspace(result.workspace);
+        setActivePanel('tree');
+        setActiveCommand(null);
+        setEditingDimensionId(null);
+        clearTransientSelection();
+        setFixtureStatus(result.expectedRecomputeStatus === 'error' ? 'error' : 'ready');
+        setNotice(result.message);
+      })
+      .catch((error: unknown) => {
+        if (!active) return;
+        setFixtureStatus('error');
+        setNotice(`Fixture ${devFixture} failed: ${error instanceof Error ? error.message : String(error)}`);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [app, clearTransientSelection, devFixture]);
 
   const requestViewportCommand = useCallback((view: CadViewportViewName) => {
     setViewCommand((current) => ({ sequence: current.sequence + 1, view }));
@@ -727,11 +767,19 @@ export function App() {
     void dispatchShortcutAction(resolved.action);
   }
 
+  const fixtureError = state.recompute.status === 'error' ? state.recompute.message : undefined;
+
   return (
     <div
       className="cad-app"
       data-document-kind={document.kind}
       data-runtime-status={runtimeState.status}
+      data-recompute-status={state.recompute.status}
+      data-dev-fixture={devFixture ?? ''}
+      data-fixture-status={fixtureStatus}
+      data-sketch-count={part?.sketches.length ?? 0}
+      data-feature-count={part?.features.length ?? 0}
+      data-stable-reference-count={part?.stableReferences.length ?? 0}
       data-selected-kind={selectedPick?.kind ?? ''}
       data-selected-point={selectedPointText}
       data-selected-body-id={selectedBodyId ?? ''}
@@ -963,13 +1011,19 @@ export function App() {
                   />
                 ) : (
                   <div className="stage-message">
-                    <div className="stage-symbol">◇</div>
-                    <strong>{part && part.sketches.length > 0 ? `${part.sketches.length} эскиз(а)` : 'Новая деталь'}</strong>
-                    <span>{runtimeState.status === 'loading' ? 'Загрузка OpenCascade…' : 'ASA-CAD'}</span>
+                    <div className="stage-symbol">{fixtureError ? '!' : '◇'}</div>
+                    <strong>
+                      {fixtureError
+                        ? 'Ошибка перестроения'
+                        : part && part.sketches.length > 0 ? `${part.sketches.length} эскиз(а)` : 'Новая деталь'}
+                    </strong>
+                    <span>{runtimeState.status === 'loading' ? 'Загрузка OpenCascade…' : fixtureError ? 'B-Rep не построен' : 'ASA-CAD'}</span>
                     <small>
-                      {rectangleReady
-                        ? 'Эскиз параметрический. Завершите его и выполните выдавливание — B-Rep будет построен локально в браузере.'
-                        : 'Создайте эскиз и геометрию. OpenCascade не загружается до первой твердотельной операции.'}
+                      {fixtureError
+                        ? fixtureError
+                        : rectangleReady
+                          ? 'Эскиз параметрический. Завершите его и выполните выдавливание — B-Rep будет построен локально в браузере.'
+                          : 'Создайте эскиз и геометрию. OpenCascade не загружается до первой твердотельной операции.'}
                     </small>
                   </div>
                 )}
@@ -992,6 +1046,7 @@ export function App() {
           <span>{notice}</span>
         </div>
         <div className="status-right">
+          {devFixture && <span>fixture:{devFixture}</span>}
           {selectedPick && <span>{selectedPick.kind === 'face' ? 'Грань' : 'Ребро'}: {selectedPointText}</span>}
           {selectedBody && <span>Выбрано: {selectedBody.name}</span>}
           <span>{documentNames[document.kind]}</span>
