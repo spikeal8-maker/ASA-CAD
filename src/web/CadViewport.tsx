@@ -3,7 +3,21 @@ import type { CadRenderModel, CadViewportPick } from '../contracts/render';
 import { VIEWPORT_VISUAL_TOKENS } from './viewportTokens';
 import './runtime.css';
 
-export type CadViewportViewName = 'fit' | 'front' | 'back' | 'top' | 'bottom' | 'left' | 'right' | 'isometric';
+export type CadViewportViewName =
+  | 'fit'
+  | 'front'
+  | 'back'
+  | 'top'
+  | 'bottom'
+  | 'left'
+  | 'right'
+  | 'isometric'
+  | 'zoom-in'
+  | 'zoom-out'
+  | 'pan-left'
+  | 'pan-right'
+  | 'pan-up'
+  | 'pan-down';
 
 export interface CadViewportViewCommand {
   sequence: number;
@@ -33,6 +47,7 @@ export function CadViewport({ model, selectionMode = 'none', onPick, viewCommand
   const selectionModeRef = useRef(selectionMode);
   const onPickRef = useRef(onPick);
   const viewCommandRef = useRef(viewCommand);
+  const appliedViewSequenceRef = useRef<number | null>(null);
   const interactionRef = useRef<ViewportInteractionBridge | null>(null);
   const cameraStateRef = useRef<StoredCameraState | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -48,7 +63,10 @@ export function CadViewport({ model, selectionMode = 'none', onPick, viewCommand
 
   useEffect(() => {
     viewCommandRef.current = viewCommand;
-    if (viewCommand) interactionRef.current?.setView(viewCommand.view);
+    if (!viewCommand || !interactionRef.current) return;
+    if (appliedViewSequenceRef.current === viewCommand.sequence) return;
+    interactionRef.current.setView(viewCommand.view);
+    appliedViewSequenceRef.current = viewCommand.sequence;
   }, [viewCommand?.sequence, viewCommand?.view]);
 
   useEffect(() => {
@@ -258,11 +276,48 @@ export function CadViewport({ model, selectionMode = 'none', onPick, viewCommand
           );
         };
 
-        const setView = (view: CadViewportViewName) => {
-          const currentDirection = camera.position.clone().sub(controls.target);
-          if (currentDirection.lengthSq() < 1e-10) currentDirection.set(1, -1, 1);
-          currentDirection.normalize();
+        const finishViewMutation = (view: CadViewportViewName) => {
+          camera.lookAt(controls.target);
+          controls.update();
+          const currentHost = hostRef.current;
+          if (currentHost) currentHost.dataset.viewName = view;
+          writeCameraState();
+          render();
+        };
 
+        const setView = (view: CadViewportViewName) => {
+          const currentOffset = camera.position.clone().sub(controls.target);
+          if (currentOffset.lengthSq() < 1e-10) currentOffset.set(1, -1, 1);
+
+          if (view === 'zoom-in' || view === 'zoom-out') {
+            const nextDistance = THREE.MathUtils.clamp(
+              currentOffset.length() * (view === 'zoom-in' ? 0.82 : 1.22),
+              controls.minDistance,
+              controls.maxDistance,
+            );
+            currentOffset.setLength(nextDistance);
+            camera.position.copy(controls.target).add(currentOffset);
+            finishViewMutation(view);
+            return;
+          }
+
+          if (view.startsWith('pan-')) {
+            const viewDirection = controls.target.clone().sub(camera.position).normalize();
+            const screenRight = new THREE.Vector3().crossVectors(viewDirection, camera.up).normalize();
+            const screenUp = new THREE.Vector3().crossVectors(screenRight, viewDirection).normalize();
+            const amount = Math.max(currentOffset.length() * 0.06, diagonal * 0.01);
+            const delta = new THREE.Vector3();
+            if (view === 'pan-left') delta.addScaledVector(screenRight, -amount);
+            if (view === 'pan-right') delta.addScaledVector(screenRight, amount);
+            if (view === 'pan-up') delta.addScaledVector(screenUp, amount);
+            if (view === 'pan-down') delta.addScaledVector(screenUp, -amount);
+            camera.position.add(delta);
+            controls.target.add(delta);
+            finishViewMutation(view);
+            return;
+          }
+
+          const currentDirection = currentOffset.normalize();
           let direction = currentDirection;
           let up = camera.up.clone();
           if (view === 'front') { direction = new THREE.Vector3(0, -1, 0); up = new THREE.Vector3(0, 0, 1); }
@@ -276,12 +331,7 @@ export function CadViewport({ model, selectionMode = 'none', onPick, viewCommand
           controls.target.copy(center);
           camera.up.copy(up);
           camera.position.copy(center).addScaledVector(direction, fitDistance());
-          camera.lookAt(center);
-          controls.update();
-          const currentHost = hostRef.current;
-          if (currentHost) currentHost.dataset.viewName = view;
-          writeCameraState();
-          render();
+          finishViewMutation(view);
         };
 
         const faceGroupAtTriangle = (
@@ -320,7 +370,11 @@ export function CadViewport({ model, selectionMode = 'none', onPick, viewCommand
           resetSelectionVisuals();
         };
         interactionRef.current = { setSelectionMode, setView };
-        if (viewCommandRef.current) setView(viewCommandRef.current.view);
+        const pendingViewCommand = viewCommandRef.current;
+        if (pendingViewCommand && appliedViewSequenceRef.current !== pendingViewCommand.sequence) {
+          setView(pendingViewCommand.view);
+          appliedViewSequenceRef.current = pendingViewCommand.sequence;
+        }
 
         const setPointer = (event: PointerEvent) => {
           const rect = renderer.domElement.getBoundingClientRect();
@@ -353,7 +407,6 @@ export function CadViewport({ model, selectionMode = 'none', onPick, viewCommand
         };
 
         const onPointerMove = (event: PointerEvent) => {
-          // OrbitControls owns right/middle drags. Never run expensive picking while navigating.
           if (event.buttons !== 0) {
             hoverFace = null;
             hoverMarker.visible = false;
@@ -455,8 +508,6 @@ export function CadViewport({ model, selectionMode = 'none', onPick, viewCommand
           renderer.domElement.style.cursor = selectionModeRef.current === 'none' ? 'default' : 'crosshair';
         };
         const onContextMenu = (event: MouseEvent) => {
-          // Product context menu/candidate list is a later M2I slice. Suppress the
-          // browser menu so right-drag orbit remains a CAD navigation gesture.
           event.preventDefault();
         };
 
