@@ -67,7 +67,6 @@ export class LocalStorageCadProjectHost implements CadProjectHost {
       [input.mutationId]: revision,
     };
 
-    // Keep bounded idempotency history in standalone mode.
     const mutationEntries = Object.entries(appliedMutations);
     const boundedMutations = Object.fromEntries(mutationEntries.slice(Math.max(0, mutationEntries.length - 50)));
 
@@ -80,7 +79,7 @@ export class LocalStorageCadProjectHost implements CadProjectHost {
     return { revision };
   }
 
-  async saveSnapshot(_imageDataUrl: string, _sourceRevision: number): Promise<void> {
+  async saveSnapshot(_input: { imageDataUrl: string; sourceRevision: number }): Promise<void> {
     // Standalone M2 does not need a separate snapshot gallery. The method is a
     // deliberate no-op host capability so UI/persistence code remains identical.
   }
