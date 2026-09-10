@@ -234,10 +234,17 @@ async function editWidthAndVerifyHistory() {
 
 async function saveAndInspectDocument() {
   await page.getByTitle('Сохранить').click();
-  await page.getByText('Сохранено локально', { exact: true }).waitFor();
+  await page.getByText(/Сохранено локально · ревизия \d+/).waitFor();
 
-  const saved = await page.evaluate(() => localStorage.getItem('asa-cad-m2-shell-document'));
-  assert.ok(saved, 'saved Part document missing from localStorage');
+  const stored = await page.evaluate(() => {
+    const key = Object.keys(localStorage).find((candidate) => candidate.startsWith('asa-cad-project:'));
+    return key ? { key, value: localStorage.getItem(key) } : null;
+  });
+  assert.ok(stored?.value, 'saved Part project record missing from CadProjectHost storage');
+  const record = JSON.parse(stored.value);
+  assert.ok(Number.isSafeInteger(record.revision) && record.revision >= 1, 'standalone host revision was not advanced');
+  assert.equal(typeof record.serializedDocument, 'string', 'standalone host did not persist serialized CadDocument');
+  const saved = record.serializedDocument;
   const document = JSON.parse(saved);
   assert.equal(document.kind, 'part');
   assert.equal(document.sketches.length, 2);
