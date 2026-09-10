@@ -28,7 +28,7 @@ async function execute(app: CadApplication, command: CadCommand, label: string):
 function createdId<T extends string>(result: CadCommandResult, index: number, label: string): T {
   const id = result.createdIds?.[index];
   if (!id) throw new Error(`${label} did not create object ${index}`);
-  return id as T;
+  return id as unknown as T;
 }
 
 async function buildRectangleSketch(app: CadApplication): Promise<CadSketchId> {
