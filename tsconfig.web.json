@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "react": ["vendor/toubkal/node_modules/@types/react/index.d.ts"],
+      "react/jsx-runtime": ["vendor/toubkal/node_modules/@types/react/jsx-runtime.d.ts"],
+      "react-dom/client": ["vendor/toubkal/node_modules/@types/react-dom/client.d.ts"]
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "tests/m2/**/*.ts"
+  ],
+  "exclude": ["vendor/**"]
+}
