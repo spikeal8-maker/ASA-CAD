@@ -1,4 +1,5 @@
 import type {
+  CadBodyId,
   CadDimensionId,
   CadFeatureId,
   CadSketchEntityId,
@@ -87,7 +88,14 @@ export type CadCommand<K extends CadCommandId = CadCommandId> = K extends CadCom
 export interface CadCommandResult {
   ok: boolean;
   changed: boolean;
-  createdIds?: Array<CadSketchId | CadSketchEntityId | CadDimensionId | CadFeatureId | CadStableReferenceId>;
+  createdIds?: Array<
+    | CadSketchId
+    | CadSketchEntityId
+    | CadDimensionId
+    | CadFeatureId
+    | CadBodyId
+    | CadStableReferenceId
+  >;
   warnings?: string[];
   error?: {
     code: string;
