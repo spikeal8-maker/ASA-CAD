@@ -1,0 +1,34 @@
+.mobile-ui-settings-launcher {
+  display: none;
+}
+
+@media (max-width: 599px) {
+  .mobile-ui-settings-launcher {
+    position: fixed;
+    z-index: 70;
+    right: max(8px, env(safe-area-inset-right));
+    bottom: calc(62px + max(8px, env(safe-area-inset-bottom)));
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    min-height: 44px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--border-strong);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .96);
+    color: var(--text);
+    box-shadow: 0 3px 12px rgba(0,0,0,.16);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .mobile-ui-settings-launcher:active {
+    background: var(--accent-soft);
+  }
+
+  .interface-settings-dialog {
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+  }
+}
