@@ -129,7 +129,7 @@ export class AsaLabCadProjectHost implements CadProjectHost {
 }
 
 export class CadHostHttpError extends Error {
-  readonly name = 'CadHostHttpError';
+  override name: string = 'CadHostHttpError';
   constructor(
     readonly status: number,
     readonly code: string | undefined,
@@ -140,13 +140,13 @@ export class CadHostHttpError extends Error {
 }
 
 export class AsaLabCadRevisionConflictError extends CadHostHttpError {
-  readonly name = 'AsaLabCadRevisionConflictError';
+  override name: string = 'AsaLabCadRevisionConflictError';
   constructor(message: string) {
     super(409, 'project_revision_conflict', message);
   }
 }
 
 export class CadHostNetworkError extends Error {
-  readonly name = 'CadHostNetworkError';
+  override name: string = 'CadHostNetworkError';
   readonly code = 'CAD_HOST_NETWORK_ERROR';
 }
