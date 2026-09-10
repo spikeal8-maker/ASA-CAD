@@ -22,6 +22,17 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
     modules: [vendorModules],
+    fallback: {
+      fs: false,
+      path: false,
+      crypto: false,
+      os: false,
+      stream: false,
+      perf_hooks: false,
+      worker_threads: false,
+      module: false,
+      url: false,
+    },
   },
   module: {
     rules: [
@@ -39,6 +50,14 @@ module.exports = {
           },
         },
         type: 'javascript/auto',
+      },
+      {
+        test: /\.wasm$/,
+        type: 'javascript/auto',
+        loader: 'file-loader',
+        options: {
+          name: 'wasm/[name].[contenthash:8].[ext]',
+        },
       },
       { test: /\.css$/, type: 'css' },
       { test: /\.(svg|png|jpg|jpeg|gif|ico)$/i, type: 'asset/resource' },
