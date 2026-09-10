@@ -77,5 +77,8 @@ jobs:
       - name: ASA M1 standalone project host
         run: npm run test:m1:host
 
+      - name: ASA M1 PlaneGCS solver boundary
+        run: npm run test:m1:solver
+
       - name: ASA M1 protected Part on OpenCascade runtime
         run: npm run test:m1:runtime
