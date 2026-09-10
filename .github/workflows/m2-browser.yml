@@ -117,6 +117,11 @@ jobs:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m2/ui-scale-picking-browser.mjs
 
+      - name: Exercise browser zoom effective viewport + DPR model
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
+        run: node tests/m2/browser-zoom-equivalence.mjs
+
       - name: Show server log on failure
         if: failure()
         run: cat /tmp/asa-m2-http.log || true
