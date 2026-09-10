@@ -1,6 +1,6 @@
 # ASA-CAD implementation roadmap
 
-`docs/SYSTEM_SPEC.md` defines the end state. This file defines implementation order and release gates.
+`docs/SYSTEM_SPEC.md` defines the end state. This file defines implementation order, current status and release gates.
 
 ## Program rules
 
@@ -11,277 +11,268 @@
 5. ASA-CAD remains independently runnable/testable in its own frontend Docker image.
 6. Saved `CadDocument` compatibility is a release boundary.
 7. Upstream Toubkal changes are pinned/intentional, never auto-merged.
-8. Permanent UI is new ASA-owned code; visible Toubkal UI is temporary diagnostic/reference surface only.
+8. Permanent UI is ASA-owned code; Toubkal UI is diagnostic/reference only.
 9. M2 visual completion requires command, interaction, display/DPI/mobile and KOMPAS-reference gates — not one screenshot.
+10. Do not reopen completed M0/M1 architecture work unless a failing regression proves the boundary itself is wrong.
 
 ---
 
 ## M0 — Reproducible imported CAD baseline
 
-**Status: ACTIVE, foundation mostly complete**  
+**Status: DONE**  
 Tracking: #1
 
-Done:
+Accepted:
 - pinned Toubkal baseline under `vendor/toubkal`;
-- exact upstream baseline recorded;
+- exact upstream revision recorded;
 - clean install/build/lint/regression CI;
-- architecture/update contracts.
-
-Remaining:
-- ASA-owned protected Part fixture in CI:
-  `Sketch 60x40 -> Extrude 10 -> centered Ø12 cut -> Fillet -> 60->80 -> recompute -> save -> reopen`;
+- ASA-owned protected Part regression:
+  `Sketch 60x40 -> Extrude 10 -> centered Ø12 cut -> Fillet R1 -> 60->80 -> recompute -> serialize/reopen/rebuild`;
 - license/third-party notice verification.
-
-Acceptance: protected Part is reproducible from clean checkout in CI.
 
 ---
 
 ## M0D — Standalone Docker/browser test surface
 
-**Status: ACTIVE; image build/boot/health/header smoke is green**  
+**Status: DONE**  
 Tracking: #12
 
-Already exists:
-- root Dockerfile;
-- Caddy;
-- Compose;
-- `http://localhost:8088`;
-- CAD-local COOP/COEP headers;
-- CI image build/start/health/static smoke.
+Accepted:
+- root Dockerfile + Caddy + Compose;
+- production-like standalone run on `http://localhost:8088`;
+- same release artifact can mount under `/cad/*`;
+- CAD-local COOP/COEP;
+- lazy OpenCascade/WASM boot;
+- health/deep-route checks;
+- full protected Part workflow in real Chromium inside the release container;
+- no CAD compute backend/database.
 
-Remaining:
-- real-browser boot against Docker image;
-- local/mock `CadProjectHost` as M1 stabilizes;
-- protected Part browser E2E;
-- later protected Assembly browser E2E.
-
-Acceptance: the same release-like frontend image boots and performs protected workflow(s) in a real browser without ASA Lab/backend CAD compute.
+Future Assembly E2E belongs to M4A/M4B, not to reopening M0D.
 
 ---
 
 ## M1 — ASA-owned document/application/command boundary
 
-**Status: NEXT after M0/M0D core gates**  
+**Status: DONE**  
 Tracking: #2
 
-Define from the start:
-
-```ts
-type CadDocument =
-  | CadPartDocument
-  | CadAssemblyDocument
-  | CadDrawingDocument
-  | CadFragmentDocument
-  | CadSpecificationDocument
-  | CadTextDocument;
-```
-
-Deliver:
-- schema/parser/serializer/migrations;
+Accepted:
+- six-kind `CadDocument` union;
+- parser/serializer/migration boundary;
 - stable ASA IDs;
 - `CadApplication` typed command/state API;
-- stable command IDs;
-- runtime adapters around geometry/recompute/solver/picking;
-- undo/redo;
-- linked-document reference type;
-- first Assembly reference boundary;
-- protected Part workflow entirely through ASA API.
+- undo/redo/rebuild;
+- OpenCascade runtime adapter;
+- PlaneGCS sketch-solver adapter;
+- StableRef capture/resolve boundary;
+- measurement/render contracts;
+- Assembly reference boundary;
+- command-registry linkage;
+- architecture regression forbidding raw vendor/OCC/store imports in public application/contracts.
 
-Acceptance: M2 can build its UI without reaching `window.oc`, raw OCC objects, vendor Zustand/events/components.
+M2 can build UI without reaching raw OCC/Toubkal internals.
 
 ---
 
 ## M1U — KOMPAS v25 command/UI inventory
 
-**Status: DONE for current built-in engineering baseline; maintained on reference-version changes**  
+**Status: DONE for the current v25 baseline; maintained on reference-version changes**  
 Tracking: #16
 
 Delivered:
-- human inventory `docs/KOMPAS_UI_INVENTORY.md`;
-- machine inventory `spec/ui/kompas-command-inventory.v25.json`;
-- 211 classified command/control rows across system/view/Sketch/Part/Assembly/Drawing/Fragment/Specification/Text plus advanced Surfaces and Sheet Metal lanes;
-- explicit `core-now | planned | advanced | not-in-ASA-scope` policy;
-- Boolean and advanced Assembly mate families retained as later parity rather than omitted;
-- official v25 help + SDK cross-check policy.
-
-Future KOMPAS releases or deliberately adopted application/plugin surfaces create inventory-drift work; they do not reopen the current baseline automatically.
+- `docs/KOMPAS_UI_INVENTORY.md`;
+- `spec/ui/kompas-command-inventory.v25.json`;
+- 211 classified command/control rows;
+- `core-now | planned | advanced | not-in-ASA-scope` policy;
+- Part/Sketch/Assembly/Drawing/Fragment/Specification/Text plus Surfaces/Sheet Metal coverage;
+- official-help + SDK cross-check policy.
 
 ---
 
 ## M1B — Client runtime/container/ASA Lab host contract
 
-**Status: design defined; implementation after stable M1 boundary**  
+**Status: DONE**  
 Tracking: #4
 
-Prove:
-- same versioned `asa-cad-web` form runs standalone and behind ASA Lab `/cad/*`;
-- `CadProjectHost` persistence boundary;
-- lazy/content-hashed WASM;
-- device capability probe;
-- browser cache/recovery;
-- no normal geometry/assembly compute RPC;
-- CAD-specific isolation headers do not become global ASA Lab requirements.
+Accepted:
+- capability probe independent of screen size;
+- `full | constrained | unsupported` tiers;
+- lazy runtime loader;
+- editor/viewer mount contracts;
+- `/cad/projects/:projectId` and `/cad/view/:versionId` routes;
+- standalone + ASA Lab `CadProjectHost` adapters;
+- ASA Lab Project Core GET/draft/snapshot mapping;
+- IndexedDB recovery + pending mutation retry;
+- versioned release manifest;
+- content-hashed/lazy WASM;
+- `/cad/` base-path support;
+- no geometry/rebuild/solve RPC path;
+- isolation headers confined to CAD surface.
 
-Acceptance: CAD runtime loads only for CAD and calculations execute locally.
+Actual ASA Lab deployment remains M5.
 
 ---
 
 # M2 program — Permanent ASA KOMPAS-oriented shell
 
-M2 is intentionally split. Functional shell work can progress in parallel, but visual acceptance requires all applicable M2 subtracks.
+M2 is the current implementation program. The protected Part functional slice is accepted; visual/interaction/responsive acceptance remains coordinated through #15/#17/#18/#19.
 
 ## M2 — Core shell and protected Part vertical slice
 
-**Status: BLOCKED by M1**  
+**Status: ACTIVE — functional protected Part slice accepted**  
 Tracking: #3
 
-Binding machine layout: `spec/ui/layout-registry.v2.json`.
-
-Build from ASA-owned components:
-- Main Menu;
-- DocumentTabs;
-- six-kind New Document dialog;
-- Workspace/Instrument area + command groups;
-- management-panel rail/block;
-- central WorkArea host;
-- contextual Viewport Quick Access Bar;
-- ParameterPanel / Tree / Variables panel switching;
+Already working through ASA-owned UI:
+- Main Menu/global bar;
+- document tabs + six-kind New Document dialog;
+- command search;
+- KOMPAS-oriented instrument/ribbon area;
+- Tree/Parameters management surfaces;
+- central WorkArea + Three.js viewport;
+- contextual Quick Access;
 - StatusBar;
-- CommandSearch;
-- responsive layout engine;
-- deterministic command overflow;
-- UI Scale tokens/settings.
-
-First working commands:
 - New/Open/Save;
 - Undo/Redo/Rebuild;
 - Fit + standard views;
 - Create Sketch;
-- Line/Rectangle/Circle required by protected workflow;
-- required driving dimension;
+- rectangle/circle + driving dimensions;
 - Finish Sketch;
 - Extrude;
-- Cut Extrude;
-- Fillet.
+- face StableRef -> second sketch;
+- Ø12 through cut;
+- edge StableRef -> fillet R1;
+- width 60->80 downstream recompute;
+- save/reopen native parametric document;
+- reopened Ø12->Ø14 edit without losing downstream fillet.
 
-For each command:
-`API -> parameter/selection contract -> registry -> layout/mobile metadata -> control -> fixture -> browser/visual test`.
+Binding machine layout: `spec/ui/layout-registry.v2.json`.
 
-No production dead buttons.
+M2 remains open until the applicable M2A/M2I/M2R/M2V gates below are accepted.
 
 ---
 
 ## M2A — Deterministic demo routes and owner review loop
 
-**Status: starts with first usable M2 shell, then ongoing**  
+**Status: ACTIVE — technical Part fixtures ready; visual owner acceptance remains**  
 Tracking: #15
 
-Create fixed development states such as:
-- `/dev/part/empty`;
-- `/dev/part/reference`;
-- `/dev/part/rebuild-error`;
-- later Assembly/Drawing/Fragment/Specification/Text states.
+Implemented and browser-proven:
+- `/dev/part/empty` — clean shell, no WASM;
+- `/dev/part/sketch` — 60×40 parametric sketch, no WASM;
+- `/dev/part/extrude` — real 60×40×10 OCC B-Rep;
+- `/dev/part/reference` — cut + fillet rebuilt from StableRefs;
+- `/dev/part/rebuild-error` — real recompute failure state.
 
-Owner loop:
-`open exact URL -> identify defect -> agent edits ASA UI -> hot reload -> review -> regression`.
+The deep-route asset/base contract works independently and in production `/cad/*` mount form.
 
-Acceptance: visual corrections do not require manually rebuilding a model or starting ASA Lab.
+Remaining before M2A acceptance:
+- capture deterministic reference screenshots;
+- map each required screenshot to `visual-reference-manifest.v1.json`;
+- owner visual review/correction loop;
+- add later document fixtures as those editors arrive.
 
 ---
 
 ## M2I — Workspace, keyboard, touch and mobile/hybrid input
 
-**Status: coordinated with M2**  
+**Status: ACTIVE**  
 Tracking: #17
 
-Contracts:
-- `WORKSPACE_INTERACTION_SPEC.md`;
-- `SHORTCUTS_SPEC.md`;
-- `MOBILE_RESPONSIVE_SPEC.md`.
+Browser-proven now:
+- Three.js viewport over kernel-neutral `CadRenderModel`;
+- left click reserved for CAD selection;
+- wheel zoom / middle pan / right orbit;
+- face/edge hover/preselection;
+- camera preserved across B-Rep rebuild;
+- Fit + front/back/top/bottom/left/right/isometric;
+- central `ShortcutRegistry`;
+- Ctrl+S, Ctrl+Z/Y/Shift+Z, Esc, Ctrl+Enter, F5;
+- camera-only F/0/1/2/3, Ctrl +/- and arrow navigation;
+- numeric/text focus safety;
+- browser-reserved shortcut protection;
+- ordinary body selection synchronized viewport <-> Tree by stable ASA `bodyId`;
+- command-specific face/edge picking kept separate from ordinary selection.
 
-Implement:
-- selection/preselection/typed picking;
-- tree/viewport synchronization;
-- orbit/pan/zoom;
-- selection rectangles/candidate chooser;
-- preview/phantom state;
-- central ShortcutRegistry;
-- mouse/keyboard/touch/hybrid input;
-- phone/tablet AppFrame;
-- Tree/Parameters/Tools drawers/bottom sheets;
-- software-keyboard/safe-area handling;
-- same command IDs and `CadDocument` on every device.
-
-Acceptance: desktop and supported phone can navigate/select/operate implemented commands and save/reopen the same native Part document locally.
+Remaining M2I:
+- Ctrl/Shift multi-selection;
+- enclosing/crossing selection rectangle;
+- feature/subshape selection levels + typed invalid-selection feedback;
+- ambiguous-hit candidate chooser/cycling;
+- stationary right-click context menu distinct from orbit drag;
+- mobile command discovery parity and Tree/Parameters/Tools sheets/drawers;
+- real touch E2E and hybrid input regression;
+- portrait/landscape active-state preservation;
+- software-keyboard handling;
+- transient feature preview/phantom;
+- focus selected; optional perspective/orthographic mode later.
 
 ---
 
 ## M2R — HD/FHD/2K/4K/DPI/browser-zoom/UI-Scale
 
-**Status: coordinated with M2**  
+**Status: ACTIVE — implementation complete enough for final CI acceptance; current gate being stabilized**  
 Tracking: #18
 
-Binding contract: `DISPLAY_LAYOUT_SPEC.md` + `spec/ui/viewport-matrix.v1.json`.
+Implemented:
+- binding effective-viewport matrix from `spec/ui/viewport-matrix.v1.json`;
+- responsive overrides isolated in `src/web/responsive.css`;
+- portrait-tablet panel reflow preserving WorkArea width;
+- low-height phone-landscape composition;
+- phone root/grid width protection for correct pointer coordinates;
+- token-based UI Scale `Auto | 90 | 100 | 110 | 125 | 150`;
+- persisted UI Scale preference;
+- visible desktop settings dialog + phone bottom-sheet entry;
+- UI Scale does not transform CAD geometry/camera coordinates;
+- FHD/2K/ultrawide/4K/DPR comparisons;
+- B-Rep picking regression across UI Scale changes;
+- browser-zoom effective CSS viewport/DPR equivalence regression.
 
-Core rule: layout uses **effective CSS viewport width + height**, not raw physical monitor resolution.
-
-Required regression includes:
-- 1280x720;
-- 1366x768;
-- 1536x864;
-- 1920x1080 baseline;
-- 2560x1440;
-- 3440x1440;
-- 3840x2160 effective;
-- representative 4K@150% effective 2560x1440;
-- representative 4K@200% effective 1920x1080;
-- 1920x720 height stress;
-- browser zoom 100/125/150/200%, 80% best effort;
-- required phone/tablet viewports.
-
-Acceptance: no clipping/unreachable commands, no microscopic text, no double-scaling on 4K, bounded panels/groups, correct picking after zoom/UI-scale/layout changes.
+Acceptance requires all M2 browser gates green together. Do not close #18 merely because individual matrix cases pass.
 
 ---
 
 ## M2V — KOMPAS reference mapping and visual composition
 
-**Status: REFERENCE BASELINE DONE; implementation-time visual acceptance waits for M2 fixtures**  
+**Status: ACTIVE acceptance lane — reference baseline ready, ASA visual comparison remains**  
 Tracking: #19
 
 Already delivered:
 - `KOMPAS_SHELL_LAYOUT_SPEC.md`;
-- populated official-help reference manifest `spec/ui/visual-reference-manifest.v1.json`;
-- exact structural decisions for management panels and graphical Quick Access;
+- populated official-help reference manifest;
+- management-panel / graphical Quick Access placement rules;
 - machine layout registry v2;
-- reference slots for owner screenshots when exact installed-KOMPAS spacing/appearance is desired.
+- reference slots for owner screenshots.
 
-Still requires the actual M2 UI:
-- build deterministic ASA fixtures;
-- capture ASA screenshots;
-- compare at Full HD baseline and responsive matrix;
-- use owner screenshots where exact local KOMPAS visual tuning is requested;
-- record deliberate differences;
-- pass visual review.
-
-This is no longer a specification blocker; it is an implementation/acceptance lane.
+Remaining:
+- capture ASA fixture screenshots at required baseline states;
+- compare hierarchy/spacing/command composition against chosen KOMPAS references;
+- use owner screenshots for exact installed-KOMPAS tuning where required;
+- document deliberate differences;
+- owner visual acceptance across responsive variants.
 
 ---
 
 ## M3 — Parametric Sketch foundation
 
-**Status: BLOCKED by M1/M2 foundation**  
+**Status: NEXT FEATURE LANE after M2 acceptance path is controlled**  
 Tracking: #5
 
-Implement full first-wave Sketch geometry, constraints, driving dimensions, solver diagnostics, save/reopen and corresponding desktop/mobile controls.
+Implement the complete first-wave Sketch editor:
+- line/arc/circle/rectangle/polygon/construction geometry;
+- trim/extend/offset/project;
+- coincidence/horizontal/vertical/parallel/perpendicular/tangent/concentric/equal/symmetry/fix/point-on-curve;
+- linear/horizontal/vertical/angular/radial/diameter driving dimensions;
+- solver/DOF/overconstraint diagnostics;
+- save/reopen and corresponding desktop/mobile controls.
 
 ---
 
 ## M4 — Part Design and stable topology references
 
-**Status: BLOCKED by M3**  
+**Status: BLOCKED by M3 foundation**  
 Tracking: #6
 
-Implement first-wave Part features, stable logical references, dependency/recompute diagnostics and compatibility fixtures.
+Extend Part features and stable-reference/rebuild diagnostics: revolve, sweep, loft, hole variants, rib, shell, draft, chamfer/fillet families, mirror/linear/circular patterns and auxiliary geometry.
 
 ---
 
@@ -290,7 +281,7 @@ Implement first-wave Part features, stable logical references, dependency/recomp
 **Status: BLOCKED by stable Part/reference semantics**  
 Tracking: #11
 
-Implement bottom-up + top-down Assembly, components/subassemblies, context Part editing, mates, occurrence/version semantics and protected Assembly regression.
+Implement bottom-up + top-down Assembly, components/subassemblies, in-context Part editing, mates, occurrence/version semantics and protected Assembly regression.
 
 ---
 
@@ -299,16 +290,16 @@ Implement bottom-up + top-down Assembly, components/subassemblies, context Part 
 **Status: BLOCKED by M4/M4A**  
 Tracking: #7
 
-Produce versioned `asa-cad-web` release image, compatibility corpus, browser E2E, cleanup/recovery and target-device capability/performance matrix.
+Produce versioned `asa-cad-web` beta image, compatibility corpus, target-device performance/capability matrix, cleanup/recovery and full browser E2E.
 
 ---
 
 ## M5 — ASA Lab integration
 
-**Status: BLOCKED by M1B/M4B**  
+**Status: BLOCKED by M4B; host contract already prepared in M1B**  
 Tracking: #8
 
-Deploy pinned `asa-cad-web` behind `/cad/*`, connect Project Core/classes/assignments/versions/submission/teacher review, preserve local client computation.
+Deploy pinned `asa-cad-web` behind ASA Lab `/cad/*`, connect Project Core/classes/assignments/versions/submission/teacher review and prove unrelated ASA Lab pages do not request CAD WASM.
 
 ---
 
@@ -334,14 +325,14 @@ Structured specification/BOM and engineering Text documents with links/versionin
 
 Tracking: #9
 
-Promote advanced commands from the maintained KOMPAS inventory, including surfaces, sheet metal, advanced mates, advanced drawing symbols, variables/templates/exchange as deliberately prioritized.
+Promote advanced commands from the maintained KOMPAS inventory, including surfaces, sheet metal, advanced mates, drawing symbols, variables/templates/exchange as deliberately prioritized.
 
 ---
 
 # Release gates
 
-- **Gate A — ASA CAD Core:** M0 + core M0D + M1; M1U baseline done.
-- **Gate B — ASA CAD Editor Alpha:** M1B + M2 + M2A + M2I + M2R + M2V visual acceptance + M3.
+- **Gate A — ASA CAD Core: DONE.** M0 + M0D + M1 + M1U + M1B accepted.
+- **Gate B — ASA CAD Editor Alpha: ACTIVE.** M2 + M2A + M2I + M2R + M2V + M3.
 - **Gate C — ASA CAD Standalone Beta:** M4 + M4A + M4B.
 - **Gate D — ASA Lab CAD Module:** M5.
 - **Gate E — Engineering Documentation Suite:** M6 + M6A.
@@ -349,9 +340,10 @@ Promote advanced commands from the maintained KOMPAS inventory, including surfac
 
 # Immediate next work
 
-1. Finish #1 protected Part workflow CI fixture.
-2. Finish #12 real-browser Docker boot/protected Part workflow.
-3. Start #2 M1 `CadDocument` / `CadApplication` / command boundary.
-4. Then start #3 M2 using the already-defined command, layout, display, input and visual-reference contracts.
+1. Stabilize and accept #18 M2R on one all-green browser run.
+2. Continue #17 mobile/touch interaction: command discovery, drawers/sheets, real touch E2E, orientation/software-keyboard behavior.
+3. Execute #19 KOMPAS visual-reference comparison using deterministic #15 fixtures and owner review.
+4. Close the coordinated M2 visual baseline only when #15/#17/#18/#19 evidence agrees.
+5. Then expand M3 sketch functionality without breaking the protected Part regression.
 
 Specification work should not delay those code steps unless implementation exposes a genuinely new unresolved requirement.
