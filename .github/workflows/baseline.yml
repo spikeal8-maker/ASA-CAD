@@ -29,13 +29,13 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Typecheck and build
+      - name: Typecheck and build vendor baseline
         run: npm run build
 
-      - name: Lint
+      - name: Lint vendor baseline
         run: npm run lint
 
-      - name: Supported CAD regression suite
+      - name: Supported vendor CAD regression suite
         run: npm test
 
       - name: ASA M0 protected Part regression
@@ -45,3 +45,11 @@ jobs:
       - name: ASA M0 license and notices regression
         working-directory: .
         run: node tests/m0/license-baseline.mjs
+
+      - name: ASA M1 public contract typecheck
+        working-directory: .
+        run: npm run typecheck:asa
+
+      - name: ASA M1 public contract runtime test
+        working-directory: .
+        run: npm run test:m1:contracts
