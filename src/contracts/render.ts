@@ -1,3 +1,4 @@
+import type { CadDocument } from './document';
 import type { CadBodyId, CadFeatureId } from './ids';
 
 export interface CadRenderBounds {
@@ -37,5 +38,8 @@ export interface CadRenderModel {
 }
 
 export interface CadRenderModelProvider {
-  getRenderModel(options?: { deflection?: number }): CadRenderModel | null;
+  getRenderModel(
+    document: Readonly<CadDocument>,
+    options?: { deflection?: number },
+  ): CadRenderModel | null;
 }
