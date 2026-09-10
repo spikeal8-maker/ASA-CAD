@@ -1,5 +1,8 @@
 const path = require('node:path');
-const rspackCore = require(path.resolve(__dirname, '../vendor/toubkal/node_modules/@rspack/core'));
+const { createRequire } = require('node:module');
+
+const vendorRequire = createRequire(path.resolve(__dirname, '../vendor/toubkal/package.json'));
+const rspackCore = vendorRequire('@rspack/core');
 const config = require('./rspack.asa.config.cjs');
 
 const compiler = rspackCore.rspack(config);
