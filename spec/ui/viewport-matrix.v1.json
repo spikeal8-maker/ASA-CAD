@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "purpose": "ASA-CAD responsive, DPI, zoom and touch regression matrix",
+  "rules": {
+    "layoutUnit": "CSS-effective-pixels",
+    "physicalResolutionIsNotBreakpoint": true,
+    "baselineUiScale": "100%",
+    "requiredZoomLevels": [80, 100, 125, 150, 200]
+  },
+  "cases": [
+    {"id":"desktop-hd-1280x720","width":1280,"height":720,"layout":"desktop-compact-height","uiScale":100,"required":true,"notes":"HD/small laptop lower bound; compact command presentation"},
+    {"id":"desktop-1366x768","width":1366,"height":768,"layout":"desktop-compact-height","uiScale":100,"required":true,"notes":"common school/laptop target"},
+    {"id":"desktop-1536x864","width":1536,"height":864,"layout":"desktop-compact-height","uiScale":100,"required":true,"notes":"common effective viewport from scaled Full HD/high-DPI laptop"},
+    {"id":"desktop-fhd-1920x1080","width":1920,"height":1080,"layout":"large-standard-height","uiScale":100,"required":true,"notes":"primary visual reference fixture"},
+    {"id":"desktop-2k-2560x1440","width":2560,"height":1440,"layout":"xlarge-tall","uiScale":100,"required":true,"notes":"2K effective, central work area expands"},
+    {"id":"desktop-2k-ui110","width":2560,"height":1440,"layout":"xlarge-tall","uiScale":110,"required":true,"notes":"larger UI preference on 2K"},
+    {"id":"desktop-ultrawide-3440x1440","width":3440,"height":1440,"layout":"xlarge-tall","uiScale":100,"required":true,"notes":"panels capped; extra width goes to work area"},
+    {"id":"desktop-4k-effective-3840x2160","width":3840,"height":2160,"layout":"xlarge-tall","uiScale":125,"required":true,"deviceScaleFactor":1,"notes":"4K at low OS scaling; Auto may choose/suggest larger UI scale"},
+    {"id":"desktop-4k-os150-effective","physicalWidth":3840,"physicalHeight":2160,"width":2560,"height":1440,"layout":"xlarge-tall","uiScale":100,"required":true,"deviceScaleFactor":1.5,"notes":"representative 4K at 150% OS scale; no double scaling"},
+    {"id":"desktop-4k-os200-effective","physicalWidth":3840,"physicalHeight":2160,"width":1920,"height":1080,"layout":"large-standard-height","uiScale":100,"required":true,"deviceScaleFactor":2,"notes":"representative 4K at 200% OS scale; behaves like effective FHD"},
+    {"id":"desktop-short-wide-1920x720","width":1920,"height":720,"layout":"large-compact-height","uiScale":100,"required":true,"notes":"height stress: chrome must compact before viewport clips"},
+    {"id":"tablet-portrait-768x1024","width":768,"height":1024,"layout":"tablet-standard-height","uiScale":100,"required":true,"pointer":"coarse","touch":true},
+    {"id":"tablet-landscape-1024x768","width":1024,"height":768,"layout":"compact-compact-height","uiScale":100,"required":true,"pointer":"coarse","touch":true},
+    {"id":"hybrid-tablet-1280x800","width":1280,"height":800,"layout":"desktop-compact-height","uiScale":100,"required":true,"pointer":"hybrid","touch":true,"keyboard":true},
+    {"id":"phone-small-360x640","width":360,"height":640,"layout":"xs-phone-short","uiScale":100,"required":true,"pointer":"coarse","touch":true,"notes":"safe/read-only or constrained edit depending runtime capability"},
+    {"id":"phone-390x844","width":390,"height":844,"layout":"xs-phone-compact-height","uiScale":100,"required":true,"pointer":"coarse","touch":true},
+    {"id":"phone-430x932","width":430,"height":932,"layout":"xs-phone-standard-height","uiScale":100,"required":true,"pointer":"coarse","touch":true},
+    {"id":"phone-landscape-844x390","width":844,"height":390,"layout":"tablet-short","uiScale":100,"required":true,"pointer":"coarse","touch":true,"notes":"landscape shell; software bars/safe areas considered"}
+  ],
+  "zoomRegression": [
+    {"baseCase":"desktop-fhd-1920x1080","zoom":80,"required":"best-effort"},
+    {"baseCase":"desktop-fhd-1920x1080","zoom":100,"required":true},
+    {"baseCase":"desktop-fhd-1920x1080","zoom":125,"required":true},
+    {"baseCase":"desktop-fhd-1920x1080","zoom":150,"required":true},
+    {"baseCase":"desktop-fhd-1920x1080","zoom":200,"required":true},
+    {"baseCase":"desktop-1366x768","zoom":125,"required":true},
+    {"baseCase":"desktop-2k-2560x1440","zoom":150,"required":true}
+  ],
+  "fixtureFamilies": [
+    "part-empty",
+    "part-sketch-active",
+    "part-feature-parameters",
+    "part-reference",
+    "command-overflow",
+    "long-document-title",
+    "panel-min-default-max",
+    "assembly-reference",
+    "drawing-reference-later",
+    "mobile-active-command-sheet"
+  ]
+}
