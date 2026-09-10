@@ -1,11 +1,20 @@
 import type { CadDocument, CadDocumentKind, CadPartDocument, CadSketch } from '../../contracts/document';
-import type { CadViewportViewName } from '../CadViewport';
 import {
   cadUiCommandById,
   cadUiCommandLabel,
   searchableCadUiCommands,
   type CadUiCommandMeta,
 } from './CadUiActions';
+
+export type StandardViewportViewName =
+  | 'fit'
+  | 'front'
+  | 'back'
+  | 'top'
+  | 'bottom'
+  | 'left'
+  | 'right'
+  | 'isometric';
 
 export const documentNames: Record<CadDocumentKind, string> = {
   part: 'Деталь',
@@ -25,7 +34,7 @@ export const documentDescriptions: Record<CadDocumentKind, string> = {
   text: 'Инженерный текстовый документ',
 };
 
-export const viewportViewByLabel: Record<string, CadViewportViewName> = {
+export const viewportViewByLabel: Record<string, StandardViewportViewName> = {
   'Показать всё': 'fit',
   'Спереди': 'front',
   'Сзади': 'back',
