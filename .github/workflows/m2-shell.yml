@@ -55,6 +55,9 @@ jobs:
       - name: Verify central keyboard shortcut policy
         run: npm run test:m2:shortcuts
 
+      - name: Verify deterministic fixture routes
+        run: vendor/toubkal/node_modules/.bin/tsx tests/m2/dev-routes.ts
+
       - name: Build ASA-owned shell
         run: npm run build:asa
 
