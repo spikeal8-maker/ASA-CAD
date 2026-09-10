@@ -22,6 +22,21 @@
 		-Server
 	}
 
+	# Production/same-origin mount. `handle_path` strips /cad before looking in
+	# /srv, while the release index has <base href="/cad/"> so nested editor and
+	# viewer routes resolve every JS/CSS/WASM asset back through this handler.
+	handle_path /cad/* {
+		root * /srv
+		@cad_hashed path_regexp cad_hashed \-[A-Za-z0-9_-]{8,}\.[A-Za-z0-9]+$
+		header @cad_hashed Cache-Control "public, max-age=31536000, immutable"
+		try_files {path} /index.html
+		header Cache-Control "no-cache"
+		file_server
+	}
+
+	# Standalone root remains available for local inspection. Its release index
+	# intentionally loads static assets via /cad/*, proving the production mount
+	# path even during standalone testing.
 	@hashed path_regexp hashed \-[A-Za-z0-9_-]{8,}\.[A-Za-z0-9]+$
 	handle @hashed {
 		root * /srv
@@ -29,8 +44,6 @@
 		file_server
 	}
 
-	# Standalone SPA fallback. In the final ASA-CAD shell this also supports
-	# direct refreshes of editor/viewer routes.
 	handle {
 		root * /srv
 		try_files {path} /index.html
