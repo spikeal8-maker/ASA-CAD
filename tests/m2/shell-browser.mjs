@@ -16,10 +16,12 @@ async function runDesktop() {
   await page.goto(url, { waitUntil: 'networkidle' });
   await page.getByText('ASA-CAD', { exact: true }).first().waitFor();
   await page.getByText('Твердотельное моделирование', { exact: true }).waitFor();
-  await page.getByText('Дерево', { exact: true }).first().waitFor();
+  await page.locator('.management-panel .panel-title-row strong').filter({ hasText: 'Дерево' }).waitFor();
   await page.getByText('Новая деталь', { exact: true }).waitFor();
 
-  // Shell boot must remain cheap: this M2 surface does not eagerly fetch OCC WASM.
+  assert.equal(await page.evaluate(() => crossOriginIsolated), true, 'CAD browser route is not cross-origin isolated');
+
+  // Shell boot must remain cheap: no OCC WASM until a solid feature is rebuilt.
   const resources = await page.evaluate(() => performance.getEntriesByType('resource').map((entry) => entry.name));
   assert.equal(resources.some((name) => /\.wasm(?:\?|$)/i.test(name)), false, 'M2 shell eagerly loaded WASM');
   assert.equal(failedRuntimeRequests.length, 0);
@@ -60,12 +62,14 @@ async function runPhone() {
       bottomDisplay: bottom ? getComputedStyle(bottom).display : 'missing',
       workWidth: work?.getBoundingClientRect().width ?? 0,
       workHeight: work?.getBoundingClientRect().height ?? 0,
+      isolated: crossOriginIsolated,
     };
   });
   assert.equal(layout.ribbonDisplay, 'none', 'desktop ribbon must not be squeezed into phone layout');
   assert.notEqual(layout.bottomDisplay, 'none', 'phone bottom navigation must be visible');
   assert.ok(layout.workWidth >= 360, `phone work area unexpectedly narrow: ${layout.workWidth}`);
   assert.ok(layout.workHeight >= 300, `phone work area unexpectedly short: ${layout.workHeight}`);
+  assert.equal(layout.isolated, true, 'phone CAD route is not cross-origin isolated');
   assert.deepEqual(pageErrors, [], `phone page errors: ${pageErrors.join('; ')}`);
   await page.close();
 }
