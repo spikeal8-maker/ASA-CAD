@@ -11,12 +11,12 @@ Read these together for product UI work:
 7. `VISUAL_REFERENCE_SPEC.md` — KOMPAS reference mapping and visual acceptance policy.
 8. `M2_VISUAL_ACCEPTANCE.md` — M2 acceptance gates.
 9. `TZ_CRITICAL_AUDIT.md` — critical gap analysis and resolved/remaining risks.
-10. `KOMPAS_UI_INVENTORY.md` — maintained human-readable KOMPAS v25 command/workspace inventory.
+10. `KOMPAS_UI_INVENTORY.md` — completed KOMPAS v25 built-in engineering baseline; maintained when reference version/scope changes.
 
 Machine-readable UI contracts:
 
 - `../spec/ui/command-registry.v1.json` — stable ASA product command IDs currently admitted to implementation;
-- `../spec/ui/kompas-command-inventory.v25.json` — broader KOMPAS v25 audit/classification baseline;
+- `../spec/ui/kompas-command-inventory.v25.json` — 211-row KOMPAS v25 audit/classification baseline;
 - `../spec/ui/layout-registry.v2.json` — deterministic workspace/group order, collapse priority, overflow and mobile placement;
 - `../spec/ui/viewport-matrix.v1.json` — required display/DPI/zoom/device regression matrix;
 - `../spec/ui/visual-reference-manifest.v1.json` — official-help/owner-reference states mapped to future deterministic ASA fixtures.
