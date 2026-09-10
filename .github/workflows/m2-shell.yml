@@ -52,6 +52,9 @@ jobs:
       - name: Verify neutral OpenCascade render bridge
         run: npm run test:m2:render
 
+      - name: Verify central keyboard shortcut policy
+        run: npm run test:m2:shortcuts
+
       - name: Build ASA-owned shell
         run: npm run build:asa
 
