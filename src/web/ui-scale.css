@@ -6,7 +6,7 @@
   --ui-command-font: 12px;
   --ui-tree-font: 13px;
   --ui-panel-font: 12.5px;
-  --ui-status-font: 11.5px;
+  --ui-status-font: 12px;
   --ui-global-action: 30px;
   --ui-brand-mark: 25px;
   --ui-quick-action: 28px;
@@ -19,10 +19,10 @@
 html[data-ui-scale="90"] {
   --ui-root-font: 12.6px;
   --ui-workspace-font: 12px;
-  --ui-command-font: 11px;
+  --ui-command-font: 12px;
   --ui-tree-font: 12px;
   --ui-panel-font: 12px;
-  --ui-status-font: 10.5px;
+  --ui-status-font: 12px;
   --ui-global-action: 28px;
   --ui-brand-mark: 23px;
   --ui-quick-action: 26px;
@@ -176,7 +176,7 @@ html {
     --ui-command-font: 12px;
     --ui-tree-font: 13px;
     --ui-panel-font: 12.5px;
-    --ui-status-font: 11.5px;
+    --ui-status-font: 12px;
     --ui-global-action: 40px;
   }
 }
