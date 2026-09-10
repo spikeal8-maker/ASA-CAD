@@ -24,6 +24,7 @@ ENV XDG_DATA_HOME=/tmp/caddy-data
 
 COPY docker/Caddyfile /etc/caddy/Caddyfile
 COPY --from=build /workspace/vendor/toubkal/dist /srv
+COPY release/manifest.json /srv/asa-cad-release.json
 
 USER 65534:65534
 EXPOSE 8080
