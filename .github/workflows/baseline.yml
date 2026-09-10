@@ -46,10 +46,18 @@ jobs:
         working-directory: .
         run: node tests/m0/license-baseline.mjs
 
-      - name: ASA M1 public contract typecheck
+      - name: ASA M1 public typecheck
         working-directory: .
         run: npm run typecheck:asa
 
-      - name: ASA M1 public contract runtime test
+      - name: ASA M1 document contracts
         working-directory: .
         run: npm run test:m1:contracts
+
+      - name: ASA M1 application behavior
+        working-directory: .
+        run: npm run test:m1:application
+
+      - name: ASA M1 protected Part on OpenCascade runtime
+        working-directory: .
+        run: npm run test:m1:runtime
