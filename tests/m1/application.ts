@@ -5,14 +5,18 @@ import {
   parseCadDocument,
   serializeCadDocument,
   type CadDimensionId,
+  type CadFeatureId,
+  type CadReferenceCaptureRequest,
   type CadRuntimeAdapter,
   type CadRuntimeRecomputeResult,
+  type CadRuntimeReferenceCaptureResult,
   type CadSketchEntityId,
   type CadSketchId,
 } from '../../src';
 
 class RecordingRuntime implements CadRuntimeAdapter {
   recomputeCount = 0;
+  captureCount = 0;
   lastSerializedDocument = '';
   disposed = false;
 
@@ -20,6 +24,18 @@ class RecordingRuntime implements CadRuntimeAdapter {
     this.recomputeCount++;
     this.lastSerializedDocument = JSON.stringify(document);
     return { ok: true, diagnostics: [], runtimeRevision: `test-${this.recomputeCount}` };
+  }
+
+  async captureReference(
+    _document: Parameters<CadRuntimeAdapter['captureReference']>[0],
+    request: CadReferenceCaptureRequest,
+  ): Promise<CadRuntimeReferenceCaptureResult> {
+    this.captureCount++;
+    return {
+      ownerFeatureId: request.sourceFeatureId,
+      semanticRole: request.semanticRole,
+      locator: { kind: request.kind, point: [...request.point] },
+    };
   }
 
   dispose(): void {
@@ -64,10 +80,36 @@ const extrude = await app.execute({
   payload: { sketchId, distance: 10 },
 });
 assert.equal(extrude.ok, true);
-assert.equal(app.getDocument().kind, 'part');
+const extrudeFeatureId = extrude.createdIds?.[0] as CadFeatureId;
+assert.ok(extrudeFeatureId);
 if (app.getDocument().kind === 'part') {
   assert.equal(app.getDocument().features.at(-1)?.type, 'extrude');
   assert.equal(app.getDocument().bodies.length, 1);
+}
+
+// Reference capture must go through CadApplication/runtime and persist only plain ASA data.
+const edgeReferenceId = await app.captureReference({
+  kind: 'edge',
+  sourceFeatureId: extrudeFeatureId,
+  point: [0, 0, 0],
+  semanticRole: 'protected-fillet-edge',
+});
+assert.equal(runtime.recomputeCount, 1, 'dirty document is rebuilt before reference capture');
+assert.equal(runtime.captureCount, 1);
+if (app.getDocument().kind === 'part') {
+  assert.equal(app.getDocument().stableReferences.length, 1);
+  assert.deepEqual(app.getDocument().stableReferences[0].locator, { kind: 'edge', point: [0, 0, 0] });
+}
+assert.equal(app.getCommandAvailability('feature.fillet').enabled, true);
+
+const fillet = await app.execute({
+  id: 'feature.fillet',
+  payload: { references: [edgeReferenceId], radius: 1 },
+});
+assert.equal(fillet.ok, true);
+if (app.getDocument().kind === 'part') {
+  assert.equal(app.getDocument().features.at(-1)?.type, 'fillet');
+  assert.deepEqual(app.getDocument().features.at(-1)?.inputReferences, [edgeReferenceId]);
 }
 
 const editWidth = await app.execute({
@@ -83,13 +125,13 @@ assert.equal(app.getState().recompute.status, 'dirty');
 
 const rebuild = await app.execute({ id: 'document.rebuild', payload: {} });
 assert.equal(rebuild.ok, true);
-assert.equal(runtime.recomputeCount, 1);
+assert.equal(runtime.recomputeCount, 2);
 assert.equal(app.getState().recompute.status, 'clean');
 assert.match(runtime.lastSerializedDocument, /\"width\"/);
 
 const undo = await app.undo();
 assert.equal(undo.ok, true);
-assert.equal(runtime.recomputeCount, 2);
+assert.equal(runtime.recomputeCount, 3);
 if (app.getDocument().kind === 'part') {
   assert.equal(app.getDocument().dimensions.find((item) => item.id === widthDimensionId)?.value, 60);
 }
@@ -97,7 +139,7 @@ assert.equal(app.getState().canRedo, true);
 
 const redo = await app.redo();
 assert.equal(redo.ok, true);
-assert.equal(runtime.recomputeCount, 3);
+assert.equal(runtime.recomputeCount, 4);
 if (app.getDocument().kind === 'part') {
   assert.equal(app.getDocument().dimensions.find((item) => item.id === widthDimensionId)?.value, 80);
 }
@@ -105,7 +147,7 @@ if (app.getDocument().kind === 'part') {
 const serialized = serializeCadDocument(app.getDocument());
 const reopened = parseCadDocument(serialized);
 await app.replaceDocument(reopened);
-assert.equal(runtime.recomputeCount, 4);
+assert.equal(runtime.recomputeCount, 5);
 assert.equal(app.getState().dirty, false);
 assert.equal(app.getState().canUndo, false);
 assert.equal(app.getState().canRedo, false);
