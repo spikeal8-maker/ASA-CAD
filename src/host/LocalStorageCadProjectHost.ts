@@ -84,6 +84,10 @@ export class LocalStorageCadProjectHost implements CadProjectHost {
     // deliberate no-op host capability so UI/persistence code remains identical.
   }
 
+  hasStoredProject(): boolean {
+    return this.storage.getItem(this.storageKey) !== null;
+  }
+
   getStorageKey(): string {
     return this.storageKey;
   }
