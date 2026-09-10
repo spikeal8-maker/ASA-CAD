@@ -33,7 +33,7 @@ async function runDesktop() {
   await page.getByText('Эскиз 1', { exact: true }).waitFor();
 
   // New-document routing is ASA-owned for all six kinds.
-  await page.getByRole('button', { name: 'Новый документ' }).click();
+  await page.locator('.new-tab-button').click();
   const dialog = page.getByRole('dialog', { name: 'Новый документ' });
   await dialog.waitFor();
   for (const label of ['Деталь', 'Сборка', 'Чертеж', 'Фрагмент', 'Спецификация', 'Текстовый документ']) {
