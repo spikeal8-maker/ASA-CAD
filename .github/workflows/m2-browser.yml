@@ -102,6 +102,11 @@ jobs:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m2/ordinary-selection-browser.mjs
 
+      - name: Exercise real touch navigation and selection
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
+        run: node tests/m2/touch-browser.mjs
+
       - name: Exercise deterministic Part fixtures
         env:
           ASA_CAD_FIXTURE_BASE_URL: http://127.0.0.1:8090
