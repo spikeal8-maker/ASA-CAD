@@ -5,6 +5,7 @@ const root = path.resolve(__dirname, '..');
 const vendorModules = path.join(root, 'vendor/toubkal/node_modules');
 const vendorRequire = createRequire(path.join(root, 'vendor/toubkal/package.json'));
 const { HtmlRspackPlugin } = vendorRequire('@rspack/core');
+const fileLoader = vendorRequire.resolve('file-loader');
 const isDev = process.argv.includes('serve');
 
 module.exports = {
@@ -54,7 +55,7 @@ module.exports = {
       {
         test: /\.wasm$/,
         type: 'javascript/auto',
-        loader: 'file-loader',
+        loader: fileLoader,
         options: {
           name: 'wasm/[name].[contenthash:8].[ext]',
         },
