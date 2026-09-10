@@ -16,8 +16,8 @@
   },
   "commands": [
     {"id":"system.new","labelRu":"Новый","kinds":["all"],"workspace":"system","group":"file","control":"split-button","milestone":"M2","status":"implemented"},
-    {"id":"system.open","labelRu":"Открыть","kinds":["all"],"workspace":"system","group":"file","control":"button","milestone":"M2","status":"experimental"},
-    {"id":"system.save","labelRu":"Сохранить","kinds":["all"],"workspace":"system","group":"file","control":"button","milestone":"M2","status":"experimental"},
+    {"id":"system.open","labelRu":"Открыть","kinds":["all"],"workspace":"system","group":"file","control":"button","milestone":"M2","status":"implemented"},
+    {"id":"system.save","labelRu":"Сохранить","kinds":["all"],"workspace":"system","group":"file","control":"button","milestone":"M2","status":"implemented"},
     {"id":"system.saveAs","labelRu":"Сохранить как","kinds":["all"],"workspace":"system","group":"file","control":"button","milestone":"M2+","status":"planned"},
     {"id":"system.export","labelRu":"Экспорт","kinds":["all"],"workspace":"system","group":"file","control":"split-button","milestone":"M4+","status":"planned"},
     {"id":"system.undo","labelRu":"Отменить","kinds":["all"],"workspace":"system","group":"quick-access","control":"button","milestone":"M2","status":"implemented"},
