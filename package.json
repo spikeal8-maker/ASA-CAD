@@ -7,7 +7,9 @@
   "scripts": {
     "install:vendor": "npm --prefix vendor/toubkal ci",
     "dev": "npm --prefix vendor/toubkal run dev",
+    "dev:asa": "cd vendor/toubkal && npx --no-install rspack serve --config ../../build/rspack.asa.config.cjs",
     "build": "npm --prefix vendor/toubkal run build",
+    "build:asa": "cd vendor/toubkal && npx --no-install rspack --config ../../build/rspack.asa.config.cjs",
     "lint": "npm --prefix vendor/toubkal run lint",
     "typecheck:asa": "node vendor/toubkal/node_modules/typescript/bin/tsc -p tsconfig.json --noEmit",
     "test:vendor": "npm --prefix vendor/toubkal test",
@@ -29,6 +31,7 @@
     "test:m1b:asa-host": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m1b/asa-host.ts",
     "test:m1b:recovery": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m1b/recovery.ts",
     "test:m1b": "npm run typecheck:asa && npm run test:m1b:client && npm run test:m1b:asa-host && npm run test:m1b:recovery",
+    "test:m2:shell": "npm run build:asa && node tests/m2/shell-build.mjs",
     "test": "npm run test:vendor && npm run test:m0 && npm run test:m1 && npm run test:m1b",
     "check": "npm run build && npm run lint && npm test",
     "docker:build": "docker compose build",
