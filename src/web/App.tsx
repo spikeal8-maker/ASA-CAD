@@ -10,7 +10,7 @@ import {
   type CadDocumentKind,
   type CadPartDocument,
 } from '../contracts/document';
-import type { CadDimensionId, CadSketchEntityId } from '../contracts/ids';
+import type { CadBodyId, CadDimensionId, CadSketchEntityId } from '../contracts/ids';
 import type { CadViewportPick } from '../contracts/render';
 import {
   CadViewport,
@@ -118,6 +118,7 @@ export function App() {
   const [activeCommand, setActiveCommand] = useState<string | null>(null);
   const [selectionMode, setSelectionMode] = useState<'none' | 'face' | 'edge'>('none');
   const [selectedPick, setSelectedPick] = useState<CadViewportPick | null>(null);
+  const [selectedBodyId, setSelectedBodyId] = useState<CadBodyId | null>(null);
   const [sketchPlane, setSketchPlane] = useState<'XY' | 'XZ' | 'YZ'>('XY');
   const [rectangleWidth, setRectangleWidth] = useState(60);
   const [rectangleHeight, setRectangleHeight] = useState(40);
@@ -155,6 +156,9 @@ export function App() {
   const selectedPointText = selectedPick
     ? selectedPick.point.map((value) => Number(value).toFixed(2)).join(', ')
     : '';
+  const selectedBody = selectedBodyId && part
+    ? part.bodies.find((body) => body.id === selectedBodyId) ?? null
+    : null;
 
   const searchableCommands = search.trim()
     ? registry.commands
@@ -165,6 +169,7 @@ export function App() {
   const clearTransientSelection = useCallback(() => {
     setSelectionMode('none');
     setSelectedPick(null);
+    setSelectedBodyId(null);
   }, []);
 
   const requestViewportCommand = useCallback((view: CadViewportViewName) => {
@@ -185,6 +190,12 @@ export function App() {
     } else {
       setNotice(`Ребро выбрано: ${pick.point.map((value) => value.toFixed(1)).join(', ')}`);
     }
+  }, []);
+
+  const handleBodySelect = useCallback((bodyId: CadBodyId | null) => {
+    setSelectedBodyId(bodyId);
+    setSelectedPick(null);
+    setNotice(bodyId ? 'Тело выбрано' : 'Выбор очищен');
   }, []);
 
   async function createDocument(kind: CadDocumentKind) {
@@ -228,6 +239,7 @@ export function App() {
     setActiveCommand('part.sketch.create');
     setActivePanel('parameters');
     setSelectedPick(null);
+    setSelectedBodyId(null);
     if (hasSolid && renderModel) {
       setSelectionMode('face');
       setActiveWorkspace('solid');
@@ -486,6 +498,7 @@ export function App() {
     setActivePanel('parameters');
     setSelectionMode('edge');
     setSelectedPick(null);
+    setSelectedBodyId(null);
     setNotice('Выберите ребро в рабочей области');
   }
 
@@ -647,12 +660,13 @@ export function App() {
           return;
         }
         clearTransientSelection();
+        setNotice('Выбор очищен');
         return;
       case 'interaction.commit':
         await commitActiveCommand();
         return;
       case 'interaction.delete':
-        setNotice('Удаление доступно после ordinary-selection среза M2I');
+        setNotice('Удаление выбранного объекта будет включено отдельной безопасной командой');
         return;
       case 'view.fit':
         requestView('Показать всё');
@@ -703,7 +717,7 @@ export function App() {
       {
         documentKind: document.kind,
         activeCommand,
-        hasSelection: Boolean(selectedPick) && !activeCommand,
+        hasSelection: Boolean(selectedBodyId) && !activeCommand,
         cadEditorFocused: true,
         inputKind: shortcutInputKind(event.target),
       },
@@ -720,6 +734,7 @@ export function App() {
       data-runtime-status={runtimeState.status}
       data-selected-kind={selectedPick?.kind ?? ''}
       data-selected-point={selectedPointText}
+      data-selected-body-id={selectedBodyId ?? ''}
       data-shortcuts="central"
       tabIndex={-1}
       onKeyDown={handleKeyDown}
@@ -874,7 +889,12 @@ export function App() {
 
         <aside className="management-panel">
           {activePanel === 'tree' ? (
-            <DocumentTree document={document} onEditDimension={beginDimensionEdit} />
+            <DocumentTree
+              document={document}
+              selectedBodyId={selectedBodyId}
+              onSelectBody={handleBodySelect}
+              onEditDimension={beginDimensionEdit}
+            />
           ) : (
             <ParameterPanel
               activeCommand={activeCommand}
@@ -913,6 +933,7 @@ export function App() {
             <span className="quick-separator" />
             <span className="view-caption">{viewName}</span>
             {selectionMode !== 'none' && <span className="selection-caption">{selectionMode === 'face' ? 'Выбор грани' : 'Выбор ребра'}</span>}
+            {selectedBody && selectionMode === 'none' && <span className="selection-caption">Выбрано: {selectedBody.name}</span>}
             {activeCommand && (
               <>
                 <span className="quick-separator" />
@@ -937,6 +958,8 @@ export function App() {
                     selectionMode={selectionMode}
                     onPick={handleViewportPick}
                     viewCommand={viewCommand}
+                    selectedBodyId={selectedBodyId}
+                    onBodySelect={handleBodySelect}
                   />
                 ) : (
                   <div className="stage-message">
@@ -970,6 +993,7 @@ export function App() {
         </div>
         <div className="status-right">
           {selectedPick && <span>{selectedPick.kind === 'face' ? 'Грань' : 'Ребро'}: {selectedPointText}</span>}
+          {selectedBody && <span>Выбрано: {selectedBody.name}</span>}
           <span>{documentNames[document.kind]}</span>
           <span>{runtimeState.status === 'ready' ? 'OCC локально' : 'ядро по требованию'}</span>
           <span>мм</span>
@@ -1100,9 +1124,13 @@ function ViewCommandGroups(props: { viewName: string; requestView: (value: strin
 
 function DocumentTree({
   document,
+  selectedBodyId,
+  onSelectBody,
   onEditDimension,
 }: {
   document: CadDocument;
+  selectedBodyId: CadBodyId | null;
+  onSelectBody: (id: CadBodyId | null) => void;
   onEditDimension: (id: CadDimensionId) => void;
 }) {
   return (
@@ -1136,7 +1164,15 @@ function DocumentTree({
               <TreeRow key={feature.id} depth={1} icon="◇" label={feature.name} />
             ))}
             {document.bodies.map((body) => (
-              <TreeRow key={body.id} depth={1} icon="⬡" label={body.name} />
+              <TreeRow
+                key={body.id}
+                depth={1}
+                icon="⬡"
+                label={body.name}
+                selected={body.id === selectedBodyId}
+                bodyId={body.id}
+                onClick={() => onSelectBody(body.id)}
+              />
             ))}
           </>
         )}
@@ -1156,14 +1192,18 @@ function TreeRow(props: {
   label: string;
   muted?: boolean;
   bold?: boolean;
+  selected?: boolean;
+  bodyId?: CadBodyId;
   onClick?: () => void;
 }) {
   return (
     <button
-      className={`tree-row ${props.muted ? 'muted' : ''} ${props.bold ? 'bold' : ''} ${props.onClick ? 'interactive' : ''}`}
+      className={`tree-row ${props.muted ? 'muted' : ''} ${props.bold ? 'bold' : ''} ${props.onClick ? 'interactive' : ''} ${props.selected ? 'selected' : ''}`}
       type="button"
       style={{ paddingInlineStart: 10 + props.depth * 18 }}
       onClick={props.onClick}
+      data-body-id={props.bodyId}
+      aria-pressed={props.bodyId ? Boolean(props.selected) : undefined}
     >
       <span className="tree-chevron">{props.depth < 2 ? '›' : ''}</span>
       <span className="tree-icon">{props.icon}</span>
