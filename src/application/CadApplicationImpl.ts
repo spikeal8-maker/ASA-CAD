@@ -1,0 +1,453 @@
+import type {
+  CadApplication,
+  CadApplicationListener,
+  CadApplicationState,
+} from '../contracts/application';
+import type {
+  CadCommand,
+  CadCommandAvailability,
+  CadCommandId,
+  CadCommandResult,
+} from '../contracts/commands';
+import type {
+  CadBody,
+  CadDimension,
+  CadDocument,
+  CadFeature,
+  CadPartDocument,
+  CadSketch,
+  CadSketchEntity,
+} from '../contracts/document';
+import type {
+  CadBodyId,
+  CadDimensionId,
+  CadFeatureId,
+  CadSketchEntityId,
+  CadSketchId,
+} from '../contracts/ids';
+import { createCadId } from '../contracts/ids';
+import type { CadRuntimeAdapter } from '../contracts/runtime';
+
+function cloneDocument<T extends CadDocument>(document: T): T {
+  return structuredClone(document);
+}
+
+function errorResult(error: unknown): CadCommandResult {
+  return {
+    ok: false,
+    changed: false,
+    error: {
+      code: 'CAD_COMMAND_FAILED',
+      message: error instanceof Error ? error.message : String(error),
+    },
+  };
+}
+
+export class CadApplicationImpl implements CadApplication {
+  private document: CadDocument;
+  private readonly runtime: CadRuntimeAdapter;
+  private readonly listeners = new Set<CadApplicationListener>();
+  private undoStack: CadDocument[] = [];
+  private redoStack: CadDocument[] = [];
+  private disposed = false;
+  private state: CadApplicationState;
+
+  constructor(document: CadDocument, runtime: CadRuntimeAdapter) {
+    this.document = cloneDocument(document);
+    this.runtime = runtime;
+    this.state = {
+      documentKind: document.kind,
+      mode: 'idle',
+      selection: [],
+      canUndo: false,
+      canRedo: false,
+      dirty: false,
+      recompute: { status: 'dirty' },
+    };
+  }
+
+  getDocument(): Readonly<CadDocument> {
+    return this.document;
+  }
+
+  getState(): Readonly<CadApplicationState> {
+    return this.state;
+  }
+
+  getCommandAvailability(id: CadCommandId): CadCommandAvailability {
+    if (this.disposed) return { enabled: false, reason: 'Application is disposed' };
+
+    if (id === 'document.rebuild') return { enabled: true };
+    if (this.document.kind !== 'part') {
+      return { enabled: false, reason: 'Command requires a Part document' };
+    }
+
+    const part = this.document;
+    switch (id) {
+      case 'sketch.create':
+        return { enabled: true };
+      case 'sketch.line':
+      case 'sketch.rectangle':
+      case 'sketch.circle':
+      case 'sketch.finish':
+      case 'dimension.linear':
+      case 'dimension.diameter':
+        return part.sketches.length > 0
+          ? { enabled: true }
+          : { enabled: false, reason: 'Create a sketch first' };
+      case 'feature.extrude':
+      case 'feature.cutExtrude':
+        return part.sketches.length > 0
+          ? { enabled: true }
+          : { enabled: false, reason: 'A sketch/profile is required' };
+      case 'feature.fillet':
+        return part.stableReferences.length > 0
+          ? { enabled: true }
+          : { enabled: false, reason: 'A stable edge/face reference is required' };
+      case 'part.dimension.setValue':
+        return part.dimensions.length > 0
+          ? { enabled: true }
+          : { enabled: false, reason: 'No driving dimensions exist' };
+      default:
+        return { enabled: false, reason: `Unsupported command: ${id satisfies never}` };
+    }
+  }
+
+  async execute(command: CadCommand): Promise<CadCommandResult> {
+    this.assertAlive();
+    const availability = this.getCommandAvailability(command.id);
+    if (!availability.enabled) {
+      return {
+        ok: false,
+        changed: false,
+        error: {
+          code: 'CAD_COMMAND_DISABLED',
+          message: availability.reason ?? `Command ${command.id} is disabled`,
+        },
+      };
+    }
+
+    if (command.id === 'document.rebuild') {
+      return this.recompute();
+    }
+
+    const before = cloneDocument(this.document);
+    try {
+      const result = this.applyDocumentCommand(command);
+      if (result.changed) {
+        this.undoStack.push(before);
+        this.redoStack = [];
+        this.state = {
+          ...this.state,
+          dirty: true,
+          recompute: { status: 'dirty' },
+          canUndo: this.undoStack.length > 0,
+          canRedo: false,
+        };
+        this.emit();
+      }
+      return result;
+    } catch (error) {
+      this.document = before;
+      return errorResult(error);
+    }
+  }
+
+  async undo(): Promise<CadCommandResult> {
+    this.assertAlive();
+    const previous = this.undoStack.pop();
+    if (!previous) return { ok: true, changed: false };
+
+    this.redoStack.push(cloneDocument(this.document));
+    this.document = cloneDocument(previous);
+    this.state = {
+      ...this.state,
+      documentKind: this.document.kind,
+      dirty: true,
+      canUndo: this.undoStack.length > 0,
+      canRedo: true,
+      recompute: { status: 'dirty' },
+    };
+    this.emit();
+    const rebuild = await this.recompute();
+    return rebuild.ok ? { ...rebuild, changed: true } : rebuild;
+  }
+
+  async redo(): Promise<CadCommandResult> {
+    this.assertAlive();
+    const next = this.redoStack.pop();
+    if (!next) return { ok: true, changed: false };
+
+    this.undoStack.push(cloneDocument(this.document));
+    this.document = cloneDocument(next);
+    this.state = {
+      ...this.state,
+      documentKind: this.document.kind,
+      dirty: true,
+      canUndo: true,
+      canRedo: this.redoStack.length > 0,
+      recompute: { status: 'dirty' },
+    };
+    this.emit();
+    const rebuild = await this.recompute();
+    return rebuild.ok ? { ...rebuild, changed: true } : rebuild;
+  }
+
+  async replaceDocument(document: CadDocument): Promise<void> {
+    this.assertAlive();
+    this.document = cloneDocument(document);
+    this.undoStack = [];
+    this.redoStack = [];
+    this.state = {
+      documentKind: document.kind,
+      mode: 'idle',
+      selection: [],
+      canUndo: false,
+      canRedo: false,
+      dirty: false,
+      recompute: { status: 'dirty' },
+    };
+    this.emit();
+    await this.recompute();
+  }
+
+  subscribe(listener: CadApplicationListener): () => void {
+    this.assertAlive();
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  }
+
+  dispose(): void {
+    if (this.disposed) return;
+    this.disposed = true;
+    this.listeners.clear();
+    this.undoStack = [];
+    this.redoStack = [];
+    this.runtime.dispose();
+  }
+
+  private applyDocumentCommand(command: Exclude<CadCommand, { id: 'document.rebuild' }>): CadCommandResult {
+    const part = this.requirePart();
+
+    switch (command.id) {
+      case 'sketch.create': {
+        const id = createCadId<CadSketchId>('sketch');
+        const sketch: CadSketch = {
+          id,
+          name: command.payload.name ?? `Эскиз ${part.sketches.length + 1}`,
+          support: String(command.payload.support),
+          entities: [],
+          constraintIds: [],
+          dimensionIds: [],
+        };
+        part.sketches.push(sketch);
+        return { ok: true, changed: true, createdIds: [id] };
+      }
+
+      case 'sketch.line': {
+        const sketch = this.requireSketch(part, command.payload.sketchId);
+        const id = createCadId<CadSketchEntityId>('entity');
+        sketch.entities.push({
+          id,
+          type: 'line',
+          data: { from: command.payload.from, to: command.payload.to },
+        });
+        return { ok: true, changed: true, createdIds: [id] };
+      }
+
+      case 'sketch.rectangle': {
+        const sketch = this.requireSketch(part, command.payload.sketchId);
+        const { origin: [x, y], width, height } = command.payload;
+        if (width <= 0 || height <= 0) throw new Error('Rectangle width/height must be positive');
+        const points = [
+          [x, y],
+          [x + width, y],
+          [x + width, y + height],
+          [x, y + height],
+        ] as const;
+        const ids: CadSketchEntityId[] = [];
+        for (let index = 0; index < 4; index++) {
+          const id = createCadId<CadSketchEntityId>('entity');
+          const entity: CadSketchEntity = {
+            id,
+            type: 'line',
+            data: { from: points[index], to: points[(index + 1) % 4], role: `rectangle-edge-${index}` },
+          };
+          sketch.entities.push(entity);
+          ids.push(id);
+        }
+        return { ok: true, changed: true, createdIds: ids };
+      }
+
+      case 'sketch.circle': {
+        const sketch = this.requireSketch(part, command.payload.sketchId);
+        if (command.payload.diameter <= 0) throw new Error('Circle diameter must be positive');
+        const id = createCadId<CadSketchEntityId>('entity');
+        sketch.entities.push({
+          id,
+          type: 'circle',
+          data: { center: command.payload.center, diameter: command.payload.diameter },
+        });
+        return { ok: true, changed: true, createdIds: [id] };
+      }
+
+      case 'sketch.finish':
+        this.requireSketch(part, command.payload.sketchId);
+        return { ok: true, changed: false };
+
+      case 'dimension.linear': {
+        const sketch = this.requireSketch(part, command.payload.sketchId);
+        if (command.payload.value <= 0) throw new Error('Dimension value must be positive');
+        const id = createCadId<CadDimensionId>('dimension');
+        const dimension: CadDimension = {
+          id,
+          type: 'linear',
+          entityIds: [...command.payload.entityIds],
+          value: command.payload.value,
+          driving: true,
+          name: command.payload.name,
+        };
+        part.dimensions.push(dimension);
+        sketch.dimensionIds.push(id);
+        return { ok: true, changed: true, createdIds: [id] };
+      }
+
+      case 'dimension.diameter': {
+        const sketch = this.requireSketch(part, command.payload.sketchId);
+        if (command.payload.value <= 0) throw new Error('Diameter must be positive');
+        const id = createCadId<CadDimensionId>('dimension');
+        const dimension: CadDimension = {
+          id,
+          type: 'diameter',
+          entityIds: [command.payload.entityId],
+          value: command.payload.value,
+          driving: true,
+          name: command.payload.name,
+        };
+        part.dimensions.push(dimension);
+        sketch.dimensionIds.push(id);
+        return { ok: true, changed: true, createdIds: [id] };
+      }
+
+      case 'feature.extrude': {
+        this.requireSketch(part, command.payload.sketchId);
+        if (command.payload.distance <= 0) throw new Error('Extrude distance must be positive');
+        const featureId = createCadId<CadFeatureId>('feature');
+        const feature: CadFeature = {
+          id: featureId,
+          type: 'extrude',
+          name: `Элемент выдавливания ${part.features.filter((item) => item.type === 'extrude').length + 1}`,
+          suppressed: false,
+          parameters: { ...command.payload },
+          inputReferences: [],
+        };
+        part.features.push(feature);
+        const createdIds: Array<CadFeatureId | CadBodyId> = [featureId];
+        if (part.bodies.length === 0) {
+          const bodyId = createCadId<CadBodyId>('body');
+          const body: CadBody = { id: bodyId, name: 'Тело 1', visible: true };
+          part.bodies.push(body);
+          createdIds.push(bodyId);
+        }
+        return { ok: true, changed: true, createdIds };
+      }
+
+      case 'feature.cutExtrude': {
+        this.requireSketch(part, command.payload.sketchId);
+        if (command.payload.end === 'blind' && (!command.payload.distance || command.payload.distance <= 0)) {
+          throw new Error('Blind cut requires a positive distance');
+        }
+        const id = createCadId<CadFeatureId>('feature');
+        part.features.push({
+          id,
+          type: 'cut-extrude',
+          name: `Вырезать выдавливанием ${part.features.filter((item) => item.type === 'cut-extrude').length + 1}`,
+          suppressed: false,
+          parameters: { ...command.payload },
+          inputReferences: [],
+        });
+        return { ok: true, changed: true, createdIds: [id] };
+      }
+
+      case 'feature.fillet': {
+        if (command.payload.radius <= 0) throw new Error('Fillet radius must be positive');
+        const id = createCadId<CadFeatureId>('feature');
+        part.features.push({
+          id,
+          type: 'fillet',
+          name: `Скругление ${part.features.filter((item) => item.type === 'fillet').length + 1}`,
+          suppressed: false,
+          parameters: { radius: command.payload.radius },
+          inputReferences: [...command.payload.references],
+        });
+        return { ok: true, changed: true, createdIds: [id] };
+      }
+
+      case 'part.dimension.setValue': {
+        if (command.payload.value <= 0) throw new Error('Driving dimension value must be positive');
+        const dimension = part.dimensions.find((item) => item.id === command.payload.dimensionId);
+        if (!dimension) throw new Error(`Unknown dimension: ${command.payload.dimensionId}`);
+        if (!dimension.driving) throw new Error(`Dimension is not driving: ${command.payload.dimensionId}`);
+        dimension.value = command.payload.value;
+        return { ok: true, changed: true };
+      }
+    }
+  }
+
+  private async recompute(): Promise<CadCommandResult> {
+    this.state = { ...this.state, mode: 'rebuilding', recompute: { status: 'running' } };
+    this.emit();
+    try {
+      const result = await this.runtime.recompute(this.document);
+      const firstError = result.diagnostics.find((item) => item.severity === 'error');
+      const firstWarning = result.diagnostics.find((item) => item.severity === 'warning');
+      this.state = {
+        ...this.state,
+        mode: result.ok ? 'idle' : 'error',
+        recompute: result.ok
+          ? firstWarning
+            ? { status: 'warning', message: firstWarning.message }
+            : { status: 'clean' }
+          : { status: 'error', message: firstError?.message ?? 'Recompute failed' },
+      };
+      this.emit();
+      return result.ok
+        ? { ok: true, changed: false, warnings: result.diagnostics.filter((item) => item.severity === 'warning').map((item) => item.message) }
+        : {
+            ok: false,
+            changed: false,
+            error: {
+              code: firstError?.code ?? 'CAD_RECOMPUTE_FAILED',
+              message: firstError?.message ?? 'Recompute failed',
+            },
+          };
+    } catch (error) {
+      this.state = {
+        ...this.state,
+        mode: 'error',
+        recompute: { status: 'error', message: error instanceof Error ? error.message : String(error) },
+      };
+      this.emit();
+      return errorResult(error);
+    }
+  }
+
+  private requirePart(): CadPartDocument {
+    if (this.document.kind !== 'part') throw new Error('Command requires a Part document');
+    return this.document;
+  }
+
+  private requireSketch(part: CadPartDocument, id: CadSketchId): CadSketch {
+    const sketch = part.sketches.find((item) => item.id === id);
+    if (!sketch) throw new Error(`Unknown sketch: ${id}`);
+    return sketch;
+  }
+
+  private emit(): void {
+    for (const listener of this.listeners) listener(this.state);
+  }
+
+  private assertAlive(): void {
+    if (this.disposed) throw new Error('CadApplication is disposed');
+  }
+}
