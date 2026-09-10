@@ -3,25 +3,36 @@ import type { CadRenderModel, CadViewportPick } from '../contracts/render';
 import { VIEWPORT_VISUAL_TOKENS } from './viewportTokens';
 import './runtime.css';
 
+export type CadViewportViewName = 'fit' | 'front' | 'back' | 'top' | 'bottom' | 'left' | 'right' | 'isometric';
+
+export interface CadViewportViewCommand {
+  sequence: number;
+  view: CadViewportViewName;
+}
+
 export interface CadViewportProps {
   model: CadRenderModel | null;
   selectionMode?: 'none' | 'face' | 'edge';
   onPick?: (pick: CadViewportPick) => void;
+  viewCommand?: CadViewportViewCommand;
 }
 
 interface ViewportInteractionBridge {
   setSelectionMode(mode: 'none' | 'face' | 'edge'): void;
+  setView(view: CadViewportViewName): void;
 }
 
 interface StoredCameraState {
   position: readonly [number, number, number];
   target: readonly [number, number, number];
+  up: readonly [number, number, number];
 }
 
-export function CadViewport({ model, selectionMode = 'none', onPick }: CadViewportProps) {
+export function CadViewport({ model, selectionMode = 'none', onPick, viewCommand }: CadViewportProps) {
   const hostRef = useRef<HTMLDivElement | null>(null);
   const selectionModeRef = useRef(selectionMode);
   const onPickRef = useRef(onPick);
+  const viewCommandRef = useRef(viewCommand);
   const interactionRef = useRef<ViewportInteractionBridge | null>(null);
   const cameraStateRef = useRef<StoredCameraState | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -34,6 +45,11 @@ export function CadViewport({ model, selectionMode = 'none', onPick }: CadViewpo
     selectionModeRef.current = selectionMode;
     interactionRef.current?.setSelectionMode(selectionMode);
   }, [selectionMode]);
+
+  useEffect(() => {
+    viewCommandRef.current = viewCommand;
+    if (viewCommand) interactionRef.current?.setView(viewCommand.view);
+  }, [viewCommand?.sequence, viewCommand?.view]);
 
   useEffect(() => {
     const host = hostRef.current;
@@ -166,6 +182,7 @@ export function CadViewport({ model, selectionMode = 'none', onPick }: CadViewpo
         if (cameraStateRef.current) {
           camera.position.set(...cameraStateRef.current.position);
           controls.target.set(...cameraStateRef.current.target);
+          camera.up.set(...cameraStateRef.current.up);
         } else {
           camera.position.set(
             center.x + diagonal * 0.95,
@@ -173,6 +190,7 @@ export function CadViewport({ model, selectionMode = 'none', onPick }: CadViewpo
             center.z + diagonal * 0.8,
           );
           controls.target.copy(center);
+          camera.up.set(0, 0, 1);
         }
         camera.lookAt(controls.target);
         controls.update();
@@ -212,9 +230,11 @@ export function CadViewport({ model, selectionMode = 'none', onPick }: CadViewpo
           if (!currentHost) return;
           const position: [number, number, number] = [camera.position.x, camera.position.y, camera.position.z];
           const target: [number, number, number] = [controls.target.x, controls.target.y, controls.target.z];
-          cameraStateRef.current = { position, target };
+          const up: [number, number, number] = [camera.up.x, camera.up.y, camera.up.z];
+          cameraStateRef.current = { position, target, up };
           currentHost.dataset.cameraPosition = position.map((value) => value.toFixed(6)).join(',');
           currentHost.dataset.cameraTarget = target.map((value) => value.toFixed(6)).join(',');
+          currentHost.dataset.cameraUp = up.map((value) => value.toFixed(6)).join(',');
           currentHost.dataset.viewChangeCount = String(viewChangeCount);
         };
 
@@ -226,6 +246,43 @@ export function CadViewport({ model, selectionMode = 'none', onPick }: CadViewpo
         };
         controls.addEventListener('change', onCameraChange);
         writeCameraState();
+
+        const fitDistance = () => {
+          const radius = diagonal / 2;
+          const verticalFov = THREE.MathUtils.degToRad(camera.fov);
+          const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * Math.max(camera.aspect, 0.01));
+          const limitingFov = Math.max(Math.min(verticalFov, horizontalFov), THREE.MathUtils.degToRad(5));
+          return Math.min(
+            Math.max(radius / Math.sin(limitingFov / 2) * 1.16, controls.minDistance * 2),
+            controls.maxDistance * 0.95,
+          );
+        };
+
+        const setView = (view: CadViewportViewName) => {
+          const currentDirection = camera.position.clone().sub(controls.target);
+          if (currentDirection.lengthSq() < 1e-10) currentDirection.set(1, -1, 1);
+          currentDirection.normalize();
+
+          let direction = currentDirection;
+          let up = camera.up.clone();
+          if (view === 'front') { direction = new THREE.Vector3(0, -1, 0); up = new THREE.Vector3(0, 0, 1); }
+          if (view === 'back') { direction = new THREE.Vector3(0, 1, 0); up = new THREE.Vector3(0, 0, 1); }
+          if (view === 'top') { direction = new THREE.Vector3(0, 0, 1); up = new THREE.Vector3(0, 1, 0); }
+          if (view === 'bottom') { direction = new THREE.Vector3(0, 0, -1); up = new THREE.Vector3(0, -1, 0); }
+          if (view === 'left') { direction = new THREE.Vector3(-1, 0, 0); up = new THREE.Vector3(0, 0, 1); }
+          if (view === 'right') { direction = new THREE.Vector3(1, 0, 0); up = new THREE.Vector3(0, 0, 1); }
+          if (view === 'isometric') { direction = new THREE.Vector3(1, -1, 1).normalize(); up = new THREE.Vector3(0, 0, 1); }
+
+          controls.target.copy(center);
+          camera.up.copy(up);
+          camera.position.copy(center).addScaledVector(direction, fitDistance());
+          camera.lookAt(center);
+          controls.update();
+          const currentHost = hostRef.current;
+          if (currentHost) currentHost.dataset.viewName = view;
+          writeCameraState();
+          render();
+        };
 
         const faceGroupAtTriangle = (
           source: CadRenderModel['meshes'][number],
@@ -262,7 +319,8 @@ export function CadViewport({ model, selectionMode = 'none', onPick }: CadViewpo
           renderer.domElement.className = `cad-viewport-canvas selection-${mode}`;
           resetSelectionVisuals();
         };
-        interactionRef.current = { setSelectionMode };
+        interactionRef.current = { setSelectionMode, setView };
+        if (viewCommandRef.current) setView(viewCommandRef.current.view);
 
         const setPointer = (event: PointerEvent) => {
           const rect = renderer.domElement.getBoundingClientRect();
