@@ -8,6 +8,7 @@ const dist = fileURLToPath(distUrl);
 const index = await readFile(join(dist, 'index.html'), 'utf8');
 assert.match(index, /<title>ASA-CAD<\/title>/i, 'ASA shell HTML title is missing');
 assert.match(index, /\.js/i, 'ASA shell index has no JS bundle');
+assert.equal(/\.wasm(?:["'?<]|$)/i.test(index), false, 'index.html must not directly reference CAD WASM');
 
 async function files(dir) {
   const result = [];
@@ -23,10 +24,9 @@ async function files(dir) {
 const outputFiles = await files(dist);
 assert.ok(outputFiles.some((file) => file.endsWith('.js')), 'ASA shell emitted no JavaScript');
 assert.ok(outputFiles.some((file) => file.endsWith('.css')), 'ASA shell emitted no CSS');
-assert.equal(
+assert.ok(
   outputFiles.some((file) => file.endsWith('.wasm')),
-  false,
-  'M2 shell boot bundle must not eagerly include the heavy CAD WASM runtime',
+  'M2 release must package the lazy OpenCascade WASM asset for first solid operation',
 );
 
 const bundleText = (
@@ -40,4 +40,4 @@ assert.equal(/Initializing geometry registry/i.test(bundleText), false, 'ASA she
 assert.equal(/toubkalcad-app-logo/i.test(bundleText), false, 'ASA shell accidentally bundled vendor product artwork');
 
 console.log('ASA-CAD M2 independent shell build PASS');
-console.log(`Emitted ${outputFiles.length} files; heavy WASM is not in the shell boot artifact.`);
+console.log(`Emitted ${outputFiles.length} files; OpenCascade WASM is packaged lazily and not referenced by index.html.`);
