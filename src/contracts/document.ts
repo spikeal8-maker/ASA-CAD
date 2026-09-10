@@ -216,6 +216,13 @@ function defaultTitle(kind: CadDocumentKind): string {
   }
 }
 
+export function createEmptyCadDocument(kind: 'part', options?: CreateCadDocumentOptions): CadPartDocument;
+export function createEmptyCadDocument(kind: 'assembly', options?: CreateCadDocumentOptions): CadAssemblyDocument;
+export function createEmptyCadDocument(kind: 'drawing', options?: CreateCadDocumentOptions): CadDrawingDocument;
+export function createEmptyCadDocument(kind: 'fragment', options?: CreateCadDocumentOptions): CadFragmentDocument;
+export function createEmptyCadDocument(kind: 'specification', options?: CreateCadDocumentOptions): CadSpecificationDocument;
+export function createEmptyCadDocument(kind: 'text', options?: CreateCadDocumentOptions): CadTextDocument;
+export function createEmptyCadDocument(kind: CadDocumentKind, options?: CreateCadDocumentOptions): CadDocument;
 export function createEmptyCadDocument(
   kind: CadDocumentKind,
   options: CreateCadDocumentOptions = {},
@@ -248,7 +255,7 @@ export function createEmptyCadDocument(
   }
 }
 
-export function serializeCadDocument(document: CadDocument): string {
+export function serializeCadDocument(document: Readonly<CadDocument>): string {
   validateCadDocument(document);
   return JSON.stringify(document);
 }
