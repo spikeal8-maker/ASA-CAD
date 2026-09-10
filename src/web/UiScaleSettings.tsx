@@ -23,20 +23,24 @@ export function UiScaleSettings() {
   const [preference, setPreferenceState] = useState<CadUiScalePreference>(initial.preference);
   const [resolved, setResolved] = useState<CadUiScaleResolved>(initial.resolved);
 
+  const openSettings = () => {
+    const next = readControllerState();
+    setPreferenceState(next.preference);
+    setResolved(next.resolved);
+    setOpen(true);
+  };
+
   useEffect(() => {
     const settingsButton = document.querySelector<HTMLButtonElement>('.global-actions button[title="Настройки"]');
     if (!settingsButton) return;
-    const openSettings = (event: Event) => {
+    const onOpen = (event: Event) => {
       event.preventDefault();
-      const next = readControllerState();
-      setPreferenceState(next.preference);
-      setResolved(next.resolved);
-      setOpen(true);
+      openSettings();
     };
-    settingsButton.addEventListener('click', openSettings);
+    settingsButton.addEventListener('click', onOpen);
     settingsButton.setAttribute('aria-haspopup', 'dialog');
     settingsButton.setAttribute('aria-controls', 'asa-cad-interface-settings');
-    return () => settingsButton.removeEventListener('click', openSettings);
+    return () => settingsButton.removeEventListener('click', onOpen);
   }, []);
 
   useEffect(() => {
@@ -78,6 +82,17 @@ export function UiScaleSettings() {
       <div className="ui-scale-status" data-testid="ui-scale-status" aria-label={`Масштаб интерфейса ${resolved}%`}>
         UI {resolved}%
       </div>
+
+      <button
+        type="button"
+        className="mobile-ui-settings-launcher"
+        aria-label="Настройки интерфейса"
+        aria-haspopup="dialog"
+        aria-controls="asa-cad-interface-settings"
+        onClick={openSettings}
+      >
+        ⚙
+      </button>
 
       {open && (
         <div
