@@ -1,6 +1,7 @@
 import type { CadCommand, CadCommandAvailability, CadCommandId, CadCommandResult } from './commands';
 import type { CadDocument } from './document';
-import type { CadObjectId } from './ids';
+import type { CadObjectId, CadStableReferenceId } from './ids';
+import type { CadReferenceCaptureRequest } from './runtime';
 
 export type CadApplicationMode = 'idle' | 'command' | 'rebuilding' | 'error';
 
@@ -35,6 +36,7 @@ export interface CadApplication {
   getState(): Readonly<CadApplicationState>;
   getCommandAvailability(id: CadCommandId): CadCommandAvailability;
   execute(command: CadCommand): Promise<CadCommandResult>;
+  captureReference(request: CadReferenceCaptureRequest): Promise<CadStableReferenceId>;
   undo(): Promise<CadCommandResult>;
   redo(): Promise<CadCommandResult>;
   replaceDocument(document: CadDocument): Promise<void>;
