@@ -71,7 +71,7 @@ const HANDLERS = {
       const sketch: CadSketch = {
         id,
         name: command.payload.name ?? `Эскиз ${part.sketches.length + 1}`,
-        support: String(command.payload.support),
+        support: command.payload.support,
         entities: [],
         constraintIds: [],
         dimensionIds: [],

@@ -5,6 +5,7 @@ import type {
   CadPartDocument,
   CadSketch,
   CadSketchEntity,
+  CadSketchLineEntity,
   CadStableReference,
 } from '../contracts/document';
 import type { CadFeatureId, CadSketchEntityId, CadSketchId } from '../contracts/ids';
@@ -317,7 +318,7 @@ export class OpenCascadePartRuntime implements CadRuntimeAdapter {
 
   private rectangleProfile(part: CadPartDocument, sketch: CadSketch): RectangleProfile {
     const rectangle = sketch.entities
-      .filter((entity) => entity.type === 'line' && String(entity.data.role ?? '').startsWith('rectangle-edge-'))
+      .filter((entity): entity is CadSketchLineEntity => entity.type === 'line' && String(entity.data.role ?? '').startsWith('rectangle-edge-'))
       .sort((a, b) => String(a.data.role).localeCompare(String(b.data.role)));
     if (rectangle.length !== 4) throw new Error(`${sketch.name}: M1 extrude requires one rectangle profile`);
 

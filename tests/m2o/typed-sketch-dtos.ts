@@ -10,7 +10,6 @@ import {
   type CadHorizontalConstraint,
   type CadLinearDimension,
   type CadSketch,
-  type CadSketchArcEntity,
   type CadSketchCircleEntity,
   type CadSketchEntityId,
   type CadSketchId,
@@ -25,7 +24,6 @@ const sketchId = createCadId<CadSketchId>('sketch');
 const lineAId = createCadId<CadSketchEntityId>('entity');
 const lineBId = createCadId<CadSketchEntityId>('entity');
 const circleId = createCadId<CadSketchEntityId>('entity');
-const arcId = createCadId<CadSketchEntityId>('entity');
 
 const lineA: CadSketchLineEntity = {
   id: lineAId,
@@ -41,11 +39,6 @@ const circle: CadSketchCircleEntity = {
   id: circleId,
   type: 'circle',
   data: { center: [30, 20], diameter: 12 },
-};
-const arc: CadSketchArcEntity = {
-  id: arcId,
-  type: 'arc',
-  data: { center: [30, 20], radius: 8, startAngle: 0, endAngle: Math.PI },
 };
 
 const horizontalId = createCadId<CadConstraintId>('constraint');
@@ -90,7 +83,7 @@ const sketch: CadSketch = {
   id: sketchId,
   name: 'Эскиз 1',
   support: 'XY',
-  entities: [lineA, lineB, circle, arc],
+  entities: [lineA, lineB, circle],
   constraintIds: [horizontalId, coincidentId],
   dimensionIds: [linearId, diameterId],
 };
@@ -105,7 +98,6 @@ assert.equal(parsed.kind, 'part');
 if (parsed.kind !== 'part') throw new Error('expected part');
 assert.equal(parsed.sketches[0]?.entities[0]?.type, 'line');
 assert.equal(parsed.sketches[0]?.entities[2]?.type, 'circle');
-assert.equal(parsed.sketches[0]?.entities[3]?.type, 'arc');
 
 function mutateAndReject(mutator: (value: any) => void, pattern: RegExp): void {
   const value = JSON.parse(serialized);
@@ -122,20 +114,22 @@ mutateAndReject(
   /data\.from\[0\] must be finite/,
 );
 mutateAndReject(
+  (value) => { value.sketches[0].support = 'freeform-plane'; },
+  /support must be XY, XZ, YZ or a stable reference id/,
+);
+mutateAndReject(
   (value) => { value.constraints[1].data.refs = [{ entityId: lineAId }]; },
   /data\.refs must contain exactly two references/,
 );
 mutateAndReject(
   (value) => { value.dimensions[1].entityIds = [circleId, lineAId]; },
-  /diameter requires exactly 1 entity id/,
+  /diameter requires exactly one entity id/,
 );
 mutateAndReject(
   (value) => { value.dimensions[0].type = 'mystery-dimension'; },
   /dimensions\[0\]\.type is unsupported/,
 );
 
-// Pre-O7 valid schema-v1 shape remains accepted because O7 changes typing and
-// validation, not the serialized representation or schema version.
 const legacyCompatible = createEmptyCadDocument('part', { title: 'Legacy compatible' });
 const legacySketchId = createCadId<CadSketchId>('sketch');
 const legacyEntityId = createCadId<CadSketchEntityId>('entity');

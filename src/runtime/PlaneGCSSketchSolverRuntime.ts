@@ -1,18 +1,22 @@
-import type { CadConstraint, CadDimension, CadPartDocument, CadSketch } from '../contracts/document';
-import type { CadSketchEntityId, CadSketchId } from '../contracts/ids';
+import type {
+  CadConstraint,
+  CadConstraintPointReference,
+  CadDimension,
+  CadDocument,
+  CadPartDocument,
+  CadSketch,
+  CadSketchEntity,
+} from '../contracts/document';
+import type { CadSketchId } from '../contracts/ids';
 import type { CadSketchSolveResult, CadSketchSolverAdapter } from '../contracts/sketchSolver';
 import { PlaneGCSSolverAdapter } from '../../vendor/toubkal/src/services/solver/PlaneGCSSolverAdapter';
 import type { EntityGeom } from '../../vendor/toubkal/src/services/solver/model';
 import type { SketchConstraint, SketchRef } from '../../vendor/toubkal/src/store/cadStore';
 
-interface StoredPointRef {
-  entityId: CadSketchEntityId;
-  point?: 'a' | 'b' | 'c';
-}
-
 /**
- * ASA boundary around the existing PlaneGCS implementation. Vendor geometry and
- * constraint shapes are created locally and never escape this adapter.
+ * ASA boundary around the existing PlaneGCS implementation. Persisted ASA DTOs
+ * are already validated before they reach this adapter, so entity/constraint
+ * payloads stay strongly typed and vendor shapes never escape this boundary.
  */
 export class PlaneGCSSketchSolverRuntime implements CadSketchSolverAdapter {
   private readonly solver: PlaneGCSSolverAdapter;
@@ -28,7 +32,7 @@ export class PlaneGCSSketchSolverRuntime implements CadSketchSolverAdapter {
     this.initialized = true;
   }
 
-  solve(document: Readonly<import('../contracts/document').CadDocument>, sketchId: CadSketchId): CadSketchSolveResult {
+  solve(document: Readonly<CadDocument>, sketchId: CadSketchId): CadSketchSolveResult {
     if (!this.initialized) throw new Error('PlaneGCSSketchSolverRuntime.init() must be awaited before solve()');
     if (document.kind !== 'part') {
       return this.failure('SKETCH_SOLVER_PART_ONLY', `Sketch solve requires Part, got ${document.kind}`);
@@ -44,16 +48,35 @@ export class PlaneGCSSketchSolverRuntime implements CadSketchSolverAdapter {
         ...this.toVendorDimensions(document, sketch),
       ];
       const result = this.solver.solve(geoms, constraints);
-      const entities = sketch.entities.map((entity) => {
+      const entities: CadSketchEntity[] = sketch.entities.map((entity) => {
         const solved = result.geoms[entity.id];
-        if (!solved) return { id: entity.id, data: structuredClone(entity.data) };
-        if (solved.kind === 'line') {
-          return { id: entity.id, data: { ...entity.data, from: [...solved.a], to: [...solved.b] } };
+        if (!solved) return structuredClone(entity);
+
+        if (entity.type === 'line' && solved.kind === 'line') {
+          return {
+            id: entity.id,
+            type: 'line',
+            data: {
+              ...entity.data,
+              from: [solved.a[0], solved.a[1]],
+              to: [solved.b[0], solved.b[1]],
+            },
+          };
         }
-        if (solved.kind === 'circle') {
-          return { id: entity.id, data: { ...entity.data, center: [...solved.c], diameter: solved.r * 2 } };
+
+        if (entity.type === 'circle' && solved.kind === 'circle') {
+          return {
+            id: entity.id,
+            type: 'circle',
+            data: {
+              ...entity.data,
+              center: [solved.c[0], solved.c[1]],
+              diameter: solved.r * 2,
+            },
+          };
         }
-        return { id: entity.id, data: structuredClone(entity.data) };
+
+        return structuredClone(entity);
       });
 
       return {
@@ -77,24 +100,22 @@ export class PlaneGCSSketchSolverRuntime implements CadSketchSolverAdapter {
 
   private toVendorGeometry(sketch: CadSketch): EntityGeom[] {
     return sketch.entities.flatMap((entity): EntityGeom[] => {
-      if (entity.type === 'line') {
-        return [{
-          id: entity.id,
-          kind: 'line',
-          a: this.point2(entity.data.from, `${entity.id}.from`),
-          b: this.point2(entity.data.to, `${entity.id}.to`),
-        }];
+      switch (entity.type) {
+        case 'line':
+          return [{
+            id: entity.id,
+            kind: 'line',
+            a: [entity.data.from[0], entity.data.from[1]],
+            b: [entity.data.to[0], entity.data.to[1]],
+          }];
+        case 'circle':
+          return [{
+            id: entity.id,
+            kind: 'circle',
+            c: [entity.data.center[0], entity.data.center[1]],
+            r: entity.data.diameter / 2,
+          }];
       }
-      if (entity.type === 'circle') {
-        const diameter = this.number(entity.data.diameter, `${entity.id}.diameter`);
-        return [{
-          id: entity.id,
-          kind: 'circle',
-          c: this.point2(entity.data.center, `${entity.id}.center`),
-          r: diameter / 2,
-        }];
-      }
-      return [];
     });
   }
 
@@ -113,13 +134,8 @@ export class PlaneGCSSketchSolverRuntime implements CadSketchSolverAdapter {
         return this.vendorConstraint(constraint, 'VERTICAL', [{ entityId: constraint.entityIds[0] }]);
       case 'fixed':
         return this.vendorConstraint(constraint, 'FIXED', [{ entityId: constraint.entityIds[0] }]);
-      case 'coincident': {
-        const refs = constraint.data?.refs;
-        if (!Array.isArray(refs) || refs.length !== 2) throw new Error(`Constraint ${constraint.id} has no coincident refs`);
-        return this.vendorConstraint(constraint, 'COINCIDENT', refs as StoredPointRef[]);
-      }
-      default:
-        throw new Error(`M1 PlaneGCS adapter does not support constraint type ${constraint.type}`);
+      case 'coincident':
+        return this.vendorConstraint(constraint, 'COINCIDENT', constraint.data.refs);
     }
   }
 
@@ -131,29 +147,31 @@ export class PlaneGCSSketchSolverRuntime implements CadSketchSolverAdapter {
   }
 
   private toVendorDimension(dimension: CadDimension): SketchConstraint {
-    if (dimension.type === 'linear' && dimension.entityIds.length === 1) {
-      return {
-        id: dimension.id,
-        type: 'LENGTH',
-        refs: [{ kind: 'entity', id: dimension.entityIds[0] }],
-        value: dimension.value,
-      };
+    switch (dimension.type) {
+      case 'linear':
+        if (dimension.entityIds.length !== 1) {
+          throw new Error(`Linear dimension ${dimension.id} currently requires exactly one entity`);
+        }
+        return {
+          id: dimension.id,
+          type: 'LENGTH',
+          refs: [{ kind: 'entity', id: dimension.entityIds[0] }],
+          value: dimension.value,
+        };
+      case 'diameter':
+        return {
+          id: dimension.id,
+          type: 'RADIUS',
+          refs: [{ kind: 'entity', id: dimension.entityIds[0] }],
+          value: dimension.value / 2,
+        };
     }
-    if (dimension.type === 'diameter' && dimension.entityIds.length === 1) {
-      return {
-        id: dimension.id,
-        type: 'RADIUS',
-        refs: [{ kind: 'entity', id: dimension.entityIds[0] }],
-        value: dimension.value / 2,
-      };
-    }
-    throw new Error(`M1 PlaneGCS adapter does not support dimension ${dimension.type}`);
   }
 
   private vendorConstraint(
     constraint: CadConstraint,
     type: SketchConstraint['type'],
-    refs: StoredPointRef[],
+    refs: readonly CadConstraintPointReference[],
   ): SketchConstraint {
     return {
       id: constraint.id,
@@ -164,16 +182,6 @@ export class PlaneGCSSketchSolverRuntime implements CadSketchSolverAdapter {
         pt: ref.point,
       })),
     };
-  }
-
-  private point2(value: unknown, label: string): [number, number] {
-    if (!Array.isArray(value) || value.length < 2) throw new Error(`${label} must be [x,y]`);
-    return [this.number(value[0], `${label}[0]`), this.number(value[1], `${label}[1]`)];
-  }
-
-  private number(value: unknown, label: string): number {
-    if (typeof value !== 'number' || !Number.isFinite(value)) throw new Error(`${label} must be finite`);
-    return value;
   }
 
   private failure(code: string, message: string): CadSketchSolveResult {

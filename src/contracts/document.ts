@@ -33,6 +33,7 @@ export type {
   CadSketchLineData,
   CadSketchLineEntity,
   CadSketchPointSelector,
+  CadSketchSupport,
   CadVerticalConstraint,
 } from './sketch';
 
