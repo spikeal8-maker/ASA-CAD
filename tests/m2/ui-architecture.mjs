@@ -7,7 +7,7 @@ const APP_PATH = join(WEB_ROOT, 'App.tsx');
 
 // O5 progressively lowers this ceiling after each accepted extraction so
 // responsibilities cannot silently move back into the root editor component.
-const MAX_APP_BYTES = 47_300;
+const MAX_APP_BYTES = 30_700;
 const appBytes = statSync(APP_PATH).size;
 assert.ok(
   appBytes <= MAX_APP_BYTES,
