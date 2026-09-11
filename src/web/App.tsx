@@ -22,6 +22,7 @@ import { useCadPersistenceCommands } from './useCadPersistenceCommands';
 import { CadUiActionButton, CadUiActionSearchResults, CadUiGlobalActionButton } from './CadUiActionControls';
 import type { CadUiAction } from './CadUiAction';
 import { useM2CadUiActions } from './useM2CadUiActions';
+import { MobileToolsPanel } from './MobileToolsPanel';
 import { cadUiActionIdForShortcut } from './M2CadUiActions';
 import {
   ShortcutRegistry,
@@ -126,7 +127,7 @@ export function App(props: CadProjectPersistenceOverrides) {
   const persistence = useCadProjectPersistence(app, initialDocument, route, props);
   const shortcutRegistry = useMemo(() => new ShortcutRegistry(), []);
   const [, setRevisionToken] = useState(0);
-  const [activePanel, setActivePanel] = useState<'tree' | 'parameters'>('tree');
+  const [activePanel, setActivePanel] = useState<'tree' | 'parameters' | 'tools'>('tree');
   const [newDialogOpen, setNewDialogOpen] = useState(false);
   const [activeWorkspace, setActiveWorkspace] = useState('solid');
   const [activeCommand, setActiveCommand] = useState<string | null>(null);
@@ -935,7 +936,7 @@ export function App(props: CadProjectPersistenceOverrides) {
               onSelectBody={handleBodySelect}
               onEditDimension={beginDimensionEdit}
             />
-          ) : (
+          ) : activePanel === 'parameters' ? (
             <ParameterPanel
               activeCommand={activeCommand}
               requiresFaceSelection={hasSolid && activeCommand === 'part.sketch.create'}
@@ -962,6 +963,12 @@ export function App(props: CadProjectPersistenceOverrides) {
               onFillet={commitFillet}
               onDimensionEdit={commitDimensionEdit}
               onCancel={cancelCommand}
+            />
+          ) : (
+            <MobileToolsPanel
+              documentKind={document.kind}
+              workspace={activeWorkspace}
+              getAction={uiAction}
             />
           )}
         </aside>
@@ -1050,9 +1057,24 @@ export function App(props: CadProjectPersistenceOverrides) {
       </footer>
 
       <div className="mobile-bottom-bar" aria-label="Мобильные панели">
-        <button type="button" onClick={() => setActivePanel('tree')}>☷<span>Дерево</span></button>
-        <button type="button" onClick={() => setActivePanel('parameters')}>≡<span>Параметры</span></button>
-        <button type="button" onClick={() => setNewDialogOpen(true)}>＋<span>Документ</span></button>
+        <button
+          type="button"
+          className={activePanel === 'tree' ? 'active' : ''}
+          aria-pressed={activePanel === 'tree'}
+          onClick={() => setActivePanel('tree')}
+        >☷<span>Дерево</span></button>
+        <button
+          type="button"
+          className={activePanel === 'parameters' ? 'active' : ''}
+          aria-pressed={activePanel === 'parameters'}
+          onClick={() => setActivePanel('parameters')}
+        >≡<span>Параметры</span></button>
+        <button
+          type="button"
+          className={activePanel === 'tools' ? 'active' : ''}
+          aria-pressed={activePanel === 'tools'}
+          onClick={() => setActivePanel('tools')}
+        >⌘<span>Инструменты</span></button>
       </div>
 
       {newDialogOpen && (
