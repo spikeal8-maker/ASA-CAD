@@ -2,7 +2,7 @@
 
 This file is the **single short current-state entry point** for humans and coding agents. It describes what is true on `main` now. Long-term product intent belongs to `SYSTEM_SPEC.md`; implementation order belongs to `ROADMAP.md`.
 
-Last synchronized: 2026-09-10.
+Last synchronized: 2026-09-11.
 
 ## Current phase
 
@@ -17,14 +17,19 @@ Completed foundation:
 
 **Current program: M2 — permanent ASA-owned KOMPAS-oriented shell.**
 
+**Active blocking optimization gate before M3: M2O — #21.**
+
+Execution checklist: [`M2O_OPTIMIZATION_GATE.md`](M2O_OPTIMIZATION_GATE.md).
+
 Tracking:
 - #3 M2 core shell — ACTIVE;
 - #15 M2A deterministic fixtures/visual review — ACTIVE;
 - #17 M2I interaction/mobile — ACTIVE;
 - #18 M2R display/DPI/zoom/UI Scale — DONE;
-- #19 M2V KOMPAS visual acceptance — ACTIVE.
+- #19 M2V KOMPAS visual acceptance — ACTIVE;
+- #21 M2O architecture optimization — ACTIVE / BLOCKS M3.
 
-Next feature lane after controlled M2 acceptance: **M3 Parametric Sketch** (#5).
+Next feature lane after M2O + controlled M2 acceptance: **M3 Parametric Sketch** (#5).
 
 ## What works now
 
@@ -32,10 +37,12 @@ The permanent ASA shell is independent from visible Toubkal UI and can be starte
 
 ```bash
 npm run install:vendor
-npm run dev:asa
+npm run dev
 ```
 
 Standalone address: `http://localhost:8090`.
+
+`npm run dev:asa` remains an explicit alias. Vendor diagnostic UI is `npm run dev:vendor`.
 
 Release-like Docker:
 
@@ -101,6 +108,7 @@ These are the preferred surfaces for visual correction and regression review.
 Do **not** mistake the protected Part proof for full KOMPAS parity.
 
 Not complete yet:
+- M2O architecture optimization gate;
 - full sketch geometry/constraints/DOF workflow (M3);
 - broad Part Design feature set and industrial StableRef corpus (M4);
 - Assembly product workflow (M4A);
@@ -111,21 +119,15 @@ Not complete yet:
 
 The current OpenCascade Part runtime intentionally implements a narrow accepted vertical slice. New features must extend contracts/tests rather than bypassing them.
 
-## Current engineering debt to control before M3
-
-1. Keep `App.tsx` from becoming the command/runtime/UI god-object. Move new responsibilities into focused controllers/components instead of growing it indefinitely.
-2. Mobile and desktop must consume one typed command/view model. Mobile must **not** discover/click desktop DOM controls.
-3. Dynamic implementation status must be updated here and in the corresponding GitHub issue when a gate closes; do not copy live status into many specs.
-4. M2 visual acceptance still needs screenshot/reference work against KOMPAS and owner review.
-5. StableRef needs a broader topology-change corpus during M4; the current protected workflow proves the architecture, not every topology case.
-
 ## Immediate next work
 
-In order:
-1. finish M2I mobile shell using typed shared command actions, not DOM delegation;
-2. keep touch/desktop protected workflows green;
-3. complete M2A/M2V screenshot/reference acceptance;
-4. split remaining oversized M2 UI orchestration before adding the much larger M3 command surface;
-5. start M3 Parametric Sketch.
+Follow [`M2O_OPTIMIZATION_GATE.md`](M2O_OPTIMIZATION_GATE.md) in order.
 
-If another document contains an older `ACTIVE/NEXT` statement, **this file plus the current GitHub issue wins for current status**.
+Immediate sequence:
+1. O1 — correct mandatory architecture documentation to the six-document model;
+2. O2 — cross-validate command/layout registries and make implementation statuses truthful;
+3. O3 — route editor persistence through `CadProjectSession` / `CadProjectHost`;
+4. continue O4–O11 without adding new CAD feature families;
+5. start M3 only after the M2O completion gate passes.
+
+If another document contains an older `ACTIVE/NEXT` statement, **this file plus issue #21 and the M2O execution file win for current status**.
