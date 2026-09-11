@@ -31,7 +31,7 @@ try {
 
   const tools = page.locator('[data-mobile-tools="true"]');
   await tools.waitFor();
-  await page.getByText('Инструменты', { exact: true }).waitFor();
+  await tools.getByText('Инструменты', { exact: true }).waitFor();
 
   const createSketch = tools.locator('[data-command-id="part.sketch.create"]');
   assert.equal(await createSketch.isEnabled(), true, 'Create Sketch must be enabled through the mobile shared action');
