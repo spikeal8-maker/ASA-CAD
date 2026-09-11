@@ -51,167 +51,121 @@ For every step:
 
 **Non-blocking follow-up lanes:** O9, O10, O11. They remain important, but M3 must not wait for a full toolchain migration, GitHub administration that permissions may block, or final KOMPAS visual polish.
 
+## Current execution state
+
+- [x] O1 — six-document architecture/document consistency; CI protected.
+- [x] O2 — canonical command/layout IDs and truthful accepted M2 statuses; CI protected.
+- [x] O3 — editor persistence routed through `CadEditorPersistence -> CadProjectSession -> CadProjectHost`; standalone/ASA Lab host seams preserved; protected browser/Docker save-reopen green.
+- [ ] O4 — **ACTIVE**. Typed `CadUiAction` model + builder/search/enablement/execution contract and regression exist; permanent desktop/mobile/search/shortcut presentation still needs to consume the shared action objects before this step closes.
+- [ ] O5 — pending.
+- [ ] O6 — pending.
+- [ ] O7 — pending.
+- [ ] O8 — pending.
+
 ---
 
 # Execution order
 
 The blocking order below is mandatory unless a discovered blocker requires a documented change.
 
-## O1 — Fix mandatory architecture documentation — P0
+## O1 — Fix mandatory architecture documentation — P0 — DONE
 
-### Problem
+### Result
 
-`SYSTEM_SPEC.md` and actual TypeScript support six document kinds, while `ARCHITECTURE.md` still describes only Part/Assembly as the public document union.
+`ARCHITECTURE.md`, `SYSTEM_SPEC.md`, `STATUS.md` and `CadDocumentKind` now agree on six first-class document kinds:
+- `part`;
+- `assembly`;
+- `drawing`;
+- `fragment`;
+- `specification`;
+- `text`.
 
-### Work
+The architecture separately records current runtime maturity: the accepted exact B-Rep vertical slice is Part-focused; that limitation does not shrink the public document model.
 
-- update `docs/ARCHITECTURE.md` to the six-document model:
-  - `part`;
-  - `assembly`;
-  - `drawing`;
-  - `fragment`;
-  - `specification`;
-  - `text`;
-- distinguish current runtime maturity from public document architecture;
-- keep Part/Assembly-specific exact-geometry rules without implying the other four do not exist;
-- ensure `SYSTEM_SPEC.md`, `ARCHITECTURE.md`, `STATUS.md` and `src/contracts/document.ts` use the same terminology.
+### Permanent protection
 
-### Acceptance
-
-- [ ] no mandatory source-of-truth says there are only two document kinds;
-- [ ] six kinds match `CadDocumentKind` in code;
-- [ ] architecture still makes clear that current exact 3D runtime is intentionally Part-focused.
-
-### Required checks
-
-- `npm run typecheck:asa`
-- documentation consistency test added or extended.
+`tests/m2o/document-kinds.mjs` runs in the M2 shell gate and rejects a regression back to a two-document public architecture.
 
 ---
 
-## O2 — Make command/layout registries internally consistent — P0
+## O2 — Make command/layout registries internally consistent — P0 — DONE
 
-### Problem
+### Result
 
-`command-registry.v1.json` and `layout-registry.v2.json` contain divergent command IDs and stale implementation statuses.
+- command/layout IDs are cross-validated;
+- missing layout command IDs were normalized against the maintained KOMPAS inventory;
+- stale aliases are rejected;
+- accepted M2 commands are explicitly `implemented`;
+- status vocabulary is limited to `planned | implemented | experimental | deferred`.
 
-Examples already observed include naming differences such as pattern/check/measurement command IDs.
+### Permanent protection
 
-### Work
-
-Create one validator that checks both registries.
-
-For every command ID referenced by layout:
-- command must exist in command registry;
-- command kind/workspace placement must be compatible;
-- implemented commands must have valid backend/action mapping where applicable.
-
-For production-visible commands:
-- they must have a layout placement or an explicitly documented non-ribbon surface;
-- they must not remain silently orphaned.
-
-Normalize duplicate/divergent IDs instead of adding aliases indefinitely.
-
-### Status vocabulary
-
-Use only:
-
-```text
-planned
-implemented
-experimental
-deferred
-```
-
-`implemented` means the accepted product path exists, not merely a backend method.
-
-### Acceptance
-
-- [ ] every layout command resolves to one command-registry entry;
-- [ ] no duplicate semantic command uses multiple IDs without an explicit compatibility reason;
-- [ ] currently accepted M2 commands have correct `implemented` status;
-- [ ] CI fails on future registry drift.
-
-### Required checks
-
-Add a dedicated test, e.g.:
-
-```text
-tests/m2/registry-integrity.mjs
-```
-
-and include it in `test:m2:shell`.
+`tests/m2o/registry-integrity.mjs` runs in the M2 shell gate and rejects unknown layout IDs, stale aliases, duplicate IDs and status regression for the accepted M2 command set.
 
 ---
 
-## O3 — Route product persistence through `CadProjectSession` — P0
+## O3 — Route product persistence through `CadProjectSession` — P0 — DONE
 
-### Problem
+### Result
 
-M1B introduced `CadProjectHost`, recovery and session boundaries, but the M2 product shell still saves/opens directly through `localStorage`.
+Permanent editor persistence now follows:
 
-That bypass would force Save/Open to be rewritten again during ASA Lab integration.
+```text
+App / UI command
+  -> CadEditorPersistence
+  -> CadProjectSession
+  -> CadProjectHost
+      -> LocalStorageCadProjectHost (standalone)
+      -> AsaLabCadProjectHost (ASA Lab)
+```
 
-### Work
+The UI no longer serializes/parses/saves directly to `localStorage`. Standalone localStorage remains an implementation detail of `LocalStorageCadProjectHost`; the legacy raw JSON key is only a compatibility mirror.
 
-- make `CadProjectSession` the editor persistence boundary;
-- standalone mode uses the standalone/local host adapter;
-- future ASA Lab mode uses `AsaLabCadProjectHost` without changing editor UI;
-- preserve local recovery behavior;
-- remove direct document persistence logic from `App.tsx`;
-- keep localStorage only behind the standalone/recovery implementation if still appropriate.
+`CadProjectSession` owns optimistic revision, mutation-id idempotency and recovery coordination.
 
-### Acceptance
+### Permanent protection
 
-- [ ] UI does not serialize/save project documents directly;
-- [ ] Save/Open use `CadProjectSession`/`CadProjectHost`;
-- [ ] revision + `mutationId` semantics remain tested;
-- [ ] protected Part save/reopen browser test remains green;
-- [ ] ASA Lab adapter can be substituted without changing command UI.
-
-### Required checks
-
+- `tests/m2o/persistence-session.ts`;
+- `tests/m2o/persistence-boundary.mjs`;
 - existing M1B host/recovery tests;
-- protected Part browser E2E;
-- new editor-session persistence regression.
+- full protected Part browser save/reopen regression;
+- Docker `/cad/*` release regression.
 
 ---
 
-## O4 — Introduce the shared typed UI action model — P0
+## O4 — Introduce the shared typed UI action model — P0 — ACTIVE
 
 ### Problem
 
 Desktop controls are still primarily hand-wired React elements. Mobile must not discover or click desktop DOM controls. Registry metadata is not yet an executable presentation layer.
 
-### Work
+### Foundation already landed
 
-Introduce a typed model, for example:
+`src/web/CadUiAction.ts` now defines the shared typed runtime presentation model and helpers:
+- stable registry-owned command identity/labels/status/presentation;
+- editor-state enablement/disabled reason/checked state;
+- typed execution callback;
+- shared action indexing/search/execution;
+- planned/deferred commands cannot execute merely because an accidental callback exists.
 
-```ts
-interface CadUiAction {
-  id: string;
-  label: string;
-  enabled: boolean;
-  disabledReason?: string;
-  checked?: boolean;
-  groupId: string;
-  presentation: 'button' | 'split-button' | 'dropdown' | 'toggle';
-  execute(): void | Promise<void>;
-}
-```
+`tests/m2o/ui-actions.ts` protects the contract and proves that desktop/mobile can consume the same action object.
 
-Exact shape may evolve, but requirements are fixed:
-- command identity comes from ASA command IDs;
-- enablement is derived from editor/application state;
-- desktop and mobile consume the same action objects;
-- action execution must not depend on locating another presentation's DOM node.
+### Remaining work to close O4
+
+- create the permanent action bindings for the accepted M2 command set;
+- make desktop ribbon/global controls consume `CadUiAction` objects;
+- make command search consume the same action collection rather than raw registry rows;
+- route shortcut actions to the same underlying action execution where the command is shared;
+- expose the same action objects to the mobile Tools presentation when that surface is mounted;
+- keep interaction-only shortcuts (`Esc`, commit/cancel, camera motion where appropriate) in the central interaction layer rather than forcing them into product command IDs.
 
 ### Acceptance
 
 - [ ] desktop and mobile can render the same command from one action definition;
 - [ ] no mobile→desktop DOM delegation;
-- [ ] command search can consume the same model;
-- [ ] shortcut dispatch and visual command dispatch resolve to the same underlying action/application behavior where appropriate.
+- [ ] command search consumes the shared action model;
+- [ ] shortcut dispatch and visual command dispatch resolve to the same underlying action/application behavior where appropriate;
+- [ ] protected browser workflow remains green.
 
 ---
 
@@ -437,18 +391,18 @@ During/after early M3:
 
 M3 may start when **all blocking items below** are true:
 
-- [ ] O1 architecture documentation corrected;
-- [ ] O2 command/layout registries cross-validated and statuses truthful;
-- [ ] O3 editor persistence goes through `CadProjectSession`/host boundary;
+- [x] O1 architecture documentation corrected;
+- [x] O2 command/layout registries cross-validated and statuses truthful;
+- [x] O3 editor persistence goes through `CadProjectSession`/host boundary;
 - [ ] O4 shared typed action model exists and is consumed by permanent presentation paths;
 - [ ] O5 M3-critical UI responsibilities are extracted and `App.tsx` is materially smaller;
 - [ ] O6 Sketch/Constraint/Dimension command growth has focused handlers;
 - [ ] O7 Sketch entity/constraint/dimension contracts are strongly typed;
 - [ ] O8 Sketch selection/preview interaction can grow outside a monolithic viewport event block;
-- [ ] protected Part workflow is green;
-- [ ] M1/M1B regressions are green;
-- [ ] M2 shell/browser responsive/touch gates are green;
-- [ ] Docker `/cad/*` release gate is green.
+- [ ] protected Part workflow is green after the final blocking step;
+- [ ] M1/M1B regressions are green after the final blocking step;
+- [ ] M2 shell/browser responsive/touch gates are green after the final blocking step;
+- [ ] Docker `/cad/*` release gate is green after the final blocking step.
 
 The following do **not** block M3 once the gate above is green:
 - full dependency/toolchain migration (O9);
@@ -474,4 +428,4 @@ If an O-step reveals that this plan is wrong, update this file **before** implem
 
 ## Immediate next action
 
-Start with **O1**, then **O2**, then O3/O4. Do not begin M3 while any hard blocker remains open.
+Continue **O4** by wiring permanent presentation paths to the shared `CadUiAction` collection. Do not begin M3 while O4 remains open.
