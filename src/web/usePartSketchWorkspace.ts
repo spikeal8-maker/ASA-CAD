@@ -1,7 +1,13 @@
 import { useCallback, useState } from 'react';
 import type { CadApplication } from '../contracts/application';
+import type { CadPlaneName } from '../contracts/commands';
 import type { CadDocument, CadDocumentKind, CadPartDocument } from '../contracts/document';
-import type { CadBodyId, CadDimensionId, CadSketchEntityId } from '../contracts/ids';
+import type {
+  CadBodyId,
+  CadDimensionId,
+  CadSketchEntityId,
+  CadStableReferenceId,
+} from '../contracts/ids';
 import type { CadViewportPick } from '../contracts/render';
 
 export type CadWorkspacePanel = 'tree' | 'parameters' | 'tools';
@@ -31,7 +37,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
   const [selectionMode, setSelectionMode] = useState<PartSketchSelectionMode>('none');
   const [selectedPick, setSelectedPick] = useState<CadViewportPick | null>(null);
   const [selectedBodyId, setSelectedBodyId] = useState<CadBodyId | null>(null);
-  const [sketchPlane, setSketchPlane] = useState<'XY' | 'XZ' | 'YZ'>('XY');
+  const [sketchPlane, setSketchPlane] = useState<CadPlaneName>('XY');
   const [rectangleWidth, setRectangleWidth] = useState(60);
   const [rectangleHeight, setRectangleHeight] = useState(40);
   const [circleDiameter, setCircleDiameter] = useState(12);
@@ -116,7 +122,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
   }
 
   async function commitCreateSketch() {
-    let support: 'XY' | 'XZ' | 'YZ' | string = sketchPlane;
+    let support: CadPlaneName | CadStableReferenceId = sketchPlane;
     const currentPart = partDocument(app.getDocument());
 
     if (currentPart?.bodies.length) {
