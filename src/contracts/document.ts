@@ -13,6 +13,7 @@ import type {
 } from './ids';
 import { createCadId } from './ids';
 import { validateCadPartSketchCollections } from './sketch';
+import { validateCadPartSemantics } from './partSemantics';
 import type { CadConstraint, CadDimension, CadSketch } from './sketch';
 
 export type {
@@ -280,5 +281,6 @@ export function validateCadDocument(value: unknown): asserts value is CadDocumen
   }
   if (document.kind === 'part') {
     validateCadPartSketchCollections(value);
+    validateCadPartSemantics(value as CadPartDocument);
   }
 }
