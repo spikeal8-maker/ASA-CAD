@@ -1,11 +1,14 @@
+import type { CadPlaneName } from './commands';
 import type {
   CadConstraintId,
   CadDimensionId,
   CadSketchEntityId,
   CadSketchId,
+  CadStableReferenceId,
 } from './ids';
 
 export type CadPoint2 = readonly [number, number];
+export type CadSketchSupport = CadPlaneName | CadStableReferenceId;
 
 export interface CadSketchLineData {
   from: CadPoint2;
@@ -36,7 +39,7 @@ export type CadSketchEntity = CadSketchLineEntity | CadSketchCircleEntity;
 export interface CadSketch {
   id: CadSketchId;
   name: string;
-  support: string;
+  support: CadSketchSupport;
   entities: CadSketchEntity[];
   constraintIds: CadConstraintId[];
   dimensionIds: CadDimensionId[];
@@ -131,13 +134,19 @@ function validateSketch(value: unknown, path: string): asserts value is CadSketc
   const sketch = expectRecord(value, path);
   expectId(sketch.id, `${path}.id`);
   if (typeof sketch.name !== 'string') throw new Error(`${path}.name must be a string`);
-  if (typeof sketch.support !== 'string' || !sketch.support) throw new Error(`${path}.support must be a non-empty string`);
+  validateSketchSupport(sketch.support, `${path}.support`);
   if (!Array.isArray(sketch.entities)) throw new Error(`${path}.entities must be an array`);
   if (!Array.isArray(sketch.constraintIds)) throw new Error(`${path}.constraintIds must be an array`);
   if (!Array.isArray(sketch.dimensionIds)) throw new Error(`${path}.dimensionIds must be an array`);
   sketch.entities.forEach((entity, index) => validateEntity(entity, `${path}.entities[${index}]`));
   sketch.constraintIds.forEach((id, index) => expectId(id, `${path}.constraintIds[${index}]`));
   sketch.dimensionIds.forEach((id, index) => expectId(id, `${path}.dimensionIds[${index}]`));
+}
+
+function validateSketchSupport(value: unknown, path: string): asserts value is CadSketchSupport {
+  if (value === 'XY' || value === 'XZ' || value === 'YZ') return;
+  if (typeof value === 'string' && value.startsWith('ref_') && value.length > 4) return;
+  throw new Error(`${path} must be XY, XZ, YZ or a stable reference id`);
 }
 
 function validateEntity(value: unknown, path: string): asserts value is CadSketchEntity {
