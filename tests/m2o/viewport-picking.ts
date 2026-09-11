@@ -39,6 +39,9 @@ const edgeResolution = resolveViewportPickCandidates(candidates, 'edge');
 assert.equal(edgeResolution.primary?.kind, 'edge');
 assert.equal(edgeResolution.ordered.length, 1);
 
+const noSketchCandidate = resolveViewportPickCandidates(candidates, 'sketch');
+assert.equal(noSketchCandidate.primary, null, 'Sketch mode must not accidentally consume B-Rep body/face/edge hits');
+
 const selection = new ViewportSelectionController('none');
 selection.setHover(bodyResolution.primary);
 assert.equal(selection.getSnapshot().hoverCandidate?.kind, 'body');
