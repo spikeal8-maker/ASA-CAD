@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 const app = readFileSync('src/web/App.tsx', 'utf8');
 const tree = readFileSync('src/web/DocumentTree.tsx', 'utf8');
 const parameters = readFileSync('src/web/ParameterPanel.tsx', 'utf8');
+const workspace = readFileSync('src/web/usePartSketchWorkspace.ts', 'utf8');
 
 assert.match(app, /import \{ DocumentTree \} from '\.\/DocumentTree';/, 'App must import extracted DocumentTree');
 assert.doesNotMatch(app, /function DocumentTree\(/, 'DocumentTree implementation must not return to App.tsx');
@@ -16,6 +17,43 @@ assert.doesNotMatch(app, /function NumericField\(/, 'NumericField implementation
 assert.doesNotMatch(app, /commandRegistryJson/, 'App must not own ParameterPanel command-label metadata after extraction');
 assert.match(app, /<ParameterPanel\b/, 'App must render the extracted ParameterPanel component');
 
+assert.match(app, /import \{ usePartSketchWorkspace \} from '\.\/usePartSketchWorkspace';/, 'App must use the focused Part/Sketch workspace controller');
+assert.match(app, /const workspace = usePartSketchWorkspace\(/, 'App must create the Part/Sketch workspace controller');
+for (const legacyRootFragment of [
+  'function beginCreateSketch(',
+  'function commitCreateSketch(',
+  'function beginRectangle(',
+  'function commitRectangle(',
+  'function beginCircle(',
+  'function commitCircle(',
+  'function finishSketch(',
+  'function beginExtrude(',
+  'function commitExtrude(',
+  'function beginCut(',
+  'function commitCut(',
+  'function beginFillet(',
+  'function commitFillet(',
+  'function beginDimensionEdit(',
+  'function commitDimensionEdit(',
+  'function cancelCommand(',
+  'function commitActiveCommand(',
+  'const [activeWorkspace,',
+  'const [activeCommand,',
+  'const [selectionMode,',
+  'const [selectedPick,',
+  'const [selectedBodyId,',
+  'const [sketchPlane,',
+  'const [rectangleWidth,',
+  'const [rectangleHeight,',
+  'const [circleDiameter,',
+  'const [extrudeDistance,',
+  'const [filletRadius,',
+  'const [editingDimensionId,',
+  'const [dimensionEditValue,',
+]) {
+  assert.equal(app.includes(legacyRootFragment), false, `Part/Sketch ownership must not return to App.tsx: ${legacyRootFragment}`);
+}
+
 assert.match(tree, /export function DocumentTree\(/, 'DocumentTree module must export its focused presentation component');
 assert.match(tree, /data-body-id=\{props\.bodyId\}/, 'tree/body selection DOM contract must be preserved');
 assert.match(tree, /aria-pressed=\{props\.bodyId \? Boolean\(props\.selected\) : undefined\}/, 'tree accessibility selection contract must be preserved');
@@ -26,6 +64,23 @@ assert.match(parameters, /type="number"/, 'numeric parameter input semantics mus
 assert.match(parameters, /min="0\.01"/, 'numeric parameter minimum must be preserved');
 assert.match(parameters, /step="1"/, 'numeric parameter step must be preserved');
 assert.match(parameters, /StableRef, а не временный индекс грани/, 'face-selection guidance must be preserved');
+
+assert.match(workspace, /export function usePartSketchWorkspace\(/, 'focused Part/Sketch workspace controller must be exported');
+assert.match(workspace, /import type \{ CadApplication \} from '\.\.\/contracts\/application';/, 'workspace must depend on the ASA CadApplication contract');
+assert.match(workspace, /app\.execute\(/, 'workspace controller must dispatch geometry only through CadApplication');
+assert.match(workspace, /app\.captureReference\(/, 'workspace controller must capture topology through CadApplication');
+for (const forbidden of [
+  "../runtime/",
+  "../browser/",
+  "../host/",
+  "vendor/",
+  "opencascade",
+  "TopoDS",
+  "localStorage",
+  "indexedDB",
+]) {
+  assert.equal(workspace.includes(forbidden), false, `Part/Sketch workspace must not own runtime/persistence/vendor internals: ${forbidden}`);
+}
 
 for (const [name, source] of [
   ['DocumentTree', tree],
@@ -44,4 +99,4 @@ for (const [name, source] of [
   }
 }
 
-console.log('M2O O5 decomposition PASS (DocumentTree + ParameterPanel focused presentation boundaries)');
+console.log('M2O O5 decomposition PASS (DocumentTree + ParameterPanel + Part/Sketch workspace controller)');
