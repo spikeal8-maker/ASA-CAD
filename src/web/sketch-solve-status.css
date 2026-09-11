@@ -1,0 +1,16 @@
+.sketch-solve-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 420px;
+  color: #68747e;
+}
+.sketch-solve-status.solving { color: #126c9c; }
+.sketch-solve-status.solved { color: #26734d; }
+.sketch-solve-status.error { color: #a03d3d; }
+.sketch-solve-diagnostic {
+  overflow: hidden;
+  max-width: 220px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

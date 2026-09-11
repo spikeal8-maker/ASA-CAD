@@ -19,6 +19,7 @@ on:
       - build/**
       - tests/m2/**
       - tests/m2o/**
+      - tests/m3/**
       - package.json
       - .github/workflows/m2-shell.yml
   pull_request:
@@ -38,6 +39,7 @@ on:
       - build/**
       - tests/m2/**
       - tests/m2o/**
+      - tests/m3/**
       - package.json
       - .github/workflows/m2-shell.yml
 
@@ -65,6 +67,9 @@ jobs:
 
       - name: Verify M2O optimization gates
         run: npm run test:m2o
+
+      - name: Verify M3 foundation boundaries
+        run: npm run test:m3:foundation
 
       - name: Verify neutral OpenCascade render bridge
         run: npm run test:m2:render

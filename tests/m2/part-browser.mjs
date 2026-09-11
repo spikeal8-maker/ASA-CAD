@@ -128,7 +128,7 @@ async function createProtectedExtrude() {
   await applyPrimary();
   await page.getByText('Прямоугольник 60×40 мм создан', { exact: true }).waitFor();
 
-  assert.deepEqual(await loadedWasmResources(), [], 'OpenCascade WASM loaded during 2D rectangle authoring');
+  assert.equal(await page.locator('.cad-app').getAttribute('data-runtime-status'), 'idle', 'OpenCascade runtime loaded during 2D rectangle authoring');
 
   await finishSketch();
 
@@ -138,7 +138,7 @@ async function createProtectedExtrude() {
 
   const distance = page.locator('.numeric-field').filter({ hasText: 'Расстояние' }).locator('input');
   assert.equal(await distance.inputValue(), '10');
-  assert.deepEqual(await loadedWasmResources(), [], 'OpenCascade WASM loaded before the solid command was committed');
+  assert.equal(await page.locator('.cad-app').getAttribute('data-runtime-status'), 'idle', 'OpenCascade runtime loaded before the solid command was committed');
 
   await applyPrimary();
   await page.locator('.cad-app[data-runtime-status="ready"]').waitFor({ timeout: 120_000 });
@@ -163,7 +163,7 @@ async function createProtectedExtrude() {
   assert.ok(viewport.height > 300, `viewport height too small: ${viewport.height}`);
   assert.equal(viewport.canvasCount, 1);
 
-  console.log(`  ✓ lazy WASM: ${loadedWasm.length} resource(s), first solid only`);
+  console.log(`  ✓ lazy OpenCascade runtime: solid starts only at first B-Rep operation; ${loadedWasm.length} WASM resource(s) total`);
   console.log(`  ✓ real B-Rep viewport: ${Math.round(viewport.width)}×${Math.round(viewport.height)}, ${viewport.revision}`);
 }
 

@@ -11,6 +11,7 @@ on:
       - src/contracts/**
       - build/**
       - tests/m2/**
+      - tests/m3/**
       - spec/ui/command-registry.v1.json
       - spec/ui/viewport-matrix.v1.json
       - package.json
@@ -24,6 +25,7 @@ on:
       - src/contracts/**
       - build/**
       - tests/m2/**
+      - tests/m3/**
       - spec/ui/command-registry.v1.json
       - spec/ui/viewport-matrix.v1.json
       - package.json
@@ -81,6 +83,11 @@ jobs:
         env:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m2/mobile-tools-browser.mjs
+
+      - name: Exercise M3 active Sketch solve overlay
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
+        run: node tests/m3/solve-overlay-browser.mjs
 
       - name: Exercise full protected Part workflow
         env:

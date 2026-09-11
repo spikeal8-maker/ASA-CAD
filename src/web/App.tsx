@@ -22,6 +22,8 @@ import { MobileToolsPanel } from './MobileToolsPanel';
 import { DocumentTree } from './DocumentTree';
 import { ParameterPanel } from './ParameterPanel';
 import { usePartSketchWorkspace } from './usePartSketchWorkspace';
+import { useSketchSolveOverlay } from './useSketchSolveOverlay';
+import { StatusBar } from './StatusBar';
 import { cadUiActionIdForShortcut } from './M2CadUiActions';
 import {
   ShortcutRegistry,
@@ -84,7 +86,7 @@ export function App(props: CadProjectPersistenceOverrides) {
   );
   const persistence = useCadProjectPersistence(app, initialDocument, route, props);
   const shortcutRegistry = useMemo(() => new ShortcutRegistry(), []);
-  const [, setRevisionToken] = useState(0);
+  const [revisionToken, setRevisionToken] = useState(0);
   const [activePanel, setActivePanel] = useState<'tree' | 'parameters' | 'tools'>('tree');
   const [newDialogOpen, setNewDialogOpen] = useState(false);
   const [notice, setNotice] = useState(devFixture ? `Fixture ${devFixture}: загрузка…` : 'Готово');
@@ -170,6 +172,13 @@ export function App(props: CadProjectPersistenceOverrides) {
     cancelCommand,
     commitActiveCommand,
   } = workspace;
+  const { solveSnapshot, sketchOverlay } = useSketchSolveOverlay({
+    document,
+    activeSketchId,
+    activeSketch: sketch,
+    active: document.kind === 'part' && activeWorkspace === 'sketch',
+    revisionToken,
+  });
 
   useEffect(() => {
     if (!devFixture || fixtureStartedRef.current) return;
@@ -583,9 +592,10 @@ export function App(props: CadProjectPersistenceOverrides) {
                   <span className="axis-y">Y</span>
                 </div>
                 <div className="stage-grid" />
-                {renderModel ? (
+                {renderModel || sketchOverlay ? (
                   <CadViewport
                     model={renderModel}
+                    sketchOverlay={sketchOverlay}
                     selectionMode={selectionMode}
                     onPick={handleViewportPick}
                     viewCommand={viewCommand}
@@ -623,22 +633,18 @@ export function App(props: CadProjectPersistenceOverrides) {
         </section>
       </main>
 
-      <footer className="status-bar">
-        <div className="status-left">
-          <span className={`status-indicator ${state.recompute.status}`} />
-          <span>{notice}</span>
-        </div>
-        <div className="status-right">
-          {devFixture && <span>fixture:{devFixture}</span>}
-          {selectedPick && <span>{selectedPick.kind === 'face' ? 'Грань' : 'Ребро'}: {selectedPointText}</span>}
-          {selectedBody && <span>Выбрано: {selectedBody.name}</span>}
-          <span>{documentNames[document.kind]}</span>
-          <span>{runtimeState.status === 'ready' ? 'OCC локально' : 'ядро по требованию'}</span>
-          <span>мм</span>
-          <span>UI 100%</span>
-          <span>M2</span>
-        </div>
-      </footer>
+      <StatusBar
+        recomputeStatus={state.recompute.status}
+        notice={notice}
+        fixture={devFixture}
+        selectedPick={selectedPick}
+        selectedPointText={selectedPointText}
+        selectedBodyName={selectedBody?.name}
+        documentName={documentNames[document.kind]}
+        runtimeReady={runtimeState.status === 'ready'}
+        sketchSolveActive={document.kind === 'part' && activeWorkspace === 'sketch'}
+        solveSnapshot={solveSnapshot}
+      />
 
       <div className="mobile-bottom-bar" aria-label="Мобильные панели">
         <button

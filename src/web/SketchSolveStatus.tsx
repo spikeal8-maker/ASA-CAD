@@ -1,5 +1,6 @@
 import React from 'react';
 import type { CadSketchSolveSnapshot } from '../application/SketchSolveSession';
+import './sketch-solve-status.css';
 
 export interface SketchSolveStatusProps {
   active: boolean;
