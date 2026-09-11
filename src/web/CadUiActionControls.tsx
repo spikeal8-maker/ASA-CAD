@@ -8,6 +8,7 @@ export interface CadUiActionButtonProps {
   accent?: boolean;
   text?: boolean;
   selected?: boolean;
+  className?: string;
   titleSuffix?: string;
 }
 
@@ -23,7 +24,7 @@ export function CadUiActionButton(props: CadUiActionButtonProps) {
 
   return (
     <button
-      className={`ribbon-command ${props.text ? 'text-command' : ''} ${props.large ? 'large' : ''} ${props.accent ? 'accent' : ''} ${props.selected ? 'selected' : ''}`}
+      className={`ribbon-command ${props.className ?? ''} ${props.text ? 'text-command' : ''} ${props.large ? 'large' : ''} ${props.accent ? 'accent' : ''} ${props.selected ? 'selected' : ''}`}
       type="button"
       disabled={!action.enabled}
       title={title}
