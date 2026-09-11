@@ -67,15 +67,19 @@ assert.equal(result.converged, true);
 
 const solvedLine = result.entities.find((entity) => entity.id === lineId);
 assert.ok(solvedLine);
-const from = solvedLine.data.from as [number, number];
-const to = solvedLine.data.to as [number, number];
+assert.equal(solvedLine.type, 'line');
+if (solvedLine.type !== 'line') throw new Error('Expected solved line');
+const from = solvedLine.data.from;
+const to = solvedLine.data.to;
 assert.ok(Array.isArray(from) && Array.isArray(to));
 assert.ok(Math.abs(from[1] - to[1]) < 1e-5, `horizontal constraint failed: ${from[1]} vs ${to[1]}`);
 assert.ok(Math.abs(Math.hypot(to[0] - from[0], to[1] - from[1]) - 40) < 1e-4, 'driving length was not solved to 40');
 
 const solvedCircle = result.entities.find((entity) => entity.id === circleId);
 assert.ok(solvedCircle);
-assert.ok(Math.abs(Number(solvedCircle.data.diameter) - 10) < 1e-5, 'driving diameter was not solved to 10');
+assert.equal(solvedCircle.type, 'circle');
+if (solvedCircle.type !== 'circle') throw new Error('Expected solved circle');
+assert.ok(Math.abs(solvedCircle.data.diameter - 10) < 1e-5, 'driving diameter was not solved to 10');
 
 solver.dispose();
 app.dispose();
