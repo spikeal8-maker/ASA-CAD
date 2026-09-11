@@ -29,18 +29,15 @@ Tracking:
 - #19 M2V KOMPAS visual acceptance — ACTIVE;
 - #21 M2O architecture optimization — ACTIVE / BLOCKS M3.
 
-### M2O progress
+## M2O progress
 
 Completed and CI-protected:
 - **O1** — mandatory architecture documentation aligned to all six document kinds;
 - **O2** — command/layout registries normalized to canonical IDs, accepted M2 statuses made truthful, future drift rejected by CI;
 - **O3** — editor Save/Open routed through `CadEditorPersistence -> CadProjectSession -> CadProjectHost`; standalone storage is isolated behind `LocalStorageCadProjectHost`, optimistic revision/mutation/recovery semantics are tested, and shell/browser/Docker protected workflows remain green;
-- **O4** — shared typed `CadUiAction` catalog now drives global toolbar, command search, command-backed shortcuts, Sketch/Part/View ribbon buttons and mobile Tools. Phone tools consume the same actions directly, with a dedicated Chromium regression and no desktop DOM delegation.
+- **O4** — shared typed `CadUiAction` catalog drives global toolbar, command search, command-backed shortcuts, Sketch/Part/View ribbon and mobile Tools. Phone tools consume the same action objects directly and are browser-tested without desktop DOM delegation or eager OpenCascade loading.
 
-In progress:
-- **O5** — extract M3-critical responsibilities from `App.tsx` and lower its size/ownership ceiling without changing accepted CAD behavior.
-
-Next feature lane after the blocking M2O entry gate: **M3 Parametric Sketch** (#5).
+Current optimization step: **O5 — extract M3-critical responsibilities from `App.tsx` and lower its size/ownership ceiling without changing accepted CAD behavior.**
 
 ## What works now
 
@@ -146,6 +143,6 @@ The current OpenCascade Part runtime intentionally implements a narrow accepted 
 
 ## Immediate next work
 
-Continue **O5**. Extract M3-critical controller/shell/panel ownership from `App.tsx` in small behavior-preserving slices and lower the allowed App-size ceiling as code moves out. Do not add new M3 CAD feature families until O5–O8 meet their minimum gate criteria.
+Start **O5.1 — extract `DocumentTree` from `App.tsx`** as a behavior-preserving component move. Add/strengthen the architecture guard, lower the `App.tsx` size ceiling after the extraction is green, then proceed to ParameterPanel.
 
 If another document contains an older `ACTIVE/NEXT` statement, **this file plus issue #21 and the M2O execution file win for current status**.
