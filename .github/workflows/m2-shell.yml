@@ -66,6 +66,9 @@ jobs:
       - name: Verify M2O architecture/document consistency
         run: npm run test:m2o:docs
 
+      - name: Verify M2O command/layout registry integrity
+        run: npm run test:m2o:registry
+
       - name: Verify neutral OpenCascade render bridge
         run: npm run test:m2:render
 
