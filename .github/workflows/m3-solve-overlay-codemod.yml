@@ -1,0 +1,32 @@
+name: M3.1 solve-overlay codemod
+
+on:
+  push:
+    branches: [m3/solve-overlay-session]
+    paths:
+      - scripts/m3/apply-m3-solve-overlay.mjs
+      - .github/workflows/m3-solve-overlay-codemod.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: m3/solve-overlay-session
+      - name: Apply exact M3.1 solve-overlay wiring
+        run: node scripts/m3/apply-m3-solve-overlay.mjs
+      - name: Commit M3.1 wiring
+        run: |
+          git config user.name "asa-cad-m3-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No M3.1 solve-overlay diff produced"
+            exit 1
+          fi
+          git commit -m "feat(m3): wire active Sketch solve overlay"
+          git push origin HEAD:m3/solve-overlay-session
