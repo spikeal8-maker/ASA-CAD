@@ -11,7 +11,8 @@ M2O was intentionally not a repository-wide rewrite. It stopped when the minimum
 Blocking classification:
 - O1–O4: hard blockers — DONE;
 - O5–O8: minimum structural blockers — DONE;
-- O9–O11: non-blocking follow-up lanes.
+- O9/O11: non-blocking follow-up lanes;
+- O10 repository protection — DONE after the blocking gate.
 
 ## Completed blocking work
 
@@ -125,21 +126,22 @@ M3 may now proceed.
 
 # Non-blocking follow-up lanes
 
-## O9 — ASA-owned dependency/toolchain direction
+## O9 — ASA-owned dependency/toolchain direction — OPEN
 
 New ASA-only dependencies should be root-owned. A full toolchain migration is not required before M3 while current pinned tooling remains reproducible.
 
-## O10 — Repository branch protection / enforced PR checks
+## O10 — Repository branch protection / enforced PR checks — DONE
 
-Risky development already follows:
+`main` is protected and verified through GitHub:
+- pull request required before merge;
+- admin enforcement enabled;
+- required conversation resolution enabled;
+- force-push and branch deletion disabled;
+- required always-on checks: `shell-build`, `vendor-baseline`, `asa-m1`, `asa-m1b`.
 
-```text
-short feature branch -> full CI -> PR -> green -> main
-```
+Browser/Docker suites remain path-filtered, so they are not global branch-protection checks; affected CAD/UI PRs must still wait for those suites under the project development rules.
 
-Repository-level enforcement remains an administrative follow-up. It is **not claimed complete** until GitHub reports `main` protected with required checks.
-
-## O11 — M2 visual/KOMPAS acceptance
+## O11 — M2 visual/KOMPAS acceptance — OPEN
 
 Continue deterministic KOMPAS reference review in parallel. Final visual parity does not block M3 because the real Sketch workspace will change part of the visual surface.
 
@@ -152,7 +154,8 @@ For M3 and later:
 4. keep solver preview transient until explicitly committed;
 5. keep Sketch overlay separate from B-Rep render data;
 6. use `activeSketchId`, never implicit last-Sketch semantics;
-7. keep protected browser/Docker/baseline gates green.
+7. keep protected browser/Docker/baseline gates green;
+8. use short branch -> PR -> required checks -> merge; do not bypass protected `main`.
 
 ## Next action
 
