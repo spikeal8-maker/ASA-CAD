@@ -6,6 +6,7 @@ const layer = readFileSync('src/web/viewport/SketchOverlayLayer.tsx', 'utf8');
 const viewport = readFileSync('src/web/CadViewport.tsx', 'utf8');
 const renderContract = readFileSync('src/contracts/render.ts', 'utf8');
 const picking = readFileSync('src/web/viewport/ViewportPicking.ts', 'utf8');
+const runtimeCss = readFileSync('src/web/runtime.css', 'utf8');
 
 for (const [name, source] of [['model', model], ['layer', layer]]) {
   assert.doesNotMatch(source, /from ['"][^'"]*(?:three|opencascade|vendor|runtime\/)[^'"]*['"]/, `${name} must be kernel/Three/vendor independent`);
@@ -16,7 +17,7 @@ assert.match(model, /source: SketchOverlaySource/, 'overlay model must record do
 assert.match(model, /solveSnapshot\.sketchId === sketch\.id/, 'solver preview must be scoped to the active Sketch id');
 assert.match(model, /solveSnapshot\.status === 'solved'/, 'only a successful solve may replace document geometry in overlay');
 assert.match(layer, /data-sketch-entity-id/, 'overlay layer must preserve stable Sketch entity identity in presentation DOM');
-assert.match(layer, /pointer-events: none|pointerEvents/m, 'overlay interaction must not be invented inside presentation component');
+assert.match(runtimeCss, /\.cad-sketch-overlay\s*\{[\s\S]*pointer-events:\s*none;/, 'M2O overlay must remain read-only until M3 interaction owns pointer routing');
 
 assert.match(viewport, /sketchOverlay\?: SketchOverlayModel \| null/, 'CadViewport must accept Sketch overlay independently from B-Rep model');
 assert.match(viewport, /<SketchOverlayLayer model=\{sketchOverlay\}/, 'CadViewport must mount Sketch overlay as a sibling presentation layer');
