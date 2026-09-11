@@ -15,7 +15,7 @@ if (inputCount !== 2 || outputCount !== 2) {
 source = source.split(before).join(after).split(beforeOut).join(afterOut);
 
 const wrongPortCount = source.split('http://127.0.0.1:8091/').length - 1;
-if (wrongPortCount !== 2) {
+if (wrongPortCount !== 3) {
   throw new Error(`Unexpected M3 browser step port matcher count: ${wrongPortCount}`);
 }
 source = source.split('http://127.0.0.1:8091/').join('http://127.0.0.1:8090/');
