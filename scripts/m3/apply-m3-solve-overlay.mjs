@@ -142,30 +142,30 @@ patch('.github/workflows/m2-shell.yml', [
 patch('.github/workflows/m2-browser.yml', [
   [
     'M3 browser paths push',
-    '      - tests/m2/**\n      - build/**',
-    '      - tests/m2/**\n      - tests/m3/**\n      - build/**',
+    '      - build/**\n      - tests/m2/**',
+    '      - build/**\n      - tests/m2/**\n      - tests/m3/**',
   ],
   [
     'M3 browser paths pull request',
-    '      - tests/m2/**\n      - build/**',
-    '      - tests/m2/**\n      - tests/m3/**\n      - build/**',
+    '      - build/**\n      - tests/m2/**',
+    '      - build/**\n      - tests/m2/**\n      - tests/m3/**',
   ],
   [
     'M3 solve-overlay browser step',
     `      - name: Exercise shared mobile action tools
         env:
-          ASA_CAD_SHELL_URL: http://127.0.0.1:8091/
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m2/mobile-tools-browser.mjs
 
       - name: Exercise full protected Part workflow`,
     `      - name: Exercise shared mobile action tools
         env:
-          ASA_CAD_SHELL_URL: http://127.0.0.1:8091/
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m2/mobile-tools-browser.mjs
 
       - name: Exercise M3 active Sketch solve overlay
         env:
-          ASA_CAD_SHELL_URL: http://127.0.0.1:8091/
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m3/solve-overlay-browser.mjs
 
       - name: Exercise full protected Part workflow`,
