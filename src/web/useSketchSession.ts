@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { CadPartDocument } from '../contracts/document';
 import type { CadSketchId } from '../contracts/ids';
 import {
@@ -12,14 +12,15 @@ import {
 export function useSketchSession(part: Readonly<CadPartDocument> | null) {
   const [state, setState] = useState(createSketchSessionState);
 
+  // CadApplication currently mutates the active Part object in-place for normal
+  // commands. Reconcile after every editor render rather than relying on object
+  // identity so a future Sketch-delete command cannot leave a stale active ID.
   useEffect(() => {
     setState((current) => reconcileSketchSession(current, part));
-  }, [part]);
+  });
 
-  const activeSketch = useMemo(
-    () => resolveActiveSketch(part, state.activeSketchId),
-    [part, state.activeSketchId],
-  );
+  const activeSketch = resolveActiveSketch(part, state.activeSketchId);
+  const effectiveActiveSketchId = activeSketch ? state.activeSketchId : null;
 
   const enterSketch = useCallback((sketchId: CadSketchId) => {
     setState((current) => activateSketch(current, sketchId));
@@ -30,7 +31,7 @@ export function useSketchSession(part: Readonly<CadPartDocument> | null) {
   }, []);
 
   return {
-    activeSketchId: state.activeSketchId,
+    activeSketchId: effectiveActiveSketchId,
     activeSketch,
     enterSketch,
     clearActiveSketch,
