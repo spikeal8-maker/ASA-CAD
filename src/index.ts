@@ -1,5 +1,6 @@
 export * from './contracts';
 export * from './application/CadApplicationImpl';
+export * from './application/SketchSolveSession';
 export * from './runtime/OpenCascadePartRuntime';
 export * from './runtime/OpenCascadeMeasurementAdapter';
 export * from './runtime/PlaneGCSSketchSolverRuntime';
