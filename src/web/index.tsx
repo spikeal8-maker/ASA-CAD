@@ -7,6 +7,7 @@ import './styles.css';
 import './responsive.css';
 import './ui-scale.css';
 import './mobile-settings.css';
+import './mobile-tools.css';
 
 const root = document.getElementById('root');
 if (!root) throw new Error('ASA-CAD root element not found');

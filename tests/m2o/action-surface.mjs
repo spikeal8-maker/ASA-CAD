@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const app = readFileSync('src/web/App.tsx', 'utf8');
+const mobileTools = readFileSync('src/web/MobileToolsPanel.tsx', 'utf8');
 
 assert.match(app, /useM2CadUiActions/, 'App must build the shared M2 CadUiAction catalog');
 assert.match(app, /CadUiActionSearchResults/, 'command search must render CadUiAction results');
@@ -58,4 +59,12 @@ assert.match(app, /<ViewCommandGroups viewName=\{viewName\} getAction=\{uiAction
 assert.match(app, /action=\{props\.getAction\(view\.id\)\}/, 'standard view buttons must consume CadUiAction');
 assert.doesNotMatch(app, /requestView: \(value: string\) => void/, 'view ribbon must not own direct requestView handlers');
 
-console.log('M2O O4 action surfaces PASS (toolbar/search + shortcuts + ribbon)');
+assert.match(app, /<MobileToolsPanel/, 'phone Tools sheet must be a real presentation surface');
+assert.match(app, /getAction=\{uiAction\}/, 'phone Tools sheet must receive the same shared action catalog');
+assert.match(app, /activePanel === 'tools'/, 'mobile bottom bar must expose the Tools panel state');
+assert.match(app, />⌘<span>Инструменты<\/span><\/button>/, 'mobile bottom bar must expose Tools instead of desktop delegation');
+assert.match(mobileTools, /import type \{ CadUiAction \}/, 'mobile Tools presentation must consume typed CadUiAction');
+assert.match(mobileTools, /props\.getAction\(tool\.id\)/, 'mobile Tool buttons must resolve shared action objects');
+assert.doesNotMatch(mobileTools, /querySelector|querySelectorAll|\.click\(\)/, 'mobile Tools must never discover/click desktop DOM');
+
+console.log('M2O O4 action surfaces PASS (toolbar/search + shortcuts + ribbon + mobile tools)');
