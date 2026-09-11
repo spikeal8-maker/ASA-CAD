@@ -145,6 +145,6 @@ function assertEntityOwnedBySketch(
   }
 }
 
-function isOriginPlane(value: string): boolean {
+function isOriginPlane(value: string): value is 'XY' | 'XZ' | 'YZ' {
   return value === 'XY' || value === 'XZ' || value === 'YZ';
 }
