@@ -117,7 +117,9 @@ export interface CadPartSketchCollections {
  * This intentionally validates only entities/constraints/dimensions that ASA
  * currently persists. Future kinds must be added to the discriminated unions
  * and this validator together; arbitrary `type`/`Record<string, unknown>` data
- * is rejected rather than silently entering project history.
+ * is rejected rather than silently entering project history. Stable-reference
+ * existence/ownership is a semantic document check layered above this shape
+ * validator; this function only validates the support token form.
  */
 export function validateCadPartSketchCollections(value: unknown): asserts value is CadPartSketchCollections {
   const record = expectRecord(value, 'CadPartDocument');
