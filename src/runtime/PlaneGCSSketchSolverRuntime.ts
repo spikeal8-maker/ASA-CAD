@@ -84,6 +84,9 @@ export class PlaneGCSSketchSolverRuntime implements CadSketchSolverAdapter {
         converged: result.converged,
         residual: result.residual,
         iterations: result.iterations,
+        // Current @salusoft89/planegcs wrapper does not expose solver rank/DoF.
+        // Do not infer it from convergence; M3 may enrich the adapter later.
+        degreesOfFreedom: null,
         entities,
         diagnostics: result.converged
           ? []
@@ -190,6 +193,7 @@ export class PlaneGCSSketchSolverRuntime implements CadSketchSolverAdapter {
       converged: false,
       residual: Number.POSITIVE_INFINITY,
       iterations: 0,
+      degreesOfFreedom: null,
       entities: [],
       diagnostics: [{ severity: 'error', code, message }],
     };

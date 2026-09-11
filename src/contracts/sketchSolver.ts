@@ -7,17 +7,24 @@ import type { CadDocument, CadSketchEntity } from './document';
  */
 export type CadSolvedSketchEntity = CadSketchEntity;
 
+export interface CadSketchSolveDiagnostic {
+  severity: 'info' | 'warning' | 'error';
+  code: string;
+  message: string;
+}
+
 export interface CadSketchSolveResult {
   ok: boolean;
   converged: boolean;
   residual: number;
   iterations: number;
+  /**
+   * Exact solver rank/DoF when the adapter can provide it. `null` is explicit:
+   * callers must not infer full/under-constrained state from convergence alone.
+   */
+  degreesOfFreedom: number | null;
   entities: CadSolvedSketchEntity[];
-  diagnostics: Array<{
-    severity: 'info' | 'warning' | 'error';
-    code: string;
-    message: string;
-  }>;
+  diagnostics: CadSketchSolveDiagnostic[];
 }
 
 /**
