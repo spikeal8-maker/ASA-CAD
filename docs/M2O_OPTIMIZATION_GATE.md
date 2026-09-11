@@ -10,7 +10,7 @@ Current product status belongs to [`STATUS.md`](STATUS.md). Long-term architectu
 
 ## Gate rule
 
-**Do not add new CAD feature families while M2O is open.**
+**Do not add new CAD feature families while the blocking M2O steps are open.**
 
 Allowed during M2O:
 - refactoring without changing accepted behavior;
@@ -21,7 +21,7 @@ Allowed during M2O:
 - strengthening tests/CI;
 - M2A/M2V visual correction if it does not bypass this plan.
 
-Not allowed during M2O:
+Not allowed during blocking M2O work:
 - broad new Sketch command families;
 - new Part feature families;
 - Assembly implementation;
@@ -29,11 +29,33 @@ Not allowed during M2O:
 - new hard-coded desktop/mobile command duplication;
 - increasing `App.tsx` or `CadApplicationImpl` instead of extracting ownership.
 
+## Scope-control rule — do not turn M2O into a rewrite
+
+M2O exists to make **M3 cheaper and safer**, not to perfect every future architecture before new product work can continue.
+
+For every step:
+- stop when the written acceptance criteria are satisfied;
+- preserve accepted Part/runtime/browser behavior;
+- prefer extraction and adapters over rewrites;
+- do not redesign OpenCascade, PlaneGCS, StableRef or the saved-document model unless the step proves it is required;
+- do not type or redesign Drawing/Specification/Text merely because they will exist later;
+- do not migrate all dependencies/tooling merely to make the repository look cleaner;
+- do not finish pixel-perfect visual polish that M3 will immediately change;
+- do not add speculative abstraction for M4/M5/M6 unless a current M2O boundary requires it.
+
+### Blocking classification
+
+**Hard blockers before M3:** O1, O2, O3, O4.
+
+**Minimum structural blockers before M3:** O5, O6, O7, O8. These steps are complete for M3 when the specific M3 growth path is modular and tested; they do not require a repository-wide rewrite.
+
+**Non-blocking follow-up lanes:** O9, O10, O11. They remain important, but M3 must not wait for a full toolchain migration, GitHub administration that permissions may block, or final KOMPAS visual polish.
+
 ---
 
 # Execution order
 
-The order below is mandatory unless a discovered blocker requires a documented change.
+The blocking order below is mandatory unless a discovered blocker requires a documented change.
 
 ## O1 — Fix mandatory architecture documentation — P0
 
@@ -155,7 +177,7 @@ That bypass would force Save/Open to be rewritten again during ASA Lab integrati
 
 ---
 
-## O4 — Introduce the shared typed UI action model — P0/P1
+## O4 — Introduce the shared typed UI action model — P0
 
 ### Problem
 
@@ -193,7 +215,7 @@ Exact shape may evolve, but requirements are fixed:
 
 ---
 
-## O5 — Start real decomposition of `App.tsx` — P1
+## O5 — Decompose only the M3-critical responsibilities from `App.tsx` — P1
 
 ### Problem
 
@@ -228,18 +250,18 @@ Names can change; ownership must not.
 2. persistence/session orchestration;
 3. DocumentTree;
 4. ParameterPanel;
-5. Desktop shell composition;
-6. Mobile shell composition;
-7. remaining editor controller state.
+5. Sketch/Part workspace command presentation needed by M3;
+6. only then additional shell/controller extraction when justified.
 
-Do **not** rewrite everything in one commit.
+Do **not** rewrite the whole editor before M3.
 
-### Acceptance
+### Acceptance for M3 entry
 
-- [ ] `App.tsx` materially decreases in size instead of only staying under the old ceiling;
-- [ ] extracted modules have narrow responsibilities;
+- [ ] `App.tsx` materially decreases in size;
+- [ ] new M3 command families have a focused owner and do not require adding large command blocks to `App.tsx`;
+- [ ] DocumentTree/ParameterPanel/persistence/action presentation have clear owners;
 - [ ] protected Part E2E remains unchanged from the user's perspective;
-- [ ] no component imports vendor/OpenCascade internals.
+- [ ] no extracted component imports vendor/OpenCascade internals.
 
 ### Guard evolution
 
@@ -247,7 +269,7 @@ After each extraction, lower the `MAX_APP_BYTES` architecture limit so code cann
 
 ---
 
-## O6 — Replace the large application command switch with handlers — P1
+## O6 — Replace the M3 growth path in the application switch with handlers — P1
 
 ### Problem
 
@@ -255,16 +277,16 @@ After each extraction, lower the `MAX_APP_BYTES` architecture limit so code cann
 
 ### Work
 
-Introduce command dispatch by focused handlers, for example:
+Introduce focused command dispatch for the command families M3 will expand, for example:
 
 ```text
 src/application/commands/
   sketch/
   constraint/
   dimension/
-  part/
-  document/
 ```
+
+Part/document handlers may remain in the current implementation temporarily if they are stable and are not the M3 growth hotspot.
 
 The application remains the owner of:
 - document state;
@@ -273,11 +295,9 @@ The application remains the owner of:
 - subscriptions;
 - runtime coordination.
 
-Individual command semantics move to handlers.
+### Acceptance for M3 entry
 
-### Acceptance
-
-- [ ] new M3 commands no longer require growing one central switch substantially;
+- [ ] adding a new Sketch/Constraint/Dimension command no longer requires substantially growing one central switch;
 - [ ] handler failures remain atomic;
 - [ ] undo/redo semantics remain centralized and tested;
 - [ ] existing M1/M2 command tests stay green.
@@ -309,7 +329,7 @@ type CadSketchEntity =
   | CadPointEntity;
 ```
 
-Do not prematurely redesign Drawing/Specification/Text schemas during this gate.
+Do not redesign Drawing/Specification/Text schemas during this gate.
 
 ### Acceptance
 
@@ -320,7 +340,7 @@ Do not prematurely redesign Drawing/Specification/Text schemas during this gate.
 
 ---
 
-## O8 — Decompose viewport interaction before adding more tools — P1
+## O8 — Split only the viewport responsibilities M3 will extend — P1
 
 ### Problem
 
@@ -328,128 +348,112 @@ Do not prematurely redesign Drawing/Specification/Text schemas during this gate.
 
 ### Work
 
-Extract controller-level responsibilities such as:
+Extract the responsibilities required for upcoming M3 interaction growth, primarily:
 
 ```text
-CameraController
 SelectionController
-PointerController
-TouchController
-PreviewLayer / PreviewController
+Pointer/Touch interaction controller
+Preview layer/controller
 ```
+
+Camera/render code may remain where it is if stable and not blocking M3.
 
 React remains responsible for lifecycle/composition, not all interaction algorithms.
 
-### Acceptance
+### Acceptance for M3 entry
 
+- [ ] future sketch selection/preview can be added without expanding one monolithic viewport event block;
 - [ ] mouse navigation tests remain green;
 - [ ] touch gesture tests remain green;
 - [ ] body/face/edge picking remains green;
-- [ ] view/camera persistence remains green;
-- [ ] future selection rectangle/preview can be added without expanding one monolithic viewport component.
+- [ ] view/camera persistence remains green.
 
 ---
 
-## O9 — Establish ASA-owned dependency/toolchain ownership — P1/P2
+# Non-blocking follow-up lanes
 
-### Problem
+The following work is important but must not hold M3 hostage once O1–O8 meet their entry criteria.
 
-Root scripts currently execute TypeScript/tsx/build dependencies from `vendor/toubkal/node_modules`. This couples ASA product tooling to vendor dependency ownership.
+## O9 — Establish ASA-owned dependency/toolchain direction — P2
 
-### Work
+### Goal
 
-Move toward a root-owned dependency lock for ASA tooling and product libraries.
+Stop creating new ASA-only dependencies inside vendor metadata.
 
-The root should own, as appropriate:
-- TypeScript;
-- tsx/test tooling;
-- React/Three used by ASA UI;
-- build tooling;
-- future ASA-only packages.
+### Minimum work before/alongside M3
 
-Vendor must remain independently installable/reproducible for upstream comparison.
+- document which dependencies belong to ASA root versus vendor;
+- ensure any **new** ASA-only package is root-owned;
+- preserve independent vendor reproducibility.
 
-This migration may be incremental. Do not copy the entire vendor dependency tree blindly.
+A full migration of React/Three/Rspack/TypeScript out of the vendor dependency tree is **not required before M3** if current pinned tooling remains reproducible.
 
-### Acceptance
+### Later acceptance
 
-- [ ] ASA-only dependencies no longer need edits to vendor package metadata;
-- [ ] `npm ci`/equivalent at root is reproducible;
-- [ ] vendor baseline remains independently reproducible;
-- [ ] build/runtime versions are pinned intentionally.
+- root-owned dependency lock exists when needed for ASA-only dependencies;
+- vendor baseline remains independently reproducible;
+- build/runtime versions are pinned intentionally.
 
 ---
 
 ## O10 — Harden repository change flow — P2
 
-### Problem
+### Goal
 
-`main` is currently unprotected. Direct write workflows can place a broken commit on `main` before CI finishes.
-
-### Target flow
+Prefer:
 
 ```text
-feature branch
--> CI
--> PR
--> required green checks
--> main
+feature branch -> CI -> PR -> green -> main
 ```
 
-### Work
+### Rule
 
-- enable branch protection/ruleset when repository permissions allow;
-- require baseline + ASA shell tests for structural changes;
-- require browser/Docker checks for affected UI/runtime/release changes;
-- agents should prefer short branches/PRs for M3 onward.
+If repository permissions allow branch protection/rulesets, enable them. If the available GitHub integration cannot administer them, record that limitation and still use short branches/PRs operationally for high-risk M3 changes.
 
-### Acceptance
-
-- [ ] ordinary development no longer relies on repairing `main` after a failed push;
-- [ ] required checks are documented and enforced where GitHub permissions permit.
+**GitHub administration is not an M3 code blocker.**
 
 ---
 
-## O11 — Finish M2 visual acceptance on the optimized shell — P2
+## O11 — Complete M2 visual acceptance on the optimized shell — parallel M2V
 
-Do M2V **after** the command/presentation architecture is stable enough that visual work will not immediately be discarded.
+M2V should start only after O4/O5 stabilize the command/presentation structure, but **pixel-perfect KOMPAS visual completion is not required before M3 begins**.
 
-### Work
+Reason: M3 introduces a real Sketch workspace and will change parts of the command surface. Finishing every Sketch visual detail before that would cause avoidable rework.
 
-- capture approved deterministic fixture screenshots;
-- compare against mapped KOMPAS references;
-- tune hierarchy, spacing, panel dimensions and command grouping;
-- replace temporary symbols with ASA-owned vector icons;
-- document deliberate differences.
+Before M3:
+- baseline desktop shell hierarchy must be coherent;
+- deterministic fixtures must remain available;
+- no known visual defect may block use of the protected Part workflow.
 
-### Acceptance
-
-- [ ] #15 deterministic review evidence is complete;
-- [ ] #19 visual acceptance criteria are satisfied;
-- [ ] owner review is recorded;
-- [ ] desktop/tablet/phone visual baselines are stable.
+During/after early M3:
+- complete KOMPAS reference screenshot comparisons;
+- tune Sketch-specific layout once the real Sketcher exists;
+- finish ASA-owned vector icon set;
+- record owner visual acceptance.
 
 ---
 
-# M2O completion gate
+# M3 entry gate
 
-M3 may start only when all of the following are true:
+M3 may start when **all blocking items below** are true:
 
 - [ ] O1 architecture documentation corrected;
 - [ ] O2 command/layout registries cross-validated and statuses truthful;
 - [ ] O3 editor persistence goes through `CadProjectSession`/host boundary;
-- [ ] O4 shared typed action model exists and is used by product presentations;
-- [ ] O5 `App.tsx` is materially decomposed and size ceiling reduced;
-- [ ] O6 application command handlers are modular enough for M3 growth;
+- [ ] O4 shared typed action model exists and is consumed by permanent presentation paths;
+- [ ] O5 M3-critical UI responsibilities are extracted and `App.tsx` is materially smaller;
+- [ ] O6 Sketch/Constraint/Dimension command growth has focused handlers;
 - [ ] O7 Sketch entity/constraint/dimension contracts are strongly typed;
-- [ ] O8 viewport responsibilities are split enough for M3 interaction growth;
-- [ ] O9 ASA dependency ownership has an accepted/reproducible direction;
-- [ ] O10 safer branch/CI workflow is established or explicitly blocked by permissions;
-- [ ] O11 M2 visual acceptance is complete or separately accepted as the final M2 closeout;
+- [ ] O8 Sketch selection/preview interaction can grow outside a monolithic viewport event block;
 - [ ] protected Part workflow is green;
 - [ ] M1/M1B regressions are green;
 - [ ] M2 shell/browser responsive/touch gates are green;
 - [ ] Docker `/cad/*` release gate is green.
+
+The following do **not** block M3 once the gate above is green:
+- full dependency/toolchain migration (O9);
+- GitHub branch-protection administration (O10);
+- final pixel-perfect KOMPAS/M2V closeout (O11).
 
 ---
 
@@ -462,11 +466,12 @@ For every O-step:
 3. do not combine unrelated feature work with the optimization commit;
 4. add/strengthen a regression before removing the old path when practical;
 5. keep accepted browser behavior unchanged unless the O-step explicitly changes UI presentation;
-6. update this checklist only after the corresponding tests are green;
-7. update `STATUS.md` when an O-step materially changes the next action.
+6. stop when the step's acceptance criteria are satisfied — do not continue refactoring merely because more cleanup is possible;
+7. update this checklist only after the corresponding tests are green;
+8. update `STATUS.md` when an O-step materially changes the next action.
 
 If an O-step reveals that this plan is wrong, update this file **before** implementing a different architecture so the plan and code do not diverge silently.
 
 ## Immediate next action
 
-Start with **O1**, then **O2**. Do not begin M3 while any P0 item remains open.
+Start with **O1**, then **O2**, then O3/O4. Do not begin M3 while any hard blocker remains open.
