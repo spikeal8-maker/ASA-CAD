@@ -5,13 +5,13 @@ import { extname, join, relative } from 'node:path';
 const WEB_ROOT = 'src/web';
 const APP_PATH = join(WEB_ROOT, 'App.tsx');
 
-// App.tsx is already too large. Freeze growth immediately; new feature families
-// must move responsibilities into focused modules before adding more orchestration.
-const MAX_APP_BYTES = 62_500;
+// O5 progressively lowers this ceiling after each accepted extraction so
+// responsibilities cannot silently move back into the root editor component.
+const MAX_APP_BYTES = 59_000;
 const appBytes = statSync(APP_PATH).size;
 assert.ok(
   appBytes <= MAX_APP_BYTES,
-  `App.tsx grew to ${appBytes} bytes (limit ${MAX_APP_BYTES}). Extract a focused controller/component instead of growing the god-object.`,
+  `App.tsx grew to ${appBytes} bytes (limit ${MAX_APP_BYTES}). Keep extracted ownership in focused modules instead of regrowing the root.`,
 );
 
 function filesRecursively(directory) {
