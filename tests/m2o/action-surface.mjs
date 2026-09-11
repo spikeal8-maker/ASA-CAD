@@ -47,9 +47,8 @@ for (const ribbonActionId of [
   'part.fillet',
   'system.rebuild',
 ]) {
-  assert.match(
-    app,
-    new RegExp(`CadUiActionButton action=\\{uiAction\\('${ribbonActionId.replaceAll('.', '\\.')} '\)?`),
+  assert.ok(
+    app.includes(`action={uiAction('${ribbonActionId}')}`),
     `${ribbonActionId} ribbon button must consume CadUiAction`,
   );
 }
