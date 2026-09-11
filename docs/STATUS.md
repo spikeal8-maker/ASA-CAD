@@ -36,7 +36,8 @@ Completed and CI-protected:
 - **O2** — command/layout registries normalized to canonical IDs, accepted M2 statuses made truthful, future drift rejected by CI;
 - **O3** — editor Save/Open routed through `CadEditorPersistence -> CadProjectSession -> CadProjectHost`; standalone storage is isolated behind `LocalStorageCadProjectHost`, optimistic revision/mutation/recovery semantics are tested, and shell/browser/Docker protected workflows remain green.
 
-Current blocking step: **O4 — shared typed `CadUiAction` / command presentation model.**
+In progress:
+- **O4** — shared typed `CadUiAction` model exists with registry metadata, contextual enablement, execution and search helpers; `tests/m2o/ui-actions.ts` protects the contract. Permanent desktop/mobile/search/shortcut presentation paths still need to consume this model before O4 can close.
 
 Next feature lane after the blocking M2O entry gate: **M3 Parametric Sketch** (#5).
 
@@ -130,7 +131,7 @@ These are the preferred surfaces for visual correction and regression review.
 Do **not** mistake the protected Part proof for full KOMPAS parity.
 
 Not complete yet:
-- remaining blocking M2O steps O4–O8;
+- blocking M2O O4–O8;
 - full sketch geometry/constraints/DOF workflow (M3);
 - broad Part Design feature set and industrial StableRef corpus (M4);
 - Assembly product workflow (M4A);
@@ -143,6 +144,6 @@ The current OpenCascade Part runtime intentionally implements a narrow accepted 
 
 ## Immediate next work
 
-Follow [`M2O_OPTIMIZATION_GATE.md`](M2O_OPTIMIZATION_GATE.md) from **O4**. Do not add new M3 CAD feature families while the O4 hard blocker remains open.
+Continue **O4**: wire permanent desktop/mobile/search/shortcut presentation to the shared `CadUiAction` layer, then close O4 only after protected browser behavior remains green.
 
 If another document contains an older `ACTIVE/NEXT` statement, **this file plus issue #21 and the M2O execution file win for current status**.
