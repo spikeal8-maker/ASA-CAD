@@ -41,12 +41,13 @@ assert.equal(solvedModel.source, 'solver-preview');
 assert.equal(solvedModel.solveStatus, 'solved');
 assert.equal(solvedModel.degreesOfFreedom, 2);
 assert.equal(solvedModel.constraintState, 'under-constrained');
-assert.equal(solvedModel.entities[0]?.type, 'line');
-if (solvedModel.entities[0]?.type !== 'line') throw new Error('expected line overlay');
-assert.deepEqual(solvedModel.entities[0].data.to, [40, 0]);
+const solvedLine = solvedModel.entities[0];
+assert.equal(solvedLine?.type, 'line');
+if (solvedLine?.type !== 'line') throw new Error('expected line overlay');
+assert.deepEqual(solvedLine.data.to, [40, 0]);
 
 // Overlay mutations must never leak back into document or solver-session state.
-solvedModel.entities[0].data.to = [99, 99];
+solvedLine.data.to = [99, 99];
 assert.deepEqual(sketch.entities[0]?.type === 'line' ? sketch.entities[0].data.to : null, [20, 0]);
 assert.deepEqual(solvedSnapshot.previewEntities[0]?.type === 'line' ? solvedSnapshot.previewEntities[0].data.to : null, [40, 0]);
 
