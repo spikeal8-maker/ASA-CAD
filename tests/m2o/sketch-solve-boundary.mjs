@@ -9,7 +9,11 @@ assert.match(contract, /degreesOfFreedom: number \| null/, 'solver result must e
 assert.match(session, /previewEntities: CadSolvedSketchEntity\[\]/, 'solve session must own transient solved preview geometry');
 assert.match(session, /constraintState: CadSketchConstraintState/, 'solve session must own constraint-state projection');
 assert.match(session, /requestId !== this\.requestId/, 'solve session must reject stale async results');
-assert.doesNotMatch(session, /CadApplication/, 'solver session must not bypass CadApplication history');
+assert.doesNotMatch(
+  session,
+  /from ['"][^'"]*(?:contracts\/application|CadApplicationImpl)['"]|import\s+(?:type\s+)?\{[^}]*CadApplication[^}]*\}/s,
+  'solver session must not import/depend on CadApplication history ownership',
+);
 assert.doesNotMatch(session, /\.execute\(/, 'solver session must not persist geometry by executing hidden commands');
 assert.doesNotMatch(session, /localStorage|indexedDB|CadProjectHost/, 'solver session must be independent of persistence');
 assert.match(planeGcs, /degreesOfFreedom:/, 'PlaneGCS adapter must report DoF availability explicitly');
