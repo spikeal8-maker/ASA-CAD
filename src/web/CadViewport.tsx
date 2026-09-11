@@ -2,6 +2,16 @@ import React, { useEffect, useRef, useState } from 'react';
 import type { CadRenderModel, CadViewportPick } from '../contracts/render';
 import type { CadBodyId } from '../contracts/ids';
 import { VIEWPORT_VISUAL_TOKENS } from './viewportTokens';
+import {
+  resolveViewportPickCandidates,
+  type ViewportBodyCandidate,
+  type ViewportEdgeCandidate,
+  type ViewportFaceCandidate,
+  type ViewportPickCandidate,
+  type ViewportPickResolution,
+  type ViewportSelectionMode,
+} from './viewport/ViewportPicking';
+import { ViewportSelectionController } from './viewport/ViewportSelectionController';
 import './runtime.css';
 
 export type CadViewportViewName =
@@ -27,15 +37,17 @@ export interface CadViewportViewCommand {
 
 export interface CadViewportProps {
   model: CadRenderModel | null;
-  selectionMode?: 'none' | 'face' | 'edge';
+  selectionMode?: ViewportSelectionMode;
   onPick?: (pick: CadViewportPick) => void;
+  /** Called only when multiple near-depth semantic targets compete under the cursor. */
+  onPickCandidates?: (candidates: readonly ViewportPickCandidate[]) => void;
   viewCommand?: CadViewportViewCommand;
   selectedBodyId?: CadBodyId | null;
   onBodySelect?: (bodyId: CadBodyId | null) => void;
 }
 
 interface ViewportInteractionBridge {
-  setSelectionMode(mode: 'none' | 'face' | 'edge'): void;
+  setSelectionMode(mode: ViewportSelectionMode): void;
   setView(view: CadViewportViewName): void;
   setSelectedBodyId(bodyId: CadBodyId | null): void;
 }
@@ -50,6 +62,7 @@ export function CadViewport({
   model,
   selectionMode = 'none',
   onPick,
+  onPickCandidates,
   viewCommand,
   selectedBodyId = null,
   onBodySelect,
@@ -57,6 +70,7 @@ export function CadViewport({
   const hostRef = useRef<HTMLDivElement | null>(null);
   const selectionModeRef = useRef(selectionMode);
   const onPickRef = useRef(onPick);
+  const onPickCandidatesRef = useRef(onPickCandidates);
   const selectedBodyIdRef = useRef<CadBodyId | null>(selectedBodyId);
   const onBodySelectRef = useRef(onBodySelect);
   const viewCommandRef = useRef(viewCommand);
@@ -68,6 +82,10 @@ export function CadViewport({
   useEffect(() => {
     onPickRef.current = onPick;
   }, [onPick]);
+
+  useEffect(() => {
+    onPickCandidatesRef.current = onPickCandidates;
+  }, [onPickCandidates]);
 
   useEffect(() => {
     onBodySelectRef.current = onBodySelect;
@@ -261,9 +279,10 @@ export function CadViewport({
         selectedMarker.renderOrder = 20;
         scene.add(selectedMarker);
 
-        let selectedFace: { meshId: string; faceIndex: number } | null = null;
-        let hoverFace: { meshId: string; faceIndex: number } | null = null;
-        let hoverBodyId: CadBodyId | null = null;
+        const selection = new ViewportSelectionController(
+          selectionModeRef.current,
+          selectedBodyIdRef.current,
+        );
         let viewChangeCount = 0;
 
         const writeCameraState = () => {
@@ -368,18 +387,25 @@ export function CadViewport({
         };
 
         const refreshMaterials = () => {
-          const ordinaryMode = selectionModeRef.current === 'none';
+          const snapshot = selection.getSnapshot();
+          const ordinaryMode = snapshot.mode === 'none';
+          const selectedCandidate = snapshot.selectedCommandCandidate;
+          const hoverCandidate = snapshot.hoverCandidate;
           for (const record of meshRecords) {
             const bodySelected = ordinaryMode
               && Boolean(record.source.bodyId)
-              && selectedBodyIdRef.current === record.source.bodyId;
+              && snapshot.selectedBodyId === record.source.bodyId;
             const bodyHovered = ordinaryMode
-              && Boolean(record.source.bodyId)
-              && hoverBodyId === record.source.bodyId;
+              && hoverCandidate?.kind === 'body'
+              && hoverCandidate.bodyId === record.source.bodyId;
             for (let index = 0; index < record.source.faceGroups.length; index++) {
               const face = record.source.faceGroups[index];
-              const faceSelected = selectedFace?.meshId === record.source.meshId && selectedFace.faceIndex === face.faceIndex;
-              const faceHovered = hoverFace?.meshId === record.source.meshId && hoverFace.faceIndex === face.faceIndex;
+              const faceSelected = selectedCandidate?.kind === 'face'
+                && selectedCandidate.meshId === record.source.meshId
+                && selectedCandidate.faceIndex === face.faceIndex;
+              const faceHovered = hoverCandidate?.kind === 'face'
+                && hoverCandidate.meshId === record.source.meshId
+                && hoverCandidate.faceIndex === face.faceIndex;
               record.mesh.geometry.groups[index].materialIndex = bodySelected || faceSelected
                 ? 2
                 : bodyHovered || faceHovered ? 1 : 0;
@@ -388,9 +414,8 @@ export function CadViewport({
         };
 
         const resetCommandSelectionVisuals = () => {
-          selectedFace = null;
-          hoverFace = null;
-          hoverBodyId = null;
+          selection.resetCommandSelection();
+          selection.clearHover();
           hoverMarker.visible = false;
           selectedMarker.visible = false;
           refreshMaterials();
@@ -398,13 +423,14 @@ export function CadViewport({
           render();
         };
 
-        const setSelectionMode = (mode: 'none' | 'face' | 'edge') => {
+        const setSelectionMode = (mode: ViewportSelectionMode) => {
+          selection.setMode(mode);
           renderer.domElement.className = `cad-viewport-canvas selection-${mode}`;
           resetCommandSelectionVisuals();
         };
         const setSelectedBodyId = (bodyId: CadBodyId | null) => {
           selectedBodyIdRef.current = bodyId;
-          hoverBodyId = null;
+          selection.setExternalBodySelection(bodyId);
           refreshMaterials();
           render();
         };
@@ -423,38 +449,105 @@ export function CadViewport({
           raycaster.setFromCamera(pointer, camera);
         };
 
-        const meshHit = (event: PointerEvent) => {
+        const meshRayHits = (event: PointerEvent) => {
           setPointer(event);
           const hits = raycaster.intersectObjects(meshRecords.map((record) => record.mesh), false);
-          for (const hit of hits) {
+          return hits.flatMap((hit) => {
             const record = meshRecords.find((item) => item.mesh === hit.object);
-            if (record) return { hit, record };
-          }
-          return null;
+            return record ? [{ hit, record }] : [];
+          });
+        };
+
+        const edgeRayHits = (event: PointerEvent) => {
+          setPointer(event);
+          const hits = raycaster.intersectObjects(meshRecords.map((record) => record.edges), false);
+          return hits.flatMap((hit) => {
+            const record = meshRecords.find((item) => item.edges === hit.object);
+            return record ? [{ hit, record }] : [];
+          });
+        };
+
+        const publishCandidateDebug = (resolution: ViewportPickResolution) => {
+          const currentHost = hostRef.current;
+          if (!currentHost) return;
+          currentHost.dataset.pickCandidateCount = String(resolution.ordered.length);
+          currentHost.dataset.pickAmbiguous = String(resolution.ambiguous);
+          currentHost.dataset.pickPrimaryKind = resolution.primary?.kind ?? '';
+        };
+
+        const resolveEntries = <T extends { candidate: ViewportPickCandidate },>(
+          entries: T[],
+          mode: ViewportSelectionMode,
+        ) => {
+          const resolution = resolveViewportPickCandidates(entries.map((entry) => entry.candidate), mode);
+          publishCandidateDebug(resolution);
+          const entry = resolution.primary
+            ? entries.find((candidateEntry) => candidateEntry.candidate === resolution.primary) ?? null
+            : null;
+          return { entry, resolution };
+        };
+
+        const bodyHit = (event: PointerEvent) => {
+          const entries = meshRayHits(event).flatMap(({ hit, record }) => {
+            const bodyId = record.source.bodyId;
+            if (!bodyId) return [];
+            const candidate: ViewportBodyCandidate = {
+              kind: 'body',
+              meshId: record.source.meshId,
+              bodyId,
+              sourceFeatureId: record.source.sourceFeatureId,
+              distance: hit.distance,
+              point: [hit.point.x, hit.point.y, hit.point.z],
+            };
+            return [{ hit, record, candidate }];
+          });
+          return resolveEntries(entries, 'none');
         };
 
         const faceHit = (event: PointerEvent) => {
-          const found = meshHit(event);
-          if (!found || found.hit.faceIndex == null) return null;
-          const face = faceGroupAtTriangle(found.record.source, found.hit.faceIndex);
-          if (!face) return null;
-          return { ...found, face };
+          const entries = meshRayHits(event).flatMap(({ hit, record }) => {
+            if (hit.faceIndex == null) return [];
+            const face = faceGroupAtTriangle(record.source, hit.faceIndex);
+            if (!face) return [];
+            const candidate: ViewportFaceCandidate = {
+              kind: 'face',
+              meshId: record.source.meshId,
+              bodyId: record.source.bodyId,
+              sourceFeatureId: record.source.sourceFeatureId,
+              faceIndex: face.faceIndex,
+              distance: hit.distance,
+              point: [hit.point.x, hit.point.y, hit.point.z],
+            };
+            return [{ hit, record, face, candidate }];
+          });
+          return resolveEntries(entries, 'face');
         };
 
         const edgeHit = (event: PointerEvent) => {
-          setPointer(event);
-          const hits = raycaster.intersectObjects(meshRecords.map((record) => record.edges), false);
-          for (const hit of hits) {
-            const record = meshRecords.find((item) => item.edges === hit.object);
-            if (record) return { hit, record };
-          }
-          return null;
+          const entries = edgeRayHits(event).map(({ hit, record }) => {
+            const candidate: ViewportEdgeCandidate = {
+              kind: 'edge',
+              meshId: record.source.meshId,
+              bodyId: record.source.bodyId,
+              sourceFeatureId: record.source.sourceFeatureId,
+              segmentIndex: hit.index ?? undefined,
+              distance: hit.distance,
+              point: [hit.point.x, hit.point.y, hit.point.z],
+            };
+            return { hit, record, candidate };
+          });
+          return resolveEntries(entries, 'edge');
+        };
+
+        const offerAmbiguousCandidates = (resolution: ViewportPickResolution): boolean => {
+          if (!resolution.ambiguous || !onPickCandidatesRef.current) return false;
+          onPickCandidatesRef.current(resolution.ordered);
+          return true;
         };
 
         const onPointerMove = (event: PointerEvent) => {
           if (event.buttons !== 0) {
-            hoverFace = null;
-            hoverBodyId = null;
+            selection.clearHover();
             hoverMarker.visible = false;
             refreshMaterials();
             renderer.domElement.style.cursor = 'grabbing';
@@ -464,9 +557,8 @@ export function CadViewport({
 
           const mode = selectionModeRef.current;
           if (mode === 'face') {
-            const found = faceHit(event);
-            hoverBodyId = null;
-            hoverFace = found ? { meshId: found.record.source.meshId, faceIndex: found.face.faceIndex } : null;
+            const { entry: found } = faceHit(event);
+            selection.setHover(found?.candidate ?? null);
             hoverMarker.visible = false;
             refreshMaterials();
             renderer.domElement.style.cursor = found ? 'crosshair' : 'default';
@@ -474,12 +566,11 @@ export function CadViewport({
             return;
           }
           if (mode === 'edge') {
-            const found = edgeHit(event);
-            hoverBodyId = null;
-            hoverFace = null;
+            const { entry: found } = edgeHit(event);
+            selection.setHover(found?.candidate ?? null);
             refreshMaterials();
             if (found) {
-              hoverMarker.position.copy(found.hit.point);
+              hoverMarker.position.set(...found.candidate.point);
               hoverMarker.visible = true;
             } else {
               hoverMarker.visible = false;
@@ -488,19 +579,25 @@ export function CadViewport({
             render();
             return;
           }
+          if (mode === 'sketch') {
+            selection.clearHover();
+            hoverMarker.visible = false;
+            refreshMaterials();
+            renderer.domElement.style.cursor = 'default';
+            render();
+            return;
+          }
 
-          const found = meshHit(event);
-          hoverFace = null;
+          const { entry: found } = bodyHit(event);
+          selection.setHover(found?.candidate ?? null);
           hoverMarker.visible = false;
-          hoverBodyId = found?.record.source.bodyId ?? null;
           refreshMaterials();
-          renderer.domElement.style.cursor = hoverBodyId ? 'pointer' : 'default';
+          renderer.domElement.style.cursor = found ? 'pointer' : 'default';
           render();
         };
 
         const onPointerLeave = () => {
-          hoverFace = null;
-          hoverBodyId = null;
+          selection.clearHover();
           hoverMarker.visible = false;
           refreshMaterials();
           renderer.domElement.style.cursor = 'default';
@@ -511,54 +608,56 @@ export function CadViewport({
           if (event.button !== 0) return;
           const mode = selectionModeRef.current;
           if (mode === 'face') {
-            const found = faceHit(event);
-            if (!found) return;
-            selectedFace = {
-              meshId: found.record.source.meshId,
-              faceIndex: found.face.faceIndex,
-            };
-            hoverFace = null;
-            hoverBodyId = null;
+            const { entry: found, resolution } = faceHit(event);
+            if (!found || offerAmbiguousCandidates(resolution)) return;
+            selection.select(found.candidate);
             hoverMarker.visible = false;
             refreshMaterials();
             render();
             onPickRef.current?.({
               kind: 'face',
-              meshId: found.record.source.meshId,
-              bodyId: found.record.source.bodyId,
-              sourceFeatureId: found.record.source.sourceFeatureId,
-              faceIndex: found.face.faceIndex,
-              point: [found.hit.point.x, found.hit.point.y, found.hit.point.z],
+              meshId: found.candidate.meshId,
+              bodyId: found.candidate.bodyId,
+              sourceFeatureId: found.candidate.sourceFeatureId,
+              faceIndex: found.candidate.faceIndex,
+              point: found.candidate.point,
             });
             return;
           }
 
           if (mode === 'edge') {
-            const found = edgeHit(event);
-            if (!found) return;
+            const { entry: found, resolution } = edgeHit(event);
+            if (!found || offerAmbiguousCandidates(resolution)) return;
+            selection.select(found.candidate);
             hoverMarker.visible = false;
-            selectedMarker.position.copy(found.hit.point);
+            selectedMarker.position.set(...found.candidate.point);
             selectedMarker.visible = true;
             render();
             onPickRef.current?.({
               kind: 'edge',
-              meshId: found.record.source.meshId,
-              bodyId: found.record.source.bodyId,
-              sourceFeatureId: found.record.source.sourceFeatureId,
-              segmentIndex: found.hit.index ?? undefined,
-              point: [found.hit.point.x, found.hit.point.y, found.hit.point.z],
+              meshId: found.candidate.meshId,
+              bodyId: found.candidate.bodyId,
+              sourceFeatureId: found.candidate.sourceFeatureId,
+              segmentIndex: found.candidate.segmentIndex,
+              point: found.candidate.point,
             });
             return;
           }
 
-          const found = meshHit(event);
-          const bodyId = found?.record.source.bodyId ?? null;
+          if (mode === 'sketch') return;
+
+          const { entry: found, resolution } = bodyHit(event);
+          if (offerAmbiguousCandidates(resolution)) return;
+          selection.select(found?.candidate ?? null);
+          const bodyId = found?.candidate.bodyId ?? null;
           selectedBodyIdRef.current = bodyId;
-          hoverBodyId = null;
           refreshMaterials();
           render();
           onBodySelectRef.current?.(bodyId);
         };
+
+        const onPointerLeaveLegacyGuard = false;
+        void onPointerLeaveLegacyGuard;
 
         const onPointerDown = (event: PointerEvent) => {
           if (event.button === 1 || event.button === 2) {
