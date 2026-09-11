@@ -1,0 +1,32 @@
+name: M2O O7 Sketch contract codemod
+
+on:
+  push:
+    branches: [m2o/o7-typed-sketch-dtos]
+    paths:
+      - scripts/m2o/apply-o7-sketch-contracts.mjs
+      - .github/workflows/m2o-o7-sketch-contracts-codemod.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: m2o/o7-typed-sketch-dtos
+      - name: Apply exact Sketch contract wiring
+        run: node scripts/m2o/apply-o7-sketch-contracts.mjs
+      - name: Commit typed document contract
+        run: |
+          if git diff --quiet -- src/contracts/document.ts; then
+            echo "No document contract diff produced"
+            exit 1
+          fi
+          git config user.name "asa-cad-o7-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add src/contracts/document.ts
+          git commit -m "refactor(m2o): wire typed Sketch DTOs into CadDocument"
+          git push origin HEAD:m2o/o7-typed-sketch-dtos
