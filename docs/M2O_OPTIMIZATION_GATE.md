@@ -1,59 +1,34 @@
 # M2O — Architecture Optimization Gate
 
-This document is the **execution checklist before M3 Parametric Sketch**.
+This was the **blocking execution checklist before M3 Parametric Sketch**.
 
-Its purpose is narrow: remove the structural debt that would make every new Sketch command expensive or duplicated. Current product status belongs to [`STATUS.md`](STATUS.md); long-term product architecture belongs to [`ARCHITECTURE.md`](ARCHITECTURE.md).
+**Status: DONE.** All blocking steps O1–O8 are implemented, regression-protected and green. M3 may start through the boundaries created here. Current product status belongs to [`STATUS.md`](STATUS.md); long-term architecture belongs to [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
-> **Rule:** do not add new CAD feature families while blocking M2O steps O1–O8 are open.
+## Scope rule
 
-## Scope control
+M2O was intentionally not a repository-wide rewrite. It stopped when the minimum architecture needed for safe M3 growth was established while preserving the accepted Part/browser/Docker behavior.
 
-M2O is not a repository-wide rewrite.
+Blocking classification:
+- O1–O4: hard blockers — DONE;
+- O5–O8: minimum structural blockers — DONE;
+- O9–O11: non-blocking follow-up lanes.
 
-For every step:
-- stop when the written acceptance criteria are satisfied;
-- preserve accepted Part/runtime/browser behavior;
-- prefer extraction/adapters over rewrites;
-- do not redesign OpenCascade, PlaneGCS, StableRef or unrelated document types unless required by the active step;
-- do not add speculative M4/M5/M6 architecture;
-- keep feature work out of optimization PRs;
-- keep protected browser/Docker/baseline regressions green.
+## Completed blocking work
 
-### Blocking classification
+### O1 — Architecture/document consistency — DONE
 
-- **Hard blockers before M3:** O1, O2, O3, O4.
-- **Minimum structural blockers before M3:** O5, O6, O7, O8.
-- **Non-blocking follow-up lanes:** O9, O10, O11.
-
-## Current execution state
-
-- [x] **O1** — six-document architecture/document consistency; CI protected.
-- [x] **O2** — canonical command/layout IDs and truthful accepted M2 statuses; CI protected.
-- [x] **O3** — editor persistence through `CadEditorPersistence -> CadProjectSession -> CadProjectHost`; browser/Docker save-reopen green.
-- [x] **O4** — one typed `CadUiAction` source is consumed by global toolbar, command search, command-backed shortcuts, Sketch/Part/View ribbon and phone/tablet Tools. Mobile uses the shared catalog directly; no desktop DOM delegation. Dedicated 390×844 Chromium regression is green.
-- [ ] **O5 — ACTIVE** — extract M3-critical ownership from `App.tsx` and lower the size ceiling.
-- [ ] O6 — focused Sketch/Constraint/Dimension command handlers.
-- [ ] O7 — strong typing for M3 sketch entities/constraints/dimensions.
-- [ ] O8 — extract M3-critical viewport interaction responsibilities.
-
----
-
-## O1 — Architecture/document consistency — DONE
-
-Acceptance achieved:
-- all mandatory docs/code agree on `part | assembly | drawing | fragment | specification | text`;
+- mandatory docs/code agree on `part | assembly | drawing | fragment | specification | text`;
 - current Part-focused exact-runtime maturity is documented separately;
-- `tests/m2o/document-kinds.mjs` rejects regression.
+- CI rejects regression.
 
-## O2 — Command/layout registry integrity — DONE
+### O2 — Command/layout registry integrity — DONE
 
-Acceptance achieved:
 - layout IDs resolve through the canonical command registry;
-- stale aliases and duplicate IDs are rejected;
-- accepted M2 commands carry truthful `implemented` status;
-- `tests/m2o/registry-integrity.mjs` protects the contract.
+- stale aliases/duplicates are rejected;
+- accepted M2 commands carry truthful status;
+- registry integrity is CI-protected.
 
-## O3 — Persistence boundary — DONE
+### O3 — Persistence boundary — DONE
 
 Permanent path:
 
@@ -66,98 +41,85 @@ App / UI command
       -> AsaLabCadProjectHost
 ```
 
-Acceptance achieved:
-- `App.tsx` does not own localStorage/serialization/revision mechanics;
-- session owns revision/mutation/recovery coordination;
-- standalone compatibility stays behind `LocalStorageCadProjectHost`;
-- full save/reopen browser flow, M1/M1B and Docker `/cad/*` are green.
+The UI no longer owns localStorage/revision/recovery mechanics and protected save/reopen stays green.
 
-## O4 — Shared typed UI action model — DONE
+### O4 — Shared typed UI action model — DONE
 
-Permanent path:
+`CadUiAction` is the common presentation/action source for toolbar, search, command-backed shortcuts, Sketch/Part/View ribbon and mobile Tools. Mobile does not query/click desktop DOM.
 
-```text
-command-registry + editor state/handlers
-             ↓
-        CadUiAction[]
-      ┌──────┼───────────┬──────────┐
-      ↓      ↓           ↓          ↓
- toolbar   search       ribbon    shortcuts
-                              \
-                               mobile Tools
-```
+### O5 — M3-critical UI ownership — DONE
 
-Acceptance achieved:
-- `CadUiAction` owns runtime presentation identity/label/status/enablement/execution;
-- global Open/Save/Undo/Redo use shared actions;
-- command search executes shared actions;
-- command-backed shortcuts resolve to the same actions;
-- Sketch/Part/Rebuild/View ribbon buttons consume the same actions;
-- phone `Инструменты` consumes the same action catalog directly;
-- mobile code does not discover/click desktop DOM;
-- real mobile browser flow proves `Tools -> Create Sketch -> Parameters -> Sketch tools -> Rectangle` without eager OpenCascade;
-- shell, full browser, Docker and baseline gates are green.
+- `DocumentTree` and `ParameterPanel` have focused presentation owners;
+- `usePartSketchWorkspace` owns existing Part/Sketch command lifecycle without runtime/vendor/persistence imports;
+- `App.tsx` reduced from about **62 KB to 30 KB**;
+- size/architecture regressions prevent responsibilities from silently returning to root.
 
-## O5 — Materially decompose `App.tsx` — ACTIVE
+### O6 — Focused Sketch/Constraint/Dimension handlers — DONE
 
-### Problem
+- current Sketch/Constraint/Dimension mutation + availability paths use typed handler dispatch;
+- failures remain atomic;
+- Undo/Redo/history/recompute stay centralized in `CadApplicationImpl`;
+- M1/M2 command behavior remains protected.
 
-The growth guard prevents further damage but `App.tsx` still owns too much orchestration/presentation. M3 would otherwise expand the same root file with many Sketch state variables, panels and lifecycle handlers.
+### O7 — Strong Sketch contracts + semantic validation — DONE
 
-### Extraction order
+- current persisted Sketch entities/constraints/dimensions use discriminated ASA DTOs;
+- `CadSketch.support` is typed as origin plane or stable reference;
+- schema-v1 wire representation remains compatible;
+- PlaneGCS consumes typed DTOs and solved entities retain their discriminant;
+- malformed shapes are rejected;
+- semantic validation rejects duplicate/dangling/cross-Sketch entity/constraint/dimension references and missing StableRef Sketch supports;
+- O7 tests run inside the mandatory M2O gate.
 
-Do this in small behavior-preserving PRs:
+### Pre-M3 Sketch session / solver ownership — DONE
 
-1. **DocumentTree** — move tree rendering and tree-specific helpers out of `App.tsx`.
-2. **ParameterPanel** — move current command-parameter presentation out without moving command execution logic yet.
-3. **Shell presentation blocks** — header/document tabs/workspace ribbon/status/mobile navigation into focused components where extraction meaningfully shrinks the root.
-4. **Part/Sketch presentation state/controller seam** — create the focused owner where M3 workspace state can grow without returning to root-state sprawl.
-5. Extract additional editor controller/bootstrap only when justified by the previous cuts.
+This emerged from the O7/O8 critical review and is now part of the accepted gate:
 
-Do **not** rewrite the whole editor before M3.
+- explicit transient `activeSketchId` replaces implicit `latestSketch()` targeting;
+- `SketchSession` invalidates stale active IDs and Tree selects a specific Sketch by ID;
+- `SketchSolveSession` owns lazy solver lifecycle, transient preview, diagnostics, residual/iterations, explicit DoF availability and stale-result protection;
+- solver preview cannot mutate `CadDocument` or bypass `CadApplication` history;
+- current PlaneGCS reports `degreesOfFreedom: null` when rank/DoF is unavailable instead of inferring it from convergence.
 
-### Acceptance for M3 entry
+### O8 — M3-critical viewport interaction decomposition — DONE
 
-- [ ] `App.tsx` is materially smaller than the pre-O5 ~62 KB baseline;
-- [ ] `MAX_APP_BYTES` is lowered to the achieved size after extraction;
-- [ ] DocumentTree and ParameterPanel have focused owners;
-- [ ] M3 Sketch workspace growth has one obvious focused module/controller rather than adding large blocks to `App.tsx`;
-- [ ] extracted UI modules do not import OpenCascade/vendor internals;
-- [ ] protected Part/mobile/responsive/Docker/baseline behavior stays green.
+O8 was completed as three behavior-preserving slices:
 
-## O6 — Focused Sketch/Constraint/Dimension handlers
+1. **O8.1 Picking/selection**
+   - raw Three ray hits become ASA `ViewportPickCandidate[]`;
+   - semantic duplicates collapse, nearest targets rank deterministically and ambiguity is preserved;
+   - body/command hover and selection have a Three-independent owner;
+   - candidate model already contains a `sketch-entity` target kind for M3.
 
-Goal: adding an M3 Sketch/Constraint/Dimension command must not substantially grow one central application switch.
+2. **O8.2 Camera/navigation**
+   - Fit/front/back/top/bottom/left/right/isometric/pan/zoom policy is Three-independent;
+   - `CadViewport` only adapts numeric camera state to Three/OrbitControls;
+   - camera-only navigation remains independent from CAD recompute.
 
-Minimum acceptance:
-- [ ] typed handler registration/dispatch exists for the M3 growth path;
-- [ ] failures remain atomic;
-- [ ] undo/redo stays centralized;
-- [ ] current M1/M2 command regressions stay green.
+3. **O8.3 Sketch overlay seam**
+   - `SketchOverlayModel` consumes persisted geometry or a matching successful solver preview;
+   - `SketchOverlayLayer` is a separate SVG surface, not B-Rep `CadRenderModel`/Three geometry;
+   - overlay is intentionally read-only and dormant until M3 owns Sketch interaction.
 
-## O7 — Strong M3 Sketch typing
+Full mouse/touch/picking/standard-view/UI-scale/browser-zoom/Docker/baseline regressions remain green.
 
-Scope only the M3 data surface:
-- sketch entities;
-- constraints;
-- dimensions.
+---
 
-Minimum acceptance:
-- [ ] discriminated/validated DTOs reject incompatible shapes;
-- [ ] parse/serialize and migration behavior is tested;
-- [ ] PlaneGCS consumes typed ASA DTOs;
-- [ ] existing protected Part documents remain compatible.
+# M3 entry gate — SATISFIED
 
-Do not type future Drawing/Specification/Text structures in this gate.
+- [x] O1 architecture/docs consistent;
+- [x] O2 command/layout registries canonical and truthful;
+- [x] O3 persistence goes through session/host boundary;
+- [x] O4 permanent command presentation consumes shared typed actions;
+- [x] O5 M3-critical UI ownership extracted and root substantially reduced;
+- [x] O6 Sketch/Constraint/Dimension growth has focused handlers;
+- [x] O7 Sketch contracts strongly typed and semantically validated;
+- [x] explicit `activeSketchId` / SketchSession exists;
+- [x] transient solve-cycle ownership is defined without bypassing Undo/Redo;
+- [x] O8 selection/camera/preview can grow outside the monolithic viewport effect;
+- [x] final protected Part + M1/M1B + M2 shell/browser/touch/responsive + Docker/vendor gates green.
 
-## O8 — M3-critical viewport interaction decomposition
-
-Extract only the interaction seams M3 will grow: selection/pointer/touch/preview ownership as justified by current code.
-
-Minimum acceptance:
-- [ ] sketch selection/preview can grow outside one monolithic viewport event block;
-- [ ] camera/navigation/picking/touch regressions stay green;
-- [ ] navigation-only actions still do not recompute CAD geometry.
+M3 may now proceed.
 
 ---
 
@@ -165,50 +127,33 @@ Minimum acceptance:
 
 ## O9 — ASA-owned dependency/toolchain direction
 
-New ASA-only dependencies must be root-owned. A full toolchain migration is not required before M3 while current pinned tooling remains reproducible.
+New ASA-only dependencies should be root-owned. A full toolchain migration is not required before M3 while current pinned tooling remains reproducible.
 
-## O10 — Safer branch/PR/CI workflow
+## O10 — Repository branch protection / enforced PR checks
 
-Operational rule already in use for risky M2O work:
+Risky development already follows:
 
 ```text
 short feature branch -> full CI -> PR -> green -> main
 ```
 
-Repository-level branch protection can be tightened separately; administration is not an M3 code blocker.
+Repository-level enforcement remains an administrative follow-up. It is **not claimed complete** until GitHub reports `main` protected with required checks.
 
 ## O11 — M2 visual/KOMPAS acceptance
 
-Continue deterministic reference review in parallel. Final pixel-perfect KOMPAS completion does not block M3 because the real Sketch workspace will change part of the visual surface.
+Continue deterministic KOMPAS reference review in parallel. Final visual parity does not block M3 because the real Sketch workspace will change part of the visual surface.
 
----
+## Execution discipline after M2O
 
-# M3 entry gate
+For M3 and later:
+1. preserve these ownership boundaries;
+2. add one vertical command/application/interaction slice at a time;
+3. persist changes only through `CadApplication` commands/history;
+4. keep solver preview transient until explicitly committed;
+5. keep Sketch overlay separate from B-Rep render data;
+6. use `activeSketchId`, never implicit last-Sketch semantics;
+7. keep protected browser/Docker/baseline gates green.
 
-M3 may start when all blocking items are true:
+## Next action
 
-- [x] O1 architecture/docs consistent;
-- [x] O2 command/layout registries canonical and truthful;
-- [x] O3 persistence goes through session/host boundary;
-- [x] O4 permanent command presentation consumes shared typed actions;
-- [ ] O5 M3-critical UI ownership extracted and `App.tsx` materially smaller;
-- [ ] O6 Sketch/Constraint/Dimension growth has focused handlers;
-- [ ] O7 M3 Sketch contracts strongly typed;
-- [ ] O8 M3 selection/preview interaction can grow outside monolithic viewport logic;
-- [ ] final protected Part + M1/M1B + M2 shell/browser/touch/responsive + Docker gates are green.
-
-O9/O10/O11 do not block M3 once this gate is green.
-
-## Execution discipline for agents
-
-For each O-step:
-1. read `STATUS.md`, `ARCHITECTURE.md`, this file and only affected subsystem docs;
-2. change one ownership boundary at a time;
-3. add/strengthen a regression before removing the old path when practical;
-4. preserve accepted browser behavior unless the step explicitly changes presentation;
-5. stop when acceptance is satisfied;
-6. update this checklist only after tests are green.
-
-## Immediate next action
-
-Start **O5.1 — extract `DocumentTree` from `App.tsx`** in a small PR. Preserve its markup/behavior, add an architecture guard, lower the App size ceiling after merge, then move to ParameterPanel.
+Begin **M3 Parametric Sketch** by wiring the active `SketchSession` to `SketchSolveSession` and the dormant `SketchOverlayModel`, then introduce the first direct canvas Sketch interaction through the existing candidate/selection seam. Do not fold M3 interaction back into `App.tsx` or the B-Rep Three effect.
