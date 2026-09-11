@@ -74,8 +74,15 @@ try {
   await page.getByText('Изменить размер', { exact: true }).waitFor();
 
   await page.keyboard.press('Control+s');
-  await page.getByText('Сохранено локально', { exact: true }).waitFor();
-  assert.ok(await page.evaluate(() => localStorage.getItem('asa-cad-m2-shell-document')), 'Ctrl+S did not save');
+  await page.getByText(/Сохранено локально · ревизия \d+/).waitFor();
+  const savedProject = await page.evaluate(() => {
+    const key = Object.keys(localStorage).find((candidate) => candidate.startsWith('asa-cad-project:'));
+    return key ? localStorage.getItem(key) : null;
+  });
+  assert.ok(savedProject, 'Ctrl+S did not save through CadProjectHost');
+  const savedRecord = JSON.parse(savedProject);
+  assert.ok(Number.isSafeInteger(savedRecord.revision) && savedRecord.revision >= 1, 'Ctrl+S did not advance host revision');
+  assert.equal(typeof savedRecord.serializedDocument, 'string', 'Ctrl+S host record has no CadDocument payload');
 
   await page.keyboard.press('Escape');
   await page.getByText('Команда отменена', { exact: true }).waitFor();
