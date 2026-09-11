@@ -16,4 +16,25 @@ assert.doesNotMatch(app, /title="Сохранить \(Ctrl\+S\)" onClick=\{saveL
 assert.doesNotMatch(app, /title="Отменить \(Ctrl\+Z\)" onClick=\{undo\}/, 'global Undo must not bypass CadUiAction');
 assert.doesNotMatch(app, /title="Повторить \(Ctrl\+Y \/ Ctrl\+Shift\+Z\)" onClick=\{redo\}/, 'global Redo must not bypass CadUiAction');
 
-console.log('M2O O4 global toolbar/search surface PASS (shared CadUiAction path)');
+assert.match(app, /cadUiActionIdForShortcut\(action\)/, 'shortcut dispatch must resolve command shortcuts to shared CadUiAction ids');
+assert.match(app, /uiActions\.byId\.get\(sharedActionId\)/, 'shortcut dispatch must consume the shared action catalog');
+for (const legacyCase of [
+  "case 'system.save':",
+  "case 'system.undo':",
+  "case 'system.redo':",
+  "case 'system.rebuild':",
+  "case 'view.fit':",
+  "case 'view.iso':",
+  "case 'view.front':",
+  "case 'view.top':",
+  "case 'view.left':",
+]) {
+  assert.equal(app.includes(legacyCase), false, `legacy direct shortcut case must not return: ${legacyCase}`);
+}
+// Interaction lifecycle and camera pan/zoom intentionally remain direct interaction actions.
+assert.match(app, /case 'interaction\.cancel':/, 'Esc interaction lifecycle must remain explicit');
+assert.match(app, /case 'interaction\.commit':/, 'Ctrl+Enter interaction lifecycle must remain explicit');
+assert.match(app, /case 'view\.zoomIn':/, 'camera-only zoom remains an interaction action');
+assert.match(app, /case 'view\.panLeft':/, 'camera-only pan remains an interaction action');
+
+console.log('M2O O4 action surfaces PASS (toolbar/search + shared command shortcuts)');
