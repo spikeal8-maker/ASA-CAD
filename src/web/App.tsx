@@ -21,6 +21,7 @@ import { useCadProjectPersistence, type CadProjectPersistenceOverrides } from '.
 import { useCadPersistenceCommands } from './useCadPersistenceCommands';
 import { CadUiActionSearchResults, CadUiGlobalActionButton } from './CadUiActionControls';
 import { useM2CadUiActions } from './useM2CadUiActions';
+import { cadUiActionIdForShortcut } from './M2CadUiActions';
 import {
   ShortcutRegistry,
   shortcutInputKind,
@@ -705,19 +706,19 @@ export function App(props: CadProjectPersistenceOverrides) {
   };
 
   async function dispatchShortcutAction(action: ShortcutActionId) {
+    const sharedActionId = cadUiActionIdForShortcut(action);
+    if (sharedActionId) {
+      const sharedAction = uiActions.byId.get(sharedActionId);
+      if (!sharedAction) throw new Error(`Missing CadUiAction for shortcut: ${sharedActionId}`);
+      if (!sharedAction.enabled) {
+        setNotice(sharedAction.disabledReason ?? 'Команда недоступна');
+        return;
+      }
+      await sharedAction.execute();
+      return;
+    }
+
     switch (action) {
-      case 'system.save':
-        await saveLocal();
-        return;
-      case 'system.undo':
-        await undo();
-        return;
-      case 'system.redo':
-        await redo();
-        return;
-      case 'system.rebuild':
-        await rebuild();
-        return;
       case 'interaction.cancel':
         if (activeCommand && selectedPick) {
           setSelectedPick(null);
@@ -736,21 +737,6 @@ export function App(props: CadProjectPersistenceOverrides) {
         return;
       case 'interaction.delete':
         setNotice('Удаление выбранного объекта будет включено отдельной безопасной командой');
-        return;
-      case 'view.fit':
-        requestView('Показать всё');
-        return;
-      case 'view.iso':
-        requestView('Изометрия');
-        return;
-      case 'view.front':
-        requestView('Спереди');
-        return;
-      case 'view.top':
-        requestView('Сверху');
-        return;
-      case 'view.left':
-        requestView('Слева');
         return;
       case 'view.zoomIn':
         requestViewportCommand('zoom-in');
