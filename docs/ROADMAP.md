@@ -104,7 +104,26 @@ Map deterministic ASA states to approved KOMPAS references; tune hierarchy/propo
 
 Acceptance: baseline and responsive visual review passes with deliberate differences recorded.
 
+### M2O — Architecture optimization gate — #21
+Stabilize the product architecture before M3 expands the command/data surface.
+
+Execution source of truth: [`M2O_OPTIMIZATION_GATE.md`](M2O_OPTIMIZATION_GATE.md).
+
+Required outcomes include:
+- mandatory docs agree on the six-document architecture;
+- command/layout registries are cross-validated and statuses are truthful;
+- editor persistence uses the `CadProjectSession` / host boundary;
+- desktop/mobile consume one typed command/action model;
+- `App.tsx`, `CadApplicationImpl` and viewport responsibilities are decomposed enough for M3 growth;
+- M3 sketch entities/constraints/dimensions have strong typed contracts;
+- ASA dependency/toolchain ownership has a reproducible direction;
+- safer branch/CI workflow is established where repository permissions allow.
+
+Acceptance: every checkbox in `M2O_OPTIMIZATION_GATE.md` required to start M3 is satisfied while existing Part/browser/Docker regressions remain green.
+
 ### M3 — Parametric Sketch — #5
+**Blocked by M2O.**
+
 First complete sketcher foundation:
 - line/circle/arc/rectangle and required construction geometry;
 - constraints;
@@ -117,7 +136,7 @@ First complete sketcher foundation:
 
 Acceptance: a real constrained sketch remains editable/recomputable after save/reopen and drives Part features.
 
-**Gate B acceptance:** M2 program + M3.
+**Gate B acceptance:** accepted M2 program + M2O + M3.
 
 ---
 
@@ -201,4 +220,4 @@ ASA command/API
 
 ## Current work
 
-Do not infer current work from milestone order. Read [`STATUS.md`](STATUS.md) and the active GitHub issue.
+Do not infer current work from milestone order. Read [`STATUS.md`](STATUS.md), [`M2O_OPTIMIZATION_GATE.md`](M2O_OPTIMIZATION_GATE.md) and the active GitHub issue.
