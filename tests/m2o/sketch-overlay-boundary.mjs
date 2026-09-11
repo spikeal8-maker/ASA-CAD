@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 const model = readFileSync('src/web/viewport/SketchOverlayModel.ts', 'utf8');
 const layer = readFileSync('src/web/viewport/SketchOverlayLayer.tsx', 'utf8');
 const viewport = readFileSync('src/web/CadViewport.tsx', 'utf8');
+const app = readFileSync('src/web/App.tsx', 'utf8');
 const renderContract = readFileSync('src/contracts/render.ts', 'utf8');
 const picking = readFileSync('src/web/viewport/ViewportPicking.ts', 'utf8');
 const runtimeCss = readFileSync('src/web/runtime.css', 'utf8');
@@ -21,7 +22,8 @@ assert.match(runtimeCss, /\.cad-sketch-overlay\s*\{[\s\S]*pointer-events:\s*none
 
 assert.match(viewport, /sketchOverlay\?: SketchOverlayModel \| null/, 'CadViewport must accept Sketch overlay independently from B-Rep model');
 assert.match(viewport, /<SketchOverlayLayer model=\{sketchOverlay\}/, 'CadViewport must mount Sketch overlay as a sibling presentation layer');
+assert.doesNotMatch(app, /sketchOverlay\s*=/, 'M2O must not silently activate Sketch overlay before M3 owns solve/interaction presentation');
 assert.doesNotMatch(renderContract, /SketchOverlay|CadSketchEntity|sketchEntities/, 'B-Rep CadRenderModel contract must remain free of Sketch overlay geometry');
 assert.match(picking, /kind: 'sketch-entity'/, 'shared viewport candidate model must retain future Sketch entity picking seam');
 
-console.log('M2O O8 Sketch overlay boundary PASS (separate transient 2D layer outside B-Rep/Three/runtime)');
+console.log('M2O O8 Sketch overlay boundary PASS (separate dormant transient 2D layer outside B-Rep/Three/runtime)');
