@@ -40,15 +40,16 @@
     "test:m2:shell": "npm run typecheck:asa && npm run test:m2:architecture && npm run test:m2:render && npm run test:m2:shortcuts && npm run test:m2:ui-scale && npm run build:asa && node tests/m2/shell-build.mjs",
     "test:m2o:docs": "node tests/m2o/document-kinds.mjs",
     "test:m2o:registry": "node tests/m2o/registry-integrity.mjs",
-    "test:m2o": "npm run test:m2o:docs && npm run test:m2o:registry && npm run test:m2o:persistence",
+    "test:m2o:persistence": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m2o/persistence-session.ts && node tests/m2o/persistence-boundary.mjs",
+    "test:m2o:actions": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m2o/ui-actions.ts",
+    "test:m2o": "npm run test:m2o:docs && npm run test:m2o:registry && npm run test:m2o:persistence && npm run test:m2o:actions",
     "test:asa": "npm run test:m0 && npm run test:m1 && npm run test:m1b && npm run test:m2:shell && npm run test:m2o",
     "test": "npm run test:asa",
     "check:vendor": "npm run build:vendor && npm run lint:vendor && npm run test:vendor",
     "check": "npm run test:asa && npm run check:vendor",
     "docker:build": "docker compose build",
     "docker:up": "docker compose up --build",
-    "docker:down": "docker compose down",
-    "test:m2o:persistence": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m2o/persistence-session.ts && node tests/m2o/persistence-boundary.mjs"
+    "docker:down": "docker compose down"
   },
   "engines": {
     "node": ">=20.19.0",
