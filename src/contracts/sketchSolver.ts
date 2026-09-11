@@ -1,9 +1,9 @@
 import type { CadSketchEntityId, CadSketchId } from './ids';
-import type { CadDocument } from './document';
+import type { CadDocument, CadSketchEntity } from './document';
 
 export interface CadSolvedSketchEntity {
   id: CadSketchEntityId;
-  data: Record<string, unknown>;
+  data: CadSketchEntity['data'];
 }
 
 export interface CadSketchSolveResult {
