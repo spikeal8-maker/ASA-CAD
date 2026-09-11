@@ -65,6 +65,11 @@
 }
 
 @media (max-width: 599px) {
+  .mobile-bottom-bar button.active {
+    background: #e9f2ff;
+    color: #1c5fab;
+  }
+
   .mobile-tools-panel {
     height: 100%;
   }
