@@ -107,22 +107,21 @@ Acceptance: baseline and responsive visual review passes with deliberate differe
 ### M2O — Architecture optimization gate — #21
 Stabilize the product architecture before M3 expands the command/data surface.
 
-Execution source of truth: [`M2O_OPTIMIZATION_GATE.md`](M2O_OPTIMIZATION_GATE.md).
+Execution/acceptance source of truth: [`M2O_OPTIMIZATION_GATE.md`](M2O_OPTIMIZATION_GATE.md).
 
-Required outcomes include:
+Blocking outcomes:
 - mandatory docs agree on the six-document architecture;
 - command/layout registries are cross-validated and statuses are truthful;
 - editor persistence uses the `CadProjectSession` / host boundary;
 - desktop/mobile consume one typed command/action model;
 - `App.tsx`, `CadApplicationImpl` and viewport responsibilities are decomposed enough for M3 growth;
-- M3 sketch entities/constraints/dimensions have strong typed contracts;
-- ASA dependency/toolchain ownership has a reproducible direction;
-- safer branch/CI workflow is established where repository permissions allow.
+- Sketch DTOs/semantic references are strongly validated;
+- active Sketch, transient solve-cycle and Sketch preview ownership are explicit.
 
-Acceptance: every checkbox in `M2O_OPTIMIZATION_GATE.md` required to start M3 is satisfied while existing Part/browser/Docker regressions remain green.
+Acceptance: all O1–O8 entry checkboxes in `M2O_OPTIMIZATION_GATE.md` are green while existing Part/browser/Docker regressions remain green. Toolchain ownership, repository administration and final visual acceptance remain non-blocking follow-up lanes.
 
 ### M3 — Parametric Sketch — #5
-**Blocked by M2O.**
+**Entry prerequisite: accepted M2O gate.** Read `STATUS.md` for whether the prerequisite is currently satisfied.
 
 First complete sketcher foundation:
 - line/circle/arc/rectangle and required construction geometry;
@@ -220,4 +219,4 @@ ASA command/API
 
 ## Current work
 
-Do not infer current work from milestone order. Read [`STATUS.md`](STATUS.md), [`M2O_OPTIMIZATION_GATE.md`](M2O_OPTIMIZATION_GATE.md) and the active GitHub issue.
+Do not infer current work from milestone order. Read [`STATUS.md`](STATUS.md) and the active GitHub issue. For M2O history/follow-ups, use [`M2O_OPTIMIZATION_GATE.md`](M2O_OPTIMIZATION_GATE.md).
