@@ -1,8 +1,8 @@
 # ASA-CAD current status
 
-This file is the **single short current-state entry point** for humans and coding agents. It describes what is true on `main` now. Long-term product intent belongs to `SYSTEM_SPEC.md`; implementation order belongs to `ROADMAP.md`.
+This file is the **single short current-state entry point** for humans and coding agents. Product/end-state intent belongs to [`SYSTEM_SPEC.md`](SYSTEM_SPEC.md); implementation order belongs to [`ROADMAP.md`](ROADMAP.md).
 
-Last synchronized: 2026-09-11.
+Last synchronized: 2026-09-12.
 
 ## Current phase
 
@@ -15,11 +15,9 @@ Completed foundation:
 - M1U KOMPAS v25 command inventory baseline;
 - M1B lazy client runtime, recovery and ASA Lab host contract.
 
-**Current program: M2 — permanent ASA-owned KOMPAS-oriented shell.**
+**M2O — Architecture Optimization Gate (#21): DONE.**
 
-**Active blocking optimization gate before M3: M2O — #21.**
-
-Execution checklist: [`M2O_OPTIMIZATION_GATE.md`](M2O_OPTIMIZATION_GATE.md).
+All blocking O1–O8 acceptance gates are green. **M3 Parametric Sketch is no longer blocked by M2O.** M2 visual/interaction lanes may continue in parallel where they do not conflict with the active Sketch work.
 
 Tracking:
 - #3 M2 core shell — ACTIVE;
@@ -27,122 +25,82 @@ Tracking:
 - #17 M2I interaction/mobile — ACTIVE;
 - #18 M2R display/DPI/zoom/UI Scale — DONE;
 - #19 M2V KOMPAS visual acceptance — ACTIVE;
-- #21 M2O architecture optimization — ACTIVE / BLOCKS M3.
+- #21 M2O architecture optimization — DONE / closeout.
 
-## M2O progress
+## M2O result
 
-Completed and CI-protected:
+The pre-M3 structural debt identified by the critical audit is now addressed and CI-protected:
+
 - **O1** — mandatory architecture documentation aligned to all six document kinds;
-- **O2** — command/layout registries normalized to canonical IDs, accepted M2 statuses made truthful, future drift rejected by CI;
-- **O3** — editor Save/Open routed through `CadEditorPersistence -> CadProjectSession -> CadProjectHost`; standalone storage is isolated behind `LocalStorageCadProjectHost`, optimistic revision/mutation/recovery semantics are tested, and shell/browser/Docker protected workflows remain green;
-- **O4** — shared typed `CadUiAction` catalog drives global toolbar, command search, command-backed shortcuts, Sketch/Part/View ribbon and mobile Tools. Phone tools consume the same action objects directly and are browser-tested without desktop DOM delegation or eager OpenCascade loading.
+- **O2** — command/layout registries normalized to canonical IDs, accepted M2 statuses truthful and drift rejected by CI;
+- **O3** — editor Save/Open routed through `CadEditorPersistence -> CadProjectSession -> CadProjectHost`;
+- **O4** — shared typed `CadUiAction` catalog drives toolbar, search, command-backed shortcuts, Sketch/Part/View ribbon and mobile Tools;
+- **O5** — `App.tsx` reduced from about 62 KB to about 30 KB; Tree, Parameters and Part/Sketch workspace ownership have focused modules;
+- **O6** — Sketch/Constraint/Dimension mutation and availability live in typed handlers while application history/rollback/Undo/Redo remain centralized;
+- **O7** — current persisted Sketch entities/constraints/dimensions are discriminated and runtime-validated; Sketch support is typed; PlaneGCS consumes typed ASA DTOs; semantic validation rejects duplicate/dangling/cross-Sketch references and missing StableRef supports;
+- explicit **`activeSketchId` + `SketchSession`** replaces implicit `latestSketch()` targeting;
+- **`SketchSolveSession`** owns transient solver preview/status/diagnostics/DoF availability and cannot bypass `CadApplication` history; current PlaneGCS reports DoF as unavailable rather than guessing;
+- **O8.1** — Three ray hits become ASA `ViewportPickCandidate[]`, semantic duplicates are collapsed/ranked and ambiguity is preserved; selection state has a Three-independent owner;
+- **O8.2** — Fit/standard views/pan/zoom policy lives in a Three-independent camera controller;
+- **O8.3** — persisted or solved Sketch geometry has a separate read-only `SketchOverlayModel`/SVG layer outside B-Rep `CadRenderModel`; it is deliberately dormant until M3 owns interaction;
+- **O10** — `main` is now protected: changes require a pull request, admins are enforced, conversations must resolve, force-push/delete are disabled, and always-on required checks are `shell-build`, `vendor-baseline`, `asa-m1`, `asa-m1b`.
 
-Current optimization step: **O5 — extract M3-critical responsibilities from `App.tsx` and lower its size/ownership ceiling without changing accepted CAD behavior.**
+Browser/Docker path-filtered suites remain mandatory development discipline for affected CAD/UI work even though they cannot be global required checks on docs-only PRs.
 
-## What works now
+## Protected Part workflow
 
-The permanent ASA shell is independent from visible Toubkal UI and can be started with:
-
-```bash
-npm run install:vendor
-npm run dev
-```
-
-Standalone address: `http://localhost:8090`.
-
-`npm run dev:asa` remains an explicit alias. Vendor diagnostic UI is `npm run dev:vendor`.
-
-Release-like Docker:
-
-```bash
-npm run docker:up
-```
-
-Docker address: `http://localhost:8088` and production-compatible `/cad/*` deep routes.
-
-### Protected Part workflow
-
-Real Chromium already proves through ASA-owned controls:
+Real Chromium and release Docker continue to prove through ASA-owned controls:
 
 `XY Sketch -> rectangle 60x40 -> driving dimensions -> Extrude 10 -> select top face -> second Sketch -> centered diameter 12 -> through cut -> select edge -> Fillet R1 -> edit width 60 to 80 -> downstream rebuild -> save native parametric JSON -> reload/reopen -> edit diameter 12 to 14`.
 
-Persisted document keeps feature history and durable StableRefs. Transient face/edge ordinals and native OpenCascade/Three objects are not persisted.
+Persisted data keeps feature history and durable StableRefs. Transient face/edge ordinals, solver preview, Three objects and OpenCascade objects are not persisted.
 
-### Local computation
+## Runtime / persistence invariants
 
-- shell/sketch-only work does not eagerly load OpenCascade;
-- OpenCascade WASM is loaded lazily when B-Rep work is first required;
-- B-Rep/recompute happens in the browser/device;
-- ASA Lab host contract has persistence/recovery boundaries but no normal CAD-compute RPC.
+- OpenCascade loads lazily only when exact B-Rep work is required;
+- normal CAD mathematics stays on the client device;
+- ASA Lab provides host/project/version/recovery services, not normal CAD-compute RPC;
+- UI persistence remains behind `CadProjectSession/CadProjectHost`;
+- solver preview is transient; committing a solved edit must use a normal `CadApplication` command so Undo/Redo remains authoritative.
 
-### Persistence boundary
+## Interaction already protected
 
-```text
-App / UI commands
-  -> CadEditorPersistence
-  -> CadProjectSession
-  -> CadProjectHost
-      -> LocalStorageCadProjectHost (standalone)
-      -> AsaLabCadProjectHost (ASA Lab)
-```
-
-The UI no longer owns localStorage/serialization/revision mechanics. Standalone raw JSON is only a compatibility mirror behind the host adapter.
-
-### Interaction already browser-proven
-
-- wheel zoom;
-- middle-button pan;
-- right-drag orbit;
-- Fit + front/back/top/bottom/left/right/isometric views;
-- central ShortcutRegistry;
-- Ctrl+S, Undo/Redo, Esc, Ctrl+Enter, F5 and camera shortcuts;
-- focus-safe numeric/text editing;
-- body selection synchronized Viewport <-> Tree by ASA `bodyId`;
-- command-specific face/edge picking separated from ordinary body selection;
-- real touch gesture regression is green;
-- phone `Инструменты` sheet runs the same typed actions as desktop toolbar/search/ribbon and starts Sketch commands without desktop DOM delegation or eager OpenCascade loading.
-
-### Display/responsive acceptance
-
-M2R #18 is complete. A single real-browser run passed the complete matrix together, including:
-- 1280x720 / 1366x768 / 1536x864 / 1920x1080;
-- 2560x1440 / 3440x1440 / effective 3840x2160;
-- representative 4K@150% and 4K@200%;
-- 1920x720 height stress;
-- portrait/landscape tablet, hybrid input and phones down to 360x640;
-- UI Scale Auto/90/100/110/125/150;
-- B-Rep picking across UI Scale changes;
-- browser-zoom effective viewport/DPR regression.
+- wheel zoom, MMB pan, RMB orbit;
+- Fit + front/back/top/bottom/left/right/isometric;
+- central keyboard shortcuts and focus-safe input;
+- body selection synchronized Viewport <-> Tree;
+- typed face/edge command picking;
+- semantic candidate dedupe/ranking + ambiguity seam;
+- real touch navigation/selection;
+- phone Tools using the same action catalog as desktop;
+- HD/FHD/2K/4K/ultrawide, DPR/browser zoom and UI Scale matrix;
+- B-Rep picking across UI Scale changes.
 
 ## Deterministic review routes
 
-Available Part fixtures:
+Part fixtures:
 - `/dev/part/empty`;
 - `/dev/part/sketch`;
 - `/dev/part/extrude`;
 - `/dev/part/reference`;
 - `/dev/part/rebuild-error`.
 
-These are the preferred surfaces for visual correction and regression review.
+## Deliberately not complete
 
-## What is deliberately not complete
+Do **not** mistake the protected Part proof or completed M2O gate for KOMPAS parity.
 
-Do **not** mistake the protected Part proof for full KOMPAS parity.
-
-Not complete yet:
-- blocking M2O O5–O8;
-- full sketch geometry/constraints/DOF workflow (M3);
-- broad Part Design feature set and industrial StableRef corpus (M4);
-- Assembly product workflow (M4A);
-- Drawing/Fragment (M6);
-- Specification/Text editors (M6A);
-- full visual KOMPAS acceptance and final ASA-owned icon set (M2V);
-- final ASA Lab deployment (M5).
-
-The current OpenCascade Part runtime intentionally implements a narrow accepted vertical slice. New features must extend contracts/tests rather than bypassing them.
+Still incomplete:
+- M3 full interactive parametric Sketch workflow: direct drawing/editing, broader geometry/constraints/dimensions, live PlaneGCS cycle, DoF/diagnostics presentation, snapping and active overlay interaction;
+- M2I advanced selection/window/context/chooser behavior beyond the accepted O8 seam;
+- M2V final KOMPAS visual/icon acceptance;
+- O9 root-owned dependency/toolchain follow-up;
+- broad Part Design + industrial StableRef corpus (M4);
+- Assembly (M4A);
+- ASA Lab deployment (M5);
+- Drawing/Fragment and Specification/Text (M6/M6A).
 
 ## Immediate next work
 
-Start **O5.1 — extract `DocumentTree` from `App.tsx`** as a behavior-preserving component move. Add/strengthen the architecture guard, lower the `App.tsx` size ceiling after the extraction is green, then proceed to ParameterPanel.
+Start **M3 Parametric Sketch** through the architecture that M2O created. The first slice should wire the explicit active `SketchSession` to `SketchSolveSession` and the dormant `SketchOverlayModel`, then add direct Sketch interaction as normal typed command/application slices. Do not reintroduce `latestSketch()`, direct solver document mutation, or Sketch drawing inside the B-Rep Three scene.
 
-If another document contains an older `ACTIVE/NEXT` statement, **this file plus issue #21 and the M2O execution file win for current status**.
+O9 and O11 remain non-blocking follow-ups in [`M2O_OPTIMIZATION_GATE.md`](M2O_OPTIMIZATION_GATE.md).
