@@ -19,6 +19,8 @@ import {
 import { applyPartDevFixture } from './devFixtures';
 import { useCadProjectPersistence, type CadProjectPersistenceOverrides } from './useCadProjectPersistence';
 import { useCadPersistenceCommands } from './useCadPersistenceCommands';
+import { CadUiActionSearchResults, CadUiGlobalActionButton } from './CadUiActionControls';
+import { useM2CadUiActions } from './useM2CadUiActions';
 import {
   ShortcutRegistry,
   shortcutInputKind,
@@ -170,12 +172,6 @@ export function App(props: CadProjectPersistenceOverrides) {
   const selectedBody = selectedBodyId && part
     ? part.bodies.find((body) => body.id === selectedBodyId) ?? null
     : null;
-
-  const searchableCommands = search.trim()
-    ? registry.commands
-        .filter((command) => command.labelRu.toLocaleLowerCase('ru').includes(search.toLocaleLowerCase('ru')))
-        .slice(0, 8)
-    : [];
 
   const clearTransientSelection = useCallback(() => {
     setSelectionMode('none');
@@ -669,6 +665,45 @@ export function App(props: CadProjectPersistenceOverrides) {
     setNotice(result.ok ? 'Перестроено' : result.error?.message ?? 'Ошибка перестроения');
   }
 
+  const uiActions = useM2CadUiActions(
+    {
+      open: openLocal,
+      save: saveLocal,
+      undo,
+      redo,
+      rebuild,
+      createSketch: beginCreateSketch,
+      rectangle: beginRectangle,
+      circle: beginCircle,
+      finishSketch,
+      extrude: beginExtrude,
+      cutExtrude: beginCut,
+      fillet: beginFillet,
+      fit: () => requestView('Показать всё'),
+      front: () => requestView('Спереди'),
+      back: () => requestView('Сзади'),
+      top: () => requestView('Сверху'),
+      bottom: () => requestView('Снизу'),
+      left: () => requestView('Слева'),
+      right: () => requestView('Справа'),
+      isometric: () => requestView('Изометрия'),
+    },
+    {
+      canUndo: state.canUndo,
+      canRedo: state.canRedo,
+      hasSketch: Boolean(sketch),
+      canExtrude,
+      canCutExtrude: canCut,
+      canFillet,
+    },
+  );
+  const searchableActions = uiActions.search(search);
+  const uiAction = (id: string) => {
+    const action = uiActions.byId.get(id);
+    if (!action) throw new Error(`Missing CadUiAction: ${id}`);
+    return action;
+  };
+
   async function dispatchShortcutAction(action: ShortcutActionId) {
     switch (action) {
       case 'system.save':
@@ -799,22 +834,13 @@ export function App(props: CadProjectPersistenceOverrides) {
             placeholder="Поиск команд"
             aria-label="Поиск команд"
           />
-          {searchableCommands.length > 0 && (
-            <div className="command-search-results">
-              {searchableCommands.map((command) => (
-                <button key={command.id} type="button" onClick={() => setSearch('')}>
-                  <span>{command.labelRu}</span>
-                  <small>{command.milestone}</small>
-                </button>
-              ))}
-            </div>
-          )}
+          <CadUiActionSearchResults actions={searchableActions} onPicked={() => setSearch('')} />
         </div>
         <div className="global-actions">
-          <button type="button" title="Открыть" onClick={openLocal}>⌂</button>
-          <button type="button" title="Сохранить (Ctrl+S)" onClick={saveLocal}>▣</button>
-          <button type="button" title="Отменить (Ctrl+Z)" onClick={undo} disabled={!state.canUndo}>↶</button>
-          <button type="button" title="Повторить (Ctrl+Y / Ctrl+Shift+Z)" onClick={redo} disabled={!state.canRedo}>↷</button>
+          <CadUiGlobalActionButton action={uiAction('system.open')}>⌂</CadUiGlobalActionButton>
+          <CadUiGlobalActionButton action={uiAction('system.save')} titleSuffix="(Ctrl+S)">▣</CadUiGlobalActionButton>
+          <CadUiGlobalActionButton action={uiAction('system.undo')} titleSuffix="(Ctrl+Z)">↶</CadUiGlobalActionButton>
+          <CadUiGlobalActionButton action={uiAction('system.redo')} titleSuffix="(Ctrl+Y / Ctrl+Shift+Z)">↷</CadUiGlobalActionButton>
           <button type="button" title="Настройки">⚙</button>
         </div>
       </header>
