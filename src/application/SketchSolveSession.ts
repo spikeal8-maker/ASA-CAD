@@ -77,16 +77,17 @@ export class SketchSolveSession {
       const result = this.solver.solve(document, sketchId);
       if (requestId !== this.requestId || this.disposed) return this.snapshot;
 
+      const solved = result.ok && result.converged;
       this.snapshot = {
         requestId,
-        status: result.ok && result.converged ? 'solved' : 'error',
+        status: solved ? 'solved' : 'error',
         sketchId,
         previewEntities: structuredClone(result.entities),
         converged: result.converged,
         residual: result.residual,
         iterations: result.iterations,
         degreesOfFreedom: result.degreesOfFreedom,
-        constraintState: constraintState(result.degreesOfFreedom),
+        constraintState: solved ? constraintState(result.degreesOfFreedom) : 'unknown',
         diagnostics: structuredClone(result.diagnostics),
       };
       this.emit();
