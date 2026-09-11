@@ -29,7 +29,16 @@ Tracking:
 - #19 M2V KOMPAS visual acceptance — ACTIVE;
 - #21 M2O architecture optimization — ACTIVE / BLOCKS M3.
 
-Next feature lane after M2O + controlled M2 acceptance: **M3 Parametric Sketch** (#5).
+### M2O progress
+
+Completed and CI-protected:
+- **O1** — mandatory architecture documentation aligned to all six document kinds;
+- **O2** — command/layout registries normalized to canonical IDs, accepted M2 statuses made truthful, future drift rejected by CI;
+- **O3** — editor Save/Open routed through `CadEditorPersistence -> CadProjectSession -> CadProjectHost`; standalone storage is isolated behind `LocalStorageCadProjectHost`, optimistic revision/mutation/recovery semantics are tested, and shell/browser/Docker protected workflows remain green.
+
+Current blocking step: **O4 — shared typed `CadUiAction` / command presentation model.**
+
+Next feature lane after the blocking M2O entry gate: **M3 Parametric Sketch** (#5).
 
 ## What works now
 
@@ -66,6 +75,19 @@ Persisted document keeps feature history and durable StableRefs. Transient face/
 - OpenCascade WASM is loaded lazily when B-Rep work is first required;
 - B-Rep/recompute happens in the browser/device;
 - ASA Lab host contract has persistence/recovery boundaries but no normal CAD-compute RPC.
+
+### Persistence boundary
+
+```text
+App / UI commands
+  -> CadEditorPersistence
+  -> CadProjectSession
+  -> CadProjectHost
+      -> LocalStorageCadProjectHost (standalone)
+      -> AsaLabCadProjectHost (ASA Lab)
+```
+
+The UI no longer owns localStorage/serialization/revision mechanics. Standalone raw JSON is only a compatibility mirror behind the host adapter.
 
 ### Interaction already browser-proven
 
@@ -108,7 +130,7 @@ These are the preferred surfaces for visual correction and regression review.
 Do **not** mistake the protected Part proof for full KOMPAS parity.
 
 Not complete yet:
-- M2O architecture optimization gate;
+- remaining blocking M2O steps O4–O8;
 - full sketch geometry/constraints/DOF workflow (M3);
 - broad Part Design feature set and industrial StableRef corpus (M4);
 - Assembly product workflow (M4A);
@@ -121,13 +143,6 @@ The current OpenCascade Part runtime intentionally implements a narrow accepted 
 
 ## Immediate next work
 
-Follow [`M2O_OPTIMIZATION_GATE.md`](M2O_OPTIMIZATION_GATE.md) in order.
-
-Immediate sequence:
-1. O1 — correct mandatory architecture documentation to the six-document model;
-2. O2 — cross-validate command/layout registries and make implementation statuses truthful;
-3. O3 — route editor persistence through `CadProjectSession` / `CadProjectHost`;
-4. continue O4–O11 without adding new CAD feature families;
-5. start M3 only after the M2O completion gate passes.
+Follow [`M2O_OPTIMIZATION_GATE.md`](M2O_OPTIMIZATION_GATE.md) from **O4**. Do not add new M3 CAD feature families while the O4 hard blocker remains open.
 
 If another document contains an older `ACTIVE/NEXT` statement, **this file plus issue #21 and the M2O execution file win for current status**.
