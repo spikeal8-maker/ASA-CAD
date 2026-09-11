@@ -5,8 +5,6 @@ import { BrowserPartRuntimeAdapter } from '../browser/BrowserPartRuntimeAdapter'
 import { parseCadClientRoute } from '../browser/routes';
 import {
   createEmptyCadDocument,
-  parseCadDocument,
-  serializeCadDocument,
   type CadDocument,
   type CadDocumentKind,
   type CadPartDocument,
@@ -19,6 +17,8 @@ import {
   type CadViewportViewName,
 } from './CadViewport';
 import { applyPartDevFixture } from './devFixtures';
+import { useCadProjectPersistence, type CadProjectPersistenceOverrides } from './useCadProjectPersistence';
+import { useCadPersistenceCommands } from './useCadPersistenceCommands';
 import {
   ShortcutRegistry,
   shortcutInputKind,
@@ -106,15 +106,20 @@ function dimensionLabel(name: string | undefined, type: string): string {
   return name || type;
 }
 
-export function App() {
+export function App(props: CadProjectPersistenceOverrides) {
   const route = useMemo(() => parseCadClientRoute(window.location.pathname), []);
   const devFixture = route.kind === 'dev-part' ? route.fixture : null;
   const fixtureStartedRef = useRef(false);
+  const initialDocument = useMemo(
+    () => createEmptyCadDocument('part', { title: 'Деталь 1' }),
+    [],
+  );
   const runtime = useMemo(() => new BrowserPartRuntimeAdapter(), []);
   const app = useMemo(
-    () => new CadApplicationImpl(createEmptyCadDocument('part', { title: 'Деталь 1' }), runtime),
-    [runtime],
+    () => new CadApplicationImpl(initialDocument, runtime),
+    [initialDocument, runtime],
   );
+  const persistence = useCadProjectPersistence(app, initialDocument, route, props);
   const shortcutRegistry = useMemo(() => new ShortcutRegistry(), []);
   const [, setRevisionToken] = useState(0);
   const [activePanel, setActivePanel] = useState<'tree' | 'parameters'>('tree');
@@ -249,30 +254,19 @@ export function App() {
     setNotice(`Создан документ «${documentNames[kind]}»`);
   }
 
-  async function saveLocal() {
-    localStorage.setItem('asa-cad-m2-shell-document', serializeCadDocument(app.getDocument()));
-    setNotice('Сохранено локально');
-  }
-
-  async function openLocal() {
-    const saved = localStorage.getItem('asa-cad-m2-shell-document');
-    if (!saved) {
-      setNotice('Нет локально сохраненного документа');
-      return;
-    }
-    try {
-      setNotice('Открытие документа…');
-      await app.replaceDocument(parseCadDocument(saved));
-      setActivePanel('tree');
-      setActiveCommand(null);
-      setEditingDimensionId(null);
-      clearTransientSelection();
-      setActiveWorkspace(app.getDocument().kind === 'part' ? 'solid' : app.getDocument().kind);
-      setNotice('Локальный документ открыт');
-    } catch (error) {
-      setNotice(error instanceof Error ? error.message : String(error));
-    }
-  }
+  const resetAfterOpen = useCallback((kind: CadDocumentKind) => {
+    setActivePanel('tree');
+    setActiveCommand(null);
+    setEditingDimensionId(null);
+    clearTransientSelection();
+    setActiveWorkspace(kind === 'part' ? 'solid' : kind);
+  }, [clearTransientSelection]);
+  const { save: saveLocal, open: openLocal } = useCadPersistenceCommands({
+    persistence,
+    remoteHost: Boolean(props.projectHost),
+    setNotice,
+    onOpened: resetAfterOpen,
+  });
 
   function beginCreateSketch() {
     if (document.kind !== 'part') return;

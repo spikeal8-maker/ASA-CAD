@@ -11,3 +11,5 @@ export * from './host/MemoryCadProjectHost';
 export * from './host/AsaLabCadProjectHost';
 export * from './host/CadRecoveryStore';
 export * from './host/CadProjectSession';
+export * from './host/LocalStorageCadProjectHost';
+export * from './host/CadEditorPersistence';
