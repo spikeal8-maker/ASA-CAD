@@ -1,11 +1,13 @@
 import React from 'react';
 import type { CadDocument } from '../contracts/document';
-import type { CadBodyId, CadDimensionId } from '../contracts/ids';
+import type { CadBodyId, CadDimensionId, CadSketchId } from '../contracts/ids';
 
 export interface DocumentTreeProps {
   document: CadDocument;
   selectedBodyId: CadBodyId | null;
+  activeSketchId: CadSketchId | null;
   onSelectBody(id: CadBodyId | null): void;
+  onEditSketch(id: CadSketchId): void;
   onEditDimension(id: CadDimensionId): void;
 }
 
@@ -16,7 +18,9 @@ export interface DocumentTreeProps {
 export function DocumentTree({
   document,
   selectedBodyId,
+  activeSketchId,
   onSelectBody,
+  onEditSketch,
   onEditDimension,
 }: DocumentTreeProps) {
   return (
@@ -35,7 +39,15 @@ export function DocumentTree({
             <TreeRow depth={2} icon="▱" label="Плоскость XZ" muted />
             <TreeRow depth={2} icon="▱" label="Плоскость YZ" muted />
             {document.sketches.map((item) => (
-              <TreeRow key={item.id} depth={1} icon="⌗" label={item.name} />
+              <TreeRow
+                key={item.id}
+                depth={1}
+                icon="⌗"
+                label={item.name}
+                selected={item.id === activeSketchId}
+                sketchId={item.id}
+                onClick={() => onEditSketch(item.id)}
+              />
             ))}
             {document.dimensions.map((dimension) => (
               <TreeRow
@@ -80,6 +92,7 @@ function TreeRow(props: {
   bold?: boolean;
   selected?: boolean;
   bodyId?: CadBodyId;
+  sketchId?: CadSketchId;
   onClick?: () => void;
 }) {
   return (
@@ -89,7 +102,8 @@ function TreeRow(props: {
       style={{ paddingInlineStart: 10 + props.depth * 18 }}
       onClick={props.onClick}
       data-body-id={props.bodyId}
-      aria-pressed={props.bodyId ? Boolean(props.selected) : undefined}
+      data-sketch-id={props.sketchId}
+      aria-pressed={props.bodyId || props.sketchId ? Boolean(props.selected) : undefined}
     >
       <span className="tree-chevron">{props.depth < 2 ? '›' : ''}</span>
       <span className="tree-icon">{props.icon}</span>
