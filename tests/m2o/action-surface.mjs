@@ -37,4 +37,25 @@ assert.match(app, /case 'interaction\.commit':/, 'Ctrl+Enter interaction lifecyc
 assert.match(app, /case 'view\.zoomIn':/, 'camera-only zoom remains an interaction action');
 assert.match(app, /case 'view\.panLeft':/, 'camera-only pan remains an interaction action');
 
-console.log('M2O O4 action surfaces PASS (toolbar/search + shared command shortcuts)');
+for (const ribbonActionId of [
+  'sketch.rectangle',
+  'sketch.circle',
+  'sketch.finish',
+  'part.sketch.create',
+  'part.extrude',
+  'part.cutExtrude',
+  'part.fillet',
+  'system.rebuild',
+]) {
+  assert.ok(
+    app.includes(`action={uiAction('${ribbonActionId}')}`),
+    `${ribbonActionId} ribbon button must consume CadUiAction`,
+  );
+}
+assert.doesNotMatch(app, /function CommandButton\(/, 'legacy ribbon CommandButton must not return');
+assert.doesNotMatch(app, /<CommandButton\b/, 'legacy direct ribbon command surface must not return');
+assert.match(app, /<ViewCommandGroups viewName=\{viewName\} getAction=\{uiAction\}/, 'view ribbon must receive the shared action catalog');
+assert.match(app, /action=\{props\.getAction\(view\.id\)\}/, 'standard view buttons must consume CadUiAction');
+assert.doesNotMatch(app, /requestView: \(value: string\) => void/, 'view ribbon must not own direct requestView handlers');
+
+console.log('M2O O4 action surfaces PASS (toolbar/search + shortcuts + ribbon)');

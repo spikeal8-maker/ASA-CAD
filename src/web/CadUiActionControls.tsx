@@ -6,6 +6,9 @@ export interface CadUiActionButtonProps {
   symbol: string;
   large?: boolean;
   accent?: boolean;
+  text?: boolean;
+  selected?: boolean;
+  className?: string;
   titleSuffix?: string;
 }
 
@@ -21,12 +24,13 @@ export function CadUiActionButton(props: CadUiActionButtonProps) {
 
   return (
     <button
-      className={`ribbon-command ${props.large ? 'large' : ''} ${props.accent ? 'accent' : ''}`}
+      className={`ribbon-command ${props.className ?? ''} ${props.text ? 'text-command' : ''} ${props.large ? 'large' : ''} ${props.accent ? 'accent' : ''} ${props.selected ? 'selected' : ''}`}
       type="button"
       disabled={!action.enabled}
       title={title}
       onClick={() => { void action.execute(); }}
       data-command-id={action.id}
+      aria-pressed={props.selected ? true : undefined}
     >
       <span className="ribbon-command-icon" aria-hidden="true">{props.symbol}</span>
       <span>{action.label}</span>
