@@ -147,46 +147,41 @@ const HANDLERS = {
 
   'constraint.horizontal': handler<'constraint.horizontal'>({
     availability: requireSketchAvailability,
-    execute: (part, command) => addConstraint(
+    execute: (part, command) => addUnaryConstraint(
       part,
       command.payload.sketchId,
       'horizontal',
-      [command.payload.entityId],
+      command.payload.entityId,
     ),
   }),
 
   'constraint.vertical': handler<'constraint.vertical'>({
     availability: requireSketchAvailability,
-    execute: (part, command) => addConstraint(
+    execute: (part, command) => addUnaryConstraint(
       part,
       command.payload.sketchId,
       'vertical',
-      [command.payload.entityId],
+      command.payload.entityId,
     ),
   }),
 
   'constraint.fixed': handler<'constraint.fixed'>({
     availability: requireSketchAvailability,
-    execute: (part, command) => addConstraint(
+    execute: (part, command) => addUnaryConstraint(
       part,
       command.payload.sketchId,
       'fixed',
-      [command.payload.entityId],
+      command.payload.entityId,
     ),
   }),
 
   'constraint.coincident': handler<'constraint.coincident'>({
     availability: requireSketchAvailability,
-    execute: (part, command) => {
-      const refs: CadSketchCommandReference[] = [command.payload.a, command.payload.b];
-      return addConstraint(
-        part,
-        command.payload.sketchId,
-        'coincident',
-        refs.map((ref) => ref.entityId),
-        { refs: refs.map((ref) => ({ ...ref })) },
-      );
-    },
+    execute: (part, command) => addCoincidentConstraint(
+      part,
+      command.payload.sketchId,
+      [command.payload.a, command.payload.b],
+    ),
   }),
 
   'dimension.linear': handler<'dimension.linear'>({
@@ -194,12 +189,14 @@ const HANDLERS = {
     execute: (part, command) => {
       const sketch = requireSketch(part, command.payload.sketchId);
       if (command.payload.value <= 0) throw new Error('Dimension value must be positive');
+      const [firstEntityId, ...remainingEntityIds] = command.payload.entityIds;
+      if (!firstEntityId) throw new Error('Linear dimension requires at least one entity');
       for (const entityId of command.payload.entityIds) requireSketchEntity(sketch, entityId);
       const id = createCadId<CadDimensionId>('dimension');
       const dimension: CadDimension = {
         id,
         type: 'linear',
-        entityIds: [...command.payload.entityIds],
+        entityIds: [firstEntityId, ...remainingEntityIds],
         value: command.payload.value,
         driving: true,
         name: command.payload.name,
@@ -296,20 +293,55 @@ export function applySketchGrowthCommand(
   return exhaustive;
 }
 
-function addConstraint(
+function addUnaryConstraint(
   part: CadPartDocument,
   sketchId: CadSketchId,
-  type: string,
-  entityIds: CadSketchEntityId[],
-  data?: Record<string, unknown>,
+  type: 'horizontal' | 'vertical' | 'fixed',
+  entityId: CadSketchEntityId,
+): CadCommandResult {
+  const id = createCadId<CadConstraintId>('constraint');
+  let constraint: CadConstraint;
+  switch (type) {
+    case 'horizontal':
+      constraint = { id, type, entityIds: [entityId] };
+      break;
+    case 'vertical':
+      constraint = { id, type, entityIds: [entityId] };
+      break;
+    case 'fixed':
+      constraint = { id, type, entityIds: [entityId] };
+      break;
+  }
+  return persistConstraint(part, sketchId, constraint);
+}
+
+function addCoincidentConstraint(
+  part: CadPartDocument,
+  sketchId: CadSketchId,
+  refs: [CadSketchCommandReference, CadSketchCommandReference],
+): CadCommandResult {
+  const id = createCadId<CadConstraintId>('constraint');
+  const constraint: CadConstraint = {
+    id,
+    type: 'coincident',
+    entityIds: [refs[0].entityId, refs[1].entityId],
+    data: {
+      refs: [{ ...refs[0] }, { ...refs[1] }],
+    },
+  };
+  return persistConstraint(part, sketchId, constraint);
+}
+
+function persistConstraint(
+  part: CadPartDocument,
+  sketchId: CadSketchId,
+  constraint: CadConstraint,
 ): CadCommandResult {
   const sketch = requireSketch(part, sketchId);
-  for (const entityId of entityIds) requireSketchEntity(sketch, entityId);
-  const id = createCadId<CadConstraintId>('constraint');
-  const constraint: CadConstraint = { id, type, entityIds: [...entityIds], data };
+  for (const entityId of constraint.entityIds) requireSketchEntity(sketch, entityId);
   part.constraints.push(constraint);
-  sketch.constraintIds.push(id);
-  return { ok: true, changed: true, createdIds: [id] };
+  sketch.constraintIds.push(constraint.id);
+  return { ok: true, changed: true, createdIds: [constraint.id] };
 }
 
 function requireSketch(part: CadPartDocument, id: CadSketchId): CadSketch {
