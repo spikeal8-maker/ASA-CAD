@@ -53,9 +53,20 @@ assert.deepEqual(state.target, [5, 5, 5]);
 assert.deepEqual(state.up, [0, 0, 1]);
 assert.ok(state.position[1] < state.target[1], 'front view must look from negative Y');
 
+controller.setView('back');
+assert.ok(state.position[1] > state.target[1], 'back view must look from positive Y');
+
 controller.setView('top');
 assert.deepEqual(state.up, [0, 1, 0]);
 assert.ok(state.position[2] > state.target[2], 'top view must look from positive Z');
+
+controller.setView('bottom');
+assert.deepEqual(state.up, [0, -1, 0]);
+assert.ok(state.position[2] < state.target[2], 'bottom view must look from negative Z');
+
+controller.setView('right');
+assert.deepEqual(state.up, [0, 0, 1]);
+assert.ok(state.position[0] > state.target[0], 'right view must look from positive X');
 
 controller.setView('isometric');
 const isoOffset = subtract(state.position, state.target);
