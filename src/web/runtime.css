@@ -19,8 +19,32 @@
   cursor: crosshair;
 }
 
+.cad-sketch-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.cad-sketch-overlay-entity {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.6px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cad-sketch-overlay.source-solver-preview .cad-sketch-overlay-entity {
+  stroke-width: 1.8px;
+}
+
 .cad-viewport-error {
   position: absolute;
+  z-index: 4;
   left: 50%;
   bottom: 28px;
   transform: translateX(-50%);
