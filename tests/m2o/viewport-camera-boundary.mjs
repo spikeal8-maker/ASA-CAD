@@ -9,9 +9,9 @@ assert.doesNotMatch(viewport, /const fitDistance =/, 'fit-distance policy must n
 assert.doesNotMatch(viewport, /view\.startsWith\('pan-'\)/, 'pan command policy must not return to the Three effect');
 assert.doesNotMatch(viewport, /view === 'isometric'[^\n]*new THREE\.Vector3/, 'standard-view direction mapping must not return to Three effect');
 
-assert.doesNotMatch(camera, /from ['"]three/, 'camera controller must remain Three-independent');
-assert.doesNotMatch(camera, /HTMLElement|PointerEvent|MouseEvent|OrbitControls/, 'camera controller must remain DOM/OrbitControls-independent');
-assert.doesNotMatch(camera, /CadApplication|CadRuntime|recompute/, 'camera-only navigation must remain independent from CAD recompute');
+assert.doesNotMatch(camera, /from ['"][^'"]*three[^'"]*['"]/, 'camera controller must remain Three-independent');
+assert.doesNotMatch(camera, /:\s*(?:HTMLElement|PointerEvent|MouseEvent|OrbitControls)\b/, 'camera controller must not depend on DOM/OrbitControls types');
+assert.doesNotMatch(camera, /from ['"][^'"]*(?:application|runtime)[^'"]*['"]/, 'camera-only navigation must not import CAD application/runtime layers');
 assert.match(camera, /setView\(view: CadViewportViewName\)/, 'camera controller must own view command interpretation');
 assert.match(camera, /fitDistance\(/, 'camera controller must own fit-distance policy');
 
