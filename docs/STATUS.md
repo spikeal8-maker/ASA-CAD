@@ -34,10 +34,11 @@ Tracking:
 Completed and CI-protected:
 - **O1** — mandatory architecture documentation aligned to all six document kinds;
 - **O2** — command/layout registries normalized to canonical IDs, accepted M2 statuses made truthful, future drift rejected by CI;
-- **O3** — editor Save/Open routed through `CadEditorPersistence -> CadProjectSession -> CadProjectHost`; standalone storage is isolated behind `LocalStorageCadProjectHost`, optimistic revision/mutation/recovery semantics are tested, and shell/browser/Docker protected workflows remain green.
+- **O3** — editor Save/Open routed through `CadEditorPersistence -> CadProjectSession -> CadProjectHost`; standalone storage is isolated behind `LocalStorageCadProjectHost`, optimistic revision/mutation/recovery semantics are tested, and shell/browser/Docker protected workflows remain green;
+- **O4** — shared typed `CadUiAction` catalog now drives global toolbar, command search, command-backed shortcuts, Sketch/Part/View ribbon buttons and mobile Tools. Phone tools consume the same actions directly, with a dedicated Chromium regression and no desktop DOM delegation.
 
 In progress:
-- **O4** — shared typed `CadUiAction` model, builder, indexing, contextual enablement, execution and search helpers are implemented and green in M2 shell CI. Permanent desktop/mobile/search/shortcut presentation still needs to consume the same action objects before O4 can close.
+- **O5** — extract M3-critical responsibilities from `App.tsx` and lower its size/ownership ceiling without changing accepted CAD behavior.
 
 Next feature lane after the blocking M2O entry gate: **M3 Parametric Sketch** (#5).
 
@@ -101,7 +102,8 @@ The UI no longer owns localStorage/serialization/revision mechanics. Standalone 
 - focus-safe numeric/text editing;
 - body selection synchronized Viewport <-> Tree by ASA `bodyId`;
 - command-specific face/edge picking separated from ordinary body selection;
-- real touch gesture regression is green.
+- real touch gesture regression is green;
+- phone `Инструменты` sheet runs the same typed actions as desktop toolbar/search/ribbon and starts Sketch commands without desktop DOM delegation or eager OpenCascade loading.
 
 ### Display/responsive acceptance
 
@@ -131,7 +133,7 @@ These are the preferred surfaces for visual correction and regression review.
 Do **not** mistake the protected Part proof for full KOMPAS parity.
 
 Not complete yet:
-- blocking M2O O4–O8;
+- blocking M2O O5–O8;
 - full sketch geometry/constraints/DOF workflow (M3);
 - broad Part Design feature set and industrial StableRef corpus (M4);
 - Assembly product workflow (M4A);
@@ -144,6 +146,6 @@ The current OpenCascade Part runtime intentionally implements a narrow accepted 
 
 ## Immediate next work
 
-Continue **O4** by wiring the permanent desktop ribbon/global controls, command search and shared shortcut-backed commands to the `CadUiAction` collection. Close O4 only after those presentation paths share one action source and the protected browser workflow remains green.
+Continue **O5**. Extract M3-critical controller/shell/panel ownership from `App.tsx` in small behavior-preserving slices and lower the allowed App-size ceiling as code moves out. Do not add new M3 CAD feature families until O5–O8 meet their minimum gate criteria.
 
 If another document contains an older `ACTIVE/NEXT` statement, **this file plus issue #21 and the M2O execution file win for current status**.
