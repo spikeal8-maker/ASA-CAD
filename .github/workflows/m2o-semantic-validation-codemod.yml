@@ -1,0 +1,32 @@
+name: M2O semantic validation codemod
+
+on:
+  push:
+    branches: [m2o/o7-semantic-validation]
+    paths:
+      - scripts/m2o/apply-semantic-validation.mjs
+      - .github/workflows/m2o-semantic-validation-codemod.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: m2o/o7-semantic-validation
+      - name: Wire semantic validator into CadDocument
+        run: node scripts/m2o/apply-semantic-validation.mjs
+      - name: Commit semantic validation wiring
+        run: |
+          git config user.name "asa-cad-semantic-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No semantic validation diff produced"
+            exit 1
+          fi
+          git commit -m "feat(m2o): enforce Part semantic references"
+          git push origin HEAD:m2o/o7-semantic-validation
