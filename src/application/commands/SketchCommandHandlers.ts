@@ -265,17 +265,35 @@ export function applySketchGrowthCommand(
   part: CadPartDocument,
   command: SketchGrowthCommand,
 ): CadCommandResult {
-  return executeRegistered(part, command);
-}
+  switch (command.id) {
+    case 'sketch.create':
+      return HANDLERS['sketch.create'].execute(part, command);
+    case 'sketch.line':
+      return HANDLERS['sketch.line'].execute(part, command);
+    case 'sketch.rectangle':
+      return HANDLERS['sketch.rectangle'].execute(part, command);
+    case 'sketch.circle':
+      return HANDLERS['sketch.circle'].execute(part, command);
+    case 'sketch.finish':
+      return HANDLERS['sketch.finish'].execute(part, command);
+    case 'constraint.coincident':
+      return HANDLERS['constraint.coincident'].execute(part, command);
+    case 'constraint.horizontal':
+      return HANDLERS['constraint.horizontal'].execute(part, command);
+    case 'constraint.vertical':
+      return HANDLERS['constraint.vertical'].execute(part, command);
+    case 'constraint.fixed':
+      return HANDLERS['constraint.fixed'].execute(part, command);
+    case 'dimension.linear':
+      return HANDLERS['dimension.linear'].execute(part, command);
+    case 'dimension.diameter':
+      return HANDLERS['dimension.diameter'].execute(part, command);
+    case 'part.dimension.setValue':
+      return HANDLERS['part.dimension.setValue'].execute(part, command);
+  }
 
-function executeRegistered<K extends SketchGrowthCommandId>(
-  part: CadPartDocument,
-  command: CommandFor<K>,
-): CadCommandResult {
-  // The registry is keyed by the same discriminant K. Keep the unavoidable
-  // indexed-access cast here, not at individual call sites.
-  const registered = HANDLERS[command.id] as SketchGrowthCommandHandler<K>;
-  return registered.execute(part, command);
+  const exhaustive: never = command;
+  return exhaustive;
 }
 
 function addConstraint(
