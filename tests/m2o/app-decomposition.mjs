@@ -5,6 +5,8 @@ const app = readFileSync('src/web/App.tsx', 'utf8');
 const tree = readFileSync('src/web/DocumentTree.tsx', 'utf8');
 const parameters = readFileSync('src/web/ParameterPanel.tsx', 'utf8');
 const workspace = readFileSync('src/web/usePartSketchWorkspace.ts', 'utf8');
+const sketchSession = readFileSync('src/web/SketchSession.ts', 'utf8');
+const sketchSessionHook = readFileSync('src/web/useSketchSession.ts', 'utf8');
 
 assert.match(app, /import \{ DocumentTree \} from '\.\/DocumentTree';/, 'App must import extracted DocumentTree');
 assert.doesNotMatch(app, /function DocumentTree\(/, 'DocumentTree implementation must not return to App.tsx');
@@ -56,7 +58,8 @@ for (const legacyRootFragment of [
 
 assert.match(tree, /export function DocumentTree\(/, 'DocumentTree module must export its focused presentation component');
 assert.match(tree, /data-body-id=\{props\.bodyId\}/, 'tree/body selection DOM contract must be preserved');
-assert.match(tree, /aria-pressed=\{props\.bodyId \? Boolean\(props\.selected\) : undefined\}/, 'tree accessibility selection contract must be preserved');
+assert.match(tree, /data-sketch-id=\{props\.sketchId\}/, 'tree must expose explicit Sketch identity for session selection');
+assert.match(tree, /onEditSketch\(item\.id\)/, 'Sketch tree rows must explicitly enter the selected Sketch session');
 
 assert.match(parameters, /export function ParameterPanel\(/, 'ParameterPanel module must export its focused presentation component');
 assert.match(parameters, /function NumericField\(/, 'ParameterPanel must own its presentation-only numeric field');
@@ -69,6 +72,12 @@ assert.match(workspace, /export function usePartSketchWorkspace\(/, 'focused Par
 assert.match(workspace, /import type \{ CadApplication \} from '\.\.\/contracts\/application';/, 'workspace must depend on the ASA CadApplication contract');
 assert.match(workspace, /app\.execute\(/, 'workspace controller must dispatch geometry only through CadApplication');
 assert.match(workspace, /app\.captureReference\(/, 'workspace controller must capture topology through CadApplication');
+assert.match(workspace, /useSketchSession\(part\)/, 'workspace must own an explicit SketchSession');
+assert.match(workspace, /activeSketchId/, 'workspace must route Sketch commands through explicit activeSketchId');
+assert.doesNotMatch(workspace, /latestSketch\(/, 'implicit latest-Sketch active context must not return');
+assert.match(sketchSession, /activeSketchId: CadSketchId \| null/, 'SketchSession must own explicit activeSketchId');
+assert.match(sketchSession, /resolveActiveSketch/, 'SketchSession must resolve selection by stable Sketch ID');
+assert.match(sketchSessionHook, /reconcileSketchSession/, 'React SketchSession owner must invalidate stale IDs after document changes');
 for (const forbidden of [
   "../runtime/",
   "../browser/",

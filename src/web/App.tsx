@@ -116,6 +116,7 @@ export function App(props: CadProjectPersistenceOverrides) {
     activeWorkspace,
     setActiveWorkspace,
     activeCommand,
+    activeSketchId,
     selectionMode,
     selectedPick,
     selectedBodyId,
@@ -150,6 +151,7 @@ export function App(props: CadProjectPersistenceOverrides) {
     resetForDocument,
     handleViewportPick,
     handleBodySelect,
+    enterSketch,
     beginCreateSketch,
     commitCreateSketch,
     beginRectangle,
@@ -379,6 +381,7 @@ export function App(props: CadProjectPersistenceOverrides) {
       data-selected-kind={selectedPick?.kind ?? ''}
       data-selected-point={selectedPointText}
       data-selected-body-id={selectedBodyId ?? ''}
+      data-active-sketch-id={activeSketchId ?? ''}
       data-shortcuts="central"
       tabIndex={-1}
       onKeyDown={handleKeyDown}
@@ -512,7 +515,9 @@ export function App(props: CadProjectPersistenceOverrides) {
             <DocumentTree
               document={document}
               selectedBodyId={selectedBodyId}
+              activeSketchId={activeSketchId}
               onSelectBody={handleBodySelect}
+              onEditSketch={enterSketch}
               onEditDimension={beginDimensionEdit}
             />
           ) : activePanel === 'parameters' ? (

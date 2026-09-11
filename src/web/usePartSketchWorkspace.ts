@@ -1,14 +1,16 @@
 import { useCallback, useState } from 'react';
 import type { CadApplication } from '../contracts/application';
 import type { CadPlaneName } from '../contracts/commands';
-import type { CadDocument, CadDocumentKind, CadPartDocument } from '../contracts/document';
+import type { CadDocument, CadDocumentKind, CadPartDocument, CadSketch } from '../contracts/document';
 import type {
   CadBodyId,
   CadDimensionId,
   CadSketchEntityId,
+  CadSketchId,
   CadStableReferenceId,
 } from '../contracts/ids';
 import type { CadViewportPick } from '../contracts/render';
+import { useSketchSession } from './useSketchSession';
 
 export type CadWorkspacePanel = 'tree' | 'parameters' | 'tools';
 export type PartSketchSelectionMode = 'none' | 'face' | 'edge';
@@ -47,7 +49,12 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
   const [dimensionEditValue, setDimensionEditValue] = useState(0);
 
   const part = partDocument(document);
-  const sketch = latestSketch(part);
+  const {
+    activeSketchId,
+    activeSketch: sketch,
+    enterSketch: activateSketch,
+    clearActiveSketch,
+  } = useSketchSession(part);
   const rectangleReady = hasRectangle(sketch);
   const circleReady = hasCircle(sketch);
   const hasSolid = Boolean(part?.bodies.length);
@@ -86,8 +93,9 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
   }, [clearTransientSelection]);
 
   const resetForDocument = useCallback((kind: CadDocumentKind) => {
+    clearActiveSketch();
     resetToWorkspace(kind === 'part' ? 'solid' : kind);
-  }, [resetToWorkspace]);
+  }, [clearActiveSketch, resetToWorkspace]);
 
   const handleViewportPick = useCallback((pick: CadViewportPick) => {
     setSelectedPick(pick);
@@ -103,6 +111,23 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     setSelectedPick(null);
     setNotice(bodyId ? 'Тело выбрано' : 'Выбор очищен');
   }, [setNotice]);
+
+  const enterSketch = useCallback((sketchId: CadSketchId) => {
+    const currentPart = partDocument(app.getDocument());
+    const target = findSketch(currentPart, sketchId);
+    if (!target) {
+      setNotice('Эскиз больше не существует');
+      clearActiveSketch();
+      return;
+    }
+    activateSketch(sketchId);
+    setActiveCommand(null);
+    setEditingDimensionId(null);
+    setPanel('tree');
+    setActiveWorkspace('sketch');
+    clearTransientSelection();
+    setNotice(`Открыт эскиз «${target.name}»`);
+  }, [activateSketch, app, clearActiveSketch, clearTransientSelection, setNotice, setPanel]);
 
   function beginCreateSketch() {
     if (document.kind !== 'part') return;
@@ -144,10 +169,12 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     }
 
     const result = await app.execute({ id: 'sketch.create', payload: { support } });
-    if (!result.ok) {
+    const createdSketchId = result.createdIds?.[0] as CadSketchId | undefined;
+    if (!result.ok || !createdSketchId) {
       setNotice(result.error?.message ?? 'Не удалось создать эскиз');
       return;
     }
+    activateSketch(createdSketchId);
     const supportText = currentPart?.bodies.length ? 'выбранной грани' : `плоскости ${sketchPlane}`;
     setActiveCommand(null);
     setPanel('tree');
@@ -166,7 +193,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
 
   async function commitRectangle() {
     const currentPart = partDocument(app.getDocument());
-    const currentSketch = latestSketch(currentPart);
+    const currentSketch = findSketch(currentPart, activeSketchId);
     if (!currentSketch) {
       setNotice('Сначала создайте эскиз');
       return;
@@ -229,7 +256,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
 
   async function commitCircle() {
     const currentPart = partDocument(app.getDocument());
-    const currentSketch = latestSketch(currentPart);
+    const currentSketch = findSketch(currentPart, activeSketchId);
     if (!currentSketch) {
       setNotice('Сначала создайте эскиз');
       return;
@@ -269,7 +296,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
 
   async function finishSketch() {
     const currentPart = partDocument(app.getDocument());
-    const currentSketch = latestSketch(currentPart);
+    const currentSketch = findSketch(currentPart, activeSketchId);
     if (!currentSketch) return;
     const result = await app.execute({ id: 'sketch.finish', payload: { sketchId: currentSketch.id } });
     if (!result.ok) {
@@ -293,7 +320,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
 
   async function commitExtrude() {
     const currentPart = partDocument(app.getDocument());
-    const currentSketch = latestSketch(currentPart);
+    const currentSketch = findSketch(currentPart, activeSketchId);
     if (!currentSketch || !hasRectangle(currentSketch)) {
       setNotice('Для выдавливания нужен прямоугольный эскиз');
       return;
@@ -336,7 +363,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
 
   async function commitCut() {
     const currentPart = partDocument(app.getDocument());
-    const currentSketch = latestSketch(currentPart);
+    const currentSketch = findSketch(currentPart, activeSketchId);
     if (!currentSketch || !hasCircle(currentSketch)) {
       setNotice('Для выреза нужен эскиз с окружностью');
       return;
@@ -420,6 +447,8 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     const currentPart = partDocument(app.getDocument());
     const dimension = currentPart?.dimensions.find((item) => item.id === id);
     if (!dimension || !dimension.driving) return;
+    const ownerSketch = currentPart?.sketches.find((item) => item.dimensionIds.includes(id));
+    if (ownerSketch) activateSketch(ownerSketch.id);
     setEditingDimensionId(id);
     setDimensionEditValue(dimension.value);
     setActiveCommand('dimension.edit');
@@ -490,6 +519,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     activeWorkspace,
     setActiveWorkspace,
     activeCommand,
+    activeSketchId,
     selectionMode,
     selectedPick,
     selectedBodyId,
@@ -524,6 +554,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     resetForDocument,
     handleViewportPick,
     handleBodySelect,
+    enterSketch,
     beginCreateSketch,
     commitCreateSketch,
     beginRectangle,
@@ -548,11 +579,15 @@ function partDocument(document: Readonly<CadDocument>): Readonly<CadPartDocument
   return document.kind === 'part' ? document : null;
 }
 
-function latestSketch(part: Readonly<CadPartDocument> | null) {
-  return part?.sketches.at(-1) ?? null;
+function findSketch(
+  part: Readonly<CadPartDocument> | null,
+  sketchId: CadSketchId | null,
+): Readonly<CadSketch> | null {
+  if (!part || !sketchId) return null;
+  return part.sketches.find((item) => item.id === sketchId) ?? null;
 }
 
-function hasRectangle(sketch: ReturnType<typeof latestSketch>): boolean {
+function hasRectangle(sketch: Readonly<CadSketch> | null): boolean {
   return Boolean(
     sketch?.entities.filter(
       (entity) => entity.type === 'line' && String(entity.data.role ?? '').startsWith('rectangle-edge-'),
@@ -560,7 +595,7 @@ function hasRectangle(sketch: ReturnType<typeof latestSketch>): boolean {
   );
 }
 
-function hasCircle(sketch: ReturnType<typeof latestSketch>): boolean {
+function hasCircle(sketch: Readonly<CadSketch> | null): boolean {
   return Boolean(sketch?.entities.some((entity) => entity.type === 'circle'));
 }
 
