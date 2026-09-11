@@ -31,20 +31,21 @@ Tracking:
 
 The pre-M3 structural debt identified by the critical audit is now addressed and CI-protected:
 
-- **O1** — mandatory architecture/docs agree on all six document kinds;
-- **O2** — command/layout registries use canonical IDs and truthful implemented status;
-- **O3** — Save/Open flows through `CadEditorPersistence -> CadProjectSession -> CadProjectHost`;
-- **O4** — desktop/mobile/search/shortcuts/ribbon share typed `CadUiAction` objects;
-- **O5** — `App.tsx` was reduced from about 62 KB to about 30 KB; Tree, Parameters and Part/Sketch workspace ownership have focused modules;
+- **O1** — mandatory architecture documentation aligned to all six document kinds;
+- **O2** — command/layout registries normalized to canonical IDs, accepted M2 statuses truthful and drift rejected by CI;
+- **O3** — editor Save/Open routed through `CadEditorPersistence -> CadProjectSession -> CadProjectHost`;
+- **O4** — shared typed `CadUiAction` catalog drives toolbar, search, command-backed shortcuts, Sketch/Part/View ribbon and mobile Tools;
+- **O5** — `App.tsx` reduced from about 62 KB to about 30 KB; Tree, Parameters and Part/Sketch workspace ownership have focused modules;
 - **O6** — Sketch/Constraint/Dimension mutation and availability live in typed handlers while application history/rollback/Undo/Redo remain centralized;
 - **O7** — current persisted Sketch entities/constraints/dimensions are discriminated and runtime-validated; Sketch support is typed; PlaneGCS consumes typed ASA DTOs; semantic validation rejects duplicate/dangling/cross-Sketch references and missing StableRef supports;
 - explicit **`activeSketchId` + `SketchSession`** replaces implicit `latestSketch()` targeting;
 - **`SketchSolveSession`** owns transient solver preview/status/diagnostics/DoF availability and cannot bypass `CadApplication` history; current PlaneGCS reports DoF as unavailable rather than guessing;
-- **O8.1** — Three ray hits are converted to ASA `ViewportPickCandidate[]`, semantically deduplicated/ranked, and ambiguity is preserved; selection state has a Three-independent owner;
+- **O8.1** — Three ray hits become ASA `ViewportPickCandidate[]`, semantic duplicates are collapsed/ranked and ambiguity is preserved; selection state has a Three-independent owner;
 - **O8.2** — Fit/standard views/pan/zoom policy lives in a Three-independent camera controller;
-- **O8.3** — persisted or solved Sketch geometry has a separate read-only `SketchOverlayModel`/SVG layer outside B-Rep `CadRenderModel`. It is deliberately dormant until M3 owns the interaction flow.
+- **O8.3** — persisted or solved Sketch geometry has a separate read-only `SketchOverlayModel`/SVG layer outside B-Rep `CadRenderModel`; it is deliberately dormant until M3 owns interaction;
+- **O10** — `main` is now protected: changes require a pull request, admins are enforced, conversations must resolve, force-push/delete are disabled, and always-on required checks are `shell-build`, `vendor-baseline`, `asa-m1`, `asa-m1b`.
 
-The final O7/O8 PRs passed the complete shell/M2O, M1/M1B, Chromium interaction/touch/responsive/UI-scale, release Docker and vendor baseline gates.
+Browser/Docker path-filtered suites remain mandatory development discipline for affected CAD/UI work even though they cannot be global required checks on docs-only PRs.
 
 ## Protected Part workflow
 
@@ -92,6 +93,7 @@ Still incomplete:
 - M3 full interactive parametric Sketch workflow: direct drawing/editing, broader geometry/constraints/dimensions, live PlaneGCS cycle, DoF/diagnostics presentation, snapping and active overlay interaction;
 - M2I advanced selection/window/context/chooser behavior beyond the accepted O8 seam;
 - M2V final KOMPAS visual/icon acceptance;
+- O9 root-owned dependency/toolchain follow-up;
 - broad Part Design + industrial StableRef corpus (M4);
 - Assembly (M4A);
 - ASA Lab deployment (M5);
@@ -101,4 +103,4 @@ Still incomplete:
 
 Start **M3 Parametric Sketch** through the architecture that M2O created. The first slice should wire the explicit active `SketchSession` to `SketchSolveSession` and the dormant `SketchOverlayModel`, then add direct Sketch interaction as normal typed command/application slices. Do not reintroduce `latestSketch()`, direct solver document mutation, or Sketch drawing inside the B-Rep Three scene.
 
-Non-blocking follow-ups O9/O10/O11 remain tracked in [`M2O_OPTIMIZATION_GATE.md`](M2O_OPTIMIZATION_GATE.md).
+O9 and O11 remain non-blocking follow-ups in [`M2O_OPTIMIZATION_GATE.md`](M2O_OPTIMIZATION_GATE.md).
