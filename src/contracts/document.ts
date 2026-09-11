@@ -12,6 +12,29 @@ import type {
   CadStableReferenceId,
 } from './ids';
 import { createCadId } from './ids';
+import { validateCadPartSketchCollections } from './sketch';
+import type { CadConstraint, CadDimension, CadSketch } from './sketch';
+
+export type {
+  CadCoincidentConstraint,
+  CadConstraint,
+  CadConstraintPointReference,
+  CadDiameterDimension,
+  CadDimension,
+  CadFixedConstraint,
+  CadHorizontalConstraint,
+  CadLinearDimension,
+  CadPartSketchCollections,
+  CadPoint2,
+  CadSketch,
+  CadSketchCircleData,
+  CadSketchCircleEntity,
+  CadSketchEntity,
+  CadSketchLineData,
+  CadSketchLineEntity,
+  CadSketchPointSelector,
+  CadVerticalConstraint,
+} from './sketch';
 
 export const CAD_DOCUMENT_SCHEMA_VERSION = 1 as const;
 export const ASA_CAD_ENGINE_VERSION = '0.1.0-m1' as const;
@@ -47,37 +70,6 @@ export interface CadBaseDocument {
 
 export interface CadOrigin {
   planes: readonly ['XY', 'XZ', 'YZ'];
-}
-
-export interface CadSketchEntity {
-  id: CadSketchEntityId;
-  type: string;
-  data: Record<string, unknown>;
-}
-
-export interface CadSketch {
-  id: CadSketchId;
-  name: string;
-  support: string;
-  entities: CadSketchEntity[];
-  constraintIds: CadConstraintId[];
-  dimensionIds: CadDimensionId[];
-}
-
-export interface CadConstraint {
-  id: CadConstraintId;
-  type: string;
-  entityIds: CadSketchEntityId[];
-  data?: Record<string, unknown>;
-}
-
-export interface CadDimension {
-  id: CadDimensionId;
-  type: string;
-  entityIds: CadSketchEntityId[];
-  value: number;
-  driving: boolean;
-  name?: string;
 }
 
 export interface CadFeature {
@@ -284,5 +276,8 @@ export function validateCadDocument(value: unknown): asserts value is CadDocumen
   if (typeof document.title !== 'string') throw new Error('CadDocument.title must be a string');
   if (!['mm', 'cm', 'm', 'inch'].includes(String(document.units))) {
     throw new Error(`Unsupported CadDocument units: ${String(document.units)}`);
+  }
+  if (document.kind === 'part') {
+    validateCadPartSketchCollections(value);
   }
 }
