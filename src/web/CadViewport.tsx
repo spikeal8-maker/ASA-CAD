@@ -12,23 +12,14 @@ import {
   type ViewportSelectionMode,
 } from './viewport/ViewportPicking';
 import { ViewportSelectionController } from './viewport/ViewportSelectionController';
+import {
+  ViewportCameraController,
+  type CadViewportViewName,
+  type ViewportCameraPose,
+} from './viewport/ViewportCameraController';
 import './runtime.css';
 
-export type CadViewportViewName =
-  | 'fit'
-  | 'front'
-  | 'back'
-  | 'top'
-  | 'bottom'
-  | 'left'
-  | 'right'
-  | 'isometric'
-  | 'zoom-in'
-  | 'zoom-out'
-  | 'pan-left'
-  | 'pan-right'
-  | 'pan-up'
-  | 'pan-down';
+export type { CadViewportViewName } from './viewport/ViewportCameraController';
 
 export interface CadViewportViewCommand {
   sequence: number;
@@ -307,18 +298,10 @@ export function CadViewport({
         controls.addEventListener('change', onCameraChange);
         writeCameraState();
 
-        const fitDistance = () => {
-          const radius = diagonal / 2;
-          const verticalFov = THREE.MathUtils.degToRad(camera.fov);
-          const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * Math.max(camera.aspect, 0.01));
-          const limitingFov = Math.max(Math.min(verticalFov, horizontalFov), THREE.MathUtils.degToRad(5));
-          return Math.min(
-            Math.max(radius / Math.sin(limitingFov / 2) * 1.16, controls.minDistance * 2),
-            controls.maxDistance * 0.95,
-          );
-        };
-
-        const finishViewMutation = (view: CadViewportViewName) => {
+        const finishViewMutation = (view: CadViewportViewName, pose: ViewportCameraPose) => {
+          camera.position.set(...pose.position);
+          controls.target.set(...pose.target);
+          camera.up.set(...pose.up);
           camera.lookAt(controls.target);
           controls.update();
           const currentHost = hostRef.current;
@@ -327,54 +310,22 @@ export function CadViewport({
           render();
         };
 
-        const setView = (view: CadViewportViewName) => {
-          const currentOffset = camera.position.clone().sub(controls.target);
-          if (currentOffset.lengthSq() < 1e-10) currentOffset.set(1, -1, 1);
+        const cameraController = new ViewportCameraController({
+          center: [center.x, center.y, center.z],
+          diagonal,
+          readState: () => ({
+            position: [camera.position.x, camera.position.y, camera.position.z],
+            target: [controls.target.x, controls.target.y, controls.target.z],
+            up: [camera.up.x, camera.up.y, camera.up.z],
+            fovDegrees: camera.fov,
+            aspect: camera.aspect,
+            minDistance: controls.minDistance,
+            maxDistance: controls.maxDistance,
+          }),
+          applyPose: finishViewMutation,
+        });
 
-          if (view === 'zoom-in' || view === 'zoom-out') {
-            const nextDistance = THREE.MathUtils.clamp(
-              currentOffset.length() * (view === 'zoom-in' ? 0.82 : 1.22),
-              controls.minDistance,
-              controls.maxDistance,
-            );
-            currentOffset.setLength(nextDistance);
-            camera.position.copy(controls.target).add(currentOffset);
-            finishViewMutation(view);
-            return;
-          }
-
-          if (view.startsWith('pan-')) {
-            const viewDirection = controls.target.clone().sub(camera.position).normalize();
-            const screenRight = new THREE.Vector3().crossVectors(viewDirection, camera.up).normalize();
-            const screenUp = new THREE.Vector3().crossVectors(screenRight, viewDirection).normalize();
-            const amount = Math.max(currentOffset.length() * 0.06, diagonal * 0.01);
-            const delta = new THREE.Vector3();
-            if (view === 'pan-left') delta.addScaledVector(screenRight, -amount);
-            if (view === 'pan-right') delta.addScaledVector(screenRight, amount);
-            if (view === 'pan-up') delta.addScaledVector(screenUp, amount);
-            if (view === 'pan-down') delta.addScaledVector(screenUp, -amount);
-            camera.position.add(delta);
-            controls.target.add(delta);
-            finishViewMutation(view);
-            return;
-          }
-
-          const currentDirection = currentOffset.normalize();
-          let direction = currentDirection;
-          let up = camera.up.clone();
-          if (view === 'front') { direction = new THREE.Vector3(0, -1, 0); up = new THREE.Vector3(0, 0, 1); }
-          if (view === 'back') { direction = new THREE.Vector3(0, 1, 0); up = new THREE.Vector3(0, 0, 1); }
-          if (view === 'top') { direction = new THREE.Vector3(0, 0, 1); up = new THREE.Vector3(0, 1, 0); }
-          if (view === 'bottom') { direction = new THREE.Vector3(0, 0, -1); up = new THREE.Vector3(0, -1, 0); }
-          if (view === 'left') { direction = new THREE.Vector3(-1, 0, 0); up = new THREE.Vector3(0, 0, 1); }
-          if (view === 'right') { direction = new THREE.Vector3(1, 0, 0); up = new THREE.Vector3(0, 0, 1); }
-          if (view === 'isometric') { direction = new THREE.Vector3(1, -1, 1).normalize(); up = new THREE.Vector3(0, 0, 1); }
-
-          controls.target.copy(center);
-          camera.up.copy(up);
-          camera.position.copy(center).addScaledVector(direction, fitDistance());
-          finishViewMutation(view);
-        };
+        const setView = (view: CadViewportViewName) => cameraController.setView(view);
 
         const faceGroupAtTriangle = (
           source: CadRenderModel['meshes'][number],
