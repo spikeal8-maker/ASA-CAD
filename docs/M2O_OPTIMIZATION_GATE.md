@@ -92,7 +92,7 @@ Acceptance achieved:
 - global Open/Save/Undo/Redo use shared actions;
 - command search executes shared actions;
 - command-backed shortcuts resolve to the same actions;
-- Sketch/Part/Rebuild/View ribbon consumes the same actions;
+- Sketch/Part/Rebuild/View ribbon buttons consume the same actions;
 - phone `Инструменты` consumes the same action catalog directly;
 - mobile code does not discover/click desktop DOM;
 - real mobile browser flow proves `Tools -> Create Sketch -> Parameters -> Sketch tools -> Rectangle` without eager OpenCascade;
