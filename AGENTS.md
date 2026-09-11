@@ -11,6 +11,8 @@ Read only these four entry points first:
 3. `docs/ARCHITECTURE.md` — dependency/runtime/persistence boundaries;
 4. the GitHub issue for the active task.
 
+If `STATUS.md` names a **blocking execution gate**, read that gate file before coding. While M2O is active, `docs/M2O_OPTIMIZATION_GATE.md` is mandatory and M3 feature work is blocked until its completion criteria are satisfied.
+
 Then use `docs/DOCS_POLICY.md` to open **only** the focused specification/registry required by the subsystem being changed.
 
 Do not preload the whole documentation tree. Do not reinterpret the product from scratch.
@@ -63,6 +65,7 @@ Do not reverse this direction.
 - Do not implement mobile commands by querying/clicking desktop DOM controls.
 - Do not solve responsive layout by shrinking text below documented floors or by whole-app transforms that break picking.
 - Do not hide an implemented desktop command on phone without a defined mobile discovery path.
+- Do not bypass an active blocking execution gate by adding the next feature family early.
 
 ## UI implementation pattern
 
@@ -138,14 +141,15 @@ The release image serves frontend/WASM assets only. Browser-side runtime perform
 ## Change discipline
 
 For every change:
-1. identify active issue/subsystem;
-2. read only its focused contract via `DOCS_POLICY.md`;
-3. change the narrowest owner/module;
-4. update registry/spec only if behavior/contract changed;
-5. add/update the smallest deterministic regression;
-6. preserve protected workflows;
-7. run affected type/build/browser/Docker gates;
-8. update the issue + `docs/STATUS.md` when status/gate changes.
+1. identify active issue/subsystem and any blocking execution gate in `STATUS.md`;
+2. if a blocking gate is active, work from its next unchecked item before starting later feature milestones;
+3. read only its focused contract via `DOCS_POLICY.md`;
+4. change the narrowest owner/module;
+5. update registry/spec only if behavior/contract changed;
+6. add/update the smallest deterministic regression;
+7. preserve protected workflows;
+8. run affected type/build/browser/Docker gates;
+9. update the issue + `docs/STATUS.md` when status/gate changes.
 
 Do not mix upstream import work with product-feature changes.
 
