@@ -69,8 +69,16 @@ rejectMutation(
   /support reference .* does not exist/,
 );
 rejectMutation(
+  (value) => { value.stableReferences.push(structuredClone(value.stableReferences[0])); },
+  /Duplicate stable reference id/,
+);
+rejectMutation(
   (value) => { value.sketches[0].constraintIds[0] = 'constraint_missing'; },
   /references unknown constraint constraint_missing/,
+);
+rejectMutation(
+  (value) => { value.sketches[0].dimensionIds[0] = 'dimension_missing'; },
+  /references unknown dimension dimension_missing/,
 );
 rejectMutation(
   (value) => { value.sketches[0].constraintIds = []; },
