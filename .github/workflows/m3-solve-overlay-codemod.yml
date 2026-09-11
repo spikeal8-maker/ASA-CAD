@@ -5,6 +5,7 @@ on:
     branches: [m3/solve-overlay-session]
     paths:
       - scripts/m3/apply-m3-solve-overlay.mjs
+      - scripts/m3/fix-solve-overlay-codemod-paths.mjs
       - .github/workflows/m3-solve-overlay-codemod.yml
 
 permissions:
@@ -17,6 +18,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: m3/solve-overlay-session
+      - name: Correct one-shot browser workflow matcher
+        run: node scripts/m3/fix-solve-overlay-codemod-paths.mjs
       - name: Apply exact M3.1 solve-overlay wiring
         run: node scripts/m3/apply-m3-solve-overlay.mjs
       - name: Commit M3.1 wiring
