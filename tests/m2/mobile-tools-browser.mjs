@@ -58,7 +58,7 @@ try {
   assert.equal(await finish.isEnabled(), true, 'Finish Sketch must be enabled in mobile Sketch tools');
 
   await rectangle.click();
-  await page.getByText('Размеры', { exact: true }).waitFor();
+  await page.locator('.parameter-panel h3').filter({ hasText: /^Размеры$/ }).waitFor();
   const width = page.locator('.numeric-field').filter({ hasText: 'Ширина' }).locator('input');
   const height = page.locator('.numeric-field').filter({ hasText: 'Высота' }).locator('input');
   assert.equal(await width.inputValue(), '60');
