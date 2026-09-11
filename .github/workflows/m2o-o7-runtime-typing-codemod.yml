@@ -1,0 +1,32 @@
+name: M2O O7 runtime typing codemod
+
+on:
+  push:
+    branches: [m2o/o7-typed-sketch-dtos]
+    paths:
+      - scripts/m2o/apply-o7-runtime-typing.mjs
+      - .github/workflows/m2o-o7-runtime-typing-codemod.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: m2o/o7-typed-sketch-dtos
+      - name: Apply exact O7 runtime typing fixes
+        run: node scripts/m2o/apply-o7-runtime-typing.mjs
+      - name: Commit O7 runtime typing fixes
+        run: |
+          git config user.name "asa-cad-o7-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No O7 runtime typing diff produced"
+            exit 1
+          fi
+          git commit -m "fix(m2o): complete O7 typed runtime boundary"
+          git push origin HEAD:m2o/o7-typed-sketch-dtos
