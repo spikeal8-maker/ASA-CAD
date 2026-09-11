@@ -12,6 +12,8 @@ import {
   type ViewportSelectionMode,
 } from './viewport/ViewportPicking';
 import { ViewportSelectionController } from './viewport/ViewportSelectionController';
+import { SketchOverlayLayer } from './viewport/SketchOverlayLayer';
+import type { SketchOverlayModel } from './viewport/SketchOverlayModel';
 import {
   ViewportCameraController,
   type CadViewportViewName,
@@ -28,6 +30,8 @@ export interface CadViewportViewCommand {
 
 export interface CadViewportProps {
   model: CadRenderModel | null;
+  /** Separate transient 2D Sketch surface; never merged into B-Rep CadRenderModel. */
+  sketchOverlay?: SketchOverlayModel | null;
   selectionMode?: ViewportSelectionMode;
   onPick?: (pick: CadViewportPick) => void;
   /** Called only when multiple near-depth semantic targets compete under the cursor. */
@@ -51,6 +55,7 @@ interface StoredCameraState {
 
 export function CadViewport({
   model,
+  sketchOverlay = null,
   selectionMode = 'none',
   onPick,
   onPickCandidates,
@@ -692,6 +697,7 @@ export function CadViewport({
       data-selected-body-id={selectedBodyId ?? ''}
       data-bounds={bounds}
     >
+      <SketchOverlayLayer model={sketchOverlay} />
       {error && <div className="cad-viewport-error">{error}</div>}
     </div>
   );
