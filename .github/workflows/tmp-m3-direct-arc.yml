@@ -1,0 +1,41 @@
+name: TEMP M3.4B Direct Arc
+
+on:
+  push:
+    branches: [work/m3-4b-direct-arc]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/m3-4b-direct-arc
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.19.0'
+          cache: npm
+          cache-dependency-path: vendor/toubkal/package-lock.json
+      - name: Apply focused Direct Arc wiring
+        run: node tools/codemod-m3-direct-arc.mjs
+      - name: Install pinned toolchain
+        run: npm --prefix vendor/toubkal ci
+      - name: Verify typecheck and M3 static gates
+        run: npm run typecheck:asa && npm run test:m3
+      - name: Commit product/test changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "ASA-CAD maintenance bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add src/web src/browser tests/m3 spec/ui/command-registry.v1.json package.json
+          if git diff --cached --quiet; then
+            echo "No product changes"
+            exit 0
+          fi
+          git commit -m "M3.4B: wire direct Arc interaction"
+          git push origin HEAD:work/m3-4b-direct-arc
