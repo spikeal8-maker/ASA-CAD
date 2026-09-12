@@ -1,0 +1,46 @@
+name: TEMP M3.3 Circle codemod
+
+on:
+  push:
+    branches: [work/m3-3-circle-iterative]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/m3-3-circle-iterative
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.19.0'
+          cache: npm
+          cache-dependency-path: vendor/toubkal/package-lock.json
+
+      - name: Apply focused M3.3 codemod
+        run: node tools/codemod-m3-circle.mjs
+
+      - name: Install pinned toolchain
+        run: npm --prefix vendor/toubkal ci
+
+      - name: Typecheck and M3 static regression
+        run: npm run typecheck:asa && npm run test:m3
+
+      - name: Commit applied product changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "ASA-CAD maintenance bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add src/web src/browser tests/m2 tests/m3 spec/ui/command-registry.v1.json package.json .github/workflows/m3-browser.yml
+          if git diff --cached --quiet; then
+            echo "No product changes to commit"
+            exit 0
+          fi
+          git commit -m "M3.3: wire direct Circle vertical slice"
+          git push origin HEAD:work/m3-3-circle-iterative
