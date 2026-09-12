@@ -7,10 +7,9 @@ import {
   type CadDocument,
   type CadDocumentKind,
 } from '../contracts/document';
-import {
-  CadViewport,
-  type CadViewportViewCommand,
-  type CadViewportViewName,
+import type {
+  CadViewportViewCommand,
+  CadViewportViewName,
 } from './CadViewport';
 import { applyPartDevFixture } from './devFixtures';
 import { useCadProjectPersistence, type CadProjectPersistenceOverrides } from './useCadProjectPersistence';
@@ -21,6 +20,7 @@ import { useM2CadUiActions } from './useM2CadUiActions';
 import { MobileToolsPanel } from './MobileToolsPanel';
 import { DocumentTree } from './DocumentTree';
 import { ParameterPanel } from './ParameterPanel';
+import { PartModelStage } from './PartModelStage';
 import { usePartSketchWorkspace } from './usePartSketchWorkspace';
 import { cadUiActionIdForShortcut } from './M2CadUiActions';
 import {
@@ -84,7 +84,7 @@ export function App(props: CadProjectPersistenceOverrides) {
   );
   const persistence = useCadProjectPersistence(app, initialDocument, route, props);
   const shortcutRegistry = useMemo(() => new ShortcutRegistry(), []);
-  const [, setRevisionToken] = useState(0);
+  const [revisionToken, setRevisionToken] = useState(0);
   const [activePanel, setActivePanel] = useState<'tree' | 'parameters' | 'tools'>('tree');
   const [newDialogOpen, setNewDialogOpen] = useState(false);
   const [notice, setNotice] = useState(devFixture ? `Fixture ${devFixture}: загрузка…` : 'Готово');
@@ -576,41 +576,21 @@ export function App(props: CadProjectPersistenceOverrides) {
 
           <div className="model-stage">
             {document.kind === 'part' ? (
-              <>
-                <div className="origin-widget" aria-label="Ориентация">
-                  <span className="axis-z">Z</span>
-                  <span className="axis-x">X</span>
-                  <span className="axis-y">Y</span>
-                </div>
-                <div className="stage-grid" />
-                {renderModel ? (
-                  <CadViewport
-                    model={renderModel}
-                    selectionMode={selectionMode}
-                    onPick={handleViewportPick}
-                    viewCommand={viewCommand}
-                    selectedBodyId={selectedBodyId}
-                    onBodySelect={handleBodySelect}
-                  />
-                ) : (
-                  <div className="stage-message">
-                    <div className="stage-symbol">{fixtureError ? '!' : '◇'}</div>
-                    <strong>
-                      {fixtureError
-                        ? 'Ошибка перестроения'
-                        : part && part.sketches.length > 0 ? `${part.sketches.length} эскиз(а)` : 'Новая деталь'}
-                    </strong>
-                    <span>{runtimeState.status === 'loading' ? 'Загрузка OpenCascade…' : fixtureError ? 'B-Rep не построен' : 'ASA-CAD'}</span>
-                    <small>
-                      {fixtureError
-                        ? fixtureError
-                        : rectangleReady
-                          ? 'Эскиз параметрический. Завершите его и выполните выдавливание — B-Rep будет построен локально в браузере.'
-                          : 'Создайте эскиз и геометрию. OpenCascade не загружается до первой твердотельной операции.'}
-                    </small>
-                  </div>
-                )}
-              </>
+              <PartModelStage
+                document={document}
+                activeSketch={sketch}
+                activeWorkspace={activeWorkspace}
+                revisionToken={revisionToken}
+                renderModel={renderModel}
+                runtimeStatus={runtimeState.status}
+                fixtureError={fixtureError}
+                rectangleReady={rectangleReady}
+                selectionMode={selectionMode}
+                onPick={handleViewportPick}
+                viewCommand={viewCommand}
+                selectedBodyId={selectedBodyId}
+                onBodySelect={handleBodySelect}
+              />
             ) : (
               <div className="stage-message">
                 <div className="stage-symbol">{kindIcon(document.kind)}</div>

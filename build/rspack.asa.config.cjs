@@ -38,6 +38,13 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /[\\/]@salusoft89[\\/]planegcs[\\/]dist[\\/]planegcs_dist[\\/]planegcs\.js$/,
+        // Emscripten's Node-only branch contains new URL('./', import.meta.url).
+        // Rspack would otherwise treat './' as an asset dependency at build time.
+        // The browser path receives an explicit emitted wasmUrl from ASA instead.
+        parser: { url: false },
+      },
+      {
         test: /\.(ts|tsx)$/,
         exclude: /node_modules/,
         use: {

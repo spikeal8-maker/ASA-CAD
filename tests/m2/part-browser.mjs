@@ -24,6 +24,14 @@ async function loadedWasmResources() {
   );
 }
 
+function isPlaneGcsWasm(name) {
+  return /planegcs/i.test(name);
+}
+
+function nonPlaneGcsWasm(names) {
+  return names.filter((name) => !isPlaneGcsWasm(name));
+}
+
 function near(actual, expected, tolerance = 0.2, label = 'value') {
   assert.ok(Math.abs(actual - expected) <= tolerance, `${label}: expected ${expected}, got ${actual}`);
 }
@@ -118,7 +126,11 @@ async function createProtectedExtrude() {
   await applyPrimary();
   await page.getByText('Эскиз 1', { exact: true }).waitFor();
 
-  assert.deepEqual(await loadedWasmResources(), [], 'OpenCascade WASM loaded while creating an empty sketch');
+  assert.deepEqual(await loadedWasmResources(), [], 'Any CAD WASM loaded while creating an empty sketch');
+  const emptyOverlay = page.locator('[data-testid="cad-sketch-overlay"]');
+  await emptyOverlay.waitFor();
+  assert.equal(await emptyOverlay.getAttribute('data-overlay-source'), 'document');
+  assert.equal(await emptyOverlay.getAttribute('data-entity-count'), '0');
 
   await page.getByRole('button', { name: /Прямоугольник/i }).click();
   const width = page.locator('.numeric-field').filter({ hasText: 'Ширина' }).locator('input');
@@ -128,9 +140,40 @@ async function createProtectedExtrude() {
   await applyPrimary();
   await page.getByText('Прямоугольник 60×40 мм создан', { exact: true }).waitFor();
 
-  assert.deepEqual(await loadedWasmResources(), [], 'OpenCascade WASM loaded during 2D rectangle authoring');
+  const solveStatus = page.locator('[data-testid="sketch-solve-status"]');
+  await solveStatus.waitFor({ timeout: 20_000 });
+  try {
+    await page.waitForFunction(() => {
+      const status = document.querySelector('[data-testid="sketch-solve-status"]')?.getAttribute('data-solve-status');
+      return status === 'solved' || status === 'error';
+    }, null, { timeout: 20_000 });
+  } catch {
+    // Fall through to the diagnostic assertion below with the current state.
+  }
+  const solveState = await solveStatus.getAttribute('data-solve-status');
+  if (solveState !== 'solved') {
+    const diagnostic = await page.locator('[data-testid="sketch-solve-diagnostic"]').textContent().catch(() => null);
+    const currentWasm = await loadedWasmResources();
+    throw new Error(
+      'Sketch solve did not reach solved: status=' + solveState
+      + '; diagnostic=' + (diagnostic ?? 'none')
+      + '; wasm=' + currentWasm.join(', ')
+      + '; pageErrors=' + pageErrors.join(' | ')
+      + '; failedRequests=' + failedRequests.join(' | '),
+    );
+  }
+  const solvedOverlay = page.locator('[data-testid="cad-sketch-overlay"]');
+  await solvedOverlay.waitFor();
+  assert.equal(await solvedOverlay.getAttribute('data-overlay-source'), 'solver-preview');
+  assert.equal(await solvedOverlay.getAttribute('data-entity-count'), '4');
+  assert.equal(await page.locator('[data-testid="sketch-dof"]').textContent(), 'DoF: н/д');
+
+  const sketchWasm = await loadedWasmResources();
+  assert.ok(sketchWasm.some(isPlaneGcsWasm), 'PlaneGCS WASM was not loaded for active Sketch solve: ' + sketchWasm.join(', '));
+  assert.deepEqual(nonPlaneGcsWasm(sketchWasm), [], 'OpenCascade/other WASM loaded during Sketch solve: ' + sketchWasm.join(', '));
 
   await finishSketch();
+  await page.locator('[data-testid="cad-sketch-overlay"]').waitFor({ state: 'detached' });
 
   const extrudeButton = page.getByRole('button', { name: /Элемент выдавливания/i });
   assert.equal(await extrudeButton.isEnabled(), true, 'Extrude should be enabled after the rectangle sketch is finished');
@@ -138,7 +181,7 @@ async function createProtectedExtrude() {
 
   const distance = page.locator('.numeric-field').filter({ hasText: 'Расстояние' }).locator('input');
   assert.equal(await distance.inputValue(), '10');
-  assert.deepEqual(await loadedWasmResources(), [], 'OpenCascade WASM loaded before the solid command was committed');
+  assert.deepEqual(nonPlaneGcsWasm(await loadedWasmResources()), [], 'OpenCascade WASM loaded before the solid command was committed');
 
   await applyPrimary();
   await page.locator('.cad-app[data-runtime-status="ready"]').waitFor({ timeout: 120_000 });
@@ -149,8 +192,10 @@ async function createProtectedExtrude() {
   await assertBounds([-30, -20, 0, 30, 20, 10]);
 
   const loadedWasm = await loadedWasmResources();
-  assert.ok(loadedWasm.length >= 1, 'OpenCascade WASM was not loaded for the first solid operation');
-  assert.ok(wasmRequests.length >= 1, 'No WASM network request was observed');
+  assert.ok(loadedWasm.some(isPlaneGcsWasm), 'PlaneGCS WASM disappeared after solid operation');
+  assert.ok(nonPlaneGcsWasm(loadedWasm).length >= 1, 'OpenCascade WASM was not loaded for the first solid operation: ' + loadedWasm.join(', '));
+  assert.ok(wasmRequests.some(isPlaneGcsWasm), 'No PlaneGCS WASM network request was observed');
+  assert.ok(nonPlaneGcsWasm(wasmRequests).length >= 1, 'No OpenCascade WASM network request was observed');
 
   const viewport = await page.locator('[data-testid="cad-viewport"]').evaluate((node) => ({
     revision: node.getAttribute('data-runtime-revision'),
@@ -163,7 +208,7 @@ async function createProtectedExtrude() {
   assert.ok(viewport.height > 300, `viewport height too small: ${viewport.height}`);
   assert.equal(viewport.canvasCount, 1);
 
-  console.log(`  ✓ lazy WASM: ${loadedWasm.length} resource(s), first solid only`);
+  console.log('  ✓ lazy kernels: PlaneGCS in Sketch, OpenCascade first solid (' + loadedWasm.length + ' WASM resource(s))');
   console.log(`  ✓ real B-Rep viewport: ${Math.round(viewport.width)}×${Math.round(viewport.height)}, ${viewport.revision}`);
 }
 
