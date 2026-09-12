@@ -46,6 +46,34 @@
   stroke-width: 1.8px;
 }
 
+.cad-sketch-interaction {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  cursor: crosshair;
+  touch-action: none;
+  outline: none;
+}
+
+.cad-sketch-line-ghost {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.4px;
+  stroke-dasharray: 4 3;
+  stroke-linecap: round;
+  opacity: .82;
+}
+
+.cad-sketch-line-anchor {
+  fill: white;
+  stroke: var(--accent);
+  stroke-width: 1.2px;
+}
+
 .sketch-solve-hud {
   position: absolute;
   left: 12px;
