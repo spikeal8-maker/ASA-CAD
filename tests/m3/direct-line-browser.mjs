@@ -32,6 +32,14 @@ async function interactionBox(page) {
   return { layer, box };
 }
 
+async function assertVisibleTouchTarget(page, x, y) {
+  const hit = await page.evaluate(({ x, y }) => {
+    const element = document.elementFromPoint(x, y);
+    return Boolean(element?.closest?.('[data-testid="cad-sketch-interaction"]'));
+  }, { x, y });
+  assert.equal(hit, true, `touch point ${x.toFixed(1)},${y.toFixed(1)} is covered by mobile chrome`);
+}
+
 async function waitSolvedLine(page) {
   const overlay = page.locator('[data-testid="cad-sketch-overlay"][data-entity-count="1"]');
   await overlay.waitFor({ timeout: 20_000 });
@@ -128,15 +136,21 @@ async function touchDirectLine() {
   await lineButton.click();
 
   const { box } = await interactionBox(page);
-  await page.touchscreen.tap(box.x + box.width * 0.28, box.y + box.height * 0.62);
+  // The phone management sheet intentionally covers the lower ~42% of the
+  // work area. Exercise real touch only on the visibly exposed workplane.
+  const first = { x: box.x + box.width * 0.28, y: box.y + box.height * 0.28 };
+  const second = { x: box.x + box.width * 0.72, y: box.y + box.height * 0.46 };
+  await assertVisibleTouchTarget(page, first.x, first.y);
+  await page.touchscreen.tap(first.x, first.y);
   await page.locator('[data-testid="sketch-line-anchor"]').waitFor();
   assert.equal(await page.locator('[data-testid="cad-sketch-overlay"]').getAttribute('data-entity-count'), '0');
-  await page.touchscreen.tap(box.x + box.width * 0.72, box.y + box.height * 0.36);
+  await assertVisibleTouchTarget(page, second.x, second.y);
+  await page.touchscreen.tap(second.x, second.y);
   await waitSolvedLine(page);
 
   assert.deepEqual(errors, [], `touch direct Line page errors: ${errors.join(' | ')}`);
   await page.close();
-  console.log('  ✓ touch Line: same Pointer Events path commits one line');
+  console.log('  ✓ touch Line: same Pointer Events path commits one line on visible workplane');
 }
 
 async function deterministicLineFixture() {
