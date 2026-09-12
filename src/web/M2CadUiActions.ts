@@ -8,6 +8,7 @@ export interface M2CadUiActionHandlers {
   redo(): void | Promise<void>;
   rebuild(): void | Promise<void>;
   createSketch(): void | Promise<void>;
+  line(): void | Promise<void>;
   rectangle(): void | Promise<void>;
   circle(): void | Promise<void>;
   finishSketch(): void | Promise<void>;
@@ -59,6 +60,7 @@ export function createM2CadUiActionBindings(
     'system.rebuild': binding(handlers.rebuild),
 
     'part.sketch.create': binding(handlers.createSketch),
+    'sketch.line': binding(handlers.line, state.hasSketch, 'Сначала создайте эскиз'),
     'sketch.rectangle': binding(handlers.rectangle, state.hasSketch, 'Сначала создайте эскиз'),
     'sketch.circle': binding(handlers.circle, state.hasSketch, 'Сначала создайте эскиз'),
     'sketch.finish': binding(handlers.finishSketch, state.hasSketch, 'Сначала создайте эскиз'),

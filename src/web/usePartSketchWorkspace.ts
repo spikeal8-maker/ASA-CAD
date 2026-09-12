@@ -11,8 +11,9 @@ import type {
 } from '../contracts/ids';
 import type { CadViewportPick } from '../contracts/render';
 import { useSketchSession } from './useSketchSession';
+import { useSketchLineTool } from './useSketchLineTool';
 
-export type CadWorkspacePanel = 'tree' | 'parameters' | 'tools';
+export type CadWorkspacePanel = 'tree' | 'parameters' | 'tools' | 'closed';
 export type PartSketchSelectionMode = 'none' | 'face' | 'edge';
 
 export interface PartSketchWorkspaceOptions {
@@ -78,6 +79,19 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
   const clearSelectedPick = useCallback(() => {
     setSelectedPick(null);
   }, []);
+
+  const lineTool = useSketchLineTool({
+    app,
+    sketchId: activeSketchId,
+    active: activeCommand === 'sketch.line',
+    setNotice,
+    onCommitted: () => {
+      setActiveCommand(null);
+      setPanel('tree');
+      setActiveWorkspace('sketch');
+      clearTransientSelection();
+    },
+  });
 
   const resetTransient = useCallback(() => {
     setActiveCommand(null);
@@ -181,6 +195,15 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     setActiveWorkspace('sketch');
     clearTransientSelection();
     setNotice(`Создан эскиз на ${supportText}`);
+  }
+
+  function beginLine() {
+    if (!sketch) return;
+    lineTool.reset();
+    setActiveCommand('sketch.line');
+    setPanel('closed');
+    clearTransientSelection();
+    setNotice('Укажите начальную точку отрезка');
   }
 
   function beginRectangle() {
@@ -492,7 +515,8 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
   }
 
   function cancelCommand() {
-    const stayInSketch = activeCommand === 'sketch.rectangle' || activeCommand === 'sketch.circle';
+    if (activeCommand === 'sketch.line') lineTool.reset();
+    const stayInSketch = activeCommand === 'sketch.line' || activeCommand === 'sketch.rectangle' || activeCommand === 'sketch.circle';
     setActiveCommand(null);
     setEditingDimensionId(null);
     setPanel('tree');
@@ -506,6 +530,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
   }
 
   async function commitActiveCommand() {
+    if (activeCommand === 'sketch.line') return lineTool.commitPreview();
     if (activeCommand === 'part.sketch.create') return commitCreateSketch();
     if (activeCommand === 'sketch.rectangle') return commitRectangle();
     if (activeCommand === 'sketch.circle') return commitCircle();
@@ -555,6 +580,11 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     handleViewportPick,
     handleBodySelect,
     enterSketch,
+    beginLine,
+    lineDraft: lineTool.draft,
+    lineCommitting: lineTool.committing,
+    handleSketchLinePointMove: lineTool.move,
+    handleSketchLinePoint: lineTool.point,
     beginCreateSketch,
     commitCreateSketch,
     beginRectangle,
