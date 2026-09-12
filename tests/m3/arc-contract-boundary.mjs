@@ -30,7 +30,8 @@ assert.match(solver, /\bstartAngle,/, 'solver readback must retain canonical sol
 assert.match(solver, /endAngle: startAngle \+ sweep/, 'solver readback must retain canonical solved Arc sweep');
 
 const arc = registry.commands.find((command) => command.id === 'sketch.arc');
-assert.ok(arc, 'command registry must already contain sketch.arc');
-assert.equal(arc.status, 'planned', 'Arc must stay planned until direct product UI/browser acceptance exists');
+assert.ok(arc, 'command registry must contain sketch.arc');
+assert.equal(arc.status, 'implemented', 'Arc may be implemented only together with direct product UI/browser acceptance');
+assert.equal(arc.backendCommand, 'sketch.arc', 'implemented Arc must remain wired to the typed backend command');
 
-console.log('ASA-CAD M3.4A Arc contract boundary PASS (ASA DTO/command/handler/PlaneGCS, product status still planned)');
+console.log('ASA-CAD M3.4 Arc contract boundary PASS (ASA DTO/command/handler/PlaneGCS + direct product acceptance)');

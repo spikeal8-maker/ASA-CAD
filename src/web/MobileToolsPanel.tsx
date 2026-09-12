@@ -19,6 +19,7 @@ const SKETCH_TOOLS: readonly MobileToolSpec[] = [
   { id: 'sketch.line', symbol: '╱' },
   { id: 'sketch.rectangle', symbol: '▭' },
   { id: 'sketch.circle', symbol: '○' },
+  { id: 'sketch.arc', symbol: '⌒' },
   { id: 'sketch.finish', symbol: '✓' },
 ];
 
