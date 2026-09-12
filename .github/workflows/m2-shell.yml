@@ -19,6 +19,7 @@ on:
       - build/**
       - tests/m2/**
       - tests/m2o/**
+      - tests/m3/**
       - package.json
       - .github/workflows/m2-shell.yml
   pull_request:
@@ -38,6 +39,7 @@ on:
       - build/**
       - tests/m2/**
       - tests/m2o/**
+      - tests/m3/**
       - package.json
       - .github/workflows/m2-shell.yml
 
@@ -60,11 +62,14 @@ jobs:
       - name: Install pinned frontend toolchain
         run: npm --prefix vendor/toubkal ci
 
-      - name: Typecheck ASA M2 presentation boundary
+      - name: Typecheck ASA presentation boundary
         run: npm run typecheck:asa
 
       - name: Verify M2O optimization gates
         run: npm run test:m2o
+
+      - name: Verify active M3 gates
+        run: npm run test:m3
 
       - name: Verify neutral OpenCascade render bridge
         run: npm run test:m2:render
