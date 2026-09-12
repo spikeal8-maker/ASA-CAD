@@ -1,0 +1,32 @@
+name: M3.1 solver diagnostics codemod
+
+on:
+  push:
+    branches: [m3/m3-1-solve-overlay]
+    paths:
+      - scripts/m3/apply-m3-1-solver-diagnostics.mjs
+      - .github/workflows/m3-1-solver-diagnostics-codemod.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: m3/m3-1-solve-overlay
+      - name: Apply solver diagnostics
+        run: node scripts/m3/apply-m3-1-solver-diagnostics.mjs
+      - name: Remove one-shot codemod files
+        run: |
+          rm scripts/m3/apply-m3-1-solver-diagnostics.mjs
+          rm .github/workflows/m3-1-solver-diagnostics-codemod.yml
+      - name: Commit solver diagnostics
+        run: |
+          git config user.name "asa-cad-m3-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -m "test(m3): expose Sketch solver browser failures"
+          git push origin HEAD:m3/m3-1-solve-overlay
