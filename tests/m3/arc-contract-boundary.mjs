@@ -13,7 +13,8 @@ assert.match(sketch, /startAngle/, 'Arc must persist a canonical start angle');
 assert.match(sketch, /endAngle/, 'Arc must persist a canonical end angle');
 assert.match(sketch, /sweep must be greater than 0 and less than 2π/, 'Arc validator must reject zero/full-turn sweeps');
 
-assert.match(commands, /id: 'sketch\.arc'/, 'typed command surface must contain sketch.arc');
+assert.match(commands, /\| 'sketch\.arc'/, 'CadCommandId must contain sketch.arc');
+assert.match(commands, /'sketch\.arc': \{/, 'CadCommandMap must contain a typed sketch.arc payload');
 assert.match(commands, /center: readonly \[number, number\]/, 'Arc command must use a strict 2D center tuple without circular contract imports');
 assert.match(commands, /start: readonly \[number, number\]/, 'Arc command must define one initial center-start-end construction mode');
 assert.match(commands, /end: readonly \[number, number\]/, 'Arc command must define one initial center-start-end construction mode');
