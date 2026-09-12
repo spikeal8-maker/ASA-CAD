@@ -154,6 +154,8 @@ export function App(props: CadProjectPersistenceOverrides) {
     enterSketch,
     beginCreateSketch,
     commitCreateSketch,
+    beginLine,
+    commitLine,
     beginRectangle,
     commitRectangle,
     beginCircle,
@@ -257,6 +259,7 @@ export function App(props: CadProjectPersistenceOverrides) {
       redo,
       rebuild,
       createSketch: beginCreateSketch,
+      line: beginLine,
       rectangle: beginRectangle,
       circle: beginCircle,
       finishSketch,
@@ -444,7 +447,8 @@ export function App(props: CadProjectPersistenceOverrides) {
           {document.kind === 'part' && activeWorkspace === 'sketch' ? (
             <>
               <CommandGroup label="Геометрия">
-                <CadUiActionButton action={uiAction('sketch.rectangle')} symbol={commandSymbol('sketch.rectangle')} large accent />
+                <CadUiActionButton action={uiAction('sketch.line')} symbol="╱" large accent />
+                <CadUiActionButton action={uiAction('sketch.rectangle')} symbol={commandSymbol('sketch.rectangle')} />
                 <CadUiActionButton action={uiAction('sketch.circle')} symbol={commandSymbol('sketch.circle')} />
               </CommandGroup>
               <CommandGroup label="Размеры">
@@ -563,12 +567,12 @@ export function App(props: CadProjectPersistenceOverrides) {
             <button type="button" title="Изометрия (0)" onClick={() => requestView('Изометрия')}>◇</button>
             <span className="quick-separator" />
             <span className="view-caption">{viewName}</span>
-            {selectionMode !== 'none' && <span className="selection-caption">{selectionMode === 'face' ? 'Выбор грани' : 'Выбор ребра'}</span>}
+            {selectionMode !== 'none' && <span className="selection-caption">{selectionMode === 'face' ? 'Выбор грани' : selectionMode === 'edge' ? 'Выбор ребра' : 'Построение отрезка'}</span>}
             {selectedBody && selectionMode === 'none' && <span className="selection-caption">Выбрано: {selectedBody.name}</span>}
             {activeCommand && (
               <>
                 <span className="quick-separator" />
-                <button className="quick-accept" type="button" onClick={commitActiveCommand} title="Применить (Ctrl+Enter)">✓</button>
+                {activeCommand !== 'sketch.line' && <button className="quick-accept" type="button" onClick={commitActiveCommand} title="Применить (Ctrl+Enter)">✓</button>}
                 <button className="quick-cancel" type="button" onClick={cancelCommand} title="Отмена (Esc)">×</button>
               </>
             )}
@@ -588,6 +592,8 @@ export function App(props: CadProjectPersistenceOverrides) {
                 selectionMode={selectionMode}
                 onPick={handleViewportPick}
                 viewCommand={viewCommand}
+                lineToolActive={activeCommand === 'sketch.line'}
+                onCommitLine={commitLine}
                 selectedBodyId={selectedBodyId}
                 onBodySelect={handleBodySelect}
               />

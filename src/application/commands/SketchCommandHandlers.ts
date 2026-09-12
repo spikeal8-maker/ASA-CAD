@@ -85,6 +85,11 @@ const HANDLERS = {
     availability: requireSketchAvailability,
     execute: (part, command) => {
       const sketch = requireSketch(part, command.payload.sketchId);
+      const length = Math.hypot(
+        command.payload.to[0] - command.payload.from[0],
+        command.payload.to[1] - command.payload.from[1],
+      );
+      if (length < 0.01) throw new Error('Line length must be non-zero');
       const id = createCadId<CadSketchEntityId>('entity');
       sketch.entities.push({
         id,

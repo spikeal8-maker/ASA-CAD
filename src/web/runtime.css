@@ -214,3 +214,33 @@
   border-left: 1px solid #d5d9de;
   line-height: 20px;
 }
+
+
+.cad-sketch-interaction-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  cursor: crosshair;
+  touch-action: none;
+  user-select: none;
+}
+
+.cad-sketch-line-ghost {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.6px;
+  stroke-dasharray: 4 3;
+  opacity: .8;
+  pointer-events: none;
+}
+
+.cad-sketch-line-anchor {
+  fill: white;
+  stroke: var(--accent);
+  stroke-width: 1.2px;
+  pointer-events: none;
+}

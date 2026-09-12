@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import type { CadApplication } from '../contracts/application';
 import type { CadPlaneName } from '../contracts/commands';
-import type { CadDocument, CadDocumentKind, CadPartDocument, CadSketch } from '../contracts/document';
+import type { CadDocument, CadDocumentKind, CadPartDocument, CadPoint2, CadSketch } from '../contracts/document';
 import type {
   CadBodyId,
   CadDimensionId,
@@ -13,7 +13,7 @@ import type { CadViewportPick } from '../contracts/render';
 import { useSketchSession } from './useSketchSession';
 
 export type CadWorkspacePanel = 'tree' | 'parameters' | 'tools';
-export type PartSketchSelectionMode = 'none' | 'face' | 'edge';
+export type PartSketchSelectionMode = 'none' | 'face' | 'edge' | 'sketch';
 
 export interface PartSketchWorkspaceOptions {
   app: CadApplication;
@@ -181,6 +181,40 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     setActiveWorkspace('sketch');
     clearTransientSelection();
     setNotice(`Создан эскиз на ${supportText}`);
+  }
+
+  function beginLine() {
+    if (!sketch) return;
+    setActiveCommand('sketch.line');
+    setPanel('tree');
+    clearTransientSelection();
+    setSelectionMode('sketch');
+    setActiveWorkspace('sketch');
+    setNotice('Отрезок: укажите первую точку');
+  }
+
+  async function commitLine(from: CadPoint2, to: CadPoint2): Promise<boolean> {
+    const currentPart = partDocument(app.getDocument());
+    const currentSketch = findSketch(currentPart, activeSketchId);
+    if (!currentSketch) {
+      setNotice('Активный эскиз больше не существует');
+      return false;
+    }
+    const length = Math.hypot(to[0] - from[0], to[1] - from[1]);
+    if (length < 0.01) {
+      setNotice('Отрезок должен иметь ненулевую длину');
+      return false;
+    }
+    const result = await app.execute({
+      id: 'sketch.line',
+      payload: { sketchId: currentSketch.id, from, to },
+    });
+    if (!result.ok) {
+      setNotice(result.error?.message ?? 'Не удалось создать отрезок');
+      return false;
+    }
+    setNotice('Отрезок создан; укажите первую точку следующего отрезка или Esc для выхода');
+    return true;
   }
 
   function beginRectangle() {
@@ -492,7 +526,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
   }
 
   function cancelCommand() {
-    const stayInSketch = activeCommand === 'sketch.rectangle' || activeCommand === 'sketch.circle';
+    const stayInSketch = activeCommand === 'sketch.line' || activeCommand === 'sketch.rectangle' || activeCommand === 'sketch.circle';
     setActiveCommand(null);
     setEditingDimensionId(null);
     setPanel('tree');
@@ -557,6 +591,8 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     enterSketch,
     beginCreateSketch,
     commitCreateSketch,
+    beginLine,
+    commitLine,
     beginRectangle,
     commitRectangle,
     beginCircle,
