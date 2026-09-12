@@ -59,6 +59,23 @@ async function waitSolvedCircle(page) {
   return overlay.locator('circle[data-sketch-entity-id]').first();
 }
 
+async function deterministicCircleFixture() {
+  const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+  await page.goto(`${url.replace(/\/$/, '')}/dev/part/circle`, { waitUntil: 'networkidle' });
+  await page.locator('.cad-app[data-dev-fixture="circle"][data-fixture-status="ready"]').waitFor();
+  await page.getByText('Fixture circle: окружность Ø24 мм с центром (5, -3) в XY', { exact: true }).waitFor();
+  assert.equal(await page.locator('[data-testid="part-model-stage"]').getAttribute('data-sketch-support'), 'XY');
+  const circle = await waitSolvedCircle(page);
+  near(Number(await circle.getAttribute('cx')), 5, 0.2, 'fixture center x');
+  near(Number(await circle.getAttribute('cy')), 3, 0.2, 'fixture center y');
+  near(Number(await circle.getAttribute('r')), 12, 0.2, 'fixture radius');
+  const wasm = await wasmResources(page);
+  assert.ok(wasm.some(isPlaneGcs), 'Circle fixture did not exercise PlaneGCS');
+  assert.deepEqual(wasm.filter((name) => !isPlaneGcs(name)), [], 'Circle fixture loaded OpenCascade/other WASM');
+  await page.close();
+  console.log('  ✓ /dev/part/circle deterministic review fixture');
+}
+
 async function desktopDirectCircle() {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   const errors = [];
@@ -176,6 +193,7 @@ async function touchDirectCircle() {
 
 try {
   console.log('\nASA-CAD M3.3 direct Circle browser');
+  await deterministicCircleFixture();
   await desktopDirectCircle();
   await touchDirectCircle();
   console.log('ASA-CAD M3.3 direct Circle browser PASS\n');
