@@ -1,0 +1,68 @@
+name: TEMP M3.3 Circle fixture
+
+on:
+  push:
+    branches: [work/m3-3-circle-fixture]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/m3-3-circle-fixture
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.19.0'
+          cache: npm
+          cache-dependency-path: vendor/toubkal/package-lock.json
+
+      - name: Apply Circle fixture codemod
+        run: node tools/codemod-m3-circle-fixture.mjs
+
+      - name: Install pinned toolchain
+        run: npm --prefix vendor/toubkal ci
+
+      - name: Verify fixture route + build
+        run: npm run typecheck:asa && vendor/toubkal/node_modules/.bin/tsx tests/m2/dev-routes.ts && npm run build:asa
+
+      - name: Install Chromium
+        run: npx --yes playwright@1.60.0 install --with-deps chromium
+
+      - name: Start static server
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tests/m2/static-server.mjs >/tmp/asa-circle-fixture-http.log 2>&1 &
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:8090/ >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/asa-circle-fixture-http.log
+          exit 1
+
+      - name: Exercise Circle fixture + direct Circle regression
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
+        run: node tests/m3/direct-circle-browser.mjs
+
+      - name: Commit validated fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "ASA-CAD maintenance bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add src/browser/routes.ts src/web/devFixtures.ts tests/m3/direct-circle-browser.mjs
+          if git diff --cached --quiet; then
+            echo "No product changes to commit"
+            exit 0
+          fi
+          git commit -m "M3.3: add deterministic direct Circle fixture"
+          git push origin HEAD:work/m3-3-circle-fixture
