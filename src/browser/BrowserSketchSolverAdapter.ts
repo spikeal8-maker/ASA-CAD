@@ -1,3 +1,4 @@
+import planeGcsWasmUrl from '../../vendor/toubkal/node_modules/@salusoft89/planegcs/dist/planegcs_dist/planegcs.wasm';
 import type { CadDocument } from '../contracts/document';
 import type { CadSketchId } from '../contracts/ids';
 import type {
@@ -5,17 +6,12 @@ import type {
   CadSketchSolverAdapter,
 } from '../contracts/sketchSolver';
 
-const planeGcsWasmUrl = new URL(
-  '../../vendor/toubkal/node_modules/@salusoft89/planegcs/dist/planegcs_dist/planegcs.wasm',
-  import.meta.url,
-).toString();
-
 /**
  * Browser-owned lazy boundary for the Sketch solver.
  *
- * The product shell may import this lightweight adapter at startup, but the
- * PlaneGCS implementation and its WASM are loaded only when SketchSolveSession
- * first initializes a real solve. This is independent from OpenCascade loading.
+ * Importing the WASM module yields its emitted URL but does not fetch/instantiate
+ * it. PlaneGCS still initializes only when SketchSolveSession first requests a
+ * real solve; OpenCascade remains an independent lazy runtime.
  */
 export class BrowserSketchSolverAdapter implements CadSketchSolverAdapter {
   private delegate: CadSketchSolverAdapter | null = null;
