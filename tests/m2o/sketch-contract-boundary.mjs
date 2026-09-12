@@ -7,7 +7,7 @@ const solverContract = readFileSync('src/contracts/sketchSolver.ts', 'utf8');
 const solver = readFileSync('src/runtime/PlaneGCSSketchSolverRuntime.ts', 'utf8');
 const handlers = readFileSync('src/application/commands/SketchCommandHandlers.ts', 'utf8');
 
-assert.match(sketchContract, /type CadSketchEntity = CadSketchLineEntity \| CadSketchCircleEntity/, 'Sketch entities must be a discriminated union');
+assert.match(sketchContract, /type CadSketchEntity = CadSketchLineEntity \| CadSketchCircleEntity \| CadSketchArcEntity/, 'Sketch entities must be a discriminated union');
 assert.match(sketchContract, /support: CadSketchSupport/, 'Sketch support must not degrade to arbitrary string');
 assert.match(sketchContract, /type CadConstraint =/, 'Sketch constraints must be a discriminated union');
 assert.match(sketchContract, /type CadDimension =/, 'Sketch dimensions must be a discriminated union');

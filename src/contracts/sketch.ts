@@ -21,6 +21,15 @@ export interface CadSketchCircleData {
   diameter: number;
 }
 
+export interface CadSketchArcData {
+  center: CadPoint2;
+  radius: number;
+  /** Canonical start angle in radians, normalized to [0, 2π). */
+  startAngle: number;
+  /** Canonical CCW end angle; endAngle > startAngle and sweep < 2π. */
+  endAngle: number;
+}
+
 export interface CadSketchLineEntity {
   id: CadSketchEntityId;
   type: 'line';
@@ -33,8 +42,14 @@ export interface CadSketchCircleEntity {
   data: CadSketchCircleData;
 }
 
+export interface CadSketchArcEntity {
+  id: CadSketchEntityId;
+  type: 'arc';
+  data: CadSketchArcData;
+}
+
 /** Current persisted M3-ready Sketch entity surface. Extend this union explicitly. */
-export type CadSketchEntity = CadSketchLineEntity | CadSketchCircleEntity;
+export type CadSketchEntity = CadSketchLineEntity | CadSketchCircleEntity | CadSketchArcEntity;
 
 export interface CadSketch {
   id: CadSketchId;
@@ -168,6 +183,21 @@ function validateEntity(value: unknown, path: string): asserts value is CadSketc
       expectPoint2(data.center, `${path}.data.center`);
       expectPositiveFinite(data.diameter, `${path}.data.diameter`);
       return;
+    case 'arc': {
+      expectPoint2(data.center, `${path}.data.center`);
+      expectPositiveFinite(data.radius, `${path}.data.radius`);
+      expectFinite(data.startAngle, `${path}.data.startAngle`);
+      expectFinite(data.endAngle, `${path}.data.endAngle`);
+      const twoPi = Math.PI * 2;
+      if (data.startAngle < 0 || data.startAngle >= twoPi) {
+        throw new Error(`${path}.data.startAngle must be in [0,2π)`);
+      }
+      const sweep = data.endAngle - data.startAngle;
+      if (!(sweep > 0) || !(sweep < twoPi)) {
+        throw new Error(`${path}.data.sweep must be greater than 0 and less than 2π`);
+      }
+      return;
+    }
     default:
       throw new Error(`${path}.type is unsupported: ${String(entity.type)}`);
   }
