@@ -38,7 +38,7 @@ export function resolveSketchWorkplaneProjection(
     case 'XY':
       return {
         kind: 'origin-plane',
-        support,
+        support: 'XY',
         origin: [0, 0, 0],
         u: [1, 0, 0],
         v: [0, 1, 0],
@@ -48,7 +48,7 @@ export function resolveSketchWorkplaneProjection(
     case 'XZ':
       return {
         kind: 'origin-plane',
-        support,
+        support: 'XZ',
         origin: [0, 0, 0],
         u: [1, 0, 0],
         v: [0, 0, 1],
@@ -58,7 +58,7 @@ export function resolveSketchWorkplaneProjection(
     case 'YZ':
       return {
         kind: 'origin-plane',
-        support,
+        support: 'YZ',
         origin: [0, 0, 0],
         u: [0, 1, 0],
         v: [0, 0, 1],
@@ -68,7 +68,7 @@ export function resolveSketchWorkplaneProjection(
     default:
       return {
         kind: 'stable-reference',
-        support,
+        support: support as CadStableReferenceId,
         modelContextReady: false,
       };
   }
