@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const interaction = fs.readFileSync('src/web/viewport/SketchLineInteractionLayer.tsx', 'utf8');
+const surface = fs.readFileSync('src/web/viewport/SketchInteractionSurface.tsx', 'utf8');
 const overlay = fs.readFileSync('src/web/viewport/SketchOverlayLayer.tsx', 'utf8');
 const viewportGeometry = fs.readFileSync('src/web/viewport/SketchViewportGeometry.ts', 'utf8');
 const tool = fs.readFileSync('src/web/useSketchLineTool.ts', 'utf8');
@@ -12,16 +13,23 @@ const styles = fs.readFileSync('src/web/styles.css', 'utf8');
 const bindings = fs.readFileSync('src/web/M2CadUiActions.ts', 'utf8');
 const registry = JSON.parse(fs.readFileSync('spec/ui/command-registry.v1.json', 'utf8'));
 
-for (const forbidden of ['CadApplication', 'OpenCascade', 'vendor/', 'CadProjectHost', 'localStorage']) {
-  assert.equal(interaction.includes(forbidden), false, `Sketch interaction layer must not depend on ${forbidden}`);
+for (const source of [interaction, surface]) {
+  for (const forbidden of ['CadApplication', 'OpenCascade', 'vendor/', 'CadProjectHost', 'localStorage']) {
+    assert.equal(source.includes(forbidden), false, `Sketch interaction presentation must not depend on ${forbidden}`);
+  }
 }
-assert.match(interaction, /onPointerDown=/, 'Line interaction must use Pointer Events');
-assert.match(interaction, /onPointerMove=/, 'Line interaction must own transient pointer preview');
-assert.match(interaction, /onPointerUp=/, 'touch geometry input must commit only after tap arbitration');
-assert.match(interaction, /touchesRef\.current\.size >= 2/, 'secondary touches must enter navigation arbitration');
-assert.match(interaction, /panSketchViewport/, 'two-touch navigation must pan transient Sketch view state');
-assert.match(interaction, /zoomSketchViewport/, 'pinch/wheel navigation must zoom transient Sketch view state');
-assert.match(interaction, /wasMultiTouch/, 'multi-touch contacts must not become Line endpoints on release');
+
+assert.match(interaction, /SketchInteractionSurface/, 'Line must reuse the shared Sketch interaction substrate');
+for (const forbidden of ['touchesRef', 'panSketchViewport', 'zoomSketchViewport', 'onPointerDown=', 'onPointerUp=', 'getBoundingClientRect']) {
+  assert.equal(interaction.includes(forbidden), false, `Line layer must not duplicate shared input policy: ${forbidden}`);
+}
+assert.match(surface, /onPointerDown=/, 'shared Sketch surface must use Pointer Events');
+assert.match(surface, /onPointerMove=/, 'shared Sketch surface must own transient pointer movement');
+assert.match(surface, /onPointerUp=/, 'shared Sketch surface must arbitrate touch taps on release');
+assert.match(surface, /touchesRef\.current\.size >= 2/, 'secondary touches must enter navigation arbitration');
+assert.match(surface, /panSketchViewport/, 'shared two-touch navigation must pan transient Sketch view state');
+assert.match(surface, /zoomSketchViewport/, 'shared pinch/wheel navigation must zoom transient Sketch view state');
+assert.match(surface, /wasMultiTouch/, 'multi-touch contacts must not become geometry points on release');
 
 assert.match(viewportGeometry, /SketchViewportState/, 'Sketch view must have explicit transient state');
 assert.match(viewportGeometry, /span: 100/, 'Sketch must open with a usable stable engineering frame');
@@ -45,4 +53,4 @@ assert.ok(line, 'command registry must contain sketch.line');
 assert.equal(line.status, 'implemented', 'sketch.line must be implemented only with the M3.2 product path');
 assert.equal(line.milestone, 'M3.2');
 
-console.log('ASA-CAD M3.2 direct Line architecture boundary PASS (stable view + gesture arbitration + panel collapse)');
+console.log('ASA-CAD M3.2 direct Line architecture boundary PASS (shared input substrate + stable view + panel collapse)');
