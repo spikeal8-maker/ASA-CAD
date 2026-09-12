@@ -86,6 +86,8 @@ Desktop and mobile presentations must consume the same typed command/action mode
 
 The central work area owns global selection/navigation semantics. Feature-specific code may request a selection mode but may not redefine mouse/touch/keyboard behavior locally.
 
+For direct Sketch tools, shared coordinate conversion and mouse/touch/pan/pinch/wheel behavior belongs to the shared Sketch interaction substrate. Tool-specific Line/Circle/Arc/Rectangle layers own only tool state, ghost rendering and typed command intent; they must not copy gesture policy.
+
 ## Code-size / ownership rule
 
 Do not grow `src/web/App.tsx` into a god-object.
@@ -152,6 +154,22 @@ For every change:
 9. update the issue + `docs/STATUS.md` when status/gate changes.
 
 Do not mix upstream import work with product-feature changes.
+
+## PR review discipline
+
+The review branch is an artifact for humans and bots, not a transcript of every repair attempt.
+
+- One PR should normally contain one product vertical slice or one focused maintenance concern.
+- **Target: 6 commits or fewer. Hard limit: 12 commits.** The required shell gate rejects PRs above the hard limit.
+- Iterative scratch/codemod commits are allowed only while preparing work. Before review, rebuild/squash a clean branch from current `main` if the history became noisy.
+- One-shot codemod/review-fix scripts and workflows must be removed from the final review tree. The repository hygiene gate rejects them.
+- Do not mix Circle + Arc + constraints, or another multi-family expansion, merely to avoid opening another PR.
+- If a repair unexpectedly crosses subsystem ownership boundaries, split the work instead of growing the current PR.
+- Browser/Docker suites that are relevant to changed CAD/UI/runtime paths must be green before merge even when they are path-filtered rather than global required checks.
+- A feature PR may use a separate one-commit status closeout PR after merge when that keeps the product diff smaller and easier to review.
+- Close superseded branches/PRs/issues instead of leaving competing sources of truth for future agents.
+
+Use `.github/PULL_REQUEST_TEMPLATE.md` as the review checklist.
 
 ## Upstream
 
