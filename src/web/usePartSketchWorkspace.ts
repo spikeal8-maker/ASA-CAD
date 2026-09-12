@@ -13,7 +13,7 @@ import type { CadViewportPick } from '../contracts/render';
 import { useSketchSession } from './useSketchSession';
 import { useSketchLineTool } from './useSketchLineTool';
 
-export type CadWorkspacePanel = 'tree' | 'parameters' | 'tools';
+export type CadWorkspacePanel = 'tree' | 'parameters' | 'tools' | 'closed';
 export type PartSketchSelectionMode = 'none' | 'face' | 'edge';
 
 export interface PartSketchWorkspaceOptions {
@@ -201,7 +201,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     if (!sketch) return;
     lineTool.reset();
     setActiveCommand('sketch.line');
-    setPanel('tree');
+    setPanel('closed');
     clearTransientSelection();
     setNotice('Укажите начальную точку отрезка');
   }

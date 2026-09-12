@@ -85,7 +85,7 @@ export function App(props: CadProjectPersistenceOverrides) {
   const persistence = useCadProjectPersistence(app, initialDocument, route, props);
   const shortcutRegistry = useMemo(() => new ShortcutRegistry(), []);
   const [revisionToken, setRevisionToken] = useState(0);
-  const [activePanel, setActivePanel] = useState<'tree' | 'parameters' | 'tools'>('tree');
+  const [activePanel, setActivePanel] = useState<'tree' | 'parameters' | 'tools' | 'closed'>('tree');
   const [newDialogOpen, setNewDialogOpen] = useState(false);
   const [notice, setNotice] = useState(devFixture ? `Fixture ${devFixture}: загрузка…` : 'Готово');
   const [fixtureStatus, setFixtureStatus] = useState<'none' | 'loading' | 'ready' | 'error'>(devFixture ? 'loading' : 'none');
@@ -491,7 +491,7 @@ export function App(props: CadProjectPersistenceOverrides) {
         </div>
       </section>
 
-      <main className="content-area">
+      <main className={`content-area${activePanel === 'closed' ? ' panel-closed' : ''}`}>
         <aside className="management-rail" aria-label="Панели">
           <button
             type="button"
@@ -518,7 +518,7 @@ export function App(props: CadProjectPersistenceOverrides) {
         </aside>
 
         <aside className="management-panel">
-          {activePanel === 'tree' ? (
+          {activePanel === 'closed' ? null : activePanel === 'tree' ? (
             <DocumentTree
               document={document}
               selectedBodyId={selectedBodyId}
