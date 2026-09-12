@@ -1,0 +1,35 @@
+name: M3.2 Direct Line codemod
+
+on:
+  push:
+    branches: [m3/m3-2-direct-line]
+    paths:
+      - tools/m3-2-direct-line-codemod.mjs
+      - .github/workflows/m3-2-direct-line-codemod.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: m3/m3-2-direct-line
+      - name: Apply fail-fast M3.2 wiring
+        run: node tools/m3-2-direct-line-codemod.mjs
+      - name: Commit generated wiring
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then
+            echo 'No codemod changes produced'
+            exit 1
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/web/usePartSketchWorkspace.ts src/web/M2CadUiActions.ts src/web/MobileToolsPanel.tsx src/web/App.tsx spec/ui/command-registry.v1.json
+          git commit -m 'M3.2: wire direct Line through shared action path'
+          git push origin HEAD:m3/m3-2-direct-line
