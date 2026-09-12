@@ -1,11 +1,10 @@
 import React from 'react';
 import type { CadSketchEntity } from '../../contracts/document';
 import type { SketchOverlayModel } from './SketchOverlayModel';
-import type { SketchDisplayFrame } from './SketchViewportGeometry';
+import { useSketchViewportFrame } from './SketchViewportFrameContext';
 
 export interface SketchOverlayLayerProps {
   model: SketchOverlayModel | null;
-  frame: SketchDisplayFrame;
 }
 
 /**
@@ -15,7 +14,8 @@ export interface SketchOverlayLayerProps {
  * a sibling Sketch interaction layer so transient pointer/ghost state never
  * enters CadRenderModel or solver-owned preview data.
  */
-export function SketchOverlayLayer({ model, frame }: SketchOverlayLayerProps) {
+export function SketchOverlayLayer({ model }: SketchOverlayLayerProps) {
+  const frame = useSketchViewportFrame();
   if (!model) return null;
 
   return (
