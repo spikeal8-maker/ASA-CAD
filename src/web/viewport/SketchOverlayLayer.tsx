@@ -1,6 +1,7 @@
 import React from 'react';
 import type { CadSketchEntity } from '../../contracts/document';
 import type { SketchOverlayModel } from './SketchOverlayModel';
+import { sketchDisplayFrame } from './SketchViewportGeometry';
 
 export interface SketchOverlayLayerProps {
   model: SketchOverlayModel | null;
@@ -9,22 +10,13 @@ export interface SketchOverlayLayerProps {
 /**
  * Separate Sketch presentation layer above the B-Rep canvas.
  *
- * M2O keeps this layer read-only. M3 may add pointer/snap/drag adapters through
- * the shared viewport candidate model; it must not move Sketch entities into
- * CadRenderModel/Three B-Rep meshes.
+ * Persisted/solver geometry stays read-only here. M3 interaction is rendered by
+ * a sibling Sketch interaction layer so transient pointer/ghost state never
+ * enters CadRenderModel or solver-owned preview data.
  */
 export function SketchOverlayLayer({ model }: SketchOverlayLayerProps) {
   if (!model) return null;
-  const bounds = sketchDisplayBounds(model.entities);
-  const width = Math.max(bounds.maxX - bounds.minX, 1);
-  const height = Math.max(bounds.maxY - bounds.minY, 1);
-  const padding = Math.max(Math.max(width, height) * 0.08, 1);
-  const viewBox = [
-    bounds.minX - padding,
-    bounds.minY - padding,
-    width + padding * 2,
-    height + padding * 2,
-  ].join(' ');
+  const frame = sketchDisplayFrame(model.entities);
 
   return (
     <svg
@@ -36,7 +28,7 @@ export function SketchOverlayLayer({ model }: SketchOverlayLayerProps) {
       data-constraint-state={model.constraintState}
       data-degrees-of-freedom={model.degreesOfFreedom ?? ''}
       data-entity-count={model.entities.length}
-      viewBox={viewBox}
+      viewBox={frame.viewBox}
       preserveAspectRatio="xMidYMid meet"
       aria-hidden="true"
     >
@@ -73,41 +65,4 @@ function renderEntity(entity: CadSketchEntity) {
         />
       );
   }
-}
-
-interface SketchDisplayBounds {
-  minX: number;
-  minY: number;
-  maxX: number;
-  maxY: number;
-}
-
-function sketchDisplayBounds(entities: readonly CadSketchEntity[]): SketchDisplayBounds {
-  if (entities.length === 0) return { minX: -10, minY: -10, maxX: 10, maxY: 10 };
-  let minX = Number.POSITIVE_INFINITY;
-  let minY = Number.POSITIVE_INFINITY;
-  let maxX = Number.NEGATIVE_INFINITY;
-  let maxY = Number.NEGATIVE_INFINITY;
-
-  const include = (x: number, y: number) => {
-    minX = Math.min(minX, x);
-    minY = Math.min(minY, y);
-    maxX = Math.max(maxX, x);
-    maxY = Math.max(maxY, y);
-  };
-
-  for (const entity of entities) {
-    if (entity.type === 'line') {
-      include(entity.data.from[0], -entity.data.from[1]);
-      include(entity.data.to[0], -entity.data.to[1]);
-      continue;
-    }
-    const radius = entity.data.diameter / 2;
-    const x = entity.data.center[0];
-    const y = -entity.data.center[1];
-    include(x - radius, y - radius);
-    include(x + radius, y + radius);
-  }
-
-  return { minX, minY, maxX, maxY };
 }
