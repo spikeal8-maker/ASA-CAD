@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import type { CadPartDocument, CadPoint2, CadSketch } from '../contracts/document';
 import type { CadBodyId } from '../contracts/ids';
 import type { CadRenderModel, CadViewportPick } from '../contracts/render';
@@ -10,6 +10,10 @@ import { SketchSolveStatus } from './SketchSolveStatus';
 import { useActiveSketchSolveOverlay } from './useActiveSketchSolveOverlay';
 import type { SketchLineDraft } from './useSketchLineTool';
 import { SketchLineInteractionLayer } from './viewport/SketchLineInteractionLayer';
+import {
+  resetSketchViewportState,
+  sketchDisplayFrame,
+} from './viewport/SketchViewportGeometry';
 import { resolveSketchWorkplaneProjection } from './viewport/SketchWorkplaneProjection';
 
 export interface PartModelStageProps {
@@ -37,11 +41,16 @@ export interface PartModelStageProps {
  * Focused owner for the Part work-area presentation.
  *
  * Active Sketch editing remains an isolated 2D workplane until a StableRef face
- * can provide a resolved model-space frame. Origin planes already expose a
- * support-aware projection contract, but M3.2 does not fake B-Rep composition.
+ * can provide a resolved model-space frame. The transient Sketch viewport is
+ * stable across geometry commits and resets only when the active Sketch changes.
  */
 export function PartModelStage(props: PartModelStageProps) {
   const sketchEditing = props.activeWorkspace === 'sketch' && Boolean(props.activeSketch);
+  const [sketchViewport, setSketchViewport] = useState(resetSketchViewportState);
+  useEffect(() => {
+    setSketchViewport(resetSketchViewportState());
+  }, [props.activeSketch?.id]);
+
   const sketchSolve = useActiveSketchSolveOverlay({
     document: props.document,
     sketch: props.activeSketch,
@@ -49,6 +58,7 @@ export function PartModelStage(props: PartModelStageProps) {
     revisionToken: props.revisionToken,
   });
   const sketchOverlay = sketchSolve.overlay;
+  const sketchFrame = sketchDisplayFrame(sketchViewport);
   const viewportModel = sketchEditing ? null : props.renderModel;
   const showViewport = Boolean(viewportModel || sketchOverlay);
   const workplaneProjection = props.activeSketch
@@ -63,6 +73,8 @@ export function PartModelStage(props: PartModelStageProps) {
       data-sketch-support={props.activeSketch?.support ?? ''}
       data-sketch-projection={workplaneProjection?.kind ?? ''}
       data-model-context-ready={workplaneProjection?.modelContextReady ? 'true' : 'false'}
+      data-sketch-view-span={sketchViewport.span}
+      data-sketch-view-center={sketchViewport.center.join(',')}
     >
       <div className="origin-widget" aria-label="Ориентация">
         <span className="axis-z">Z</span>
@@ -75,6 +87,7 @@ export function PartModelStage(props: PartModelStageProps) {
         <CadViewport
           model={viewportModel}
           sketchOverlay={sketchOverlay}
+          sketchFrame={sketchFrame}
           selectionMode={props.selectionMode}
           onPick={props.onPick}
           viewCommand={props.viewCommand}
@@ -103,6 +116,9 @@ export function PartModelStage(props: PartModelStageProps) {
       {sketchEditing && (
         <SketchLineInteractionLayer
           model={sketchOverlay}
+          frame={sketchFrame}
+          viewportState={sketchViewport}
+          onViewportStateChange={setSketchViewport}
           active={props.activeCommand === 'sketch.line'}
           draft={props.lineDraft}
           committing={props.lineCommitting}
