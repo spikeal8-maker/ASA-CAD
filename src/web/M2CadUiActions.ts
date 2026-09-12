@@ -8,6 +8,7 @@ export interface M2CadUiActionHandlers {
   redo(): void | Promise<void>;
   rebuild(): void | Promise<void>;
   createSketch(): void | Promise<void>;
+  line(): void | Promise<void>;
   rectangle(): void | Promise<void>;
   circle(): void | Promise<void>;
   finishSketch(): void | Promise<void>;
@@ -41,12 +42,7 @@ function binding(
   return { execute, enabled, disabledReason };
 }
 
-/**
- * Permanent M2 product bindings. Stable identity/labels/presentation stay in
- * command-registry; this function owns only current editor enablement and
- * execution. Desktop, mobile and search must consume actions built from these
- * bindings instead of copying command logic.
- */
+/** Shared permanent command bindings consumed by desktop/mobile/search. */
 export function createM2CadUiActionBindings(
   handlers: M2CadUiActionHandlers,
   state: M2CadUiActionState,
@@ -59,6 +55,7 @@ export function createM2CadUiActionBindings(
     'system.rebuild': binding(handlers.rebuild),
 
     'part.sketch.create': binding(handlers.createSketch),
+    'sketch.line': binding(handlers.line, state.hasSketch, 'Сначала создайте эскиз'),
     'sketch.rectangle': binding(handlers.rectangle, state.hasSketch, 'Сначала создайте эскиз'),
     'sketch.circle': binding(handlers.circle, state.hasSketch, 'Сначала создайте эскиз'),
     'sketch.finish': binding(handlers.finishSketch, state.hasSketch, 'Сначала создайте эскиз'),
