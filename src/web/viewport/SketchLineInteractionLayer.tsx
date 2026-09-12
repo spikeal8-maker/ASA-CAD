@@ -48,13 +48,13 @@ const TOUCH_TAP_THRESHOLD = 10;
  * keeping one Pointer Events path for the Sketch workplane.
  */
 export function SketchLineInteractionLayer(props: SketchLineInteractionLayerProps) {
-  if (!props.active || !props.model) return null;
   const touchesRef = useRef(new Map<number, ActiveTouch>());
   const gestureRef = useRef<GestureState>({
     multiTouch: false,
     previousMidpoint: null,
     previousDistance: null,
   });
+  if (!props.active || !props.model) return null;
   const phase = props.draft.from ? 'anchored' : 'awaiting-start';
 
   const screenRect = (node: SVGSVGElement): SketchScreenRect => {
