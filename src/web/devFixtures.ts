@@ -13,6 +13,8 @@ export interface CadPartDevFixtureResult {
   workspace: 'solid' | 'sketch';
   expectedRecomputeStatus: 'clean' | 'dirty' | 'error';
   message: string;
+  /** Optional review-only Sketch activation; existing fixtures keep their old lazy behavior. */
+  activeSketchId?: CadSketchId;
 }
 
 function commandError(result: CadCommandResult, label: string): never {
@@ -193,12 +195,13 @@ export async function applyPartDevFixture(
   }
 
   if (name === 'line') {
-    await buildLineSketch(app);
+    const activeSketchId = await buildLineSketch(app);
     return {
       name,
       workspace: 'sketch',
       expectedRecomputeStatus: 'dirty',
       message: 'Fixture line: один прямой отрезок в XY',
+      activeSketchId,
     };
   }
 
