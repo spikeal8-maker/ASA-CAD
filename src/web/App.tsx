@@ -193,8 +193,12 @@ export function App(props: CadProjectPersistenceOverrides) {
     void applyPartDevFixture(app, devFixture)
       .then((result) => {
         if (!active) return;
-        resetToWorkspace(result.workspace);
-        setActivePanel('tree');
+        if (result.activeSketchId) {
+          enterSketch(result.activeSketchId);
+        } else {
+          resetToWorkspace(result.workspace);
+          setActivePanel('tree');
+        }
         setFixtureStatus(result.expectedRecomputeStatus === 'error' ? 'error' : 'ready');
         setNotice(result.message);
       })
@@ -207,7 +211,7 @@ export function App(props: CadProjectPersistenceOverrides) {
     return () => {
       active = false;
     };
-  }, [app, devFixture, resetToWorkspace, resetTransient]);
+  }, [app, devFixture, enterSketch, resetToWorkspace, resetTransient]);
 
   const requestViewportCommand = useCallback((view: CadViewportViewName) => {
     setViewCommand((current) => ({ sequence: current.sequence + 1, view }));

@@ -48,6 +48,21 @@ async function buildLineSketch(app: CadApplication): Promise<CadSketchId> {
   return sketchId;
 }
 
+async function buildCircleSketch(app: CadApplication): Promise<CadSketchId> {
+  const sketchResult = await execute(
+    app,
+    { id: 'sketch.create', payload: { support: 'XY', name: 'Эскиз 1' } },
+    'Create circle sketch',
+  );
+  const sketchId = createdId<CadSketchId>(sketchResult, 0, 'Create circle sketch');
+  await execute(
+    app,
+    { id: 'sketch.circle', payload: { sketchId, center: [5, -3], diameter: 24 } },
+    'Create direct circle fixture',
+  );
+  return sketchId;
+}
+
 async function buildRectangleSketch(app: CadApplication): Promise<CadSketchId> {
   const sketchResult = await execute(
     app,
@@ -201,6 +216,17 @@ export async function applyPartDevFixture(
       workspace: 'sketch',
       expectedRecomputeStatus: 'dirty',
       message: 'Fixture line: один прямой отрезок в XY',
+      activeSketchId,
+    };
+  }
+
+  if (name === 'circle') {
+    const activeSketchId = await buildCircleSketch(app);
+    return {
+      name,
+      workspace: 'sketch',
+      expectedRecomputeStatus: 'dirty',
+      message: 'Fixture circle: окружность Ø24 мм с центром (5, -3) в XY',
       activeSketchId,
     };
   }
