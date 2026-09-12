@@ -65,8 +65,8 @@ replaceExact(
   assert.equal(await page.locator('[data-testid="sketch-dof"]').textContent(), 'DoF: н/д');
 
   const sketchWasm = await loadedWasmResources();
-  assert.ok(sketchWasm.some(isPlaneGcsWasm), `PlaneGCS WASM was not loaded for active Sketch solve: ${sketchWasm.join(', ')}`);
-  assert.deepEqual(nonPlaneGcsWasm(sketchWasm), [], `OpenCascade/other WASM loaded during Sketch solve: ${sketchWasm.join(', ')}`);
+  assert.ok(sketchWasm.some(isPlaneGcsWasm), 'PlaneGCS WASM was not loaded for active Sketch solve: ' + sketchWasm.join(', '));
+  assert.deepEqual(nonPlaneGcsWasm(sketchWasm), [], 'OpenCascade/other WASM loaded during Sketch solve: ' + sketchWasm.join(', '));
 
   await finishSketch();
   await page.locator('[data-testid="cad-sketch-overlay"]').waitFor({ state: 'detached' });`,
@@ -85,15 +85,15 @@ replaceExact(
   assert.ok(wasmRequests.length >= 1, 'No WASM network request was observed');`,
 `  const loadedWasm = await loadedWasmResources();
   assert.ok(loadedWasm.some(isPlaneGcsWasm), 'PlaneGCS WASM disappeared after solid operation');
-  assert.ok(nonPlaneGcsWasm(loadedWasm).length >= 1, `OpenCascade WASM was not loaded for the first solid operation: ${loadedWasm.join(', ')}`);
+  assert.ok(nonPlaneGcsWasm(loadedWasm).length >= 1, 'OpenCascade WASM was not loaded for the first solid operation: ' + loadedWasm.join(', '));
   assert.ok(wasmRequests.some(isPlaneGcsWasm), 'No PlaneGCS WASM network request was observed');
   assert.ok(nonPlaneGcsWasm(wasmRequests).length >= 1, 'No OpenCascade WASM network request was observed');`,
 'post-solid WASM assertion',
 );
 
 replaceExact(
-`  console.log(\`  ✓ lazy WASM: ${'${'}loadedWasm.length} resource(s), first solid only\`);`,
-`  console.log(\`  ✓ lazy kernels: PlaneGCS in Sketch, OpenCascade first solid (${ '${' }loadedWasm.length} WASM resource(s))\`);`,
+"  console.log(`  ✓ lazy WASM: ${loadedWasm.length} resource(s), first solid only`);",
+"  console.log('  ✓ lazy kernels: PlaneGCS in Sketch, OpenCascade first solid (' + loadedWasm.length + ' WASM resource(s))');",
 'WASM console message',
 );
 
