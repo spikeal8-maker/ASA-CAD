@@ -1,4 +1,10 @@
-import type { CadPoint2, CadSketchEntity } from '../../contracts/document';
+import type { CadPoint2 } from '../../contracts/document';
+
+export interface SketchViewportState {
+  center: CadPoint2;
+  /** Visible Sketch width/height in local units. Kept square for deterministic SVG mapping. */
+  span: number;
+}
 
 export interface SketchDisplayFrame {
   minX: number;
@@ -17,35 +23,31 @@ export interface SketchScreenRect {
   height: number;
 }
 
-/** Shared viewBox policy for persisted/solver Sketch geometry and M3 interaction. */
-export function sketchDisplayFrame(entities: readonly CadSketchEntity[]): SketchDisplayFrame {
-  if (entities.length === 0) return frameFromBounds(-10, -10, 10, 10);
+export const DEFAULT_SKETCH_VIEWPORT_STATE: SketchViewportState = {
+  center: [0, 0],
+  span: 100,
+};
 
-  let minX = Number.POSITIVE_INFINITY;
-  let minY = Number.POSITIVE_INFINITY;
-  let maxX = Number.NEGATIVE_INFINITY;
-  let maxY = Number.NEGATIVE_INFINITY;
-  const include = (x: number, y: number) => {
-    minX = Math.min(minX, x);
-    minY = Math.min(minY, y);
-    maxX = Math.max(maxX, x);
-    maxY = Math.max(maxY, y);
+const MIN_SPAN = 2;
+const MAX_SPAN = 100_000;
+
+/**
+ * Stable transient Sketch camera. Geometry commits never refit this frame, so
+ * direct drawing can extend beyond existing entity bounds without view jumps.
+ */
+export function sketchDisplayFrame(state: SketchViewportState): SketchDisplayFrame {
+  const span = clampSpan(state.span);
+  const minX = state.center[0] - span / 2;
+  const minY = -state.center[1] - span / 2;
+  return {
+    minX,
+    minY,
+    maxX: minX + span,
+    maxY: minY + span,
+    width: span,
+    height: span,
+    viewBox: [minX, minY, span, span].join(' '),
   };
-
-  for (const entity of entities) {
-    if (entity.type === 'line') {
-      include(entity.data.from[0], -entity.data.from[1]);
-      include(entity.data.to[0], -entity.data.to[1]);
-      continue;
-    }
-    const radius = entity.data.diameter / 2;
-    const x = entity.data.center[0];
-    const y = -entity.data.center[1];
-    include(x - radius, y - radius);
-    include(x + radius, y + radius);
-  }
-
-  return frameFromBounds(minX, minY, maxX, maxY);
 }
 
 /**
@@ -75,23 +77,51 @@ export function screenPointToSketchPoint(
   return [normalizeSignedZero(svgX), normalizeSignedZero(-svgY)];
 }
 
-function frameFromBounds(minX: number, minY: number, maxX: number, maxY: number): SketchDisplayFrame {
-  const rawWidth = Math.max(maxX - minX, 1);
-  const rawHeight = Math.max(maxY - minY, 1);
-  const padding = Math.max(Math.max(rawWidth, rawHeight) * 0.08, 1);
-  const paddedMinX = minX - padding;
-  const paddedMinY = minY - padding;
-  const width = rawWidth + padding * 2;
-  const height = rawHeight + padding * 2;
+export function panSketchViewport(
+  state: SketchViewportState,
+  rect: SketchScreenRect,
+  deltaClientX: number,
+  deltaClientY: number,
+): SketchViewportState {
+  const frame = sketchDisplayFrame(state);
+  const scale = Math.min(rect.width / frame.width, rect.height / frame.height);
+  if (!(scale > 0) || !Number.isFinite(scale)) return state;
   return {
-    minX: paddedMinX,
-    minY: paddedMinY,
-    maxX: paddedMinX + width,
-    maxY: paddedMinY + height,
-    width,
-    height,
-    viewBox: [paddedMinX, paddedMinY, width, height].join(' '),
+    center: [
+      normalizeSignedZero(state.center[0] - deltaClientX / scale),
+      normalizeSignedZero(state.center[1] + deltaClientY / scale),
+    ],
+    span: state.span,
   };
+}
+
+/** Zoom around a Sketch-space anchor while keeping that point visually fixed. */
+export function zoomSketchViewport(
+  state: SketchViewportState,
+  factor: number,
+  anchor: CadPoint2,
+): SketchViewportState {
+  if (!(factor > 0) || !Number.isFinite(factor)) return state;
+  const nextSpan = clampSpan(state.span * factor);
+  const applied = nextSpan / state.span;
+  return {
+    center: [
+      normalizeSignedZero(anchor[0] + (state.center[0] - anchor[0]) * applied),
+      normalizeSignedZero(anchor[1] + (state.center[1] - anchor[1]) * applied),
+    ],
+    span: nextSpan,
+  };
+}
+
+export function resetSketchViewportState(): SketchViewportState {
+  return {
+    center: [...DEFAULT_SKETCH_VIEWPORT_STATE.center] as CadPoint2,
+    span: DEFAULT_SKETCH_VIEWPORT_STATE.span,
+  };
+}
+
+function clampSpan(value: number): number {
+  return Math.min(Math.max(value, MIN_SPAN), MAX_SPAN);
 }
 
 function normalizeSignedZero(value: number): number {
