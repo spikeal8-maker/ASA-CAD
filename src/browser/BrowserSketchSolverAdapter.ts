@@ -5,6 +5,11 @@ import type {
   CadSketchSolverAdapter,
 } from '../contracts/sketchSolver';
 
+const planeGcsWasmUrl = new URL(
+  '../../vendor/toubkal/node_modules/@salusoft89/planegcs/dist/planegcs_dist/planegcs.wasm',
+  import.meta.url,
+).toString();
+
 /**
  * Browser-owned lazy boundary for the Sketch solver.
  *
@@ -44,7 +49,7 @@ export class BrowserSketchSolverAdapter implements CadSketchSolverAdapter {
     if (!this.loadPromise) {
       this.loadPromise = import('../runtime/PlaneGCSSketchSolverRuntime')
         .then(async ({ PlaneGCSSketchSolverRuntime }) => {
-          const delegate = new PlaneGCSSketchSolverRuntime();
+          const delegate = new PlaneGCSSketchSolverRuntime(planeGcsWasmUrl);
           await delegate.init();
           if (this.disposed) {
             delegate.dispose();
