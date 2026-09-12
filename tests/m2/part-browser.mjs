@@ -132,6 +132,35 @@ async function createProtectedExtrude() {
   assert.equal(await emptyOverlay.getAttribute('data-overlay-source'), 'document');
   assert.equal(await emptyOverlay.getAttribute('data-entity-count'), '0');
 
+  // M3.2 direct Line: pointer state is transient, second click is one normal
+  // sketch.line application mutation, and one Undo must remove the whole line.
+  await page.getByRole('button', { name: /^Отрезок$/ }).click();
+  const lineLayer = page.locator('[data-testid="sketch-line-interaction-layer"]');
+  await lineLayer.waitFor();
+  assert.equal(await lineLayer.getAttribute('data-line-state'), 'awaiting-first-point');
+  const lineBox = await lineLayer.boundingBox();
+  assert.ok(lineBox && lineBox.width > 300 && lineBox.height > 200, 'Line workplane has no usable desktop bounds');
+  await lineLayer.click({ position: { x: lineBox.width * 0.38, y: lineBox.height * 0.55 } });
+  await page.locator('[data-testid="sketch-line-ghost"]').waitFor();
+  assert.equal(await lineLayer.getAttribute('data-line-state'), 'awaiting-second-point');
+  await page.mouse.move(lineBox.x + lineBox.width * 0.62, lineBox.y + lineBox.height * 0.42);
+  await lineLayer.click({ position: { x: lineBox.width * 0.62, y: lineBox.height * 0.42 } });
+  await page.getByText(/Отрезок создан; укажите первую точку следующего отрезка/).waitFor();
+  await page.locator('[data-testid="cad-sketch-overlay"][data-entity-count="1"]').waitFor({ timeout: 30_000 });
+  await page.locator('[data-testid="sketch-solve-status"][data-solve-status="solved"]').waitFor({ timeout: 30_000 });
+
+  await page.locator('.cad-app').focus();
+  await page.keyboard.press('Control+z');
+  await page.locator('[data-testid="cad-sketch-overlay"][data-entity-count="0"]').waitFor();
+  await page.keyboard.press('Control+y');
+  await page.locator('[data-testid="cad-sketch-overlay"][data-entity-count="1"]').waitFor();
+  await page.keyboard.press('Control+z');
+  await page.locator('[data-testid="cad-sketch-overlay"][data-entity-count="0"]').waitFor();
+  await page.keyboard.press('Escape');
+  await lineLayer.waitFor({ state: 'detached' });
+  assert.deepEqual(nonPlaneGcsWasm(await loadedWasmResources()), [], 'OpenCascade WASM loaded during direct Line authoring');
+  console.log('  ✓ direct Line ghost + one-step Undo/Redo through CadApplication');
+
   await page.getByRole('button', { name: /Прямоугольник/i }).click();
   const width = page.locator('.numeric-field').filter({ hasText: 'Ширина' }).locator('input');
   const height = page.locator('.numeric-field').filter({ hasText: 'Высота' }).locator('input');
