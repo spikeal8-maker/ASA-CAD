@@ -63,6 +63,21 @@ async function buildCircleSketch(app: CadApplication): Promise<CadSketchId> {
   return sketchId;
 }
 
+async function buildArcSketch(app: CadApplication): Promise<CadSketchId> {
+  const sketchResult = await execute(
+    app,
+    { id: 'sketch.create', payload: { support: 'XY', name: 'Эскиз 1' } },
+    'Create arc sketch',
+  );
+  const sketchId = createdId<CadSketchId>(sketchResult, 0, 'Create arc sketch');
+  await execute(
+    app,
+    { id: 'sketch.arc', payload: { sketchId, center: [0, 0], start: [20, 0], end: [0, 20] } },
+    'Create direct arc fixture',
+  );
+  return sketchId;
+}
+
 async function buildRectangleSketch(app: CadApplication): Promise<CadSketchId> {
   const sketchResult = await execute(
     app,
@@ -227,6 +242,17 @@ export async function applyPartDevFixture(
       workspace: 'sketch',
       expectedRecomputeStatus: 'dirty',
       message: 'Fixture circle: окружность Ø24 мм с центром (5, -3) в XY',
+      activeSketchId,
+    };
+  }
+
+  if (name === 'arc') {
+    const activeSketchId = await buildArcSketch(app);
+    return {
+      name,
+      workspace: 'sketch',
+      expectedRecomputeStatus: 'dirty',
+      message: 'Fixture arc: четверть окружности R20 в XY',
       activeSketchId,
     };
   }
