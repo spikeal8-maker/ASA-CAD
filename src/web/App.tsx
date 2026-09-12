@@ -152,6 +152,11 @@ export function App(props: CadProjectPersistenceOverrides) {
     handleViewportPick,
     handleBodySelect,
     enterSketch,
+    beginLine,
+    lineDraft,
+    lineCommitting,
+    handleSketchLinePointMove,
+    handleSketchLinePoint,
     beginCreateSketch,
     commitCreateSketch,
     beginRectangle,
@@ -257,6 +262,7 @@ export function App(props: CadProjectPersistenceOverrides) {
       redo,
       rebuild,
       createSketch: beginCreateSketch,
+      line: beginLine,
       rectangle: beginRectangle,
       circle: beginCircle,
       finishSketch,
@@ -444,7 +450,8 @@ export function App(props: CadProjectPersistenceOverrides) {
           {document.kind === 'part' && activeWorkspace === 'sketch' ? (
             <>
               <CommandGroup label="Геометрия">
-                <CadUiActionButton action={uiAction('sketch.rectangle')} symbol={commandSymbol('sketch.rectangle')} large accent />
+                <CadUiActionButton action={uiAction('sketch.line')} symbol="╱" large accent />
+                <CadUiActionButton action={uiAction('sketch.rectangle')} symbol={commandSymbol('sketch.rectangle')} />
                 <CadUiActionButton action={uiAction('sketch.circle')} symbol={commandSymbol('sketch.circle')} />
               </CommandGroup>
               <CommandGroup label="Размеры">
@@ -580,6 +587,7 @@ export function App(props: CadProjectPersistenceOverrides) {
                 document={document}
                 activeSketch={sketch}
                 activeWorkspace={activeWorkspace}
+                activeCommand={activeCommand}
                 revisionToken={revisionToken}
                 renderModel={renderModel}
                 runtimeStatus={runtimeState.status}
@@ -590,6 +598,10 @@ export function App(props: CadProjectPersistenceOverrides) {
                 viewCommand={viewCommand}
                 selectedBodyId={selectedBodyId}
                 onBodySelect={handleBodySelect}
+                lineDraft={lineDraft}
+                lineCommitting={lineCommitting}
+                onSketchLinePointMove={handleSketchLinePointMove}
+                onSketchLinePoint={handleSketchLinePoint}
               />
             ) : (
               <div className="stage-message">

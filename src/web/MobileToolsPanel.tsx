@@ -16,6 +16,7 @@ const SOLID_TOOLS: readonly MobileToolSpec[] = [
 ];
 
 const SKETCH_TOOLS: readonly MobileToolSpec[] = [
+  { id: 'sketch.line', symbol: '╱' },
   { id: 'sketch.rectangle', symbol: '▭' },
   { id: 'sketch.circle', symbol: '○' },
   { id: 'sketch.finish', symbol: '✓' },
