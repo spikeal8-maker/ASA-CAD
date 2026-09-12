@@ -3,6 +3,7 @@ export const ASA_CAD_MOUNT_PATH = '/cad' as const;
 export const CAD_PART_DEV_FIXTURE_NAMES = [
   'empty',
   'sketch',
+  'line',
   'extrude',
   'reference',
   'rebuild-error',
