@@ -30,14 +30,16 @@ assert.match(app, /<PartModelStage\b/, 'App must delegate Part work-area solve/o
 assert.doesNotMatch(app, /SketchSolveSession|PlaneGCSSketchSolverRuntime|buildSketchOverlayModel/, 'App must not own solver or overlay orchestration');
 assert.match(stage, /useActiveSketchSolveOverlay\(/, 'PartModelStage must activate the focused Sketch solve/overlay hook');
 assert.match(stage, /sketchOverlay=\{sketchOverlay\}/, 'PartModelStage must pass the transient overlay into CadViewport');
-assert.match(stage, /Boolean\(props\.renderModel \|\| sketchOverlay\)/, 'Sketch-only editing must mount CadViewport even without B-Rep');
+assert.match(stage, /const viewportModel = sketchEditing \? null : props\.renderModel;/, 'M3.1 must not composite a screen-fitted Sketch over unprojected B-Rep context');
+assert.match(stage, /Boolean\(viewportModel \|\| sketchOverlay\)/, 'Sketch-only editing must mount CadViewport even without B-Rep');
+assert.match(stage, /data-sketch-context=\{sketchEditing \? 'isolated-2d' : 'model'\}/, 'Part stage must expose deliberate isolated Sketch workplane mode');
 assert.match(solveHook, /new SketchSolveSession\(solver\)/, 'focused hook must own transient SketchSolveSession');
 assert.match(solveHook, /buildSketchOverlayModel\(sketch, snapshot\)/, 'focused hook must project solve state through SketchOverlayModel');
 assert.match(solveHook, /sketch\.entities\.length === 0/, 'empty Sketch must not eagerly initialize PlaneGCS');
 assert.match(browserSolver, /import\('\.\.\/runtime\/PlaneGCSSketchSolverRuntime'\)/, 'browser solver must lazy-import the concrete PlaneGCS runtime');
-assert.match(browserSolver, /planegcs\.wasm/, 'browser solver must provide an explicit browser PlaneGCS WASM URL');
+assert.match(browserSolver, /planegcs\.wasm/, 'browser solver must provide an emitted PlaneGCS WASM URL');
 assert.ok(buildConfig.includes('planegcs_dist') && buildConfig.includes('parser: { url: false }'), 'ASA build must isolate Emscripten planegcs.js new-URL parsing without disabling ASA WASM asset URLs globally');
 assert.doesNotMatch(renderContract, /SketchOverlay|CadSketchEntity|sketchEntities/, 'B-Rep CadRenderModel contract must remain free of Sketch overlay geometry');
 assert.match(picking, /kind: 'sketch-entity'/, 'shared viewport candidate model must retain Sketch entity picking seam');
 
-console.log('M3.1 Sketch solve-overlay boundary PASS (active transient solver preview outside B-Rep/App ownership)');
+console.log('M3.1 Sketch solve-overlay boundary PASS (isolated active workplane + transient solver preview outside B-Rep/App ownership)');
