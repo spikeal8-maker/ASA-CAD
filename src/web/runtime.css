@@ -1,3 +1,7 @@
+.part-model-stage {
+  display: contents;
+}
+
 .cad-viewport {
   position: absolute;
   inset: 0;
