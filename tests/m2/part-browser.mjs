@@ -140,8 +140,28 @@ async function createProtectedExtrude() {
   await applyPrimary();
   await page.getByText('Прямоугольник 60×40 мм создан', { exact: true }).waitFor();
 
-  const solveStatus = page.locator('[data-testid="sketch-solve-status"][data-solve-status="solved"]');
-  await solveStatus.waitFor({ timeout: 60_000 });
+  const solveStatus = page.locator('[data-testid="sketch-solve-status"]');
+  await solveStatus.waitFor({ timeout: 20_000 });
+  try {
+    await page.waitForFunction(() => {
+      const status = document.querySelector('[data-testid="sketch-solve-status"]')?.getAttribute('data-solve-status');
+      return status === 'solved' || status === 'error';
+    }, null, { timeout: 20_000 });
+  } catch {
+    // Fall through to the diagnostic assertion below with the current state.
+  }
+  const solveState = await solveStatus.getAttribute('data-solve-status');
+  if (solveState !== 'solved') {
+    const diagnostic = await page.locator('[data-testid="sketch-solve-diagnostic"]').textContent().catch(() => null);
+    const currentWasm = await loadedWasmResources();
+    throw new Error(
+      'Sketch solve did not reach solved: status=' + solveState
+      + '; diagnostic=' + (diagnostic ?? 'none')
+      + '; wasm=' + currentWasm.join(', ')
+      + '; pageErrors=' + pageErrors.join(' | ')
+      + '; failedRequests=' + failedRequests.join(' | '),
+    );
+  }
   const solvedOverlay = page.locator('[data-testid="cad-sketch-overlay"]');
   await solvedOverlay.waitFor();
   assert.equal(await solvedOverlay.getAttribute('data-overlay-source'), 'solver-preview');
