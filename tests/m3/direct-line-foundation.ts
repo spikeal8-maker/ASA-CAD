@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import type { CadSketchEntity, CadStableReferenceId } from '../../src/contracts/document';
+import type { CadSketchEntity } from '../../src/contracts/document';
+import type { CadStableReferenceId } from '../../src/contracts/ids';
 import {
   screenPointToSketchPoint,
   sketchDisplayFrame,
