@@ -15,12 +15,15 @@ import type {
 export class BrowserSketchSolverAdapter implements CadSketchSolverAdapter {
   private delegate: CadSketchSolverAdapter | null = null;
   private loadPromise: Promise<CadSketchSolverAdapter> | null = null;
+  private disposed = false;
 
   async init(): Promise<void> {
+    this.assertAlive();
     await this.load();
   }
 
   solve(document: Readonly<CadDocument>, sketchId: CadSketchId): CadSketchSolveResult {
+    this.assertAlive();
     if (!this.delegate) {
       throw new Error('BrowserSketchSolverAdapter.init() must be awaited before solve()');
     }
@@ -28,18 +31,25 @@ export class BrowserSketchSolverAdapter implements CadSketchSolverAdapter {
   }
 
   dispose(): void {
+    if (this.disposed) return;
+    this.disposed = true;
     this.delegate?.dispose();
     this.delegate = null;
     this.loadPromise = null;
   }
 
   private load(): Promise<CadSketchSolverAdapter> {
+    this.assertAlive();
     if (this.delegate) return Promise.resolve(this.delegate);
     if (!this.loadPromise) {
       this.loadPromise = import('../runtime/PlaneGCSSketchSolverRuntime')
         .then(async ({ PlaneGCSSketchSolverRuntime }) => {
           const delegate = new PlaneGCSSketchSolverRuntime();
           await delegate.init();
+          if (this.disposed) {
+            delegate.dispose();
+            throw new Error('BrowserSketchSolverAdapter was disposed while loading');
+          }
           this.delegate = delegate;
           return delegate;
         })
@@ -49,5 +59,9 @@ export class BrowserSketchSolverAdapter implements CadSketchSolverAdapter {
         });
     }
     return this.loadPromise;
+  }
+
+  private assertAlive(): void {
+    if (this.disposed) throw new Error('BrowserSketchSolverAdapter is disposed');
   }
 }
