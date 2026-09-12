@@ -26,8 +26,8 @@ replaceOnce(
 );
 replaceOnce(
   'src/web/App.tsx',
-  `      <main className="content-area">`,
-  `      <main className={\`content-area${activePanel === 'closed' ? ' panel-closed' : ''}\`}>`,
+  '      <main className="content-area">',
+  "      <main className={`content-area${activePanel === 'closed' ? ' panel-closed' : ''}`}>",
 );
 replaceOnce(
   'src/web/App.tsx',
