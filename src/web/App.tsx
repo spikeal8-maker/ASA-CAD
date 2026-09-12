@@ -157,6 +157,10 @@ export function App(props: CadProjectPersistenceOverrides) {
     lineCommitting,
     handleSketchLinePointMove,
     handleSketchLinePoint,
+    circleDraft,
+    circleCommitting,
+    handleSketchCirclePointMove,
+    handleSketchCirclePoint,
     beginCreateSketch,
     commitCreateSketch,
     beginRectangle,
@@ -602,6 +606,10 @@ export function App(props: CadProjectPersistenceOverrides) {
                 lineCommitting={lineCommitting}
                 onSketchLinePointMove={handleSketchLinePointMove}
                 onSketchLinePoint={handleSketchLinePoint}
+                circleDraft={circleDraft}
+                circleCommitting={circleCommitting}
+                onSketchCirclePointMove={handleSketchCirclePointMove}
+                onSketchCirclePoint={handleSketchCirclePoint}
               />
             ) : (
               <div className="stage-message">

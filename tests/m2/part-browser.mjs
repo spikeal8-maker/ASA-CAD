@@ -225,6 +225,9 @@ async function createHoleAndFillet() {
   await page.getByText('Создан эскиз на выбранной грани', { exact: true }).waitFor();
 
   await page.getByRole('button', { name: /Окружность/i }).click();
+  await page.locator('.content-area.panel-closed').waitFor();
+  await page.getByTitle('Параметры').click();
+  await page.locator('.parameter-panel').waitFor();
   const diameter = page.locator('.numeric-field').filter({ hasText: 'Диаметр' }).locator('input');
   assert.equal(await diameter.inputValue(), '12');
   await applyPrimary();

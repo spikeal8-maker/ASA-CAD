@@ -9,7 +9,9 @@ import {
 import { SketchSolveStatus } from './SketchSolveStatus';
 import { useActiveSketchSolveOverlay } from './useActiveSketchSolveOverlay';
 import type { SketchLineDraft } from './useSketchLineTool';
+import type { SketchCircleDraft } from './useSketchCircleTool';
 import { SketchLineInteractionLayer } from './viewport/SketchLineInteractionLayer';
+import { SketchCircleInteractionLayer } from './viewport/SketchCircleInteractionLayer';
 import { SketchViewportFrameProvider } from './viewport/SketchViewportFrameContext';
 import {
   resetSketchViewportState,
@@ -36,6 +38,10 @@ export interface PartModelStageProps {
   lineCommitting: boolean;
   onSketchLinePointMove(point: CadPoint2): void;
   onSketchLinePoint(point: CadPoint2): void | Promise<void>;
+  circleDraft: SketchCircleDraft;
+  circleCommitting: boolean;
+  onSketchCirclePointMove(point: CadPoint2): void;
+  onSketchCirclePoint(point: CadPoint2): void | Promise<void>;
 }
 
 /**
@@ -125,6 +131,20 @@ export function PartModelStage(props: PartModelStageProps) {
             committing={props.lineCommitting}
             onPointMove={props.onSketchLinePointMove}
             onPoint={props.onSketchLinePoint}
+          />
+        )}
+
+        {sketchEditing && (
+          <SketchCircleInteractionLayer
+            model={sketchOverlay}
+            frame={sketchFrame}
+            viewportState={sketchViewport}
+            onViewportStateChange={setSketchViewport}
+            active={props.activeCommand === 'sketch.circle'}
+            draft={props.circleDraft}
+            committing={props.circleCommitting}
+            onPointMove={props.onSketchCirclePointMove}
+            onPoint={props.onSketchCirclePoint}
           />
         )}
 

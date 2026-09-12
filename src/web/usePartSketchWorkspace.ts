@@ -12,6 +12,7 @@ import type {
 import type { CadViewportPick } from '../contracts/render';
 import { useSketchSession } from './useSketchSession';
 import { useSketchLineTool } from './useSketchLineTool';
+import { useSketchCircleTool } from './useSketchCircleTool';
 
 export type CadWorkspacePanel = 'tree' | 'parameters' | 'tools' | 'closed';
 export type PartSketchSelectionMode = 'none' | 'face' | 'edge';
@@ -86,6 +87,19 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     active: activeCommand === 'sketch.line',
     setNotice,
     onCommitted: () => {
+      setActiveCommand(null);
+      setPanel('tree');
+      setActiveWorkspace('sketch');
+      clearTransientSelection();
+    },
+  });
+  const circleTool = useSketchCircleTool({
+    app,
+    sketchId: activeSketchId,
+    active: activeCommand === 'sketch.circle',
+    setNotice,
+    onCommitted: (diameter) => {
+      setCircleDiameter(diameter);
       setActiveCommand(null);
       setPanel('tree');
       setActiveWorkspace('sketch');
@@ -271,10 +285,11 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
 
   function beginCircle() {
     if (!sketch) return;
+    circleTool.reset();
     setActiveCommand('sketch.circle');
-    setPanel('parameters');
+    setPanel('closed');
     clearTransientSelection();
-    setNotice('Задайте диаметр окружности');
+    setNotice('Укажите центр окружности');
   }
 
   async function commitCircle() {
@@ -516,6 +531,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
 
   function cancelCommand() {
     if (activeCommand === 'sketch.line') lineTool.reset();
+    if (activeCommand === 'sketch.circle') circleTool.reset();
     const stayInSketch = activeCommand === 'sketch.line' || activeCommand === 'sketch.rectangle' || activeCommand === 'sketch.circle';
     setActiveCommand(null);
     setEditingDimensionId(null);
@@ -533,7 +549,10 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     if (activeCommand === 'sketch.line') return lineTool.commitPreview();
     if (activeCommand === 'part.sketch.create') return commitCreateSketch();
     if (activeCommand === 'sketch.rectangle') return commitRectangle();
-    if (activeCommand === 'sketch.circle') return commitCircle();
+    if (activeCommand === 'sketch.circle') {
+      if (circleTool.draft.center) return circleTool.commitPreview();
+      return commitCircle();
+    }
     if (activeCommand === 'part.extrude') return commitExtrude();
     if (activeCommand === 'part.cutExtrude') return commitCut();
     if (activeCommand === 'part.fillet') return commitFillet();
@@ -585,6 +604,10 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     lineCommitting: lineTool.committing,
     handleSketchLinePointMove: lineTool.move,
     handleSketchLinePoint: lineTool.point,
+    circleDraft: circleTool.draft,
+    circleCommitting: circleTool.committing,
+    handleSketchCirclePointMove: circleTool.move,
+    handleSketchCirclePoint: circleTool.point,
     beginCreateSketch,
     commitCreateSketch,
     beginRectangle,
