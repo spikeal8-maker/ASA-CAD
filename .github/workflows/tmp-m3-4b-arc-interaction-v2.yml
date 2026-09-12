@@ -17,9 +17,7 @@ jobs:
         with:
           ref: work/m3-4b-arc-interaction
       - name: Apply fail-fast product codemod
-        run: |
-          node tools/tmp-m3-4b-arc-interaction.mjs
-          git checkout -- .github/workflows/m3-browser.yml
+        run: node tools/tmp-m3-4b-product-only.mjs
       - name: Commit product wiring
         run: |
           git config user.name "github-actions[bot]"
