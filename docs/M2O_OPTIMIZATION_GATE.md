@@ -2,7 +2,7 @@
 
 This was the **blocking execution checklist before M3 Parametric Sketch**.
 
-**Status: DONE.** All blocking steps O1–O8 are implemented, regression-protected and green. M3 may start through the boundaries created here. Current product status belongs to [`STATUS.md`](STATUS.md); long-term architecture belongs to [`ARCHITECTURE.md`](ARCHITECTURE.md).
+**Status: DONE.** All blocking steps O1–O8 are implemented, regression-protected and green. M3 proceeds through the boundaries created here. Current product status belongs to [`STATUS.md`](STATUS.md); long-term architecture belongs to [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
 ## Scope rule
 
@@ -120,7 +120,7 @@ Full mouse/touch/picking/standard-view/UI-scale/browser-zoom/Docker/baseline reg
 - [x] O8 selection/camera/preview can grow outside the monolithic viewport effect;
 - [x] final protected Part + M1/M1B + M2 shell/browser/touch/responsive + Docker/vendor gates green.
 
-M3 may now proceed.
+M3 is now active; this file is historical gate evidence, not the live feature queue.
 
 ---
 
@@ -143,7 +143,7 @@ Browser/Docker suites remain path-filtered, so they are not global branch-protec
 
 ## O11 — M2 visual/KOMPAS acceptance — OPEN
 
-Continue deterministic KOMPAS reference review in parallel. Final visual parity does not block M3 because the real Sketch workspace will change part of the visual surface.
+Continue deterministic KOMPAS reference review in parallel. Final visual parity does not block M3 because the real Sketch workspace changes part of the visual surface.
 
 ## Execution discipline after M2O
 
@@ -155,8 +155,10 @@ For M3 and later:
 5. keep Sketch overlay separate from B-Rep render data;
 6. use `activeSketchId`, never implicit last-Sketch semantics;
 7. keep protected browser/Docker/baseline gates green;
-8. use short branch -> PR -> required checks -> merge; do not bypass protected `main`.
+8. use short branch -> PR -> required checks -> merge; do not bypass protected `main`;
+9. target <= 6 commits per review PR; hard limit 12, after which the review branch must be rebuilt/squashed from current `main`;
+10. remove one-shot codemod/review-fix scripts and workflows before review.
 
-## Next action
+## Current work
 
-Begin **M3 Parametric Sketch** by wiring the active `SketchSession` to `SketchSolveSession` and the dormant `SketchOverlayModel`, then introduce the first direct canvas Sketch interaction through the existing candidate/selection seam. Do not fold M3 interaction back into `App.tsx` or the B-Rep Three effect.
+Do not use this closed gate to infer the next feature. Read [`STATUS.md`](STATUS.md) and the active milestone issue. At the current synchronization point, M3.1 solve/overlay and M3.2 direct Line are complete; the next narrow product slice is **M3.3 direct Circle** in issue #5.
