@@ -26,13 +26,13 @@ for (const forbidden of [
 assert.match(layer, /data-circle-phase/, 'Circle layer must expose deterministic interaction phase');
 assert.match(layer, /sketch-circle-ghost/, 'Circle layer must expose a transient radius ghost');
 
-assert.match(tool, /id: 'sketch\.circle'/, 'direct Circle must commit through typed sketch.circle');
-assert.equal(/dimension\.diameter/.test(tool), false, 'direct Circle must remain one geometry mutation; driving diameter is a separate path');
+assert.match(tool, /id:\s*'sketch\.circle'/, 'direct Circle must commit through typed sketch.circle');
+assert.equal(/id:\s*'dimension\.diameter'/.test(tool), false, 'direct Circle must remain one geometry mutation; driving diameter is a separate path');
 assert.equal(/\.entities\.(push|splice)/.test(tool), false, 'Circle tool must not mutate persisted Sketch DTOs directly');
 
 assert.match(workspace, /circleTool\.reset\(\)/, 'Circle activation/cancel must reset transient tool state');
 assert.match(workspace, /setPanel\('closed'\)/, 'direct Circle must use the accepted collapsed management layout');
-assert.match(workspace, /id: 'dimension\.diameter'/, 'numeric/driving diameter fallback must remain available');
+assert.match(workspace, /id:\s*'dimension\.diameter'/, 'numeric/driving diameter fallback must remain available');
 assert.match(stage, /SketchCircleInteractionLayer/, 'Part stage must compose direct Circle outside B-Rep Three interaction');
 assert.match(protectedPart, /getByTitle\('Параметры'\)/, 'protected Part must retain explicit numeric Circle + driving diameter fallback');
 
