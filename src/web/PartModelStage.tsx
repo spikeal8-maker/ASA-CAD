@@ -1,5 +1,5 @@
 import React from 'react';
-import type { CadPartDocument, CadSketch } from '../contracts/document';
+import type { CadPartDocument, CadPoint2, CadSketch } from '../contracts/document';
 import type { CadBodyId } from '../contracts/ids';
 import type { CadRenderModel, CadViewportPick } from '../contracts/render';
 import {
@@ -8,6 +8,7 @@ import {
 } from './CadViewport';
 import { SketchSolveStatus } from './SketchSolveStatus';
 import { useActiveSketchSolveOverlay } from './useActiveSketchSolveOverlay';
+import { SketchLineInteractionLayer } from './viewport/SketchLineInteractionLayer';
 
 export interface PartModelStageProps {
   document: Readonly<CadPartDocument>;
@@ -18,22 +19,16 @@ export interface PartModelStageProps {
   runtimeStatus: string;
   fixtureError?: string;
   rectangleReady: boolean;
-  selectionMode: 'none' | 'face' | 'edge';
+  selectionMode: 'none' | 'face' | 'edge' | 'sketch';
   onPick(pick: CadViewportPick): void;
   viewCommand: CadViewportViewCommand;
   selectedBodyId: CadBodyId | null;
   onBodySelect(bodyId: CadBodyId | null): void;
+  lineToolActive: boolean;
+  onCommitLine(from: CadPoint2, to: CadPoint2): Promise<boolean> | boolean;
 }
 
-/**
- * Focused owner for the Part work-area presentation.
- *
- * M3.1 deliberately uses an isolated 2D Sketch workplane while a Sketch is
- * active. Until M3.2 owns support-aware screen projection, compositing a
- * screen-fitted SVG over an arbitrary B-Rep camera would be visually false for
- * XZ/YZ or face-supported sketches. B-Rep context returns immediately when the
- * Sketch workspace is left. Solver preview remains transient throughout.
- */
+/** Focused owner for Part/Sketch work-area presentation and transient tools. */
 export function PartModelStage(props: PartModelStageProps) {
   const sketchEditing = props.activeWorkspace === 'sketch' && Boolean(props.activeSketch);
   const sketchSolve = useActiveSketchSolveOverlay({
@@ -86,6 +81,13 @@ export function PartModelStage(props: PartModelStageProps) {
                 : 'Создайте эскиз и геометрию. OpenCascade не загружается до первой твердотельной операции.'}
           </small>
         </div>
+      )}
+
+      {sketchEditing && (
+        <SketchLineInteractionLayer
+          active={props.lineToolActive}
+          onCommit={props.onCommitLine}
+        />
       )}
 
       {sketchEditing && (
