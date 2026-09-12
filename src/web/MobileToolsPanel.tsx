@@ -16,6 +16,7 @@ const SOLID_TOOLS: readonly MobileToolSpec[] = [
 ];
 
 const SKETCH_TOOLS: readonly MobileToolSpec[] = [
+  { id: 'sketch.line', symbol: '╱' },
   { id: 'sketch.rectangle', symbol: '▭' },
   { id: 'sketch.circle', symbol: '○' },
   { id: 'sketch.finish', symbol: '✓' },
@@ -43,10 +44,7 @@ function workspaceTools(documentKind: CadDocumentKind, workspace: string): reado
   return SOLID_TOOLS;
 }
 
-/**
- * Phone/tablet command presentation over the same CadUiAction objects as the
- * desktop shell. No DOM lookup/delegation is allowed here.
- */
+/** Phone/tablet command presentation over the shared CadUiAction catalog. */
 export function MobileToolsPanel(props: {
   documentKind: CadDocumentKind;
   workspace: string;
