@@ -5,6 +5,7 @@ export const CAD_PART_DEV_FIXTURE_NAMES = [
   'sketch',
   'line',
   'circle',
+  'arc',
   'extrude',
   'reference',
   'rebuild-error',
