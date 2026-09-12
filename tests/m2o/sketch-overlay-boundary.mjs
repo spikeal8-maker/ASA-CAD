@@ -8,6 +8,7 @@ const app = readFileSync('src/web/App.tsx', 'utf8');
 const stage = readFileSync('src/web/PartModelStage.tsx', 'utf8');
 const solveHook = readFileSync('src/web/useActiveSketchSolveOverlay.ts', 'utf8');
 const browserSolver = readFileSync('src/browser/BrowserSketchSolverAdapter.ts', 'utf8');
+const buildConfig = readFileSync('build/rspack.asa.config.cjs', 'utf8');
 const renderContract = readFileSync('src/contracts/render.ts', 'utf8');
 const picking = readFileSync('src/web/viewport/ViewportPicking.ts', 'utf8');
 const runtimeCss = readFileSync('src/web/runtime.css', 'utf8');
@@ -35,6 +36,7 @@ assert.match(solveHook, /buildSketchOverlayModel\(sketch, snapshot\)/, 'focused 
 assert.match(solveHook, /sketch\.entities\.length === 0/, 'empty Sketch must not eagerly initialize PlaneGCS');
 assert.match(browserSolver, /import\('\.\.\/runtime\/PlaneGCSSketchSolverRuntime'\)/, 'browser solver must lazy-import the concrete PlaneGCS runtime');
 assert.match(browserSolver, /planegcs\.wasm/, 'browser solver must provide an explicit browser PlaneGCS WASM URL');
+assert.ok(buildConfig.includes('planegcs_dist') && buildConfig.includes('parser: { url: false }'), 'ASA build must isolate Emscripten planegcs.js new-URL parsing without disabling ASA WASM asset URLs globally');
 assert.doesNotMatch(renderContract, /SketchOverlay|CadSketchEntity|sketchEntities/, 'B-Rep CadRenderModel contract must remain free of Sketch overlay geometry');
 assert.match(picking, /kind: 'sketch-entity'/, 'shared viewport candidate model must retain Sketch entity picking seam');
 
