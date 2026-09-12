@@ -1,10 +1,11 @@
 import React from 'react';
 import type { CadSketchEntity } from '../../contracts/document';
 import type { SketchOverlayModel } from './SketchOverlayModel';
-import { sketchDisplayFrame } from './SketchViewportGeometry';
+import type { SketchDisplayFrame } from './SketchViewportGeometry';
 
 export interface SketchOverlayLayerProps {
   model: SketchOverlayModel | null;
+  frame: SketchDisplayFrame;
 }
 
 /**
@@ -14,9 +15,8 @@ export interface SketchOverlayLayerProps {
  * a sibling Sketch interaction layer so transient pointer/ghost state never
  * enters CadRenderModel or solver-owned preview data.
  */
-export function SketchOverlayLayer({ model }: SketchOverlayLayerProps) {
+export function SketchOverlayLayer({ model, frame }: SketchOverlayLayerProps) {
   if (!model) return null;
-  const frame = sketchDisplayFrame(model.entities);
 
   return (
     <svg
@@ -28,6 +28,7 @@ export function SketchOverlayLayer({ model }: SketchOverlayLayerProps) {
       data-constraint-state={model.constraintState}
       data-degrees-of-freedom={model.degreesOfFreedom ?? ''}
       data-entity-count={model.entities.length}
+      data-view-box={frame.viewBox}
       viewBox={frame.viewBox}
       preserveAspectRatio="xMidYMid meet"
       aria-hidden="true"
