@@ -7,7 +7,7 @@ const sharedPath = path.join(viewportDir, 'SketchInteractionSurface.tsx');
 const shared = fs.readFileSync(sharedPath, 'utf8');
 
 for (const token of ['onPointerDown=', 'onPointerMove=', 'onPointerUp=', 'panSketchViewport', 'zoomSketchViewport', 'touchesRef']) {
-  assert.match(shared, new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `shared Sketch surface must own ${token}`);
+  assert.ok(shared.includes(token), `shared Sketch surface must own ${token}`);
 }
 
 const toolLayers = fs.readdirSync(viewportDir)
