@@ -31,6 +31,21 @@ function createdId<T extends string>(result: CadCommandResult, index: number, la
   return id as unknown as T;
 }
 
+async function buildLineSketch(app: CadApplication): Promise<CadSketchId> {
+  const sketchResult = await execute(
+    app,
+    { id: 'sketch.create', payload: { support: 'XY', name: 'Эскиз 1' } },
+    'Create line sketch',
+  );
+  const sketchId = createdId<CadSketchId>(sketchResult, 0, 'Create line sketch');
+  await execute(
+    app,
+    { id: 'sketch.line', payload: { sketchId, from: [-8, -4], to: [10, 6] } },
+    'Create direct line fixture',
+  );
+  return sketchId;
+}
+
 async function buildRectangleSketch(app: CadApplication): Promise<CadSketchId> {
   const sketchResult = await execute(
     app,
@@ -174,6 +189,16 @@ export async function applyPartDevFixture(
       workspace: 'sketch',
       expectedRecomputeStatus: 'dirty',
       message: 'Fixture sketch: параметрический прямоугольник 60×40 мм',
+    };
+  }
+
+  if (name === 'line') {
+    await buildLineSketch(app);
+    return {
+      name,
+      workspace: 'sketch',
+      expectedRecomputeStatus: 'dirty',
+      message: 'Fixture line: один прямой отрезок в XY',
     };
   }
 
