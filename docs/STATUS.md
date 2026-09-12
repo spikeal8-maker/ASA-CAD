@@ -26,7 +26,7 @@ Tracking:
 - #18 M2R display/DPI/zoom/UI Scale — DONE;
 - #19 M2V KOMPAS visual acceptance — ACTIVE;
 - #21 M2O architecture optimization — DONE;
-- #5 M3 Parametric Sketch — ACTIVE; M3.1, M3.2 and M3.3 DONE; M3.4 Arc contract NEXT.
+- #5 M3 Parametric Sketch — ACTIVE; M3.1, M3.2, M3.3 and M3.4A DONE; M3.4B direct Arc NEXT.
 
 ## M2O result
 
@@ -66,9 +66,9 @@ Browser/Docker path-filtered suites remain mandatory development discipline for 
 - two-finger touch pan/pinch is navigation-only and cannot create accidental endpoints;
 - direct manipulation collapses management UI and restores Tree after commit/cancel;
 - XY/XZ/YZ workplane projection contract exists; StableRef face-backed 3D context remains deliberately unresolved;
-- Chromium proves mouse/touch, ghost immutability, atomic Undo/Redo and Save/Open.
+- deterministic `/dev/part/line` plus Chromium prove mouse/touch, ghost immutability, atomic Undo/Redo and Save/Open.
 
-### M3.3 — direct Circle — DONE in PR #43
+### M3.3 — direct Circle — DONE in PR #43; deterministic closeout in PR #45
 
 - first pointer sets the center, move shows a transient radius ghost, second pointer creates exactly one typed `sketch.circle` history mutation;
 - `SketchCircleInteractionLayer` reuses the shared `SketchInteractionSurface`; mouse/touch/pan/pinch/wheel policy is not duplicated;
@@ -76,9 +76,22 @@ Browser/Docker path-filtered suites remain mandatory development discipline for 
 - PlaneGCS solver preview follows the persisted Circle and OpenCascade stays lazy during pure 2D editing;
 - direct Circle does **not** silently create a driving dimension as a second history mutation;
 - the existing explicit numeric `dimension.diameter` path remains available through Parameters and the protected Ø12 -> cut -> reopen -> Ø14 workflow stays green;
+- deterministic `/dev/part/circle` builds one XY Circle at center `(5, -3)`, diameter 24, activates its `SketchSession` and solves through PlaneGCS without loading OpenCascade;
+- fixture infrastructure consumes returned `activeSketchId`, so direct-geometry review routes enter the intended Sketch state without test-only DOM delegation;
 - dedicated `ASA-CAD M3 browser` proves Line + Circle mouse/touch/Undo/Redo/Save/Open;
-- M2 browser, M3 browser, Docker, shell, M0/M1/M1B and vendor baseline were green before merge;
-- review branch contained one final commit and no temporary codemod/workflow artifacts.
+- M2 browser, M3 browser, Docker, shell, M0/M1/M1B and vendor baseline were green before merge.
+
+### M3.4A — typed Arc contract/runtime — DONE in PR #46
+
+- ASA owns one canonical persisted Arc DTO: `center + radius + startAngle + endAngle`;
+- angles are radians; `startAngle` is normalized and persisted sweep is positive CCW, greater than zero and less than `2π`;
+- schemaVersion remains 1 and runtime validation rejects malformed radius/sweep values;
+- typed `sketch.arc` uses one initial construction contract: `center -> start -> end`;
+- the application handler canonicalizes construction points into persisted radius/angles and failed Arc commands roll back atomically;
+- ASA PlaneGCS runtime maps Arc DTOs to the vendor Arc geometry already supported by the pinned solver and reads solved center/radius/angles back into the same discriminated ASA DTO;
+- `test:m3` now proves schema-v1 round-trip, malformed Arc rejection, atomic command rollback and PlaneGCS solve/readback;
+- Line/Circle, protected Part, M2 browser, M3 browser, Docker, shell, M1/M1B and vendor baseline remained green;
+- `sketch.arc` remains `planned` in the product registry because no direct Arc UI/browser acceptance exists yet.
 
 ## Protected Part workflow
 
@@ -125,10 +138,10 @@ Part fixtures:
 
 ## Deliberately not complete
 
-Do **not** mistake the protected Part proof, completed M2O gate or first three M3 slices for KOMPAS parity.
+Do **not** mistake the protected Part proof, completed M2O gate or accepted Arc contract for KOMPAS parity.
 
 Still incomplete:
-- M3 Arc/Rectangle and edit tools, broader constraints/dimensions, snapping, drag editing and reliable StableRef-backed 3D Sketch context;
+- M3 direct Arc/Rectangle and edit tools, broader constraints/dimensions, snapping, drag editing and reliable StableRef-backed 3D Sketch context;
 - exact solver DoF/rank reporting where PlaneGCS wrapper does not expose it;
 - M2I advanced selection/window/context/chooser behavior beyond the accepted O8 seam;
 - M2V final KOMPAS visual/icon acceptance;
@@ -140,16 +153,17 @@ Still incomplete:
 
 ## Immediate next work
 
-Continue issue #5 with **M3.4 — Arc contract slice first**.
+Continue issue #5 with **M3.4B — direct Arc interaction only**.
 
-Arc is not yet part of `CadSketchEntity` or the typed command surface. Before any Arc pointer UI:
-1. choose one canonical persisted Arc representation;
-2. add runtime validation and schema-v1 round-trip coverage;
-3. add typed `sketch.arc` command/handler + availability;
-4. add PlaneGCS support/regression for that exact representation;
-5. keep command-registry status truthful;
-6. only after the contract/runtime slice is green, add direct Arc interaction through the existing `SketchInteractionSurface`.
+Use the already merged M3.4A contract; do not introduce another Arc representation:
+1. implement `center -> start -> end` transient Arc tool state and ghost;
+2. reuse `SketchInteractionSurface`; do not copy pointer/touch/pan/pinch/wheel policy;
+3. commit exactly one typed `sketch.arc` application-history mutation;
+4. render persisted/solver Arc through the existing Sketch overlay, keeping preview transient;
+5. add deterministic `/dev/part/arc` before calling M3.4 complete;
+6. protect desktop/touch/Undo/Redo/Save/Open in the dedicated M3 browser lane;
+7. promote `sketch.arc` to `implemented` only after direct UI/browser acceptance is green.
 
-Do not combine Rectangle, trim, snap or broader constraints with the Arc contract slice.
+Do not combine Rectangle, trim, snap or broader constraints with this slice.
 
 O9 and O11 remain non-blocking follow-ups in [`M2O_OPTIMIZATION_GATE.md`](M2O_OPTIMIZATION_GATE.md).
