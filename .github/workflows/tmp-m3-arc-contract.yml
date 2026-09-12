@@ -1,0 +1,46 @@
+name: TEMP M3.4A Arc contract codemod
+
+on:
+  push:
+    branches: [work/m3-4-arc-contract]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/m3-4-arc-contract
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.19.0'
+          cache: npm
+          cache-dependency-path: vendor/toubkal/package-lock.json
+
+      - name: Apply focused Arc contract codemod
+        run: node tools/codemod-m3-arc-contract-v2.mjs
+
+      - name: Install pinned toolchain
+        run: npm --prefix vendor/toubkal ci
+
+      - name: Verify Arc contract slice
+        run: npm run typecheck:asa && npm run test:m2o:sketch-contracts && npm run test:m3 && npm run test:m1:solver
+
+      - name: Commit Arc contract product changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "ASA-CAD maintenance bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add src/contracts src/application src/runtime tests/m2o tests/m3 package.json
+          if git diff --cached --quiet; then
+            echo "No product changes to commit"
+            exit 0
+          fi
+          git commit -m "M3.4A: add typed Arc contract and PlaneGCS seam"
+          git push origin HEAD:work/m3-4-arc-contract
