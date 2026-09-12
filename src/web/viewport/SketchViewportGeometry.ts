@@ -72,7 +72,7 @@ export function screenPointToSketchPoint(
 
   const svgX = frame.minX + localX / scale;
   const svgY = frame.minY + localY / scale;
-  return [svgX, -svgY];
+  return [normalizeSignedZero(svgX), normalizeSignedZero(-svgY)];
 }
 
 function frameFromBounds(minX: number, minY: number, maxX: number, maxY: number): SketchDisplayFrame {
@@ -92,4 +92,8 @@ function frameFromBounds(minX: number, minY: number, maxX: number, maxY: number)
     height,
     viewBox: [paddedMinX, paddedMinY, width, height].join(' '),
   };
+}
+
+function normalizeSignedZero(value: number): number {
+  return Object.is(value, -0) ? 0 : value;
 }
