@@ -26,7 +26,7 @@ Tracking:
 - #18 M2R display/DPI/zoom/UI Scale — DONE;
 - #19 M2V KOMPAS visual acceptance — ACTIVE;
 - #21 M2O architecture optimization — DONE / closeout;
-- #5 M3 Parametric Sketch — ACTIVE.
+- #5 M3 Parametric Sketch — ACTIVE; M3.1 and M3.2 DONE.
 
 ## M2O result
 
@@ -52,15 +52,27 @@ Browser/Docker path-filtered suites remain mandatory development discipline for 
 
 ### M3.1 — active solve preview / read-only overlay — DONE in PR #38
 
-The first real Sketcher slice is now implemented and regression-protected:
 - explicit active `SketchSession` drives `SketchSolveSession`;
-- browser PlaneGCS is loaded lazily only after a non-empty active Sketch needs solving;
+- browser PlaneGCS loads lazily only after a non-empty active Sketch needs solving;
 - successful solved geometry is projected into transient `SketchOverlayModel` and is never persisted directly;
 - solve status, diagnostics and DoF availability are visible to the editor;
-- an empty Sketch renders without loading PlaneGCS;
 - OpenCascade remains unloaded until the first exact solid operation;
-- PlaneGCS and OpenCascade have separate browser WASM lifecycles and the protected Chromium flow proves both;
-- M3.1 uses a deliberate **isolated 2D Sketch workplane** while editing. B-Rep is not composited under the screen-fitted SVG until M3.2 owns support-aware projection, preventing a misleading overlay on XZ/YZ or face-supported sketches.
+- active Sketch editing uses an isolated 2D workplane rather than a visually false unprojected B-Rep composition.
+
+### M3.2 — direct Line vertical slice — DONE in PR #39
+
+The first real direct Sketch geometry tool is merged and regression-protected:
+- `sketch.line` is an implemented shared desktop/search/mobile `CadUiAction` and still commits through the normal typed `CadApplication` command;
+- first pointer anchors, transient move shows a ghost, second pointer creates exactly one persisted Line/history mutation;
+- PlaneGCS preview follows the persisted commit without writing solved preview directly into `CadDocument`;
+- explicit transient Sketch viewport state (`center` + `span`) gives a stable 100 mm default frame and does not refit from entity bounds after each commit;
+- persisted/solver overlay and interaction consume the same Sketch-only frame; B-Rep/Three remains separate;
+- two-finger touch pan/pinch changes only transient Sketch view state and cannot become accidental Line endpoints;
+- direct manipulation collapses the management panel/bottom sheet and restores Tree after commit/cancel;
+- origin-plane XY/XZ/YZ workplane projection contract exists; StableRef face support remains deliberately unresolved for 3D model-context composition;
+- deterministic `/dev/part/line` fixture exists;
+- Chromium proves wide Line creation beyond the old entity-fit bounds, ghost immutability, one atomic commit, solve preview, Undo/Redo, Save/Open and real touch gesture arbitration;
+- shell, full browser matrix, Docker, M0/M1/M1B and vendor regressions were green before merge.
 
 ## Protected Part workflow
 
@@ -68,7 +80,7 @@ Real Chromium and release Docker continue to prove through ASA-owned controls:
 
 `XY Sketch -> rectangle 60x40 -> PlaneGCS solve/preview -> driving dimensions -> Extrude 10 -> select top face -> second Sketch -> centered diameter 12 -> through cut -> select edge -> Fillet R1 -> edit width 60 to 80 -> downstream rebuild -> save native parametric JSON -> reload/reopen -> edit diameter 12 to 14`.
 
-Persisted data keeps feature history and durable StableRefs. Transient face/edge ordinals, solver preview, Three objects and OpenCascade objects are not persisted.
+Persisted data keeps feature history and durable StableRefs. Transient face/edge ordinals, solver preview, Sketch ghost/view state, Three objects and OpenCascade objects are not persisted.
 
 ## Runtime / persistence invariants
 
@@ -77,11 +89,11 @@ Persisted data keeps feature history and durable StableRefs. Transient face/edge
 - normal CAD mathematics stays on the client device;
 - ASA Lab provides host/project/version/recovery services, not normal CAD-compute RPC;
 - UI persistence remains behind `CadProjectSession/CadProjectHost`;
-- solver preview is transient; committing a solved edit must use a normal `CadApplication` command so Undo/Redo remains authoritative.
+- solver/ghost/view preview is transient; committed geometry and solved edits must use normal `CadApplication` commands so Undo/Redo remains authoritative.
 
 ## Interaction already protected
 
-- wheel zoom, MMB pan, RMB orbit;
+- wheel zoom, MMB pan, RMB orbit for B-Rep;
 - Fit + front/back/top/bottom/left/right/isometric;
 - central keyboard shortcuts and focus-safe input;
 - body selection synchronized Viewport <-> Tree;
@@ -91,23 +103,26 @@ Persisted data keeps feature history and durable StableRefs. Transient face/edge
 - phone Tools using the same action catalog as desktop;
 - HD/FHD/2K/4K/ultrawide, DPR/browser zoom and UI Scale matrix;
 - B-Rep picking across UI Scale changes;
-- read-only active-Sketch solver overlay in an isolated 2D workplane.
+- active-Sketch solver overlay in an isolated 2D workplane;
+- direct Line mouse/touch input on a stable Sketch frame;
+- Sketch two-finger pan/pinch without accidental geometry creation.
 
 ## Deterministic review routes
 
 Part fixtures:
 - `/dev/part/empty`;
 - `/dev/part/sketch`;
+- `/dev/part/line`;
 - `/dev/part/extrude`;
 - `/dev/part/reference`;
 - `/dev/part/rebuild-error`.
 
 ## Deliberately not complete
 
-Do **not** mistake the protected Part proof, completed M2O gate or M3.1 preview for KOMPAS parity.
+Do **not** mistake the protected Part proof, completed M2O gate or first two M3 slices for KOMPAS parity.
 
 Still incomplete:
-- M3 direct drawing/editing, broader geometry/constraints/dimensions, snapping, active overlay interaction and support-aware 3D projection/context;
+- M3 direct Circle/Arc/Rectangle and edit tools, broader constraints/dimensions, snapping, drag editing and reliable StableRef-backed 3D Sketch context;
 - M2I advanced selection/window/context/chooser behavior beyond the accepted O8 seam;
 - M2V final KOMPAS visual/icon acceptance;
 - O9 root-owned dependency/toolchain follow-up;
@@ -118,6 +133,6 @@ Still incomplete:
 
 ## Immediate next work
 
-Continue issue #5 with **M3.2 — direct Line canvas interaction**. Route pointer input through the existing viewport candidate/Sketch seams, add ghost/snap preview outside B-Rep, commit one normal typed `sketch.line` command through `CadApplication`, and add support-aware workplane projection before compositing Sketch geometry with B-Rep context. Preserve the M3.1 rule that transient solver/ghost geometry never mutates `CadDocument` directly.
+Continue issue #5 with **M3.3 — direct Circle vertical slice**. Reuse the accepted M3.2 stable Sketch viewport, panel-collapse and gesture-arbitration path; add center -> radius/diameter ghost interaction, commit one typed `sketch.circle` mutation through `CadApplication`, keep solver preview transient, and protect mouse/touch/Undo/Redo/save-reopen behavior before starting Arc or broader constraints.
 
 O9 and O11 remain non-blocking follow-ups in [`M2O_OPTIMIZATION_GATE.md`](M2O_OPTIMIZATION_GATE.md).
