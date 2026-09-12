@@ -4,6 +4,11 @@ on:
   push:
     branches: [main]
     paths:
+      - AGENTS.md
+      - .github/PULL_REQUEST_TEMPLATE.md
+      - .github/workflows/**
+      - scripts/**
+      - tools/**
       - src/web/**
       - src/browser/**
       - src/runtime/**
@@ -17,13 +22,18 @@ on:
       - spec/ui/layout-registry.v2.json
       - spec/ui/viewport-matrix.v1.json
       - build/**
+      - tests/process/**
       - tests/m2/**
       - tests/m2o/**
       - tests/m3/**
       - package.json
-      - .github/workflows/m2-shell.yml
   pull_request:
     paths:
+      - AGENTS.md
+      - .github/PULL_REQUEST_TEMPLATE.md
+      - .github/workflows/**
+      - scripts/**
+      - tools/**
       - src/web/**
       - src/browser/**
       - src/runtime/**
@@ -37,11 +47,11 @@ on:
       - spec/ui/layout-registry.v2.json
       - spec/ui/viewport-matrix.v1.json
       - build/**
+      - tests/process/**
       - tests/m2/**
       - tests/m2o/**
       - tests/m3/**
       - package.json
-      - .github/workflows/m2-shell.yml
 
 permissions:
   contents: read
@@ -58,6 +68,11 @@ jobs:
           node-version: '20.19.0'
           cache: npm
           cache-dependency-path: vendor/toubkal/package-lock.json
+
+      - name: Verify PR/repository hygiene
+        env:
+          ASA_PR_COMMIT_COUNT: ${{ github.event.pull_request.commits }}
+        run: node tests/process/pr-hygiene.mjs
 
       - name: Install pinned frontend toolchain
         run: npm --prefix vendor/toubkal ci
