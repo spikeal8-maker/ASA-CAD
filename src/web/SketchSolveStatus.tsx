@@ -19,9 +19,10 @@ export function SketchSolveStatus({ snapshot }: SketchSolveStatusProps) {
       {firstDiagnostic && (
         <span
           data-testid="sketch-solve-diagnostic"
+          data-diagnostic-code={firstDiagnostic.code}
           title={firstDiagnostic.message}
         >
-          {firstDiagnostic.severity === 'error' ? 'Ошибка эскиза' : firstDiagnostic.message}
+          {firstDiagnostic.message}
         </span>
       )}
     </>
