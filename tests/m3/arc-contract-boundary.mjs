@@ -26,7 +26,7 @@ assert.match(handlers, /positiveSweep/, 'Arc handler must canonicalize a positiv
 
 assert.match(solver, /case 'arc'/, 'PlaneGCS ASA adapter must map typed Arc DTOs');
 assert.match(solver, /kind: 'arc'/, 'PlaneGCS geometry seam must use vendor Arc geometry only behind ASA runtime boundary');
-assert.match(solver, /startAngle: startAngle/, 'solver readback must retain canonical solved Arc start angle');
+assert.match(solver, /\bstartAngle,/, 'solver readback must retain canonical solved Arc start angle');
 assert.match(solver, /endAngle: startAngle \+ sweep/, 'solver readback must retain canonical solved Arc sweep');
 
 const arc = registry.commands.find((command) => command.id === 'sketch.arc');
