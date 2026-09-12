@@ -1,0 +1,27 @@
+name: Apply M3.4B Arc interaction wiring
+
+on:
+  push:
+    branches:
+      - work/m3-4b-arc-interaction
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: ${{ !contains(github.event.head_commit.message, 'apply direct Arc interaction wiring') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/m3-4b-arc-interaction
+      - name: Apply fail-fast codemod
+        run: node tools/tmp-m3-4b-arc-interaction.mjs
+      - name: Commit wired product state
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src tests spec package.json .github/workflows/m3-browser.yml
+          git commit -m "work: apply direct Arc interaction wiring"
+          git push origin HEAD:work/m3-4b-arc-interaction
