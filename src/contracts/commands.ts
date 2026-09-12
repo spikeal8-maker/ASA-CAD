@@ -21,6 +21,7 @@ export type CadCommandId =
   | 'sketch.line'
   | 'sketch.rectangle'
   | 'sketch.circle'
+  | 'sketch.arc'
   | 'sketch.finish'
   | 'constraint.coincident'
   | 'constraint.horizontal'
@@ -56,6 +57,12 @@ export interface CadCommandMap {
     sketchId: CadSketchId;
     center: readonly [number, number];
     diameter: number;
+  };
+  'sketch.arc': {
+    sketchId: CadSketchId;
+    center: readonly [number, number];
+    start: readonly [number, number];
+    end: readonly [number, number];
   };
   'sketch.finish': {
     sketchId: CadSketchId;

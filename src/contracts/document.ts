@@ -30,6 +30,8 @@ export type {
   CadSketch,
   CadSketchCircleData,
   CadSketchCircleEntity,
+  CadSketchArcData,
+  CadSketchArcEntity,
   CadSketchEntity,
   CadSketchLineData,
   CadSketchLineEntity,
