@@ -10,6 +10,7 @@ import { SketchSolveStatus } from './SketchSolveStatus';
 import { useActiveSketchSolveOverlay } from './useActiveSketchSolveOverlay';
 import type { SketchLineDraft } from './useSketchLineTool';
 import { SketchLineInteractionLayer } from './viewport/SketchLineInteractionLayer';
+import { SketchViewportFrameProvider } from './viewport/SketchViewportFrameContext';
 import {
   resetSketchViewportState,
   sketchDisplayFrame,
@@ -66,76 +67,77 @@ export function PartModelStage(props: PartModelStageProps) {
     : null;
 
   return (
-    <div
-      className="part-model-stage"
-      data-testid="part-model-stage"
-      data-sketch-context={sketchEditing ? 'isolated-2d' : 'model'}
-      data-sketch-support={props.activeSketch?.support ?? ''}
-      data-sketch-projection={workplaneProjection?.kind ?? ''}
-      data-model-context-ready={workplaneProjection?.modelContextReady ? 'true' : 'false'}
-      data-sketch-view-span={sketchViewport.span}
-      data-sketch-view-center={sketchViewport.center.join(',')}
-    >
-      <div className="origin-widget" aria-label="Ориентация">
-        <span className="axis-z">Z</span>
-        <span className="axis-x">X</span>
-        <span className="axis-y">Y</span>
+    <SketchViewportFrameProvider frame={sketchFrame}>
+      <div
+        className="part-model-stage"
+        data-testid="part-model-stage"
+        data-sketch-context={sketchEditing ? 'isolated-2d' : 'model'}
+        data-sketch-support={props.activeSketch?.support ?? ''}
+        data-sketch-projection={workplaneProjection?.kind ?? ''}
+        data-model-context-ready={workplaneProjection?.modelContextReady ? 'true' : 'false'}
+        data-sketch-view-span={sketchViewport.span}
+        data-sketch-view-center={sketchViewport.center.join(',')}
+      >
+        <div className="origin-widget" aria-label="Ориентация">
+          <span className="axis-z">Z</span>
+          <span className="axis-x">X</span>
+          <span className="axis-y">Y</span>
+        </div>
+        <div className="stage-grid" />
+
+        {showViewport ? (
+          <CadViewport
+            model={viewportModel}
+            sketchOverlay={sketchOverlay}
+            selectionMode={props.selectionMode}
+            onPick={props.onPick}
+            viewCommand={props.viewCommand}
+            selectedBodyId={props.selectedBodyId}
+            onBodySelect={props.onBodySelect}
+          />
+        ) : (
+          <div className="stage-message">
+            <div className="stage-symbol">{props.fixtureError ? '!' : '◇'}</div>
+            <strong>
+              {props.fixtureError
+                ? 'Ошибка перестроения'
+                : props.document.sketches.length > 0 ? `${props.document.sketches.length} эскиз(а)` : 'Новая деталь'}
+            </strong>
+            <span>{props.runtimeStatus === 'loading' ? 'Загрузка OpenCascade…' : props.fixtureError ? 'B-Rep не построен' : 'ASA-CAD'}</span>
+            <small>
+              {props.fixtureError
+                ? props.fixtureError
+                : props.rectangleReady
+                  ? 'Эскиз параметрический. Завершите его и выполните выдавливание — B-Rep будет построен локально в браузере.'
+                  : 'Создайте эскиз и геометрию. OpenCascade не загружается до первой твердотельной операции.'}
+            </small>
+          </div>
+        )}
+
+        {sketchEditing && (
+          <SketchLineInteractionLayer
+            model={sketchOverlay}
+            frame={sketchFrame}
+            viewportState={sketchViewport}
+            onViewportStateChange={setSketchViewport}
+            active={props.activeCommand === 'sketch.line'}
+            draft={props.lineDraft}
+            committing={props.lineCommitting}
+            onPointMove={props.onSketchLinePointMove}
+            onPoint={props.onSketchLinePoint}
+          />
+        )}
+
+        {sketchEditing && (
+          <div
+            className="sketch-solve-hud"
+            data-testid="sketch-solve-hud"
+            data-overlay-source={sketchOverlay?.source ?? 'document'}
+          >
+            <SketchSolveStatus snapshot={sketchSolve.snapshot} />
+          </div>
+        )}
       </div>
-      <div className="stage-grid" />
-
-      {showViewport ? (
-        <CadViewport
-          model={viewportModel}
-          sketchOverlay={sketchOverlay}
-          sketchFrame={sketchFrame}
-          selectionMode={props.selectionMode}
-          onPick={props.onPick}
-          viewCommand={props.viewCommand}
-          selectedBodyId={props.selectedBodyId}
-          onBodySelect={props.onBodySelect}
-        />
-      ) : (
-        <div className="stage-message">
-          <div className="stage-symbol">{props.fixtureError ? '!' : '◇'}</div>
-          <strong>
-            {props.fixtureError
-              ? 'Ошибка перестроения'
-              : props.document.sketches.length > 0 ? `${props.document.sketches.length} эскиз(а)` : 'Новая деталь'}
-          </strong>
-          <span>{props.runtimeStatus === 'loading' ? 'Загрузка OpenCascade…' : props.fixtureError ? 'B-Rep не построен' : 'ASA-CAD'}</span>
-          <small>
-            {props.fixtureError
-              ? props.fixtureError
-              : props.rectangleReady
-                ? 'Эскиз параметрический. Завершите его и выполните выдавливание — B-Rep будет построен локально в браузере.'
-                : 'Создайте эскиз и геометрию. OpenCascade не загружается до первой твердотельной операции.'}
-          </small>
-        </div>
-      )}
-
-      {sketchEditing && (
-        <SketchLineInteractionLayer
-          model={sketchOverlay}
-          frame={sketchFrame}
-          viewportState={sketchViewport}
-          onViewportStateChange={setSketchViewport}
-          active={props.activeCommand === 'sketch.line'}
-          draft={props.lineDraft}
-          committing={props.lineCommitting}
-          onPointMove={props.onSketchLinePointMove}
-          onPoint={props.onSketchLinePoint}
-        />
-      )}
-
-      {sketchEditing && (
-        <div
-          className="sketch-solve-hud"
-          data-testid="sketch-solve-hud"
-          data-overlay-source={sketchOverlay?.source ?? 'document'}
-        >
-          <SketchSolveStatus snapshot={sketchSolve.snapshot} />
-        </div>
-      )}
-    </div>
+    </SketchViewportFrameProvider>
   );
 }
