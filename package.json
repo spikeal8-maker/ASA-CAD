@@ -53,7 +53,7 @@
     "test:m2o:sketch-overlay": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m2o/sketch-overlay-model.ts && node tests/m2o/sketch-overlay-boundary.mjs",
     "test:m2o": "npm run test:m2o:docs && npm run test:m2o:registry && npm run test:m2o:persistence && npm run test:m2o:actions && npm run test:m2o:decomposition && npm run test:m2o:handlers && npm run test:m2o:sketch-contracts && npm run test:m2o:semantics && npm run test:m2o:sketch-session && npm run test:m2o:solve-cycle && npm run test:m2o:viewport-interaction && npm run test:m2o:viewport-camera && npm run test:m2o:sketch-overlay",
     "test:m3:foundation": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m3/direct-line-foundation.ts && node tests/m3/direct-line-boundary.mjs && node tests/m3/sketch-interaction-substrate.mjs",
-    "test:m3": "npm run test:m3:foundation && npm run test:m3:circle",
+    "test:m3": "npm run test:m3:foundation && npm run test:m3:circle && npm run test:m3:arc-contract",
     "test:asa": "npm run test:m0 && npm run test:m1 && npm run test:m1b && npm run test:m2:shell && npm run test:m2o && npm run test:m3",
     "test": "npm run test:asa",
     "check:vendor": "npm run build:vendor && npm run lint:vendor && npm run test:vendor",
@@ -61,7 +61,8 @@
     "docker:build": "docker compose build",
     "docker:up": "docker compose up --build",
     "docker:down": "docker compose down",
-    "test:m3:circle": "node tests/m3/direct-circle-boundary.mjs"
+    "test:m3:circle": "node tests/m3/direct-circle-boundary.mjs",
+    "test:m3:arc-contract": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m3/arc-contract.ts && node tests/m3/arc-contract-boundary.mjs"
   },
   "engines": {
     "node": ">=20.19.0",

@@ -76,6 +76,21 @@ export class PlaneGCSSketchSolverRuntime implements CadSketchSolverAdapter {
           };
         }
 
+        if (entity.type === 'arc' && solved.kind === 'arc') {
+          const startAngle = normalizeArcAngle(solved.a1);
+          const sweep = positiveArcSweep(solved.a1, solved.a2);
+          return {
+            id: entity.id,
+            type: 'arc',
+            data: {
+              center: [solved.c[0], solved.c[1]],
+              radius: solved.r,
+              startAngle,
+              endAngle: startAngle + sweep,
+            },
+          };
+        }
+
         return structuredClone(entity);
       });
 
@@ -117,6 +132,15 @@ export class PlaneGCSSketchSolverRuntime implements CadSketchSolverAdapter {
             kind: 'circle',
             c: [entity.data.center[0], entity.data.center[1]],
             r: entity.data.diameter / 2,
+          }];
+        case 'arc':
+          return [{
+            id: entity.id,
+            kind: 'arc',
+            c: [entity.data.center[0], entity.data.center[1]],
+            r: entity.data.radius,
+            a1: entity.data.startAngle,
+            a2: entity.data.endAngle,
           }];
       }
     });
@@ -198,4 +222,17 @@ export class PlaneGCSSketchSolverRuntime implements CadSketchSolverAdapter {
       diagnostics: [{ severity: 'error', code, message }],
     };
   }
+}
+
+const ARC_TWO_PI = Math.PI * 2;
+
+function normalizeArcAngle(value: number): number {
+  const normalized = ((value % ARC_TWO_PI) + ARC_TWO_PI) % ARC_TWO_PI;
+  return Object.is(normalized, -0) ? 0 : normalized;
+}
+
+function positiveArcSweep(start: number, end: number): number {
+  let sweep = normalizeArcAngle(end) - normalizeArcAngle(start);
+  if (sweep <= 0) sweep += ARC_TWO_PI;
+  return sweep;
 }

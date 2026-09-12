@@ -25,6 +25,7 @@ export const SKETCH_GROWTH_COMMAND_IDS = [
   'sketch.line',
   'sketch.rectangle',
   'sketch.circle',
+  'sketch.arc',
   'sketch.finish',
   'constraint.coincident',
   'constraint.horizontal',
@@ -132,6 +133,29 @@ const HANDLERS = {
         id,
         type: 'circle',
         data: { center: command.payload.center, diameter: command.payload.diameter },
+      });
+      return { ok: true, changed: true, createdIds: [id] };
+    },
+  }),
+
+  'sketch.arc': handler<'sketch.arc'>({
+    availability: requireSketchAvailability,
+    execute: (part, command) => {
+      const sketch = requireSketch(part, command.payload.sketchId);
+      const { center, start, end } = command.payload;
+      const radius = pointDistance(center, start);
+      if (!(radius > 1e-6)) throw new Error('Arc radius must be positive');
+      const startAngle = normalizeAngle(Math.atan2(start[1] - center[1], start[0] - center[0]));
+      const rawEndAngle = normalizeAngle(Math.atan2(end[1] - center[1], end[0] - center[0]));
+      const sweep = positiveSweep(startAngle, rawEndAngle);
+      if (!(sweep > 1e-9) || !(sweep < TWO_PI - 1e-9)) {
+        throw new Error('Arc sweep must be greater than 0 and less than 2π');
+      }
+      const id = createCadId<CadSketchEntityId>('entity');
+      sketch.entities.push({
+        id,
+        type: 'arc',
+        data: { center, radius, startAngle, endAngle: startAngle + sweep },
       });
       return { ok: true, changed: true, createdIds: [id] };
     },
@@ -271,6 +295,8 @@ export function applySketchGrowthCommand(
       return HANDLERS['sketch.rectangle'].execute(part, command);
     case 'sketch.circle':
       return HANDLERS['sketch.circle'].execute(part, command);
+    case 'sketch.arc':
+      return HANDLERS['sketch.arc'].execute(part, command);
     case 'sketch.finish':
       return HANDLERS['sketch.finish'].execute(part, command);
     case 'constraint.coincident':
@@ -342,6 +368,23 @@ function persistConstraint(
   part.constraints.push(constraint);
   sketch.constraintIds.push(constraint.id);
   return { ok: true, changed: true, createdIds: [constraint.id] };
+}
+
+const TWO_PI = Math.PI * 2;
+
+function normalizeAngle(value: number): number {
+  const normalized = ((value % TWO_PI) + TWO_PI) % TWO_PI;
+  return Object.is(normalized, -0) ? 0 : normalized;
+}
+
+function positiveSweep(startAngle: number, endAngle: number): number {
+  let sweep = endAngle - startAngle;
+  if (sweep <= 0) sweep += TWO_PI;
+  return sweep;
+}
+
+function pointDistance(a: readonly [number, number], b: readonly [number, number]): number {
+  return Math.hypot(b[0] - a[0], b[1] - a[1]);
 }
 
 function requireSketch(part: CadPartDocument, id: CadSketchId): CadSketch {
