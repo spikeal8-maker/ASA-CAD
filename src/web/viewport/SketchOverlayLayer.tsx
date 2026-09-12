@@ -1,6 +1,7 @@
 import React from 'react';
 import type { CadSketchEntity } from '../../contracts/document';
 import type { SketchOverlayModel } from './SketchOverlayModel';
+import { sketchPointToSvg, sketchWorkplaneViewBox } from './SketchWorkplane';
 
 export interface SketchOverlayLayerProps {
   model: SketchOverlayModel | null;
@@ -9,22 +10,11 @@ export interface SketchOverlayLayerProps {
 /**
  * Separate Sketch presentation layer above the B-Rep canvas.
  *
- * M2O keeps this layer read-only. M3 may add pointer/snap/drag adapters through
- * the shared viewport candidate model; it must not move Sketch entities into
- * CadRenderModel/Three B-Rep meshes.
+ * M3.2 uses one stable workplane viewBox shared with direct tools. Geometry may
+ * change without changing the pointer-to-Sketch transform underneath the user.
  */
 export function SketchOverlayLayer({ model }: SketchOverlayLayerProps) {
   if (!model) return null;
-  const bounds = sketchDisplayBounds(model.entities);
-  const width = Math.max(bounds.maxX - bounds.minX, 1);
-  const height = Math.max(bounds.maxY - bounds.minY, 1);
-  const padding = Math.max(Math.max(width, height) * 0.08, 1);
-  const viewBox = [
-    bounds.minX - padding,
-    bounds.minY - padding,
-    width + padding * 2,
-    height + padding * 2,
-  ].join(' ');
 
   return (
     <svg
@@ -36,7 +26,7 @@ export function SketchOverlayLayer({ model }: SketchOverlayLayerProps) {
       data-constraint-state={model.constraintState}
       data-degrees-of-freedom={model.degreesOfFreedom ?? ''}
       data-entity-count={model.entities.length}
-      viewBox={viewBox}
+      viewBox={sketchWorkplaneViewBox()}
       preserveAspectRatio="xMidYMid meet"
       aria-hidden="true"
     >
@@ -47,67 +37,35 @@ export function SketchOverlayLayer({ model }: SketchOverlayLayerProps) {
 
 function renderEntity(entity: CadSketchEntity) {
   switch (entity.type) {
-    case 'line':
+    case 'line': {
+      const from = sketchPointToSvg(entity.data.from);
+      const to = sketchPointToSvg(entity.data.to);
       return (
         <line
           key={entity.id}
           className="cad-sketch-overlay-entity line"
           data-sketch-entity-id={entity.id}
-          x1={entity.data.from[0]}
-          y1={-entity.data.from[1]}
-          x2={entity.data.to[0]}
-          y2={-entity.data.to[1]}
+          x1={from[0]}
+          y1={from[1]}
+          x2={to[0]}
+          y2={to[1]}
           vectorEffect="non-scaling-stroke"
         />
       );
-    case 'circle':
+    }
+    case 'circle': {
+      const center = sketchPointToSvg(entity.data.center);
       return (
         <circle
           key={entity.id}
           className="cad-sketch-overlay-entity circle"
           data-sketch-entity-id={entity.id}
-          cx={entity.data.center[0]}
-          cy={-entity.data.center[1]}
+          cx={center[0]}
+          cy={center[1]}
           r={entity.data.diameter / 2}
           vectorEffect="non-scaling-stroke"
         />
       );
-  }
-}
-
-interface SketchDisplayBounds {
-  minX: number;
-  minY: number;
-  maxX: number;
-  maxY: number;
-}
-
-function sketchDisplayBounds(entities: readonly CadSketchEntity[]): SketchDisplayBounds {
-  if (entities.length === 0) return { minX: -10, minY: -10, maxX: 10, maxY: 10 };
-  let minX = Number.POSITIVE_INFINITY;
-  let minY = Number.POSITIVE_INFINITY;
-  let maxX = Number.NEGATIVE_INFINITY;
-  let maxY = Number.NEGATIVE_INFINITY;
-
-  const include = (x: number, y: number) => {
-    minX = Math.min(minX, x);
-    minY = Math.min(minY, y);
-    maxX = Math.max(maxX, x);
-    maxY = Math.max(maxY, y);
-  };
-
-  for (const entity of entities) {
-    if (entity.type === 'line') {
-      include(entity.data.from[0], -entity.data.from[1]);
-      include(entity.data.to[0], -entity.data.to[1]);
-      continue;
     }
-    const radius = entity.data.diameter / 2;
-    const x = entity.data.center[0];
-    const y = -entity.data.center[1];
-    include(x - radius, y - radius);
-    include(x + radius, y + radius);
   }
-
-  return { minX, minY, maxX, maxY };
 }
