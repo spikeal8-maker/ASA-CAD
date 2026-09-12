@@ -1,0 +1,35 @@
+name: M3.2 Review Fixes Codemod
+
+on:
+  push:
+    branches: [m3/m3-2-direct-line]
+    paths:
+      - tools/m3-2-review-fixes-codemod.mjs
+      - .github/workflows/m3-2-review-fixes-codemod.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: m3/m3-2-direct-line
+      - name: Apply fail-fast review fixes
+        run: node tools/m3-2-review-fixes-codemod.mjs
+      - name: Commit generated review fixes
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then
+            echo 'No review-fix changes produced'
+            exit 1
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/web/usePartSketchWorkspace.ts src/web/App.tsx src/web/styles.css
+          git commit -m 'M3.2: collapse panels during direct Sketch manipulation'
+          git push origin HEAD:m3/m3-2-direct-line
