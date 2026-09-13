@@ -66,6 +66,9 @@ async function createSimpleExtrude() {
   await page.getByRole('button', { name: /XY/ }).click();
   await page.locator('.parameter-actions button.primary').click();
   await page.getByRole('button', { name: /Прямоугольник/i }).click();
+  await page.locator('.content-area.panel-closed').waitFor();
+  await page.getByTitle('Параметры').click();
+  await page.locator('.parameter-panel').waitFor();
   await page.locator('.parameter-actions button.primary').click();
   await page.getByRole('button', { name: /Завершить эскиз/ }).click();
   await page.getByRole('button', { name: /Элемент выдавливания/i }).click();
