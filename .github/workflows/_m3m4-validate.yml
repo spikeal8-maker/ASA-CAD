@@ -43,4 +43,4 @@ jobs:
       - name: Build ASA shell
         run: npm run build:asa
 
-# trigger after decomposition-test update
+# trigger final state after ratchet + STATUS sync
