@@ -31,3 +31,5 @@ jobs:
           git add src/web/App.tsx
           git commit -m "M3M-004 scratch: apply shell extraction"
           git push origin HEAD:scratch/m3m-004-shell
+
+# trigger: workflow is now present on the branch
