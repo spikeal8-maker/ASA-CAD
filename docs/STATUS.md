@@ -25,8 +25,8 @@ M3.6B rigid selected-entity drag was started in draft PR #56 but is intentionall
 
 Immediate order:
 1. **M3M-001 — file-size budgets + numeric agent rules — DONE (#58)**;
-2. **M3M-002 — split `usePartSketchWorkspace` into focused Sketch/Part/selection owners — NEXT**;
-3. M3M-003 — extract `SketchEditingStage` from `PartModelStage`;
+2. **M3M-002 — split `usePartSketchWorkspace` into focused Sketch/Part/selection owners — DONE (this change)**;
+3. **M3M-003 — extract `SketchEditingStage` from `PartModelStage` — NEXT**;
 4. M3M-004 — extract shell presentation from `App.tsx`;
 5. M3M-005 — split monolithic `styles.css`;
 6. M3M-006 — split Sketch command handlers by geometry/edit/constraint/dimension ownership;
@@ -83,4 +83,4 @@ After maintenance:
 
 ## Immediate next work
 
-Work **only on issue #57 M3M-002** after #58 merges. Split `usePartSketchWorkspace` into focused Sketch editing, Part feature and Part selection owners; keep its public facade stable and ratchet its file ceiling downward. Do not restart M3.6B from closed PR #56.
+Work **only on issue #57 M3M-003** after this change merges. Extract `SketchEditingStage` from `PartModelStage` so future drag/snap/constraint layers do not grow the Part/B-Rep stage. Do not restart M3.6B from closed PR #56.

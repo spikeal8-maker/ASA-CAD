@@ -5,6 +5,7 @@ const layer = fs.readFileSync('src/web/viewport/SketchArcInteractionLayer.tsx', 
 const geometry = fs.readFileSync('src/web/viewport/SketchArcGeometry.ts', 'utf8');
 const tool = fs.readFileSync('src/web/useSketchArcTool.ts', 'utf8');
 const workspace = fs.readFileSync('src/web/usePartSketchWorkspace.ts', 'utf8');
+const editing = fs.readFileSync('src/web/useSketchEditingController.ts', 'utf8');
 const stage = fs.readFileSync('src/web/PartModelStage.tsx', 'utf8');
 const overlay = fs.readFileSync('src/web/viewport/SketchOverlayLayer.tsx', 'utf8');
 const fixture = fs.readFileSync('src/web/devFixtures.ts', 'utf8');
@@ -36,9 +37,10 @@ assert.match(tool, /center.*start.*end/s, 'Arc tool must preserve center -> star
 assert.match(tool, /distance\(draft\.center, end\) <= MIN_RADIUS/, 'Arc must reject an endpoint coincident with its center');
 assert.match(geometry, /\$\{largeArcFlag\} 0 \$\{endX\}/, 'positive CAD CCW Arc must use SVG sweep-flag=0 after Y inversion');
 
-assert.match(workspace, /useSketchArcTool/, 'Part/Sketch workspace must own Arc tool lifecycle');
-assert.match(workspace, /arcTool\.reset\(\)/, 'Arc activation/cancel must reset transient tool state');
-assert.match(workspace, /setActiveCommand\('sketch\.arc'\)/, 'Arc activation must use canonical command id');
+assert.match(workspace, /useSketchEditingController/, 'Part/Sketch facade must compose the focused Sketch editing owner');
+assert.match(editing, /useSketchArcTool/, 'Sketch editing owner must own Arc tool lifecycle');
+assert.match(editing, /arcTool\.reset\(\)/, 'Arc activation/cancel must reset transient tool state');
+assert.match(editing, /setActiveCommand\('sketch\.arc'\)/, 'Arc activation must use canonical command id');
 assert.match(stage, /SketchArcInteractionLayer/, 'Part stage must compose direct Arc outside B-Rep Three interaction');
 assert.match(overlay, /case 'arc'/, 'persisted/solver Arc must render in Sketch overlay');
 assert.match(fixture, /Fixture arc:/, 'Arc must have deterministic review fixture');
@@ -50,4 +52,4 @@ assert.equal(arc.status, 'implemented');
 assert.equal(arc.milestone, 'M3.4B');
 assert.equal(arc.backendCommand, 'sketch.arc');
 
-console.log('ASA-CAD M3.4B direct Arc boundary PASS (shared input + sweep + endpoint guard + one typed mutation)');
+console.log('ASA-CAD M3.4B direct Arc boundary PASS (focused Sketch owner + shared input + sweep + endpoint guard + one typed mutation)');
