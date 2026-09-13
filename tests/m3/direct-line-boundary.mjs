@@ -12,7 +12,7 @@ const partStage = fs.readFileSync('src/web/PartModelStage.tsx', 'utf8');
 const sketchStage = fs.readFileSync('src/web/SketchEditingStage.tsx', 'utf8');
 const app = fs.readFileSync('src/web/App.tsx', 'utf8');
 const shellMain = fs.readFileSync('src/web/CadShellMain.tsx', 'utf8');
-const styles = fs.readFileSync('src/web/styles.css', 'utf8');
+const styles = fs.readFileSync('src/web/styles/management.css', 'utf8');
 const bindings = fs.readFileSync('src/web/M2CadUiActions.ts', 'utf8');
 const registry = JSON.parse(fs.readFileSync('spec/ui/command-registry.v1.json', 'utf8'));
 

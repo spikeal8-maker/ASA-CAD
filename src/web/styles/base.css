@@ -1,0 +1,48 @@
+:root {
+  color-scheme: light;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  font-size: 14px;
+  --ui-scale: 1;
+  --bg-app: #eef0f3;
+  --bg-panel: #f7f8fa;
+  --bg-panel-strong: #ffffff;
+  --bg-ribbon: #f2f3f5;
+  --bg-work: #dde1e6;
+  --border: #c8cdd4;
+  --border-strong: #aeb5bf;
+  --text: #20252b;
+  --text-muted: #69717c;
+  --accent: #0d6efd;
+  --accent-soft: #e6f0ff;
+  --danger: #c63333;
+  --success: #2f7d43;
+  --warning: #ad6b00;
+  --mainbar-h: 38px;
+  --tabs-h: 32px;
+  --workspace-h: 31px;
+  --ribbon-h: 78px;
+  --status-h: 26px;
+  --rail-w: 46px;
+  --panel-w: 292px;
+  --radius: 4px;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { width: 100%; height: 100%; margin: 0; }
+body { overflow: hidden; background: var(--bg-app); color: var(--text); }
+button, input, select { font: inherit; }
+button { color: inherit; }
+button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid rgba(13, 110, 253, .45);
+  outline-offset: 1px;
+}
+
+.cad-app {
+  width: 100%;
+  height: 100dvh;
+  min-width: 0;
+  display: grid;
+  grid-template-rows: var(--mainbar-h) var(--tabs-h) calc(var(--workspace-h) + var(--ribbon-h)) minmax(0, 1fr) var(--status-h);
+  background: var(--bg-app);
+  overflow: hidden;
+}
