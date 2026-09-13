@@ -72,6 +72,11 @@ jobs:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m3/direct-circle-browser.mjs
 
+      - name: Exercise M3 direct Arc mouse/touch/persistence
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
+        run: node tests/m3/direct-arc-browser.mjs
+
       - name: Show server log on failure
         if: failure()
         run: cat /tmp/asa-m3-http.log || true
