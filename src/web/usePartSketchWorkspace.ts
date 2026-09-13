@@ -12,6 +12,7 @@ import type {
 import type { CadViewportPick } from '../contracts/render';
 import { useSketchSession } from './useSketchSession';
 import { useSketchLineTool } from './useSketchLineTool';
+import { useSketchRectangleTool } from './useSketchRectangleTool';
 import { useSketchCircleTool } from './useSketchCircleTool';
 import { useSketchArcTool } from './useSketchArcTool';
 
@@ -94,6 +95,20 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
       clearTransientSelection();
     },
   });
+  const rectangleTool = useSketchRectangleTool({
+    app,
+    sketchId: activeSketchId,
+    active: activeCommand === 'sketch.rectangle',
+    setNotice,
+    onCommitted: (width, height) => {
+      setRectangleWidth(width);
+      setRectangleHeight(height);
+      setActiveCommand(null);
+      setPanel('tree');
+      setActiveWorkspace('sketch');
+      clearTransientSelection();
+    },
+  });
   const circleTool = useSketchCircleTool({
     app,
     sketchId: activeSketchId,
@@ -119,6 +134,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
       clearTransientSelection();
     },
   });
+  const directTwoPointTool = activeCommand === 'sketch.rectangle' ? rectangleTool : lineTool;
 
   const resetTransient = useCallback(() => {
     setActiveCommand(null);
@@ -235,10 +251,14 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
 
   function beginRectangle() {
     if (!sketch) return;
+    rectangleTool.reset();
     setActiveCommand('sketch.rectangle');
+    // Keep the explicit numeric rectangle path available for the protected Part
+    // workflow while enabling first-corner/opposite-corner direct interaction
+    // on the same command. Direct pointer commit never creates dimensions.
     setPanel('parameters');
     clearTransientSelection();
-    setNotice('Задайте ширину и высоту прямоугольника');
+    setNotice('Укажите первый угол прямоугольника или задайте размеры');
   }
 
   async function commitRectangle() {
@@ -553,6 +573,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
 
   function cancelCommand() {
     if (activeCommand === 'sketch.line') lineTool.reset();
+    if (activeCommand === 'sketch.rectangle') rectangleTool.reset();
     if (activeCommand === 'sketch.circle') circleTool.reset();
     if (activeCommand === 'sketch.arc') arcTool.reset();
     const stayInSketch = activeCommand === 'sketch.line' || activeCommand === 'sketch.rectangle' || activeCommand === 'sketch.circle' || activeCommand === 'sketch.arc';
@@ -570,9 +591,12 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
 
   async function commitActiveCommand() {
     if (activeCommand === 'sketch.line') return lineTool.commitPreview();
+    if (activeCommand === 'sketch.rectangle') {
+      if (rectangleTool.draft.from) return rectangleTool.commitPreview();
+      return commitRectangle();
+    }
     if (activeCommand === 'sketch.arc') return arcTool.commitPreview();
     if (activeCommand === 'part.sketch.create') return commitCreateSketch();
-    if (activeCommand === 'sketch.rectangle') return commitRectangle();
     if (activeCommand === 'sketch.circle') {
       if (circleTool.draft.center) return circleTool.commitPreview();
       return commitCircle();
@@ -624,10 +648,10 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     handleBodySelect,
     enterSketch,
     beginLine,
-    lineDraft: lineTool.draft,
-    lineCommitting: lineTool.committing,
-    handleSketchLinePointMove: lineTool.move,
-    handleSketchLinePoint: lineTool.point,
+    lineDraft: directTwoPointTool.draft,
+    lineCommitting: directTwoPointTool.committing,
+    handleSketchLinePointMove: directTwoPointTool.move,
+    handleSketchLinePoint: directTwoPointTool.point,
     circleDraft: circleTool.draft,
     circleCommitting: circleTool.committing,
     handleSketchCirclePointMove: circleTool.move,

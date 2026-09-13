@@ -12,6 +12,7 @@ import type { SketchLineDraft } from './useSketchLineTool';
 import type { SketchCircleDraft } from './useSketchCircleTool';
 import type { SketchArcDraft } from './useSketchArcTool';
 import { SketchLineInteractionLayer } from './viewport/SketchLineInteractionLayer';
+import { SketchRectangleInteractionLayer } from './viewport/SketchRectangleInteractionLayer';
 import { SketchCircleInteractionLayer } from './viewport/SketchCircleInteractionLayer';
 import { SketchArcInteractionLayer } from './viewport/SketchArcInteractionLayer';
 import { SketchViewportFrameProvider } from './viewport/SketchViewportFrameContext';
@@ -133,6 +134,20 @@ export function PartModelStage(props: PartModelStageProps) {
             viewportState={sketchViewport}
             onViewportStateChange={setSketchViewport}
             active={props.activeCommand === 'sketch.line'}
+            draft={props.lineDraft}
+            committing={props.lineCommitting}
+            onPointMove={props.onSketchLinePointMove}
+            onPoint={props.onSketchLinePoint}
+          />
+        )}
+
+        {sketchEditing && (
+          <SketchRectangleInteractionLayer
+            model={sketchOverlay}
+            frame={sketchFrame}
+            viewportState={sketchViewport}
+            onViewportStateChange={setSketchViewport}
+            active={props.activeCommand === 'sketch.rectangle'}
             draft={props.lineDraft}
             committing={props.lineCommitting}
             onPointMove={props.onSketchLinePointMove}
