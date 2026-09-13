@@ -11,6 +11,7 @@ const editing = fs.readFileSync('src/web/useSketchEditingController.ts', 'utf8')
 const partStage = fs.readFileSync('src/web/PartModelStage.tsx', 'utf8');
 const sketchStage = fs.readFileSync('src/web/SketchEditingStage.tsx', 'utf8');
 const app = fs.readFileSync('src/web/App.tsx', 'utf8');
+const shellMain = fs.readFileSync('src/web/CadShellMain.tsx', 'utf8');
 const styles = fs.readFileSync('src/web/styles.css', 'utf8');
 const bindings = fs.readFileSync('src/web/M2CadUiActions.ts', 'utf8');
 const registry = JSON.parse(fs.readFileSync('spec/ui/command-registry.v1.json', 'utf8'));
@@ -49,7 +50,8 @@ assert.match(bindings, /'sketch\.line': binding\(handlers\.line/, 'shared action
 assert.match(workspace, /useSketchEditingController/, 'Part/Sketch facade must compose the focused Sketch editing owner');
 assert.match(editing, /setPanel\('closed'\)/, 'direct Line must collapse management UI before drawing');
 assert.match(editing, /setActiveCommand\('sketch\.line'\)/, 'Line activation must stay in the Sketch editing owner');
-assert.match(app, /activePanel === 'closed' \? ' panel-closed'/, 'shell must expose explicit closed management state');
+assert.match(app, /<CadShellMain\b/, 'App must delegate work-area shell presentation to CadShellMain');
+assert.match(shellMain, /props\.activePanel === 'closed' \? ' panel-closed'/, 'shell presentation must expose explicit closed management state');
 assert.match(styles, /\.content-area\.panel-closed \.management-panel \{ display: none; \}/, 'closed panel must not cover the workplane');
 
 const line = registry.commands.find((command) => command.id === 'sketch.line');
@@ -57,4 +59,4 @@ assert.ok(line, 'command registry must contain sketch.line');
 assert.equal(line.status, 'implemented', 'sketch.line must be implemented only with the M3.2 product path');
 assert.equal(line.milestone, 'M3.2');
 
-console.log('ASA-CAD M3.2 direct Line architecture boundary PASS (SketchEditingStage + shared input + stable view + panel collapse)');
+console.log('ASA-CAD M3.2 direct Line architecture boundary PASS (SketchEditingStage + shared input + stable view + shell-owned panel collapse)');
