@@ -14,13 +14,17 @@ import type {
 import { applyPartDevFixture } from './devFixtures';
 import { useCadProjectPersistence, type CadProjectPersistenceOverrides } from './useCadProjectPersistence';
 import { useCadPersistenceCommands } from './useCadPersistenceCommands';
-import { CadUiActionButton, CadUiActionSearchResults, CadUiGlobalActionButton } from './CadUiActionControls';
-import type { CadUiAction } from './CadUiAction';
 import { useM2CadUiActions } from './useM2CadUiActions';
 import { MobileToolsPanel } from './MobileToolsPanel';
 import { DocumentTree } from './DocumentTree';
 import { ParameterPanel } from './ParameterPanel';
 import { PartModelStage } from './PartModelStage';
+import { CadShellTop } from './CadShellTop';
+import { CadShellMain } from './CadShellMain';
+import { CadShellBottom } from './CadShellBottom';
+import { NewDocumentDialog } from './NewDocumentDialog';
+import { PlannedDocumentStage } from './PlannedDocumentStage';
+import { documentNames } from './CadDocumentPresentation';
 import { usePartSketchWorkspace } from './usePartSketchWorkspace';
 import { cadUiActionIdForShortcut } from './M2CadUiActions';
 import {
@@ -28,24 +32,6 @@ import {
   shortcutInputKind,
   type ShortcutActionId,
 } from './ShortcutRegistry';
-
-const documentNames: Record<CadDocumentKind, string> = {
-  part: 'Деталь',
-  assembly: 'Сборка',
-  drawing: 'Чертеж',
-  fragment: 'Фрагмент',
-  specification: 'Спецификация',
-  text: 'Текстовый документ',
-};
-
-const documentDescriptions: Record<CadDocumentKind, string> = {
-  part: 'Параметрическая трехмерная деталь',
-  assembly: 'Сборка деталей и подсборок',
-  drawing: 'Листовой ассоциативный чертеж',
-  fragment: 'Свободный двумерный фрагмент',
-  specification: 'Состав изделия и позиции',
-  text: 'Инженерный текстовый документ',
-};
 
 const viewportViewByLabel: Record<string, CadViewportViewName> = {
   'Показать всё': 'fit',
@@ -57,17 +43,6 @@ const viewportViewByLabel: Record<string, CadViewportViewName> = {
   'Справа': 'right',
   'Изометрия': 'isometric',
 };
-
-function kindIcon(kind: CadDocumentKind): string {
-  switch (kind) {
-    case 'part': return '◇';
-    case 'assembly': return '⬡';
-    case 'drawing': return '▱';
-    case 'fragment': return '⌗';
-    case 'specification': return '≣';
-    case 'text': return '¶';
-  }
-}
 
 export function App(props: CadProjectPersistenceOverrides) {
   const route = useMemo(() => parseCadClientRoute(window.location.pathname), []);
@@ -416,369 +391,143 @@ export function App(props: CadProjectPersistenceOverrides) {
       tabIndex={-1}
       onKeyDown={handleKeyDown}
     >
-      <header className="main-menu-bar">
-        <button className="brand-button" type="button" onClick={() => setNewDialogOpen(true)} aria-label="ASA-CAD">
-          <span className="brand-mark">A</span>
-          <span>ASA-CAD</span>
-        </button>
-        <nav className="main-menu-items" aria-label="Главное меню">
-          <button type="button">Файл</button>
-          <button type="button">Главная</button>
-          <button type="button">Сервис</button>
-        </nav>
-        <div className="command-search-wrap">
-          <span aria-hidden="true">⌕</span>
-          <input
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="Поиск команд"
-            aria-label="Поиск команд"
+      <CadShellTop
+        documentKind={document.kind}
+        documentTitle={document.title}
+        dirty={state.dirty}
+        activeWorkspace={activeWorkspace}
+        setActiveWorkspace={setActiveWorkspace}
+        search={search}
+        setSearch={setSearch}
+        searchableActions={searchableActions}
+        getAction={uiAction}
+        openNewDocument={() => setNewDialogOpen(true)}
+        rectangleReady={rectangleReady}
+        rectangleWidth={rectangleWidth}
+        rectangleHeight={rectangleHeight}
+        circleReady={circleReady}
+        circleDiameter={circleDiameter}
+        viewName={viewName}
+      />
+
+      <CadShellMain
+        activePanel={activePanel}
+        setActivePanel={setActivePanel}
+        requestView={requestView}
+        viewName={viewName}
+        selectionMode={selectionMode}
+        selectedBodyName={selectedBody?.name}
+        selectedSketchEntityId={selectedSketchEntityId}
+        activeCommand={activeCommand}
+        commitActiveCommand={commitActiveCommand}
+        cancelCommand={cancelCommand}
+        treeContent={
+          <DocumentTree
+            document={document}
+            selectedBodyId={selectedBodyId}
+            activeSketchId={activeSketchId}
+            onSelectBody={handleBodySelect}
+            onEditSketch={enterSketch}
+            onEditDimension={beginDimensionEdit}
           />
-          <CadUiActionSearchResults actions={searchableActions} onPicked={() => setSearch('')} />
-        </div>
-        <div className="global-actions">
-          <CadUiGlobalActionButton action={uiAction('system.open')}>⌂</CadUiGlobalActionButton>
-          <CadUiGlobalActionButton action={uiAction('system.save')} titleSuffix="(Ctrl+S)">▣</CadUiGlobalActionButton>
-          <CadUiGlobalActionButton action={uiAction('system.undo')} titleSuffix="(Ctrl+Z)">↶</CadUiGlobalActionButton>
-          <CadUiGlobalActionButton action={uiAction('system.redo')} titleSuffix="(Ctrl+Y / Ctrl+Shift+Z)">↷</CadUiGlobalActionButton>
-          <button type="button" title="Настройки">⚙</button>
-        </div>
-      </header>
-
-      <div className="document-tabs" role="tablist" aria-label="Документы">
-        <button type="button" className="new-tab-button" onClick={() => setNewDialogOpen(true)} title="Новый документ">＋</button>
-        <button className="document-tab active" type="button" role="tab" aria-selected="true">
-          <span className="document-kind-icon">{kindIcon(document.kind)}</span>
-          <span>{document.title}</span>
-          {state.dirty && <span className="dirty-dot" title="Изменено">●</span>}
-          <span className="tab-close" aria-hidden="true">×</span>
-        </button>
-      </div>
-
-      <section className="instrument-area">
-        <div className="workspace-tabs" role="tablist" aria-label="Инструментальные области">
-          {document.kind === 'part' ? (
-            <>
-              <WorkspaceTab active={activeWorkspace === 'solid'} onClick={() => setActiveWorkspace('solid')}>Твердотельное моделирование</WorkspaceTab>
-              {activeWorkspace === 'sketch' && <WorkspaceTab active>Эскиз</WorkspaceTab>}
-              <WorkspaceTab active={activeWorkspace === 'surfaces'} onClick={() => setActiveWorkspace('surfaces')}>Каркас и поверхности</WorkspaceTab>
-              <WorkspaceTab active={activeWorkspace === 'diagnostics'} onClick={() => setActiveWorkspace('diagnostics')}>Проверка / Измерения</WorkspaceTab>
-              <WorkspaceTab active={activeWorkspace === 'view'} onClick={() => setActiveWorkspace('view')}>Вид</WorkspaceTab>
-            </>
-          ) : (
-            <WorkspaceTab active>{documentNames[document.kind]}</WorkspaceTab>
-          )}
-        </div>
-
-        <div className="command-ribbon">
-          {document.kind === 'part' && activeWorkspace === 'sketch' ? (
-            <>
-              <CommandGroup label="Геометрия">
-                <CadUiActionButton action={uiAction('sketch.line')} symbol="╱" large accent />
-                <CadUiActionButton action={uiAction('sketch.rectangle')} symbol={commandSymbol('sketch.rectangle')} />
-                <CadUiActionButton action={uiAction('sketch.circle')} symbol={commandSymbol('sketch.circle')} />
-                <CadUiActionButton action={uiAction('sketch.arc')} symbol="⌒" />
-              </CommandGroup>
-              <CommandGroup label="Размеры">
-                <RibbonTextButton
-                  label={rectangleReady ? `${rectangleWidth} × ${rectangleHeight} мм` : circleReady ? `Ø${circleDiameter} мм` : 'Размеры'}
-                  symbol="↔"
-                  disabled
-                />
-              </CommandGroup>
-              <CommandGroup label="Эскиз" compact>
-                <CadUiActionButton action={uiAction('sketch.finish')} symbol="✓" text />
-              </CommandGroup>
-            </>
-          ) : document.kind === 'part' && activeWorkspace !== 'view' ? (
-            <>
-              <CommandGroup label="Эскиз">
-                <CadUiActionButton action={uiAction('part.sketch.create')} symbol={commandSymbol('part.sketch.create')} large accent />
-              </CommandGroup>
-              <CommandGroup label="Элементы тела">
-                <CadUiActionButton action={uiAction('part.extrude')} symbol={commandSymbol('part.extrude')} />
-                <CadUiActionButton action={uiAction('part.cutExtrude')} symbol={commandSymbol('part.cutExtrude')} />
-                <CadUiActionButton action={uiAction('part.fillet')} symbol={commandSymbol('part.fillet')} />
-              </CommandGroup>
-              <CommandGroup label="Сервис модели" compact>
-                <CadUiActionButton action={uiAction('system.rebuild')} symbol="↻" text titleSuffix="(F5)" />
-                <RibbonTextButton label="Свойства" symbol="ⓘ" disabled />
-              </CommandGroup>
-            </>
-          ) : document.kind === 'part' ? (
-            <ViewCommandGroups viewName={viewName} getAction={uiAction} />
-          ) : (
-            <div className="planned-workspace-note">
-              <strong>{documentNames[document.kind]}</strong>
-              <span>Документный маршрут уже существует. Инструменты включаются по roadmap без фиктивных кнопок.</span>
-            </div>
-          )}
-        </div>
-      </section>
-
-      <main className={`content-area${activePanel === 'closed' ? ' panel-closed' : ''}`}>
-        <aside className="management-rail" aria-label="Панели">
-          <button
-            type="button"
-            className={activePanel === 'tree' ? 'active' : ''}
-            onClick={() => setActivePanel('tree')}
-            title="Дерево"
-          >
-            ☷
-            <span>Дерево</span>
-          </button>
-          <button
-            type="button"
-            className={activePanel === 'parameters' ? 'active' : ''}
-            onClick={() => setActivePanel('parameters')}
-            title="Параметры"
-          >
-            ≡
-            <span>Параметры</span>
-          </button>
-          <button type="button" disabled title="Переменные — M7">
-            ƒ
-            <span>Переменные</span>
-          </button>
-        </aside>
-
-        <aside className="management-panel">
-          {activePanel === 'closed' ? null : activePanel === 'tree' ? (
-            <DocumentTree
+        }
+        parametersContent={
+          <ParameterPanel
+            activeCommand={activeCommand}
+            requiresFaceSelection={hasSolid && activeCommand === 'part.sketch.create'}
+            selectedPick={selectedPick}
+            sketchPlane={sketchPlane}
+            setSketchPlane={setSketchPlane}
+            rectangleWidth={rectangleWidth}
+            rectangleHeight={rectangleHeight}
+            setRectangleWidth={setRectangleWidth}
+            setRectangleHeight={setRectangleHeight}
+            circleDiameter={circleDiameter}
+            setCircleDiameter={setCircleDiameter}
+            extrudeDistance={extrudeDistance}
+            setExtrudeDistance={setExtrudeDistance}
+            filletRadius={filletRadius}
+            setFilletRadius={setFilletRadius}
+            dimensionEditValue={dimensionEditValue}
+            setDimensionEditValue={setDimensionEditValue}
+            onCreateSketch={commitCreateSketch}
+            onCreateRectangle={commitRectangle}
+            onCreateCircle={commitCircle}
+            onExtrude={commitExtrude}
+            onCut={commitCut}
+            onFillet={commitFillet}
+            onDimensionEdit={commitDimensionEdit}
+            onCancel={cancelCommand}
+          />
+        }
+        toolsContent={
+          <MobileToolsPanel
+            documentKind={document.kind}
+            workspace={activeWorkspace}
+            getAction={uiAction}
+          />
+        }
+        modelContent={
+          document.kind === 'part' ? (
+            <PartModelStage
               document={document}
-              selectedBodyId={selectedBodyId}
-              activeSketchId={activeSketchId}
-              onSelectBody={handleBodySelect}
-              onEditSketch={enterSketch}
-              onEditDimension={beginDimensionEdit}
-            />
-          ) : activePanel === 'parameters' ? (
-            <ParameterPanel
+              activeSketch={sketch}
+              activeWorkspace={activeWorkspace}
               activeCommand={activeCommand}
-              requiresFaceSelection={hasSolid && activeCommand === 'part.sketch.create'}
-              selectedPick={selectedPick}
-              sketchPlane={sketchPlane}
-              setSketchPlane={setSketchPlane}
-              rectangleWidth={rectangleWidth}
-              rectangleHeight={rectangleHeight}
-              setRectangleWidth={setRectangleWidth}
-              setRectangleHeight={setRectangleHeight}
-              circleDiameter={circleDiameter}
-              setCircleDiameter={setCircleDiameter}
-              extrudeDistance={extrudeDistance}
-              setExtrudeDistance={setExtrudeDistance}
-              filletRadius={filletRadius}
-              setFilletRadius={setFilletRadius}
-              dimensionEditValue={dimensionEditValue}
-              setDimensionEditValue={setDimensionEditValue}
-              onCreateSketch={commitCreateSketch}
-              onCreateRectangle={commitRectangle}
-              onCreateCircle={commitCircle}
-              onExtrude={commitExtrude}
-              onCut={commitCut}
-              onFillet={commitFillet}
-              onDimensionEdit={commitDimensionEdit}
-              onCancel={cancelCommand}
+              revisionToken={revisionToken}
+              renderModel={renderModel}
+              runtimeStatus={runtimeState.status}
+              fixtureError={fixtureError}
+              rectangleReady={rectangleReady}
+              selectionMode={selectionMode}
+              onPick={handleViewportPick}
+              viewCommand={viewCommand}
+              selectedBodyId={selectedBodyId}
+              onBodySelect={handleBodySelect}
+              selectedSketchEntityId={selectedSketchEntityId}
+              onSketchEntitySelect={handleSketchEntitySelect}
+              lineDraft={lineDraft}
+              lineCommitting={lineCommitting}
+              onSketchLinePointMove={handleSketchLinePointMove}
+              onSketchLinePoint={handleSketchLinePoint}
+              rectangleDraft={rectangleDraft}
+              rectangleCommitting={rectangleCommitting}
+              onSketchRectanglePointMove={handleSketchRectanglePointMove}
+              onSketchRectanglePoint={handleSketchRectanglePoint}
+              circleDraft={circleDraft}
+              circleCommitting={circleCommitting}
+              onSketchCirclePointMove={handleSketchCirclePointMove}
+              onSketchCirclePoint={handleSketchCirclePoint}
+              arcDraft={arcDraft}
+              arcCommitting={arcCommitting}
+              onSketchArcPointMove={handleSketchArcPointMove}
+              onSketchArcPoint={handleSketchArcPoint}
             />
           ) : (
-            <MobileToolsPanel
-              documentKind={document.kind}
-              workspace={activeWorkspace}
-              getAction={uiAction}
-            />
-          )}
-        </aside>
+            <PlannedDocumentStage kind={document.kind} />
+          )
+        }
+      />
 
-        <section className="work-area" aria-label="Рабочая область">
-          <div className="viewport-quick-access" aria-label="Быстрый доступ рабочей области">
-            <button type="button" title="Показать всё (F)" onClick={() => requestView('Показать всё')}>⌗</button>
-            <button type="button" title="Изометрия (0)" onClick={() => requestView('Изометрия')}>◇</button>
-            <span className="quick-separator" />
-            <span className="view-caption">{viewName}</span>
-            {selectionMode !== 'none' && <span className="selection-caption">{selectionMode === 'face' ? 'Выбор грани' : 'Выбор ребра'}</span>}
-            {selectedBody && selectionMode === 'none' && <span className="selection-caption">Выбрано: {selectedBody.name}</span>}
-            {selectedSketchEntityId && !activeCommand && <span className="selection-caption">Элемент эскиза выбран</span>}
-            {activeCommand && (
-              <>
-                <span className="quick-separator" />
-                <button className="quick-accept" type="button" onClick={commitActiveCommand} title="Применить (Ctrl+Enter)">✓</button>
-                <button className="quick-cancel" type="button" onClick={cancelCommand} title="Отмена (Esc)">×</button>
-              </>
-            )}
-          </div>
+      <CadShellBottom
+        recomputeStatus={state.recompute.status}
+        notice={notice}
+        devFixture={devFixture}
+        selectedPickKind={selectedPick?.kind}
+        selectedPointText={selectedPointText}
+        selectedBodyName={selectedBody?.name}
+        selectedSketchEntityId={selectedSketchEntityId}
+        documentKind={document.kind}
+        runtimeStatus={runtimeState.status}
+        activePanel={activePanel}
+        setActivePanel={setActivePanel}
+      />
 
-          <div className="model-stage">
-            {document.kind === 'part' ? (
-              <PartModelStage
-                document={document}
-                activeSketch={sketch}
-                activeWorkspace={activeWorkspace}
-                activeCommand={activeCommand}
-                revisionToken={revisionToken}
-                renderModel={renderModel}
-                runtimeStatus={runtimeState.status}
-                fixtureError={fixtureError}
-                rectangleReady={rectangleReady}
-                selectionMode={selectionMode}
-                onPick={handleViewportPick}
-                viewCommand={viewCommand}
-                selectedBodyId={selectedBodyId}
-                onBodySelect={handleBodySelect}
-                selectedSketchEntityId={selectedSketchEntityId}
-                onSketchEntitySelect={handleSketchEntitySelect}
-                lineDraft={lineDraft}
-                lineCommitting={lineCommitting}
-                onSketchLinePointMove={handleSketchLinePointMove}
-                onSketchLinePoint={handleSketchLinePoint}
-                rectangleDraft={rectangleDraft}
-                rectangleCommitting={rectangleCommitting}
-                onSketchRectanglePointMove={handleSketchRectanglePointMove}
-                onSketchRectanglePoint={handleSketchRectanglePoint}
-                circleDraft={circleDraft}
-                circleCommitting={circleCommitting}
-                onSketchCirclePointMove={handleSketchCirclePointMove}
-                onSketchCirclePoint={handleSketchCirclePoint}
-                arcDraft={arcDraft}
-                arcCommitting={arcCommitting}
-                onSketchArcPointMove={handleSketchArcPointMove}
-                onSketchArcPoint={handleSketchArcPoint}
-              />
-            ) : (
-              <div className="stage-message">
-                <div className="stage-symbol">{kindIcon(document.kind)}</div>
-                <strong>{documentNames[document.kind]}</strong>
-                <span>{documentDescriptions[document.kind]}</span>
-                <small>Каркас маршрута готов; функциональный редактор включается на соответствующем milestone.</small>
-              </div>
-            )}
-          </div>
-        </section>
-      </main>
-
-      <footer className="status-bar">
-        <div className="status-left">
-          <span className={`status-indicator ${state.recompute.status}`} />
-          <span>{notice}</span>
-        </div>
-        <div className="status-right">
-          {devFixture && <span>fixture:{devFixture}</span>}
-          {selectedPick && <span>{selectedPick.kind === 'face' ? 'Грань' : 'Ребро'}: {selectedPointText}</span>}
-          {selectedBody && <span>Выбрано: {selectedBody.name}</span>}
-          {selectedSketchEntityId && <span>Sketch entity: {selectedSketchEntityId}</span>}
-          <span>{documentNames[document.kind]}</span>
-          <span>{runtimeState.status === 'ready' ? 'OCC локально' : 'ядро по требованию'}</span>
-          <span>мм</span>
-          <span>UI 100%</span>
-          <span>M2</span>
-        </div>
-      </footer>
-
-      <div className="mobile-bottom-bar" aria-label="Мобильные панели">
-        <button
-          type="button"
-          className={activePanel === 'tree' ? 'active' : ''}
-          aria-pressed={activePanel === 'tree'}
-          onClick={() => setActivePanel('tree')}
-        >☷<span>Дерево</span></button>
-        <button
-          type="button"
-          className={activePanel === 'parameters' ? 'active' : ''}
-          aria-pressed={activePanel === 'parameters'}
-          onClick={() => setActivePanel('parameters')}
-        >≡<span>Параметры</span></button>
-        <button
-          type="button"
-          className={activePanel === 'tools' ? 'active' : ''}
-          aria-pressed={activePanel === 'tools'}
-          onClick={() => setActivePanel('tools')}
-        >⌘<span>Инструменты</span></button>
-      </div>
-
-      {newDialogOpen && (
-        <div className="modal-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && setNewDialogOpen(false)}>
-          <section className="new-document-dialog" role="dialog" aria-modal="true" aria-labelledby="new-document-title">
-            <header>
-              <div>
-                <h2 id="new-document-title">Новый документ</h2>
-                <p>Один ASA-CAD, шесть инженерных типов документов</p>
-              </div>
-              <button type="button" onClick={() => setNewDialogOpen(false)} aria-label="Закрыть">×</button>
-            </header>
-            <div className="document-kind-grid">
-              {(Object.keys(documentNames) as CadDocumentKind[]).map((kind) => (
-                <button key={kind} type="button" onClick={() => createDocument(kind)}>
-                  <span className="kind-card-icon">{kindIcon(kind)}</span>
-                  <span className="kind-card-text">
-                    <strong>{documentNames[kind]}</strong>
-                    <small>{documentDescriptions[kind]}</small>
-                  </span>
-                </button>
-              ))}
-            </div>
-          </section>
-        </div>
-      )}
+      <NewDocumentDialog
+        open={newDialogOpen}
+        onClose={() => setNewDialogOpen(false)}
+        onCreate={createDocument}
+      />
     </div>
-  );
-}
-
-function WorkspaceTab(props: React.PropsWithChildren<{ active?: boolean; onClick?: () => void }>) {
-  return (
-    <button className={props.active ? 'active' : ''} type="button" onClick={props.onClick} role="tab" aria-selected={props.active}>
-      {props.children}
-    </button>
-  );
-}
-
-function CommandGroup(props: React.PropsWithChildren<{ label: string; compact?: boolean }>) {
-  return (
-    <section className={`command-group ${props.compact ? 'compact' : ''}`}>
-      <div className="command-group-content">{props.children}</div>
-      <div className="command-group-label">{props.label}</div>
-    </section>
-  );
-}
-
-function RibbonTextButton(props: { label: string; symbol: string; disabled?: boolean; onClick?: () => void; title?: string }) {
-  return (
-    <button className="ribbon-command text-command" type="button" disabled={props.disabled} onClick={props.onClick} title={props.title}>
-      <span className="ribbon-command-icon">{props.symbol}</span>
-      <span>{props.label}</span>
-    </button>
-  );
-}
-
-function commandSymbol(id: string): string {
-  if (id.includes('sketch')) return '▱';
-  if (id.includes('circle')) return '○';
-  if (id.includes('cut')) return '▣';
-  if (id.includes('extrude')) return '▤';
-  if (id.includes('fillet')) return '◜';
-  return '◇';
-}
-
-function ViewCommandGroups(props: { viewName: string; getAction: (id: string) => CadUiAction }) {
-  const views = [
-    { label: 'Спереди', id: 'view.front', shortcut: '1' },
-    { label: 'Сзади', id: 'view.back' },
-    { label: 'Сверху', id: 'view.top', shortcut: '2' },
-    { label: 'Снизу', id: 'view.bottom' },
-    { label: 'Слева', id: 'view.left', shortcut: '3' },
-    { label: 'Справа', id: 'view.right' },
-    { label: 'Изометрия', id: 'view.iso', shortcut: '0' },
-  ];
-  return (
-    <CommandGroup label="Ориентация">
-      {views.map((view) => (
-        <CadUiActionButton
-          key={view.id}
-          action={props.getAction(view.id)}
-          symbol="◇"
-          className="view-command"
-          selected={props.viewName === view.label}
-          titleSuffix={view.shortcut ? `(${view.shortcut})` : undefined}
-        />
-      ))}
-    </CommandGroup>
   );
 }
