@@ -19,9 +19,9 @@ M3.6B rigid drag draft PR #56 is closed and discarded. Restart only after M3M-00
 
 1. M3M-001 — file-size budgets + numeric agent rules — DONE (#58);
 2. M3M-002 — focused Part/Sketch workspace owners — DONE (#60);
-3. **M3M-003 — `SketchEditingStage` extracted from `PartModelStage` — DONE (this change);**
-4. **M3M-004 — extract shell presentation from `App.tsx` — NEXT;**
-5. M3M-005 — split monolithic `styles.css`;
+3. M3M-003 — `SketchEditingStage` extracted from `PartModelStage` — DONE (#61);
+4. **M3M-004 — shell presentation extracted from `App.tsx`; App ratcheted to 18,023 B — DONE (this change);**
+5. **M3M-005 — split monolithic `styles.css` — NEXT;**
 6. M3M-006 — split Sketch command handlers by geometry/edit/constraint/dimension ownership;
 7. M3M-007 — shared M3 browser-test harness;
 8. M3M-008 — reduce mandatory agent-document context and retire stale workflow prose;
@@ -40,6 +40,7 @@ Protected boundaries:
 - transient `SketchSolveSession` and PlaneGCS preview;
 - `SketchEditingStage` owns active 2D Sketch viewport state, solve overlay, stable-ID selection and direct tool layers;
 - `PartModelStage` owns only Part/B-Rep presentation and mode delegation;
+- `App.tsx` owns orchestration; shell/ribbon/panel/status/dialog presentation lives in focused `CadShell*` modules;
 - Sketch SVG overlay remains separate from B-Rep/Three;
 - shared `SketchInteractionSurface`;
 - client-side lazy OpenCascade/PlaneGCS;
@@ -64,4 +65,4 @@ M3 regressions protect Line/Circle/Arc/Rectangle and selection/delete on desktop
 
 ## Immediate next work
 
-Work **only on #57 M3M-004** after this change merges. Extract shell/presentation from `App.tsx` and ratchet the App ceiling down substantially. Do not restart M3.6B.
+Work **only on #57 M3M-005** after this change merges. Split `styles.css` into a small set of focused domain CSS files and ratchet the old stylesheet ceiling down. Do not restart M3.6B.
