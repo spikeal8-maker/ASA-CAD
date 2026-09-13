@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import type { CadPartDocument, CadPoint2, CadSketch } from '../contracts/document';
-import type { CadBodyId } from '../contracts/ids';
+import type { CadBodyId, CadSketchEntityId } from '../contracts/ids';
 import type { CadRenderModel, CadViewportPick } from '../contracts/render';
 import {
   CadViewport,
@@ -16,6 +16,7 @@ import { SketchLineInteractionLayer } from './viewport/SketchLineInteractionLaye
 import { SketchCircleInteractionLayer } from './viewport/SketchCircleInteractionLayer';
 import { SketchArcInteractionLayer } from './viewport/SketchArcInteractionLayer';
 import { SketchRectangleInteractionLayer } from './viewport/SketchRectangleInteractionLayer';
+import { SketchSelectionLayer } from './viewport/SketchSelectionLayer';
 import { SketchViewportFrameProvider } from './viewport/SketchViewportFrameContext';
 import {
   resetSketchViewportState,
@@ -38,6 +39,8 @@ export interface PartModelStageProps {
   viewCommand: CadViewportViewCommand;
   selectedBodyId: CadBodyId | null;
   onBodySelect(bodyId: CadBodyId | null): void;
+  selectedSketchEntityId: CadSketchEntityId | null;
+  onSketchEntitySelect(entityId: CadSketchEntityId): void;
   lineDraft: SketchLineDraft;
   lineCommitting: boolean;
   onSketchLinePointMove(point: CadPoint2): void;
@@ -60,11 +63,13 @@ export interface PartModelStageProps {
  * Focused owner for the Part work-area presentation.
  *
  * Active Sketch editing remains an isolated 2D workplane until a StableRef face
- * can provide a resolved model-space frame. The transient Sketch viewport is
- * stable across geometry commits and resets only when the active Sketch changes.
+ * can provide a resolved model-space frame. CadViewport retains the accepted
+ * read-only Sketch overlay boundary; stable-ID selection is a separate sibling
+ * interaction layer and never enters the B-Rep Three effect.
  */
 export function PartModelStage(props: PartModelStageProps) {
   const sketchEditing = props.activeWorkspace === 'sketch' && Boolean(props.activeSketch);
+  const sketchSelectionEnabled = sketchEditing && props.activeCommand === null;
   const [sketchViewport, setSketchViewport] = useState(resetSketchViewportState);
   useEffect(() => {
     setSketchViewport(resetSketchViewportState());
@@ -95,6 +100,7 @@ export function PartModelStage(props: PartModelStageProps) {
         data-model-context-ready={workplaneProjection?.modelContextReady ? 'true' : 'false'}
         data-sketch-view-span={sketchViewport.span}
         data-sketch-view-center={sketchViewport.center.join(',')}
+        data-selected-sketch-entity-id={props.selectedSketchEntityId ?? ''}
       >
         <div className="origin-widget" aria-label="Ориентация">
           <span className="axis-z">Z</span>
@@ -130,6 +136,15 @@ export function PartModelStage(props: PartModelStageProps) {
                   : 'Создайте эскиз и геометрию. OpenCascade не загружается до первой твердотельной операции.'}
             </small>
           </div>
+        )}
+
+        {sketchEditing && (
+          <SketchSelectionLayer
+            model={sketchOverlay}
+            enabled={sketchSelectionEnabled}
+            selectedEntityId={props.selectedSketchEntityId}
+            onEntitySelect={props.onSketchEntitySelect}
+          />
         )}
 
         {sketchEditing && (

@@ -117,6 +117,7 @@ export function App(props: CadProjectPersistenceOverrides) {
     setActiveWorkspace,
     activeCommand,
     activeSketchId,
+    selectedSketchEntityId,
     selectionMode,
     selectedPick,
     selectedBodyId,
@@ -151,6 +152,8 @@ export function App(props: CadProjectPersistenceOverrides) {
     resetForDocument,
     handleViewportPick,
     handleBodySelect,
+    handleSketchEntitySelect,
+    deleteSelectedSketchEntity,
     enterSketch,
     beginLine,
     lineDraft,
@@ -283,6 +286,7 @@ export function App(props: CadProjectPersistenceOverrides) {
       rectangle: beginRectangle,
       circle: beginCircle,
       arc: beginArc,
+      deleteSketchEntity: deleteSelectedSketchEntity,
       finishSketch,
       extrude: beginExtrude,
       cutExtrude: beginCut,
@@ -300,6 +304,7 @@ export function App(props: CadProjectPersistenceOverrides) {
       canUndo: state.canUndo,
       canRedo: state.canRedo,
       hasSketch: Boolean(sketch),
+      hasSketchEntitySelection: Boolean(selectedSketchEntityId),
       canExtrude,
       canCutExtrude: canCut,
       canFillet,
@@ -343,7 +348,7 @@ export function App(props: CadProjectPersistenceOverrides) {
         await commitActiveCommand();
         return;
       case 'interaction.delete':
-        setNotice('Удаление выбранного объекта будет включено отдельной безопасной командой');
+        await deleteSelectedSketchEntity();
         return;
       case 'view.zoomIn':
         requestViewportCommand('zoom-in');
@@ -379,7 +384,7 @@ export function App(props: CadProjectPersistenceOverrides) {
       {
         documentKind: document.kind,
         activeCommand,
-        hasSelection: Boolean(selectedBodyId) && !activeCommand,
+        hasSelection: Boolean(selectedBodyId || selectedSketchEntityId) && !activeCommand,
         cadEditorFocused: true,
         inputKind: shortcutInputKind(event.target),
       },
@@ -406,6 +411,7 @@ export function App(props: CadProjectPersistenceOverrides) {
       data-selected-point={selectedPointText}
       data-selected-body-id={selectedBodyId ?? ''}
       data-active-sketch-id={activeSketchId ?? ''}
+      data-selected-sketch-entity-id={selectedSketchEntityId ?? ''}
       data-shortcuts="central"
       tabIndex={-1}
       onKeyDown={handleKeyDown}
@@ -591,6 +597,7 @@ export function App(props: CadProjectPersistenceOverrides) {
             <span className="view-caption">{viewName}</span>
             {selectionMode !== 'none' && <span className="selection-caption">{selectionMode === 'face' ? 'Выбор грани' : 'Выбор ребра'}</span>}
             {selectedBody && selectionMode === 'none' && <span className="selection-caption">Выбрано: {selectedBody.name}</span>}
+            {selectedSketchEntityId && !activeCommand && <span className="selection-caption">Элемент эскиза выбран</span>}
             {activeCommand && (
               <>
                 <span className="quick-separator" />
@@ -617,6 +624,8 @@ export function App(props: CadProjectPersistenceOverrides) {
                 viewCommand={viewCommand}
                 selectedBodyId={selectedBodyId}
                 onBodySelect={handleBodySelect}
+                selectedSketchEntityId={selectedSketchEntityId}
+                onSketchEntitySelect={handleSketchEntitySelect}
                 lineDraft={lineDraft}
                 lineCommitting={lineCommitting}
                 onSketchLinePointMove={handleSketchLinePointMove}
@@ -655,6 +664,7 @@ export function App(props: CadProjectPersistenceOverrides) {
           {devFixture && <span>fixture:{devFixture}</span>}
           {selectedPick && <span>{selectedPick.kind === 'face' ? 'Грань' : 'Ребро'}: {selectedPointText}</span>}
           {selectedBody && <span>Выбрано: {selectedBody.name}</span>}
+          {selectedSketchEntityId && <span>Sketch entity: {selectedSketchEntityId}</span>}
           <span>{documentNames[document.kind]}</span>
           <span>{runtimeState.status === 'ready' ? 'OCC локально' : 'ядро по требованию'}</span>
           <span>мм</span>

@@ -1,0 +1,32 @@
+.cad-sketch-selection-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.cad-sketch-selection-highlight {
+  fill: none;
+  stroke: #e47b20;
+  stroke-width: 2.6px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.cad-sketch-selection-hit-target {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 9px;
+  cursor: pointer;
+  pointer-events: stroke;
+}
+
+.cad-sketch-selection-layer[data-selection-enabled="false"] .cad-sketch-selection-hit-target {
+  pointer-events: none;
+  cursor: default;
+}

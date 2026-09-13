@@ -99,7 +99,7 @@ export class ShortcutRegistry {
       return null;
     }
 
-    if (key === 'Delete' && context.hasSelection) {
+    if ((key === 'Delete' || key === 'Backspace') && context.hasSelection) {
       return { action: 'interaction.delete', preventDefault: true };
     }
 

@@ -12,6 +12,7 @@ export interface M2CadUiActionHandlers {
   rectangle(): void | Promise<void>;
   circle(): void | Promise<void>;
   arc(): void | Promise<void>;
+  deleteSketchEntity(): void | Promise<void>;
   finishSketch(): void | Promise<void>;
   extrude(): void | Promise<void>;
   cutExtrude(): void | Promise<void>;
@@ -30,6 +31,7 @@ export interface M2CadUiActionState {
   canUndo: boolean;
   canRedo: boolean;
   hasSketch: boolean;
+  hasSketchEntitySelection: boolean;
   canExtrude: boolean;
   canCutExtrude: boolean;
   canFillet: boolean;
@@ -44,10 +46,9 @@ function binding(
 }
 
 /**
- * Permanent M2 product bindings. Stable identity/labels/presentation stay in
+ * Permanent product bindings. Stable identity/labels/presentation stay in
  * command-registry; this function owns only current editor enablement and
- * execution. Desktop, mobile and search must consume actions built from these
- * bindings instead of copying command logic.
+ * execution. Desktop, mobile and search consume the same action objects.
  */
 export function createM2CadUiActionBindings(
   handlers: M2CadUiActionHandlers,
@@ -65,6 +66,11 @@ export function createM2CadUiActionBindings(
     'sketch.rectangle': binding(handlers.rectangle, state.hasSketch, 'Сначала создайте эскиз'),
     'sketch.circle': binding(handlers.circle, state.hasSketch, 'Сначала создайте эскиз'),
     'sketch.arc': binding(handlers.arc, state.hasSketch, 'Сначала создайте эскиз'),
+    'sketch.entity.delete': binding(
+      handlers.deleteSketchEntity,
+      state.hasSketchEntitySelection,
+      'Выберите элемент эскиза',
+    ),
     'sketch.finish': binding(handlers.finishSketch, state.hasSketch, 'Сначала создайте эскиз'),
     'part.extrude': binding(handlers.extrude, state.canExtrude, 'Завершите прямоугольный эскиз'),
     'part.cutExtrude': binding(handlers.cutExtrude, state.canCutExtrude, 'Создайте окружность на грани и завершите эскиз'),
