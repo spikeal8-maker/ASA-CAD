@@ -42,3 +42,5 @@ jobs:
         run: npm run test:m3
       - name: Build ASA shell
         run: npm run build:asa
+
+# trigger after decomposition-test update
