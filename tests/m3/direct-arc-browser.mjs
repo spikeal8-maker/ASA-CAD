@@ -102,7 +102,9 @@ async function desktopDirectArc() {
   assert.equal(await page.locator('[data-testid="cad-sketch-overlay"]').getAttribute('data-entity-count'), '0', 'Arc center mutated persisted Sketch');
 
   await page.mouse.move(start.x, start.y);
-  await page.locator('[data-testid="sketch-arc-radius-ghost"]').waitFor();
+  const radiusGhost = page.locator('[data-testid="sketch-arc-radius-ghost"]');
+  await radiusGhost.waitFor({ state: 'attached' });
+  near(Number(await radiusGhost.getAttribute('x2')), 12, 1.2, 'radius ghost x2');
   await page.mouse.click(start.x, start.y);
   await page.locator('[data-testid="cad-sketch-interaction"][data-arc-phase="awaiting-end"]').waitFor();
   assert.equal(await page.locator('[data-testid="cad-sketch-overlay"]').getAttribute('data-entity-count'), '0', 'Arc start mutated persisted Sketch');
