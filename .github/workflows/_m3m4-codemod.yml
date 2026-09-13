@@ -1,0 +1,33 @@
+name: M3M-004 one-shot shell codemod
+
+on:
+  push:
+    branches:
+      - scratch/m3m-004-shell
+    paths:
+      - scripts/_m3m4-codemod.mjs
+      - .github/workflows/_m3m4-codemod.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: scratch/m3m-004-shell
+      - name: Apply shell extraction codemod
+        run: node scripts/_m3m4-codemod.mjs
+      - name: Commit generated App extraction
+        run: |
+          if git diff --quiet; then
+            echo "No codemod changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/web/App.tsx
+          git commit -m "M3M-004 scratch: apply shell extraction"
+          git push origin HEAD:scratch/m3m-004-shell
