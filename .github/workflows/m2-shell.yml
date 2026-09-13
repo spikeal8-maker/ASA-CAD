@@ -14,10 +14,7 @@ on:
       - src/runtime/**
       - src/application/**
       - src/contracts/**
-      - docs/ARCHITECTURE.md
-      - docs/SYSTEM_SPEC.md
-      - docs/STATUS.md
-      - docs/M2O_OPTIMIZATION_GATE.md
+      - docs/**
       - spec/ui/command-registry.v1.json
       - spec/ui/layout-registry.v2.json
       - spec/ui/viewport-matrix.v1.json
@@ -39,10 +36,7 @@ on:
       - src/runtime/**
       - src/application/**
       - src/contracts/**
-      - docs/ARCHITECTURE.md
-      - docs/SYSTEM_SPEC.md
-      - docs/STATUS.md
-      - docs/M2O_OPTIMIZATION_GATE.md
+      - docs/**
       - spec/ui/command-registry.v1.json
       - spec/ui/layout-registry.v2.json
       - spec/ui/viewport-matrix.v1.json
@@ -73,6 +67,9 @@ jobs:
         env:
           ASA_PR_COMMIT_COUNT: ${{ github.event.pull_request.commits }}
         run: node tests/process/pr-hygiene.mjs
+
+      - name: Verify bot-friendly file budgets
+        run: node tests/process/file-budgets.mjs
 
       - name: Install pinned frontend toolchain
         run: npm --prefix vendor/toubkal ci

@@ -3,6 +3,8 @@ import { readFile, readdir, stat } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
 
+await import('../process/file-budgets.mjs');
+
 const distUrl = new URL('../../dist/asa/', import.meta.url);
 const dist = fileURLToPath(distUrl);
 const index = await readFile(join(dist, 'index.html'), 'utf8');

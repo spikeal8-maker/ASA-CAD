@@ -4,131 +4,129 @@ Binding rules for automated coding agents.
 
 ## Read before ordinary changes
 
-Read only these four entry points first:
+Read these entry points first:
 
-1. `docs/STATUS.md` — current implementation state and immediate next work;
+1. `docs/STATUS.md` — current state, blocking gate, immediate next work;
 2. `docs/SYSTEM_SPEC.md` — product/end-state invariants;
 3. `docs/ARCHITECTURE.md` — dependency/runtime/persistence boundaries;
 4. the GitHub issue for the active task.
 
-If `STATUS.md` names a **blocking execution gate**, read that gate file before coding. While M2O is active, `docs/M2O_OPTIMIZATION_GATE.md` is mandatory and M3 feature work is blocked until its completion criteria are satisfied.
+If `STATUS.md` names a blocking gate, read that gate/issue before coding and do not start later feature work. Then use `docs/DOCS_POLICY.md` to open only the focused spec/registry needed for the subsystem. Do not preload the documentation tree.
 
-Then use `docs/DOCS_POLICY.md` to open **only** the focused specification/registry required by the subsystem being changed.
+## Product and dependency invariants
 
-Do not preload the whole documentation tree. Do not reinterpret the product from scratch.
+ASA-CAD is a browser-native engineering CAD and future ASA Lab module. Document kinds are Part, Assembly, Drawing, Fragment, Specification and Text.
 
-## Product invariants
+Normal CAD geometry/solving runs on the active client. ASA Lab owns identity/classes/projects/persistence/versions/assignments/submissions/review; it is not the normal CAD-compute server.
 
-ASA-CAD is a browser-native engineering CAD system and future ASA Lab module.
-
-Document family:
-- Part / Деталь;
-- Assembly / Сборка;
-- Drawing / Чертеж;
-- Fragment / Фрагмент;
-- Specification / Спецификация;
-- Text / Текстовый документ.
-
-Interactive CAD mathematics runs on the active client device. ASA Lab owns identity/classes/projects/persistence/versions/assignments/submissions/teacher review and is not a normal CAD-compute server.
-
-Permanent product UI is ASA-owned and KOMPAS-oriented. Visible Toubkal UI is diagnostic/reference only.
-
-## Dependency direction
-
-Allowed:
+Permanent direction:
 
 ```text
 ASA UI
-  -> typed command/view model + UI registries
+  -> typed command/view model + registries
   -> CadApplication / CadDocument
   -> ASA runtime adapters
   -> vendor-derived runtime / OpenCascade / solvers
 ```
 
-Do not reverse this direction.
+Visible Toubkal UI is diagnostic/reference only.
 
 ## Hard prohibitions
 
-- Do not rewrite the geometry kernel from scratch.
-- Do not replace exact B-Rep with mesh-only authoritative data.
-- Do not make product UI depend on `window.oc`, raw OCC objects, vendor Zustand/events/components.
-- Do not persist WASM pointers, OCC objects, Three.js meshes or transient face/edge ordinals.
-- Do not silently resolve ambiguous topology references to another subshape.
+- Do not rewrite the geometry kernel or make mesh data authoritative.
+- Do not make product UI depend on raw OCC objects, `window.oc`, vendor stores/events/components.
+- Do not persist WASM pointers, OCC/Three objects or transient face/edge ordinals.
+- Do not silently resolve ambiguous topology references to a different subshape.
 - Do not introduce normal server geometry/solver RPC.
-- Do not bundle/load CAD WASM on unrelated ASA Lab pages.
 - Do not auto-update `vendor/toubkal` on `main`.
 - Do not break saved-document compatibility silently.
 - Do not copy proprietary KOMPAS artwork/icons.
-- Do not expose production controls with no implemented command.
+- Do not expose production controls without an implemented command.
 - Do not invent command IDs/layout/mobile placement when registries already define them.
-- Do not create a separate mobile document/command model.
-- Do not implement mobile commands by querying/clicking desktop DOM controls.
-- Do not solve responsive layout by shrinking text below documented floors or by whole-app transforms that break picking.
-- Do not hide an implemented desktop command on phone without a defined mobile discovery path.
-- Do not bypass an active blocking execution gate by adding the next feature family early.
+- Do not create a separate mobile command/document model or delegate mobile commands through desktop DOM clicks.
+- Do not solve responsive layout with unreadable text or whole-app transforms that break picking.
+- Do not bypass a blocking execution/maintenance gate.
 
-## UI implementation pattern
+## Vertical-slice pattern
 
-Each permanent command is a vertical slice:
+Each permanent command is implemented end to end:
 
 ```text
-stable ASA command/API
+typed ASA command/API
 -> parameter/selection contract
--> command registry
--> layout/mobile metadata
+-> registry/layout metadata
 -> desktop/mobile presentation
 -> deterministic fixture
--> browser regression
+-> focused regression
 -> acceptance/status update
 ```
 
-Desktop and mobile presentations must consume the same typed command/action model. They may render differently but may not delegate through DOM clicks.
+Desktop and mobile consume the same typed action model. The central work area owns global selection/navigation policy.
 
-The central work area owns global selection/navigation semantics. Feature-specific code may request a selection mode but may not redefine mouse/touch/keyboard behavior locally.
+Direct Sketch tools must compose `SketchInteractionSurface`; tool layers own only tool state, ghost rendering and typed intent. They must not duplicate pointer/touch/pan/pinch/wheel policy.
 
-For direct Sketch tools, shared coordinate conversion and mouse/touch/pan/pinch/wheel behavior belongs to the shared Sketch interaction substrate. Tool-specific Line/Circle/Arc/Rectangle layers own only tool state, ghost rendering and typed command intent; they must not copy gesture policy.
+## Code-size and ownership budgets
 
-## Code-size / ownership rule
+Bot-friendly code size is a required architecture property, not a style preference. `tests/process/file-budgets.mjs` is authoritative and runs in required CI.
 
-Do not grow `src/web/App.tsx` into a god-object.
+Default targets for hand-written files:
 
-Before adding a new responsibility, choose an owner:
+| Kind | Target | Hard limit |
+| --- | ---: | ---: |
+| UI/controller `.ts/.tsx` | <= 10 KB | 20 KB |
+| runtime/adapter `.ts` | <= 14 KB | 24 KB |
+| command-handler `.ts` | <= 10 KB | 16 KB |
+| domain CSS | <= 10 KB | 20 KB |
+| M3 browser test | <= 8 KB | 14 KB |
+| agent entry/status doc | <= 5 KB | 8 KB |
+| focused narrative spec | <= 12 KB | 20 KB |
+
+Machine registries, fixture datasets, vendor and lock/generated files are exempt.
+
+Existing files above a target may be grandfathered only at the explicit byte ceiling in `file-budgets.mjs`. A grandfathered file may shrink but must never grow. When an extraction reduces it, lower the ceiling in the same PR.
+
+Before adding responsibility to a file:
+1. check its owner and budget;
+2. if the responsibility is a new family, create/extend a focused owner;
+3. if the target would be exceeded, extract first instead of increasing the ceiling;
+4. never raise a grandfathered ceiling to make CI pass.
+
+Expected ownership:
 - document/runtime session -> controller/hook/service;
-- command lifecycle -> command controller/action model;
-- desktop shell -> desktop component;
-- mobile shell -> mobile component;
-- Tree/Parameters -> focused panel components;
+- Sketch editing -> focused Sketch controller/stage;
+- Part features -> focused Part feature controller/runtime evaluator;
+- selection -> focused selection controller;
+- shell presentation -> shell component;
+- Tree/Parameters -> focused panels;
 - viewport interaction -> viewport/input modules;
 - persistence -> `CadProjectHost` / session layer.
 
-A change that adds a new feature family should normally add/extend a focused module rather than another large block in `App.tsx`.
+`App.tsx`, `usePartSketchWorkspace.ts`, `CadViewport.tsx`, `OpenCascadePartRuntime.ts`, `SketchCommandHandlers.ts` and monolithic CSS are ratcheted hotspots until maintenance issue #57 closes.
 
-## Protected regression
+## Protected regressions
 
-Part protected workflow must remain green:
+The protected Part workflow must remain green:
 
-`Sketch 60x40 -> Extrude 10 -> centered diameter-12 cut -> Fillet R1 -> edit 60 to 80 -> downstream recompute -> save -> reopen -> edit again`
+`Sketch 60x40 -> Extrude 10 -> diameter-12 through cut -> Fillet R1 -> edit 60 to 80 -> rebuild -> save -> reopen -> edit again`.
 
-After M4A, protected Assembly workflow becomes a second permanent gate.
+After M4A, protected Assembly becomes a second permanent gate.
 
-## Standalone/runtime rule
+## Run/test
 
-Primary ASA dev UI:
+Primary ASA development:
 
 ```bash
 npm run install:vendor
 npm run dev
 ```
 
-`npm run dev:asa` is an explicit alias for the same ASA product shell. Default dev address: `http://localhost:8090`.
+Default ASA dev URL: `http://localhost:8090`.
 
-Vendor/Toubkal diagnostic UI is explicit:
+Vendor diagnostic UI only:
 
 ```bash
 npm run dev:vendor
 ```
-
-Default `npm run build` builds ASA-CAD; use `npm run build:vendor` only for vendor validation.
 
 Release-like test:
 
@@ -136,54 +134,39 @@ Release-like test:
 npm run docker:up
 ```
 
-Default Docker address: `http://localhost:8088`.
+Default Docker URL: `http://localhost:8088`.
 
-The release image serves frontend/WASM assets only. Browser-side runtime performs CAD calculations.
+For every change run the cheapest affected tests first, then the required shell/browser/Docker/vendor gates named by the active issue.
 
 ## Change discipline
 
 For every change:
-1. identify active issue/subsystem and any blocking execution gate in `STATUS.md`;
-2. if a blocking gate is active, work from its next unchecked item before starting later feature milestones;
-3. read only its focused contract via `DOCS_POLICY.md`;
-4. change the narrowest owner/module;
-5. update registry/spec only if behavior/contract changed;
-6. add/update the smallest deterministic regression;
-7. preserve protected workflows;
-8. run affected type/build/browser/Docker gates;
-9. update the issue + `docs/STATUS.md` when status/gate changes.
+1. read current status + active issue/gate;
+2. change the narrowest owner;
+3. preserve typed boundaries and saved-document compatibility;
+4. add/update the smallest deterministic regression;
+5. run affected gates;
+6. update registry/spec only when behavior/contract changed;
+7. when a milestone/gate changes state, update the issue and `docs/STATUS.md` in the same review change that establishes that state.
 
-Do not mix upstream import work with product-feature changes.
+Do not use a later status-only PR as the normal workflow; it caused status drift. Historical issue comments may carry detailed logs, while `STATUS.md` stays short.
 
-## PR review discipline
+## PR discipline
 
-The review branch is an artifact for humans and bots, not a transcript of every repair attempt.
+A review branch is an artifact, not a transcript.
 
-- One PR should normally contain one product vertical slice or one focused maintenance concern.
-- **Target: 6 commits or fewer. Hard limit: 12 commits.** The required shell gate rejects PRs above the hard limit.
-- Iterative scratch/codemod commits are allowed only while preparing work. Before review, rebuild/squash a clean branch from current `main` if the history became noisy.
-- One-shot codemod/review-fix scripts and workflows must be removed from the final review tree. The repository hygiene gate rejects them.
-- Do not mix Circle + Arc + constraints, or another multi-family expansion, merely to avoid opening another PR.
-- If a repair unexpectedly crosses subsystem ownership boundaries, split the work instead of growing the current PR.
-- Browser/Docker suites that are relevant to changed CAD/UI/runtime paths must be green before merge even when they are path-filtered rather than global required checks.
-- A feature PR may use a separate one-commit status closeout PR after merge when that keeps the product diff smaller and easier to review.
-- Close superseded branches/PRs/issues instead of leaving competing sources of truth for future agents.
-
-Use `.github/PULL_REQUEST_TEMPLATE.md` as the review checklist.
+- One PR = one vertical slice or one focused maintenance concern.
+- **Hard limit: 6 commits.** Rebuild/squash a noisy scratch branch before review.
+- Remove one-shot codemod/review-fix scripts/workflows before review.
+- If a repair crosses ownership boundaries, split the work.
+- Relevant browser/Docker suites must be green before merge even when path-filtered.
+- Close superseded branches/PRs/issues.
+- Use `.github/PULL_REQUEST_TEMPLATE.md`.
 
 ## Upstream
 
-Treat `vendor/toubkal` as implementation source, not product architecture.
-
-When upstream work is actually required:
-- read `docs/UPSTREAM.md`;
-- use a dedicated change/PR;
-- record old/new upstream SHA;
-- normally ignore vendor UI changes;
-- port only useful kernel/solver/recompute/picking/assembly changes through ASA boundaries;
-- preserve attribution/notices;
-- run protected/compatibility gates.
+Treat `vendor/toubkal` as implementation source, not product architecture. For upstream changes read `docs/UPSTREAM.md`, use a dedicated PR, record old/new SHA, port only useful runtime/kernel changes through ASA boundaries, preserve notices and run compatibility gates.
 
 ## Efficiency rule
 
-Prefer typed boundaries, small modules, machine registries and deterministic tests over repository-wide refactors or duplicated prose. Current status is owned by `docs/STATUS.md` + GitHub issues; do not copy status into additional summary documents.
+Prefer typed boundaries, small owners, machine registries and deterministic tests over repository-wide refactors or duplicated prose. Current status belongs only in the active GitHub issue + `docs/STATUS.md`.
