@@ -1,0 +1,33 @@
+name: M3M-005 scratch finalization
+
+on:
+  push:
+    branches:
+      - scratch/m3m-005-css
+    paths:
+      - scripts/_m3m5-finalize.mjs
+      - .github/workflows/_m3m5-finalize.yml
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: scratch/m3m-005-css
+      - name: Apply package/status finalization
+        run: node scripts/_m3m5-finalize.mjs
+      - name: Commit finalization
+        run: |
+          if git diff --quiet; then
+            echo "No finalization changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json docs/STATUS.md
+          git commit -m "M3M-005 scratch: wire CSS decomposition guard and status"
+          git push origin HEAD:scratch/m3m-005-css
