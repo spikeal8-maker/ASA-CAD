@@ -1,0 +1,28 @@
+name: M3M-004 scratch validation
+
+on:
+  push:
+    branches:
+      - scratch/m3m-004-shell
+    paths:
+      - .github/workflows/_m3m4-validate.yml
+
+jobs:
+  measure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: scratch/m3m-004-shell
+      - name: File budgets
+        run: node tests/process/file-budgets.mjs
+      - name: Exact shell sizes
+        run: |
+          wc -c \
+            src/web/App.tsx \
+            src/web/CadShellTop.tsx \
+            src/web/CadShellMain.tsx \
+            src/web/CadShellBottom.tsx \
+            src/web/NewDocumentDialog.tsx \
+            src/web/PlannedDocumentStage.tsx \
+            src/web/CadDocumentPresentation.ts
