@@ -31,6 +31,16 @@ assert.match(solver, /endAngle: startAngle \+ sweep/, 'solver readback must reta
 
 const arc = registry.commands.find((command) => command.id === 'sketch.arc');
 assert.ok(arc, 'command registry must already contain sketch.arc');
-assert.equal(arc.status, 'planned', 'Arc must stay planned until direct product UI/browser acceptance exists');
+assert.ok(['planned', 'implemented'].includes(arc.status), 'Arc status must remain planned until direct acceptance or become implemented after it');
 
-console.log('ASA-CAD M3.4A Arc contract boundary PASS (ASA DTO/command/handler/PlaneGCS, product status still planned)');
+if (arc.status === 'implemented') {
+  const directBoundary = fs.readFileSync('tests/m3/direct-arc-boundary.mjs', 'utf8');
+  const browserWorkflow = fs.readFileSync('.github/workflows/m3-browser.yml', 'utf8');
+  assert.equal(arc.milestone, 'M3.4B', 'implemented Arc must be promoted only by the direct M3.4B slice');
+  assert.equal(arc.backendCommand, 'sketch.arc', 'implemented Arc must route to the typed backend command');
+  assert.match(directBoundary, /SketchInteractionSurface/, 'implemented Arc requires direct shared-interaction acceptance');
+  assert.match(directBoundary, /sketch\.arc/, 'implemented Arc requires direct typed-mutation acceptance');
+  assert.match(browserWorkflow, /direct Arc mouse\/touch\/persistence/, 'implemented Arc requires dedicated M3 browser acceptance');
+}
+
+console.log(`ASA-CAD M3.4A Arc contract boundary PASS (ASA DTO/command/handler/PlaneGCS, product status ${arc.status})`);
