@@ -17,7 +17,7 @@ Tracking:
 - #18 M2R display/DPI/zoom/UI Scale — DONE;
 - #19 M2V KOMPAS visual acceptance — ACTIVE;
 - #21 M2O architecture optimization — DONE;
-- #5 M3 Parametric Sketch — ACTIVE; **M3.1, M3.2, M3.3, M3.4A and M3.4B DONE; M3.5 direct Rectangle NEXT.**
+- #5 M3 Parametric Sketch — ACTIVE; **M3.1, M3.2, M3.3, M3.4A, M3.4B and M3.5 DONE; M3.6A Sketch entity selection + atomic delete NEXT.**
 
 ## Accepted architecture foundation
 
@@ -62,11 +62,24 @@ Canonical schema-v1 Arc DTO is `center + radius + startAngle + endAngle`, radian
 - `sketch.arc` is now `implemented` in the product command registry;
 - shell, M2 browser, M3 browser, Docker, M1/M1B and vendor baseline were green before merge.
 
+### M3.5 — direct Rectangle — DONE (#52)
+- first corner -> opposite corner direct interaction on the stable Sketch viewport;
+- Rectangle reuses `SketchInteractionSurface`; no duplicate pointer/touch/navigation policy;
+- preview is exactly four transient ghost edges and never mutates `CadDocument`;
+- arbitrary drag direction normalizes to canonical `origin + positive width + positive height`;
+- zero-width/zero-height opposite points are rejected while the tool remains active;
+- exactly one typed `sketch.rectangle` application-history mutation atomically creates the four persisted line entities;
+- direct Rectangle does not silently add driving dimensions;
+- explicit numeric Width/Height + driving dimensions remain available through Parameters and the protected Part workflow still passes;
+- deterministic `/dev/part/rectangle` solves through PlaneGCS without OpenCascade;
+- desktop + touch + Undo/Redo + Save/Open are green in the dedicated M3 browser lane;
+- shell, full M2 browser, M3 browser, Docker, M1/M1B and vendor baseline were green on the final one-commit PR before merge.
+
 ## Protected Part workflow
 
 Real Chromium and release Docker continue to prove:
 
-`XY Sketch -> rectangle 60x40 -> PlaneGCS solve/preview -> driving dimensions -> Extrude 10 -> select top face -> second Sketch -> centered diameter 12 -> through cut -> select edge -> Fillet R1 -> edit width 60 to 80 -> downstream rebuild -> save native parametric JSON -> reload/reopen -> edit diameter 12 to 14`.
+`XY Sketch -> explicit numeric rectangle 60x40 -> PlaneGCS solve/preview -> driving dimensions -> Extrude 10 -> select top face -> second Sketch -> centered diameter 12 -> through cut -> select edge -> Fillet R1 -> edit width 60 to 80 -> downstream rebuild -> save native parametric JSON -> reload/reopen -> edit diameter 12 to 14`.
 
 Persisted data keeps feature history and durable StableRefs. Solver preview, Sketch ghosts/view state, transient face/edge ordinals, Three objects and OpenCascade objects are not persisted.
 
@@ -90,7 +103,7 @@ Persisted data keeps feature history and durable StableRefs. Solver preview, Ske
 - shared desktop/mobile action catalog;
 - HD/FHD/2K/4K/ultrawide, DPR/browser zoom and UI Scale matrix;
 - isolated active-Sketch 2D viewport and solver overlay;
-- direct Line, Circle and Arc mouse/touch tools through one `SketchInteractionSurface`.
+- direct Line, Circle, Arc and Rectangle mouse/touch tools through one `SketchInteractionSurface`.
 
 ## Deterministic review routes
 
@@ -100,6 +113,7 @@ Part fixtures:
 - `/dev/part/line`;
 - `/dev/part/circle`;
 - `/dev/part/arc`;
+- `/dev/part/rectangle`;
 - `/dev/part/extrude`;
 - `/dev/part/reference`;
 - `/dev/part/rebuild-error`.
@@ -109,7 +123,7 @@ Part fixtures:
 Do **not** mistake the protected Part proof or completed M2O gate for KOMPAS parity.
 
 Still incomplete:
-- M3 direct Rectangle, entity edit/delete/drag, snapping, broader constraints/dimensions and reliable StableRef-backed 3D Sketch context;
+- M3 Sketch entity selection/delete/drag, trim/extend, snapping, construction/reference geometry, broader constraints/dimensions and reliable StableRef-backed 3D Sketch context;
 - exact solver DoF/rank reporting where the PlaneGCS wrapper does not expose it;
 - M2I advanced window/context/candidate chooser behavior beyond the accepted seam;
 - M2V final KOMPAS visual/icon acceptance;
@@ -121,17 +135,18 @@ Still incomplete:
 
 ## Immediate next work
 
-Continue issue #5 with **M3.5 — direct Rectangle only**.
+Continue issue #5 with **M3.6A — Sketch entity selection + atomic delete foundation only**.
 
-Use the already existing typed `sketch.rectangle` command and `SketchInteractionSurface`:
-1. first corner -> opposite corner transient interaction;
-2. four-edge ghost only; do not mutate persisted DTOs directly;
-3. normalize arbitrary drag direction into `origin + positive width + positive height`;
-4. commit exactly one typed `sketch.rectangle` application-history mutation;
-5. keep driving dimensions explicit rather than silently adding them;
-6. add deterministic `/dev/part/rectangle`;
-7. protect desktop/touch/Undo/Redo/Save/Open in the M3 browser lane.
+There is no typed delete command yet, so establish the contract before expanding UI behavior:
+1. add one typed Sketch-entity delete command keyed by explicit `sketchId + entityId`;
+2. handle Sketch-local constraints/dimensions that reference the deleted entity deterministically in the same atomic history mutation; never leave dangling references;
+3. select persisted/solver Sketch entities through the ASA Sketch overlay by stable `entityId`, never SVG/DOM index identity;
+4. keep selection transient and outside persisted `CadDocument`;
+5. desktop click and touch tap select the same entity; Esc clears selection;
+6. Delete/Backspace and the shared mobile action presentation execute the same typed delete intent;
+7. Undo/Redo restores/removes the entity and handled dependencies atomically;
+8. protect Line/Circle/Arc/Rectangle selection/delete in deterministic M3 browser coverage without loading OpenCascade.
 
-Do not combine selection/edit, trim, snapping or broader constraints with this slice.
+Do not combine dragging, trim, snapping, constraint authoring or general box-selection with this slice.
 
 O9 and O11 remain non-blocking follow-ups in [`M2O_OPTIMIZATION_GATE.md`](M2O_OPTIMIZATION_GATE.md).
