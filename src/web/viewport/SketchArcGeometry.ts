@@ -62,9 +62,9 @@ function arcPath(center: CadPoint2, radius: number, startAngle: number, endAngle
   const endX = center[0] + radius * Math.cos(endAngle);
   const endY = -(center[1] + radius * Math.sin(endAngle));
   const largeArcFlag = sweep > Math.PI ? 1 : 0;
-  // CAD coordinates are Y-up. Negating SVG Y reflects the plane, therefore
-  // positive CAD CCW becomes SVG sweep-flag=1 (clockwise in screen space).
-  return `M ${startX} ${startY} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endX} ${endY}`;
+  // CAD coordinates are Y-up. Negating SVG Y mirrors the plane, so positive
+  // CAD CCW must use SVG sweep-flag=0 to preserve the intended circle/curvature.
+  return `M ${startX} ${startY} A ${radius} ${radius} 0 ${largeArcFlag} 0 ${endX} ${endY}`;
 }
 
 function normalizeAngle(value: number): number {
