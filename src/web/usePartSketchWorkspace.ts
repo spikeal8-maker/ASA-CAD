@@ -13,6 +13,7 @@ import type { CadViewportPick } from '../contracts/render';
 import { useSketchSession } from './useSketchSession';
 import { useSketchLineTool } from './useSketchLineTool';
 import { useSketchCircleTool } from './useSketchCircleTool';
+import { useSketchArcTool } from './useSketchArcTool';
 
 export type CadWorkspacePanel = 'tree' | 'parameters' | 'tools' | 'closed';
 export type PartSketchSelectionMode = 'none' | 'face' | 'edge';
@@ -100,6 +101,18 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     setNotice,
     onCommitted: (diameter) => {
       setCircleDiameter(diameter);
+      setActiveCommand(null);
+      setPanel('tree');
+      setActiveWorkspace('sketch');
+      clearTransientSelection();
+    },
+  });
+  const arcTool = useSketchArcTool({
+    app,
+    sketchId: activeSketchId,
+    active: activeCommand === 'sketch.arc',
+    setNotice,
+    onCommitted: () => {
       setActiveCommand(null);
       setPanel('tree');
       setActiveWorkspace('sketch');
@@ -290,6 +303,15 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     setPanel('closed');
     clearTransientSelection();
     setNotice('Укажите центр окружности');
+  }
+
+  function beginArc() {
+    if (!sketch) return;
+    arcTool.reset();
+    setActiveCommand('sketch.arc');
+    setPanel('closed');
+    clearTransientSelection();
+    setNotice('Укажите центр дуги');
   }
 
   async function commitCircle() {
@@ -532,7 +554,8 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
   function cancelCommand() {
     if (activeCommand === 'sketch.line') lineTool.reset();
     if (activeCommand === 'sketch.circle') circleTool.reset();
-    const stayInSketch = activeCommand === 'sketch.line' || activeCommand === 'sketch.rectangle' || activeCommand === 'sketch.circle';
+    if (activeCommand === 'sketch.arc') arcTool.reset();
+    const stayInSketch = activeCommand === 'sketch.line' || activeCommand === 'sketch.rectangle' || activeCommand === 'sketch.circle' || activeCommand === 'sketch.arc';
     setActiveCommand(null);
     setEditingDimensionId(null);
     setPanel('tree');
@@ -553,6 +576,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
       if (circleTool.draft.center) return circleTool.commitPreview();
       return commitCircle();
     }
+    if (activeCommand === 'sketch.arc') return arcTool.commitPreview();
     if (activeCommand === 'part.extrude') return commitExtrude();
     if (activeCommand === 'part.cutExtrude') return commitCut();
     if (activeCommand === 'part.fillet') return commitFillet();
@@ -608,12 +632,17 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     circleCommitting: circleTool.committing,
     handleSketchCirclePointMove: circleTool.move,
     handleSketchCirclePoint: circleTool.point,
+    arcDraft: arcTool.draft,
+    arcCommitting: arcTool.committing,
+    handleSketchArcPointMove: arcTool.move,
+    handleSketchArcPoint: arcTool.point,
     beginCreateSketch,
     commitCreateSketch,
     beginRectangle,
     commitRectangle,
     beginCircle,
     commitCircle,
+    beginArc,
     finishSketch,
     beginExtrude,
     commitExtrude,

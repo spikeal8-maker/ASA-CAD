@@ -161,6 +161,11 @@ export function App(props: CadProjectPersistenceOverrides) {
     circleCommitting,
     handleSketchCirclePointMove,
     handleSketchCirclePoint,
+    arcDraft,
+    arcCommitting,
+    handleSketchArcPointMove,
+    handleSketchArcPoint,
+    beginArc,
     beginCreateSketch,
     commitCreateSketch,
     beginRectangle,
@@ -273,6 +278,7 @@ export function App(props: CadProjectPersistenceOverrides) {
       line: beginLine,
       rectangle: beginRectangle,
       circle: beginCircle,
+      arc: beginArc,
       finishSketch,
       extrude: beginExtrude,
       cutExtrude: beginCut,
@@ -461,6 +467,7 @@ export function App(props: CadProjectPersistenceOverrides) {
                 <CadUiActionButton action={uiAction('sketch.line')} symbol="╱" large accent />
                 <CadUiActionButton action={uiAction('sketch.rectangle')} symbol={commandSymbol('sketch.rectangle')} />
                 <CadUiActionButton action={uiAction('sketch.circle')} symbol={commandSymbol('sketch.circle')} />
+                <CadUiActionButton action={uiAction('sketch.arc')} symbol="⌒" />
               </CommandGroup>
               <CommandGroup label="Размеры">
                 <RibbonTextButton
@@ -614,6 +621,10 @@ export function App(props: CadProjectPersistenceOverrides) {
                 circleCommitting={circleCommitting}
                 onSketchCirclePointMove={handleSketchCirclePointMove}
                 onSketchCirclePoint={handleSketchCirclePoint}
+                arcDraft={arcDraft}
+                arcCommitting={arcCommitting}
+                onSketchArcPointMove={handleSketchArcPointMove}
+                onSketchArcPoint={handleSketchArcPoint}
               />
             ) : (
               <div className="stage-message">

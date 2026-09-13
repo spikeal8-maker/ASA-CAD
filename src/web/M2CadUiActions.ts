@@ -11,6 +11,7 @@ export interface M2CadUiActionHandlers {
   line(): void | Promise<void>;
   rectangle(): void | Promise<void>;
   circle(): void | Promise<void>;
+  arc(): void | Promise<void>;
   finishSketch(): void | Promise<void>;
   extrude(): void | Promise<void>;
   cutExtrude(): void | Promise<void>;
@@ -63,6 +64,7 @@ export function createM2CadUiActionBindings(
     'sketch.line': binding(handlers.line, state.hasSketch, 'Сначала создайте эскиз'),
     'sketch.rectangle': binding(handlers.rectangle, state.hasSketch, 'Сначала создайте эскиз'),
     'sketch.circle': binding(handlers.circle, state.hasSketch, 'Сначала создайте эскиз'),
+    'sketch.arc': binding(handlers.arc, state.hasSketch, 'Сначала создайте эскиз'),
     'sketch.finish': binding(handlers.finishSketch, state.hasSketch, 'Сначала создайте эскиз'),
     'part.extrude': binding(handlers.extrude, state.canExtrude, 'Завершите прямоугольный эскиз'),
     'part.cutExtrude': binding(handlers.cutExtrude, state.canCutExtrude, 'Создайте окружность на грани и завершите эскиз'),
