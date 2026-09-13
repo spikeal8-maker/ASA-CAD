@@ -78,6 +78,21 @@ async function buildArcSketch(app: CadApplication): Promise<CadSketchId> {
   return sketchId;
 }
 
+async function buildDirectRectangleSketch(app: CadApplication): Promise<CadSketchId> {
+  const sketchResult = await execute(
+    app,
+    { id: 'sketch.create', payload: { support: 'XY', name: 'Эскиз 1' } },
+    'Create direct rectangle sketch',
+  );
+  const sketchId = createdId<CadSketchId>(sketchResult, 0, 'Create direct rectangle sketch');
+  await execute(
+    app,
+    { id: 'sketch.rectangle', payload: { sketchId, origin: [-18, -10], width: 36, height: 20 } },
+    'Create direct rectangle fixture',
+  );
+  return sketchId;
+}
+
 async function buildRectangleSketch(app: CadApplication): Promise<CadSketchId> {
   const sketchResult = await execute(
     app,
@@ -253,6 +268,17 @@ export async function applyPartDevFixture(
       workspace: 'sketch',
       expectedRecomputeStatus: 'dirty',
       message: 'Fixture arc: дуга R12 мм 0→90° в XY',
+      activeSketchId,
+    };
+  }
+
+  if (name === 'rectangle') {
+    const activeSketchId = await buildDirectRectangleSketch(app);
+    return {
+      name,
+      workspace: 'sketch',
+      expectedRecomputeStatus: 'dirty',
+      message: 'Fixture rectangle: прямоугольник 36×20 мм в XY',
       activeSketchId,
     };
   }

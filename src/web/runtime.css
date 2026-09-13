@@ -68,6 +68,15 @@
   opacity: .82;
 }
 
+.cad-sketch-rectangle-ghost {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.4px;
+  stroke-dasharray: 4 3;
+  stroke-linecap: round;
+  opacity: .82;
+}
+
 .cad-sketch-line-anchor {
   fill: white;
   stroke: var(--accent);

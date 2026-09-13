@@ -46,6 +46,9 @@ async function createExtrudedPart() {
   await page.getByText('Эскиз 1', { exact: true }).waitFor();
 
   await page.getByRole('button', { name: /Прямоугольник/i }).click();
+  await page.locator('.content-area.panel-closed').waitFor();
+  await page.getByTitle('Параметры').click();
+  await page.locator('.parameter-panel').waitFor();
   await page.locator('.parameter-actions button.primary').click();
   await page.getByText('Прямоугольник 60×40 мм создан', { exact: true }).waitFor();
 

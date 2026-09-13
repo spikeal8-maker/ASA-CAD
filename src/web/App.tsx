@@ -157,6 +157,10 @@ export function App(props: CadProjectPersistenceOverrides) {
     lineCommitting,
     handleSketchLinePointMove,
     handleSketchLinePoint,
+    rectangleDraft,
+    rectangleCommitting,
+    handleSketchRectanglePointMove,
+    handleSketchRectanglePoint,
     circleDraft,
     circleCommitting,
     handleSketchCirclePointMove,
@@ -617,6 +621,10 @@ export function App(props: CadProjectPersistenceOverrides) {
                 lineCommitting={lineCommitting}
                 onSketchLinePointMove={handleSketchLinePointMove}
                 onSketchLinePoint={handleSketchLinePoint}
+                rectangleDraft={rectangleDraft}
+                rectangleCommitting={rectangleCommitting}
+                onSketchRectanglePointMove={handleSketchRectanglePointMove}
+                onSketchRectanglePoint={handleSketchRectanglePoint}
                 circleDraft={circleDraft}
                 circleCommitting={circleCommitting}
                 onSketchCirclePointMove={handleSketchCirclePointMove}
