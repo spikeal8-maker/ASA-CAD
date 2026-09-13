@@ -21,8 +21,8 @@ M3.6B rigid drag draft PR #56 is closed and discarded. Restart only after M3M-00
 2. M3M-002 — focused Part/Sketch workspace owners — DONE (#60);
 3. M3M-003 — `SketchEditingStage` extracted from `PartModelStage` — DONE (#61);
 4. **M3M-004 — shell presentation extracted from `App.tsx`; App ratcheted to 18,023 B — DONE (this change);**
-5. **M3M-005 — split monolithic `styles.css` — NEXT;**
-6. M3M-006 — split Sketch command handlers by geometry/edit/constraint/dimension ownership;
+5. **M3M-005 — shell CSS split into focused domain files; monolithic `styles.css` removed — DONE (this change);**
+6. **M3M-006 — split Sketch command handlers by geometry/edit/constraint/dimension ownership — NEXT;**
 7. M3M-007 — shared M3 browser-test harness;
 8. M3M-008 — reduce mandatory agent-document context and retire stale workflow prose;
 9. M3M-009 — freeze/decompose `CadViewport.tsx` / `OpenCascadePartRuntime.ts` before broad M4.
@@ -65,4 +65,4 @@ M3 regressions protect Line/Circle/Arc/Rectangle and selection/delete on desktop
 
 ## Immediate next work
 
-Work **only on #57 M3M-005** after this change merges. Split `styles.css` into a small set of focused domain CSS files and ratchet the old stylesheet ceiling down. Do not restart M3.6B.
+Work **only on #57 M3M-006** after this change merges. Split Sketch command handlers into focused geometry/edit/constraint/dimension owners before broader constraints. Do not restart M3.6B.

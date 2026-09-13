@@ -42,7 +42,7 @@
     "test:m2o:registry": "node tests/m2o/registry-integrity.mjs",
     "test:m2o:persistence": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m2o/persistence-session.ts && node tests/m2o/persistence-boundary.mjs",
     "test:m2o:actions": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m2o/ui-actions.ts && node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m2o/ui-action-bindings.ts && node tests/m2o/action-surface.mjs",
-    "test:m2o:decomposition": "node tests/m2o/app-decomposition.mjs",
+    "test:m2o:decomposition": "node tests/m2o/app-decomposition.mjs && node tests/process/css-decomposition.mjs",
     "test:m2o:handlers": "node tests/m2o/application-handlers.mjs && node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m2o/sketch-command-handlers.ts",
     "test:m2o:sketch-contracts": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m2o/typed-sketch-dtos.ts && node tests/m2o/sketch-contract-boundary.mjs",
     "test:m2o:semantics": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m2o/semantic-document-validation.ts",
