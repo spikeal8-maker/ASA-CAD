@@ -1,0 +1,33 @@
+name: M3M-005 one-shot CSS split
+
+on:
+  push:
+    branches:
+      - scratch/m3m-005-css
+    paths:
+      - scripts/_m3m5-split-css.mjs
+      - .github/workflows/_m3m5-css.yml
+
+permissions:
+  contents: write
+
+jobs:
+  split:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: scratch/m3m-005-css
+      - name: Split styles.css by domain
+        run: node scripts/_m3m5-split-css.mjs
+      - name: Commit generated split
+        run: |
+          if git diff --quiet; then
+            echo "No split changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/web/index.tsx src/web/styles src/web/styles.css tests/process/file-budgets.mjs tests/m3/direct-line-boundary.mjs
+          git commit -m "M3M-005 scratch: split shell CSS domains"
+          git push origin HEAD:scratch/m3m-005-css
