@@ -1,0 +1,31 @@
+name: M3.5 direct Rectangle scratch validation
+
+on:
+  push:
+    branches: [impl/m3-direct-rectangle]
+    paths:
+      - .github/workflows/m3-direct-rectangle-validate.yml
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: impl/m3-direct-rectangle
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.19.0'
+          cache: npm
+          cache-dependency-path: vendor/toubkal/package-lock.json
+      - name: Install pinned frontend toolchain
+        run: npm --prefix vendor/toubkal ci
+      - name: Typecheck
+        run: npm run typecheck:asa
+      - name: M3 boundary suite
+        run: npm run test:m3
+      - name: Build ASA shell
+        run: npm run build:asa
