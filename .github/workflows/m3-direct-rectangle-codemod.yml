@@ -26,12 +26,15 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          # GITHUB_TOKEN cannot update workflow files in this repository.
+          # Keep the validated m3-browser change for a separate connector write.
+          git checkout -- .github/workflows/m3-browser.yml
           if git diff --quiet; then
             echo "No changes to commit"
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src package.json tests .github/workflows/m3-browser.yml
+          git add src package.json tests
           git commit -m "impl: wire direct Rectangle interaction"
           git push origin HEAD:impl/m3-direct-rectangle
