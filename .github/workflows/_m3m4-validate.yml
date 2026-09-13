@@ -8,12 +8,18 @@ on:
       - .github/workflows/_m3m4-validate.yml
 
 jobs:
-  measure:
+  validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           ref: scratch/m3m-004-shell
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.19.0'
+          cache: npm
+          cache-dependency-path: vendor/toubkal/package-lock.json
       - name: File budgets
         run: node tests/process/file-budgets.mjs
       - name: Exact shell sizes
@@ -26,3 +32,13 @@ jobs:
             src/web/NewDocumentDialog.tsx \
             src/web/PlannedDocumentStage.tsx \
             src/web/CadDocumentPresentation.ts
+      - name: Install pinned frontend toolchain
+        run: npm --prefix vendor/toubkal ci
+      - name: Typecheck ASA shell
+        run: npm run typecheck:asa
+      - name: Verify M2O gates
+        run: npm run test:m2o
+      - name: Verify M3 foundation
+        run: npm run test:m3
+      - name: Build ASA shell
+        run: npm run build:asa
