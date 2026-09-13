@@ -68,7 +68,8 @@ async function deterministicArcFixture() {
   await page.getByText('Fixture arc: дуга R12 мм 0→90° в XY', { exact: true }).waitFor();
   assert.equal(await page.locator('[data-testid="part-model-stage"]').getAttribute('data-sketch-support'), 'XY');
   const arc = await waitSolvedArc(page);
-  assert.match(await arc.getAttribute('d'), /^M\s+12(?:\.0+)?\s+0(?:\.0+)?\s+A\s+12/, 'fixture Arc path must start at (12,0) with R12');
+  const path = await arc.getAttribute('d');
+  assert.match(path, /^M\s+12(?:\.0+)?\s+0(?:\.0+)?\s+A\s+12(?:\.0+)?\s+12(?:\.0+)?\s+0\s+0\s+0\s+/, 'fixture Arc must keep the positive CAD CCW sweep on the intended circle');
   const wasm = await wasmResources(page);
   assert.ok(wasm.some(isPlaneGcs), 'Arc fixture did not exercise PlaneGCS');
   assert.deepEqual(wasm.filter((name) => !isPlaneGcs(name)), [], 'Arc fixture loaded OpenCascade/other WASM');
@@ -109,6 +110,11 @@ async function desktopDirectArc() {
   await page.locator('[data-testid="cad-sketch-interaction"][data-arc-phase="awaiting-end"]').waitFor();
   assert.equal(await page.locator('[data-testid="cad-sketch-overlay"]').getAttribute('data-entity-count'), '0', 'Arc start mutated persisted Sketch');
 
+  await page.mouse.click(center.x, center.y);
+  await page.getByText('Конечная точка должна отличаться от центра дуги', { exact: true }).waitFor();
+  await page.locator('[data-testid="cad-sketch-interaction"][data-arc-phase="awaiting-end"]').waitFor();
+  assert.equal(await page.locator('[data-testid="cad-sketch-overlay"]').getAttribute('data-entity-count'), '0', 'invalid Arc endpoint committed geometry');
+
   await page.mouse.move(end.x, end.y);
   await page.locator('[data-testid="sketch-arc-ghost"]').waitFor();
   assert.equal(await page.locator('[data-testid="cad-sketch-overlay"]').getAttribute('data-entity-count'), '0', 'Arc ghost mutated persisted Sketch');
@@ -116,7 +122,8 @@ async function desktopDirectArc() {
   await page.mouse.click(end.x, end.y);
   await page.getByText(/Дуга создана: R12(?:\.0)? мм/).waitFor();
   await page.locator('[data-testid="cad-sketch-interaction"]').waitFor({ state: 'detached' });
-  await waitSolvedArc(page);
+  const solvedArc = await waitSolvedArc(page);
+  assert.match(await solvedArc.getAttribute('d'), /A\s+[^ ]+\s+[^ ]+\s+0\s+0\s+0\s+/, 'direct Arc must render with SVG sweep-flag=0');
 
   const sketchWasm = await wasmResources(page);
   assert.ok(sketchWasm.some(isPlaneGcs), 'PlaneGCS WASM did not load after direct Arc commit');
@@ -148,7 +155,7 @@ async function desktopDirectArc() {
 
   assert.deepEqual(errors, [], `desktop direct Arc page errors: ${errors.join(' | ')}`);
   await page.close();
-  console.log('  ✓ desktop Arc: center -> start -> sweep ghost -> one mutation -> solver -> undo/redo -> save/reopen');
+  console.log('  ✓ desktop Arc: center -> start -> guarded end -> sweep ghost -> one mutation -> solver -> undo/redo -> save/reopen');
 }
 
 async function touchDirectArc() {
