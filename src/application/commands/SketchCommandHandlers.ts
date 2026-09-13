@@ -19,6 +19,10 @@ import type {
   CadSketchId,
 } from '../../contracts/ids';
 import { createCadId } from '../../contracts/ids';
+import {
+  isZeroSketchTranslation,
+  translateSketchEntity,
+} from '../SketchEntityTransform';
 
 export const SKETCH_GROWTH_COMMAND_IDS = [
   'sketch.create',
@@ -27,6 +31,7 @@ export const SKETCH_GROWTH_COMMAND_IDS = [
   'sketch.circle',
   'sketch.arc',
   'sketch.entity.delete',
+  'sketch.entity.translate',
   'sketch.finish',
   'constraint.coincident',
   'constraint.horizontal',
@@ -172,6 +177,21 @@ const HANDLERS = {
     },
   }),
 
+  'sketch.entity.translate': handler<'sketch.entity.translate'>({
+    availability: requireSketchAvailability,
+    execute: (part, command) => {
+      const sketch = requireSketch(part, command.payload.sketchId);
+      const entity = requireSketchEntity(sketch, command.payload.entityId);
+      if (isZeroSketchTranslation(command.payload.delta)) return { ok: true, changed: false };
+      if (isFixedSketchEntity(part, sketch, command.payload.entityId)) {
+        throw new Error('Fixed sketch entity cannot be translated');
+      }
+      const index = sketch.entities.findIndex((item) => item.id === command.payload.entityId);
+      sketch.entities[index] = translateSketchEntity(entity, command.payload.delta);
+      return { ok: true, changed: true };
+    },
+  }),
+
   'sketch.finish': handler<'sketch.finish'>({
     availability: requireSketchAvailability,
     execute: (part, command) => {
@@ -310,6 +330,8 @@ export function applySketchGrowthCommand(
       return HANDLERS['sketch.arc'].execute(part, command);
     case 'sketch.entity.delete':
       return HANDLERS['sketch.entity.delete'].execute(part, command);
+    case 'sketch.entity.translate':
+      return HANDLERS['sketch.entity.translate'].execute(part, command);
     case 'sketch.finish':
       return HANDLERS['sketch.finish'].execute(part, command);
     case 'constraint.coincident':
@@ -404,6 +426,18 @@ function deleteSketchEntityWithDependencies(
   sketch.dimensionIds = sketch.dimensionIds.filter((id) => !dimensionIds.has(id));
   part.constraints = part.constraints.filter((constraint) => !constraintIds.has(constraint.id));
   part.dimensions = part.dimensions.filter((dimension) => !dimensionIds.has(dimension.id));
+}
+
+function isFixedSketchEntity(
+  part: CadPartDocument,
+  sketch: CadSketch,
+  entityId: CadSketchEntityId,
+): boolean {
+  return part.constraints.some(
+    (constraint) => sketch.constraintIds.includes(constraint.id)
+      && constraint.type === 'fixed'
+      && constraint.entityIds.includes(entityId),
+  );
 }
 
 const TWO_PI = Math.PI * 2;

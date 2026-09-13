@@ -8,6 +8,7 @@ import {
 } from './CadViewport';
 import { SketchSolveStatus } from './SketchSolveStatus';
 import { useActiveSketchSolveOverlay } from './useActiveSketchSolveOverlay';
+import { useSketchEntityDrag } from './useSketchEntityDrag';
 import type { SketchLineDraft } from './useSketchLineTool';
 import type { SketchCircleDraft } from './useSketchCircleTool';
 import type { SketchArcDraft } from './useSketchArcTool';
@@ -40,7 +41,10 @@ export interface PartModelStageProps {
   selectedBodyId: CadBodyId | null;
   onBodySelect(bodyId: CadBodyId | null): void;
   selectedSketchEntityId: CadSketchEntityId | null;
-  onSketchEntitySelect(entityId: CadSketchEntityId): void;
+  onSketchEntitySelect(
+    entityId: CadSketchEntityId,
+    translation?: readonly [number, number],
+  ): void | boolean | Promise<void | boolean>;
   lineDraft: SketchLineDraft;
   lineCommitting: boolean;
   onSketchLinePointMove(point: CadPoint2): void;
@@ -64,8 +68,8 @@ export interface PartModelStageProps {
  *
  * Active Sketch editing remains an isolated 2D workplane until a StableRef face
  * can provide a resolved model-space frame. CadViewport retains the accepted
- * read-only Sketch overlay boundary; stable-ID selection is a separate sibling
- * interaction layer and never enters the B-Rep Three effect.
+ * read-only Sketch overlay boundary; stable-ID selection/rigid-drag is a
+ * separate sibling interaction layer and never enters the B-Rep Three effect.
  */
 export function PartModelStage(props: PartModelStageProps) {
   const sketchEditing = props.activeWorkspace === 'sketch' && Boolean(props.activeSketch);
@@ -80,6 +84,17 @@ export function PartModelStage(props: PartModelStageProps) {
     sketch: props.activeSketch,
     active: sketchEditing,
     revisionToken: props.revisionToken,
+  });
+  const entityDrag = useSketchEntityDrag({
+    sketch: props.activeSketch,
+    selectedEntityId: props.selectedSketchEntityId,
+    enabled: sketchSelectionEnabled,
+    previewCandidate: sketchSolve.previewCandidate,
+    restorePersistedPreview: sketchSolve.restorePersistedPreview,
+    commit: async (entityId, delta) => Boolean(await props.onSketchEntitySelect(entityId, delta)),
+    // Solver diagnostics remain visible in SketchSolveStatus. Application-level
+    // rejections (for example Fixed) are surfaced by the workspace command seam.
+    onRejected: () => undefined,
   });
   const sketchOverlay = sketchSolve.overlay;
   const sketchFrame = sketchDisplayFrame(sketchViewport);
@@ -101,6 +116,7 @@ export function PartModelStage(props: PartModelStageProps) {
         data-sketch-view-span={sketchViewport.span}
         data-sketch-view-center={sketchViewport.center.join(',')}
         data-selected-sketch-entity-id={props.selectedSketchEntityId ?? ''}
+        data-dragging-sketch-entity-id={entityDrag.draggingEntityId ?? ''}
       >
         <div className="origin-widget" aria-label="Ориентация">
           <span className="axis-z">Z</span>
@@ -143,7 +159,12 @@ export function PartModelStage(props: PartModelStageProps) {
             model={sketchOverlay}
             enabled={sketchSelectionEnabled}
             selectedEntityId={props.selectedSketchEntityId}
+            draggingEntityId={entityDrag.draggingEntityId}
             onEntitySelect={props.onSketchEntitySelect}
+            onEntityDragStart={entityDrag.start}
+            onEntityDragMove={entityDrag.move}
+            onEntityDragEnd={entityDrag.end}
+            onEntityDragCancel={entityDrag.cancel}
           />
         )}
 

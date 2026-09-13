@@ -1,4 +1,4 @@
-import type { CadDocument } from '../contracts/document';
+import type { CadDocument, CadSketchEntity } from '../contracts/document';
 import type { CadSketchId } from '../contracts/ids';
 import type {
   CadSketchSolveDiagnostic,
@@ -35,6 +35,7 @@ export type CadSketchSolveListener = (snapshot: Readonly<CadSketchSolveSnapshot>
  * Responsibilities:
  * - lazy-init the concrete solver;
  * - keep only transient preview/diagnostics/DoF state;
+ * - solve persisted geometry or an explicitly supplied transient entity candidate;
  * - reject stale async solve completions;
  * - never mutate CadDocument or CadApplication history.
  *
@@ -60,7 +61,49 @@ export class SketchSolveSession {
     return () => this.listeners.delete(listener);
   }
 
-  async solve(document: Readonly<CadDocument>, sketchId: CadSketchId): Promise<Readonly<CadSketchSolveSnapshot>> {
+  solve(document: Readonly<CadDocument>, sketchId: CadSketchId): Promise<Readonly<CadSketchSolveSnapshot>> {
+    return this.solveDocument(document, sketchId);
+  }
+
+  /**
+   * Solves an editor-only geometry candidate on a structured clone of the
+   * document. Constraints/dimensions remain identical to the persisted model,
+   * while candidate entities never enter CadDocument or history.
+   */
+  solveCandidate(
+    document: Readonly<CadDocument>,
+    sketchId: CadSketchId,
+    entities: readonly CadSketchEntity[],
+  ): Promise<Readonly<CadSketchSolveSnapshot>> {
+    if (document.kind !== 'part') {
+      return this.solveDocument(document, sketchId);
+    }
+    const candidate = structuredClone(document);
+    const sketch = candidate.sketches.find((item) => item.id === sketchId);
+    if (!sketch) throw new Error(`Unknown sketch: ${sketchId}`);
+    sketch.entities = structuredClone([...entities]);
+    return this.solveDocument(candidate, sketchId);
+  }
+
+  clear(): void {
+    this.assertAlive();
+    const requestId = ++this.requestId;
+    this.snapshot = idleSnapshot(requestId);
+    this.emit();
+  }
+
+  dispose(): void {
+    if (this.disposed) return;
+    this.disposed = true;
+    this.requestId += 1;
+    this.listeners.clear();
+    this.solver.dispose();
+  }
+
+  private async solveDocument(
+    document: Readonly<CadDocument>,
+    sketchId: CadSketchId,
+  ): Promise<Readonly<CadSketchSolveSnapshot>> {
     this.assertAlive();
     const requestId = ++this.requestId;
     this.snapshot = {
@@ -108,21 +151,6 @@ export class SketchSolveSession {
       this.emit();
       return this.snapshot;
     }
-  }
-
-  clear(): void {
-    this.assertAlive();
-    const requestId = ++this.requestId;
-    this.snapshot = idleSnapshot(requestId);
-    this.emit();
-  }
-
-  dispose(): void {
-    if (this.disposed) return;
-    this.disposed = true;
-    this.requestId += 1;
-    this.listeners.clear();
-    this.solver.dispose();
   }
 
   private ensureInitialized(): Promise<void> {

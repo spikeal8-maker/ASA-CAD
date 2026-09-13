@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { SketchSolveSession, type CadSketchSolveSnapshot } from '../application/SketchSolveSession';
 import { BrowserSketchSolverAdapter } from '../browser/BrowserSketchSolverAdapter';
-import type { CadDocument, CadSketch } from '../contracts/document';
+import type { CadDocument, CadSketch, CadSketchEntity } from '../contracts/document';
 import {
   buildSketchOverlayModel,
   type SketchOverlayModel,
@@ -19,12 +19,15 @@ export interface ActiveSketchSolveOverlayOptions {
 export interface ActiveSketchSolveOverlayResult {
   overlay: SketchOverlayModel | null;
   snapshot: Readonly<CadSketchSolveSnapshot>;
+  previewCandidate(entities: readonly CadSketchEntity[]): Promise<Readonly<CadSketchSolveSnapshot>>;
+  restorePersistedPreview(): Promise<Readonly<CadSketchSolveSnapshot>>;
 }
 
 /**
- * M3 editor bridge between transient Sketch selection, solve orchestration and
- * the read-only Sketch overlay. It owns no persisted geometry and never writes
- * CadDocument directly; commits continue through CadApplication commands.
+ * M3 editor bridge between transient Sketch selection/editing, solve
+ * orchestration and the read-only Sketch overlay. It owns no persisted geometry
+ * and never writes CadDocument directly; commits continue through CadApplication
+ * commands.
  */
 export function useActiveSketchSolveOverlay(
   options: ActiveSketchSolveOverlayOptions,
@@ -58,8 +61,26 @@ export function useActiveSketchSolveOverlay(
     void session.solve(document, sketch.id);
   }, [active, document, revisionToken, session, sketch?.id, sketch?.entities.length]);
 
+  const previewCandidate = useCallback(async (
+    entities: readonly CadSketchEntity[],
+  ): Promise<Readonly<CadSketchSolveSnapshot>> => {
+    if (!active || document.kind !== 'part' || !sketch) return session.getSnapshot();
+    return session.solveCandidate(document, sketch.id, entities);
+  }, [active, document, session, sketch]);
+
+  const restorePersistedPreview = useCallback(async (): Promise<Readonly<CadSketchSolveSnapshot>> => {
+    if (!active || document.kind !== 'part' || !sketch || sketch.entities.length === 0) {
+      const current = session.getSnapshot();
+      if (current.status !== 'idle' || current.sketchId !== null) session.clear();
+      return session.getSnapshot();
+    }
+    return session.solve(document, sketch.id);
+  }, [active, document, session, sketch]);
+
   return {
     overlay: active ? buildSketchOverlayModel(sketch, snapshot) : null,
     snapshot,
+    previewCandidate,
+    restorePersistedPreview,
   };
 }

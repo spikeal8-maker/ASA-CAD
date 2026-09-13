@@ -174,14 +174,33 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     setNotice(bodyId ? 'Тело выбрано' : 'Выбор очищен');
   }, [clearEntitySelection, setNotice]);
 
-  const handleSketchEntitySelect = useCallback((entityId: CadSketchEntityId) => {
-    if (!activeSketchId) return;
+  const handleSketchEntitySelect = useCallback(async (
+    entityId: CadSketchEntityId,
+    translation?: readonly [number, number],
+  ) => {
+    if (!activeSketchId) return false;
+
+    if (translation) {
+      const result = await app.execute({
+        id: 'sketch.entity.translate',
+        payload: { sketchId: activeSketchId, entityId, delta: translation },
+      });
+      if (!result.ok) {
+        setNotice(result.error?.message ?? 'Не удалось переместить элемент эскиза');
+        return false;
+      }
+      selectEntity(activeSketchId, entityId);
+      setNotice(`Элемент эскиза перемещён: Δ${translation[0].toFixed(1)}, ${translation[1].toFixed(1)} мм`);
+      return true;
+    }
+
     setSelectionMode('none');
     setSelectedPick(null);
     setSelectedBodyId(null);
     selectEntity(activeSketchId, entityId);
     setNotice('Элемент эскиза выбран');
-  }, [activeSketchId, selectEntity, setNotice]);
+    return true;
+  }, [activeSketchId, app, selectEntity, setNotice]);
 
   const deleteSelectedSketchEntity = useCallback(async () => {
     if (!activeSketchId || !selectedEntityId) {

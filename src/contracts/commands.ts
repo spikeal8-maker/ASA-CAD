@@ -23,6 +23,7 @@ export type CadCommandId =
   | 'sketch.circle'
   | 'sketch.arc'
   | 'sketch.entity.delete'
+  | 'sketch.entity.translate'
   | 'sketch.finish'
   | 'constraint.coincident'
   | 'constraint.horizontal'
@@ -68,6 +69,11 @@ export interface CadCommandMap {
   'sketch.entity.delete': {
     sketchId: CadSketchId;
     entityId: CadSketchEntityId;
+  };
+  'sketch.entity.translate': {
+    sketchId: CadSketchId;
+    entityId: CadSketchEntityId;
+    delta: readonly [number, number];
   };
   'sketch.finish': {
     sketchId: CadSketchId;
