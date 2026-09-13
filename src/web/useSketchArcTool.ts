@@ -73,6 +73,10 @@ export function useSketchArcTool(options: UseSketchArcToolOptions) {
       setNotice('Радиус дуги должен быть больше нуля');
       return false;
     }
+    if (distance(draft.center, end) <= MIN_RADIUS) {
+      setNotice('Конечная точка должна отличаться от центра дуги');
+      return false;
+    }
     const sweep = positiveSweep(
       angle(draft.center, draft.start),
       angle(draft.center, end),
