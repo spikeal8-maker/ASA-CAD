@@ -7,6 +7,7 @@ const tool = fs.readFileSync('src/web/useSketchArcTool.ts', 'utf8');
 const workspace = fs.readFileSync('src/web/usePartSketchWorkspace.ts', 'utf8');
 const editing = fs.readFileSync('src/web/useSketchEditingController.ts', 'utf8');
 const stage = fs.readFileSync('src/web/PartModelStage.tsx', 'utf8');
+const sketchStage = fs.readFileSync('src/web/SketchEditingStage.tsx', 'utf8');
 const overlay = fs.readFileSync('src/web/viewport/SketchOverlayLayer.tsx', 'utf8');
 const fixture = fs.readFileSync('src/web/devFixtures.ts', 'utf8');
 const routes = fs.readFileSync('src/browser/routes.ts', 'utf8');
@@ -41,7 +42,8 @@ assert.match(workspace, /useSketchEditingController/, 'Part/Sketch facade must c
 assert.match(editing, /useSketchArcTool/, 'Sketch editing owner must own Arc tool lifecycle');
 assert.match(editing, /arcTool\.reset\(\)/, 'Arc activation/cancel must reset transient tool state');
 assert.match(editing, /setActiveCommand\('sketch\.arc'\)/, 'Arc activation must use canonical command id');
-assert.match(stage, /SketchArcInteractionLayer/, 'Part stage must compose direct Arc outside B-Rep Three interaction');
+assert.match(stage, /SketchEditingStage/, 'Part stage must delegate direct Sketch presentation');
+assert.match(sketchStage, /SketchArcInteractionLayer/, 'Sketch editing stage must compose direct Arc outside B-Rep Three interaction');
 assert.match(overlay, /case 'arc'/, 'persisted/solver Arc must render in Sketch overlay');
 assert.match(fixture, /Fixture arc:/, 'Arc must have deterministic review fixture');
 assert.match(routes, /'arc'/, 'Arc fixture must be a supported dev route');
@@ -52,4 +54,4 @@ assert.equal(arc.status, 'implemented');
 assert.equal(arc.milestone, 'M3.4B');
 assert.equal(arc.backendCommand, 'sketch.arc');
 
-console.log('ASA-CAD M3.4B direct Arc boundary PASS (focused Sketch owner + shared input + sweep + endpoint guard + one typed mutation)');
+console.log('ASA-CAD M3.4B direct Arc boundary PASS (SketchEditingStage + shared input + sweep + endpoint guard + one typed mutation)');

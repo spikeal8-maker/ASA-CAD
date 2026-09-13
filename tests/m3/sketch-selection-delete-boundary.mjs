@@ -7,6 +7,7 @@ const session = fs.readFileSync('src/web/SketchSession.ts', 'utf8');
 const overlay = fs.readFileSync('src/web/viewport/SketchOverlayLayer.tsx', 'utf8');
 const selectionLayer = fs.readFileSync('src/web/viewport/SketchSelectionLayer.tsx', 'utf8');
 const stage = fs.readFileSync('src/web/PartModelStage.tsx', 'utf8');
+const sketchStage = fs.readFileSync('src/web/SketchEditingStage.tsx', 'utf8');
 const actions = fs.readFileSync('src/web/M2CadUiActions.ts', 'utf8');
 const shortcuts = fs.readFileSync('src/web/ShortcutRegistry.ts', 'utf8');
 const mobile = fs.readFileSync('src/web/MobileToolsPanel.tsx', 'utf8');
@@ -35,9 +36,10 @@ assert.match(selectionLayer, /data-sketch-select-id/, 'selection hit targets mus
 assert.match(selectionLayer, /onEntitySelect\(entity\.id\)/, 'selection must report entity.id, never an SVG index');
 assert.equal(/\bindex\b/.test(selectionLayer), false, 'Sketch selection must not use child/index identity');
 assert.match(selectionLayer, /selectedEntityId === entity\.id/, 'selected Sketch entity must have explicit presentation state');
-assert.match(stage, /sketchOverlay=\{sketchOverlay\}/, 'PartModelStage must preserve the accepted CadViewport overlay boundary');
-assert.match(stage, /<SketchSelectionLayer/, 'Sketch selection interaction must remain separate from B-Rep Three interaction');
-assert.match(stage, /sketchSelectionEnabled\s*=\s*sketchEditing\s*&&\s*props\.activeCommand\s*===\s*null/,
+assert.match(stage, /<SketchEditingStage/, 'PartModelStage must delegate the complete active Sketch surface');
+assert.match(sketchStage, /sketchOverlay=\{sketchOverlay\}/, 'SketchEditingStage must preserve the accepted CadViewport overlay boundary');
+assert.match(sketchStage, /<SketchSelectionLayer/, 'Sketch selection interaction must remain separate from B-Rep Three interaction');
+assert.match(sketchStage, /sketchSelectionEnabled\s*=\s*props\.activeCommand\s*===\s*null/,
   'selection must be disabled while a direct Sketch command owns pointer input');
 
 assert.match(actions, /'sketch\.entity\.delete':\s*binding/, 'mobile/search must use shared CadUiAction delete intent');
@@ -52,4 +54,4 @@ assert.equal(definition.status, 'implemented');
 assert.equal(definition.backendCommand, 'sketch.entity.delete');
 assert.equal(definition.milestone, 'M3.6A');
 
-console.log('ASA-CAD M3.6A selection/delete boundary PASS (stable IDs + transient selection + atomic dependencies + shared action + O8 overlay boundary)');
+console.log('ASA-CAD M3.6A selection/delete boundary PASS (SketchEditingStage + stable IDs + transient selection + atomic dependencies)');

@@ -7,6 +7,7 @@ const tool = fs.readFileSync('src/web/useSketchRectangleTool.ts', 'utf8');
 const workspace = fs.readFileSync('src/web/usePartSketchWorkspace.ts', 'utf8');
 const editing = fs.readFileSync('src/web/useSketchEditingController.ts', 'utf8');
 const stage = fs.readFileSync('src/web/PartModelStage.tsx', 'utf8');
+const sketchStage = fs.readFileSync('src/web/SketchEditingStage.tsx', 'utf8');
 const app = fs.readFileSync('src/web/App.tsx', 'utf8');
 const routes = fs.readFileSync('src/browser/routes.ts', 'utf8');
 const fixtures = fs.readFileSync('src/web/devFixtures.ts', 'utf8');
@@ -48,11 +49,12 @@ assert.match(editing, /useSketchRectangleTool/, 'Sketch editing owner must own R
 assert.match(editing, /rectangleTool\.reset\(\)/, 'Rectangle activation/cancel must reset transient tool state');
 assert.match(editing, /hasRectangleDraft/, 'central commit must distinguish direct Rectangle from numeric fallback');
 assert.match(editing, /id:\s*'dimension\.linear'/, 'numeric/driving Rectangle fallback must remain available for the protected Part path');
-assert.match(stage, /SketchRectangleInteractionLayer/, 'Part stage must compose direct Rectangle outside B-Rep Three interaction');
-assert.match(app, /rectangleDraft=\{rectangleDraft\}/, 'App must wire Rectangle transient state into PartModelStage');
+assert.match(stage, /SketchEditingStage/, 'Part stage must delegate direct Sketch presentation');
+assert.match(sketchStage, /SketchRectangleInteractionLayer/, 'Sketch editing stage must compose direct Rectangle outside B-Rep Three interaction');
+assert.match(app, /rectangleDraft=\{rectangleDraft\}/, 'App must keep wiring Rectangle transient state through the stable PartModelStage contract');
 assert.match(routes, /'rectangle'/, 'deterministic Rectangle fixture route must exist');
 assert.match(fixtures, /Fixture rectangle:/, 'deterministic Rectangle fixture must be implemented');
 assert.match(protectedPart, /Прямоугольник[\s\S]*getByTitle\('Параметры'\)/, 'protected Part must retain explicit numeric Rectangle + driving-dimension fallback');
 assert.match(workflow, /direct-rectangle-browser\.mjs/, 'M3 browser lane must protect direct Rectangle');
 
-console.log('ASA-CAD M3.5 direct Rectangle boundary PASS (focused Sketch owner + shared input + canonical drag + one mutation + numeric fallback)');
+console.log('ASA-CAD M3.5 direct Rectangle boundary PASS (SketchEditingStage + shared input + canonical drag + one mutation + numeric fallback)');

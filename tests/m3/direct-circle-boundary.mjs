@@ -6,6 +6,7 @@ const tool = fs.readFileSync('src/web/useSketchCircleTool.ts', 'utf8');
 const workspace = fs.readFileSync('src/web/usePartSketchWorkspace.ts', 'utf8');
 const editing = fs.readFileSync('src/web/useSketchEditingController.ts', 'utf8');
 const stage = fs.readFileSync('src/web/PartModelStage.tsx', 'utf8');
+const sketchStage = fs.readFileSync('src/web/SketchEditingStage.tsx', 'utf8');
 const protectedPart = fs.readFileSync('tests/m2/part-browser.mjs', 'utf8');
 const registry = JSON.parse(fs.readFileSync('spec/ui/command-registry.v1.json', 'utf8'));
 
@@ -35,7 +36,8 @@ assert.match(workspace, /useSketchEditingController/, 'Part/Sketch facade must c
 assert.match(editing, /circleTool\.reset\(\)/, 'Circle activation/cancel must reset transient tool state');
 assert.match(editing, /setPanel\('closed'\)/, 'direct Circle must use the accepted collapsed management layout');
 assert.match(editing, /id:\s*'dimension\.diameter'/, 'numeric/driving diameter fallback must remain available');
-assert.match(stage, /SketchCircleInteractionLayer/, 'Part stage must compose direct Circle outside B-Rep Three interaction');
+assert.match(stage, /SketchEditingStage/, 'Part stage must delegate direct Sketch presentation');
+assert.match(sketchStage, /SketchCircleInteractionLayer/, 'Sketch editing stage must compose direct Circle outside B-Rep Three interaction');
 assert.match(protectedPart, /getByTitle\('Параметры'\)/, 'protected Part must retain explicit numeric Circle + driving diameter fallback');
 
 const circle = registry.commands.find((command) => command.id === 'sketch.circle');
@@ -43,4 +45,4 @@ assert.ok(circle, 'command registry must contain sketch.circle');
 assert.equal(circle.status, 'implemented');
 assert.equal(circle.milestone, 'M3.3');
 
-console.log('ASA-CAD M3.3 direct Circle boundary PASS (focused Sketch owner + shared input + one geometry commit + numeric dimension fallback)');
+console.log('ASA-CAD M3.3 direct Circle boundary PASS (SketchEditingStage + shared input + one geometry commit + numeric dimension fallback)');

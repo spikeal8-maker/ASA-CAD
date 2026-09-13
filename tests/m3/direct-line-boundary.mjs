@@ -8,7 +8,8 @@ const viewportGeometry = fs.readFileSync('src/web/viewport/SketchViewportGeometr
 const tool = fs.readFileSync('src/web/useSketchLineTool.ts', 'utf8');
 const workspace = fs.readFileSync('src/web/usePartSketchWorkspace.ts', 'utf8');
 const editing = fs.readFileSync('src/web/useSketchEditingController.ts', 'utf8');
-const stage = fs.readFileSync('src/web/PartModelStage.tsx', 'utf8');
+const partStage = fs.readFileSync('src/web/PartModelStage.tsx', 'utf8');
+const sketchStage = fs.readFileSync('src/web/SketchEditingStage.tsx', 'utf8');
 const app = fs.readFileSync('src/web/App.tsx', 'utf8');
 const styles = fs.readFileSync('src/web/styles.css', 'utf8');
 const bindings = fs.readFileSync('src/web/M2CadUiActions.ts', 'utf8');
@@ -35,14 +36,15 @@ assert.match(surface, /wasMultiTouch/, 'multi-touch contacts must not become geo
 assert.match(viewportGeometry, /SketchViewportState/, 'Sketch view must have explicit transient state');
 assert.match(viewportGeometry, /span: 100/, 'Sketch must open with a usable stable engineering frame');
 assert.equal(viewportGeometry.includes('CadSketchEntity'), false, 'Sketch viewport frame must not refit from entity bounds');
-assert.match(stage, /useState\(resetSketchViewportState\)/, 'Part stage must own transient Sketch camera state');
-assert.match(stage, /\[props\.activeSketch\?\.id\]/, 'Sketch camera may reset only when active Sketch changes');
+assert.match(partStage, /<SketchEditingStage/, 'Part stage must delegate active Sketch presentation to one focused owner');
+assert.match(sketchStage, /useState\(resetSketchViewportState\)/, 'Sketch editing stage must own transient Sketch camera state');
+assert.match(sketchStage, /\[props\.activeSketch\.id\]/, 'Sketch camera may reset only when active Sketch changes');
 assert.match(overlay, /useSketchViewportFrame/, 'persisted\/solver overlay must consume the same stable Sketch frame');
 assert.equal(/sketchDisplayFrame\(model\.entities\)/.test(overlay), false, 'overlay must not refit after geometry commit');
 
 assert.match(tool, /id: 'sketch\.line'/, 'Line tool must commit through typed sketch.line command');
 assert.equal(/\.entities\.(push|splice)/.test(tool), false, 'Line tool must not mutate persisted Sketch entities directly');
-assert.match(stage, /SketchLineInteractionLayer/, 'Part stage must compose the separate Line interaction layer');
+assert.match(sketchStage, /SketchLineInteractionLayer/, 'focused Sketch stage must compose the separate Line interaction layer');
 assert.match(bindings, /'sketch\.line': binding\(handlers\.line/, 'shared action catalog must bind sketch.line');
 assert.match(workspace, /useSketchEditingController/, 'Part/Sketch facade must compose the focused Sketch editing owner');
 assert.match(editing, /setPanel\('closed'\)/, 'direct Line must collapse management UI before drawing');
@@ -55,4 +57,4 @@ assert.ok(line, 'command registry must contain sketch.line');
 assert.equal(line.status, 'implemented', 'sketch.line must be implemented only with the M3.2 product path');
 assert.equal(line.milestone, 'M3.2');
 
-console.log('ASA-CAD M3.2 direct Line architecture boundary PASS (focused Sketch owner + shared input + stable view + panel collapse)');
+console.log('ASA-CAD M3.2 direct Line architecture boundary PASS (SketchEditingStage + shared input + stable view + panel collapse)');
