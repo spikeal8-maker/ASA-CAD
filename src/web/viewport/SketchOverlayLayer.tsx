@@ -2,6 +2,7 @@ import React from 'react';
 import type { CadSketchEntity } from '../../contracts/document';
 import type { SketchOverlayModel } from './SketchOverlayModel';
 import { useSketchViewportFrame } from './SketchViewportFrameContext';
+import { sketchArcGeometry } from './SketchArcGeometry';
 
 export interface SketchOverlayLayerProps {
   model: SketchOverlayModel | null;
@@ -65,5 +66,23 @@ function renderEntity(entity: CadSketchEntity) {
           vectorEffect="non-scaling-stroke"
         />
       );
+    case 'arc': {
+      const geometry = sketchArcGeometry(
+        entity.data.center,
+        entity.data.radius,
+        entity.data.startAngle,
+        entity.data.endAngle,
+      );
+      if (!geometry) return null;
+      return (
+        <path
+          key={entity.id}
+          className="cad-sketch-overlay-entity arc"
+          data-sketch-entity-id={entity.id}
+          d={geometry.path}
+          vectorEffect="non-scaling-stroke"
+        />
+      );
+    }
   }
 }
