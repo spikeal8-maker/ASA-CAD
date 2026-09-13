@@ -12,7 +12,7 @@ export interface SketchOverlayLayerProps {
  * Separate Sketch presentation layer above the B-Rep canvas.
  *
  * Persisted/solver geometry stays read-only here. M3 interaction is rendered by
- * a sibling Sketch interaction layer so transient pointer/ghost state never
+ * sibling Sketch interaction layers so transient pointer/selection state never
  * enters CadRenderModel or solver-owned preview data.
  */
 export function SketchOverlayLayer({ model }: SketchOverlayLayerProps) {

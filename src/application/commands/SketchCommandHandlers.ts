@@ -26,6 +26,7 @@ export const SKETCH_GROWTH_COMMAND_IDS = [
   'sketch.rectangle',
   'sketch.circle',
   'sketch.arc',
+  'sketch.entity.delete',
   'sketch.finish',
   'constraint.coincident',
   'constraint.horizontal',
@@ -158,6 +159,16 @@ const HANDLERS = {
         data: { center, radius, startAngle, endAngle: startAngle + sweep },
       });
       return { ok: true, changed: true, createdIds: [id] };
+    },
+  }),
+
+  'sketch.entity.delete': handler<'sketch.entity.delete'>({
+    availability: requireSketchAvailability,
+    execute: (part, command) => {
+      const sketch = requireSketch(part, command.payload.sketchId);
+      requireSketchEntity(sketch, command.payload.entityId);
+      deleteSketchEntityWithDependencies(part, sketch, command.payload.entityId);
+      return { ok: true, changed: true };
     },
   }),
 
@@ -297,6 +308,8 @@ export function applySketchGrowthCommand(
       return HANDLERS['sketch.circle'].execute(part, command);
     case 'sketch.arc':
       return HANDLERS['sketch.arc'].execute(part, command);
+    case 'sketch.entity.delete':
+      return HANDLERS['sketch.entity.delete'].execute(part, command);
     case 'sketch.finish':
       return HANDLERS['sketch.finish'].execute(part, command);
     case 'constraint.coincident':
@@ -368,6 +381,29 @@ function persistConstraint(
   part.constraints.push(constraint);
   sketch.constraintIds.push(constraint.id);
   return { ok: true, changed: true, createdIds: [constraint.id] };
+}
+
+function deleteSketchEntityWithDependencies(
+  part: CadPartDocument,
+  sketch: CadSketch,
+  entityId: CadSketchEntityId,
+): void {
+  const constraintIds = new Set(
+    part.constraints
+      .filter((constraint) => sketch.constraintIds.includes(constraint.id) && constraint.entityIds.includes(entityId))
+      .map((constraint) => constraint.id),
+  );
+  const dimensionIds = new Set(
+    part.dimensions
+      .filter((dimension) => sketch.dimensionIds.includes(dimension.id) && dimension.entityIds.includes(entityId))
+      .map((dimension) => dimension.id),
+  );
+
+  sketch.entities = sketch.entities.filter((entity) => entity.id !== entityId);
+  sketch.constraintIds = sketch.constraintIds.filter((id) => !constraintIds.has(id));
+  sketch.dimensionIds = sketch.dimensionIds.filter((id) => !dimensionIds.has(id));
+  part.constraints = part.constraints.filter((constraint) => !constraintIds.has(constraint.id));
+  part.dimensions = part.dimensions.filter((dimension) => !dimensionIds.has(dimension.id));
 }
 
 const TWO_PI = Math.PI * 2;

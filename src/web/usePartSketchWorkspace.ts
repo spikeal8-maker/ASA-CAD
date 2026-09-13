@@ -31,9 +31,9 @@ export interface PartSketchWorkspaceOptions {
  * Focused UI/controller seam for the Part + Sketch workspace.
  *
  * This is intentionally not a CAD runtime or persistence layer. It owns the
- * editor state/lifecycle that M3 Sketch will grow: active commands, sketch
- * parameters, subshape/body selection and begin/commit/cancel transitions.
- * Geometry still executes only through CadApplication.
+ * editor state/lifecycle that M3 Sketch will grow: active commands, Sketch
+ * selection/parameters and begin/commit/cancel transitions. Geometry changes
+ * still execute only through CadApplication.
  */
 export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
   const { app, document, renderModelAvailable, setPanel, setNotice } = options;
@@ -56,8 +56,11 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
   const {
     activeSketchId,
     activeSketch: sketch,
+    selectedEntityId,
     enterSketch: activateSketch,
     clearActiveSketch,
+    selectEntity,
+    clearEntitySelection,
   } = useSketchSession(part);
   const rectangleReady = hasRectangle(sketch);
   const circleReady = hasCircle(sketch);
@@ -77,7 +80,8 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     setSelectionMode('none');
     setSelectedPick(null);
     setSelectedBodyId(null);
-  }, []);
+    clearEntitySelection();
+  }, [clearEntitySelection]);
 
   const clearSelectedPick = useCallback(() => {
     setSelectedPick(null);
@@ -154,19 +158,48 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
   }, [clearActiveSketch, resetToWorkspace]);
 
   const handleViewportPick = useCallback((pick: CadViewportPick) => {
+    clearEntitySelection();
     setSelectedPick(pick);
     if (pick.kind === 'face') {
       setNotice(`Грань выбрана: ${pick.point.map((value) => value.toFixed(1)).join(', ')}`);
     } else {
       setNotice(`Ребро выбрано: ${pick.point.map((value) => value.toFixed(1)).join(', ')}`);
     }
-  }, [setNotice]);
+  }, [clearEntitySelection, setNotice]);
 
   const handleBodySelect = useCallback((bodyId: CadBodyId | null) => {
+    clearEntitySelection();
     setSelectedBodyId(bodyId);
     setSelectedPick(null);
     setNotice(bodyId ? 'Тело выбрано' : 'Выбор очищен');
-  }, [setNotice]);
+  }, [clearEntitySelection, setNotice]);
+
+  const handleSketchEntitySelect = useCallback((entityId: CadSketchEntityId) => {
+    if (!activeSketchId) return;
+    setSelectionMode('none');
+    setSelectedPick(null);
+    setSelectedBodyId(null);
+    selectEntity(activeSketchId, entityId);
+    setNotice('Элемент эскиза выбран');
+  }, [activeSketchId, selectEntity, setNotice]);
+
+  const deleteSelectedSketchEntity = useCallback(async () => {
+    if (!activeSketchId || !selectedEntityId) {
+      setNotice('Выберите элемент эскиза');
+      return false;
+    }
+    const result = await app.execute({
+      id: 'sketch.entity.delete',
+      payload: { sketchId: activeSketchId, entityId: selectedEntityId },
+    });
+    if (!result.ok) {
+      setNotice(result.error?.message ?? 'Не удалось удалить элемент эскиза');
+      return false;
+    }
+    clearEntitySelection();
+    setNotice('Элемент эскиза и его зависимости удалены');
+    return true;
+  }, [activeSketchId, app, clearEntitySelection, selectedEntityId, setNotice]);
 
   const enterSketch = useCallback((sketchId: CadSketchId) => {
     const currentPart = partDocument(app.getDocument());
@@ -191,6 +224,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     setPanel('parameters');
     setSelectedPick(null);
     setSelectedBodyId(null);
+    clearEntitySelection();
     if (hasSolid && renderModelAvailable) {
       setSelectionMode('face');
       setActiveWorkspace('solid');
@@ -472,6 +506,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     setSelectionMode('edge');
     setSelectedPick(null);
     setSelectedBodyId(null);
+    clearEntitySelection();
     setNotice('Выберите ребро в рабочей области');
   }
 
@@ -608,6 +643,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     setActiveWorkspace,
     activeCommand,
     activeSketchId,
+    selectedSketchEntityId: selectedEntityId,
     selectionMode,
     selectedPick,
     selectedBodyId,
@@ -637,11 +673,14 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     selectedBody,
     clearTransientSelection,
     clearSelectedPick,
+    clearSketchEntitySelection: clearEntitySelection,
     resetTransient,
     resetToWorkspace,
     resetForDocument,
     handleViewportPick,
     handleBodySelect,
+    handleSketchEntitySelect,
+    deleteSelectedSketchEntity,
     enterSketch,
     beginLine,
     lineDraft: lineTool.draft,

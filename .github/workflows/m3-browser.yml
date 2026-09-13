@@ -82,6 +82,11 @@ jobs:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m3/direct-rectangle-browser.mjs
 
+      - name: Exercise M3 Sketch selection/delete desktop/touch
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
+        run: node tests/m3/sketch-selection-delete-browser.mjs
+
       - name: Show server log on failure
         if: failure()
         run: cat /tmp/asa-m3-http.log || true

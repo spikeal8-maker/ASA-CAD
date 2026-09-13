@@ -22,6 +22,7 @@ export type CadCommandId =
   | 'sketch.rectangle'
   | 'sketch.circle'
   | 'sketch.arc'
+  | 'sketch.entity.delete'
   | 'sketch.finish'
   | 'constraint.coincident'
   | 'constraint.horizontal'
@@ -63,6 +64,10 @@ export interface CadCommandMap {
     center: readonly [number, number];
     start: readonly [number, number];
     end: readonly [number, number];
+  };
+  'sketch.entity.delete': {
+    sketchId: CadSketchId;
+    entityId: CadSketchEntityId;
   };
   'sketch.finish': {
     sketchId: CadSketchId;
