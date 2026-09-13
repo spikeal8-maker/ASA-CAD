@@ -1,0 +1,34 @@
+name: one-shot M3 direct Arc codemod
+
+on:
+  push:
+    branches: [impl/m3-direct-arc]
+    paths:
+      - tools/m3-direct-arc-codemod.cjs
+      - .github/workflows/m3-direct-arc-codemod.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: impl/m3-direct-arc
+      - name: Apply Arc wiring
+        run: node tools/m3-direct-arc-codemod.cjs
+      - name: Commit generated implementation changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add src tests package.json spec/ui/command-registry.v1.json .github/workflows/m3-browser.yml
+          if git diff --cached --quiet; then
+            echo 'No generated changes'
+            exit 0
+          fi
+          git commit -m 'impl: wire M3.4B direct Arc vertical slice'
+          git push origin HEAD:impl/m3-direct-arc
