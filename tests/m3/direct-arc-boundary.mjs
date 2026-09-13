@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const layer = fs.readFileSync('src/web/viewport/SketchArcInteractionLayer.tsx', 'utf8');
+const geometry = fs.readFileSync('src/web/viewport/SketchArcGeometry.ts', 'utf8');
 const tool = fs.readFileSync('src/web/useSketchArcTool.ts', 'utf8');
 const workspace = fs.readFileSync('src/web/usePartSketchWorkspace.ts', 'utf8');
 const stage = fs.readFileSync('src/web/PartModelStage.tsx', 'utf8');
@@ -32,6 +33,8 @@ assert.match(layer, /sketch-arc-ghost/, 'Arc must expose transient sweep ghost')
 assert.match(tool, /id:\s*'sketch\.arc'/, 'direct Arc must commit through typed sketch.arc');
 assert.equal(/\.entities\.(push|splice)/.test(tool), false, 'Arc tool must not mutate persisted Sketch DTOs directly');
 assert.match(tool, /center.*start.*end/s, 'Arc tool must preserve center -> start -> end construction order');
+assert.match(tool, /distance\(draft\.center, end\) <= MIN_RADIUS/, 'Arc must reject an endpoint coincident with its center');
+assert.match(geometry, /\$\{largeArcFlag\} 0 \$\{endX\}/, 'positive CAD CCW Arc must use SVG sweep-flag=0 after Y inversion');
 
 assert.match(workspace, /useSketchArcTool/, 'Part/Sketch workspace must own Arc tool lifecycle');
 assert.match(workspace, /arcTool\.reset\(\)/, 'Arc activation/cancel must reset transient tool state');
@@ -47,4 +50,4 @@ assert.equal(arc.status, 'implemented');
 assert.equal(arc.milestone, 'M3.4B');
 assert.equal(arc.backendCommand, 'sketch.arc');
 
-console.log('ASA-CAD M3.4B direct Arc boundary PASS (shared input + three-point ghost + one typed mutation)');
+console.log('ASA-CAD M3.4B direct Arc boundary PASS (shared input + sweep + endpoint guard + one typed mutation)');
