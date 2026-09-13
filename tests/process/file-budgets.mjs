@@ -16,7 +16,6 @@ const frozenCeilings = new Map([
   ['src/web/PartSketchWorkspaceTypes.ts', 140],
   ['src/web/PartModelStage.tsx', 3_423],
   ['src/web/SketchEditingStage.tsx', 6_477],
-  ['src/web/styles.css', 22_588],
   ['src/runtime/OpenCascadePartRuntime.ts', 20_347],
   ['src/application/commands/SketchCommandHandlers.ts', 15_384],
 ]);

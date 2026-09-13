@@ -1,0 +1,97 @@
+.instrument-area {
+  min-height: 0;
+  background: var(--bg-ribbon);
+  border-bottom: 1px solid var(--border-strong);
+  overflow: hidden;
+}
+.workspace-tabs {
+  height: var(--workspace-h);
+  display: flex;
+  align-items: stretch;
+  gap: 1px;
+  padding: 0 7px;
+  border-bottom: 1px solid #d6d9de;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.workspace-tabs::-webkit-scrollbar { display: none; }
+.workspace-tabs button {
+  flex: none;
+  padding: 0 12px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.workspace-tabs button:hover { background: #e8eaed; }
+.workspace-tabs button.active { border-bottom-color: var(--accent); color: #0b5ed7; font-weight: 600; }
+.command-ribbon {
+  height: var(--ribbon-h);
+  display: flex;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  padding: 3px 6px 2px;
+  gap: 2px;
+}
+.command-group {
+  flex: 0 0 auto;
+  min-width: 94px;
+  height: 100%;
+  display: grid;
+  grid-template-rows: 1fr 17px;
+  border-right: 1px solid #d2d5da;
+  padding: 0 6px;
+}
+.command-group-content { display: flex; align-items: stretch; gap: 3px; min-width: 0; }
+.command-group-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #747b84;
+  font-size: 10.5px;
+  white-space: nowrap;
+}
+.ribbon-command {
+  position: relative;
+  min-width: 62px;
+  max-width: 94px;
+  padding: 4px 5px 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  border-radius: 3px;
+  cursor: pointer;
+  color: #31383f;
+  font-size: 11px;
+  line-height: 1.05;
+  text-align: center;
+}
+.ribbon-command.large { min-width: 76px; }
+.ribbon-command:hover:not(:disabled) { background: #dfe8f6; }
+.ribbon-command.accent:not(:disabled) .ribbon-command-icon { color: var(--accent); }
+.ribbon-command:disabled { opacity: .47; cursor: default; }
+.ribbon-command-icon { font-size: 25px; line-height: 1; min-height: 26px; display: grid; place-items: center; }
+.ribbon-command.view-command.selected { background: var(--accent-soft); }
+.planned-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  padding: 1px 3px;
+  border-radius: 3px;
+  background: #e2e5e9;
+  color: #69717c;
+  font-size: 8px;
+}
+.planned-workspace-note {
+  align-self: center;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 12px;
+  color: var(--text-muted);
+}
+.planned-workspace-note strong { color: var(--text); }
