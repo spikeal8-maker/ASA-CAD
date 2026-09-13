@@ -2,7 +2,7 @@ import React from 'react';
 import type { CadPoint2 } from '../../contracts/document';
 import type { SketchArcDraft } from '../useSketchArcTool';
 import type { SketchOverlayModel } from './SketchOverlayModel';
-import { SketchArcGeometryFromConstructionView } from './SketchArcPreview';
+import { sketchArcGeometryFromConstruction } from './SketchArcGeometry';
 import { SketchInteractionSurface } from './SketchInteractionSurface';
 import type {
   SketchDisplayFrame,
@@ -31,6 +31,9 @@ export function SketchArcInteractionLayer(props: SketchArcInteractionLayerProps)
       : 'awaiting-end';
   const startCandidate = props.draft.start ?? props.draft.hover;
   const endCandidate = props.draft.end ?? props.draft.hover;
+  const arcGhost = props.draft.center && props.draft.start && endCandidate
+    ? sketchArcGeometryFromConstruction(props.draft.center, props.draft.start, endCandidate)
+    : null;
 
   return (
     <SketchInteractionSurface
@@ -55,7 +58,6 @@ export function SketchArcInteractionLayer(props: SketchArcInteractionLayerProps)
           vectorEffect="non-scaling-stroke"
         />
       )}
-
       {props.draft.center && startCandidate && !props.draft.start && (
         <line
           data-testid="sketch-arc-radius-ghost"
@@ -69,14 +71,15 @@ export function SketchArcInteractionLayer(props: SketchArcInteractionLayerProps)
           vectorEffect="non-scaling-stroke"
         />
       )}
-
-      {props.draft.center && props.draft.start && endCandidate && (
-        <SketchArcGeometryFromConstructionView
-          center={props.draft.center}
-          start={props.draft.start}
-          end={endCandidate}
-          testId="sketch-arc-ghost"
+      {arcGhost && (
+        <path
+          data-testid="sketch-arc-ghost"
           className="cad-sketch-arc-ghost"
+          d={arcGhost.path}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={0.45}
+          vectorEffect="non-scaling-stroke"
         />
       )}
     </SketchInteractionSurface>
