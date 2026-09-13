@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import type { CadApplication } from '../contracts/application';
 import type { CadPoint2 } from '../contracts/document';
 import type { CadSketchId } from '../contracts/ids';
+import { canonicalSketchRectangle } from './viewport/SketchRectangleGeometry';
 
 export interface SketchRectangleDraft {
   first: CadPoint2 | null;
@@ -22,7 +23,6 @@ const EMPTY_DRAFT: SketchRectangleDraft = {
   opposite: null,
   hover: null,
 };
-const MIN_SIZE = 1e-6;
 
 /**
  * Transient M3 direct Rectangle owner.
@@ -61,7 +61,7 @@ export function useSketchRectangleTool(options: UseSketchRectangleToolOptions) {
 
   const commit = useCallback(async (opposite: CadPoint2) => {
     if (!active || !sketchId || !draft.first || committing) return false;
-    const geometry = canonicalRectangle(draft.first, opposite);
+    const geometry = canonicalSketchRectangle(draft.first, opposite);
     if (!geometry) {
       setNotice('Ширина и высота прямоугольника должны быть больше нуля');
       return false;
@@ -100,23 +100,18 @@ export function useSketchRectangleTool(options: UseSketchRectangleToolOptions) {
     await commit(value);
   }, [active, commit, committing, draft.first, setNotice]);
 
+  const commitPreview = useCallback(async () => {
+    if (!draft.opposite) return false;
+    return commit(draft.opposite);
+  }, [commit, draft.opposite]);
+
   return {
     draft,
     committing,
     move,
     point,
     reset,
-  };
-}
-
-export function canonicalRectangle(first: CadPoint2, opposite: CadPoint2) {
-  const width = Math.abs(opposite[0] - first[0]);
-  const height = Math.abs(opposite[1] - first[1]);
-  if (!(width > MIN_SIZE) || !(height > MIN_SIZE)) return null;
-  return {
-    origin: [Math.min(first[0], opposite[0]), Math.min(first[1], opposite[1])] as const,
-    width,
-    height,
+    commitPreview,
   };
 }
 
