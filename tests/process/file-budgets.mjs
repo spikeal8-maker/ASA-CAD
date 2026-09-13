@@ -5,7 +5,7 @@ import path from 'node:path';
 const KB = 1024;
 
 const frozenCeilings = new Map([
-  ['src/web/App.tsx', 31_555],
+  ['src/web/App.tsx', 18_023],
   ['src/web/CadViewport.tsx', 27_846],
   ['src/web/usePartSketchWorkspace.ts', 9_468],
   ['src/web/usePartSelectionController.ts', 3_227],
