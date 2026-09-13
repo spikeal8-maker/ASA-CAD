@@ -43,4 +43,4 @@ jobs:
       - name: Build ASA shell
         run: npm run build:asa
 
-# trigger final state after ratchet + STATUS sync
+# trigger after M3 shell-boundary update
