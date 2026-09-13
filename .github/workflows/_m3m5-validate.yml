@@ -1,0 +1,35 @@
+name: M3M-005 scratch validation
+
+on:
+  push:
+    branches:
+      - scratch/m3m-005-css
+    paths:
+      - .github/workflows/_m3m5-validate.yml
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: scratch/m3m-005-css
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.19.0'
+          cache: npm
+          cache-dependency-path: vendor/toubkal/package-lock.json
+      - name: Verify file budgets
+        run: node tests/process/file-budgets.mjs
+      - name: Verify CSS decomposition
+        run: node tests/process/css-decomposition.mjs
+      - name: Install pinned frontend toolchain
+        run: npm --prefix vendor/toubkal ci
+      - name: Typecheck ASA shell
+        run: npm run typecheck:asa
+      - name: Verify M2O gates
+        run: npm run test:m2o
+      - name: Verify M3 foundation
+        run: npm run test:m3
+      - name: Build ASA shell
+        run: npm run build:asa
