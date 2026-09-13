@@ -1,0 +1,31 @@
+name: M3.5 M2 Rectangle compatibility scratch
+
+on:
+  push:
+    branches: [impl/m3-direct-rectangle]
+    paths:
+      - tools/m3-rectangle-m2-compat.cjs
+      - .github/workflows/m3-rectangle-m2-compat.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: impl/m3-direct-rectangle
+          fetch-depth: 0
+      - name: Apply exact compatibility patch
+        run: node tools/m3-rectangle-m2-compat.cjs
+      - name: Commit compatibility tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tests/m2/navigation-browser.mjs tests/m2/views-browser.mjs tests/m2/shortcuts-browser.mjs tests/m2/ordinary-selection-browser.mjs
+          git commit -m "test: preserve explicit numeric Rectangle helpers"
+          git push origin HEAD:impl/m3-direct-rectangle
