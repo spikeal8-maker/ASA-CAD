@@ -5,12 +5,9 @@ import path from 'node:path';
 const commitCount = Number(process.env.ASA_PR_COMMIT_COUNT ?? '0');
 if (commitCount > 0) {
   assert.ok(
-    commitCount <= 12,
-    `PR has ${commitCount} commits. Hard limit is 12. Rebuild/squash the review branch from current main before review.`,
+    commitCount <= 6,
+    `PR has ${commitCount} commits. Review limit is 6. Rebuild/squash the review branch from current main before review.`,
   );
-  if (commitCount > 6) {
-    console.warn(`PR hygiene warning: ${commitCount} commits; target is <= 6 for one vertical slice.`);
-  }
 }
 
 const temporaryName = /(^|\/)([^/]*(codemod|one[-_]?shot|review[-_]?fix|temporary[-_]?workflow)[^/]*)(\/|$)/i;
