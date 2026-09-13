@@ -14,6 +14,7 @@ import { useSketchSession } from './useSketchSession';
 import { useSketchLineTool } from './useSketchLineTool';
 import { useSketchCircleTool } from './useSketchCircleTool';
 import { useSketchArcTool } from './useSketchArcTool';
+import { useSketchRectangleTool } from './useSketchRectangleTool';
 
 export type CadWorkspacePanel = 'tree' | 'parameters' | 'tools' | 'closed';
 export type PartSketchSelectionMode = 'none' | 'face' | 'edge';
@@ -88,6 +89,20 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     active: activeCommand === 'sketch.line',
     setNotice,
     onCommitted: () => {
+      setActiveCommand(null);
+      setPanel('tree');
+      setActiveWorkspace('sketch');
+      clearTransientSelection();
+    },
+  });
+  const rectangleTool = useSketchRectangleTool({
+    app,
+    sketchId: activeSketchId,
+    active: activeCommand === 'sketch.rectangle',
+    setNotice,
+    onCommitted: (width, height) => {
+      setRectangleWidth(width);
+      setRectangleHeight(height);
       setActiveCommand(null);
       setPanel('tree');
       setActiveWorkspace('sketch');
@@ -235,10 +250,11 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
 
   function beginRectangle() {
     if (!sketch) return;
+    rectangleTool.reset();
     setActiveCommand('sketch.rectangle');
-    setPanel('parameters');
+    setPanel('closed');
     clearTransientSelection();
-    setNotice('Задайте ширину и высоту прямоугольника');
+    setNotice('Укажите первый угол прямоугольника');
   }
 
   async function commitRectangle() {
@@ -553,6 +569,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
 
   function cancelCommand() {
     if (activeCommand === 'sketch.line') lineTool.reset();
+    if (activeCommand === 'sketch.rectangle') rectangleTool.reset();
     if (activeCommand === 'sketch.circle') circleTool.reset();
     if (activeCommand === 'sketch.arc') arcTool.reset();
     const stayInSketch = activeCommand === 'sketch.line' || activeCommand === 'sketch.rectangle' || activeCommand === 'sketch.circle' || activeCommand === 'sketch.arc';
@@ -572,7 +589,10 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     if (activeCommand === 'sketch.line') return lineTool.commitPreview();
     if (activeCommand === 'sketch.arc') return arcTool.commitPreview();
     if (activeCommand === 'part.sketch.create') return commitCreateSketch();
-    if (activeCommand === 'sketch.rectangle') return commitRectangle();
+    if (activeCommand === 'sketch.rectangle') {
+      if (rectangleTool.draft.first) return rectangleTool.commitPreview();
+      return commitRectangle();
+    }
     if (activeCommand === 'sketch.circle') {
       if (circleTool.draft.center) return circleTool.commitPreview();
       return commitCircle();
@@ -628,6 +648,10 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     lineCommitting: lineTool.committing,
     handleSketchLinePointMove: lineTool.move,
     handleSketchLinePoint: lineTool.point,
+    rectangleDraft: rectangleTool.draft,
+    rectangleCommitting: rectangleTool.committing,
+    handleSketchRectanglePointMove: rectangleTool.move,
+    handleSketchRectanglePoint: rectangleTool.point,
     circleDraft: circleTool.draft,
     circleCommitting: circleTool.committing,
     handleSketchCirclePointMove: circleTool.move,

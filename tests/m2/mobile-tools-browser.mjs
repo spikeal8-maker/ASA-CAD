@@ -58,15 +58,13 @@ try {
   assert.equal(await finish.isEnabled(), true, 'Finish Sketch must be enabled in mobile Sketch tools');
 
   await rectangle.click();
-  await page.locator('.parameter-panel h3').filter({ hasText: /^Размеры$/ }).waitFor();
-  const width = page.locator('.numeric-field').filter({ hasText: 'Ширина' }).locator('input');
-  const height = page.locator('.numeric-field').filter({ hasText: 'Высота' }).locator('input');
-  assert.equal(await width.inputValue(), '60');
-  assert.equal(await height.inputValue(), '40');
-  assert.deepEqual(await wasmResources(), [], 'mobile 2D command path eagerly loaded OpenCascade');
+  await page.locator('.content-area.panel-closed').waitFor();
+  const interaction = page.locator('[data-testid="cad-sketch-interaction"][data-tool="rectangle"][data-rectangle-phase="awaiting-first"]');
+  await interaction.waitFor();
+  assert.deepEqual(await wasmResources(), [], 'starting direct mobile Rectangle eagerly loaded a CAD kernel');
 
   assert.deepEqual(errors, [], `mobile tools page errors: ${errors.join(' | ')}`);
-  console.log('ASA-CAD mobile shared actions PASS (Tools -> Create Sketch -> Sketch tools, no desktop DOM delegation)');
+  console.log('ASA-CAD mobile shared actions PASS (Tools -> Create Sketch -> direct Sketch Rectangle, no desktop DOM delegation)');
 } finally {
   await browser.close();
 }

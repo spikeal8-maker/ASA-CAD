@@ -11,9 +11,11 @@ import { useActiveSketchSolveOverlay } from './useActiveSketchSolveOverlay';
 import type { SketchLineDraft } from './useSketchLineTool';
 import type { SketchCircleDraft } from './useSketchCircleTool';
 import type { SketchArcDraft } from './useSketchArcTool';
+import type { SketchRectangleDraft } from './useSketchRectangleTool';
 import { SketchLineInteractionLayer } from './viewport/SketchLineInteractionLayer';
 import { SketchCircleInteractionLayer } from './viewport/SketchCircleInteractionLayer';
 import { SketchArcInteractionLayer } from './viewport/SketchArcInteractionLayer';
+import { SketchRectangleInteractionLayer } from './viewport/SketchRectangleInteractionLayer';
 import { SketchViewportFrameProvider } from './viewport/SketchViewportFrameContext';
 import {
   resetSketchViewportState,
@@ -40,6 +42,10 @@ export interface PartModelStageProps {
   lineCommitting: boolean;
   onSketchLinePointMove(point: CadPoint2): void;
   onSketchLinePoint(point: CadPoint2): void | Promise<void>;
+  rectangleDraft: SketchRectangleDraft;
+  rectangleCommitting: boolean;
+  onSketchRectanglePointMove(point: CadPoint2): void;
+  onSketchRectanglePoint(point: CadPoint2): void | Promise<void>;
   circleDraft: SketchCircleDraft;
   circleCommitting: boolean;
   onSketchCirclePointMove(point: CadPoint2): void;
@@ -137,6 +143,20 @@ export function PartModelStage(props: PartModelStageProps) {
             committing={props.lineCommitting}
             onPointMove={props.onSketchLinePointMove}
             onPoint={props.onSketchLinePoint}
+          />
+        )}
+
+        {sketchEditing && (
+          <SketchRectangleInteractionLayer
+            model={sketchOverlay}
+            frame={sketchFrame}
+            viewportState={sketchViewport}
+            onViewportStateChange={setSketchViewport}
+            active={props.activeCommand === 'sketch.rectangle'}
+            draft={props.rectangleDraft}
+            committing={props.rectangleCommitting}
+            onPointMove={props.onSketchRectanglePointMove}
+            onPoint={props.onSketchRectanglePoint}
           />
         )}
 

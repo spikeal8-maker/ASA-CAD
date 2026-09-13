@@ -133,6 +133,9 @@ async function createProtectedExtrude() {
   assert.equal(await emptyOverlay.getAttribute('data-entity-count'), '0');
 
   await page.getByRole('button', { name: /Прямоугольник/i }).click();
+  await page.locator('.content-area.panel-closed').waitFor();
+  await page.getByTitle('Параметры').click();
+  await page.locator('.parameter-panel').waitFor();
   const width = page.locator('.numeric-field').filter({ hasText: 'Ширина' }).locator('input');
   const height = page.locator('.numeric-field').filter({ hasText: 'Высота' }).locator('input');
   assert.equal(await width.inputValue(), '60');
