@@ -81,14 +81,14 @@ for (const file of files) {
   const policy = policies.find((candidate) => candidate.matches(normalized));
   if (!policy) continue;
 
-  const size = fs.statSync(file).size;
+  const size = canonicalUtf8Size(file);
   checked.add(normalized);
 
   const frozen = frozenCeilings.get(normalized);
   if (frozen != null) {
     assert.ok(
       size <= frozen,
-      `${normalized} grew to ${size} bytes; frozen maintenance ceiling is ${frozen}. Extract responsibility instead of raising the ceiling.`,
+      `${normalized} grew to ${size} canonical UTF-8 bytes; frozen maintenance ceiling is ${frozen}. Extract responsibility instead of raising the ceiling.`,
     );
   }
 
@@ -96,18 +96,17 @@ for (const file of files) {
   const hard = frozen ?? grandfathered ?? policy.hard;
   assert.ok(
     size <= hard,
-    `${normalized} is ${size} bytes; ${policy.name} hard limit is ${hard}. Split the file into focused owners.`,
+    `${normalized} is ${size} canonical UTF-8 bytes; ${policy.name} hard limit is ${hard}. Split the file into focused owners.`,
   );
 
   if (size > policy.target) {
-    warnings.push(`${normalized}: ${size} bytes > ${policy.target}-byte ${policy.name} target`);
+    warnings.push(`${normalized}: ${size} canonical UTF-8 bytes > ${policy.target}-byte ${policy.name} target`);
   }
 }
 
 for (const [file, ceiling] of frozenCeilings) {
   assert.ok(checked.has(file), `Frozen hotspot disappeared from budget scan: ${file}`);
-  const size = fs.statSync(file).size;
-  assert.ok(size <= ceiling);
+  assert.ok(canonicalUtf8Size(file) <= ceiling);
 }
 
 for (const warning of warnings) console.warn(`File budget warning: ${warning}`);
@@ -115,6 +114,11 @@ for (const warning of warnings) console.warn(`File budget warning: ${warning}`);
 console.log(
   `ASA-CAD file budgets PASS (${checked.size} files checked; ${frozenCeilings.size} hotspots frozen).`,
 );
+
+function canonicalUtf8Size(file) {
+  const text = fs.readFileSync(file, 'utf8').replace(/\r\n?/g, '\n');
+  return Buffer.byteLength(text, 'utf8');
+}
 
 function walk(root, output) {
   for (const entry of fs.readdirSync(root, { withFileTypes: true })) {
