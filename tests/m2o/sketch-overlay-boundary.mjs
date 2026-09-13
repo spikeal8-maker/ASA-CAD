@@ -5,7 +5,8 @@ const model = readFileSync('src/web/viewport/SketchOverlayModel.ts', 'utf8');
 const layer = readFileSync('src/web/viewport/SketchOverlayLayer.tsx', 'utf8');
 const viewport = readFileSync('src/web/CadViewport.tsx', 'utf8');
 const app = readFileSync('src/web/App.tsx', 'utf8');
-const stage = readFileSync('src/web/PartModelStage.tsx', 'utf8');
+const partStage = readFileSync('src/web/PartModelStage.tsx', 'utf8');
+const sketchStage = readFileSync('src/web/SketchEditingStage.tsx', 'utf8');
 const solveHook = readFileSync('src/web/useActiveSketchSolveOverlay.ts', 'utf8');
 const browserSolver = readFileSync('src/browser/BrowserSketchSolverAdapter.ts', 'utf8');
 const buildConfig = readFileSync('build/rspack.asa.config.cjs', 'utf8');
@@ -26,13 +27,14 @@ assert.match(runtimeCss, /\.cad-sketch-overlay\s*\{[\s\S]*pointer-events:\s*none
 
 assert.match(viewport, /sketchOverlay\?: SketchOverlayModel \| null/, 'CadViewport must accept Sketch overlay independently from B-Rep model');
 assert.match(viewport, /<SketchOverlayLayer model=\{sketchOverlay\}/, 'CadViewport must mount Sketch overlay as a sibling presentation layer');
-assert.match(app, /<PartModelStage\b/, 'App must delegate Part work-area solve/overlay presentation to a focused owner');
+assert.match(app, /<PartModelStage\b/, 'App must delegate Part work-area presentation');
 assert.doesNotMatch(app, /SketchSolveSession|PlaneGCSSketchSolverRuntime|buildSketchOverlayModel/, 'App must not own solver or overlay orchestration');
-assert.match(stage, /useActiveSketchSolveOverlay\(/, 'PartModelStage must activate the focused Sketch solve/overlay hook');
-assert.match(stage, /sketchOverlay=\{sketchOverlay\}/, 'PartModelStage must pass the transient overlay into CadViewport');
-assert.match(stage, /const viewportModel = sketchEditing \? null : props\.renderModel;/, 'M3.1 must not composite a screen-fitted Sketch over unprojected B-Rep context');
-assert.match(stage, /Boolean\(viewportModel \|\| sketchOverlay\)/, 'Sketch-only editing must mount CadViewport even without B-Rep');
-assert.match(stage, /data-sketch-context=\{sketchEditing \? 'isolated-2d' : 'model'\}/, 'Part stage must expose deliberate isolated Sketch workplane mode');
+assert.match(partStage, /<SketchEditingStage/, 'PartModelStage must delegate active Sketch presentation wholesale');
+assert.doesNotMatch(partStage, /useActiveSketchSolveOverlay|SketchSelectionLayer|SketchLineInteractionLayer/, 'PartModelStage must not regain Sketch editing orchestration');
+assert.match(sketchStage, /useActiveSketchSolveOverlay\(/, 'SketchEditingStage must activate the focused Sketch solve/overlay hook');
+assert.match(sketchStage, /sketchOverlay=\{sketchOverlay\}/, 'SketchEditingStage must pass transient overlay into CadViewport');
+assert.match(sketchStage, /<CadViewport model=\{null\} sketchOverlay=\{sketchOverlay\}/, 'isolated Sketch mode must not composite unprojected B-Rep geometry');
+assert.match(sketchStage, /data-sketch-context="isolated-2d"/, 'Sketch editing stage must expose deliberate isolated workplane mode');
 assert.match(solveHook, /new SketchSolveSession\(solver\)/, 'focused hook must own transient SketchSolveSession');
 assert.match(solveHook, /buildSketchOverlayModel\(sketch, snapshot\)/, 'focused hook must project solve state through SketchOverlayModel');
 assert.match(solveHook, /sketch\.entities\.length === 0/, 'empty Sketch must not eagerly initialize PlaneGCS');
@@ -42,4 +44,4 @@ assert.ok(buildConfig.includes('planegcs_dist') && buildConfig.includes('parser:
 assert.doesNotMatch(renderContract, /SketchOverlay|CadSketchEntity|sketchEntities/, 'B-Rep CadRenderModel contract must remain free of Sketch overlay geometry');
 assert.match(picking, /kind: 'sketch-entity'/, 'shared viewport candidate model must retain Sketch entity picking seam');
 
-console.log('M3.1 Sketch solve-overlay boundary PASS (isolated active workplane + transient solver preview outside B-Rep/App ownership)');
+console.log('M3.1 Sketch solve-overlay boundary PASS (SketchEditingStage owns isolated workplane + transient solver preview)');
