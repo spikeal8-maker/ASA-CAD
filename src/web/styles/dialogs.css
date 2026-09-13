@@ -1,0 +1,46 @@
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 100;
+  display: grid; place-items: center;
+  padding: 18px;
+  background: rgba(25,29,35,.34);
+}
+.new-document-dialog {
+  width: min(720px, 100%);
+  max-height: min(640px, calc(100dvh - 36px));
+  overflow: auto;
+  background: white;
+  border: 1px solid #aeb4bd;
+  border-radius: 7px;
+  box-shadow: 0 16px 42px rgba(0,0,0,.24);
+}
+.new-document-dialog header {
+  min-height: 68px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.new-document-dialog h2 { margin: 0; font-size: 18px; }
+.new-document-dialog p { margin: 4px 0 0; color: var(--text-muted); font-size: 12px; }
+.new-document-dialog header button { width: 32px; height: 32px; font-size: 20px; cursor: pointer; border-radius: 4px; }
+.new-document-dialog header button:hover { background: #eceff2; }
+.document-kind-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding: 14px; }
+.document-kind-grid > button {
+  min-height: 92px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 13px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: #fafbfc;
+  text-align: left;
+  cursor: pointer;
+}
+.document-kind-grid > button:hover { border-color: #8ab6f6; background: #f0f6ff; }
+.kind-card-icon { width: 52px; height: 52px; display: grid; place-items: center; background: #e8edf2; border-radius: 5px; font-size: 29px; color: #556675; }
+.kind-card-text { min-width: 0; display: grid; gap: 4px; }
+.kind-card-text strong { font-size: 14px; }
+.kind-card-text small { color: var(--text-muted); line-height: 1.35; }
+.mobile-bottom-bar { display: none; }
