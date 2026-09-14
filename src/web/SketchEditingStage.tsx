@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import type { CadSketchDelta } from '../application/SketchEntityTransform';
 import type { CadPartDocument, CadPoint2, CadSketch } from '../contracts/document';
 import type { CadSketchEntityId } from '../contracts/ids';
 import { CadViewport } from './CadViewport';
 import { SketchSolveStatus } from './SketchSolveStatus';
 import { useActiveSketchSolveOverlay } from './useActiveSketchSolveOverlay';
+import { useSketchEntityDrag } from './useSketchEntityDrag';
 import type { SketchLineDraft } from './useSketchLineTool';
 import type { SketchCircleDraft } from './useSketchCircleTool';
 import type { SketchArcDraft } from './useSketchArcTool';
@@ -27,6 +29,8 @@ export interface SketchEditingStageProps {
   revisionToken: number;
   selectedSketchEntityId: CadSketchEntityId | null;
   onSketchEntitySelect(entityId: CadSketchEntityId): void;
+  onSketchEntityTranslate(entityId: CadSketchEntityId, delta: CadSketchDelta): Promise<boolean>;
+  onSketchDragRejected(message: string): void;
   lineDraft: SketchLineDraft;
   lineCommitting: boolean;
   onSketchLinePointMove(point: CadPoint2): void;
@@ -45,12 +49,7 @@ export interface SketchEditingStageProps {
   onSketchArcPoint(point: CadPoint2): void | Promise<void>;
 }
 
-/**
- * Sole owner of the active 2D Sketch presentation/editing surface.
- *
- * Future drag, snap and constraint interaction belongs here (or focused
- * children below it), never in PartModelStage or the B-Rep Three viewport.
- */
+/** Sole owner of the active 2D Sketch presentation/editing surface. */
 export function SketchEditingStage(props: SketchEditingStageProps) {
   const sketchSelectionEnabled = props.activeCommand === null;
   const [sketchViewport, setSketchViewport] = useState(resetSketchViewportState);
@@ -63,6 +62,16 @@ export function SketchEditingStage(props: SketchEditingStageProps) {
     sketch: props.activeSketch,
     active: true,
     revisionToken: props.revisionToken,
+  });
+  const entityDrag = useSketchEntityDrag({
+    part: props.document,
+    sketch: props.activeSketch,
+    selectedEntityId: props.selectedSketchEntityId,
+    enabled: sketchSelectionEnabled,
+    previewCandidate: sketchSolve.previewCandidate,
+    restorePersistedPreview: sketchSolve.restorePersistedPreview,
+    commit: props.onSketchEntityTranslate,
+    onRejected: props.onSketchDragRejected,
   });
   const sketchOverlay = sketchSolve.overlay;
   const sketchFrame = sketchDisplayFrame(sketchViewport);
@@ -80,6 +89,7 @@ export function SketchEditingStage(props: SketchEditingStageProps) {
         data-sketch-view-span={sketchViewport.span}
         data-sketch-view-center={sketchViewport.center.join(',')}
         data-selected-sketch-entity-id={props.selectedSketchEntityId ?? ''}
+        data-dragging-sketch-entity-id={entityDrag.draggingEntityId ?? ''}
       >
         <div className="origin-widget" aria-label="Ориентация">
           <span className="axis-z">Z</span>
@@ -94,7 +104,12 @@ export function SketchEditingStage(props: SketchEditingStageProps) {
           model={sketchOverlay}
           enabled={sketchSelectionEnabled}
           selectedEntityId={props.selectedSketchEntityId}
+          draggingEntityId={entityDrag.draggingEntityId}
           onEntitySelect={props.onSketchEntitySelect}
+          onEntityDragStart={entityDrag.start}
+          onEntityDragMove={entityDrag.move}
+          onEntityDragEnd={entityDrag.end}
+          onEntityDragCancel={entityDrag.cancel}
         />
 
         <SketchLineInteractionLayer
