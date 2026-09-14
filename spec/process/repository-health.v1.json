@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Machine-readable repository-health policy for continuous ASA-CAD quality gates.",
+  "auditCadence": {
+    "sliceGate": "after-every-permanent-vertical-slice",
+    "fullAuditEveryAcceptedSlices": 3,
+    "milestoneBoundaryAudit": true,
+    "preIntegrationAudit": true,
+    "preReleaseAudit": true
+  },
+  "fileBudgets": [
+    {
+      "id": "agent-entry-status",
+      "description": "Agent entry/status document",
+      "targetBytes": 5120,
+      "hardBytes": 8192,
+      "lineReviewTarget": 220,
+      "exactFiles": ["AGENTS.md", "docs/STATUS.md"]
+    },
+    {
+      "id": "focused-narrative-spec",
+      "description": "Focused narrative specification",
+      "targetBytes": 12288,
+      "hardBytes": 20480,
+      "lineReviewTarget": 450,
+      "prefix": "docs/",
+      "extensions": [".md"]
+    },
+    {
+      "id": "command-handler",
+      "description": "Command handler",
+      "targetBytes": 10240,
+      "hardBytes": 16384,
+      "lineReviewTarget": 350,
+      "prefix": "src/application/commands/",
+      "extensions": [".ts"]
+    },
+    {
+      "id": "application-core",
+      "description": "Application/core controller",
+      "targetBytes": 12288,
+      "hardBytes": 20480,
+      "lineReviewTarget": 400,
+      "prefix": "src/application/",
+      "extensions": [".ts", ".tsx"]
+    },
+    {
+      "id": "public-contract",
+      "description": "Public contract/model",
+      "targetBytes": 12288,
+      "hardBytes": 20480,
+      "lineReviewTarget": 400,
+      "prefix": "src/contracts/",
+      "extensions": [".ts", ".tsx"]
+    },
+    {
+      "id": "runtime-adapter",
+      "description": "Runtime/adapter",
+      "targetBytes": 14336,
+      "hardBytes": 24576,
+      "lineReviewTarget": 450,
+      "prefix": "src/runtime/",
+      "extensions": [".ts"]
+    },
+    {
+      "id": "ui-controller",
+      "description": "UI/controller",
+      "targetBytes": 10240,
+      "hardBytes": 20480,
+      "lineReviewTarget": 350,
+      "prefix": "src/web/",
+      "extensions": [".ts", ".tsx"]
+    },
+    {
+      "id": "domain-css",
+      "description": "Domain CSS",
+      "targetBytes": 10240,
+      "hardBytes": 20480,
+      "lineReviewTarget": 450,
+      "prefix": "src/web/",
+      "extensions": [".css"]
+    },
+    {
+      "id": "browser-regression",
+      "description": "Focused browser regression",
+      "targetBytes": 8192,
+      "hardBytes": 14336,
+      "lineReviewTarget": 300,
+      "prefix": "tests/",
+      "suffix": "-browser.mjs"
+    }
+  ],
+  "frozenCeilings": {
+    "AGENTS.md": 7256,
+    "src/web/App.tsx": 18023,
+    "src/web/CadViewport.tsx": 27846,
+    "src/web/ParameterPanel.tsx": 12026,
+    "src/web/usePartSketchWorkspace.ts": 9468,
+    "src/web/usePartSelectionController.ts": 3227,
+    "src/web/useSketchEditingController.ts": 9586,
+    "src/web/useSketchDimensionController.ts": 3799,
+    "src/web/usePartFeatureController.ts": 9333,
+    "src/web/PartSketchWorkspaceModel.ts": 1227,
+    "src/web/PartSketchWorkspaceTypes.ts": 140,
+    "src/web/PartModelStage.tsx": 3423,
+    "src/web/SketchEditingStage.tsx": 6477,
+    "src/runtime/OpenCascadePartRuntime.ts": 20347,
+    "src/application/commands/SketchCommandHandlers.ts": 15384
+  },
+  "grandfatheredHardCeilings": {
+    "docs/UI_COMMAND_SPEC.md": 31166,
+    "docs/SYSTEM_SPEC.md": 17300,
+    "docs/DOCUMENT_TYPES.md": 14249,
+    "docs/ARCHITECTURE.md": 13446,
+    "tests/m2/part-browser.mjs": 18912,
+    "tests/m2/responsive-browser.mjs": 10684,
+    "tests/m3/direct-line-browser.mjs": 13550,
+    "tests/m3/direct-circle-browser.mjs": 10069,
+    "tests/m3/direct-arc-browser.mjs": 10692,
+    "tests/m3/direct-rectangle-browser.mjs": 10509
+  },
+  "repositoryHygiene": {
+    "excludedPrefixes": ["vendor/", "node_modules/", ".git/"],
+    "forbiddenBasenames": [".DS_Store", "Thumbs.db"],
+    "forbiddenSuffixes": [".bak", ".orig", ".rej", ".swp", ".swo", ".tmp", ".log"],
+    "forbiddenDirectoryNames": ["coverage", "playwright-report", "test-results", ".cache"],
+    "temporaryToolNamePattern": "(codemod|one[-_]?shot|review[-_]?fix|temporary[-_]?workflow)",
+    "firstPartyLargeFileReviewBytes": 524288,
+    "firstPartyHardFileBytes": 2097152
+  },
+  "changeFootprint": {
+    "targetHandwrittenFiles": 12,
+    "architectureReviewAboveHandwrittenFiles": 20,
+    "targetChangedLines": 800,
+    "architectureReviewAboveChangedLines": 1500,
+    "maxReviewCommits": 6
+  },
+  "auditOutcomes": {
+    "green": "No blocking violation; next feature slice may start.",
+    "yellow": "Debt is explicit and non-growing; it must be removed before the next milestone boundary and may not be worsened by later slices.",
+    "red": "Feature work is blocked until a focused maintenance gate returns repository health to green or explicitly accepted yellow."
+  }
+}

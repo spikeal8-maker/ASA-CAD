@@ -3,7 +3,8 @@
 This file defines **implementation order and acceptance boundaries only**.
 
 Current implementation state and immediate work: [`STATUS.md`](STATUS.md).  
-Product/end-state contract: [`SYSTEM_SPEC.md`](SYSTEM_SPEC.md).
+Product/end-state contract: [`SYSTEM_SPEC.md`](SYSTEM_SPEC.md).  
+Continuous audit/maintenance contract: [`DEVELOPMENT_QUALITY_GATES.md`](DEVELOPMENT_QUALITY_GATES.md).
 
 Do not turn this file into a commit diary. Milestone progress belongs in GitHub issues and `STATUS.md`.
 
@@ -16,9 +17,20 @@ Every milestone preserves:
 - saved-document compatibility or explicit migrations;
 - protected Part workflow;
 - protected Assembly workflow after M4A;
-- intentional/pinned vendor updates only.
+- intentional/pinned vendor updates only;
+- continuous repository-health gates and non-growing architecture debt.
 
 Permanent UI is ASA-owned. Toubkal visible UI is diagnostic/reference only.
+
+## Continuous quality gate
+
+Every permanent vertical slice ends with the Slice Quality Gate from `DEVELOPMENT_QUALITY_GATES.md`.
+
+Every three accepted slices and every milestone boundary, whichever comes first, require a Full Repository Health Audit.
+
+A RED audit blocks feature work. A YELLOW item must be explicit, frozen/non-growing and removed before the next milestone boundary. File-budget ceilings may not be raised merely to make a feature merge.
+
+The definition of done for every milestone therefore includes both product behavior and repository maintainability.
 
 ---
 
@@ -135,7 +147,24 @@ First complete sketcher foundation:
 
 Acceptance: a real constrained sketch remains editable/recomputable after save/reopen and drives Part features.
 
-**Gate B acceptance:** accepted M2 program + M2O + M3.
+### M3X — ASA Lab host-contract preflight
+Start before broad M4 expansion so M5 is not the first real cross-repository integration.
+
+Required compatibility evidence:
+- shared project/module identity;
+- `CadDocument` envelope/schema version;
+- load/save payload semantics;
+- `baseRevision` optimistic concurrency;
+- `mutationId` retry/idempotency semantics;
+- `409` conflict behavior;
+- snapshot/version semantics;
+- same-origin session assumptions;
+- unsupported-version failure;
+- golden fixtures/contract tests usable by both ASA-CAD and `asa-lab`.
+
+Acceptance: ASA-CAD and ASA Lab independently pass the same contract fixtures. This lane does not deploy M5 yet; it removes schema/API drift before Part Design and Assembly make the payload harder to change.
+
+**Gate B acceptance:** accepted M2 program + M2O + M3 + green M3X contract preflight.
 
 ---
 
@@ -146,7 +175,13 @@ Expand exact B-Rep Part features and persistent reference behavior.
 
 Priority families include extrude/cut/revolve/hole/fillet/chamfer/shell/rib/draft/patterns/sweep/loft as deliberately promoted from the registry.
 
-Acceptance includes a broad StableRef/topology-change corpus, rebuild diagnostics and compatible save/reopen.
+Acceptance includes:
+- broad StableRef/topology-change corpus;
+- rebuild diagnostics;
+- compatible save/reopen;
+- large-document/history/recompute regression;
+- no growth of frozen M3 hotspots;
+- green Full Repository Health Audit before M4 closes.
 
 ### M4A — Assembly — #11
 Bottom-up and top-down Assembly:
@@ -163,6 +198,8 @@ Acceptance: submitted/reopened Assembly resolves the exact pinned component vers
 ### M4B — Standalone beta hardening — #7
 Versioned `asa-cad-web` image, compatibility corpus, recovery, cleanup, browser/device performance/capability matrix.
 
+Acceptance also requires a pre-release Full Repository Health Audit with no RED findings.
+
 **Gate C acceptance:** M4 + M4A + M4B.
 
 ---
@@ -172,11 +209,15 @@ Versioned `asa-cad-web` image, compatibility corpus, recovery, cleanup, browser/
 ### M5 — ASA Lab integration — #8
 Deploy pinned `asa-cad-web` behind `/cad/*` and connect existing ASA Lab Project Core/classes/assignments/versions/submission/teacher review.
 
+Entry prerequisite: M3X cross-repository contract preflight remains green against the current ASA Lab API/schema.
+
 Acceptance:
 - no duplicate CAD persistence service;
 - unrelated ASA pages do not fetch CAD/WASM;
 - same native document opens across supported devices;
-- geometry computation remains client-side.
+- geometry computation remains client-side;
+- `baseRevision`/`mutationId` and `409` behavior pass real integration E2E;
+- cross-device recovery/version/submission semantics pass against ASA Lab staging.
 
 ---
 
@@ -197,7 +238,7 @@ Structured BOM/specification and linked engineering text documents.
 ### M7+ — Advanced functions — #9
 Promote advanced commands deliberately from the maintained KOMPAS inventory: surfaces, sheet metal, advanced mates/drawing symbols, variables/templates/exchange and other approved workflows.
 
-No automatic parity chase. Each promotion is a normal vertical slice with contract, UI metadata, fixture and regression.
+No automatic parity chase. Each promotion is a normal vertical slice with contract, UI metadata, fixture, regression and Slice Quality Gate.
 
 ---
 
@@ -214,9 +255,11 @@ ASA command/API
 -> deterministic fixture
 -> affected browser/kernel regression
 -> save/reopen compatibility where applicable
+-> Slice Quality Gate
+-> cleanup/refactor if required
 -> issue/STATUS update
 ```
 
 ## Current work
 
-Do not infer current work from milestone order. Read [`STATUS.md`](STATUS.md) and the active GitHub issue. For M2O history/follow-ups, use [`M2O_OPTIMIZATION_GATE.md`](M2O_OPTIMIZATION_GATE.md).
+Do not infer current work from milestone order. Read [`STATUS.md`](STATUS.md) and the active GitHub issue. For M2O history/follow-ups, use [`M2O_OPTIMIZATION_GATE.md`](M2O_OPTIMIZATION_GATE.md). Current maintenance gates remain authoritative until `STATUS.md` marks them accepted.

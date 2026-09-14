@@ -8,7 +8,18 @@ Describe one product vertical slice or one focused maintenance change. Do not co
 - [ ] I did not move CAD state into UI-only code or bypass `CadApplication` history.
 - [ ] Desktop/mobile still share typed command/action contracts where applicable.
 - [ ] Sketch interaction reuses the shared Sketch input substrate; no copied mouse/touch/pan/pinch policy.
-- [ ] Changed hand-written files remain within `tests/process/file-budgets.mjs`; I did not raise a frozen ceiling to make CI pass.
+- [ ] Changed hand-written files remain within `spec/process/repository-health.v1.json`; I did not raise a frozen ceiling to make CI pass.
+
+## Slice Quality Gate
+
+Result: **GREEN / YELLOW / RED**
+
+- [ ] Repository-hygiene and file-budget checks are green.
+- [ ] No new god-object, duplicate implementation path or temporary/generated artifact remains.
+- [ ] Any file above target is non-growing or was split in this change.
+- [ ] If YELLOW, the debt is explicit, frozen and linked to a cleanup owner before the next milestone boundary.
+- [ ] RED findings are resolved before merge.
+- [ ] If this is the third accepted slice since the last full audit or a milestone boundary, the Full Repository Health Audit was performed.
 
 ## Review hygiene
 
@@ -22,12 +33,13 @@ Describe one product vertical slice or one focused maintenance change. Do not co
 
 List the exact checks run and their result.
 
-- [ ] file-budget / PR-hygiene checks
+- [ ] `npm run test:process`
 - [ ] required shell/type checks
 - [ ] affected unit/architecture tests
 - [ ] affected browser tests
 - [ ] Docker/release regression when runtime/UI behavior changed
 - [ ] protected Part workflow remains green when applicable
+- [ ] ASA Lab shared contract fixtures remain green when the host/persistence boundary changed
 
 ## Status sync
 
