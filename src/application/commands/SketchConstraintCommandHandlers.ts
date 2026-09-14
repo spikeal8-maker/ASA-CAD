@@ -27,10 +27,12 @@ export const SKETCH_CONSTRAINT_COMMAND_IDS = [
 
 export type SketchConstraintCommandId = typeof SKETCH_CONSTRAINT_COMMAND_IDS[number];
 
+type CadOrientationConstraintType = 'horizontal' | 'vertical';
+
 export const sketchConstraintCommandHandlers = {
   'constraint.horizontal': defineSketchCommandHandler<'constraint.horizontal'>({
     availability: requireSketchAvailability,
-    execute: (part, command) => addUnaryConstraint(
+    execute: (part, command) => addLineOrientationConstraint(
       part,
       command.payload.sketchId,
       'horizontal',
@@ -40,7 +42,7 @@ export const sketchConstraintCommandHandlers = {
 
   'constraint.vertical': defineSketchCommandHandler<'constraint.vertical'>({
     availability: requireSketchAvailability,
-    execute: (part, command) => addUnaryConstraint(
+    execute: (part, command) => addLineOrientationConstraint(
       part,
       command.payload.sketchId,
       'vertical',
@@ -68,25 +70,46 @@ export const sketchConstraintCommandHandlers = {
   }),
 } satisfies SketchCommandHandlerMap<SketchConstraintCommandId>;
 
+function addLineOrientationConstraint(
+  part: CadPartDocument,
+  sketchId: CadSketchId,
+  type: CadOrientationConstraintType,
+  entityId: CadSketchEntityId,
+): CadCommandResult {
+  const sketch = requireSketch(part, sketchId);
+  const entity = requireSketchEntity(sketch, entityId);
+  if (entity.type !== 'line') {
+    throw new Error(`${type === 'horizontal' ? 'Horizontal' : 'Vertical'} constraint requires a Line entity`);
+  }
+
+  const sketchConstraintIds = new Set(sketch.constraintIds);
+  const unaryForEntity = part.constraints.filter((constraint) => (
+    sketchConstraintIds.has(constraint.id)
+    && constraint.entityIds.length === 1
+    && constraint.entityIds[0] === entityId
+  ));
+  if (unaryForEntity.some((constraint) => constraint.type === type)) {
+    throw new Error(`${type === 'horizontal' ? 'Horizontal' : 'Vertical'} constraint already exists for entity ${entityId}`);
+  }
+
+  const opposite: CadOrientationConstraintType = type === 'horizontal' ? 'vertical' : 'horizontal';
+  if (unaryForEntity.some((constraint) => constraint.type === opposite)) {
+    throw new Error(`Cannot apply ${type} constraint: entity ${entityId} already has ${opposite} constraint`);
+  }
+
+  const id = createCadId<CadConstraintId>('constraint');
+  const constraint: CadConstraint = { id, type, entityIds: [entityId] };
+  return persistConstraint(part, sketchId, constraint);
+}
+
 function addUnaryConstraint(
   part: CadPartDocument,
   sketchId: CadSketchId,
-  type: 'horizontal' | 'vertical' | 'fixed',
+  type: 'fixed',
   entityId: CadSketchEntityId,
 ): CadCommandResult {
   const id = createCadId<CadConstraintId>('constraint');
-  let constraint: CadConstraint;
-  switch (type) {
-    case 'horizontal':
-      constraint = { id, type, entityIds: [entityId] };
-      break;
-    case 'vertical':
-      constraint = { id, type, entityIds: [entityId] };
-      break;
-    case 'fixed':
-      constraint = { id, type, entityIds: [entityId] };
-      break;
-  }
+  const constraint: CadConstraint = { id, type, entityIds: [entityId] };
   return persistConstraint(part, sketchId, constraint);
 }
 

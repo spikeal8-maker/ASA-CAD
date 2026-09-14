@@ -42,6 +42,8 @@ assert.match(app, /case 'view\.panLeft':/, 'camera-only pan remains an interacti
 for (const ribbonActionId of [
   'sketch.rectangle',
   'sketch.circle',
+  'constraint.horizontal',
+  'constraint.vertical',
   'sketch.finish',
   'part.sketch.create',
   'part.extrude',
@@ -66,6 +68,8 @@ assert.match(shellBottom, /props\.activePanel === 'tools'/, 'mobile bottom bar m
 assert.match(shellBottom, />⌘<span>Инструменты<\/span><\/button>/, 'mobile bottom bar must expose Tools instead of desktop delegation');
 assert.match(mobileTools, /import type \{ CadUiAction \}/, 'mobile Tools presentation must consume typed CadUiAction');
 assert.match(mobileTools, /props\.getAction\(tool\.id\)/, 'mobile Tool buttons must resolve shared action objects');
+assert.match(mobileTools, /id: 'constraint\.horizontal'/, 'mobile Sketch tools must expose Horizontal through CadUiAction');
+assert.match(mobileTools, /id: 'constraint\.vertical'/, 'mobile Sketch tools must expose Vertical through CadUiAction');
 assert.doesNotMatch(mobileTools, /querySelector|querySelectorAll|\.click\(\)/, 'mobile Tools must never discover/click desktop DOM');
 
-console.log('M2O O4 action surfaces PASS (App action owner + extracted shell presentation + mobile tools)');
+console.log('M2O O4 action surfaces PASS (App action owner + H/V ribbon/mobile surfaces + extracted shell presentation)');
