@@ -11,9 +11,11 @@ Last synchronized: 2026-09-14.
 **M3 Parametric Sketch (#5): ACTIVE.**  
 **M3M #57: M3 resume gate (001..008) COMPLETE; M3M-009 remains pre-M4.**
 
-Accepted M3 slices: M3.1 solve/overlay, M3.2 Line, M3.3 Circle, M3.4 Arc, M3.5 Rectangle, M3.6A stable-ID selection/delete, **M3.6B selected stable-ID rigid drag/translate (#75)**.
+Accepted M3 slices: M3.1 solve/overlay, M3.2 Line, M3.3 Circle, M3.4 Arc, M3.5 Rectangle, M3.6A stable-ID selection/delete, M3.6B selected stable-ID rigid drag/translate (#75), **M3.7A selected-Line Horizontal / Vertical constraints (#77)**.
 
 M3.6B is merged to `main` at `57c5e613`: typed `sketch.entity.translate`, transient PlaneGCS drag preview, fixed-entity guard, one pointer-up history commit, Esc cancel, Undo/Redo, Save/Open, and desktop/touch Line/Circle/Arc/Rectangle-edge regressions are accepted. OpenCascade stays lazy during Sketch drag.
+
+M3.7A is merged to `main` at `1c5606cc`: `constraint.horizontal` / `constraint.vertical` are product actions for a selected Line through the shared desktop/mobile/search `CadUiAction` model. Application semantics reject non-Line targets, duplicate same-type constraints and direct H-vs-V conflict. Persisted constraint intent reconstructs the same solved PlaneGCS result after Undo/Redo and Save/Open; desktop Horizontal and touch Vertical browser regressions are accepted without loading OpenCascade.
 
 ## Maintenance gate #57
 
@@ -43,17 +45,17 @@ No RED blocker remains for M3. Existing debt is frozen/non-growing and has expli
 - shared `SketchInteractionSurface`; stable-ID selection/drag stays in separate Sketch interaction layers;
 - M3 browser infrastructure centralized in `M3BrowserHarness.mjs` while tool assertions remain separate;
 - client-side lazy PlaneGCS/OpenCascade; no persisted OCC/Three/WASM objects;
-- protected Part and M3 Line/Circle/Arc/Rectangle/selection-delete/rigid-drag desktop+touch regressions are green.
+- protected Part and M3 Line/Circle/Arc/Rectangle/selection-delete/rigid-drag/H-V-constraint desktop+touch regressions are green.
 
 ## Immediate next work
 
-Start **M3.7A — selected-Line Horizontal / Vertical constraints** as a new clean slice from current `main`:
-- expose existing typed `constraint.horizontal` and `constraint.vertical` through ASA-owned shared desktop/mobile actions;
-- apply only to an already selected Line;
-- harden applicability, duplicate rejection and direct Horizontal-vs-Vertical conflict behavior before promoting registry entries from `planned`;
-- one action creates one normal application-history mutation; PlaneGCS overlay/diagnostics, Undo/Redo and Save/Open must preserve the same persisted constraint intent;
-- do not mix Coincident, multi-entity constraints, Fixed, endpoint reshape, snapping, trim/extend, or broad M4 work into this slice.
+Start **M3.7B — Fixed constraint with solved-geometry freeze semantics** as a new clean slice from current `main`:
+- keep `constraint.fixed` hidden/planned until the persistence contract is explicit and browser-proven;
+- Fixed must freeze the geometry the user currently sees after PlaneGCS solving, never stale pre-solve coordinates from the persisted entity DTO;
+- define one atomic history mutation that persists the solved geometry required for the selected entity and creates the Fixed constraint without an intermediate inconsistent document state;
+- reject duplicate Fixed deterministically and preserve the selected stable entity ID;
+- Undo/Redo and Save/Open must restore the exact same frozen geometry + Fixed intent;
+- dragging a fixed entity must remain rejected at both interaction and application boundaries;
+- cover Line first only if that is the narrowest safe vertical slice; do not broaden to Coincident, multi-entity constraints, endpoint reshape, snapping, trim/extend, dimensions or M4 work unless required by the Fixed contract.
 
-**M3.7B Fixed is intentionally separate.** `Fixed` must freeze the geometry the user currently sees after solving, not stale pre-solve persisted coordinates. Define that solved-geometry freeze/persistence contract before exposing `constraint.fixed` in shared UI.
-
-M3.7A must explicitly test that solver overlay and persisted constraint intent cannot silently diverge. Do not start broad M4 before M3M-009.
+M3.7B must explicitly prove that solved overlay, persisted entity geometry and Fixed intent cannot silently diverge. Do not start broad M4 before M3M-009.
