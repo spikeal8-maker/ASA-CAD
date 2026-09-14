@@ -47,11 +47,13 @@ No RED blocker remains for M3. Existing debt is frozen/non-growing and has expli
 
 ## Immediate next work
 
-Start **M3.7A — selected-entity unary constraints** as a new clean slice from current `main`:
-- expose existing typed `constraint.horizontal`, `constraint.vertical`, and `constraint.fixed` through ASA-owned shared desktop/mobile actions;
-- Horizontal/Vertical apply only to a selected Line; Fixed applies to selected Line/Circle/Arc;
-- harden duplicate/conflict/applicability behavior before promoting registry entries from `planned`;
-- solve/diagnostics must remain transient until one typed constraint command commits; Undo/Redo and Save/Open must preserve intent;
-- do not mix coincident, multi-entity constraints, endpoint reshape, snapping, trim/extend, or broad M4 work into this slice.
+Start **M3.7A — selected-Line Horizontal / Vertical constraints** as a new clean slice from current `main`:
+- expose existing typed `constraint.horizontal` and `constraint.vertical` through ASA-owned shared desktop/mobile actions;
+- apply only to an already selected Line;
+- harden applicability, duplicate rejection and direct Horizontal-vs-Vertical conflict behavior before promoting registry entries from `planned`;
+- one action creates one normal application-history mutation; PlaneGCS overlay/diagnostics, Undo/Redo and Save/Open must preserve the same persisted constraint intent;
+- do not mix Coincident, multi-entity constraints, Fixed, endpoint reshape, snapping, trim/extend, or broad M4 work into this slice.
 
-M3.7A must explicitly test that solver preview/diagnostics and persisted constraint intent cannot silently diverge. Do not start broad M4 before M3M-009.
+**M3.7B Fixed is intentionally separate.** `Fixed` must freeze the geometry the user currently sees after solving, not stale pre-solve persisted coordinates. Define that solved-geometry freeze/persistence contract before exposing `constraint.fixed` in shared UI.
+
+M3.7A must explicitly test that solver overlay and persisted constraint intent cannot silently diverge. Do not start broad M4 before M3M-009.
