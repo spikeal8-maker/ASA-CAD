@@ -18,12 +18,24 @@
   pointer-events: none;
 }
 
+.cad-sketch-selection-highlight.dragging {
+  stroke-dasharray: 5 3;
+}
+
 .cad-sketch-selection-hit-target {
   fill: none;
   stroke: transparent;
   stroke-width: 9px;
   cursor: pointer;
   pointer-events: stroke;
+}
+
+.cad-sketch-selection-layer[data-selected-sketch-entity-id]:not([data-selected-sketch-entity-id=""]) .cad-sketch-selection-hit-target {
+  cursor: grab;
+}
+
+.cad-sketch-selection-layer[data-dragging-sketch-entity-id]:not([data-dragging-sketch-entity-id=""]) .cad-sketch-selection-hit-target {
+  cursor: grabbing;
 }
 
 .cad-sketch-selection-layer[data-selection-enabled="false"] .cad-sketch-selection-hit-target {
