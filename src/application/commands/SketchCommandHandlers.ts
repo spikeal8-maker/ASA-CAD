@@ -55,6 +55,7 @@ export function getSketchGrowthCommandAvailability(
       return sketchGeometryCommandHandlers[id].availability(part);
 
     case 'sketch.entity.delete':
+    case 'sketch.entity.translate':
     case 'sketch.finish':
       return sketchEditCommandHandlers[id].availability(part);
 
@@ -89,6 +90,8 @@ export function applySketchGrowthCommand(
 
     case 'sketch.entity.delete':
       return sketchEditCommandHandlers['sketch.entity.delete'].execute(part, command);
+    case 'sketch.entity.translate':
+      return sketchEditCommandHandlers['sketch.entity.translate'].execute(part, command);
     case 'sketch.finish':
       return sketchEditCommandHandlers['sketch.finish'].execute(part, command);
 
