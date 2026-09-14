@@ -18,10 +18,10 @@ assert.doesNotMatch(handlers, /PlaneGCS|OpenCascade|vendor\//, 'constraint comma
 assert.match(controller, /useSketchConstraintController/, 'web constraint behavior must have a focused controller');
 assert.match(controller, /selectedEntity\?\.type === 'line'/, 'shared UI enablement must require selected Line');
 assert.match(controller, /id: type === 'horizontal' \? 'constraint\.horizontal' : 'constraint\.vertical'/, 'controller must execute typed H/V commands only');
-assert.doesNotMatch(controller, /constraint\.fixed|constraint\.coincident/, 'M3.7A controller must not absorb later constraint families');
+assert.doesNotMatch(controller, /constraint\.coincident/, 'focused unary constraint controller must not absorb Coincident');
 
 assert.match(workspace, /useSketchConstraintController/, 'Part/Sketch facade must compose the focused constraint controller');
-assert.match(workspace, /canApplyOrientationConstraint: constraints\.canApplyOrientationConstraint/, 'workspace facade must expose shared H/V enablement');
+assert.match(workspace, /\.\.\.constraints/, 'workspace facade must compose the focused constraint controller without per-command growth');
 assert.match(actions, /'constraint\.horizontal': binding/, 'shared CadUiAction map must expose Horizontal');
 assert.match(actions, /'constraint\.vertical': binding/, 'shared CadUiAction map must expose Vertical');
 assert.match(actions, /canApplyOrientationConstraint/, 'desktop/mobile/search must share one H/V enablement contract');
@@ -38,8 +38,4 @@ for (const id of ['constraint.horizontal', 'constraint.vertical']) {
   assert.equal(command.milestone, 'M3.7A');
   assert.equal(command.backendCommand, id);
 }
-const fixed = registry.commands.find((item) => item.id === 'constraint.fixed');
-assert.ok(fixed);
-assert.equal(fixed.status, 'planned', 'Fixed must remain planned until solved-geometry freeze semantics are defined');
-
 console.log('ASA-CAD M3.7A orientation boundary PASS (focused owner + Line-only semantics + shared actions + Fixed remains separate)');

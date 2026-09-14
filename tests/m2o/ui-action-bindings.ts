@@ -28,6 +28,7 @@ const handlers: M2CadUiActionHandlers = {
   deleteSketchEntity: call('deleteSketchEntity'),
   horizontalConstraint: call('horizontalConstraint'),
   verticalConstraint: call('verticalConstraint'),
+  fixedConstraint: call('fixedConstraint'),
   finishSketch: call('finishSketch'),
   extrude: call('extrude'),
   cutExtrude: call('cutExtrude'),
@@ -49,6 +50,7 @@ const bindings = createM2CadUiActionBindings(handlers, {
   hasSketch: true,
   hasSketchEntitySelection: true,
   canApplyOrientationConstraint: true,
+  canApplyFixedConstraint: true,
   canExtrude: false,
   canCutExtrude: true,
   canFillet: false,
@@ -61,6 +63,7 @@ assert.equal(actions.get('system.redo')?.enabled, true);
 assert.equal(actions.get('sketch.rectangle')?.enabled, true);
 assert.equal(actions.get('constraint.horizontal')?.enabled, true);
 assert.equal(actions.get('constraint.vertical')?.enabled, true);
+assert.equal(actions.get('constraint.fixed')?.enabled, true);
 assert.equal(actions.get('part.extrude')?.enabled, false);
 assert.equal(actions.get('part.cutExtrude')?.enabled, true);
 assert.equal(actions.get('part.fillet')?.enabled, false);
@@ -68,9 +71,10 @@ assert.equal(actions.get('part.fillet')?.enabled, false);
 assert.equal(await executeCadUiAction(actions.get('system.redo')!), true);
 assert.equal(await executeCadUiAction(actions.get('constraint.horizontal')!), true);
 assert.equal(await executeCadUiAction(actions.get('constraint.vertical')!), true);
+assert.equal(await executeCadUiAction(actions.get('constraint.fixed')!), true);
 assert.equal(await executeCadUiAction(actions.get('part.cutExtrude')!), true);
 assert.equal(await executeCadUiAction(actions.get('part.extrude')!), false);
-assert.deepEqual(calls, ['redo', 'horizontalConstraint', 'verticalConstraint', 'cutExtrude']);
+assert.deepEqual(calls, ['redo', 'horizontalConstraint', 'verticalConstraint', 'fixedConstraint', 'cutExtrude']);
 
 const disabledOrientation = indexCadUiActions(createCadUiActions(definitions, createM2CadUiActionBindings(handlers, {
   canUndo: false,
@@ -78,6 +82,7 @@ const disabledOrientation = indexCadUiActions(createCadUiActions(definitions, cr
   hasSketch: true,
   hasSketchEntitySelection: false,
   canApplyOrientationConstraint: false,
+  canApplyFixedConstraint: false,
   canExtrude: false,
   canCutExtrude: false,
   canFillet: false,
@@ -85,6 +90,8 @@ const disabledOrientation = indexCadUiActions(createCadUiActions(definitions, cr
 assert.equal(disabledOrientation.get('constraint.horizontal')?.enabled, false);
 assert.equal(disabledOrientation.get('constraint.horizontal')?.disabledReason, 'Выберите отрезок эскиза');
 assert.equal(disabledOrientation.get('constraint.vertical')?.enabled, false);
+assert.equal(disabledOrientation.get('constraint.fixed')?.enabled, false);
+assert.equal(disabledOrientation.get('constraint.fixed')?.disabledReason, 'Выберите незакреплённый отрезок эскиза');
 
 assert.equal(cadUiActionIdForShortcut('system.save'), 'system.save');
 assert.equal(cadUiActionIdForShortcut('system.rebuild'), 'system.rebuild');

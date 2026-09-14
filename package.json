@@ -59,7 +59,7 @@
     "test:m3:foundation": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m3/direct-line-foundation.ts && node tests/m3/direct-line-boundary.mjs && node tests/m3/sketch-interaction-substrate.mjs && node tests/m3/browser-harness-boundary.mjs",
     "test:m3:entity-drag": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m3/sketch-entity-translate.ts && node tests/m3/sketch-entity-drag-boundary.mjs",
     "test:m3:orientation-constraints": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m3/sketch-orientation-constraints.ts && node tests/m3/sketch-orientation-constraints-boundary.mjs",
-    "test:m3": "npm run test:m3:foundation && npm run test:m3:circle && npm run test:m3:arc-contract && npm run test:m3:arc-direct && npm run test:m3:rectangle-direct && npm run test:m3:selection-delete && npm run test:m3:entity-drag && npm run test:m3:orientation-constraints",
+    "test:m3": "npm run test:m3:foundation && npm run test:m3:circle && npm run test:m3:arc-contract && npm run test:m3:arc-direct && npm run test:m3:rectangle-direct && npm run test:m3:selection-delete && npm run test:m3:entity-drag && npm run test:m3:orientation-constraints && npm run test:m3:fixed-freeze",
     "test:asa": "npm run test:process && npm run test:m0 && npm run test:m1 && npm run test:m1b && npm run test:m2:shell && npm run test:m2o && npm run test:m3",
     "test": "npm run test:asa",
     "check:vendor": "npm run build:vendor && npm run lint:vendor && npm run test:vendor",
@@ -71,7 +71,8 @@
     "test:m3:arc-contract": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m3/arc-contract.ts && node tests/m3/arc-contract-boundary.mjs",
     "test:m3:arc-direct": "node tests/m3/direct-arc-boundary.mjs",
     "test:m3:rectangle-direct": "node tests/m3/direct-rectangle-boundary.mjs",
-    "test:m3:selection-delete": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m3/sketch-entity-delete.ts && node tests/m3/sketch-selection-delete-boundary.mjs"
+    "test:m3:selection-delete": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m3/sketch-entity-delete.ts && node tests/m3/sketch-selection-delete-boundary.mjs",
+    "test:m3:fixed-freeze": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m3/sketch-fixed-freeze.ts && node tests/m3/sketch-fixed-freeze-boundary.mjs"
   },
   "engines": {
     "node": ">=20.19.0",

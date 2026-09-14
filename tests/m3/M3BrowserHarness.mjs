@@ -107,7 +107,7 @@ export async function openFixture(browser, fixture, entityCount) {
 }
 
 export async function saveLocalDocument(page) {
-  await page.locator('[data-command-id="system.save"]').click();
+  await page.locator('.global-actions [data-command-id="system.save"]').click();
   await page.getByText('Сохранено локально', { exact: true }).waitFor();
   const saved = await page.evaluate(() => localStorage.getItem('asa-cad-m2-shell-document'));
   assert.ok(saved, 'document was not saved to local host');

@@ -59,7 +59,7 @@ export function App(props: CadProjectPersistenceOverrides) {
   });
   const {
     activeWorkspace, setActiveWorkspace, activeCommand, activeSketchId, selectedSketchEntityId,
-    canApplyOrientationConstraint, applyHorizontalConstraint, applyVerticalConstraint,
+    canApplyOrientationConstraint, canApplyFixedConstraint, applyHorizontalConstraint, applyVerticalConstraint, applyFixedConstraint,
     selectionMode, selectedPick, selectedBodyId, sketchPlane, setSketchPlane,
     rectangleWidth, setRectangleWidth, rectangleHeight, setRectangleHeight,
     circleDiameter, setCircleDiameter, extrudeDistance, setExtrudeDistance,
@@ -150,7 +150,7 @@ export function App(props: CadProjectPersistenceOverrides) {
       open: openLocal, save: saveLocal, undo, redo, rebuild, createSketch: beginCreateSketch,
       line: beginLine, rectangle: beginRectangle, circle: beginCircle, arc: beginArc,
       deleteSketchEntity: deleteSelectedSketchEntity,
-      horizontalConstraint: applyHorizontalConstraint, verticalConstraint: applyVerticalConstraint,
+      horizontalConstraint: applyHorizontalConstraint, verticalConstraint: applyVerticalConstraint, fixedConstraint: applyFixedConstraint,
       finishSketch, extrude: beginExtrude, cutExtrude: beginCut, fillet: beginFillet,
       fit: () => requestView('Показать всё'), front: () => requestView('Спереди'),
       back: () => requestView('Сзади'), top: () => requestView('Сверху'), bottom: () => requestView('Снизу'),
@@ -158,7 +158,7 @@ export function App(props: CadProjectPersistenceOverrides) {
     },
     {
       canUndo: state.canUndo, canRedo: state.canRedo, hasSketch: Boolean(sketch),
-      hasSketchEntitySelection: Boolean(selectedSketchEntityId), canApplyOrientationConstraint,
+      hasSketchEntitySelection: Boolean(selectedSketchEntityId), canApplyOrientationConstraint, canApplyFixedConstraint,
       canExtrude, canCutExtrude: canCut, canFillet,
     },
   );

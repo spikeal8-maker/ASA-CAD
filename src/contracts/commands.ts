@@ -94,6 +94,12 @@ export interface CadCommandMap {
   'constraint.fixed': {
     sketchId: CadSketchId;
     entityId: CadSketchEntityId;
+    /** Serializable solver result that becomes persisted authority atomically with Fixed. M3.7B starts Line-only. */
+    frozenGeometry: {
+      type: 'line';
+      from: readonly [number, number];
+      to: readonly [number, number];
+    };
   };
   'dimension.linear': {
     sketchId: CadSketchId;

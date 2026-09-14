@@ -87,12 +87,8 @@ const invalid = await app.execute({
 assert.equal(invalid.ok, false, 'zero-sweep Arc command must be rejected');
 assert.equal(serializeCadDocument(app.getDocument()), beforeInvalid, 'failed Arc command must roll back atomically');
 
-const fixed = await app.execute({
-  id: 'constraint.fixed',
-  payload: { sketchId, entityId: arcId },
-});
-assert.equal(fixed.ok, true, fixed.error?.message);
-
+// M3.7B intentionally exposes Fixed for Line only. Arc keeps its own solver
+// readback contract independent from that later product slice.
 const solver = new PlaneGCSSketchSolverRuntime();
 await solver.init();
 const solved = solver.solve(app.getDocument(), sketchId);
