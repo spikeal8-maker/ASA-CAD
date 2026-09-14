@@ -2,7 +2,7 @@
 
 Short repository state for humans and coding agents. Product intent: `SYSTEM_SPEC.md`; architecture: `ARCHITECTURE.md`; implementation order: `ROADMAP.md`; detailed milestone history: GitHub issues.
 
-Last synchronized: 2026-09-13.
+Last synchronized: 2026-09-14.
 
 ## Current phase
 
@@ -20,11 +20,11 @@ M3.6B rigid drag draft PR #56 is closed and discarded. Restart only after M3M-00
 1. M3M-001 — file-size budgets + numeric agent rules — DONE (#58);
 2. M3M-002 — focused Part/Sketch workspace owners — DONE (#60);
 3. M3M-003 — `SketchEditingStage` extracted from `PartModelStage` — DONE (#61);
-4. **M3M-004 — shell presentation extracted from `App.tsx`; App ratcheted to 18,023 B — DONE (this change);**
-5. **M3M-005 — shell CSS split into focused domain files; monolithic `styles.css` removed — DONE (this change);**
-6. **M3M-006 — split Sketch command handlers by geometry/edit/constraint/dimension ownership — NEXT;**
-7. M3M-007 — shared M3 browser-test harness;
-8. M3M-008 — reduce mandatory agent-document context and retire stale workflow prose;
+4. M3M-004 — shell presentation extracted from `App.tsx`; App ratcheted to 18,023 B — DONE (#62);
+5. M3M-005 — shell CSS split into focused domain files; monolithic `styles.css` removed — DONE (#63);
+6. **M3M-006 — Sketch command handlers split into geometry/edit/constraint/dimension owners; facade reduced below target — DONE (this change);**
+7. **M3M-007 — shared M3 browser-test harness — NEXT;**
+8. M3M-008 — mandatory agent context reduced; stale/duplicate workflow/spec prose retired — DONE (#64);
 9. M3M-009 — freeze/decompose `CadViewport.tsx` / `OpenCascadePartRuntime.ts` before broad M4.
 
 No new M3 feature slice may merge until M3M-001..008 are accepted. M3M-009 blocks broad M4 expansion.
@@ -41,11 +41,12 @@ Protected boundaries:
 - `SketchEditingStage` owns active 2D Sketch viewport state, solve overlay, stable-ID selection and direct tool layers;
 - `PartModelStage` owns only Part/B-Rep presentation and mode delegation;
 - `App.tsx` owns orchestration; shell/ribbon/panel/status/dialog presentation lives in focused `CadShell*` modules;
+- Sketch commands use focused geometry/edit/constraint/dimension owners behind the stable `SketchCommandHandlers` facade;
 - Sketch SVG overlay remains separate from B-Rep/Three;
 - shared `SketchInteractionSurface`;
 - client-side lazy OpenCascade/PlaneGCS;
 - centralized application history/Undo/Redo;
-- protected `main`, file budgets, PR hygiene and separate M2/M3 browser lanes.
+- protected `main`, file budgets, repository hygiene, PR hygiene and separate M2/M3 browser lanes.
 
 ## Protected workflows
 
@@ -65,4 +66,4 @@ M3 regressions protect Line/Circle/Arc/Rectangle and selection/delete on desktop
 
 ## Immediate next work
 
-Work **only on #57 M3M-006** after this change merges. Split Sketch command handlers into focused geometry/edit/constraint/dimension owners before broader constraints. Do not restart M3.6B.
+Work **only on #57 M3M-007** after this change merges. Extract the repeated M3 browser boot/touch/save/open helpers into a shared harness without weakening the direct Line/Circle/Arc/Rectangle/selection-delete regressions. Do not restart M3.6B yet.

@@ -2,7 +2,12 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const application = readFileSync('src/application/CadApplicationImpl.ts', 'utf8');
-const handlers = readFileSync('src/application/commands/SketchCommandHandlers.ts', 'utf8');
+const facade = readFileSync('src/application/commands/SketchCommandHandlers.ts', 'utf8');
+const shared = readFileSync('src/application/commands/SketchCommandHandlerShared.ts', 'utf8');
+const geometry = readFileSync('src/application/commands/SketchGeometryCommandHandlers.ts', 'utf8');
+const edit = readFileSync('src/application/commands/SketchEditCommandHandlers.ts', 'utf8');
+const constraints = readFileSync('src/application/commands/SketchConstraintCommandHandlers.ts', 'utf8');
+const dimensions = readFileSync('src/application/commands/SketchDimensionCommandHandlers.ts', 'utf8');
 
 assert.match(application, /isSketchGrowthCommandId\(id\)/, 'availability must delegate M3-growth commands to the handler registry');
 assert.match(application, /applySketchGrowthCommand\(part, command\)/, 'execution must delegate M3-growth commands to the handler registry');
@@ -16,6 +21,8 @@ for (const legacyCase of [
   "case 'sketch.line':",
   "case 'sketch.rectangle':",
   "case 'sketch.circle':",
+  "case 'sketch.arc':",
+  "case 'sketch.entity.delete':",
   "case 'sketch.finish':",
   "case 'constraint.coincident':",
   "case 'constraint.horizontal':",
@@ -25,28 +32,63 @@ for (const legacyCase of [
   "case 'dimension.diameter':",
   "case 'part.dimension.setValue':",
 ]) {
-  assert.equal(application.includes(legacyCase), false, `M3 growth handler must not return to central switch: ${legacyCase}`);
+  assert.equal(application.includes(legacyCase), false, `M3 growth handler must not return to central application switch: ${legacyCase}`);
 }
 
-assert.match(handlers, /SKETCH_GROWTH_COMMAND_IDS/, 'handler module must publish its controlled command-id set');
-assert.match(handlers, /satisfies SketchGrowthHandlerRegistry/, 'handler map must be checked against the typed registry');
-for (const id of [
-  'sketch.create',
-  'sketch.line',
-  'sketch.rectangle',
-  'sketch.circle',
-  'sketch.finish',
-  'constraint.coincident',
-  'constraint.horizontal',
-  'constraint.vertical',
-  'constraint.fixed',
-  'dimension.linear',
-  'dimension.diameter',
-  'part.dimension.setValue',
+assert.match(facade, /SKETCH_GROWTH_COMMAND_IDS/, 'facade must publish the controlled command-id set');
+for (const family of [
+  'SKETCH_GEOMETRY_COMMAND_IDS',
+  'SKETCH_EDIT_COMMAND_IDS',
+  'SKETCH_CONSTRAINT_COMMAND_IDS',
+  'SKETCH_DIMENSION_COMMAND_IDS',
 ]) {
-  assert.ok(handlers.includes(`'${id}'`), `handler registry is missing ${id}`);
+  assert.ok(facade.includes(family), `Sketch facade must compose ${family}`);
 }
 
+const families = [
+  {
+    name: 'geometry',
+    source: geometry,
+    ids: ['sketch.create', 'sketch.line', 'sketch.rectangle', 'sketch.circle', 'sketch.arc'],
+  },
+  {
+    name: 'edit',
+    source: edit,
+    ids: ['sketch.entity.delete', 'sketch.finish'],
+  },
+  {
+    name: 'constraint',
+    source: constraints,
+    ids: ['constraint.coincident', 'constraint.horizontal', 'constraint.vertical', 'constraint.fixed'],
+  },
+  {
+    name: 'dimension',
+    source: dimensions,
+    ids: ['dimension.linear', 'dimension.diameter', 'part.dimension.setValue'],
+  },
+];
+
+for (const family of families) {
+  assert.match(family.source, /satisfies SketchCommandHandlerMap</, `${family.name} owner must use the typed handler map`);
+  for (const id of family.ids) {
+    assert.ok(family.source.includes(`'${id}'`), `${family.name} owner is missing ${id}`);
+  }
+  const foreignIds = families
+    .filter((other) => other !== family)
+    .flatMap((other) => other.ids);
+  for (const id of foreignIds) {
+    assert.equal(
+      family.source.includes(`'${id}'`),
+      false,
+      `${family.name} owner must not absorb foreign command family ${id}`,
+    );
+  }
+}
+
+assert.match(shared, /requireSketch\(/, 'shared handler contract owns common sketch lookup');
+assert.match(shared, /requireSketchEntity\(/, 'shared handler contract owns common entity lookup');
+
+const handlerSources = [facade, shared, geometry, edit, constraints, dimensions];
 for (const forbidden of [
   '../runtime/',
   '../browser/',
@@ -57,7 +99,9 @@ for (const forbidden of [
   'undoStack',
   'redoStack',
 ]) {
-  assert.equal(handlers.includes(forbidden), false, `Sketch handler registry must not own runtime/history/vendor concerns: ${forbidden}`);
+  for (const source of handlerSources) {
+    assert.equal(source.includes(forbidden), false, `Sketch command owners must not own runtime/history/vendor concerns: ${forbidden}`);
+  }
 }
 
-console.log('M2O O6 application handler architecture PASS (focused typed registry + centralized history/rollback)');
+console.log('M2O O6 application handler architecture PASS (geometry/edit/constraint/dimension owners + centralized history/rollback)');

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const commands = fs.readFileSync('src/contracts/commands.ts', 'utf8');
-const handlers = fs.readFileSync('src/application/commands/SketchCommandHandlers.ts', 'utf8');
+const editHandlers = fs.readFileSync('src/application/commands/SketchEditCommandHandlers.ts', 'utf8');
 const session = fs.readFileSync('src/web/SketchSession.ts', 'utf8');
 const overlay = fs.readFileSync('src/web/viewport/SketchOverlayLayer.tsx', 'utf8');
 const selectionLayer = fs.readFileSync('src/web/viewport/SketchSelectionLayer.tsx', 'utf8');
@@ -16,11 +16,11 @@ const registry = JSON.parse(fs.readFileSync('spec/ui/command-registry.v1.json', 
 assert.match(commands, /'sketch\.entity\.delete'/, 'typed command union must contain sketch.entity.delete');
 assert.match(commands, /'sketch\.entity\.delete':\s*\{\s*sketchId:\s*CadSketchId;\s*entityId:\s*CadSketchEntityId;/s,
   'delete payload must be explicit sketchId + entityId');
-assert.match(handlers, /deleteSketchEntityWithDependencies/, 'application handler must own atomic dependency deletion');
-assert.match(handlers, /part\.constraints\s*=\s*part\.constraints\.filter/, 'delete must remove dependent constraints from Part');
-assert.match(handlers, /part\.dimensions\s*=\s*part\.dimensions\.filter/, 'delete must remove dependent dimensions from Part');
-assert.match(handlers, /sketch\.constraintIds\s*=\s*sketch\.constraintIds\.filter/, 'delete must clear Sketch constraint IDs');
-assert.match(handlers, /sketch\.dimensionIds\s*=\s*sketch\.dimensionIds\.filter/, 'delete must clear Sketch dimension IDs');
+assert.match(editHandlers, /deleteSketchEntityWithDependencies/, 'edit command owner must own atomic dependency deletion');
+assert.match(editHandlers, /part\.constraints\s*=\s*part\.constraints\.filter/, 'delete must remove dependent constraints from Part');
+assert.match(editHandlers, /part\.dimensions\s*=\s*part\.dimensions\.filter/, 'delete must remove dependent dimensions from Part');
+assert.match(editHandlers, /sketch\.constraintIds\s*=\s*sketch\.constraintIds\.filter/, 'delete must clear Sketch constraint IDs');
+assert.match(editHandlers, /sketch\.dimensionIds\s*=\s*sketch\.dimensionIds\.filter/, 'delete must clear Sketch dimension IDs');
 
 assert.match(session, /selectedEntityId:\s*CadSketchEntityId\s*\|\s*null/, 'Sketch selection must be transient session state');
 assert.equal(
@@ -54,4 +54,4 @@ assert.equal(definition.status, 'implemented');
 assert.equal(definition.backendCommand, 'sketch.entity.delete');
 assert.equal(definition.milestone, 'M3.6A');
 
-console.log('ASA-CAD M3.6A selection/delete boundary PASS (SketchEditingStage + stable IDs + transient selection + atomic dependencies)');
+console.log('ASA-CAD M3.6A selection/delete boundary PASS (focused edit owner + stable IDs + transient selection + atomic dependencies)');
