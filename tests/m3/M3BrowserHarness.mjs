@@ -4,24 +4,17 @@ import { chromium } from '../../vendor/toubkal/node_modules/playwright-core/inde
 export const baseUrl = (process.env.ASA_CAD_SHELL_URL ?? 'http://127.0.0.1:8090/').replace(/\/$/, '');
 export const shellUrl = `${baseUrl}/`;
 
-export async function launchM3Browser() {
-  return chromium.launch({ headless: true });
-}
+export async function launchM3Browser() { return chromium.launch({ headless: true }); }
 
 export function near(actual, expected, tolerance = 0.6, label = 'value') {
   assert.ok(Math.abs(actual - expected) <= tolerance, `${label}: expected ${expected}, got ${actual}`);
 }
 
 export async function wasmResources(page) {
-  return page.evaluate(() => performance
-    .getEntriesByType('resource')
-    .map((entry) => entry.name)
-    .filter((name) => /\.wasm(?:\?|$)/i.test(name)));
+  return page.evaluate(() => performance.getEntriesByType('resource').map((entry) => entry.name).filter((name) => /\.wasm(?:\?|$)/i.test(name)));
 }
 
-function isPlaneGcs(name) {
-  return /planegcs/i.test(name);
-}
+function isPlaneGcs(name) { return /planegcs/i.test(name); }
 
 export async function assertNoWasm(page, label) {
   assert.deepEqual(await wasmResources(page), [], `${label}: unexpected CAD kernel loaded`);
@@ -30,11 +23,7 @@ export async function assertNoWasm(page, label) {
 export async function assertSketchOnlyWasm(page, label) {
   const wasm = await wasmResources(page);
   assert.ok(wasm.some(isPlaneGcs), `${label}: PlaneGCS WASM was not loaded`);
-  assert.deepEqual(
-    wasm.filter((name) => !isPlaneGcs(name)),
-    [],
-    `${label}: Sketch workflow loaded OpenCascade/other WASM`,
-  );
+  assert.deepEqual(wasm.filter((name) => !isPlaneGcs(name)), [], `${label}: Sketch workflow loaded OpenCascade/other WASM`);
 }
 
 export async function createXYSketch(page) {
@@ -78,10 +67,7 @@ export function squarePoint(box, xRatio, yRatio) {
   const side = Math.min(box.width, box.height);
   const offsetX = box.x + (box.width - side) / 2;
   const offsetY = box.y + (box.height - side) / 2;
-  return {
-    x: offsetX + side * xRatio,
-    y: offsetY + side * yRatio,
-  };
+  return { x: offsetX + side * xRatio, y: offsetY + side * yRatio };
 }
 
 export async function sketchViewState(page) {
@@ -120,12 +106,7 @@ export async function newDesktopPage(browser, viewport = { width: 1440, height: 
 }
 
 export async function newTouchPage(browser) {
-  const context = await browser.newContext({
-    viewport: { width: 390, height: 844 },
-    deviceScaleFactor: 3,
-    isMobile: true,
-    hasTouch: true,
-  });
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true });
   const page = await context.newPage();
   return { context, page, errors: collectPageErrors(page) };
 }
@@ -155,24 +136,14 @@ export async function reopenFirstSketch(page, entityCount) {
 }
 
 export async function assertVisibleTouchTarget(page, x, y) {
-  const hit = await page.evaluate(({ x, y }) => {
-    const element = document.elementFromPoint(x, y);
-    return Boolean(element?.closest?.('[data-testid="cad-sketch-interaction"]'));
-  }, { x, y });
+  const hit = await page.evaluate(({ x, y }) => Boolean(document.elementFromPoint(x, y)?.closest?.('[data-testid="cad-sketch-interaction"]')), { x, y });
   assert.equal(hit, true, `touch point ${x.toFixed(1)},${y.toFixed(1)} is covered by UI chrome`);
 }
 
-async function dispatchTouch(client, type, points) {
+export async function dispatchTouch(client, type, points) {
   await client.send('Input.dispatchTouchEvent', {
     type,
-    touchPoints: points.map((point) => ({
-      x: point.x,
-      y: point.y,
-      radiusX: 4,
-      radiusY: 4,
-      force: 1,
-      id: point.id,
-    })),
+    touchPoints: points.map((point) => ({ x: point.x, y: point.y, radiusX: 4, radiusY: 4, force: 1, id: point.id })),
   });
 }
 
@@ -180,16 +151,8 @@ export async function twoFingerGesture(client, startA, startB, endA, endB, steps
   await dispatchTouch(client, 'touchStart', [{ id: 1, ...startA }, { id: 2, ...startB }]);
   for (let index = 1; index <= steps; index++) {
     await dispatchTouch(client, 'touchMove', [
-      {
-        id: 1,
-        x: startA.x + (endA.x - startA.x) * index / steps,
-        y: startA.y + (endA.y - startA.y) * index / steps,
-      },
-      {
-        id: 2,
-        x: startB.x + (endB.x - startB.x) * index / steps,
-        y: startB.y + (endB.y - startB.y) * index / steps,
-      },
+      { id: 1, x: startA.x + (endA.x - startA.x) * index / steps, y: startA.y + (endA.y - startA.y) * index / steps },
+      { id: 2, x: startB.x + (endB.x - startB.x) * index / steps, y: startB.y + (endB.y - startB.y) * index / steps },
     ]);
   }
   await dispatchTouch(client, 'touchEnd', []);
