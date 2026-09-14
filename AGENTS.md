@@ -13,7 +13,7 @@ Read these entry points first:
 
 If `STATUS.md` names a blocking gate, read it before coding and do not start later feature work. Then use `docs/DOCS_POLICY.md` to open only the focused spec/registry needed for the subsystem. Do not preload the documentation tree.
 
-`docs/DEVELOPMENT_QUALITY_GATES.md` is the binding audit/maintenance contract. Read it when a quality gate, maintenance task, budget warning, repository cleanup or cross-repository contract is involved.
+`docs/DEVELOPMENT_QUALITY_GATES.md` is the binding audit/maintenance contract. Read it for quality gates, maintenance, budget warnings, repository cleanup or cross-repository contracts.
 
 ## Product and dependency invariants
 
@@ -62,9 +62,9 @@ contract/scope
 -> next slice
 ```
 
-Every three accepted slices and every milestone boundary also require the Full Repository Health Audit defined in `docs/DEVELOPMENT_QUALITY_GATES.md`.
+Every three accepted slices and every milestone boundary also require the Full Repository Health Audit in `docs/DEVELOPMENT_QUALITY_GATES.md`.
 
-A RED quality result blocks feature work. A YELLOW debt item must be explicit, frozen/non-growing and removed before the next milestone boundary.
+A RED result blocks feature work. YELLOW debt must be explicit, frozen and removed before the next milestone boundary.
 
 ## Vertical-slice pattern
 
@@ -87,22 +87,23 @@ Desktop and mobile consume the same typed action model. Direct Sketch tools comp
 
 ## Code size, ownership and repository health
 
-`spec/process/repository-health.v1.json` is the machine-readable policy. Required CI uses `tests/process/file-budgets.mjs`, `tests/process/repository-hygiene.mjs` and `tests/process/pr-hygiene.mjs`.
+`spec/process/repository-health.v1.json` is the machine policy. CI uses `tests/process/file-budgets.mjs`, `tests/process/repository-hygiene.mjs` and `tests/process/pr-hygiene.mjs`.
 
 Rules:
 
-1. Check the owner and budget before adding responsibility.
+1. Check owner and budget before adding responsibility.
 2. New responsibility family -> focused owner; do not grow a god-object.
 3. Files above target are review signals; hard-limit violations block merge.
 4. Grandfathered hotspots may only shrink. Lower the frozen ceiling after extraction.
-5. Byte budget is authoritative; line count is a secondary review signal.
-6. Vendor, generated registries and deliberate fixture datasets are not ordinary handwritten-code budgets.
-7. Remove dead/duplicate paths and obsolete temporary files during the required audit cycle.
-8. Do not add another status/spec summary when an existing source of truth owns it.
+5. Byte budget is authoritative; line count is secondary.
+6. Vendor, generated registries and deliberate fixture datasets are exempt from ordinary handwritten-code budgets.
+7. Remove dead/duplicate paths and obsolete temporary files during required audits.
+8. Do not add another status/spec summary when an existing source owns it.
 
 Expected ownership:
 - document/runtime session -> controller/service;
 - Sketch editing -> focused Sketch controller/stage;
+- Sketch commands -> geometry/edit/constraint/dimension owners behind the facade;
 - Part features -> focused feature controller/runtime evaluator;
 - selection -> focused selection controller;
 - shell -> shell components;
@@ -110,7 +111,7 @@ Expected ownership:
 - viewport input/camera -> viewport modules;
 - persistence/recovery -> `CadProjectHost` / session layer.
 
-Current frozen hotspots include `App.tsx`, `CadViewport.tsx`, `OpenCascadePartRuntime.ts` and `SketchCommandHandlers.ts`; exact ceilings live only in the machine policy.
+Exact frozen ceilings live only in the machine policy.
 
 ## Protected regressions
 
@@ -122,9 +123,9 @@ After M4A, protected Assembly becomes a second permanent gate.
 
 ## ASA Lab contract preflight
 
-Do not wait until M5 to discover Project Core incompatibility. Before broad M4 completion, maintain cross-repository compatibility evidence for project identity, `CadDocument` envelope/schema, load/save, `baseRevision`, `mutationId`, `409` conflicts, snapshots/versions, same-origin session and unsupported-version behavior.
+Do not wait until M5 to discover Project Core incompatibility. Before broad M4 completion, maintain cross-repository evidence for project identity, `CadDocument` schema, load/save, `baseRevision`, `mutationId`, `409` conflicts, versions, same-origin session and unsupported-version behavior.
 
-M5 integration is blocked while this contract preflight is RED.
+M5 integration is blocked while this preflight is RED.
 
 ## Run/test
 
@@ -135,9 +136,7 @@ npm run install:vendor
 npm run dev
 ```
 
-Default ASA dev URL: `http://localhost:8090`.
-
-Vendor diagnostic UI only: `npm run dev:vendor`.
+Default ASA dev URL: `http://localhost:8090`. Vendor diagnostic UI only: `npm run dev:vendor`.
 
 Release-like test:
 
@@ -147,7 +146,7 @@ npm run docker:up
 
 Default Docker URL: `http://localhost:8088`.
 
-For every change run the cheapest affected tests first, then the required shell/browser/Docker/vendor gates named by the active issue.
+For every change run the cheapest affected tests first, then required shell/browser/Docker/vendor gates named by the active issue.
 
 ## Change and PR discipline
 
@@ -159,15 +158,15 @@ For every change:
 4. add/update the smallest deterministic regression;
 5. run affected quality/functional gates;
 6. update registry/spec only when behavior/contract changed;
-7. when milestone/gate state changes, update its issue and `docs/STATUS.md` in the same review change.
+7. update the issue and `docs/STATUS.md` in the same review change when milestone/gate state changes.
 
-One PR = one vertical slice or one focused maintenance concern. Review branch hard limit is 6 commits. Remove one-shot tools before review. If a repair crosses ownership boundaries, split it or classify it explicitly as architecture/maintenance work.
+One PR = one vertical slice or one focused maintenance concern. Review hard limit is 6 commits. Remove one-shot tools before review. Cross-owner repair must be split or explicitly classified as architecture/maintenance work.
 
 Use `.github/PULL_REQUEST_TEMPLATE.md`. Close superseded branches/PRs/issues.
 
 ## Upstream
 
-Treat `vendor/toubkal` as implementation source, not product architecture. For upstream changes read `docs/UPSTREAM.md`, use a dedicated PR, record old/new SHA, port only useful runtime/kernel changes through ASA boundaries, preserve notices and run compatibility gates.
+Treat `vendor/toubkal` as implementation source, not product architecture. For upstream changes read `docs/UPSTREAM.md`, use a dedicated PR, record old/new SHA, port only useful kernel/solver changes through ASA adapters, preserve notices and run compatibility gates.
 
 ## Efficiency rule
 

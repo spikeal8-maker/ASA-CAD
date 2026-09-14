@@ -5,7 +5,9 @@ const sketchContract = readFileSync('src/contracts/sketch.ts', 'utf8');
 const documentContract = readFileSync('src/contracts/document.ts', 'utf8');
 const solverContract = readFileSync('src/contracts/sketchSolver.ts', 'utf8');
 const solver = readFileSync('src/runtime/PlaneGCSSketchSolverRuntime.ts', 'utf8');
-const handlers = readFileSync('src/application/commands/SketchCommandHandlers.ts', 'utf8');
+const geometryHandlers = readFileSync('src/application/commands/SketchGeometryCommandHandlers.ts', 'utf8');
+const constraintHandlers = readFileSync('src/application/commands/SketchConstraintCommandHandlers.ts', 'utf8');
+const dimensionHandlers = readFileSync('src/application/commands/SketchDimensionCommandHandlers.ts', 'utf8');
 
 assert.match(sketchContract, /type CadSketchEntity = CadSketchLineEntity \| CadSketchCircleEntity \| CadSketchArcEntity/, 'Sketch entities must be a discriminated union');
 assert.match(sketchContract, /support: CadSketchSupport/, 'Sketch support must not degrade to arbitrary string');
@@ -25,10 +27,10 @@ assert.match(solver, /switch \(entity.type\)/, 'PlaneGCS geometry conversion mus
 assert.match(solver, /case 'coincident':/, 'PlaneGCS typed constraint boundary must retain current coincident support');
 assert.match(solver, /case 'diameter':/, 'PlaneGCS typed dimension boundary must retain current diameter support');
 
-assert.doesNotMatch(handlers, /function addConstraint\([\s\S]*type: string/, 'Sketch handlers must not construct arbitrary string-typed constraints');
-assert.doesNotMatch(handlers, /data\?: Record<string, unknown>/, 'Sketch handlers must not construct arbitrary constraint payload maps');
-assert.match(handlers, /const dimension: CadDimension =/, 'Sketch handlers must construct typed dimension DTOs');
-assert.match(handlers, /const constraint: CadConstraint =/, 'Sketch handlers must construct typed constraint DTOs');
-assert.doesNotMatch(handlers, /support: String\(command\.payload\.support\)/, 'Sketch support must retain its typed command value');
+assert.doesNotMatch(constraintHandlers, /function addConstraint\([\s\S]*type: string/, 'Constraint owner must not construct arbitrary string-typed constraints');
+assert.doesNotMatch(constraintHandlers, /data\?: Record<string, unknown>/, 'Constraint owner must not construct arbitrary payload maps');
+assert.match(constraintHandlers, /constraint: CadConstraint/, 'Constraint owner must construct typed constraint DTOs');
+assert.match(dimensionHandlers, /const dimension: CadDimension =/, 'Dimension owner must construct typed dimension DTOs');
+assert.doesNotMatch(geometryHandlers, /support: String\(command\.payload\.support\)/, 'Geometry owner must retain typed Sketch support');
 
-console.log('M2O O7 Sketch contract boundary PASS (typed DTOs + typed PlaneGCS/handler consumption)');
+console.log('M2O O7 Sketch contract boundary PASS (typed DTOs + typed PlaneGCS/focused handler consumption)');

@@ -3,7 +3,7 @@ import fs from 'node:fs';
 
 const sketch = fs.readFileSync('src/contracts/sketch.ts', 'utf8');
 const commands = fs.readFileSync('src/contracts/commands.ts', 'utf8');
-const handlers = fs.readFileSync('src/application/commands/SketchCommandHandlers.ts', 'utf8');
+const geometryHandlers = fs.readFileSync('src/application/commands/SketchGeometryCommandHandlers.ts', 'utf8');
 const solver = fs.readFileSync('src/runtime/PlaneGCSSketchSolverRuntime.ts', 'utf8');
 const registry = JSON.parse(fs.readFileSync('spec/ui/command-registry.v1.json', 'utf8'));
 
@@ -19,10 +19,10 @@ assert.match(commands, /center: readonly \[number, number\]/, 'Arc command must 
 assert.match(commands, /start: readonly \[number, number\]/, 'Arc command must define one initial center-start-end construction mode');
 assert.match(commands, /end: readonly \[number, number\]/, 'Arc command must define one initial center-start-end construction mode');
 
-assert.match(handlers, /'sketch\.arc'/, 'Arc command must use focused Sketch handler dispatch');
-assert.match(handlers, /type: 'arc'/, 'Arc handler must persist the canonical ASA Arc entity');
-assert.match(handlers, /normalizeAngle/, 'Arc canonicalization belongs to the application boundary, not UI');
-assert.match(handlers, /positiveSweep/, 'Arc handler must canonicalize a positive CCW sweep');
+assert.match(geometryHandlers, /'sketch\.arc'/, 'Arc command must use the focused geometry handler owner');
+assert.match(geometryHandlers, /type: 'arc'/, 'Arc handler must persist the canonical ASA Arc entity');
+assert.match(geometryHandlers, /normalizeAngle/, 'Arc canonicalization belongs to the application boundary, not UI');
+assert.match(geometryHandlers, /positiveSweep/, 'Arc handler must canonicalize a positive CCW sweep');
 
 assert.match(solver, /case 'arc'/, 'PlaneGCS ASA adapter must map typed Arc DTOs');
 assert.match(solver, /kind: 'arc'/, 'PlaneGCS geometry seam must use vendor Arc geometry only behind ASA runtime boundary');
@@ -43,4 +43,4 @@ if (arc.status === 'implemented') {
   assert.match(browserWorkflow, /direct Arc mouse\/touch\/persistence/, 'implemented Arc requires dedicated M3 browser acceptance');
 }
 
-console.log(`ASA-CAD M3.4A Arc contract boundary PASS (ASA DTO/command/handler/PlaneGCS, product status ${arc.status})`);
+console.log(`ASA-CAD M3.4A Arc contract boundary PASS (ASA DTO/command/geometry-owner/PlaneGCS, product status ${arc.status})`);

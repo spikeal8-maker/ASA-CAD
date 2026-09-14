@@ -104,8 +104,7 @@
     "src/web/PartSketchWorkspaceTypes.ts": 140,
     "src/web/PartModelStage.tsx": 3423,
     "src/web/SketchEditingStage.tsx": 6477,
-    "src/runtime/OpenCascadePartRuntime.ts": 20347,
-    "src/application/commands/SketchCommandHandlers.ts": 15384
+    "src/runtime/OpenCascadePartRuntime.ts": 20347
   },
   "grandfatheredHardCeilings": {
     "docs/UI_COMMAND_SPEC.md": 31166,
