@@ -2,6 +2,11 @@ import type { CadCommandId } from '../../contracts/commands';
 import type { CadPartDocument, CadSketch } from '../../contracts/document';
 import type { CadSketchEntityId } from '../../contracts/ids';
 import {
+  isZeroSketchDelta,
+  translateSketchEntity,
+  validateSketchDelta,
+} from '../SketchEntityTransform';
+import {
   defineSketchCommandHandler,
   requireSketch,
   requireSketchAvailability,
@@ -11,6 +16,7 @@ import {
 
 export const SKETCH_EDIT_COMMAND_IDS = [
   'sketch.entity.delete',
+  'sketch.entity.translate',
   'sketch.finish',
 ] as const satisfies readonly CadCommandId[];
 
@@ -23,6 +29,19 @@ export const sketchEditCommandHandlers = {
       const sketch = requireSketch(part, command.payload.sketchId);
       requireSketchEntity(sketch, command.payload.entityId);
       deleteSketchEntityWithDependencies(part, sketch, command.payload.entityId);
+      return { ok: true, changed: true };
+    },
+  }),
+
+  'sketch.entity.translate': defineSketchCommandHandler<'sketch.entity.translate'>({
+    availability: requireSketchAvailability,
+    execute: (part, command) => {
+      validateSketchDelta(command.payload.delta);
+      const sketch = requireSketch(part, command.payload.sketchId);
+      const entity = requireSketchEntity(sketch, command.payload.entityId);
+      if (isZeroSketchDelta(command.payload.delta)) return { ok: true, changed: false };
+      const index = sketch.entities.findIndex((item) => item.id === entity.id);
+      sketch.entities[index] = translateSketchEntity(entity, command.payload.delta);
       return { ok: true, changed: true };
     },
   }),
