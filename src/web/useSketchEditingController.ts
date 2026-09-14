@@ -2,6 +2,7 @@ import { useState, type Dispatch, type SetStateAction } from 'react';
 import type { CadApplication } from '../contracts/application';
 import type { CadSketch } from '../contracts/document';
 import type { CadSketchEntityId, CadSketchId } from '../contracts/ids';
+import type { CadSketchDelta } from '../application/SketchEntityTransform';
 import type { CadWorkspacePanel } from './PartSketchWorkspaceTypes';
 import { findSketch, partDocument } from './PartSketchWorkspaceModel';
 import { useSketchLineTool } from './useSketchLineTool';
@@ -131,21 +132,11 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
     const edges = rectangle.createdIds as CadSketchEntityId[];
     const widthDimension = await app.execute({
       id: 'dimension.linear',
-      payload: {
-        sketchId: currentSketch.id,
-        entityIds: [edges[0]],
-        value: rectangleWidth,
-        name: 'width',
-      },
+      payload: { sketchId: currentSketch.id, entityIds: [edges[0]], value: rectangleWidth, name: 'width' },
     });
     const heightDimension = await app.execute({
       id: 'dimension.linear',
-      payload: {
-        sketchId: currentSketch.id,
-        entityIds: [edges[1]],
-        value: rectangleHeight,
-        name: 'height',
-      },
+      payload: { sketchId: currentSketch.id, entityIds: [edges[1]], value: rectangleHeight, name: 'height' },
     });
     if (!widthDimension.ok || !heightDimension.ok) {
       setNotice(widthDimension.error?.message ?? heightDimension.error?.message ?? 'Не удалось создать размеры');
@@ -197,12 +188,7 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
     const circleEntityId = circle.createdIds[0] as CadSketchEntityId;
     const diameter = await app.execute({
       id: 'dimension.diameter',
-      payload: {
-        sketchId: currentSketch.id,
-        entityId: circleEntityId,
-        value: circleDiameter,
-        name: 'diameter',
-      },
+      payload: { sketchId: currentSketch.id, entityId: circleEntityId, value: circleDiameter, name: 'diameter' },
     });
     if (!diameter.ok) {
       setNotice(diameter.error?.message ?? 'Не удалось создать диаметральный размер');
@@ -247,6 +233,20 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
     return true;
   }
 
+  async function translateSketchEntity(entityId: CadSketchEntityId, delta: CadSketchDelta) {
+    if (!activeSketchId) return false;
+    const result = await app.execute({
+      id: 'sketch.entity.translate',
+      payload: { sketchId: activeSketchId, entityId, delta },
+    });
+    if (!result.ok) {
+      setNotice(result.error?.message ?? 'Не удалось переместить элемент эскиза');
+      return false;
+    }
+    if (result.changed) setNotice('Элемент эскиза перемещён');
+    return result.changed;
+  }
+
   function resetActiveTool(command: string | null) {
     if (command === 'sketch.line') lineTool.reset();
     if (command === 'sketch.rectangle') rectangleTool.reset();
@@ -285,6 +285,7 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
     handleSketchArcPoint: arcTool.point,
     finishSketch,
     deleteSelectedSketchEntity,
+    translateSketchEntity,
     resetActiveTool,
     commitLinePreview: lineTool.commitPreview,
     commitRectanglePreview: rectangleTool.commitPreview,
