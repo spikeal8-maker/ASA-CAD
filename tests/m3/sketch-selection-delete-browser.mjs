@@ -2,32 +2,14 @@ import assert from 'node:assert/strict';
 import {
   assertNoPageErrors,
   assertSketchOnlyWasm,
-  baseUrl,
+  entityScreenPoint,
   launchM3Browser,
+  loadFixture,
   newDesktopPage,
   newTouchPage,
-  waitSolvedOverlay,
 } from './M3BrowserHarness.mjs';
 
 const browser = await launchM3Browser();
-
-async function waitFixture(page, fixture, entityCount) {
-  await page.goto(`${baseUrl}/dev/part/${fixture}`, { waitUntil: 'networkidle' });
-  await page.locator(`.cad-app[data-dev-fixture="${fixture}"][data-fixture-status="ready"]`).waitFor();
-  return waitSolvedOverlay(page, entityCount, `${fixture} fixture`);
-}
-
-async function entityScreenPoint(visual) {
-  return visual.evaluate((node) => {
-    if (!(node instanceof SVGGeometryElement)) throw new Error('Sketch entity is not SVGGeometryElement');
-    const matrix = node.getScreenCTM();
-    if (!matrix) throw new Error('Sketch entity has no screen transform');
-    const length = node.getTotalLength();
-    const local = node.getPointAtLength(length / 2);
-    const point = new DOMPoint(local.x, local.y).matrixTransform(matrix);
-    return { x: point.x, y: point.y };
-  });
-}
 
 async function selectFirstEntityWithMouse(page) {
   const visual = page.locator('[data-testid="cad-sketch-overlay"] [data-sketch-entity-id]').first();
@@ -44,7 +26,7 @@ async function selectFirstEntityWithMouse(page) {
 async function desktopSelectionDelete(fixture, initialCount, deleteKey) {
   const { page, errors } = await newDesktopPage(browser);
   try {
-    await waitFixture(page, fixture, initialCount);
+    await loadFixture(page, fixture, initialCount);
     const app = page.locator('.cad-app');
 
     const firstSelection = await selectFirstEntityWithMouse(page);
@@ -92,7 +74,7 @@ async function desktopSelectionDelete(fixture, initialCount, deleteKey) {
 async function touchSelectionDelete() {
   const { context, page, errors } = await newTouchPage(browser);
   try {
-    await waitFixture(page, 'circle', 1);
+    await loadFixture(page, 'circle', 1);
     const visual = page.locator('[data-testid="cad-sketch-overlay"] [data-sketch-entity-id]').first();
     const entityId = await visual.getAttribute('data-sketch-entity-id');
     assert.ok(entityId, 'touch Circle must expose stable entity ID');

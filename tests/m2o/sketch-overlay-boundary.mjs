@@ -32,8 +32,11 @@ assert.doesNotMatch(app, /SketchSolveSession|PlaneGCSSketchSolverRuntime|buildSk
 assert.match(partStage, /<SketchEditingStage/, 'PartModelStage must delegate active Sketch presentation wholesale');
 assert.doesNotMatch(partStage, /useActiveSketchSolveOverlay|SketchSelectionLayer|SketchLineInteractionLayer/, 'PartModelStage must not regain Sketch editing orchestration');
 assert.match(sketchStage, /useActiveSketchSolveOverlay\(/, 'SketchEditingStage must activate the focused Sketch solve/overlay hook');
-assert.match(sketchStage, /sketchOverlay=\{sketchOverlay\}/, 'SketchEditingStage must pass transient overlay into CadViewport');
-assert.match(sketchStage, /<CadViewport model=\{null\} sketchOverlay=\{sketchOverlay\}/, 'isolated Sketch mode must not composite unprojected B-Rep geometry');
+const overlayBinding = sketchStage.match(/const\s+([A-Za-z_$][\w$]*)\s*=\s*solve\.overlay;/);
+assert.ok(overlayBinding, 'SketchEditingStage must bind solve.overlay for presentation');
+const overlayName = overlayBinding[1];
+assert.match(sketchStage, new RegExp(`sketchOverlay=\\{${overlayName}\\}`), 'SketchEditingStage must pass transient overlay into CadViewport');
+assert.match(sketchStage, new RegExp(`<CadViewport\\s+model=\\{null\\}\\s+sketchOverlay=\\{${overlayName}\\}`), 'isolated Sketch mode must not composite unprojected B-Rep geometry');
 assert.match(sketchStage, /data-sketch-context="isolated-2d"/, 'Sketch editing stage must expose deliberate isolated workplane mode');
 assert.match(solveHook, /new SketchSolveSession\(solver\)/, 'focused hook must own transient SketchSolveSession');
 assert.match(solveHook, /buildSketchOverlayModel\(sketch, snapshot\)/, 'focused hook must project solve state through SketchOverlayModel');
