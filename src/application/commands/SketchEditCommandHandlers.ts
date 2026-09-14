@@ -39,6 +39,12 @@ export const sketchEditCommandHandlers = {
       validateSketchDelta(command.payload.delta);
       const sketch = requireSketch(part, command.payload.sketchId);
       const entity = requireSketchEntity(sketch, command.payload.entityId);
+      const fixed = part.constraints.some((constraint) => (
+        constraint.type === 'fixed'
+        && sketch.constraintIds.includes(constraint.id)
+        && constraint.entityIds[0] === entity.id
+      ));
+      if (fixed) throw new Error('Fixed sketch entity cannot be translated');
       if (isZeroSketchDelta(command.payload.delta)) return { ok: true, changed: false };
       const index = sketch.entities.findIndex((item) => item.id === entity.id);
       sketch.entities[index] = translateSketchEntity(entity, command.payload.delta);
