@@ -1,35 +1,20 @@
 import assert from 'node:assert/strict';
-import { chromium } from '../../vendor/toubkal/node_modules/playwright-core/index.mjs';
+import {
+  assertNoPageErrors,
+  assertSketchOnlyWasm,
+  baseUrl,
+  launchM3Browser,
+  newDesktopPage,
+  newTouchPage,
+  waitSolvedOverlay,
+} from './M3BrowserHarness.mjs';
 
-const baseUrl = (process.env.ASA_CAD_SHELL_URL ?? 'http://127.0.0.1:8090/').replace(/\/$/, '');
-const browser = await chromium.launch({ headless: true });
-
-function isPlaneGcs(name) {
-  return /planegcs/i.test(name);
-}
-
-async function wasmResources(page) {
-  return page.evaluate(() => performance
-    .getEntriesByType('resource')
-    .map((entry) => entry.name)
-    .filter((name) => /\.wasm(?:\?|$)/i.test(name)));
-}
+const browser = await launchM3Browser();
 
 async function waitFixture(page, fixture, entityCount) {
   await page.goto(`${baseUrl}/dev/part/${fixture}`, { waitUntil: 'networkidle' });
   await page.locator(`.cad-app[data-dev-fixture="${fixture}"][data-fixture-status="ready"]`).waitFor();
-  const overlay = page.locator(`[data-testid="cad-sketch-overlay"][data-entity-count="${entityCount}"]`);
-  await overlay.waitFor({ timeout: 20_000 });
-  await page.waitForFunction(() => {
-    const status = document.querySelector('[data-testid="sketch-solve-status"]')?.getAttribute('data-solve-status');
-    return status === 'solved' || status === 'error';
-  }, null, { timeout: 20_000 });
-  assert.equal(
-    await page.locator('[data-testid="sketch-solve-status"]').getAttribute('data-solve-status'),
-    'solved',
-    `${fixture} fixture must solve before selection`,
-  );
-  return overlay;
+  return waitSolvedOverlay(page, entityCount, `${fixture} fixture`);
 }
 
 async function entityScreenPoint(visual) {
@@ -46,35 +31,18 @@ async function entityScreenPoint(visual) {
 
 async function selectFirstEntityWithMouse(page) {
   const visual = page.locator('[data-testid="cad-sketch-overlay"] [data-sketch-entity-id]').first();
-  // A horizontal/vertical SVG line can have a zero-height/zero-width geometric
-  // bounding box even though its stroked hit target is visibly selectable.
-  // Waiting for DOM attachment reflects the actual selection contract better
-  // than Playwright's box-based `visible` heuristic.
   await visual.waitFor({ state: 'attached' });
   const entityId = await visual.getAttribute('data-sketch-entity-id');
   assert.ok(entityId, 'Sketch entity must expose stable entity ID');
   const point = await entityScreenPoint(visual);
   await page.mouse.click(point.x, point.y);
   await page.locator(`.cad-app[data-selected-sketch-entity-id="${entityId}"]`).waitFor();
-  const selected = page.locator(`[data-sketch-entity-id="${entityId}"].selected`);
-  await selected.waitFor({ state: 'attached' });
+  await page.locator(`[data-sketch-entity-id="${entityId}"].selected`).waitFor({ state: 'attached' });
   return { entityId, point };
 }
 
-async function assertSketchOnlyWasm(page, label) {
-  const wasm = await wasmResources(page);
-  assert.ok(wasm.some(isPlaneGcs), `${label}: PlaneGCS WASM was not loaded`);
-  assert.deepEqual(
-    wasm.filter((name) => !isPlaneGcs(name)),
-    [],
-    `${label}: Sketch selection/delete must not load OpenCascade/other WASM`,
-  );
-}
-
 async function desktopSelectionDelete(fixture, initialCount, deleteKey) {
-  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-  const errors = [];
-  page.on('pageerror', (error) => errors.push(error.message));
+  const { page, errors } = await newDesktopPage(browser);
   try {
     await waitFixture(page, fixture, initialCount);
     const app = page.locator('.cad-app');
@@ -114,7 +82,7 @@ async function desktopSelectionDelete(fixture, initialCount, deleteKey) {
     }
 
     await assertSketchOnlyWasm(page, fixture);
-    assert.deepEqual(errors, [], `${fixture}: browser errors: ${errors.join(' | ')}`);
+    assertNoPageErrors(errors, fixture);
     console.log(`  ✓ ${fixture}: stable-ID select -> Esc -> select -> ${deleteKey}${fixture === 'line' ? ' -> Undo/Redo' : ''}`);
   } finally {
     await page.close();
@@ -122,15 +90,7 @@ async function desktopSelectionDelete(fixture, initialCount, deleteKey) {
 }
 
 async function touchSelectionDelete() {
-  const context = await browser.newContext({
-    viewport: { width: 390, height: 844 },
-    deviceScaleFactor: 3,
-    isMobile: true,
-    hasTouch: true,
-  });
-  const page = await context.newPage();
-  const errors = [];
-  page.on('pageerror', (error) => errors.push(error.message));
+  const { context, page, errors } = await newTouchPage(browser);
   try {
     await waitFixture(page, 'circle', 1);
     const visual = page.locator('[data-testid="cad-sketch-overlay"] [data-sketch-entity-id]').first();
@@ -151,7 +111,7 @@ async function touchSelectionDelete() {
     await page.locator('.cad-app[data-selected-sketch-entity-id=""]').waitFor();
 
     await assertSketchOnlyWasm(page, 'touch Circle');
-    assert.deepEqual(errors, [], `touch selection/delete browser errors: ${errors.join(' | ')}`);
+    assertNoPageErrors(errors, 'touch selection/delete browser');
     console.log('  ✓ touch: stable-ID entity tap -> shared mobile delete action');
   } finally {
     await context.close();
