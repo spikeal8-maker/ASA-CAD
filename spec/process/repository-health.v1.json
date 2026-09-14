@@ -81,6 +81,14 @@
       "extensions": [".css"]
     },
     {
+      "id": "m3-browser-harness",
+      "description": "Shared M3 browser harness",
+      "targetBytes": 8192,
+      "hardBytes": 12288,
+      "lineReviewTarget": 300,
+      "exactFiles": ["tests/m3/M3BrowserHarness.mjs"]
+    },
+    {
       "id": "browser-regression",
       "description": "Focused browser regression",
       "targetBytes": 8192,
@@ -91,7 +99,6 @@
     }
   ],
   "frozenCeilings": {
-    "AGENTS.md": 7256,
     "src/web/App.tsx": 18023,
     "src/web/CadViewport.tsx": 27846,
     "src/web/ParameterPanel.tsx": 12026,
@@ -112,11 +119,7 @@
     "docs/DOCUMENT_TYPES.md": 14249,
     "docs/ARCHITECTURE.md": 13446,
     "tests/m2/part-browser.mjs": 18912,
-    "tests/m2/responsive-browser.mjs": 10684,
-    "tests/m3/direct-line-browser.mjs": 13550,
-    "tests/m3/direct-circle-browser.mjs": 10069,
-    "tests/m3/direct-arc-browser.mjs": 10692,
-    "tests/m3/direct-rectangle-browser.mjs": 10509
+    "tests/m2/responsive-browser.mjs": 10684
   },
   "repositoryHygiene": {
     "excludedPrefixes": ["vendor/", "node_modules/", ".git/"],
