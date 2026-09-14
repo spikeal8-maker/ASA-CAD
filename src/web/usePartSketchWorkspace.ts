@@ -216,6 +216,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     handleBodySelect: selection.handleBodySelect,
     handleSketchEntitySelect: selection.handleSketchEntitySelect,
     deleteSelectedSketchEntity: editing.deleteSelectedSketchEntity,
+    translateSketchEntity: editing.translateSketchEntity,
     enterSketch,
     beginLine: editing.beginLine,
     lineDraft: editing.lineDraft,
