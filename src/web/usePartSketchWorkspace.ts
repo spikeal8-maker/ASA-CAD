@@ -6,6 +6,7 @@ import { useSketchSession } from './useSketchSession';
 import { usePartSelectionController } from './usePartSelectionController';
 import { useSketchEditingController } from './useSketchEditingController';
 import { useSketchDimensionController } from './useSketchDimensionController';
+import { useSketchEntityMutationController } from './useSketchEntityMutationController';
 import { usePartFeatureController } from './usePartFeatureController';
 import { findSketch, partDocument } from './PartSketchWorkspaceModel';
 import type { CadWorkspacePanel } from './PartSketchWorkspaceTypes';
@@ -20,77 +21,39 @@ export interface PartSketchWorkspaceOptions {
   setNotice(message: string): void;
 }
 
-/**
- * Thin composition facade for Part + Sketch editing.
- *
- * Focused controllers own selection, Sketch editing/dimensions and Part
- * features. This facade only composes their public contract, routes the active
- * command and preserves the App-facing API.
- */
+/** Thin App-facing composition facade; focused controllers own behavior. */
 export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
   const { app, document, renderModelAvailable, setPanel, setNotice } = options;
   const [activeWorkspace, setActiveWorkspace] = useState('solid');
   const [activeCommand, setActiveCommand] = useState<string | null>(null);
-
   const part = partDocument(document);
   const {
-    activeSketchId,
-    activeSketch: sketch,
-    selectedEntityId,
-    enterSketch: activateSketch,
-    clearActiveSketch,
-    selectEntity,
-    clearEntitySelection,
+    activeSketchId, activeSketch: sketch, selectedEntityId,
+    enterSketch: activateSketch, clearActiveSketch, selectEntity, clearEntitySelection,
   } = useSketchSession(part);
 
   const selection = usePartSelectionController({
-    part,
-    activeSketchId,
-    clearSketchEntitySelection: clearEntitySelection,
-    selectSketchEntity: selectEntity,
-    setNotice,
+    part, activeSketchId, clearSketchEntitySelection: clearEntitySelection,
+    selectSketchEntity: selectEntity, setNotice,
   });
-
   const editing = useSketchEditingController({
-    app,
-    activeSketchId,
-    sketch,
-    selectedEntityId,
-    activeCommand,
-    setActiveCommand,
-    setActiveWorkspace,
-    setPanel,
-    setNotice,
-    clearEntitySelection,
-    clearTransientSelection: selection.clearTransientSelection,
+    app, activeSketchId, sketch, activeCommand, setActiveCommand, setActiveWorkspace,
+    setPanel, setNotice, clearTransientSelection: selection.clearTransientSelection,
   });
-
+  const entityMutations = useSketchEntityMutationController({
+    app, activeSketchId, selectedEntityId, setNotice, clearEntitySelection,
+  });
   const dimensions = useSketchDimensionController({
-    app,
-    setActiveCommand,
-    setActiveWorkspace,
-    setPanel,
-    setNotice,
-    activateSketch,
+    app, setActiveCommand, setActiveWorkspace, setPanel, setNotice, activateSketch,
     clearTransientSelection: selection.clearTransientSelection,
     setRectangleWidth: editing.setRectangleWidth,
     setRectangleHeight: editing.setRectangleHeight,
     setCircleDiameter: editing.setCircleDiameter,
   });
-
   const features = usePartFeatureController({
-    app,
-    document,
-    renderModelAvailable,
-    activeSketchId,
-    sketch,
-    selectedPick: selection.selectedPick,
-    setActiveCommand,
-    setActiveWorkspace,
-    setPanel,
-    setNotice,
-    activateSketch,
-    beginPartSelection: selection.beginPartSelection,
+    app, document, renderModelAvailable, activeSketchId, sketch,
+    selectedPick: selection.selectedPick, setActiveCommand, setActiveWorkspace,
+    setPanel, setNotice, activateSketch, beginPartSelection: selection.beginPartSelection,
     clearTransientSelection: selection.clearTransientSelection,
   });
 
@@ -99,22 +62,19 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     dimensions.clearDimensionEdit();
     selection.clearTransientSelection();
   }, [dimensions.clearDimensionEdit, selection.clearTransientSelection]);
-
   const resetToWorkspace = useCallback((workspace: string) => {
     setActiveWorkspace(workspace);
     setActiveCommand(null);
     dimensions.clearDimensionEdit();
     selection.clearTransientSelection();
   }, [dimensions.clearDimensionEdit, selection.clearTransientSelection]);
-
   const resetForDocument = useCallback((kind: CadDocumentKind) => {
     clearActiveSketch();
     resetToWorkspace(kind === 'part' ? 'solid' : kind);
   }, [clearActiveSketch, resetToWorkspace]);
 
   const enterSketch = useCallback((sketchId: CadSketchId) => {
-    const currentPart = partDocument(app.getDocument());
-    const target = findSketch(currentPart, sketchId);
+    const target = findSketch(partDocument(app.getDocument()), sketchId);
     if (!target) {
       setNotice('Эскиз больше не существует');
       clearActiveSketch();
@@ -127,31 +87,16 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     setActiveWorkspace('sketch');
     selection.clearTransientSelection();
     setNotice(`Открыт эскиз «${target.name}»`);
-  }, [
-    activateSketch,
-    app,
-    clearActiveSketch,
-    dimensions.clearDimensionEdit,
-    selection.clearTransientSelection,
-    setNotice,
-    setPanel,
-  ]);
+  }, [activateSketch, app, clearActiveSketch, dimensions.clearDimensionEdit, selection.clearTransientSelection, setNotice, setPanel]);
 
   function cancelCommand() {
     editing.resetActiveTool(activeCommand);
-    const stayInSketch = activeCommand === 'sketch.line'
-      || activeCommand === 'sketch.rectangle'
-      || activeCommand === 'sketch.circle'
-      || activeCommand === 'sketch.arc';
+    const stayInSketch = ['sketch.line', 'sketch.rectangle', 'sketch.circle', 'sketch.arc'].includes(activeCommand ?? '');
     setActiveCommand(null);
     dimensions.clearDimensionEdit();
     setPanel('tree');
     selection.clearTransientSelection();
-    setActiveWorkspace(
-      document.kind === 'part'
-        ? stayInSketch ? 'sketch' : 'solid'
-        : document.kind,
-    );
+    setActiveWorkspace(document.kind === 'part' ? (stayInSketch ? 'sketch' : 'solid') : document.kind);
     setNotice('Команда отменена');
   }
 
@@ -159,14 +104,8 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     if (activeCommand === 'sketch.line') return editing.commitLinePreview();
     if (activeCommand === 'sketch.arc') return editing.commitArcPreview();
     if (activeCommand === 'part.sketch.create') return features.commitCreateSketch();
-    if (activeCommand === 'sketch.rectangle') {
-      if (editing.hasRectangleDraft) return editing.commitRectanglePreview();
-      return editing.commitRectangle();
-    }
-    if (activeCommand === 'sketch.circle') {
-      if (editing.hasCircleDraft) return editing.commitCirclePreview();
-      return editing.commitCircle();
-    }
+    if (activeCommand === 'sketch.rectangle') return editing.hasRectangleDraft ? editing.commitRectanglePreview() : editing.commitRectangle();
+    if (activeCommand === 'sketch.circle') return editing.hasCircleDraft ? editing.commitCirclePreview() : editing.commitCircle();
     if (activeCommand === 'part.extrude') return features.commitExtrude();
     if (activeCommand === 'part.cutExtrude') return features.commitCut();
     if (activeCommand === 'part.fillet') return features.commitFillet();
@@ -174,84 +113,42 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
   }
 
   return {
-    activeWorkspace,
-    setActiveWorkspace,
-    activeCommand,
-    activeSketchId,
+    activeWorkspace, setActiveWorkspace, activeCommand, activeSketchId,
     selectedSketchEntityId: selectedEntityId,
-    selectionMode: selection.selectionMode,
-    selectedPick: selection.selectedPick,
+    selectionMode: selection.selectionMode, selectedPick: selection.selectedPick,
     selectedBodyId: selection.selectedBodyId,
-    sketchPlane: features.sketchPlane,
-    setSketchPlane: features.setSketchPlane,
-    rectangleWidth: editing.rectangleWidth,
-    setRectangleWidth: editing.setRectangleWidth,
-    rectangleHeight: editing.rectangleHeight,
-    setRectangleHeight: editing.setRectangleHeight,
-    circleDiameter: editing.circleDiameter,
-    setCircleDiameter: editing.setCircleDiameter,
-    extrudeDistance: features.extrudeDistance,
-    setExtrudeDistance: features.setExtrudeDistance,
-    filletRadius: features.filletRadius,
-    setFilletRadius: features.setFilletRadius,
-    dimensionEditValue: dimensions.dimensionEditValue,
-    setDimensionEditValue: dimensions.setDimensionEditValue,
-    part: features.part,
-    sketch,
-    rectangleReady: features.rectangleReady,
-    circleReady: features.circleReady,
-    hasSolid: features.hasSolid,
-    canExtrude: features.canExtrude,
-    canCut: features.canCut,
-    canFillet: features.canFillet,
-    selectedPointText: selection.selectedPointText,
-    selectedBody: selection.selectedBody,
-    clearTransientSelection: selection.clearTransientSelection,
-    clearSelectedPick: selection.clearSelectedPick,
-    clearSketchEntitySelection: clearEntitySelection,
-    resetTransient,
-    resetToWorkspace,
-    resetForDocument,
-    handleViewportPick: selection.handleViewportPick,
-    handleBodySelect: selection.handleBodySelect,
+    sketchPlane: features.sketchPlane, setSketchPlane: features.setSketchPlane,
+    rectangleWidth: editing.rectangleWidth, setRectangleWidth: editing.setRectangleWidth,
+    rectangleHeight: editing.rectangleHeight, setRectangleHeight: editing.setRectangleHeight,
+    circleDiameter: editing.circleDiameter, setCircleDiameter: editing.setCircleDiameter,
+    extrudeDistance: features.extrudeDistance, setExtrudeDistance: features.setExtrudeDistance,
+    filletRadius: features.filletRadius, setFilletRadius: features.setFilletRadius,
+    dimensionEditValue: dimensions.dimensionEditValue, setDimensionEditValue: dimensions.setDimensionEditValue,
+    part: features.part, sketch, rectangleReady: features.rectangleReady, circleReady: features.circleReady,
+    hasSolid: features.hasSolid, canExtrude: features.canExtrude, canCut: features.canCut, canFillet: features.canFillet,
+    selectedPointText: selection.selectedPointText, selectedBody: selection.selectedBody,
+    clearTransientSelection: selection.clearTransientSelection, clearSelectedPick: selection.clearSelectedPick,
+    clearSketchEntitySelection: clearEntitySelection, resetTransient, resetToWorkspace, resetForDocument,
+    handleViewportPick: selection.handleViewportPick, handleBodySelect: selection.handleBodySelect,
     handleSketchEntitySelect: selection.handleSketchEntitySelect,
-    deleteSelectedSketchEntity: editing.deleteSelectedSketchEntity,
-    translateSketchEntity: editing.translateSketchEntity,
-    enterSketch,
-    beginLine: editing.beginLine,
-    lineDraft: editing.lineDraft,
-    lineCommitting: editing.lineCommitting,
-    handleSketchLinePointMove: editing.handleSketchLinePointMove,
-    handleSketchLinePoint: editing.handleSketchLinePoint,
-    rectangleDraft: editing.rectangleDraft,
-    rectangleCommitting: editing.rectangleCommitting,
-    handleSketchRectanglePointMove: editing.handleSketchRectanglePointMove,
-    handleSketchRectanglePoint: editing.handleSketchRectanglePoint,
-    circleDraft: editing.circleDraft,
-    circleCommitting: editing.circleCommitting,
-    handleSketchCirclePointMove: editing.handleSketchCirclePointMove,
-    handleSketchCirclePoint: editing.handleSketchCirclePoint,
-    beginArc: editing.beginArc,
-    arcDraft: editing.arcDraft,
-    arcCommitting: editing.arcCommitting,
-    handleSketchArcPointMove: editing.handleSketchArcPointMove,
-    handleSketchArcPoint: editing.handleSketchArcPoint,
-    beginCreateSketch: features.beginCreateSketch,
-    commitCreateSketch: features.commitCreateSketch,
-    beginRectangle: editing.beginRectangle,
-    commitRectangle: editing.commitRectangle,
-    beginCircle: editing.beginCircle,
-    commitCircle: editing.commitCircle,
-    finishSketch: editing.finishSketch,
-    beginExtrude: features.beginExtrude,
-    commitExtrude: features.commitExtrude,
-    beginCut: features.beginCut,
-    commitCut: features.commitCut,
-    beginFillet: features.beginFillet,
-    commitFillet: features.commitFillet,
-    beginDimensionEdit: dimensions.beginDimensionEdit,
-    commitDimensionEdit: dimensions.commitDimensionEdit,
-    cancelCommand,
-    commitActiveCommand,
+    deleteSelectedSketchEntity: entityMutations.deleteSelectedSketchEntity,
+    translateSketchEntity: entityMutations.translateSketchEntity,
+    enterSketch, beginLine: editing.beginLine,
+    lineDraft: editing.lineDraft, lineCommitting: editing.lineCommitting,
+    handleSketchLinePointMove: editing.handleSketchLinePointMove, handleSketchLinePoint: editing.handleSketchLinePoint,
+    rectangleDraft: editing.rectangleDraft, rectangleCommitting: editing.rectangleCommitting,
+    handleSketchRectanglePointMove: editing.handleSketchRectanglePointMove, handleSketchRectanglePoint: editing.handleSketchRectanglePoint,
+    circleDraft: editing.circleDraft, circleCommitting: editing.circleCommitting,
+    handleSketchCirclePointMove: editing.handleSketchCirclePointMove, handleSketchCirclePoint: editing.handleSketchCirclePoint,
+    beginArc: editing.beginArc, arcDraft: editing.arcDraft, arcCommitting: editing.arcCommitting,
+    handleSketchArcPointMove: editing.handleSketchArcPointMove, handleSketchArcPoint: editing.handleSketchArcPoint,
+    beginCreateSketch: features.beginCreateSketch, commitCreateSketch: features.commitCreateSketch,
+    beginRectangle: editing.beginRectangle, commitRectangle: editing.commitRectangle,
+    beginCircle: editing.beginCircle, commitCircle: editing.commitCircle, finishSketch: editing.finishSketch,
+    beginExtrude: features.beginExtrude, commitExtrude: features.commitExtrude,
+    beginCut: features.beginCut, commitCut: features.commitCut,
+    beginFillet: features.beginFillet, commitFillet: features.commitFillet,
+    beginDimensionEdit: dimensions.beginDimensionEdit, commitDimensionEdit: dimensions.commitDimensionEdit,
+    cancelCommand, commitActiveCommand,
   };
 }
