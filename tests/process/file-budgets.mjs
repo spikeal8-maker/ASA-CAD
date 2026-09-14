@@ -2,80 +2,27 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 
-const KB = 1024;
+const policyPath = 'spec/process/repository-health.v1.json';
+assert.ok(fs.existsSync(policyPath), `${policyPath} must remain present`);
 
-const frozenCeilings = new Map([
-  ['src/web/App.tsx', 18_023],
-  ['src/web/CadViewport.tsx', 27_846],
-  ['src/web/usePartSketchWorkspace.ts', 9_468],
-  ['src/web/usePartSelectionController.ts', 3_227],
-  ['src/web/useSketchEditingController.ts', 9_586],
-  ['src/web/useSketchDimensionController.ts', 3_799],
-  ['src/web/usePartFeatureController.ts', 9_333],
-  ['src/web/PartSketchWorkspaceModel.ts', 1_227],
-  ['src/web/PartSketchWorkspaceTypes.ts', 140],
-  ['src/web/PartModelStage.tsx', 3_423],
-  ['src/web/SketchEditingStage.tsx', 6_477],
-  ['src/runtime/OpenCascadePartRuntime.ts', 20_347],
-  ['src/application/commands/SketchCommandHandlers.ts', 15_384],
-]);
+const policy = JSON.parse(fs.readFileSync(policyPath, 'utf8'));
+assert.equal(policy.schemaVersion, 1, 'Unsupported repository-health policy schema');
 
-const policies = [
-  {
-    name: 'agent entry/status document',
-    target: 5 * KB,
-    hard: 8 * KB,
-    matches: (file) => file === 'AGENTS.md' || file === 'docs/STATUS.md',
-  },
-  {
-    name: 'focused narrative spec',
-    target: 12 * KB,
-    hard: 20 * KB,
-    matches: (file) => file.startsWith('docs/') && file.endsWith('.md'),
-  },
-  {
-    name: 'Sketch command handler',
-    target: 10 * KB,
-    hard: 16 * KB,
-    matches: (file) => file.startsWith('src/application/commands/') && file.endsWith('.ts'),
-  },
-  {
-    name: 'runtime/adapter',
-    target: 14 * KB,
-    hard: 24 * KB,
-    matches: (file) => file.startsWith('src/runtime/') && file.endsWith('.ts'),
-  },
-  {
-    name: 'UI/controller',
-    target: 10 * KB,
-    hard: 20 * KB,
-    matches: (file) => file.startsWith('src/web/') && /\.(?:ts|tsx)$/.test(file),
-  },
-  {
-    name: 'domain CSS',
-    target: 10 * KB,
-    hard: 20 * KB,
-    matches: (file) => file.startsWith('src/web/') && file.endsWith('.css'),
-  },
-  {
-    name: 'M3 browser regression',
-    target: 8 * KB,
-    hard: 14 * KB,
-    matches: (file) => file.startsWith('tests/m3/') && file.endsWith('-browser.mjs'),
-  },
-];
+const frozenCeilings = new Map(
+  Object.entries(policy.frozenCeilings ?? {}).map(([file, bytes]) => [file, Number(bytes)]),
+);
+const grandfatheredHardCeilings = new Map(
+  Object.entries(policy.grandfatheredHardCeilings ?? {}).map(([file, bytes]) => [file, Number(bytes)]),
+);
+const policies = policy.fileBudgets ?? [];
 
-const policyGrandfathering = new Map([
-  ['docs/UI_COMMAND_SPEC.md', 31_166],
-]);
-
-const roots = ['AGENTS.md', 'docs', 'src/web', 'src/runtime', 'src/application/commands', 'tests/m3'];
+const roots = ['AGENTS.md', 'docs', 'src/web', 'src/runtime', 'src/application', 'src/contracts', 'tests'];
 const files = [];
 
 for (const root of roots) {
   if (!fs.existsSync(root)) continue;
   const info = fs.statSync(root);
-  if (info.isFile()) files.push(root.replaceAll('\\', '/'));
+  if (info.isFile()) files.push(normalize(root));
   else walk(root, files);
 }
 
@@ -83,53 +30,86 @@ const warnings = [];
 const checked = new Set();
 
 for (const file of files) {
-  const normalized = file.replaceAll('\\', '/');
-  const policy = policies.find((candidate) => candidate.matches(normalized));
-  if (!policy) continue;
+  const normalized = normalize(file);
+  const budget = policies.find((candidate) => matchesBudget(candidate, normalized));
+  if (!budget) continue;
 
-  const size = canonicalUtf8Size(file);
+  const metrics = canonicalMetrics(file);
   checked.add(normalized);
 
   const frozen = frozenCeilings.get(normalized);
   if (frozen != null) {
     assert.ok(
-      size <= frozen,
-      `${normalized} grew to ${size} canonical UTF-8 bytes; frozen maintenance ceiling is ${frozen}. Extract responsibility instead of raising the ceiling.`,
+      metrics.bytes <= frozen,
+      `${normalized} grew to ${metrics.bytes} canonical UTF-8 bytes; frozen maintenance ceiling is ${frozen}. Extract responsibility instead of raising the ceiling.`,
     );
   }
 
-  const grandfathered = policyGrandfathering.get(normalized);
-  const hard = frozen ?? grandfathered ?? policy.hard;
+  const grandfathered = grandfatheredHardCeilings.get(normalized);
+  const hard = frozen ?? grandfathered ?? Number(budget.hardBytes);
   assert.ok(
-    size <= hard,
-    `${normalized} is ${size} canonical UTF-8 bytes; ${policy.name} hard limit is ${hard}. Split the file into focused owners.`,
+    metrics.bytes <= hard,
+    `${normalized} is ${metrics.bytes} canonical UTF-8 bytes; ${budget.description} hard limit is ${hard}. Split the file into focused owners.`,
   );
 
-  if (size > policy.target) {
-    warnings.push(`${normalized}: ${size} canonical UTF-8 bytes > ${policy.target}-byte ${policy.name} target`);
+  if (metrics.bytes > Number(budget.targetBytes)) {
+    warnings.push(
+      `${normalized}: ${metrics.bytes} canonical UTF-8 bytes > ${budget.targetBytes}-byte ${budget.description} target`,
+    );
+  }
+
+  if (budget.lineReviewTarget != null && metrics.lines > Number(budget.lineReviewTarget)) {
+    warnings.push(
+      `${normalized}: ${metrics.lines} logical lines > ${budget.lineReviewTarget}-line ${budget.description} review target`,
+    );
   }
 }
 
 for (const [file, ceiling] of frozenCeilings) {
-  assert.ok(checked.has(file), `Frozen hotspot disappeared from budget scan: ${file}`);
-  assert.ok(canonicalUtf8Size(file) <= ceiling);
+  assert.ok(fs.existsSync(file), `Frozen hotspot disappeared from repository without updating policy: ${file}`);
+  assert.ok(checked.has(file), `Frozen hotspot is no longer covered by a file-budget policy: ${file}`);
+  assert.ok(canonicalMetrics(file).bytes <= ceiling);
+}
+
+for (const [file, ceiling] of grandfatheredHardCeilings) {
+  assert.ok(fs.existsSync(file), `Grandfathered file disappeared without updating policy: ${file}`);
+  assert.ok(checked.has(file), `Grandfathered file is no longer covered by a file-budget policy: ${file}`);
+  assert.ok(canonicalMetrics(file).bytes <= ceiling);
 }
 
 for (const warning of warnings) console.warn(`File budget warning: ${warning}`);
 
 console.log(
-  `ASA-CAD file budgets PASS (${checked.size} files checked; ${frozenCeilings.size} hotspots frozen).`,
+  `ASA-CAD file budgets PASS (${checked.size} files checked; ${frozenCeilings.size} hotspots frozen; ${grandfatheredHardCeilings.size} hard-limit exceptions).`,
 );
 
-function canonicalUtf8Size(file) {
+function matchesBudget(budget, file) {
+  if (Array.isArray(budget.exactFiles) && budget.exactFiles.includes(file)) return true;
+  if (Array.isArray(budget.exactFiles)) return false;
+  if (budget.prefix && !file.startsWith(budget.prefix)) return false;
+  if (budget.suffix && !file.endsWith(budget.suffix)) return false;
+  if (Array.isArray(budget.extensions) && !budget.extensions.some((extension) => file.endsWith(extension))) {
+    return false;
+  }
+  return Boolean(budget.prefix || budget.suffix || budget.extensions);
+}
+
+function canonicalMetrics(file) {
   const text = fs.readFileSync(file, 'utf8').replace(/\r\n?/g, '\n');
-  return Buffer.byteLength(text, 'utf8');
+  return {
+    bytes: Buffer.byteLength(text, 'utf8'),
+    lines: text.length === 0 ? 0 : text.split('\n').length,
+  };
+}
+
+function normalize(file) {
+  return file.replaceAll('\\', '/');
 }
 
 function walk(root, output) {
   for (const entry of fs.readdirSync(root, { withFileTypes: true })) {
     const full = path.join(root, entry.name);
     if (entry.isDirectory()) walk(full, output);
-    else if (entry.isFile()) output.push(full.replaceAll('\\', '/'));
+    else if (entry.isFile()) output.push(normalize(full));
   }
 }

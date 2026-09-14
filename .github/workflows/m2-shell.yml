@@ -15,6 +15,7 @@ on:
       - src/application/**
       - src/contracts/**
       - docs/**
+      - spec/process/**
       - spec/ui/command-registry.v1.json
       - spec/ui/layout-registry.v2.json
       - spec/ui/viewport-matrix.v1.json
@@ -37,6 +38,7 @@ on:
       - src/application/**
       - src/contracts/**
       - docs/**
+      - spec/process/**
       - spec/ui/command-registry.v1.json
       - spec/ui/layout-registry.v2.json
       - spec/ui/viewport-matrix.v1.json
@@ -66,7 +68,13 @@ jobs:
       - name: Verify PR/repository hygiene
         env:
           ASA_PR_COMMIT_COUNT: ${{ github.event.pull_request.commits }}
+          ASA_PR_CHANGED_FILES: ${{ github.event.pull_request.changed_files }}
+          ASA_PR_ADDITIONS: ${{ github.event.pull_request.additions }}
+          ASA_PR_DELETIONS: ${{ github.event.pull_request.deletions }}
         run: node tests/process/pr-hygiene.mjs
+
+      - name: Verify tracked repository artifacts
+        run: node tests/process/repository-hygiene.mjs
 
       - name: Verify bot-friendly file budgets
         run: node tests/process/file-budgets.mjs

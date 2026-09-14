@@ -11,11 +11,11 @@ Read these entry points first:
 3. `docs/ARCHITECTURE.md` — dependency/runtime/persistence boundaries;
 4. the GitHub issue for the active task.
 
-If `STATUS.md` names a blocking gate, read that gate/issue before coding and do not start later feature work. Then use `docs/DOCS_POLICY.md` to open only the focused spec/registry needed for the subsystem. Do not preload the documentation tree.
+If `STATUS.md` names a blocking gate, read it before coding and do not start later feature work. Then use `docs/DOCS_POLICY.md` to open only the focused spec/registry needed for the subsystem. Do not preload the documentation tree.
+
+`docs/DEVELOPMENT_QUALITY_GATES.md` is the binding audit/maintenance contract. Read it when a quality gate, maintenance task, budget warning, repository cleanup or cross-repository contract is involved.
 
 ## Product and dependency invariants
-
-ASA-CAD is a browser-native engineering CAD and future ASA Lab module. Document kinds are Part, Assembly, Drawing, Fragment, Specification and Text.
 
 Normal CAD geometry/solving runs on the active client. ASA Lab owns identity/classes/projects/persistence/versions/assignments/submissions/review; it is not the normal CAD-compute server.
 
@@ -42,10 +42,29 @@ Visible Toubkal UI is diagnostic/reference only.
 - Do not break saved-document compatibility silently.
 - Do not copy proprietary KOMPAS artwork/icons.
 - Do not expose production controls without an implemented command.
-- Do not invent command IDs/layout/mobile placement when registries already define them.
-- Do not create a separate mobile command/document model or delegate mobile commands through desktop DOM clicks.
-- Do not solve responsive layout with unreadable text or whole-app transforms that break picking.
-- Do not bypass a blocking execution/maintenance gate.
+- Do not create a second mobile command/document model or delegate mobile actions through desktop DOM clicks.
+- Do not bypass a blocking feature, maintenance, quality or integration gate.
+- Do not raise a file ceiling merely to make CI pass.
+- Do not leave temporary/generated/review artifacts tracked.
+
+## Permanent development loop
+
+Every permanent vertical slice follows:
+
+```text
+contract/scope
+-> smallest end-to-end slice
+-> focused regression
+-> Slice Quality Gate
+-> cleanup/refactor if required
+-> affected browser/Docker/compatibility gates
+-> issue + STATUS synchronization
+-> next slice
+```
+
+Every three accepted slices and every milestone boundary also require the Full Repository Health Audit defined in `docs/DEVELOPMENT_QUALITY_GATES.md`.
+
+A RED quality result blocks feature work. A YELLOW debt item must be explicit, frozen/non-growing and removed before the next milestone boundary.
 
 ## Vertical-slice pattern
 
@@ -54,62 +73,58 @@ Each permanent command is implemented end to end:
 ```text
 typed ASA command/API
 -> parameter/selection contract
+-> document/runtime behavior
 -> registry/layout metadata
 -> desktop/mobile presentation
 -> deterministic fixture
 -> focused regression
+-> save/reopen compatibility where applicable
+-> repository-health audit
 -> acceptance/status update
 ```
 
-Desktop and mobile consume the same typed action model. The central work area owns global selection/navigation policy.
+Desktop and mobile consume the same typed action model. Direct Sketch tools compose `SketchInteractionSurface`; tool layers own only tool state, ghost rendering and typed intent.
 
-Direct Sketch tools must compose `SketchInteractionSurface`; tool layers own only tool state, ghost rendering and typed intent. They must not duplicate pointer/touch/pan/pinch/wheel policy.
+## Code size, ownership and repository health
 
-## Code-size and ownership budgets
+`spec/process/repository-health.v1.json` is the machine-readable policy. Required CI uses `tests/process/file-budgets.mjs`, `tests/process/repository-hygiene.mjs` and `tests/process/pr-hygiene.mjs`.
 
-Bot-friendly code size is a required architecture property, not a style preference. `tests/process/file-budgets.mjs` is authoritative and runs in required CI.
+Rules:
 
-Default targets for hand-written files:
-
-| Kind | Target | Hard limit |
-| --- | ---: | ---: |
-| UI/controller `.ts/.tsx` | <= 10 KB | 20 KB |
-| runtime/adapter `.ts` | <= 14 KB | 24 KB |
-| command-handler `.ts` | <= 10 KB | 16 KB |
-| domain CSS | <= 10 KB | 20 KB |
-| M3 browser test | <= 8 KB | 14 KB |
-| agent entry/status doc | <= 5 KB | 8 KB |
-| focused narrative spec | <= 12 KB | 20 KB |
-
-Machine registries, fixture datasets, vendor and lock/generated files are exempt.
-
-Existing files above a target may be grandfathered only at the explicit byte ceiling in `file-budgets.mjs`. A grandfathered file may shrink but must never grow. When an extraction reduces it, lower the ceiling in the same PR.
-
-Before adding responsibility to a file:
-1. check its owner and budget;
-2. if the responsibility is a new family, create/extend a focused owner;
-3. if the target would be exceeded, extract first instead of increasing the ceiling;
-4. never raise a grandfathered ceiling to make CI pass.
+1. Check the owner and budget before adding responsibility.
+2. New responsibility family -> focused owner; do not grow a god-object.
+3. Files above target are review signals; hard-limit violations block merge.
+4. Grandfathered hotspots may only shrink. Lower the frozen ceiling after extraction.
+5. Byte budget is authoritative; line count is a secondary review signal.
+6. Vendor, generated registries and deliberate fixture datasets are not ordinary handwritten-code budgets.
+7. Remove dead/duplicate paths and obsolete temporary files during the required audit cycle.
+8. Do not add another status/spec summary when an existing source of truth owns it.
 
 Expected ownership:
-- document/runtime session -> controller/hook/service;
+- document/runtime session -> controller/service;
 - Sketch editing -> focused Sketch controller/stage;
-- Part features -> focused Part feature controller/runtime evaluator;
+- Part features -> focused feature controller/runtime evaluator;
 - selection -> focused selection controller;
-- shell presentation -> shell component;
+- shell -> shell components;
 - Tree/Parameters -> focused panels;
-- viewport interaction -> viewport/input modules;
-- persistence -> `CadProjectHost` / session layer.
+- viewport input/camera -> viewport modules;
+- persistence/recovery -> `CadProjectHost` / session layer.
 
-`App.tsx`, `usePartSketchWorkspace.ts`, `CadViewport.tsx`, `OpenCascadePartRuntime.ts`, `SketchCommandHandlers.ts` and monolithic CSS are ratcheted hotspots until maintenance issue #57 closes.
+Current frozen hotspots include `App.tsx`, `CadViewport.tsx`, `OpenCascadePartRuntime.ts` and `SketchCommandHandlers.ts`; exact ceilings live only in the machine policy.
 
 ## Protected regressions
 
-The protected Part workflow must remain green:
+Permanent protected Part workflow:
 
 `Sketch 60x40 -> Extrude 10 -> diameter-12 through cut -> Fillet R1 -> edit 60 to 80 -> rebuild -> save -> reopen -> edit again`.
 
 After M4A, protected Assembly becomes a second permanent gate.
+
+## ASA Lab contract preflight
+
+Do not wait until M5 to discover Project Core incompatibility. Before broad M4 completion, maintain cross-repository compatibility evidence for project identity, `CadDocument` envelope/schema, load/save, `baseRevision`, `mutationId`, `409` conflicts, snapshots/versions, same-origin session and unsupported-version behavior.
+
+M5 integration is blocked while this contract preflight is RED.
 
 ## Run/test
 
@@ -122,11 +137,7 @@ npm run dev
 
 Default ASA dev URL: `http://localhost:8090`.
 
-Vendor diagnostic UI only:
-
-```bash
-npm run dev:vendor
-```
+Vendor diagnostic UI only: `npm run dev:vendor`.
 
 Release-like test:
 
@@ -138,30 +149,21 @@ Default Docker URL: `http://localhost:8088`.
 
 For every change run the cheapest affected tests first, then the required shell/browser/Docker/vendor gates named by the active issue.
 
-## Change discipline
+## Change and PR discipline
 
 For every change:
+
 1. read current status + active issue/gate;
 2. change the narrowest owner;
 3. preserve typed boundaries and saved-document compatibility;
 4. add/update the smallest deterministic regression;
-5. run affected gates;
+5. run affected quality/functional gates;
 6. update registry/spec only when behavior/contract changed;
-7. when a milestone/gate changes state, update the issue and `docs/STATUS.md` in the same review change that establishes that state.
+7. when milestone/gate state changes, update its issue and `docs/STATUS.md` in the same review change.
 
-Do not use a later status-only PR as the normal workflow; it caused status drift. Historical issue comments may carry detailed logs, while `STATUS.md` stays short.
+One PR = one vertical slice or one focused maintenance concern. Review branch hard limit is 6 commits. Remove one-shot tools before review. If a repair crosses ownership boundaries, split it or classify it explicitly as architecture/maintenance work.
 
-## PR discipline
-
-A review branch is an artifact, not a transcript.
-
-- One PR = one vertical slice or one focused maintenance concern.
-- **Hard limit: 6 commits.** Rebuild/squash a noisy scratch branch before review.
-- Remove one-shot codemod/review-fix scripts/workflows before review.
-- If a repair crosses ownership boundaries, split the work.
-- Relevant browser/Docker suites must be green before merge even when path-filtered.
-- Close superseded branches/PRs/issues.
-- Use `.github/PULL_REQUEST_TEMPLATE.md`.
+Use `.github/PULL_REQUEST_TEMPLATE.md`. Close superseded branches/PRs/issues.
 
 ## Upstream
 

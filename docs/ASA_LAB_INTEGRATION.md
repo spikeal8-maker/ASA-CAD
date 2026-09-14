@@ -60,13 +60,13 @@ previewKind: scene
 categories: design, engineering
 ```
 
-`CadDocument` itself declares:
+The public `CadDocument` union supports:
 
 ```text
-kind: part | assembly
+kind: part | assembly | drawing | fragment | specification | text
 ```
 
-A single ASA Lab CAD module therefore supports both **Деталь** and **Сборка**.
+M5 initially needs the document kinds that are implemented at that stage, while later Drawing/Fragment/Specification/Text reuse the same module identity and Project Core boundary rather than creating new persistence systems.
 
 ## Runtime loading
 
@@ -166,12 +166,44 @@ Editing a source Part later must not silently alter an already pinned Assembly s
 7. ASA Lab remains cross-device authority.
 8. Opening on another device reloads the document and recomputes locally.
 
+## Pre-M5 cross-repository contract preflight
+
+M5 must not be the first time ASA-CAD and ASA Lab discover whether their APIs agree.
+
+A compatibility lane starts before broad M4 completion and remains green while either repository changes the Project Core/CAD boundary.
+
+Both repositories must independently validate the same golden contract fixtures for at least:
+
+- `moduleKey`, project type and route identity;
+- native `CadDocument` envelope and schema version;
+- load/open success and not-found/forbidden behavior;
+- save request/response payload;
+- `baseRevision` optimistic concurrency;
+- `mutationId` retry/idempotency semantics;
+- `409` revision-conflict response and editor recovery path;
+- snapshot source-revision semantics;
+- immutable/pinned version semantics;
+- same-origin session/cookie expectations;
+- unsupported/newer schema version failure;
+- linked-document resolution contract needed by Assembly and later Drawing/Specification.
+
+Recommended proof pattern:
+
+```text
+shared/golden JSON fixture
+-> ASA-CAD host-contract test
+-> ASA Lab Project Core contract test
+-> optional staging E2E
+```
+
+A contract change is not complete in one repository while the other repository still fails the shared fixture. Drift is a RED quality-gate result and blocks broad integration work.
+
 ## Classes, courses, assignments and submissions
 
 ASA Lab owns the educational workflow.
 
 - A teacher assignment references `moduleKey = cad`.
-- Assignment/template metadata may specify initial document kind: `part` or `assembly`.
+- Assignment/template metadata may specify initial document kind according to the implemented ASA-CAD capability.
 - Starting work creates/resolves the learner CAD project through normal Project Core.
 - Autosave writes to that project.
 - Submission pins a project revision/version.
@@ -221,7 +253,7 @@ Later runtime/threading improvements may remove this requirement, but the public
 The same project format is used on every supported device.
 
 - Full-capability desktop/laptop: reference editable CAD environment.
-- Supported tablet/phone: same Part/Assembly documents and local calculation, with responsive panels and possibly lower visual tessellation/complexity limits.
+- Supported tablet/phone: same native CAD documents and local calculation, with responsive panels and possibly lower visual tessellation/complexity limits.
 - Unsupported device: explicit failure/read-only access where possible.
 
 No device silently falls back to server-side CAD compute.
@@ -230,11 +262,13 @@ No device silently falls back to server-side CAD compute.
 
 Integration is accepted only when:
 
+- M3X/pre-M5 shared contract fixtures are green in both ASA-CAD and ASA Lab;
 - `/cad/*` is served from the pinned `asa-cad-web` container through the ASA Lab origin;
 - ordinary ASA Lab pages do not download OpenCascade WASM;
 - one ASA Lab session/login works in CAD without second authentication;
 - browser CPU/RAM perform Part and Assembly mathematics;
 - server requests during modeling are persistence/education requests, not geometry RPCs;
+- `baseRevision`/`mutationId` conflict and retry behavior passes staging E2E;
 - Part save/reopen works cross-device;
 - Assembly save/reopen preserves exact component versions and mates;
 - assignments/submissions/teacher review use existing ASA Lab flows;
@@ -242,4 +276,4 @@ Integration is accepted only when:
 - unsupported hardware fails safely;
 - the KOMPAS-oriented UI remains independent from Toubkal UI internals.
 
-See `docs/RUN_AND_DEPLOY.md`, `docs/ASSEMBLIES.md` and `docs/SYSTEM_SPEC.md`.
+See `docs/RUN_AND_DEPLOY.md`, `docs/ASSEMBLIES.md`, `docs/DEVELOPMENT_QUALITY_GATES.md` and `docs/SYSTEM_SPEC.md`.

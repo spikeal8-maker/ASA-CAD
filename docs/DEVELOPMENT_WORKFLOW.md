@@ -1,47 +1,49 @@
 # ASA-CAD development and visual review workflow
 
-This document answers a practical question: how the owner can run ASA-CAD separately from ASA Lab, look at a concrete page/state, ask an agent to change it, and verify the result before integration.
+This document defines the practical standalone development/review loop. Current phase and next coding task remain in `STATUS.md`; quality/audit cadence is defined in `DEVELOPMENT_QUALITY_GATES.md`.
 
-## 1. Two local run modes
+## 1. Product development mode
 
-### Mode A — fast development / UI editing
-
-Use this while changing layout, controls, panels, styles and command presentation.
-
-First install once:
+Install pinned vendor/toolchain dependencies once:
 
 ```bash
 npm run install:vendor
 ```
 
-Then:
+Run the **ASA-owned product UI**:
 
 ```bash
 npm run dev
 ```
 
-Current imported baseline opens at:
-
-```text
-http://localhost:8080
-```
-
-The dev server uses hot reload. A source change recompiles and the browser updates without rebuilding the Docker image.
-
-This is the preferred loop for requests such as:
-
-```text
-"Open the Part editor. Make the model tree 40 px narrower,
-move command parameters to the right panel,
-and make the top command group closer to our KOMPAS reference."
-```
-
-### Mode B — standalone Docker / production-like verification
-
-Use this after a meaningful change or before accepting a milestone:
+Equivalent explicit command:
 
 ```bash
-docker compose up --build
+npm run dev:asa
+```
+
+Default address:
+
+```text
+http://localhost:8090
+```
+
+Use this for normal shell, Sketch, Part, responsive and interaction development. Hot reload is the fast feedback loop.
+
+The old Toubkal surface is diagnostic/reference only:
+
+```bash
+npm run dev:vendor
+```
+
+Do not implement permanent ASA visual/product behavior by repainting vendor UI components.
+
+## 2. Release-like standalone Docker
+
+After a meaningful runtime/UI change or before accepting a gate:
+
+```bash
+npm run docker:up
 ```
 
 Open:
@@ -50,209 +52,140 @@ Open:
 http://localhost:8088
 ```
 
-Stop:
+Stop with:
 
 ```bash
-docker compose down
+npm run docker:down
 ```
 
-This validates the release-like static build, Caddy serving, WASM delivery and CAD-specific browser-isolation headers.
+Docker validates the production-like static build, Caddy routing, WASM assets and CAD-specific browser headers. It is not the normal pixel-by-pixel editing loop.
 
-Do not use Docker rebuild as the normal pixel-by-pixel UI editing loop.
+## 3. Permanent source boundary
 
-## 2. Current versus target source boundary
-
-### Current state
-
-The standalone visual app is still the imported Toubkal baseline under:
+Current product direction is already ASA-owned:
 
 ```text
-vendor/toubkal/
+ASA UI
+  -> typed action/command/view contracts
+  -> CadApplication / CadDocument
+  -> ASA adapters
+  -> OpenCascade / PlaneGCS / isolated vendor-derived services
 ```
 
-The root `npm run dev` delegates to that baseline. It is useful to inspect and prove the kernel/runtime, but its visible shell is not the ASA-CAD product target.
+Permanent product code lives outside `vendor/toubkal/`. Vendor source is implementation/reference input, not the public product architecture.
 
-### Target state after M1/M2
+A visual correction must change the narrowest ASA-owned shell/component/token owner unless the task is explicitly a vendor/kernel investigation.
 
-ASA-owned source will become the editable product surface. Product UI must live outside vendor code, conceptually along lines such as:
+## 4. Deterministic review routes
 
-```text
-src/ or apps/cad-web/
-  application/
-  documents/
-  shell/
-  part/
-  assembly/
-  drawing/
-  fragment/
-  specification/
-  text/
-  styles/
-```
+Use stable dev fixtures instead of manually rebuilding the same model for each review.
 
-Exact folder names are selected during implementation, but the boundary is mandatory:
-
-```text
-ASA UI -> CadApplication -> adapters -> vendor/kernel
-```
-
-Agents must not implement long-term visual corrections by continually repainting `vendor/toubkal` components.
-
-## 3. How the owner gives a visual correction task
-
-A good task identifies four things:
-
-1. **URL/state** — where to look;
-2. **document kind** — Part, Assembly, Drawing, etc.;
-3. **what is wrong**;
-4. **what outcome is required**.
-
-Examples:
-
-```text
-http://localhost:8080
-Document: Part
-The header is too tall and the model tree is too wide.
-Make the command area denser and keep the viewport larger.
-```
-
-or later:
-
-```text
-http://localhost:8088/cad/projects/demo-assembly
-Document: Assembly
-Component tree is hard to read. Mates should be a separate section,
-and Create Part must be in the Components command group.
-```
-
-A screenshot is useful for visual defects, but the URL/state remains important because the agent should inspect the actual implementation rather than only redraw a screenshot.
-
-## 4. Stable review/demo routes
-
-As the ASA-owned shell appears, development must provide deterministic demo routes/fixtures so the owner can always open the same states without manually rebuilding a model first.
-
-Target examples:
+Current Part routes include:
 
 ```text
 /dev/part/empty
+/dev/part/sketch
+/dev/part/extrude
 /dev/part/reference
-/dev/assembly/reference
-/dev/drawing/reference
-/dev/fragment/reference
-/dev/specification/reference
-/dev/text/reference
+/dev/part/rebuild-error
 ```
 
-These routes are development-only and backed by checked-in fixtures. They are not public production content.
+Future document kinds add equivalent deterministic fixtures as they become real ASA editors.
 
-Purpose:
-- visual review;
-- screenshot regression;
-- agent tasks with an exact state;
-- responsive checks;
-- fast reproduction of bugs.
+Fixtures are development/test states, not public user content.
 
-## 5. Required visual fixtures
+They exist for:
+- owner visual review;
+- browser regression;
+- responsive/DPI/zoom checks;
+- exact bug reproduction;
+- low-context agent tasks.
 
-At minimum create fixtures for:
+## 5. How to give a visual correction task
 
-### Part
-- empty Part;
-- sketch editing;
-- fully constrained sketch;
-- feature parameter editing;
-- protected reference Part;
-- rebuild warning/error.
+A useful task identifies:
 
-### Assembly
-- empty Assembly;
-- inserted components;
-- active mate command;
-- contextual Part editing inside Assembly;
-- unresolved mate/reference;
-- protected reference Assembly.
+1. exact URL/fixture state;
+2. document/workspace;
+3. observed defect;
+4. required outcome or KOMPAS reference state.
 
-### Drawing
-- empty A4 sheet;
-- drawing with associative views;
-- dimensions/annotations;
-- multi-sheet state.
+Example:
 
-### Fragment
-- reusable 2D geometry example.
+```text
+URL: /dev/part/sketch
+Workspace: Part -> Sketch
+The top command area is too tall at 1366x768 and the viewport becomes too small.
+Keep the KOMPAS-oriented hierarchy, reduce chrome height and preserve readable labels.
+```
 
-### Specification
-- assembly-generated populated table.
-
-### Text
-- multi-page technical note example.
+Screenshots are useful evidence, but the deterministic route remains important because the agent should inspect and test the real implementation.
 
 ## 6. Styling/editing architecture
 
-Product styling must be split into reusable design tokens and document-specific components.
+Use shared tokens for genuinely global appearance and focused domain styles for subsystem behavior.
 
-The owner should be able to request:
+Global requests such as shell density should change shared tokens/layout owners. Local requests such as Assembly tree row density must not require patching unrelated Part/Sketch styles.
 
-```text
-"Make the whole CAD shell denser"
-```
+Do not recreate a monolithic stylesheet. CSS ownership is subject to repository-health budgets just like TS/TSX owners.
 
-and have the agent change shared tokens rather than manually patching 40 unrelated CSS files.
+## 7. Required development loop
 
-Likewise:
+Normal product loop:
 
 ```text
-"Only in Assembly, make component rows more compact"
+open deterministic state
+-> implement the smallest vertical slice/correction
+-> run focused test
+-> Slice Quality Gate
+-> split/clean if the change introduced debt
+-> owner/browser review where applicable
+-> release-like Docker regression where required
+-> sync issue/STATUS if state changed
+-> next slice
 ```
 
-should change an Assembly component/tree style, not the whole application.
-
-See `docs/FILES_SETTINGS_AND_EXPORT.md` for the appearance/settings contract.
-
-## 7. Review loop
-
-Normal visual-development loop:
-
-```text
-owner opens dev URL
--> identifies a concrete problem
--> agent edits ASA-owned UI source
--> affected unit/visual tests run
--> dev server hot reloads
--> owner reviews
--> when accepted, Docker image is rebuilt
--> Docker smoke/E2E runs
--> change is ready for milestone acceptance
-```
+Do not defer cleanup until the end of a long milestone. Every three accepted slices and every milestone boundary require the broader Full Repository Health Audit from `DEVELOPMENT_QUALITY_GATES.md`.
 
 ## 8. Testing layers
 
-Every feature should have the cheapest appropriate test first.
+Use the cheapest relevant layer first:
 
-1. Type/unit tests — document commands, serializers, solvers/adapters.
-2. CAD regression tests — exact geometry/recompute/reference behavior.
-3. Browser component/interaction tests — commands and panels.
-4. Visual regression — stable fixture screenshots.
-5. Docker browser E2E — production-like image.
-6. ASA Lab integration E2E — only after standalone behavior is proven.
+1. process/repository-health checks;
+2. type/unit/contract tests;
+3. CAD geometry/recompute/reference tests;
+4. browser interaction tests;
+5. visual fixture/regression checks;
+6. Docker browser E2E;
+7. ASA Lab shared-contract/staging E2E when host/persistence boundaries are involved.
 
-A screenshot alone never proves CAD correctness. A geometry test alone never proves the interface is usable. Both layers are required.
+Common local checks:
 
-## 9. What the owner should not need
+```bash
+npm run test:process
+npm test
+npm run check
+```
 
-For normal UI review the owner should not have to:
-- run ASA Lab;
+A screenshot alone never proves CAD correctness. A geometry test alone never proves UI behavior. A green feature test does not override a RED repository-health result.
+
+## 9. Owner review should stay low-friction
+
+For ordinary standalone review the owner should not need to:
+- run the whole ASA Lab stack;
 - start PostgreSQL;
 - configure classes/accounts;
 - rebuild Docker after every CSS change;
-- know OpenCascade internals;
-- navigate vendor source code;
-- manually recreate the same test model every time.
+- understand OpenCascade internals;
+- navigate vendor UI source;
+- manually recreate the same model repeatedly.
 
-Standalone fixtures and the dev server exist specifically to remove that friction.
+Standalone fixtures and the ASA dev server exist specifically to remove that friction.
 
-## 10. Production integration remains separate
+## 10. ASA Lab integration remains a separate deployment step
 
-The same tested ASA-CAD release is later delivered as `asa-cad-web:<version>` and reverse-proxied by ASA Lab under `/cad/*`.
+The same tested ASA-CAD release is later delivered as `asa-cad-web:<version>` and reverse-proxied under `/cad/*`.
 
-Standalone development does not create a second product architecture. It is the same CAD app with a local/mock `CadProjectHost` instead of the ASA Lab persistence adapter.
+Standalone development uses a local/mock `CadProjectHost`; production uses the ASA Lab host adapter. The public document/application model must remain the same.
+
+Cross-repository host-contract compatibility is tested before broad M5 deployment work; see `ASA_LAB_INTEGRATION.md` and `DEVELOPMENT_QUALITY_GATES.md`.

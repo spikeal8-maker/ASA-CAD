@@ -10,6 +10,7 @@ CAD geometry/solving runs on the active client device. ASA Lab provides identity
 - **Product/end-state contract:** [`docs/SYSTEM_SPEC.md`](docs/SYSTEM_SPEC.md)
 - **Technical boundaries:** [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 - **Implementation order:** [`docs/ROADMAP.md`](docs/ROADMAP.md)
+- **Continuous quality/audit contract:** [`docs/DEVELOPMENT_QUALITY_GATES.md`](docs/DEVELOPMENT_QUALITY_GATES.md)
 - **Which other docs to read for a task:** [`docs/DOCS_POLICY.md`](docs/DOCS_POLICY.md)
 - **Coding-agent rules:** [`AGENTS.md`](AGENTS.md)
 
@@ -91,7 +92,13 @@ Open `http://localhost:8088`; stop with `npm run docker:down`.
 
 ## Test/check
 
-ASA tests including the current M2 shell gate:
+Fast repository-health/process gate:
+
+```bash
+npm run test:process
+```
+
+ASA tests including process, architecture, shell and current M3 gates:
 
 ```bash
 npm test
@@ -127,6 +134,6 @@ This is preferable to manually recreating a model for every visual change.
 - Desktop and mobile use the same command/document model; mobile must not click/query desktop DOM controls.
 - Ambiguous topology references fail explicitly rather than silently selecting another subshape.
 - `/cad/*` is designed as a separately versioned frontend container surface for later ASA Lab integration.
-- New features are vertical slices: command/API → parameters/selection → runtime/document → registry/layout → desktop/mobile UI → fixture → regression.
+- New features are vertical slices that end with a Slice Quality Gate; every three accepted slices and every milestone boundary require a broader repository-health audit.
 
 For exact status, implemented features and remaining work, read [`docs/STATUS.md`](docs/STATUS.md).
