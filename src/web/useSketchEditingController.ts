@@ -2,7 +2,6 @@ import { useState, type Dispatch, type SetStateAction } from 'react';
 import type { CadApplication } from '../contracts/application';
 import type { CadSketch } from '../contracts/document';
 import type { CadSketchEntityId, CadSketchId } from '../contracts/ids';
-import type { CadSketchDelta } from '../application/SketchEntityTransform';
 import type { CadWorkspacePanel } from './PartSketchWorkspaceTypes';
 import { findSketch, partDocument } from './PartSketchWorkspaceModel';
 import { useSketchLineTool } from './useSketchLineTool';
@@ -14,31 +13,19 @@ export interface SketchEditingControllerOptions {
   app: CadApplication;
   activeSketchId: CadSketchId | null;
   sketch: Readonly<CadSketch> | null;
-  selectedEntityId: CadSketchEntityId | null;
   activeCommand: string | null;
   setActiveCommand: Dispatch<SetStateAction<string | null>>;
   setActiveWorkspace: Dispatch<SetStateAction<string>>;
   setPanel(panel: CadWorkspacePanel): void;
   setNotice(message: string): void;
-  clearEntitySelection(): void;
   clearTransientSelection(): void;
 }
 
 export function useSketchEditingController(options: SketchEditingControllerOptions) {
   const {
-    app,
-    activeSketchId,
-    sketch,
-    selectedEntityId,
-    activeCommand,
-    setActiveCommand,
-    setActiveWorkspace,
-    setPanel,
-    setNotice,
-    clearEntitySelection,
-    clearTransientSelection,
+    app, activeSketchId, sketch, activeCommand, setActiveCommand,
+    setActiveWorkspace, setPanel, setNotice, clearTransientSelection,
   } = options;
-
   const [rectangleWidth, setRectangleWidth] = useState(60);
   const [rectangleHeight, setRectangleHeight] = useState(40);
   const [circleDiameter, setCircleDiameter] = useState(12);
@@ -51,17 +38,11 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
   };
 
   const lineTool = useSketchLineTool({
-    app,
-    sketchId: activeSketchId,
-    active: activeCommand === 'sketch.line',
-    setNotice,
-    onCommitted: onToolCommitted,
+    app, sketchId: activeSketchId, active: activeCommand === 'sketch.line',
+    setNotice, onCommitted: onToolCommitted,
   });
   const rectangleTool = useSketchRectangleTool({
-    app,
-    sketchId: activeSketchId,
-    active: activeCommand === 'sketch.rectangle',
-    setNotice,
+    app, sketchId: activeSketchId, active: activeCommand === 'sketch.rectangle', setNotice,
     onCommitted: (width, height) => {
       setRectangleWidth(width);
       setRectangleHeight(height);
@@ -69,21 +50,15 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
     },
   });
   const circleTool = useSketchCircleTool({
-    app,
-    sketchId: activeSketchId,
-    active: activeCommand === 'sketch.circle',
-    setNotice,
+    app, sketchId: activeSketchId, active: activeCommand === 'sketch.circle', setNotice,
     onCommitted: (diameter) => {
       setCircleDiameter(diameter);
       onToolCommitted();
     },
   });
   const arcTool = useSketchArcTool({
-    app,
-    sketchId: activeSketchId,
-    active: activeCommand === 'sketch.arc',
-    setNotice,
-    onCommitted: onToolCommitted,
+    app, sketchId: activeSketchId, active: activeCommand === 'sketch.arc',
+    setNotice, onCommitted: onToolCommitted,
   });
 
   function beginLine() {
@@ -106,15 +81,11 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
 
   async function commitRectangle() {
     const currentSketch = findSketch(partDocument(app.getDocument()), activeSketchId);
-    if (!currentSketch) {
-      setNotice('Сначала создайте эскиз');
-      return;
-    }
+    if (!currentSketch) { setNotice('Сначала создайте эскиз'); return; }
     if (!(rectangleWidth > 0) || !(rectangleHeight > 0)) {
       setNotice('Размеры прямоугольника должны быть больше нуля');
       return;
     }
-
     const rectangle = await app.execute({
       id: 'sketch.rectangle',
       payload: {
@@ -128,7 +99,6 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
       setNotice(rectangle.error?.message ?? 'Не удалось создать прямоугольник');
       return;
     }
-
     const edges = rectangle.createdIds as CadSketchEntityId[];
     const widthDimension = await app.execute({
       id: 'dimension.linear',
@@ -142,7 +112,6 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
       setNotice(widthDimension.error?.message ?? heightDimension.error?.message ?? 'Не удалось создать размеры');
       return;
     }
-
     setActiveCommand(null);
     setPanel('tree');
     setNotice(`Прямоугольник ${rectangleWidth}×${rectangleHeight} мм создан`);
@@ -168,15 +137,8 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
 
   async function commitCircle() {
     const currentSketch = findSketch(partDocument(app.getDocument()), activeSketchId);
-    if (!currentSketch) {
-      setNotice('Сначала создайте эскиз');
-      return;
-    }
-    if (!(circleDiameter > 0)) {
-      setNotice('Диаметр должен быть больше нуля');
-      return;
-    }
-
+    if (!currentSketch) { setNotice('Сначала создайте эскиз'); return; }
+    if (!(circleDiameter > 0)) { setNotice('Диаметр должен быть больше нуля'); return; }
     const circle = await app.execute({
       id: 'sketch.circle',
       payload: { sketchId: currentSketch.id, center: [0, 0], diameter: circleDiameter },
@@ -185,16 +147,19 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
       setNotice(circle.error?.message ?? 'Не удалось создать окружность');
       return;
     }
-    const circleEntityId = circle.createdIds[0] as CadSketchEntityId;
     const diameter = await app.execute({
       id: 'dimension.diameter',
-      payload: { sketchId: currentSketch.id, entityId: circleEntityId, value: circleDiameter, name: 'diameter' },
+      payload: {
+        sketchId: currentSketch.id,
+        entityId: circle.createdIds[0] as CadSketchEntityId,
+        value: circleDiameter,
+        name: 'diameter',
+      },
     });
     if (!diameter.ok) {
       setNotice(diameter.error?.message ?? 'Не удалось создать диаметральный размер');
       return;
     }
-
     setActiveCommand(null);
     setPanel('tree');
     setNotice(`Окружность Ø${circleDiameter} мм создана`);
@@ -204,47 +169,12 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
     const currentSketch = findSketch(partDocument(app.getDocument()), activeSketchId);
     if (!currentSketch) return;
     const result = await app.execute({ id: 'sketch.finish', payload: { sketchId: currentSketch.id } });
-    if (!result.ok) {
-      setNotice(result.error?.message ?? 'Не удалось завершить эскиз');
-      return;
-    }
+    if (!result.ok) { setNotice(result.error?.message ?? 'Не удалось завершить эскиз'); return; }
     setActiveCommand(null);
     setPanel('tree');
     setActiveWorkspace('solid');
     clearTransientSelection();
     setNotice('Эскиз завершен');
-  }
-
-  async function deleteSelectedSketchEntity() {
-    if (!activeSketchId || !selectedEntityId) {
-      setNotice('Выберите элемент эскиза');
-      return false;
-    }
-    const result = await app.execute({
-      id: 'sketch.entity.delete',
-      payload: { sketchId: activeSketchId, entityId: selectedEntityId },
-    });
-    if (!result.ok) {
-      setNotice(result.error?.message ?? 'Не удалось удалить элемент эскиза');
-      return false;
-    }
-    clearEntitySelection();
-    setNotice('Элемент эскиза и его зависимости удалены');
-    return true;
-  }
-
-  async function translateSketchEntity(entityId: CadSketchEntityId, delta: CadSketchDelta) {
-    if (!activeSketchId) return false;
-    const result = await app.execute({
-      id: 'sketch.entity.translate',
-      payload: { sketchId: activeSketchId, entityId, delta },
-    });
-    if (!result.ok) {
-      setNotice(result.error?.message ?? 'Не удалось переместить элемент эскиза');
-      return false;
-    }
-    if (result.changed) setNotice('Элемент эскиза перемещён');
-    return result.changed;
   }
 
   function resetActiveTool(command: string | null) {
@@ -255,38 +185,19 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
   }
 
   return {
-    rectangleWidth,
-    setRectangleWidth,
-    rectangleHeight,
-    setRectangleHeight,
-    circleDiameter,
-    setCircleDiameter,
-    beginLine,
-    lineDraft: lineTool.draft,
-    lineCommitting: lineTool.committing,
-    handleSketchLinePointMove: lineTool.move,
-    handleSketchLinePoint: lineTool.point,
-    beginRectangle,
-    commitRectangle,
-    rectangleDraft: rectangleTool.draft,
-    rectangleCommitting: rectangleTool.committing,
-    handleSketchRectanglePointMove: rectangleTool.move,
-    handleSketchRectanglePoint: rectangleTool.point,
-    beginCircle,
-    commitCircle,
-    circleDraft: circleTool.draft,
-    circleCommitting: circleTool.committing,
-    handleSketchCirclePointMove: circleTool.move,
-    handleSketchCirclePoint: circleTool.point,
-    beginArc,
-    arcDraft: arcTool.draft,
-    arcCommitting: arcTool.committing,
-    handleSketchArcPointMove: arcTool.move,
-    handleSketchArcPoint: arcTool.point,
-    finishSketch,
-    deleteSelectedSketchEntity,
-    translateSketchEntity,
-    resetActiveTool,
+    rectangleWidth, setRectangleWidth, rectangleHeight, setRectangleHeight,
+    circleDiameter, setCircleDiameter, beginLine,
+    lineDraft: lineTool.draft, lineCommitting: lineTool.committing,
+    handleSketchLinePointMove: lineTool.move, handleSketchLinePoint: lineTool.point,
+    beginRectangle, commitRectangle,
+    rectangleDraft: rectangleTool.draft, rectangleCommitting: rectangleTool.committing,
+    handleSketchRectanglePointMove: rectangleTool.move, handleSketchRectanglePoint: rectangleTool.point,
+    beginCircle, commitCircle,
+    circleDraft: circleTool.draft, circleCommitting: circleTool.committing,
+    handleSketchCirclePointMove: circleTool.move, handleSketchCirclePoint: circleTool.point,
+    beginArc, arcDraft: arcTool.draft, arcCommitting: arcTool.committing,
+    handleSketchArcPointMove: arcTool.move, handleSketchArcPoint: arcTool.point,
+    finishSketch, resetActiveTool,
     commitLinePreview: lineTool.commitPreview,
     commitRectanglePreview: rectangleTool.commitPreview,
     commitCirclePreview: circleTool.commitPreview,
