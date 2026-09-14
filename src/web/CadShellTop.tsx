@@ -95,6 +95,10 @@ export function CadShellTop(props: CadShellTopProps) {
                 <CadUiActionButton action={props.getAction('sketch.circle')} symbol={commandSymbol('sketch.circle')} />
                 <CadUiActionButton action={props.getAction('sketch.arc')} symbol="⌒" />
               </CommandGroup>
+              <CommandGroup label="Ограничения">
+                <CadUiActionButton action={props.getAction('constraint.horizontal')} symbol="—" text />
+                <CadUiActionButton action={props.getAction('constraint.vertical')} symbol="|" text />
+              </CommandGroup>
               <CommandGroup label="Размеры">
                 <RibbonTextButton
                   label={props.rectangleReady ? `${props.rectangleWidth} × ${props.rectangleHeight} мм` : props.circleReady ? `Ø${props.circleDiameter} мм` : 'Размеры'}

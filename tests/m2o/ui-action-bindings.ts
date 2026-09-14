@@ -21,8 +21,13 @@ const handlers: M2CadUiActionHandlers = {
   redo: call('redo'),
   rebuild: call('rebuild'),
   createSketch: call('createSketch'),
+  line: call('line'),
   rectangle: call('rectangle'),
   circle: call('circle'),
+  arc: call('arc'),
+  deleteSketchEntity: call('deleteSketchEntity'),
+  horizontalConstraint: call('horizontalConstraint'),
+  verticalConstraint: call('verticalConstraint'),
   finishSketch: call('finishSketch'),
   extrude: call('extrude'),
   cutExtrude: call('cutExtrude'),
@@ -42,6 +47,8 @@ const bindings = createM2CadUiActionBindings(handlers, {
   canUndo: false,
   canRedo: true,
   hasSketch: true,
+  hasSketchEntitySelection: true,
+  canApplyOrientationConstraint: true,
   canExtrude: false,
   canCutExtrude: true,
   canFillet: false,
@@ -52,14 +59,32 @@ assert.equal(actions.get('system.undo')?.enabled, false);
 assert.equal(actions.get('system.undo')?.disabledReason, 'Нечего отменять');
 assert.equal(actions.get('system.redo')?.enabled, true);
 assert.equal(actions.get('sketch.rectangle')?.enabled, true);
+assert.equal(actions.get('constraint.horizontal')?.enabled, true);
+assert.equal(actions.get('constraint.vertical')?.enabled, true);
 assert.equal(actions.get('part.extrude')?.enabled, false);
 assert.equal(actions.get('part.cutExtrude')?.enabled, true);
 assert.equal(actions.get('part.fillet')?.enabled, false);
 
 assert.equal(await executeCadUiAction(actions.get('system.redo')!), true);
+assert.equal(await executeCadUiAction(actions.get('constraint.horizontal')!), true);
+assert.equal(await executeCadUiAction(actions.get('constraint.vertical')!), true);
 assert.equal(await executeCadUiAction(actions.get('part.cutExtrude')!), true);
 assert.equal(await executeCadUiAction(actions.get('part.extrude')!), false);
-assert.deepEqual(calls, ['redo', 'cutExtrude']);
+assert.deepEqual(calls, ['redo', 'horizontalConstraint', 'verticalConstraint', 'cutExtrude']);
+
+const disabledOrientation = indexCadUiActions(createCadUiActions(definitions, createM2CadUiActionBindings(handlers, {
+  canUndo: false,
+  canRedo: false,
+  hasSketch: true,
+  hasSketchEntitySelection: false,
+  canApplyOrientationConstraint: false,
+  canExtrude: false,
+  canCutExtrude: false,
+  canFillet: false,
+})));
+assert.equal(disabledOrientation.get('constraint.horizontal')?.enabled, false);
+assert.equal(disabledOrientation.get('constraint.horizontal')?.disabledReason, 'Выберите отрезок эскиза');
+assert.equal(disabledOrientation.get('constraint.vertical')?.enabled, false);
 
 assert.equal(cadUiActionIdForShortcut('system.save'), 'system.save');
 assert.equal(cadUiActionIdForShortcut('system.rebuild'), 'system.rebuild');
@@ -68,4 +93,4 @@ assert.equal(cadUiActionIdForShortcut('interaction.cancel'), null);
 assert.equal(cadUiActionIdForShortcut('interaction.commit'), null);
 assert.equal(cadUiActionIdForShortcut('view.zoomIn'), null);
 
-console.log('M2O O4 M2 action bindings PASS (shared enablement/execution + shortcut command mapping)');
+console.log('M2O O4 M2 action bindings PASS (shared enablement/execution + H/V orientation actions + shortcut command mapping)');

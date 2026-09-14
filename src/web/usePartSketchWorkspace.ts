@@ -6,6 +6,7 @@ import { useSketchSession } from './useSketchSession';
 import { usePartSelectionController } from './usePartSelectionController';
 import { useSketchEditingController } from './useSketchEditingController';
 import { useSketchDimensionController } from './useSketchDimensionController';
+import { useSketchConstraintController } from './useSketchConstraintController';
 import { useSketchEntityMutationController } from './useSketchEntityMutationController';
 import { usePartFeatureController } from './usePartFeatureController';
 import { findSketch, partDocument } from './PartSketchWorkspaceModel';
@@ -42,6 +43,9 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
   });
   const entityMutations = useSketchEntityMutationController({
     app, activeSketchId, selectedEntityId, setNotice, clearEntitySelection,
+  });
+  const constraints = useSketchConstraintController({
+    app, activeSketchId, sketch, selectedEntityId, setNotice,
   });
   const dimensions = useSketchDimensionController({
     app, setActiveCommand, setActiveWorkspace, setPanel, setNotice, activateSketch,
@@ -115,6 +119,9 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
   return {
     activeWorkspace, setActiveWorkspace, activeCommand, activeSketchId,
     selectedSketchEntityId: selectedEntityId,
+    canApplyOrientationConstraint: constraints.canApplyOrientationConstraint,
+    applyHorizontalConstraint: constraints.applyHorizontalConstraint,
+    applyVerticalConstraint: constraints.applyVerticalConstraint,
     selectionMode: selection.selectionMode, selectedPick: selection.selectedPick,
     selectedBodyId: selection.selectedBodyId,
     sketchPlane: features.sketchPlane, setSketchPlane: features.setSketchPlane,
