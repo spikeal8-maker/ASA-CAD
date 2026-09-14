@@ -3,6 +3,7 @@ import type { CadSketchDelta } from '../application/SketchEntityTransform';
 import type { CadPartDocument, CadPoint2, CadSketch } from '../contracts/document';
 import type { CadSketchEntityId } from '../contracts/ids';
 import { CadViewport } from './CadViewport';
+import { SketchDirectToolLayers } from './SketchDirectToolLayers';
 import { SketchSolveStatus } from './SketchSolveStatus';
 import { useActiveSketchSolveOverlay } from './useActiveSketchSolveOverlay';
 import { useSketchEntityDrag } from './useSketchEntityDrag';
@@ -10,16 +11,9 @@ import type { SketchLineDraft } from './useSketchLineTool';
 import type { SketchCircleDraft } from './useSketchCircleTool';
 import type { SketchArcDraft } from './useSketchArcTool';
 import type { SketchRectangleDraft } from './useSketchRectangleTool';
-import { SketchLineInteractionLayer } from './viewport/SketchLineInteractionLayer';
-import { SketchCircleInteractionLayer } from './viewport/SketchCircleInteractionLayer';
-import { SketchArcInteractionLayer } from './viewport/SketchArcInteractionLayer';
-import { SketchRectangleInteractionLayer } from './viewport/SketchRectangleInteractionLayer';
 import { SketchSelectionLayer } from './viewport/SketchSelectionLayer';
 import { SketchViewportFrameProvider } from './viewport/SketchViewportFrameContext';
-import {
-  resetSketchViewportState,
-  sketchDisplayFrame,
-} from './viewport/SketchViewportGeometry';
+import { resetSketchViewportState, sketchDisplayFrame } from './viewport/SketchViewportGeometry';
 import { resolveSketchWorkplaneProjection } from './viewport/SketchWorkplaneProjection';
 
 export interface SketchEditingStageProps {
@@ -51,121 +45,81 @@ export interface SketchEditingStageProps {
 
 /** Sole owner of the active 2D Sketch presentation/editing surface. */
 export function SketchEditingStage(props: SketchEditingStageProps) {
-  const sketchSelectionEnabled = props.activeCommand === null;
-  const [sketchViewport, setSketchViewport] = useState(resetSketchViewportState);
-  useEffect(() => {
-    setSketchViewport(resetSketchViewportState());
-  }, [props.activeSketch.id]);
+  const selectionEnabled = props.activeCommand === null;
+  const [viewport, setViewport] = useState(resetSketchViewportState);
+  useEffect(() => setViewport(resetSketchViewportState()), [props.activeSketch.id]);
 
-  const sketchSolve = useActiveSketchSolveOverlay({
-    document: props.document,
-    sketch: props.activeSketch,
-    active: true,
+  const solve = useActiveSketchSolveOverlay({
+    document: props.document, sketch: props.activeSketch, active: true,
     revisionToken: props.revisionToken,
   });
-  const entityDrag = useSketchEntityDrag({
-    part: props.document,
-    sketch: props.activeSketch,
-    selectedEntityId: props.selectedSketchEntityId,
-    enabled: sketchSelectionEnabled,
-    previewCandidate: sketchSolve.previewCandidate,
-    restorePersistedPreview: sketchSolve.restorePersistedPreview,
+  const drag = useSketchEntityDrag({
+    part: props.document, sketch: props.activeSketch,
+    selectedEntityId: props.selectedSketchEntityId, enabled: selectionEnabled,
+    previewCandidate: solve.previewCandidate,
+    restorePersistedPreview: solve.restorePersistedPreview,
     commit: props.onSketchEntityTranslate,
     onRejected: props.onSketchDragRejected,
   });
-  const sketchOverlay = sketchSolve.overlay;
-  const sketchFrame = sketchDisplayFrame(sketchViewport);
-  const workplaneProjection = resolveSketchWorkplaneProjection(props.activeSketch.support);
+  const overlay = solve.overlay;
+  const frame = sketchDisplayFrame(viewport);
+  const projection = resolveSketchWorkplaneProjection(props.activeSketch.support);
 
   return (
-    <SketchViewportFrameProvider frame={sketchFrame}>
+    <SketchViewportFrameProvider frame={frame}>
       <div
         className="part-model-stage"
         data-testid="part-model-stage"
         data-sketch-context="isolated-2d"
         data-sketch-support={props.activeSketch.support}
-        data-sketch-projection={workplaneProjection?.kind ?? ''}
-        data-model-context-ready={workplaneProjection?.modelContextReady ? 'true' : 'false'}
-        data-sketch-view-span={sketchViewport.span}
-        data-sketch-view-center={sketchViewport.center.join(',')}
+        data-sketch-projection={projection?.kind ?? ''}
+        data-model-context-ready={projection?.modelContextReady ? 'true' : 'false'}
+        data-sketch-view-span={viewport.span}
+        data-sketch-view-center={viewport.center.join(',')}
         data-selected-sketch-entity-id={props.selectedSketchEntityId ?? ''}
-        data-dragging-sketch-entity-id={entityDrag.draggingEntityId ?? ''}
+        data-dragging-sketch-entity-id={drag.draggingEntityId ?? ''}
       >
         <div className="origin-widget" aria-label="Ориентация">
-          <span className="axis-z">Z</span>
-          <span className="axis-x">X</span>
-          <span className="axis-y">Y</span>
+          <span className="axis-z">Z</span><span className="axis-x">X</span><span className="axis-y">Y</span>
         </div>
         <div className="stage-grid" />
-
-        <CadViewport model={null} sketchOverlay={sketchOverlay} />
-
+        <CadViewport model={null} sketchOverlay={overlay} />
         <SketchSelectionLayer
-          model={sketchOverlay}
-          enabled={sketchSelectionEnabled}
+          model={overlay}
+          enabled={selectionEnabled}
           selectedEntityId={props.selectedSketchEntityId}
-          draggingEntityId={entityDrag.draggingEntityId}
+          draggingEntityId={drag.draggingEntityId}
           onEntitySelect={props.onSketchEntitySelect}
-          onEntityDragStart={entityDrag.start}
-          onEntityDragMove={entityDrag.move}
-          onEntityDragEnd={entityDrag.end}
-          onEntityDragCancel={entityDrag.cancel}
+          onEntityDragStart={drag.start}
+          onEntityDragMove={drag.move}
+          onEntityDragEnd={drag.end}
+          onEntityDragCancel={drag.cancel}
         />
-
-        <SketchLineInteractionLayer
-          model={sketchOverlay}
-          frame={sketchFrame}
-          viewportState={sketchViewport}
-          onViewportStateChange={setSketchViewport}
-          active={props.activeCommand === 'sketch.line'}
-          draft={props.lineDraft}
-          committing={props.lineCommitting}
-          onPointMove={props.onSketchLinePointMove}
-          onPoint={props.onSketchLinePoint}
+        <SketchDirectToolLayers
+          model={overlay}
+          frame={frame}
+          viewportState={viewport}
+          onViewportStateChange={setViewport}
+          activeCommand={props.activeCommand}
+          lineDraft={props.lineDraft}
+          lineCommitting={props.lineCommitting}
+          onLineMove={props.onSketchLinePointMove}
+          onLinePoint={props.onSketchLinePoint}
+          rectangleDraft={props.rectangleDraft}
+          rectangleCommitting={props.rectangleCommitting}
+          onRectangleMove={props.onSketchRectanglePointMove}
+          onRectanglePoint={props.onSketchRectanglePoint}
+          circleDraft={props.circleDraft}
+          circleCommitting={props.circleCommitting}
+          onCircleMove={props.onSketchCirclePointMove}
+          onCirclePoint={props.onSketchCirclePoint}
+          arcDraft={props.arcDraft}
+          arcCommitting={props.arcCommitting}
+          onArcMove={props.onSketchArcPointMove}
+          onArcPoint={props.onSketchArcPoint}
         />
-
-        <SketchRectangleInteractionLayer
-          model={sketchOverlay}
-          frame={sketchFrame}
-          viewportState={sketchViewport}
-          onViewportStateChange={setSketchViewport}
-          active={props.activeCommand === 'sketch.rectangle'}
-          draft={props.rectangleDraft}
-          committing={props.rectangleCommitting}
-          onPointMove={props.onSketchRectanglePointMove}
-          onPoint={props.onSketchRectanglePoint}
-        />
-
-        <SketchCircleInteractionLayer
-          model={sketchOverlay}
-          frame={sketchFrame}
-          viewportState={sketchViewport}
-          onViewportStateChange={setSketchViewport}
-          active={props.activeCommand === 'sketch.circle'}
-          draft={props.circleDraft}
-          committing={props.circleCommitting}
-          onPointMove={props.onSketchCirclePointMove}
-          onPoint={props.onSketchCirclePoint}
-        />
-
-        <SketchArcInteractionLayer
-          model={sketchOverlay}
-          frame={sketchFrame}
-          viewportState={sketchViewport}
-          onViewportStateChange={setSketchViewport}
-          active={props.activeCommand === 'sketch.arc'}
-          draft={props.arcDraft}
-          committing={props.arcCommitting}
-          onPointMove={props.onSketchArcPointMove}
-          onPoint={props.onSketchArcPoint}
-        />
-
-        <div
-          className="sketch-solve-hud"
-          data-testid="sketch-solve-hud"
-          data-overlay-source={sketchOverlay?.source ?? 'document'}
-        >
-          <SketchSolveStatus snapshot={sketchSolve.snapshot} />
+        <div className="sketch-solve-hud" data-testid="sketch-solve-hud" data-overlay-source={overlay?.source ?? 'document'}>
+          <SketchSolveStatus snapshot={solve.snapshot} />
         </div>
       </div>
     </SketchViewportFrameProvider>
