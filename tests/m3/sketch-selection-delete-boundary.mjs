@@ -37,10 +37,13 @@ assert.match(selectionLayer, /onEntitySelect\(entity\.id\)/, 'selection must rep
 assert.equal(/\bindex\b/.test(selectionLayer), false, 'Sketch selection must not use child/index identity');
 assert.match(selectionLayer, /selectedEntityId === entity\.id/, 'selected Sketch entity must have explicit presentation state');
 assert.match(stage, /<SketchEditingStage/, 'PartModelStage must delegate the complete active Sketch surface');
-assert.match(sketchStage, /sketchOverlay=\{sketchOverlay\}/, 'SketchEditingStage must preserve the accepted CadViewport overlay boundary');
+const overlayBinding = sketchStage.match(/const\s+([A-Za-z_$][\w$]*)\s*=\s*solve\.overlay;/);
+assert.ok(overlayBinding, 'SketchEditingStage must bind the transient solver overlay');
+assert.match(sketchStage, new RegExp(`sketchOverlay=\\{${overlayBinding[1]}\\}`), 'SketchEditingStage must preserve the accepted CadViewport overlay boundary');
 assert.match(sketchStage, /<SketchSelectionLayer/, 'Sketch selection interaction must remain separate from B-Rep Three interaction');
-assert.match(sketchStage, /sketchSelectionEnabled\s*=\s*props\.activeCommand\s*===\s*null/,
-  'selection must be disabled while a direct Sketch command owns pointer input');
+const selectionBinding = sketchStage.match(/const\s+([A-Za-z_$][\w$]*)\s*=\s*props\.activeCommand\s*===\s*null;/);
+assert.ok(selectionBinding, 'selection enablement must derive only from absence of an active direct Sketch command');
+assert.match(sketchStage, new RegExp(`enabled=\\{${selectionBinding[1]}\\}`), 'selection layer must consume the direct-command exclusion state');
 
 assert.match(actions, /'sketch\.entity\.delete':\s*binding/, 'mobile/search must use shared CadUiAction delete intent');
 assert.match(actions, /hasSketchEntitySelection/, 'delete UI action must depend on transient selection');

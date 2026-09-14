@@ -9,6 +9,7 @@ const specs = [
   'tests/m3/direct-arc-browser.mjs',
   'tests/m3/direct-rectangle-browser.mjs',
   'tests/m3/sketch-selection-delete-browser.mjs',
+  'tests/m3/sketch-entity-drag-browser.mjs',
 ];
 
 assert.match(harness, /playwright-core\/index\.mjs/, 'shared harness must own the Playwright dependency');
@@ -18,11 +19,14 @@ for (const helper of [
   'createMobileXYSketch',
   'interactionBox',
   'squarePoint',
+  'entityScreenPoint',
   'waitSolvedOverlay',
+  'loadFixture',
   'newDesktopPage',
   'newTouchPage',
   'saveLocalDocument',
   'reopenFirstSketch',
+  'dispatchTouch',
 ]) {
   assert.match(harness, new RegExp(`export (?:async )?function ${helper}\\b`), `shared harness is missing ${helper}`);
 }
@@ -38,10 +42,12 @@ for (const file of specs) {
     'createMobileXYSketch',
     'interactionBox',
     'squarePoint',
+    'entityScreenPoint',
     'newDesktopPage',
     'newTouchPage',
     'saveLocalDocument',
     'reopenFirstSketch',
+    'dispatchTouch',
   ]) {
     assert.doesNotMatch(
       source,
@@ -59,4 +65,4 @@ for (const file of specs.slice(0, 4)) {
 const harnessBudget = policy.fileBudgets.find((item) => item.id === 'm3-browser-harness');
 assert.ok(harnessBudget?.exactFiles?.includes(harnessPath), 'shared M3 browser harness must have an explicit machine budget');
 
-console.log('ASA-CAD M3M-007 browser harness boundary PASS (shared infrastructure + focused specs + no old exceptions)');
+console.log('ASA-CAD M3 browser harness boundary PASS (shared infrastructure + focused specs + drag reuse + no old exceptions)');

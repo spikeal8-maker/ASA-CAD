@@ -10,6 +10,7 @@ const workspace = fs.readFileSync('src/web/usePartSketchWorkspace.ts', 'utf8');
 const editing = fs.readFileSync('src/web/useSketchEditingController.ts', 'utf8');
 const partStage = fs.readFileSync('src/web/PartModelStage.tsx', 'utf8');
 const sketchStage = fs.readFileSync('src/web/SketchEditingStage.tsx', 'utf8');
+const directTools = fs.readFileSync('src/web/SketchDirectToolLayers.tsx', 'utf8');
 const app = fs.readFileSync('src/web/App.tsx', 'utf8');
 const shellMain = fs.readFileSync('src/web/CadShellMain.tsx', 'utf8');
 const styles = fs.readFileSync('src/web/styles/management.css', 'utf8');
@@ -45,7 +46,8 @@ assert.equal(/sketchDisplayFrame\(model\.entities\)/.test(overlay), false, 'over
 
 assert.match(tool, /id: 'sketch\.line'/, 'Line tool must commit through typed sketch.line command');
 assert.equal(/\.entities\.(push|splice)/.test(tool), false, 'Line tool must not mutate persisted Sketch entities directly');
-assert.match(sketchStage, /SketchLineInteractionLayer/, 'focused Sketch stage must compose the separate Line interaction layer');
+assert.match(sketchStage, /<SketchDirectToolLayers/, 'focused Sketch stage must delegate direct-tool composition');
+assert.match(directTools, /SketchLineInteractionLayer/, 'direct-tool owner must compose the separate Line interaction layer');
 assert.match(bindings, /'sketch\.line': binding\(handlers\.line/, 'shared action catalog must bind sketch.line');
 assert.match(workspace, /useSketchEditingController/, 'Part/Sketch facade must compose the focused Sketch editing owner');
 assert.match(editing, /setPanel\('closed'\)/, 'direct Line must collapse management UI before drawing');
@@ -59,4 +61,4 @@ assert.ok(line, 'command registry must contain sketch.line');
 assert.equal(line.status, 'implemented', 'sketch.line must be implemented only with the M3.2 product path');
 assert.equal(line.milestone, 'M3.2');
 
-console.log('ASA-CAD M3.2 direct Line architecture boundary PASS (SketchEditingStage + shared input + stable view + shell-owned panel collapse)');
+console.log('ASA-CAD M3.2 direct Line architecture boundary PASS (focused direct-tool owner + shared input + stable view + shell-owned panel collapse)');
