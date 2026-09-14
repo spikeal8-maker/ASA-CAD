@@ -15,14 +15,11 @@ export interface SketchSelectionLayerProps {
   onEntitySelect(entityId: CadSketchEntityId): void;
   onEntityDragStart?(entityId: CadSketchEntityId, point: CadPoint2): boolean;
   onEntityDragMove?(point: CadPoint2): void;
-  onEntityDragEnd?(point: CadPoint2): void | Promise<void>;
+  onEntityDragEnd?(point: CadPoint2): void | Promise<unknown>;
   onEntityDragCancel?(): void;
 }
 
-/**
- * Stable-ID Sketch selection/drag interaction. Persisted/solver geometry stays
- * read-only in SketchOverlayLayer; this sibling owns hit targets only.
- */
+/** Stable-ID Sketch selection/drag hit targets; visible solver geometry stays read-only. */
 export function SketchSelectionLayer(props: SketchSelectionLayerProps) {
   const frame = useSketchViewportFrame();
   const dragPointerRef = useRef<number | null>(null);
@@ -136,43 +133,15 @@ function renderGeometry(
   data: Record<string, string>,
   handlers: GeometryPointerHandlers = {},
 ) {
-  const common = {
-    className,
-    ...data,
-    vectorEffect: 'non-scaling-stroke' as const,
-    ...handlers,
-  };
-
+  const common = { className, ...data, vectorEffect: 'non-scaling-stroke' as const, ...handlers };
   switch (entity.type) {
     case 'line':
-      return (
-        <line
-          {...common}
-          x1={entity.data.from[0]}
-          y1={-entity.data.from[1]}
-          x2={entity.data.to[0]}
-          y2={-entity.data.to[1]}
-        />
-      );
+      return <line {...common} x1={entity.data.from[0]} y1={-entity.data.from[1]} x2={entity.data.to[0]} y2={-entity.data.to[1]} />;
     case 'circle':
-      return (
-        <circle
-          {...common}
-          cx={entity.data.center[0]}
-          cy={-entity.data.center[1]}
-          r={entity.data.diameter / 2}
-          fill="none"
-        />
-      );
+      return <circle {...common} cx={entity.data.center[0]} cy={-entity.data.center[1]} r={entity.data.diameter / 2} fill="none" />;
     case 'arc': {
-      const geometry = sketchArcGeometry(
-        entity.data.center,
-        entity.data.radius,
-        entity.data.startAngle,
-        entity.data.endAngle,
-      );
-      if (!geometry) return null;
-      return <path {...common} d={geometry.path} fill="none" />;
+      const geometry = sketchArcGeometry(entity.data.center, entity.data.radius, entity.data.startAngle, entity.data.endAngle);
+      return geometry ? <path {...common} d={geometry.path} fill="none" /> : null;
     }
   }
 }
