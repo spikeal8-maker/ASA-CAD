@@ -11,7 +11,7 @@ const app = fs.readFileSync('src/web/App.tsx', 'utf8');
 const workspace = fs.readFileSync('src/web/usePartSketchWorkspace.ts', 'utf8');
 const actions = fs.readFileSync('src/web/M2CadUiActions.ts', 'utf8');
 const mobile = fs.readFileSync('src/web/MobileToolsPanel.tsx', 'utf8');
-const ribbon = fs.readFileSync('src/web/CadShellTop.tsx', 'utf8');
+const commandGroups = fs.readFileSync('src/web/CadShellCommandGroups.tsx', 'utf8');
 const registry = JSON.parse(fs.readFileSync('spec/ui/command-registry.v1.json', 'utf8'));
 
 assert.match(handler, /requireLineEndpointReference/, 'application owner must validate Coincident point refs');
@@ -50,7 +50,7 @@ assert.match(workspace, /activeCommand === 'constraint\.coincident'/, 'cancel mu
 assert.match(actions, /coincidentConstraint/, 'shared CadUiAction binding must expose Coincident');
 assert.match(actions, /'constraint\.coincident'/, 'Coincident must use the shared action id');
 assert.match(mobile, /id: 'constraint\.coincident'/, 'mobile Sketch tools must use the same Coincident action');
-assert.match(ribbon, /getAction\('constraint\.coincident'\)/, 'desktop ribbon must use the same Coincident action');
+assert.match(commandGroups, /getAction\('constraint\.coincident'\)/, 'desktop ribbon command-group owner must use the same Coincident action');
 
 const command = registry.commands.find((item) => item.id === 'constraint.coincident');
 assert.ok(command, 'constraint.coincident must exist in command registry');
@@ -58,4 +58,4 @@ assert.equal(command.milestone, 'M3.7C');
 assert.equal(command.status, 'implemented');
 assert.equal(command.backendCommand, 'constraint.coincident');
 
-console.log('ASA-CAD M3.7C Coincident boundary PASS (stable Line endpoints + focused lifecycle + mobile work-area policy)');
+console.log('ASA-CAD M3.7C Coincident boundary PASS (stable Line endpoints + focused lifecycle + delegated desktop/mobile action surfaces)');

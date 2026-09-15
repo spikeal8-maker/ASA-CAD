@@ -17,9 +17,7 @@ class NoopRuntime implements CadRuntimeAdapter {
   async recompute(): Promise<CadRuntimeRecomputeResult> {
     return { ok: true, diagnostics: [], runtimeRevision: 'm3-parallel-test' };
   }
-  async captureReference(): Promise<never> {
-    throw new Error('reference capture is not used by M3.7D');
-  }
+  async captureReference(): Promise<never> { throw new Error('reference capture is not used by M3.7D'); }
   dispose(): void {}
 }
 
@@ -103,8 +101,11 @@ assert.equal((await undoApp.redo()).ok, true);
 assert.equal((undoApp.getDocument() as CadPartDocument).constraints[0].id, historyId, 'Redo must restore the same Parallel ID');
 
 const source = (path: string) => readFileSync(path, 'utf8');
-const owner = source('src/application/commands/SketchConstraintCommandHandlers.ts'), controller = source('src/web/useSketchConstraintControllers.ts'), layer = source('src/web/viewport/SketchCoincidentInteractionLayer.tsx');
-assert.match(owner, /sameUnorderedEntityPair/); assert.doesNotMatch(owner, /PlaneGCS|OpenCascade|vendor\//);
+const handler = source('src/application/commands/SketchConstraintCommandHandlers.ts');
+const owner = source('src/application/commands/SketchLinePairConstraintOwner.ts');
+const controller = source('src/web/useSketchConstraintControllers.ts');
+const layer = source('src/web/viewport/SketchCoincidentInteractionLayer.tsx');
+assert.match(handler, /addLinePairConstraint/); assert.match(owner, /sameUnorderedEntityPair/); assert.doesNotMatch(owner, /PlaneGCS|OpenCascade|vendor\//);
 assert.match(controller, /setActiveCommand\('constraint\.parallel'\)/); assert.match(controller, /id: 'constraint\.parallel'/);
 assert.match(layer, /tool="constraint\.parallel"/); assert.match(layer, /pointSegmentDistance/); assert.doesNotMatch(layer, /CadApplication|app\.execute|OpenCascade/);
 const registry = JSON.parse(source('spec/ui/command-registry.v1.json')); const product = registry.commands.find((item: { id: string }) => item.id === 'constraint.parallel');
@@ -113,4 +114,4 @@ assert.equal(product?.milestone, 'M3.7D'); assert.equal(product?.status, 'implem
 undoApp.dispose();
 solver.dispose();
 app.dispose();
-console.log('ASA-CAD M3.7D Parallel PASS (Line pair + ownership + PlaneGCS + persistence + history)');
+console.log('ASA-CAD M3.7D Parallel PASS (Line pair + focused ownership + PlaneGCS + persistence + history)');
