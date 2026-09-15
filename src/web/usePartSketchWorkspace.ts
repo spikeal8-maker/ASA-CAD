@@ -60,11 +60,8 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     clearTransientSelection: selection.clearTransientSelection,
   });
 
-  const resetTransient = useCallback(() => {
-    setActiveCommand(null);
-    dimensions.clearDimensionEdit();
-    selection.clearTransientSelection();
-  }, [dimensions.clearDimensionEdit, selection.clearTransientSelection]);
+  const resetTransient = useCallback(() => { setActiveCommand(null); dimensions.clearDimensionEdit(); selection.clearTransientSelection(); }, [dimensions.clearDimensionEdit, selection.clearTransientSelection]);
+
   const resetToWorkspace = useCallback((workspace: string) => {
     setActiveWorkspace(workspace);
     setActiveCommand(null);
@@ -94,7 +91,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
 
   function cancelCommand() {
     editing.resetActiveTool(activeCommand);
-    const stayInSketch = activeCommand?.startsWith('sketch.') || activeCommand === 'constraint.coincident';
+    const stayInSketch = activeCommand === 'constraint.coincident' || /^(sketch|constraint)\./.test(activeCommand ?? '');
     setActiveCommand(null);
     dimensions.clearDimensionEdit();
     setPanel('tree');

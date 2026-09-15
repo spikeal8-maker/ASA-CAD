@@ -28,6 +28,7 @@ export type CadCommandId =
   | 'constraint.coincident'
   | 'constraint.horizontal'
   | 'constraint.vertical'
+  | 'constraint.parallel'
   | 'constraint.fixed'
   | 'dimension.linear'
   | 'dimension.diameter'
@@ -90,6 +91,11 @@ export interface CadCommandMap {
   'constraint.vertical': {
     sketchId: CadSketchId;
     entityId: CadSketchEntityId;
+  };
+  'constraint.parallel': {
+    sketchId: CadSketchId;
+    aEntityId: CadSketchEntityId;
+    bEntityId: CadSketchEntityId;
   };
   'constraint.fixed': {
     sketchId: CadSketchId;

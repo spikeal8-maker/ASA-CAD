@@ -62,6 +62,7 @@ export function getSketchGrowthCommandAvailability(
     case 'constraint.coincident':
     case 'constraint.horizontal':
     case 'constraint.vertical':
+    case 'constraint.parallel':
     case 'constraint.fixed':
       return sketchConstraintCommandHandlers[id].availability(part);
 
@@ -101,6 +102,8 @@ export function applySketchGrowthCommand(
       return sketchConstraintCommandHandlers['constraint.horizontal'].execute(part, command);
     case 'constraint.vertical':
       return sketchConstraintCommandHandlers['constraint.vertical'].execute(part, command);
+    case 'constraint.parallel':
+      return sketchConstraintCommandHandlers['constraint.parallel'].execute(part, command);
     case 'constraint.fixed':
       return sketchConstraintCommandHandlers['constraint.fixed'].execute(part, command);
 

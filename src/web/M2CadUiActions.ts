@@ -17,6 +17,7 @@ export interface M2CadUiActionHandlers {
   verticalConstraint(): void | Promise<void>;
   fixedConstraint(): void | Promise<void>;
   coincidentConstraint(): void | Promise<void>;
+  parallelConstraint(): void | Promise<void>;
   finishSketch(): void | Promise<void>;
   extrude(): void | Promise<void>;
   cutExtrude(): void | Promise<void>;
@@ -39,6 +40,7 @@ export interface M2CadUiActionState {
   canApplyOrientationConstraint: boolean;
   canApplyFixedConstraint: boolean;
   canApplyCoincidentConstraint: boolean;
+  canApplyParallelConstraint: boolean;
   canExtrude: boolean;
   canCutExtrude: boolean;
   canFillet: boolean;
@@ -52,17 +54,14 @@ function binding(
   return { execute, enabled, disabledReason };
 }
 
-/**
- * Permanent product bindings. Stable identity/labels/presentation stay in
- * command-registry; this function owns only current editor enablement and
- * execution. Desktop, mobile and search consume the same action objects.
- */
+/** Permanent execution/enablement bindings shared by desktop, mobile and search. */
 export function createM2CadUiActionBindings(
   handlers: M2CadUiActionHandlers,
   state: M2CadUiActionState,
 ): CadUiActionBindings {
   const lineConstraintReason = state.canApplyOrientationConstraint ? undefined : 'Выберите отрезок эскиза';
   const fixedConstraintReason = state.canApplyFixedConstraint ? undefined : 'Выберите незакреплённый отрезок эскиза';
+  const pairConstraintReason = 'Создайте два отрезка эскиза';
   return {
     'system.open': binding(handlers.open),
     'system.save': binding(handlers.save),
@@ -75,31 +74,12 @@ export function createM2CadUiActionBindings(
     'sketch.rectangle': binding(handlers.rectangle, state.hasSketch, 'Сначала создайте эскиз'),
     'sketch.circle': binding(handlers.circle, state.hasSketch, 'Сначала создайте эскиз'),
     'sketch.arc': binding(handlers.arc, state.hasSketch, 'Сначала создайте эскиз'),
-    'sketch.entity.delete': binding(
-      handlers.deleteSketchEntity,
-      state.hasSketchEntitySelection,
-      'Выберите элемент эскиза',
-    ),
-    'constraint.horizontal': binding(
-      handlers.horizontalConstraint,
-      state.canApplyOrientationConstraint,
-      lineConstraintReason,
-    ),
-    'constraint.vertical': binding(
-      handlers.verticalConstraint,
-      state.canApplyOrientationConstraint,
-      lineConstraintReason,
-    ),
-    'constraint.fixed': binding(
-      handlers.fixedConstraint,
-      state.canApplyFixedConstraint,
-      fixedConstraintReason,
-    ),
-    'constraint.coincident': binding(
-      handlers.coincidentConstraint,
-      state.canApplyCoincidentConstraint,
-      'Создайте два отрезка эскиза',
-    ),
+    'sketch.entity.delete': binding(handlers.deleteSketchEntity, state.hasSketchEntitySelection, 'Выберите элемент эскиза'),
+    'constraint.horizontal': binding(handlers.horizontalConstraint, state.canApplyOrientationConstraint, lineConstraintReason),
+    'constraint.vertical': binding(handlers.verticalConstraint, state.canApplyOrientationConstraint, lineConstraintReason),
+    'constraint.fixed': binding(handlers.fixedConstraint, state.canApplyFixedConstraint, fixedConstraintReason),
+    'constraint.coincident': binding(handlers.coincidentConstraint, state.canApplyCoincidentConstraint, pairConstraintReason),
+    'constraint.parallel': binding(handlers.parallelConstraint, state.canApplyParallelConstraint, pairConstraintReason),
     'sketch.finish': binding(handlers.finishSketch, state.hasSketch, 'Сначала создайте эскиз'),
     'part.extrude': binding(handlers.extrude, state.canExtrude, 'Завершите прямоугольный эскиз'),
     'part.cutExtrude': binding(handlers.cutExtrude, state.canCutExtrude, 'Создайте окружность на грани и завершите эскиз'),
