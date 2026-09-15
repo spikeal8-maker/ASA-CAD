@@ -19,6 +19,7 @@ export interface M2CadUiActionHandlers {
   coincidentConstraint(): void | Promise<void>;
   parallelConstraint(): void | Promise<void>;
   perpendicularConstraint(): void | Promise<void>;
+  tangentConstraint(): void | Promise<void>;
   finishSketch(): void | Promise<void>;
   extrude(): void | Promise<void>;
   cutExtrude(): void | Promise<void>;
@@ -43,6 +44,7 @@ export interface M2CadUiActionState {
   canApplyCoincidentConstraint: boolean;
   canApplyParallelConstraint: boolean;
   canApplyPerpendicularConstraint: boolean;
+  canApplyTangentConstraint: boolean;
   canExtrude: boolean;
   canCutExtrude: boolean;
   canFillet: boolean;
@@ -64,6 +66,7 @@ export function createM2CadUiActionBindings(
   const lineConstraintReason = state.canApplyOrientationConstraint ? undefined : 'Выберите отрезок эскиза';
   const fixedConstraintReason = state.canApplyFixedConstraint ? undefined : 'Выберите незакреплённый отрезок эскиза';
   const pairConstraintReason = 'Создайте два отрезка эскиза';
+  const tangentConstraintReason = 'Создайте отрезок и окружность эскиза';
   return {
     'system.open': binding(handlers.open),
     'system.save': binding(handlers.save),
@@ -83,6 +86,7 @@ export function createM2CadUiActionBindings(
     'constraint.coincident': binding(handlers.coincidentConstraint, state.canApplyCoincidentConstraint, pairConstraintReason),
     'constraint.parallel': binding(handlers.parallelConstraint, state.canApplyParallelConstraint, pairConstraintReason),
     'constraint.perpendicular': binding(handlers.perpendicularConstraint, state.canApplyPerpendicularConstraint, pairConstraintReason),
+    'constraint.tangent': binding(handlers.tangentConstraint, state.canApplyTangentConstraint, tangentConstraintReason),
     'sketch.finish': binding(handlers.finishSketch, state.hasSketch, 'Сначала создайте эскиз'),
     'part.extrude': binding(handlers.extrude, state.canExtrude, 'Завершите прямоугольный эскиз'),
     'part.cutExtrude': binding(handlers.cutExtrude, state.canCutExtrude, 'Создайте окружность на грани и завершите эскиз'),

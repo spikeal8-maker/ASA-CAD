@@ -11,6 +11,7 @@ import { SketchRectangleInteractionLayer } from './viewport/SketchRectangleInter
 import {
   SketchCoincidentInteractionLayer, SketchParallelInteractionLayer, SketchPerpendicularInteractionLayer,
 } from './viewport/SketchCoincidentInteractionLayer';
+import { SketchTangentInteractionLayer } from './viewport/SketchTangentInteractionLayer';
 import type { SketchOverlayModel } from './viewport/SketchOverlayModel';
 import type { SketchDisplayFrame, SketchViewportState } from './viewport/SketchViewportGeometry';
 
@@ -83,6 +84,7 @@ export function SketchDirectToolLayers(props: SketchDirectToolLayersProps) {
       <SketchCoincidentInteractionLayer {...common} active={props.activeCommand === 'constraint.coincident'} />
       <SketchParallelInteractionLayer {...common} active={props.activeCommand === 'constraint.parallel'} />
       <SketchPerpendicularInteractionLayer {...common} active={props.activeCommand === 'constraint.perpendicular'} />
+      <SketchTangentInteractionLayer {...common} active={props.activeCommand === 'constraint.tangent'} />
     </>
   );
 }

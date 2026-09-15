@@ -40,6 +40,7 @@ function SketchCommandGroups(props: {
         <CadUiActionButton action={props.getAction('constraint.coincident')} symbol="●" text />
         <CadUiActionButton action={props.getAction('constraint.parallel')} symbol="∥" text />
         <CadUiActionButton action={props.getAction('constraint.perpendicular')} symbol="⊥" text />
+        <CadUiActionButton action={props.getAction('constraint.tangent')} symbol="∿" text />
       </CommandGroup>
       <CommandGroup label="Размеры">
         <RibbonTextButton

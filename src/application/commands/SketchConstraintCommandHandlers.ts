@@ -4,8 +4,9 @@ import type { CadConstraintId, CadSketchEntityId, CadSketchId } from '../../cont
 import { createCadId } from '../../contracts/ids';
 import { defineSketchCommandHandler, requireSketch, requireSketchAvailability, requireSketchEntity, type SketchCommandHandlerMap } from './SketchCommandHandlerShared';
 import { addLinePairConstraint } from './SketchLinePairConstraintOwner';
+import { addLineCircleTangentConstraint } from './SketchTangentConstraintOwner';
 
-export const SKETCH_CONSTRAINT_COMMAND_IDS = ['constraint.coincident', 'constraint.horizontal', 'constraint.vertical', 'constraint.parallel', 'constraint.perpendicular', 'constraint.fixed'] as const satisfies readonly CadCommandId[];
+export const SKETCH_CONSTRAINT_COMMAND_IDS = ['constraint.coincident', 'constraint.horizontal', 'constraint.vertical', 'constraint.parallel', 'constraint.perpendicular', 'constraint.tangent', 'constraint.fixed'] as const satisfies readonly CadCommandId[];
 export type SketchConstraintCommandId = typeof SKETCH_CONSTRAINT_COMMAND_IDS[number];
 type CadFixedFreezeGeometry = CadCommandMap['constraint.fixed']['frozenGeometry'];
 const FREEZE_TOLERANCE = 1e-6;
@@ -15,6 +16,7 @@ export const sketchConstraintCommandHandlers = {
   'constraint.vertical': defineSketchCommandHandler<'constraint.vertical'>({ availability: requireSketchAvailability, execute: (part, command) => addLineOrientationConstraint(part, command.payload.sketchId, 'vertical', command.payload.entityId) }),
   'constraint.parallel': defineSketchCommandHandler<'constraint.parallel'>({ availability: requireSketchAvailability, execute: (part, command) => addLinePairConstraint(part, command.payload.sketchId, 'parallel', command.payload.aEntityId, command.payload.bEntityId) }),
   'constraint.perpendicular': defineSketchCommandHandler<'constraint.perpendicular'>({ availability: requireSketchAvailability, execute: (part, command) => addLinePairConstraint(part, command.payload.sketchId, 'perpendicular', command.payload.aEntityId, command.payload.bEntityId) }),
+  'constraint.tangent': defineSketchCommandHandler<'constraint.tangent'>({ availability: requireSketchAvailability, execute: (part, command) => addLineCircleTangentConstraint(part, command.payload.sketchId, command.payload.aEntityId, command.payload.bEntityId) }),
   'constraint.fixed': defineSketchCommandHandler<'constraint.fixed'>({ availability: requireSketchAvailability, execute: (part, command) => addFixedConstraint(part, command.payload.sketchId, command.payload.entityId, command.payload.frozenGeometry) }),
   'constraint.coincident': defineSketchCommandHandler<'constraint.coincident'>({ availability: requireSketchAvailability, execute: (part, command) => addCoincidentConstraint(part, command.payload.sketchId, [command.payload.a, command.payload.b]) }),
 } satisfies SketchCommandHandlerMap<SketchConstraintCommandId>;
