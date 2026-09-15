@@ -39,9 +39,11 @@ for (const file of files) {
 
   const frozen = frozenCeilings.get(normalized);
   if (frozen != null) {
-    assert.ok(
-      metrics.bytes <= frozen,
-      `${normalized} grew to ${metrics.bytes} canonical UTF-8 bytes; frozen maintenance ceiling is ${frozen}. Extract responsibility instead of raising the ceiling.`,
+    assert.equal(
+      metrics.bytes,
+      frozen,
+      `${normalized} is ${metrics.bytes} canonical UTF-8 bytes but its frozen ratchet is ${frozen}. ` +
+        'Frozen files may not regrow; if the file shrank, lower the machine-readable ceiling in the same PR.',
     );
   }
 
@@ -68,7 +70,11 @@ for (const file of files) {
 for (const [file, ceiling] of frozenCeilings) {
   assert.ok(fs.existsSync(file), `Frozen hotspot disappeared from repository without updating policy: ${file}`);
   assert.ok(checked.has(file), `Frozen hotspot is no longer covered by a file-budget policy: ${file}`);
-  assert.ok(canonicalMetrics(file).bytes <= ceiling);
+  assert.equal(
+    canonicalMetrics(file).bytes,
+    ceiling,
+    `Frozen hotspot ratchet is stale for ${file}; keep the machine-readable ceiling equal to current canonical bytes.`,
+  );
 }
 
 for (const [file, ceiling] of grandfatheredHardCeilings) {
@@ -80,7 +86,7 @@ for (const [file, ceiling] of grandfatheredHardCeilings) {
 for (const warning of warnings) console.warn(`File budget warning: ${warning}`);
 
 console.log(
-  `ASA-CAD file budgets PASS (${checked.size} files checked; ${frozenCeilings.size} hotspots frozen; ${grandfatheredHardCeilings.size} hard-limit exceptions).`,
+  `ASA-CAD file budgets PASS (${checked.size} files checked; ${frozenCeilings.size} exact ratchets frozen; ${grandfatheredHardCeilings.size} hard-limit exceptions).`,
 );
 
 function matchesBudget(budget, file) {
