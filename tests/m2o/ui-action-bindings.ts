@@ -29,6 +29,7 @@ const handlers: M2CadUiActionHandlers = {
   horizontalConstraint: call('horizontalConstraint'),
   verticalConstraint: call('verticalConstraint'),
   fixedConstraint: call('fixedConstraint'),
+  coincidentConstraint: call('coincidentConstraint'),
   finishSketch: call('finishSketch'),
   extrude: call('extrude'),
   cutExtrude: call('cutExtrude'),
@@ -51,6 +52,7 @@ const bindings = createM2CadUiActionBindings(handlers, {
   hasSketchEntitySelection: true,
   canApplyOrientationConstraint: true,
   canApplyFixedConstraint: true,
+  canApplyCoincidentConstraint: true,
   canExtrude: false,
   canCutExtrude: true,
   canFillet: false,
@@ -64,6 +66,7 @@ assert.equal(actions.get('sketch.rectangle')?.enabled, true);
 assert.equal(actions.get('constraint.horizontal')?.enabled, true);
 assert.equal(actions.get('constraint.vertical')?.enabled, true);
 assert.equal(actions.get('constraint.fixed')?.enabled, true);
+assert.equal(actions.get('constraint.coincident')?.enabled, true);
 assert.equal(actions.get('part.extrude')?.enabled, false);
 assert.equal(actions.get('part.cutExtrude')?.enabled, true);
 assert.equal(actions.get('part.fillet')?.enabled, false);
@@ -72,26 +75,30 @@ assert.equal(await executeCadUiAction(actions.get('system.redo')!), true);
 assert.equal(await executeCadUiAction(actions.get('constraint.horizontal')!), true);
 assert.equal(await executeCadUiAction(actions.get('constraint.vertical')!), true);
 assert.equal(await executeCadUiAction(actions.get('constraint.fixed')!), true);
+assert.equal(await executeCadUiAction(actions.get('constraint.coincident')!), true);
 assert.equal(await executeCadUiAction(actions.get('part.cutExtrude')!), true);
 assert.equal(await executeCadUiAction(actions.get('part.extrude')!), false);
-assert.deepEqual(calls, ['redo', 'horizontalConstraint', 'verticalConstraint', 'fixedConstraint', 'cutExtrude']);
+assert.deepEqual(calls, ['redo', 'horizontalConstraint', 'verticalConstraint', 'fixedConstraint', 'coincidentConstraint', 'cutExtrude']);
 
-const disabledOrientation = indexCadUiActions(createCadUiActions(definitions, createM2CadUiActionBindings(handlers, {
+const disabledConstraints = indexCadUiActions(createCadUiActions(definitions, createM2CadUiActionBindings(handlers, {
   canUndo: false,
   canRedo: false,
   hasSketch: true,
   hasSketchEntitySelection: false,
   canApplyOrientationConstraint: false,
   canApplyFixedConstraint: false,
+  canApplyCoincidentConstraint: false,
   canExtrude: false,
   canCutExtrude: false,
   canFillet: false,
 })));
-assert.equal(disabledOrientation.get('constraint.horizontal')?.enabled, false);
-assert.equal(disabledOrientation.get('constraint.horizontal')?.disabledReason, 'Выберите отрезок эскиза');
-assert.equal(disabledOrientation.get('constraint.vertical')?.enabled, false);
-assert.equal(disabledOrientation.get('constraint.fixed')?.enabled, false);
-assert.equal(disabledOrientation.get('constraint.fixed')?.disabledReason, 'Выберите незакреплённый отрезок эскиза');
+assert.equal(disabledConstraints.get('constraint.horizontal')?.enabled, false);
+assert.equal(disabledConstraints.get('constraint.horizontal')?.disabledReason, 'Выберите отрезок эскиза');
+assert.equal(disabledConstraints.get('constraint.vertical')?.enabled, false);
+assert.equal(disabledConstraints.get('constraint.fixed')?.enabled, false);
+assert.equal(disabledConstraints.get('constraint.fixed')?.disabledReason, 'Выберите незакреплённый отрезок эскиза');
+assert.equal(disabledConstraints.get('constraint.coincident')?.enabled, false);
+assert.equal(disabledConstraints.get('constraint.coincident')?.disabledReason, 'Создайте два отрезка эскиза');
 
 assert.equal(cadUiActionIdForShortcut('system.save'), 'system.save');
 assert.equal(cadUiActionIdForShortcut('system.rebuild'), 'system.rebuild');
@@ -100,4 +107,4 @@ assert.equal(cadUiActionIdForShortcut('interaction.cancel'), null);
 assert.equal(cadUiActionIdForShortcut('interaction.commit'), null);
 assert.equal(cadUiActionIdForShortcut('view.zoomIn'), null);
 
-console.log('M2O O4 M2 action bindings PASS (shared enablement/execution + H/V orientation actions + shortcut command mapping)');
+console.log('M2O O4 M2 action bindings PASS (shared enablement/execution + H/V/Fixed/Coincident actions + shortcut command mapping)');

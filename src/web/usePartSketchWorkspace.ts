@@ -6,7 +6,7 @@ import { useSketchSession } from './useSketchSession';
 import { usePartSelectionController } from './usePartSelectionController';
 import { useSketchEditingController } from './useSketchEditingController';
 import { useSketchDimensionController } from './useSketchDimensionController';
-import { useSketchConstraintController } from './useSketchConstraintController';
+import { useSketchConstraintControllers } from './useSketchConstraintControllers';
 import { useSketchEntityMutationController } from './useSketchEntityMutationController';
 import { usePartFeatureController } from './usePartFeatureController';
 import { findSketch, partDocument } from './PartSketchWorkspaceModel';
@@ -22,7 +22,6 @@ export interface PartSketchWorkspaceOptions {
   setNotice(message: string): void;
 }
 
-/** Thin App-facing composition facade; focused controllers own behavior. */
 export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
   const { app, document, renderModelAvailable, setPanel, setNotice } = options;
   const [activeWorkspace, setActiveWorkspace] = useState('solid');
@@ -44,8 +43,8 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
   const entityMutations = useSketchEntityMutationController({
     app, activeSketchId, selectedEntityId, setNotice, clearEntitySelection,
   });
-  const constraints = useSketchConstraintController({
-    app, activeSketchId, sketch, selectedEntityId, setNotice,
+  const constraints = useSketchConstraintControllers({
+    app, activeSketchId, sketch, selectedEntityId, setActiveCommand, setPanel, setNotice,
   });
   const dimensions = useSketchDimensionController({
     app, setActiveCommand, setActiveWorkspace, setPanel, setNotice, activateSketch,
@@ -95,7 +94,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
 
   function cancelCommand() {
     editing.resetActiveTool(activeCommand);
-    const stayInSketch = ['sketch.line', 'sketch.rectangle', 'sketch.circle', 'sketch.arc'].includes(activeCommand ?? '');
+    const stayInSketch = activeCommand?.startsWith('sketch.') || activeCommand === 'constraint.coincident';
     setActiveCommand(null);
     dimensions.clearDimensionEdit();
     setPanel('tree');

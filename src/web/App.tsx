@@ -11,7 +11,7 @@ import { useM2CadUiActions } from './useM2CadUiActions';
 import { MobileToolsPanel } from './MobileToolsPanel';
 import { DocumentTree } from './DocumentTree';
 import { ParameterPanel } from './ParameterPanel';
-import { PartModelStage } from './PartModelStage';
+import { CoincidentPartStage } from './CoincidentPartModelStage';
 import { CadShellTop } from './CadShellTop';
 import { CadShellMain } from './CadShellMain';
 import { CadShellBottom } from './CadShellBottom';
@@ -21,12 +21,10 @@ import { documentNames } from './CadDocumentPresentation';
 import { usePartSketchWorkspace } from './usePartSketchWorkspace';
 import { cadUiActionIdForShortcut } from './M2CadUiActions';
 import { ShortcutRegistry, shortcutInputKind, type ShortcutActionId } from './ShortcutRegistry';
-
 const viewportViewByLabel: Record<string, CadViewportViewName> = {
   'Показать всё': 'fit', 'Спереди': 'front', 'Сзади': 'back', 'Сверху': 'top',
   'Снизу': 'bottom', 'Слева': 'left', 'Справа': 'right', 'Изометрия': 'isometric',
 };
-
 export function App(props: CadProjectPersistenceOverrides) {
   const route = useMemo(() => parseCadClientRoute(window.location.pathname), []);
   const devFixture = route.kind === 'dev-part' ? route.fixture : null;
@@ -44,12 +42,10 @@ export function App(props: CadProjectPersistenceOverrides) {
   const [viewName, setViewName] = useState('Изометрия');
   const [viewCommand, setViewCommand] = useState<CadViewportViewCommand>({ sequence: 0, view: 'isometric' });
   const [search, setSearch] = useState('');
-
   useEffect(() => {
     const unsubscribe = app.subscribe(() => setRevisionToken((value) => value + 1));
     return () => { unsubscribe(); app.dispose(); };
   }, [app]);
-
   const document = app.getDocument();
   const state = app.getState();
   const renderModel = runtime.getRenderModel(document);
@@ -57,26 +53,7 @@ export function App(props: CadProjectPersistenceOverrides) {
   const workspace = usePartSketchWorkspace({
     app, document, renderModelAvailable: Boolean(renderModel), setPanel: setActivePanel, setNotice,
   });
-  const {
-    activeWorkspace, setActiveWorkspace, activeCommand, activeSketchId, selectedSketchEntityId,
-    canApplyOrientationConstraint, canApplyFixedConstraint, applyHorizontalConstraint, applyVerticalConstraint, applyFixedConstraint,
-    selectionMode, selectedPick, selectedBodyId, sketchPlane, setSketchPlane,
-    rectangleWidth, setRectangleWidth, rectangleHeight, setRectangleHeight,
-    circleDiameter, setCircleDiameter, extrudeDistance, setExtrudeDistance,
-    filletRadius, setFilletRadius, dimensionEditValue, setDimensionEditValue,
-    part, sketch, rectangleReady, circleReady, hasSolid, canExtrude, canCut, canFillet,
-    selectedPointText, selectedBody, clearTransientSelection, clearSelectedPick,
-    resetTransient, resetToWorkspace, resetForDocument, handleViewportPick, handleBodySelect,
-    handleSketchEntitySelect, deleteSelectedSketchEntity, translateSketchEntity, enterSketch,
-    beginLine, lineDraft, lineCommitting, handleSketchLinePointMove, handleSketchLinePoint,
-    rectangleDraft, rectangleCommitting, handleSketchRectanglePointMove, handleSketchRectanglePoint,
-    circleDraft, circleCommitting, handleSketchCirclePointMove, handleSketchCirclePoint,
-    beginArc, arcDraft, arcCommitting, handleSketchArcPointMove, handleSketchArcPoint,
-    beginCreateSketch, commitCreateSketch, beginRectangle, commitRectangle, beginCircle, commitCircle,
-    finishSketch, beginExtrude, commitExtrude, beginCut, commitCut, beginFillet, commitFillet,
-    beginDimensionEdit, commitDimensionEdit, cancelCommand, commitActiveCommand,
-  } = workspace;
-
+  const { activeWorkspace, setActiveWorkspace, activeCommand, activeSketchId, selectedSketchEntityId, canApplyOrientationConstraint, canApplyFixedConstraint, applyHorizontalConstraint, applyVerticalConstraint, applyFixedConstraint, selectionMode, selectedPick, selectedBodyId, sketchPlane, setSketchPlane, rectangleWidth, setRectangleWidth, rectangleHeight, setRectangleHeight, circleDiameter, setCircleDiameter, extrudeDistance, setExtrudeDistance, filletRadius, setFilletRadius, dimensionEditValue, setDimensionEditValue, part, sketch, rectangleReady, circleReady, hasSolid, canExtrude, canCut, canFillet, selectedPointText, selectedBody, clearTransientSelection, clearSelectedPick, resetTransient, resetToWorkspace, resetForDocument, handleViewportPick, handleBodySelect, handleSketchEntitySelect, deleteSelectedSketchEntity, translateSketchEntity, enterSketch, beginLine, lineDraft, lineCommitting, handleSketchLinePointMove, handleSketchLinePoint, rectangleDraft, rectangleCommitting, handleSketchRectanglePointMove, handleSketchRectanglePoint, circleDraft, circleCommitting, handleSketchCirclePointMove, handleSketchCirclePoint, beginArc, arcDraft, arcCommitting, handleSketchArcPointMove, handleSketchArcPoint, beginCreateSketch, commitCreateSketch, beginRectangle, commitRectangle, beginCircle, commitCircle, finishSketch, beginExtrude, commitExtrude, beginCut, commitCut, beginFillet, commitFillet, beginDimensionEdit, commitDimensionEdit, cancelCommand, commitActiveCommand } = workspace;
   useEffect(() => {
     if (!devFixture || fixtureStartedRef.current) return;
     fixtureStartedRef.current = true;
@@ -85,7 +62,6 @@ export function App(props: CadProjectPersistenceOverrides) {
     setActivePanel('tree');
     resetTransient();
     setNotice(`Fixture ${devFixture}: загрузка…`);
-
     void applyPartDevFixture(app, devFixture)
       .then((result) => {
         if (!active) return;
@@ -101,56 +77,22 @@ export function App(props: CadProjectPersistenceOverrides) {
       });
     return () => { active = false; };
   }, [app, devFixture, enterSketch, resetToWorkspace, resetTransient]);
-
-  const requestViewportCommand = useCallback((view: CadViewportViewName) => {
-    setViewCommand((current) => ({ sequence: current.sequence + 1, view }));
-  }, []);
-  const requestView = useCallback((label: string) => {
-    const view = viewportViewByLabel[label];
-    if (!view) return;
-    setViewName(label);
-    requestViewportCommand(view);
-  }, [requestViewportCommand]);
-
-  async function createDocument(kind: CadDocumentKind) {
-    await app.replaceDocument(createEmptyCadDocument(kind, { title: `${documentNames[kind]} 1` }));
-    setNewDialogOpen(false);
-    setActivePanel('tree');
-    resetForDocument(kind);
-    setNotice(`Создан документ «${documentNames[kind]}»`);
-  }
-
-  const resetAfterOpen = useCallback((kind: CadDocumentKind) => {
-    setActivePanel('tree');
-    resetForDocument(kind);
-  }, [resetForDocument]);
+  const requestViewportCommand = useCallback((view: CadViewportViewName) => setViewCommand((current) => ({ sequence: current.sequence + 1, view })), []);
+  const requestView = useCallback((label: string) => { const view = viewportViewByLabel[label]; if (!view) return; setViewName(label); requestViewportCommand(view); }, [requestViewportCommand]);
+  async function createDocument(kind: CadDocumentKind) { await app.replaceDocument(createEmptyCadDocument(kind, { title: `${documentNames[kind]} 1` })); setNewDialogOpen(false); setActivePanel('tree'); resetForDocument(kind); setNotice(`Создан документ «${documentNames[kind]}»`); }
+  const resetAfterOpen = useCallback((kind: CadDocumentKind) => { setActivePanel('tree'); resetForDocument(kind); }, [resetForDocument]);
   const { save: saveLocal, open: openLocal } = useCadPersistenceCommands({
     persistence, remoteHost: Boolean(props.projectHost), setNotice, onOpened: resetAfterOpen,
   });
-
-  async function undo() {
-    clearTransientSelection();
-    const result = await app.undo();
-    setNotice(result.changed ? 'Отменено' : 'Нечего отменять');
-  }
-  async function redo() {
-    clearTransientSelection();
-    const result = await app.redo();
-    setNotice(result.changed ? 'Повторено' : 'Нечего повторять');
-  }
-  async function rebuild() {
-    clearTransientSelection();
-    setNotice('Перестроение…');
-    const result = await app.execute({ id: 'document.rebuild', payload: {} });
-    setNotice(result.ok ? 'Перестроено' : result.error?.message ?? 'Ошибка перестроения');
-  }
-
+  async function undo() { clearTransientSelection(); const result = await app.undo(); setNotice(result.changed ? 'Отменено' : 'Нечего отменять'); }
+  async function redo() { clearTransientSelection(); const result = await app.redo(); setNotice(result.changed ? 'Повторено' : 'Нечего повторять'); }
+  async function rebuild() { clearTransientSelection(); setNotice('Перестроение…'); const result = await app.execute({ id: 'document.rebuild', payload: {} }); setNotice(result.ok ? 'Перестроено' : result.error?.message ?? 'Ошибка перестроения'); }
   const uiActions = useM2CadUiActions(
     {
       open: openLocal, save: saveLocal, undo, redo, rebuild, createSketch: beginCreateSketch,
       line: beginLine, rectangle: beginRectangle, circle: beginCircle, arc: beginArc,
       deleteSketchEntity: deleteSelectedSketchEntity,
-      horizontalConstraint: applyHorizontalConstraint, verticalConstraint: applyVerticalConstraint, fixedConstraint: applyFixedConstraint,
+      horizontalConstraint: applyHorizontalConstraint, verticalConstraint: applyVerticalConstraint, fixedConstraint: applyFixedConstraint, coincidentConstraint: workspace.beginCoincidentConstraint,
       finishSketch, extrude: beginExtrude, cutExtrude: beginCut, fillet: beginFillet,
       fit: () => requestView('Показать всё'), front: () => requestView('Спереди'),
       back: () => requestView('Сзади'), top: () => requestView('Сверху'), bottom: () => requestView('Снизу'),
@@ -158,17 +100,12 @@ export function App(props: CadProjectPersistenceOverrides) {
     },
     {
       canUndo: state.canUndo, canRedo: state.canRedo, hasSketch: Boolean(sketch),
-      hasSketchEntitySelection: Boolean(selectedSketchEntityId), canApplyOrientationConstraint, canApplyFixedConstraint,
+      hasSketchEntitySelection: Boolean(selectedSketchEntityId), canApplyOrientationConstraint, canApplyFixedConstraint, canApplyCoincidentConstraint: workspace.canApplyCoincidentConstraint,
       canExtrude, canCutExtrude: canCut, canFillet,
     },
   );
   const searchableActions = uiActions.search(search);
-  const uiAction = (id: string) => {
-    const action = uiActions.byId.get(id);
-    if (!action) throw new Error(`Missing CadUiAction: ${id}`);
-    return action;
-  };
-
+  function uiAction(id: string) { const action = uiActions.byId.get(id); if (!action) throw new Error(`Missing CadUiAction: ${id}`); return action; }
   async function dispatchShortcutAction(action: ShortcutActionId) {
     const sharedActionId = cadUiActionIdForShortcut(action);
     if (sharedActionId) {
@@ -178,7 +115,6 @@ export function App(props: CadProjectPersistenceOverrides) {
       await sharedAction.execute();
       return;
     }
-
     switch (action) {
       case 'interaction.cancel':
         if (activeCommand && selectedPick) {
@@ -200,7 +136,6 @@ export function App(props: CadProjectPersistenceOverrides) {
       case 'view.panDown': requestViewportCommand('pan-down'); return;
     }
   }
-
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     const resolved = shortcutRegistry.resolve(
       {
@@ -217,9 +152,7 @@ export function App(props: CadProjectPersistenceOverrides) {
     if (resolved.preventDefault) event.preventDefault();
     void dispatchShortcutAction(resolved.action);
   }
-
   const fixtureError = state.recompute.status === 'error' ? state.recompute.message : undefined;
-
   return (
     <div
       className="cad-app"
@@ -258,7 +191,6 @@ export function App(props: CadProjectPersistenceOverrides) {
         circleDiameter={circleDiameter}
         viewName={viewName}
       />
-
       <CadShellMain
         activePanel={activePanel}
         setActivePanel={setActivePanel}
@@ -314,7 +246,7 @@ export function App(props: CadProjectPersistenceOverrides) {
         }
         modelContent={
           document.kind === 'part' ? (
-            <PartModelStage
+            <CoincidentPartStage
               document={document}
               activeSketch={sketch}
               activeWorkspace={activeWorkspace}
@@ -349,13 +281,13 @@ export function App(props: CadProjectPersistenceOverrides) {
               arcCommitting={arcCommitting}
               onSketchArcPointMove={handleSketchArcPointMove}
               onSketchArcPoint={handleSketchArcPoint}
+              commit={workspace.applyCoincidentConstraint}
             />
           ) : (
             <PlannedDocumentStage kind={document.kind} />
           )
         }
       />
-
       <CadShellBottom
         recomputeStatus={state.recompute.status}
         notice={notice}
@@ -369,7 +301,6 @@ export function App(props: CadProjectPersistenceOverrides) {
         activePanel={activePanel}
         setActivePanel={setActivePanel}
       />
-
       <NewDocumentDialog open={newDialogOpen} onClose={() => setNewDialogOpen(false)} onCreate={createDocument} />
     </div>
   );
