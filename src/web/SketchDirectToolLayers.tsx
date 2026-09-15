@@ -8,6 +8,7 @@ import { SketchLineInteractionLayer } from './viewport/SketchLineInteractionLaye
 import { SketchCircleInteractionLayer } from './viewport/SketchCircleInteractionLayer';
 import { SketchArcInteractionLayer } from './viewport/SketchArcInteractionLayer';
 import { SketchRectangleInteractionLayer } from './viewport/SketchRectangleInteractionLayer';
+import { SketchCoincidentInteractionLayer } from './viewport/SketchCoincidentInteractionLayer';
 import type { SketchOverlayModel } from './viewport/SketchOverlayModel';
 import type { SketchDisplayFrame, SketchViewportState } from './viewport/SketchViewportGeometry';
 
@@ -35,7 +36,7 @@ export interface SketchDirectToolLayersProps {
   onArcPoint(point: CadPoint2): void | Promise<void>;
 }
 
-/** Presentation-only composition for direct Sketch geometry tools. */
+/** Presentation-only composition for direct Sketch geometry/constraint tools. */
 export function SketchDirectToolLayers(props: SketchDirectToolLayersProps) {
   const common = {
     model: props.model,
@@ -76,6 +77,10 @@ export function SketchDirectToolLayers(props: SketchDirectToolLayersProps) {
         committing={props.arcCommitting}
         onPointMove={props.onArcMove}
         onPoint={props.onArcPoint}
+      />
+      <SketchCoincidentInteractionLayer
+        {...common}
+        active={props.activeCommand === 'constraint.coincident'}
       />
     </>
   );

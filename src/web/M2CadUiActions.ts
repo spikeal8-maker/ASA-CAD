@@ -16,6 +16,7 @@ export interface M2CadUiActionHandlers {
   horizontalConstraint(): void | Promise<void>;
   verticalConstraint(): void | Promise<void>;
   fixedConstraint(): void | Promise<void>;
+  coincidentConstraint(): void | Promise<void>;
   finishSketch(): void | Promise<void>;
   extrude(): void | Promise<void>;
   cutExtrude(): void | Promise<void>;
@@ -37,6 +38,7 @@ export interface M2CadUiActionState {
   hasSketchEntitySelection: boolean;
   canApplyOrientationConstraint: boolean;
   canApplyFixedConstraint: boolean;
+  canApplyCoincidentConstraint: boolean;
   canExtrude: boolean;
   canCutExtrude: boolean;
   canFillet: boolean;
@@ -92,6 +94,11 @@ export function createM2CadUiActionBindings(
       handlers.fixedConstraint,
       state.canApplyFixedConstraint,
       fixedConstraintReason,
+    ),
+    'constraint.coincident': binding(
+      handlers.coincidentConstraint,
+      state.canApplyCoincidentConstraint,
+      'Создайте два отрезка эскиза',
     ),
     'sketch.finish': binding(handlers.finishSketch, state.hasSketch, 'Сначала создайте эскиз'),
     'part.extrude': binding(handlers.extrude, state.canExtrude, 'Завершите прямоугольный эскиз'),

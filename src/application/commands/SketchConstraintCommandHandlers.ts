@@ -4,7 +4,7 @@ import type {
   CadCommandResult,
   CadSketchCommandReference,
 } from '../../contracts/commands';
-import type { CadConstraint, CadPartDocument } from '../../contracts/document';
+import type { CadConstraint, CadPartDocument, CadSketch } from '../../contracts/document';
 import type {
   CadConstraintId,
   CadSketchEntityId,
@@ -30,6 +30,7 @@ export type SketchConstraintCommandId = typeof SKETCH_CONSTRAINT_COMMAND_IDS[num
 
 type CadOrientationConstraintType = 'horizontal' | 'vertical';
 type CadFixedFreezeGeometry = CadCommandMap['constraint.fixed']['frozenGeometry'];
+type CadLineEndpointReference = CadSketchCommandReference & { point: 'a' | 'b' };
 const FREEZE_TOLERANCE = 1e-6;
 
 export const sketchConstraintCommandHandlers = {
@@ -179,16 +180,58 @@ function addCoincidentConstraint(
   sketchId: CadSketchId,
   refs: [CadSketchCommandReference, CadSketchCommandReference],
 ): CadCommandResult {
+  const sketch = requireSketch(part, sketchId);
+  const a = requireLineEndpointReference(sketch, refs[0], 'first');
+  const b = requireLineEndpointReference(sketch, refs[1], 'second');
+  if (a.entityId === b.entityId) {
+    throw new Error('M3.7C Coincident requires endpoints from two distinct Lines');
+  }
+
+  const ids = new Set(sketch.constraintIds);
+  const duplicate = part.constraints.some((constraint) => (
+    ids.has(constraint.id)
+    && constraint.type === 'coincident'
+    && sameUnorderedEndpointPair(constraint.data.refs, [a, b])
+  ));
+  if (duplicate) throw new Error('Coincident constraint already exists for the selected endpoints');
+
   const id = createCadId<CadConstraintId>('constraint');
   const constraint: CadConstraint = {
     id,
     type: 'coincident',
-    entityIds: [refs[0].entityId, refs[1].entityId],
-    data: {
-      refs: [{ ...refs[0] }, { ...refs[1] }],
-    },
+    entityIds: [a.entityId, b.entityId],
+    data: { refs: [a, b] },
   };
   return persistConstraint(part, sketchId, constraint);
+}
+
+function requireLineEndpointReference(
+  sketch: CadSketch,
+  ref: CadSketchCommandReference,
+  label: string,
+): CadLineEndpointReference {
+  const entity = requireSketchEntity(sketch, ref.entityId);
+  if (entity.type !== 'line') {
+    throw new Error(`M3.7C Coincident ${label} reference must target a Line entity`);
+  }
+  if (ref.point !== 'a' && ref.point !== 'b') {
+    throw new Error(`M3.7C Coincident ${label} Line reference must select endpoint a or b`);
+  }
+  return { entityId: ref.entityId, point: ref.point };
+}
+
+function sameUnorderedEndpointPair(
+  left: readonly CadSketchCommandReference[],
+  right: readonly CadSketchCommandReference[],
+): boolean {
+  if (left.length !== 2 || right.length !== 2) return false;
+  const leftKeys = left.map(endpointKey).sort();
+  const rightKeys = right.map(endpointKey).sort();
+  return leftKeys[0] === rightKeys[0] && leftKeys[1] === rightKeys[1];
+}
+
+function endpointKey(ref: CadSketchCommandReference): string {
+  return `${ref.entityId}:${ref.point ?? ''}`;
 }
 
 function persistConstraint(

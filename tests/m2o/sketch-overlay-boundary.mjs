@@ -5,6 +5,7 @@ const model = readFileSync('src/web/viewport/SketchOverlayModel.ts', 'utf8');
 const layer = readFileSync('src/web/viewport/SketchOverlayLayer.tsx', 'utf8');
 const viewport = readFileSync('src/web/CadViewport.tsx', 'utf8');
 const app = readFileSync('src/web/App.tsx', 'utf8');
+const partBridge = readFileSync('src/web/CoincidentPartModelStage.tsx', 'utf8');
 const partStage = readFileSync('src/web/PartModelStage.tsx', 'utf8');
 const sketchStage = readFileSync('src/web/SketchEditingStage.tsx', 'utf8');
 const solveHook = readFileSync('src/web/useActiveSketchSolveOverlay.ts', 'utf8');
@@ -27,7 +28,8 @@ assert.match(runtimeCss, /\.cad-sketch-overlay\s*\{[\s\S]*pointer-events:\s*none
 
 assert.match(viewport, /sketchOverlay\?: SketchOverlayModel \| null/, 'CadViewport must accept Sketch overlay independently from B-Rep model');
 assert.match(viewport, /<SketchOverlayLayer model=\{sketchOverlay\}/, 'CadViewport must mount Sketch overlay as a sibling presentation layer');
-assert.match(app, /<PartModelStage\b/, 'App must delegate Part work-area presentation');
+assert.match(app, /<CoincidentPartStage\b/, 'App must delegate Part work-area presentation through the focused interaction bridge');
+assert.match(partBridge, /<PartModelStage\b/, 'focused Coincident bridge must delegate the actual Part stage');
 assert.doesNotMatch(app, /SketchSolveSession|PlaneGCSSketchSolverRuntime|buildSketchOverlayModel/, 'App must not own solver or overlay orchestration');
 assert.match(partStage, /<SketchEditingStage/, 'PartModelStage must delegate active Sketch presentation wholesale');
 assert.doesNotMatch(partStage, /useActiveSketchSolveOverlay|SketchSelectionLayer|SketchLineInteractionLayer/, 'PartModelStage must not regain Sketch editing orchestration');
