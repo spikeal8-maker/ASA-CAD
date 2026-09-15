@@ -43,8 +43,7 @@ export function App(props: CadProjectPersistenceOverrides) {
   const [viewCommand, setViewCommand] = useState<CadViewportViewCommand>({ sequence: 0, view: 'isometric' });
   const [search, setSearch] = useState('');
   useEffect(() => {
-    const unsubscribe = app.subscribe(() => setRevisionToken((value) => value + 1));
-    return () => { unsubscribe(); app.dispose(); };
+    const unsubscribe = app.subscribe(() => setRevisionToken((value) => value + 1)); return () => { unsubscribe(); app.dispose(); };
   }, [app]);
   const document = app.getDocument();
   const state = app.getState();
@@ -92,7 +91,7 @@ export function App(props: CadProjectPersistenceOverrides) {
       open: openLocal, save: saveLocal, undo, redo, rebuild, createSketch: beginCreateSketch,
       line: beginLine, rectangle: beginRectangle, circle: beginCircle, arc: beginArc,
       deleteSketchEntity: deleteSelectedSketchEntity,
-      horizontalConstraint: applyHorizontalConstraint, verticalConstraint: applyVerticalConstraint, fixedConstraint: applyFixedConstraint, coincidentConstraint: workspace.beginCoincidentConstraint,
+      horizontalConstraint: applyHorizontalConstraint, verticalConstraint: applyVerticalConstraint, fixedConstraint: applyFixedConstraint, coincidentConstraint: workspace.beginCoincidentConstraint, parallelConstraint: workspace.beginParallelConstraint,
       finishSketch, extrude: beginExtrude, cutExtrude: beginCut, fillet: beginFillet,
       fit: () => requestView('Показать всё'), front: () => requestView('Спереди'),
       back: () => requestView('Сзади'), top: () => requestView('Сверху'), bottom: () => requestView('Снизу'),
@@ -100,7 +99,7 @@ export function App(props: CadProjectPersistenceOverrides) {
     },
     {
       canUndo: state.canUndo, canRedo: state.canRedo, hasSketch: Boolean(sketch),
-      hasSketchEntitySelection: Boolean(selectedSketchEntityId), canApplyOrientationConstraint, canApplyFixedConstraint, canApplyCoincidentConstraint: workspace.canApplyCoincidentConstraint,
+      hasSketchEntitySelection: Boolean(selectedSketchEntityId), canApplyOrientationConstraint, canApplyFixedConstraint, canApplyCoincidentConstraint: workspace.canApplyCoincidentConstraint, canApplyParallelConstraint: workspace.canApplyParallelConstraint,
       canExtrude, canCutExtrude: canCut, canFillet,
     },
   );
@@ -138,15 +137,8 @@ export function App(props: CadProjectPersistenceOverrides) {
   }
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     const resolved = shortcutRegistry.resolve(
-      {
-        key: event.key, code: event.code, ctrlKey: event.ctrlKey, metaKey: event.metaKey,
-        shiftKey: event.shiftKey, altKey: event.altKey,
-      },
-      {
-        documentKind: document.kind, activeCommand,
-        hasSelection: Boolean(selectedBodyId || selectedSketchEntityId) && !activeCommand,
-        cadEditorFocused: true, inputKind: shortcutInputKind(event.target),
-      },
+      { key: event.key, code: event.code, ctrlKey: event.ctrlKey, metaKey: event.metaKey, shiftKey: event.shiftKey, altKey: event.altKey },
+      { documentKind: document.kind, activeCommand, hasSelection: Boolean(selectedBodyId || selectedSketchEntityId) && !activeCommand, cadEditorFocused: true, inputKind: shortcutInputKind(event.target) },
     );
     if (!resolved) return;
     if (resolved.preventDefault) event.preventDefault();
@@ -174,22 +166,12 @@ export function App(props: CadProjectPersistenceOverrides) {
       onKeyDown={handleKeyDown}
     >
       <CadShellTop
-        documentKind={document.kind}
-        documentTitle={document.title}
-        dirty={state.dirty}
-        activeWorkspace={activeWorkspace}
-        setActiveWorkspace={setActiveWorkspace}
-        search={search}
-        setSearch={setSearch}
-        searchableActions={searchableActions}
-        getAction={uiAction}
-        openNewDocument={() => setNewDialogOpen(true)}
-        rectangleReady={rectangleReady}
-        rectangleWidth={rectangleWidth}
-        rectangleHeight={rectangleHeight}
-        circleReady={circleReady}
-        circleDiameter={circleDiameter}
-        viewName={viewName}
+        documentKind={document.kind} documentTitle={document.title} dirty={state.dirty}
+        activeWorkspace={activeWorkspace} setActiveWorkspace={setActiveWorkspace}
+        search={search} setSearch={setSearch} searchableActions={searchableActions} getAction={uiAction}
+        openNewDocument={() => setNewDialogOpen(true)} rectangleReady={rectangleReady}
+        rectangleWidth={rectangleWidth} rectangleHeight={rectangleHeight}
+        circleReady={circleReady} circleDiameter={circleDiameter} viewName={viewName}
       />
       <CadShellMain
         activePanel={activePanel}
@@ -282,6 +264,7 @@ export function App(props: CadProjectPersistenceOverrides) {
               onSketchArcPointMove={handleSketchArcPointMove}
               onSketchArcPoint={handleSketchArcPoint}
               commit={workspace.applyCoincidentConstraint}
+              parallelCommit={workspace.applyParallelConstraint}
             />
           ) : (
             <PlannedDocumentStage kind={document.kind} />
@@ -289,17 +272,11 @@ export function App(props: CadProjectPersistenceOverrides) {
         }
       />
       <CadShellBottom
-        recomputeStatus={state.recompute.status}
-        notice={notice}
-        devFixture={devFixture}
-        selectedPickKind={selectedPick?.kind}
-        selectedPointText={selectedPointText}
-        selectedBodyName={selectedBody?.name}
-        selectedSketchEntityId={selectedSketchEntityId}
-        documentKind={document.kind}
-        runtimeStatus={runtimeState.status}
-        activePanel={activePanel}
-        setActivePanel={setActivePanel}
+        recomputeStatus={state.recompute.status} notice={notice} devFixture={devFixture}
+        selectedPickKind={selectedPick?.kind} selectedPointText={selectedPointText}
+        selectedBodyName={selectedBody?.name} selectedSketchEntityId={selectedSketchEntityId}
+        documentKind={document.kind} runtimeStatus={runtimeState.status}
+        activePanel={activePanel} setActivePanel={setActivePanel}
       />
       <NewDocumentDialog open={newDialogOpen} onClose={() => setNewDialogOpen(false)} onCreate={createDocument} />
     </div>

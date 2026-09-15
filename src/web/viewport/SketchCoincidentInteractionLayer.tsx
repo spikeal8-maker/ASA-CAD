@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import type { CadSketchCommandReference } from '../../contracts/commands';
 import type { CadPoint2 } from '../../contracts/document';
-import { useSketchCoincidentCommit } from '../CoincidentPartModelStage';
+import type { CadSketchEntityId } from '../../contracts/ids';
+import { useSketchCoincidentCommit, useSketchParallelCommit } from '../CoincidentPartModelStage';
 import { SketchInteractionSurface } from './SketchInteractionSurface';
 import type { SketchOverlayModel } from './SketchOverlayModel';
 import type { SketchDisplayFrame, SketchViewportState } from './SketchViewportGeometry';
@@ -14,6 +15,7 @@ export interface SketchCoincidentInteractionLayerProps {
   active: boolean;
 }
 
+type BinaryLayerProps = SketchCoincidentInteractionLayerProps;
 interface LineEndpoint {
   ref: CadSketchCommandReference & { point: 'a' | 'b' };
   position: CadPoint2;
@@ -28,31 +30,13 @@ export function SketchCoincidentInteractionLayer(props: SketchCoincidentInteract
   const endpoints = lineEndpoints(props.model);
   const pickRadius = props.frame.width * 0.025;
   const markerRadius = props.frame.width * 0.007;
-
-  const pick = (point: CadPoint2): LineEndpoint | null => {
-    let best: LineEndpoint | null = null;
-    let distance = pickRadius;
-    for (const endpoint of endpoints) {
-      const next = Math.hypot(endpoint.position[0] - point[0], endpoint.position[1] - point[1]);
-      if (next <= distance) {
-        best = endpoint;
-        distance = next;
-      }
-    }
-    return best;
-  };
+  const pick = (point: CadPoint2): LineEndpoint | null => nearestEndpoint(endpoints, point, pickRadius);
 
   const onPoint = async (point: CadPoint2) => {
     const endpoint = pick(point);
     if (!endpoint) return;
-    if (!first) {
-      setFirst(endpoint);
-      return;
-    }
-    if (endpointKey(first.ref) === endpointKey(endpoint.ref)) {
-      setFirst(null);
-      return;
-    }
+    if (!first) { setFirst(endpoint); return; }
+    if (endpointKey(first.ref) === endpointKey(endpoint.ref)) { setFirst(null); return; }
     if (await commit(first.ref, endpoint.ref)) setFirst(null);
   };
 
@@ -84,9 +68,54 @@ export function SketchCoincidentInteractionLayer(props: SketchCoincidentInteract
             vectorEffect="non-scaling-stroke"
             style={{
               fill: selected ? 'var(--cad-accent, #3467d6)' : 'var(--cad-surface, #fff)',
-              stroke: 'var(--cad-accent, #3467d6)',
-              strokeWidth: selected ? 2 : 1.5,
-              pointerEvents: 'none',
+              stroke: 'var(--cad-accent, #3467d6)', strokeWidth: selected ? 2 : 1.5, pointerEvents: 'none',
+            }}
+          />
+        );
+      })}
+    </SketchInteractionSurface>
+  );
+}
+
+/** Transient whole-Line pair picker for M3.7D Parallel. */
+export function SketchParallelInteractionLayer(props: BinaryLayerProps) {
+  const commit = useSketchParallelCommit();
+  const [first, setFirst] = useState<CadSketchEntityId | null>(null);
+  useEffect(() => setFirst(null), [props.active, props.model?.sketchId]);
+  const lines = lineEntities(props.model);
+  const pickRadius = props.frame.width * 0.025;
+
+  const onPoint = async (point: CadPoint2) => {
+    const entityId = nearestLine(lines, point, pickRadius);
+    if (!entityId) return;
+    if (!first) { setFirst(entityId); return; }
+    if (first === entityId) { setFirst(null); return; }
+    if (await commit(first, entityId)) setFirst(null);
+  };
+
+  return (
+    <SketchInteractionSurface
+      frame={props.frame}
+      viewportState={props.viewportState}
+      onViewportStateChange={props.onViewportStateChange}
+      active={props.active}
+      tool="constraint.parallel"
+      ariaLabel="Параллельность отрезков"
+      dataAttributes={{ 'data-parallel-first': first ?? '', 'data-parallel-line-count': String(lines.length) }}
+      onPoint={onPoint}
+    >
+      {lines.map((line) => {
+        const selected = first === line.id;
+        return (
+          <line
+            key={line.id}
+            data-parallel-line-id={line.id}
+            data-parallel-selected={selected ? 'true' : 'false'}
+            x1={line.from[0]} y1={-line.from[1]} x2={line.to[0]} y2={-line.to[1]}
+            vectorEffect="non-scaling-stroke"
+            style={{
+              stroke: 'var(--cad-accent, #3467d6)', strokeWidth: selected ? 3 : 2,
+              opacity: selected ? 1 : 0.35, pointerEvents: 'none',
             }}
           />
         );
@@ -104,6 +133,42 @@ function lineEndpoints(model: SketchOverlayModel | null): LineEndpoint[] {
       { ref: { entityId: entity.id, point: 'b' }, position: entity.data.to },
     ];
   });
+}
+
+interface PickLine { id: CadSketchEntityId; from: CadPoint2; to: CadPoint2 }
+function lineEntities(model: SketchOverlayModel | null): PickLine[] {
+  if (!model) return [];
+  return model.entities.flatMap((entity): PickLine[] => entity.type === 'line'
+    ? [{ id: entity.id, from: entity.data.from, to: entity.data.to }]
+    : []);
+}
+
+function nearestEndpoint(endpoints: readonly LineEndpoint[], point: CadPoint2, radius: number): LineEndpoint | null {
+  let best: LineEndpoint | null = null;
+  let distance = radius;
+  for (const endpoint of endpoints) {
+    const next = Math.hypot(endpoint.position[0] - point[0], endpoint.position[1] - point[1]);
+    if (next <= distance) { best = endpoint; distance = next; }
+  }
+  return best;
+}
+
+function nearestLine(lines: readonly PickLine[], point: CadPoint2, radius: number): CadSketchEntityId | null {
+  let best: CadSketchEntityId | null = null;
+  let distance = radius;
+  for (const line of lines) {
+    const next = pointSegmentDistance(point, line.from, line.to);
+    if (next <= distance) { best = line.id; distance = next; }
+  }
+  return best;
+}
+
+function pointSegmentDistance(point: CadPoint2, a: CadPoint2, b: CadPoint2): number {
+  const dx = b[0] - a[0], dy = b[1] - a[1];
+  const length2 = dx * dx + dy * dy;
+  if (length2 === 0) return Math.hypot(point[0] - a[0], point[1] - a[1]);
+  const t = Math.max(0, Math.min(1, ((point[0] - a[0]) * dx + (point[1] - a[1]) * dy) / length2));
+  return Math.hypot(point[0] - (a[0] + t * dx), point[1] - (a[1] + t * dy));
 }
 
 function endpointKey(ref: CadSketchCommandReference): string {

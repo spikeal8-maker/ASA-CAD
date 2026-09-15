@@ -24,6 +24,7 @@ const SKETCH_TOOLS: readonly MobileToolSpec[] = [
   { id: 'constraint.vertical', symbol: '|' },
   { id: 'constraint.fixed', symbol: '⌾' },
   { id: 'constraint.coincident', symbol: '●' },
+  { id: 'constraint.parallel', symbol: '∥' },
   { id: 'sketch.entity.delete', symbol: '⌫' },
   { id: 'sketch.finish', symbol: '✓' },
 ];
@@ -50,10 +51,7 @@ function workspaceTools(documentKind: CadDocumentKind, workspace: string): reado
   return SOLID_TOOLS;
 }
 
-/**
- * Phone/tablet command presentation over the same CadUiAction objects as the
- * desktop shell. No DOM lookup/delegation is allowed here.
- */
+/** Phone/tablet presentation over the same CadUiAction objects as desktop. */
 export function MobileToolsPanel(props: {
   documentKind: CadDocumentKind;
   workspace: string;

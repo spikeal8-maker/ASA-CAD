@@ -8,7 +8,7 @@ import { SketchLineInteractionLayer } from './viewport/SketchLineInteractionLaye
 import { SketchCircleInteractionLayer } from './viewport/SketchCircleInteractionLayer';
 import { SketchArcInteractionLayer } from './viewport/SketchArcInteractionLayer';
 import { SketchRectangleInteractionLayer } from './viewport/SketchRectangleInteractionLayer';
-import { SketchCoincidentInteractionLayer } from './viewport/SketchCoincidentInteractionLayer';
+import { SketchCoincidentInteractionLayer, SketchParallelInteractionLayer } from './viewport/SketchCoincidentInteractionLayer';
 import type { SketchOverlayModel } from './viewport/SketchOverlayModel';
 import type { SketchDisplayFrame, SketchViewportState } from './viewport/SketchViewportGeometry';
 
@@ -78,10 +78,8 @@ export function SketchDirectToolLayers(props: SketchDirectToolLayersProps) {
         onPointMove={props.onArcMove}
         onPoint={props.onArcPoint}
       />
-      <SketchCoincidentInteractionLayer
-        {...common}
-        active={props.activeCommand === 'constraint.coincident'}
-      />
+      <SketchCoincidentInteractionLayer {...common} active={props.activeCommand === 'constraint.coincident'} />
+      <SketchParallelInteractionLayer {...common} active={props.activeCommand === 'constraint.parallel'} />
     </>
   );
 }
