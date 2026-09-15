@@ -1,32 +1,18 @@
 import React from 'react';
 import type { CadDocumentKind } from '../contracts/document';
 import type { CadUiAction } from './CadUiAction';
-import {
-  CadUiActionButton,
-  CadUiActionSearchResults,
-  CadUiGlobalActionButton,
-} from './CadUiActionControls';
+import { CadUiActionButton, CadUiActionSearchResults, CadUiGlobalActionButton } from './CadUiActionControls';
 import { documentKindIcon, documentNames } from './CadDocumentPresentation';
 
 export type CadWorkspaceId = 'solid' | 'sketch' | 'surfaces' | 'diagnostics' | 'view';
 
 export interface CadShellTopProps {
-  documentKind: CadDocumentKind;
-  documentTitle: string;
-  dirty: boolean;
-  activeWorkspace: CadWorkspaceId;
-  setActiveWorkspace: (workspace: CadWorkspaceId) => void;
-  search: string;
-  setSearch: (value: string) => void;
-  searchableActions: CadUiAction[];
-  getAction: (id: string) => CadUiAction;
-  openNewDocument: () => void;
-  rectangleReady: boolean;
-  rectangleWidth: number;
-  rectangleHeight: number;
-  circleReady: boolean;
-  circleDiameter: number;
-  viewName: string;
+  documentKind: CadDocumentKind; documentTitle: string; dirty: boolean;
+  activeWorkspace: CadWorkspaceId; setActiveWorkspace: (workspace: CadWorkspaceId) => void;
+  search: string; setSearch: (value: string) => void; searchableActions: CadUiAction[];
+  getAction: (id: string) => CadUiAction; openNewDocument: () => void;
+  rectangleReady: boolean; rectangleWidth: number; rectangleHeight: number;
+  circleReady: boolean; circleDiameter: number; viewName: string;
 }
 
 export function CadShellTop(props: CadShellTopProps) {
@@ -101,6 +87,7 @@ export function CadShellTop(props: CadShellTopProps) {
                 <CadUiActionButton action={props.getAction('constraint.fixed')} symbol="⌾" text />
                 <CadUiActionButton action={props.getAction('constraint.coincident')} symbol="●" text />
                 <CadUiActionButton action={props.getAction('constraint.parallel')} symbol="∥" text />
+                <CadUiActionButton action={props.getAction('constraint.perpendicular')} symbol="⊥" text />
               </CommandGroup>
               <CommandGroup label="Размеры">
                 <RibbonTextButton

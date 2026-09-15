@@ -2,7 +2,10 @@ import React, { useEffect, useState } from 'react';
 import type { CadSketchCommandReference } from '../../contracts/commands';
 import type { CadPoint2 } from '../../contracts/document';
 import type { CadSketchEntityId } from '../../contracts/ids';
-import { useSketchCoincidentCommit, useSketchParallelCommit } from '../CoincidentPartModelStage';
+import {
+  useSketchCoincidentCommit, useSketchParallelCommit, useSketchPerpendicularCommit,
+  type SketchLinePairCommit,
+} from '../CoincidentPartModelStage';
 import { SketchInteractionSurface } from './SketchInteractionSurface';
 import type { SketchOverlayModel } from './SketchOverlayModel';
 import type { SketchDisplayFrame, SketchViewportState } from './SketchViewportGeometry';
@@ -77,9 +80,24 @@ export function SketchCoincidentInteractionLayer(props: SketchCoincidentInteract
   );
 }
 
-/** Transient whole-Line pair picker for M3.7D Parallel. */
+/** Accepted M3.7D Parallel wrapper over the shared whole-Line pair picker. */
 export function SketchParallelInteractionLayer(props: BinaryLayerProps) {
   const commit = useSketchParallelCommit();
+  return <SketchLinePairInteractionLayer {...props} commit={commit} tool="constraint.parallel" label="Параллельность отрезков" prefix="parallel" />;
+}
+
+/** M3.7E Perpendicular reuses the same transient whole-Line pair lifecycle. */
+export function SketchPerpendicularInteractionLayer(props: BinaryLayerProps) {
+  const commit = useSketchPerpendicularCommit();
+  return <SketchLinePairInteractionLayer {...props} commit={commit} tool="constraint.perpendicular" label="Перпендикулярность отрезков" prefix="perpendicular" />;
+}
+
+function SketchLinePairInteractionLayer(props: BinaryLayerProps & {
+  commit: SketchLinePairCommit;
+  tool: 'constraint.parallel' | 'constraint.perpendicular';
+  label: string;
+  prefix: 'parallel' | 'perpendicular';
+}) {
   const [first, setFirst] = useState<CadSketchEntityId | null>(null);
   useEffect(() => setFirst(null), [props.active, props.model?.sketchId]);
   const lines = lineEntities(props.model);
@@ -90,7 +108,7 @@ export function SketchParallelInteractionLayer(props: BinaryLayerProps) {
     if (!entityId) return;
     if (!first) { setFirst(entityId); return; }
     if (first === entityId) { setFirst(null); return; }
-    if (await commit(first, entityId)) setFirst(null);
+    if (await props.commit(first, entityId)) setFirst(null);
   };
 
   return (
@@ -99,9 +117,12 @@ export function SketchParallelInteractionLayer(props: BinaryLayerProps) {
       viewportState={props.viewportState}
       onViewportStateChange={props.onViewportStateChange}
       active={props.active}
-      tool="constraint.parallel"
-      ariaLabel="Параллельность отрезков"
-      dataAttributes={{ 'data-parallel-first': first ?? '', 'data-parallel-line-count': String(lines.length) }}
+      tool={props.tool}
+      ariaLabel={props.label}
+      dataAttributes={{
+        [`data-${props.prefix}-first`]: first ?? '',
+        [`data-${props.prefix}-line-count`]: String(lines.length),
+      }}
       onPoint={onPoint}
     >
       {lines.map((line) => {
@@ -109,8 +130,10 @@ export function SketchParallelInteractionLayer(props: BinaryLayerProps) {
         return (
           <line
             key={line.id}
-            data-parallel-line-id={line.id}
-            data-parallel-selected={selected ? 'true' : 'false'}
+            {...{
+              [`data-${props.prefix}-line-id`]: line.id,
+              [`data-${props.prefix}-selected`]: selected ? 'true' : 'false',
+            }}
             x1={line.from[0]} y1={-line.from[1]} x2={line.to[0]} y2={-line.to[1]}
             vectorEffect="non-scaling-stroke"
             style={{

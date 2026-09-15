@@ -87,6 +87,11 @@ export interface CadParallelConstraint extends CadConstraintBase<'parallel'> {
   data?: undefined;
 }
 
+export interface CadPerpendicularConstraint extends CadConstraintBase<'perpendicular'> {
+  entityIds: [CadSketchEntityId, CadSketchEntityId];
+  data?: undefined;
+}
+
 export interface CadFixedConstraint extends CadConstraintBase<'fixed'> {
   entityIds: [CadSketchEntityId];
   data?: undefined;
@@ -104,6 +109,7 @@ export type CadConstraint =
   | CadHorizontalConstraint
   | CadVerticalConstraint
   | CadParallelConstraint
+  | CadPerpendicularConstraint
   | CadFixedConstraint
   | CadCoincidentConstraint;
 
@@ -223,8 +229,9 @@ function validateConstraint(value: unknown, path: string): asserts value is CadC
       if (constraint.data !== undefined) throw new Error(`${path}.${String(constraint.type)} must not contain data`);
       return;
     case 'parallel':
-      if (constraint.entityIds.length !== 2) throw new Error(`${path}.parallel requires exactly two entity ids`);
-      if (constraint.data !== undefined) throw new Error(`${path}.parallel must not contain data`);
+    case 'perpendicular':
+      if (constraint.entityIds.length !== 2) throw new Error(`${path}.${String(constraint.type)} requires exactly two entity ids`);
+      if (constraint.data !== undefined) throw new Error(`${path}.${String(constraint.type)} must not contain data`);
       return;
     case 'coincident': {
       if (constraint.entityIds.length !== 2) throw new Error(`${path}.coincident requires exactly two entity ids`);

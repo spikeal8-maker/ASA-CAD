@@ -31,6 +31,7 @@ const handlers: M2CadUiActionHandlers = {
   fixedConstraint: call('fixedConstraint'),
   coincidentConstraint: call('coincidentConstraint'),
   parallelConstraint: call('parallelConstraint'),
+  perpendicularConstraint: call('perpendicularConstraint'),
   finishSketch: call('finishSketch'),
   extrude: call('extrude'),
   cutExtrude: call('cutExtrude'),
@@ -55,6 +56,7 @@ const bindings = createM2CadUiActionBindings(handlers, {
   canApplyFixedConstraint: true,
   canApplyCoincidentConstraint: true,
   canApplyParallelConstraint: true,
+  canApplyPerpendicularConstraint: true,
   canExtrude: false,
   canCutExtrude: true,
   canFillet: false,
@@ -70,6 +72,7 @@ assert.equal(actions.get('constraint.vertical')?.enabled, true);
 assert.equal(actions.get('constraint.fixed')?.enabled, true);
 assert.equal(actions.get('constraint.coincident')?.enabled, true);
 assert.equal(actions.get('constraint.parallel')?.enabled, true);
+assert.equal(actions.get('constraint.perpendicular')?.enabled, true);
 assert.equal(actions.get('part.extrude')?.enabled, false);
 assert.equal(actions.get('part.cutExtrude')?.enabled, true);
 assert.equal(actions.get('part.fillet')?.enabled, false);
@@ -80,9 +83,10 @@ assert.equal(await executeCadUiAction(actions.get('constraint.vertical')!), true
 assert.equal(await executeCadUiAction(actions.get('constraint.fixed')!), true);
 assert.equal(await executeCadUiAction(actions.get('constraint.coincident')!), true);
 assert.equal(await executeCadUiAction(actions.get('constraint.parallel')!), true);
+assert.equal(await executeCadUiAction(actions.get('constraint.perpendicular')!), true);
 assert.equal(await executeCadUiAction(actions.get('part.cutExtrude')!), true);
 assert.equal(await executeCadUiAction(actions.get('part.extrude')!), false);
-assert.deepEqual(calls, ['redo', 'horizontalConstraint', 'verticalConstraint', 'fixedConstraint', 'coincidentConstraint', 'parallelConstraint', 'cutExtrude']);
+assert.deepEqual(calls, ['redo', 'horizontalConstraint', 'verticalConstraint', 'fixedConstraint', 'coincidentConstraint', 'parallelConstraint', 'perpendicularConstraint', 'cutExtrude']);
 
 const disabledConstraints = indexCadUiActions(createCadUiActions(definitions, createM2CadUiActionBindings(handlers, {
   canUndo: false,
@@ -93,6 +97,7 @@ const disabledConstraints = indexCadUiActions(createCadUiActions(definitions, cr
   canApplyFixedConstraint: false,
   canApplyCoincidentConstraint: false,
   canApplyParallelConstraint: false,
+  canApplyPerpendicularConstraint: false,
   canExtrude: false,
   canCutExtrude: false,
   canFillet: false,
@@ -106,6 +111,8 @@ assert.equal(disabledConstraints.get('constraint.coincident')?.enabled, false);
 assert.equal(disabledConstraints.get('constraint.coincident')?.disabledReason, 'Создайте два отрезка эскиза');
 assert.equal(disabledConstraints.get('constraint.parallel')?.enabled, false);
 assert.equal(disabledConstraints.get('constraint.parallel')?.disabledReason, 'Создайте два отрезка эскиза');
+assert.equal(disabledConstraints.get('constraint.perpendicular')?.enabled, false);
+assert.equal(disabledConstraints.get('constraint.perpendicular')?.disabledReason, 'Создайте два отрезка эскиза');
 
 assert.equal(cadUiActionIdForShortcut('system.save'), 'system.save');
 assert.equal(cadUiActionIdForShortcut('system.rebuild'), 'system.rebuild');
@@ -114,4 +121,4 @@ assert.equal(cadUiActionIdForShortcut('interaction.cancel'), null);
 assert.equal(cadUiActionIdForShortcut('interaction.commit'), null);
 assert.equal(cadUiActionIdForShortcut('view.zoomIn'), null);
 
-console.log('M2O O4 M2 action bindings PASS (shared enablement/execution + H/V/Fixed/Coincident/Parallel actions + shortcut command mapping)');
+console.log('M2O O4 M2 action bindings PASS (shared enablement/execution + H/V/Fixed/Coincident/Parallel/Perpendicular actions + shortcut command mapping)');
