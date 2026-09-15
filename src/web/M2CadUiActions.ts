@@ -20,6 +20,7 @@ export interface M2CadUiActionHandlers {
   parallelConstraint(): void | Promise<void>;
   perpendicularConstraint(): void | Promise<void>;
   tangentConstraint(): void | Promise<void>;
+  concentricConstraint(): void | Promise<void>;
   finishSketch(): void | Promise<void>;
   extrude(): void | Promise<void>;
   cutExtrude(): void | Promise<void>;
@@ -45,36 +46,25 @@ export interface M2CadUiActionState {
   canApplyParallelConstraint: boolean;
   canApplyPerpendicularConstraint: boolean;
   canApplyTangentConstraint: boolean;
+  canApplyConcentricConstraint: boolean;
   canExtrude: boolean;
   canCutExtrude: boolean;
   canFillet: boolean;
 }
 
-function binding(
-  execute: () => void | Promise<void>,
-  enabled = true,
-  disabledReason?: string,
-): CadUiActionBinding {
+function binding(execute: () => void | Promise<void>, enabled = true, disabledReason?: string): CadUiActionBinding {
   return { execute, enabled, disabledReason };
 }
 
 /** Permanent execution/enablement bindings shared by desktop, mobile and search. */
-export function createM2CadUiActionBindings(
-  handlers: M2CadUiActionHandlers,
-  state: M2CadUiActionState,
-): CadUiActionBindings {
+export function createM2CadUiActionBindings(handlers: M2CadUiActionHandlers, state: M2CadUiActionState): CadUiActionBindings {
   const lineConstraintReason = state.canApplyOrientationConstraint ? undefined : 'Выберите отрезок эскиза';
   const fixedConstraintReason = state.canApplyFixedConstraint ? undefined : 'Выберите незакреплённый отрезок эскиза';
   const pairConstraintReason = 'Создайте два отрезка эскиза';
-  const tangentConstraintReason = 'Создайте отрезок и окружность эскиза';
   return {
-    'system.open': binding(handlers.open),
-    'system.save': binding(handlers.save),
-    'system.undo': binding(handlers.undo, state.canUndo, 'Нечего отменять'),
-    'system.redo': binding(handlers.redo, state.canRedo, 'Нечего повторять'),
-    'system.rebuild': binding(handlers.rebuild),
-
-    'part.sketch.create': binding(handlers.createSketch),
+    'system.open': binding(handlers.open), 'system.save': binding(handlers.save),
+    'system.undo': binding(handlers.undo, state.canUndo, 'Нечего отменять'), 'system.redo': binding(handlers.redo, state.canRedo, 'Нечего повторять'),
+    'system.rebuild': binding(handlers.rebuild), 'part.sketch.create': binding(handlers.createSketch),
     'sketch.line': binding(handlers.line, state.hasSketch, 'Сначала создайте эскиз'),
     'sketch.rectangle': binding(handlers.rectangle, state.hasSketch, 'Сначала создайте эскиз'),
     'sketch.circle': binding(handlers.circle, state.hasSketch, 'Сначала создайте эскиз'),
@@ -86,36 +76,20 @@ export function createM2CadUiActionBindings(
     'constraint.coincident': binding(handlers.coincidentConstraint, state.canApplyCoincidentConstraint, pairConstraintReason),
     'constraint.parallel': binding(handlers.parallelConstraint, state.canApplyParallelConstraint, pairConstraintReason),
     'constraint.perpendicular': binding(handlers.perpendicularConstraint, state.canApplyPerpendicularConstraint, pairConstraintReason),
-    'constraint.tangent': binding(handlers.tangentConstraint, state.canApplyTangentConstraint, tangentConstraintReason),
+    'constraint.tangent': binding(handlers.tangentConstraint, state.canApplyTangentConstraint, 'Создайте отрезок и окружность эскиза'),
+    'constraint.concentric': binding(handlers.concentricConstraint, state.canApplyConcentricConstraint, 'Создайте две окружности эскиза'),
     'sketch.finish': binding(handlers.finishSketch, state.hasSketch, 'Сначала создайте эскиз'),
     'part.extrude': binding(handlers.extrude, state.canExtrude, 'Завершите прямоугольный эскиз'),
     'part.cutExtrude': binding(handlers.cutExtrude, state.canCutExtrude, 'Создайте окружность на грани и завершите эскиз'),
     'part.fillet': binding(handlers.fillet, state.canFillet, 'Сначала постройте сквозной вырез'),
-
-    'view.fit': binding(handlers.fit),
-    'view.front': binding(handlers.front),
-    'view.back': binding(handlers.back),
-    'view.top': binding(handlers.top),
-    'view.bottom': binding(handlers.bottom),
-    'view.left': binding(handlers.left),
-    'view.right': binding(handlers.right),
-    'view.iso': binding(handlers.isometric),
+    'view.fit': binding(handlers.fit), 'view.front': binding(handlers.front), 'view.back': binding(handlers.back), 'view.top': binding(handlers.top),
+    'view.bottom': binding(handlers.bottom), 'view.left': binding(handlers.left), 'view.right': binding(handlers.right), 'view.iso': binding(handlers.isometric),
   };
 }
 
 const SHORTCUT_TO_COMMAND_ACTION: Partial<Record<ShortcutActionId, string>> = {
-  'system.save': 'system.save',
-  'system.undo': 'system.undo',
-  'system.redo': 'system.redo',
-  'system.rebuild': 'system.rebuild',
-  'view.fit': 'view.fit',
-  'view.iso': 'view.iso',
-  'view.front': 'view.front',
-  'view.top': 'view.top',
-  'view.left': 'view.left',
+  'system.save': 'system.save', 'system.undo': 'system.undo', 'system.redo': 'system.redo', 'system.rebuild': 'system.rebuild',
+  'view.fit': 'view.fit', 'view.iso': 'view.iso', 'view.front': 'view.front', 'view.top': 'view.top', 'view.left': 'view.left',
 };
 
-/** Returns a shared CadUiAction id only for shortcuts that are real commands. */
-export function cadUiActionIdForShortcut(action: ShortcutActionId): string | null {
-  return SHORTCUT_TO_COMMAND_ACTION[action] ?? null;
-}
+export function cadUiActionIdForShortcut(action: ShortcutActionId): string | null { return SHORTCUT_TO_COMMAND_ACTION[action] ?? null; }
