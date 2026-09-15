@@ -3,6 +3,7 @@ import type { CadConstraint, CadPartDocument, CadSketch } from '../../contracts/
 import type { CadConstraintId, CadSketchEntityId, CadSketchId } from '../../contracts/ids';
 import { createCadId } from '../../contracts/ids';
 import { defineSketchCommandHandler, requireSketch, requireSketchAvailability, requireSketchEntity, type SketchCommandHandlerMap } from './SketchCommandHandlerShared';
+import { addLinePairConstraint } from './SketchLinePairConstraintOwner';
 
 export const SKETCH_CONSTRAINT_COMMAND_IDS = ['constraint.coincident', 'constraint.horizontal', 'constraint.vertical', 'constraint.parallel', 'constraint.perpendicular', 'constraint.fixed'] as const satisfies readonly CadCommandId[];
 export type SketchConstraintCommandId = typeof SKETCH_CONSTRAINT_COMMAND_IDS[number];
@@ -34,25 +35,6 @@ function addLineOrientationConstraint(
   }
   const id = createCadId<CadConstraintId>('constraint');
   return persistConstraint(part, sketchId, { id, type, entityIds: [entityId] });
-}
-
-function addLinePairConstraint(
-  part: CadPartDocument, sketchId: CadSketchId, type: 'parallel' | 'perpendicular',
-  aEntityId: CadSketchEntityId, bEntityId: CadSketchEntityId,
-): CadCommandResult {
-  const sketch = requireSketch(part, sketchId);
-  const a = requireSketchEntity(sketch, aEntityId), b = requireSketchEntity(sketch, bEntityId);
-  const label = type === 'parallel' ? 'Parallel' : 'Perpendicular';
-  if (a.type !== 'line' || b.type !== 'line') throw new Error(`${label} requires two Line entities`);
-  if (aEntityId === bEntityId) throw new Error(`${label} requires two distinct Lines`);
-  const ids = new Set(sketch.constraintIds);
-  const duplicate = part.constraints.some((constraint) => ids.has(constraint.id) && constraint.type === type
-    && sameUnorderedEntityPair(constraint.entityIds, [aEntityId, bEntityId]));
-  if (duplicate) throw new Error(`${label} constraint already exists for the selected Lines`);
-  const id = createCadId<CadConstraintId>('constraint');
-  return persistConstraint(part, sketchId, type === 'parallel'
-    ? { id, type: 'parallel', entityIds: [aEntityId, bEntityId] }
-    : { id, type: 'perpendicular', entityIds: [aEntityId, bEntityId] });
 }
 
 function addFixedConstraint(
@@ -134,12 +116,6 @@ function requireLineEndpointReference(
 function sameUnorderedEndpointPair(left: readonly CadSketchCommandReference[], right: readonly CadSketchCommandReference[]): boolean {
   if (left.length !== 2 || right.length !== 2) return false;
   const a = left.map(endpointKey).sort(), b = right.map(endpointKey).sort();
-  return a[0] === b[0] && a[1] === b[1];
-}
-
-function sameUnorderedEntityPair(left: readonly CadSketchEntityId[], right: readonly CadSketchEntityId[]): boolean {
-  if (left.length !== 2 || right.length !== 2) return false;
-  const a = [...left].sort(), b = [...right].sort();
   return a[0] === b[0] && a[1] === b[1];
 }
 
