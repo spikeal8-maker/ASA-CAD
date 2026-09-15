@@ -44,6 +44,7 @@ for (const ribbonActionId of [
   'sketch.circle',
   'constraint.horizontal',
   'constraint.vertical',
+  'constraint.fixed',
   'sketch.finish',
   'part.sketch.create',
   'part.extrude',
@@ -70,6 +71,7 @@ assert.match(mobileTools, /import type \{ CadUiAction \}/, 'mobile Tools present
 assert.match(mobileTools, /props\.getAction\(tool\.id\)/, 'mobile Tool buttons must resolve shared action objects');
 assert.match(mobileTools, /id: 'constraint\.horizontal'/, 'mobile Sketch tools must expose Horizontal through CadUiAction');
 assert.match(mobileTools, /id: 'constraint\.vertical'/, 'mobile Sketch tools must expose Vertical through CadUiAction');
+assert.match(mobileTools, /id: 'constraint\.fixed'/, 'mobile Sketch tools must expose Fixed through CadUiAction');
 assert.doesNotMatch(mobileTools, /querySelector|querySelectorAll|\.click\(\)/, 'mobile Tools must never discover/click desktop DOM');
 
 console.log('M2O O4 action surfaces PASS (App action owner + H/V ribbon/mobile surfaces + extracted shell presentation)');

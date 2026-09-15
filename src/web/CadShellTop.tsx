@@ -98,6 +98,7 @@ export function CadShellTop(props: CadShellTopProps) {
               <CommandGroup label="Ограничения">
                 <CadUiActionButton action={props.getAction('constraint.horizontal')} symbol="—" text />
                 <CadUiActionButton action={props.getAction('constraint.vertical')} symbol="|" text />
+                <CadUiActionButton action={props.getAction('constraint.fixed')} symbol="⌾" text />
               </CommandGroup>
               <CommandGroup label="Размеры">
                 <RibbonTextButton

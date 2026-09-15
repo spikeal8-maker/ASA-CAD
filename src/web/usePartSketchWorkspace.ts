@@ -119,9 +119,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
   return {
     activeWorkspace, setActiveWorkspace, activeCommand, activeSketchId,
     selectedSketchEntityId: selectedEntityId,
-    canApplyOrientationConstraint: constraints.canApplyOrientationConstraint,
-    applyHorizontalConstraint: constraints.applyHorizontalConstraint,
-    applyVerticalConstraint: constraints.applyVerticalConstraint,
+    ...constraints,
     selectionMode: selection.selectionMode, selectedPick: selection.selectedPick,
     selectedBodyId: selection.selectedBodyId,
     sketchPlane: features.sketchPlane, setSketchPlane: features.setSketchPlane,

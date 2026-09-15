@@ -15,6 +15,7 @@ export interface M2CadUiActionHandlers {
   deleteSketchEntity(): void | Promise<void>;
   horizontalConstraint(): void | Promise<void>;
   verticalConstraint(): void | Promise<void>;
+  fixedConstraint(): void | Promise<void>;
   finishSketch(): void | Promise<void>;
   extrude(): void | Promise<void>;
   cutExtrude(): void | Promise<void>;
@@ -35,6 +36,7 @@ export interface M2CadUiActionState {
   hasSketch: boolean;
   hasSketchEntitySelection: boolean;
   canApplyOrientationConstraint: boolean;
+  canApplyFixedConstraint: boolean;
   canExtrude: boolean;
   canCutExtrude: boolean;
   canFillet: boolean;
@@ -58,6 +60,7 @@ export function createM2CadUiActionBindings(
   state: M2CadUiActionState,
 ): CadUiActionBindings {
   const lineConstraintReason = state.canApplyOrientationConstraint ? undefined : 'Выберите отрезок эскиза';
+  const fixedConstraintReason = state.canApplyFixedConstraint ? undefined : 'Выберите незакреплённый отрезок эскиза';
   return {
     'system.open': binding(handlers.open),
     'system.save': binding(handlers.save),
@@ -84,6 +87,11 @@ export function createM2CadUiActionBindings(
       handlers.verticalConstraint,
       state.canApplyOrientationConstraint,
       lineConstraintReason,
+    ),
+    'constraint.fixed': binding(
+      handlers.fixedConstraint,
+      state.canApplyFixedConstraint,
+      fixedConstraintReason,
     ),
     'sketch.finish': binding(handlers.finishSketch, state.hasSketch, 'Сначала создайте эскиз'),
     'part.extrude': binding(handlers.extrude, state.canExtrude, 'Завершите прямоугольный эскиз'),

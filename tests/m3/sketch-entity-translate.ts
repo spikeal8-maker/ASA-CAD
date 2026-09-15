@@ -84,6 +84,7 @@ assert.equal(moved.id, entityId, 'translation must preserve stable entity ID');
 assert.deepEqual(moved.type === 'line' ? moved.data.from : null, [7, -3]);
 assert.deepEqual(moved.type === 'line' ? moved.data.to : null, [27, -3]);
 assert.equal(part().constraints.length, 1, 'translation must preserve existing constraints');
+if (moved.type !== 'line') throw new Error('Expected moved Line');
 
 const undo = await app.undo();
 assert.equal(undo.ok, true);
@@ -104,7 +105,13 @@ const noOp = await app.execute({
 assert.equal(noOp.ok, true);
 assert.equal(noOp.changed, false, 'zero drag must not create a document mutation');
 
-const fixed = await app.execute({ id: 'constraint.fixed', payload: { sketchId, entityId } });
+const fixed = await app.execute({
+  id: 'constraint.fixed',
+  payload: {
+    sketchId, entityId,
+    frozenGeometry: { type: 'line', from: redone.type === 'line' ? redone.data.from : [0, 0], to: redone.type === 'line' ? redone.data.to : [1, 0] },
+  },
+});
 assert.equal(fixed.ok, true);
 const beforeFixedMove = JSON.stringify(app.getDocument());
 const blocked = await app.execute({
