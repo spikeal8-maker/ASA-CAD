@@ -8,10 +8,12 @@ export type SketchCoincidentCommit = (a: CadSketchCommandReference, b: CadSketch
 export type SketchLinePairCommit = (aEntityId: CadSketchEntityId, bEntityId: CadSketchEntityId) => Promise<boolean>;
 export type SketchParallelCommit = SketchLinePairCommit;
 export type SketchPerpendicularCommit = SketchLinePairCommit;
+export type SketchTangentCommit = SketchLinePairCommit;
 
 const CoincidentCommitContext = createContext<SketchCoincidentCommit | null>(null);
 const ParallelCommitContext = createContext<SketchParallelCommit | null>(null);
 const PerpendicularCommitContext = createContext<SketchPerpendicularCommit | null>(null);
+const TangentCommitContext = createContext<SketchTangentCommit | null>(null);
 
 /** Binary Sketch-constraint bridge kept outside frozen Part/Sketch stage owners. */
 export function CoincidentPartStage(
@@ -19,14 +21,17 @@ export function CoincidentPartStage(
     commit: SketchCoincidentCommit;
     parallelCommit: SketchParallelCommit;
     perpendicularCommit: SketchPerpendicularCommit;
+    tangentCommit: SketchTangentCommit;
   },
 ) {
-  const { commit, parallelCommit, perpendicularCommit, ...stageProps } = props;
+  const { commit, parallelCommit, perpendicularCommit, tangentCommit, ...stageProps } = props;
   return (
     <CoincidentCommitContext.Provider value={commit}>
       <ParallelCommitContext.Provider value={parallelCommit}>
         <PerpendicularCommitContext.Provider value={perpendicularCommit}>
-          <PartModelStage {...stageProps} />
+          <TangentCommitContext.Provider value={tangentCommit}>
+            <PartModelStage {...stageProps} />
+          </TangentCommitContext.Provider>
         </PerpendicularCommitContext.Provider>
       </ParallelCommitContext.Provider>
     </CoincidentCommitContext.Provider>
@@ -48,5 +53,11 @@ export function useSketchParallelCommit(): SketchParallelCommit {
 export function useSketchPerpendicularCommit(): SketchPerpendicularCommit {
   const commit = useContext(PerpendicularCommitContext);
   if (!commit) throw new Error('Sketch Perpendicular interaction provider is missing');
+  return commit;
+}
+
+export function useSketchTangentCommit(): SketchTangentCommit {
+  const commit = useContext(TangentCommitContext);
+  if (!commit) throw new Error('Sketch Tangent interaction provider is missing');
   return commit;
 }

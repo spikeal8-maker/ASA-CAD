@@ -15,22 +15,25 @@ export interface SketchConstraintControllersOptions {
   setNotice(message: string): void;
 }
 
-/** Composes unary constraints with focused transient binary Line constraints. */
+/** Composes unary constraints with focused transient binary Sketch constraints. */
 export function useSketchConstraintControllers(options: SketchConstraintControllersOptions) {
   const { app, activeSketchId, sketch, setActiveCommand, setPanel, setNotice } = options;
   const unary = useSketchConstraintController(options);
-  const canApplyCoincidentConstraint = (sketch?.entities.filter((entity) => entity.type === 'line').length ?? 0) >= 2;
+  const lineCount = sketch?.entities.filter((entity) => entity.type === 'line').length ?? 0;
+  const circleCount = sketch?.entities.filter((entity) => entity.type === 'circle').length ?? 0;
+  const canApplyCoincidentConstraint = lineCount >= 2;
   const canApplyParallelConstraint = canApplyCoincidentConstraint;
   const canApplyPerpendicularConstraint = canApplyCoincidentConstraint;
+  const canApplyTangentConstraint = lineCount >= 1 && circleCount >= 1;
 
-  function canBeginBinaryConstraint(): boolean {
+  function canBeginLinePairConstraint(): boolean {
     if (activeSketchId && canApplyCoincidentConstraint) return true;
     setNotice('Для ограничения нужны два отрезка эскиза');
     return false;
   }
 
   function beginCoincidentConstraint(): boolean {
-    if (!canBeginBinaryConstraint()) return false;
+    if (!canBeginLinePairConstraint()) return false;
     setActiveCommand('constraint.coincident');
     setPanel('closed');
     setNotice('Выберите конец первого отрезка');
@@ -38,7 +41,7 @@ export function useSketchConstraintControllers(options: SketchConstraintControll
   }
 
   function beginParallelConstraint(): boolean {
-    if (!canBeginBinaryConstraint()) return false;
+    if (!canBeginLinePairConstraint()) return false;
     setActiveCommand('constraint.parallel');
     setPanel('closed');
     setNotice('Выберите первый отрезок');
@@ -46,10 +49,21 @@ export function useSketchConstraintControllers(options: SketchConstraintControll
   }
 
   function beginPerpendicularConstraint(): boolean {
-    if (!canBeginBinaryConstraint()) return false;
+    if (!canBeginLinePairConstraint()) return false;
     setActiveCommand('constraint.perpendicular');
     setPanel('closed');
     setNotice('Выберите первый отрезок');
+    return true;
+  }
+
+  function beginTangentConstraint(): boolean {
+    if (!activeSketchId || !canApplyTangentConstraint) {
+      setNotice('Для касательности нужны отрезок и окружность эскиза');
+      return false;
+    }
+    setActiveCommand('constraint.tangent');
+    setPanel('closed');
+    setNotice('Выберите отрезок или окружность');
     return true;
   }
 
@@ -85,16 +99,27 @@ export function useSketchConstraintControllers(options: SketchConstraintControll
     );
   }
 
+  async function applyTangentConstraint(aEntityId: CadSketchEntityId, bEntityId: CadSketchEntityId): Promise<boolean> {
+    if (!activeSketchId) { setNotice('Сначала откройте эскиз'); return false; }
+    return finishBinaryConstraint(
+      await app.execute({ id: 'constraint.tangent', payload: { sketchId: activeSketchId, aEntityId, bEntityId } }),
+      'Касательность применена',
+    );
+  }
+
   return {
     ...unary,
     canApplyCoincidentConstraint,
     canApplyParallelConstraint,
     canApplyPerpendicularConstraint,
+    canApplyTangentConstraint,
     beginCoincidentConstraint,
     beginParallelConstraint,
     beginPerpendicularConstraint,
+    beginTangentConstraint,
     applyCoincidentConstraint,
     applyParallelConstraint,
     applyPerpendicularConstraint,
+    applyTangentConstraint,
   };
 }

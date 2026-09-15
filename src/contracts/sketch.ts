@@ -92,6 +92,11 @@ export interface CadPerpendicularConstraint extends CadConstraintBase<'perpendic
   data?: undefined;
 }
 
+export interface CadTangentConstraint extends CadConstraintBase<'tangent'> {
+  entityIds: [CadSketchEntityId, CadSketchEntityId];
+  data?: undefined;
+}
+
 export interface CadFixedConstraint extends CadConstraintBase<'fixed'> {
   entityIds: [CadSketchEntityId];
   data?: undefined;
@@ -110,6 +115,7 @@ export type CadConstraint =
   | CadVerticalConstraint
   | CadParallelConstraint
   | CadPerpendicularConstraint
+  | CadTangentConstraint
   | CadFixedConstraint
   | CadCoincidentConstraint;
 
@@ -230,6 +236,7 @@ function validateConstraint(value: unknown, path: string): asserts value is CadC
       return;
     case 'parallel':
     case 'perpendicular':
+    case 'tangent':
       if (constraint.entityIds.length !== 2) throw new Error(`${path}.${String(constraint.type)} requires exactly two entity ids`);
       if (constraint.data !== undefined) throw new Error(`${path}.${String(constraint.type)} must not contain data`);
       return;
