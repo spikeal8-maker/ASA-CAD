@@ -91,7 +91,8 @@ export function App(props: CadProjectPersistenceOverrides) {
       open: openLocal, save: saveLocal, undo, redo, rebuild, createSketch: beginCreateSketch,
       line: beginLine, rectangle: beginRectangle, circle: beginCircle, arc: beginArc,
       deleteSketchEntity: deleteSelectedSketchEntity,
-      horizontalConstraint: applyHorizontalConstraint, verticalConstraint: applyVerticalConstraint, fixedConstraint: applyFixedConstraint, coincidentConstraint: workspace.beginCoincidentConstraint, parallelConstraint: workspace.beginParallelConstraint,
+      horizontalConstraint: applyHorizontalConstraint, verticalConstraint: applyVerticalConstraint, fixedConstraint: applyFixedConstraint,
+      coincidentConstraint: workspace.beginCoincidentConstraint, parallelConstraint: workspace.beginParallelConstraint, perpendicularConstraint: workspace.beginPerpendicularConstraint,
       finishSketch, extrude: beginExtrude, cutExtrude: beginCut, fillet: beginFillet,
       fit: () => requestView('Показать всё'), front: () => requestView('Спереди'),
       back: () => requestView('Сзади'), top: () => requestView('Сверху'), bottom: () => requestView('Снизу'),
@@ -99,7 +100,8 @@ export function App(props: CadProjectPersistenceOverrides) {
     },
     {
       canUndo: state.canUndo, canRedo: state.canRedo, hasSketch: Boolean(sketch),
-      hasSketchEntitySelection: Boolean(selectedSketchEntityId), canApplyOrientationConstraint, canApplyFixedConstraint, canApplyCoincidentConstraint: workspace.canApplyCoincidentConstraint, canApplyParallelConstraint: workspace.canApplyParallelConstraint,
+      hasSketchEntitySelection: Boolean(selectedSketchEntityId), canApplyOrientationConstraint, canApplyFixedConstraint,
+      canApplyCoincidentConstraint: workspace.canApplyCoincidentConstraint, canApplyParallelConstraint: workspace.canApplyParallelConstraint, canApplyPerpendicularConstraint: workspace.canApplyPerpendicularConstraint,
       canExtrude, canCutExtrude: canCut, canFillet,
     },
   );
@@ -174,97 +176,42 @@ export function App(props: CadProjectPersistenceOverrides) {
         circleReady={circleReady} circleDiameter={circleDiameter} viewName={viewName}
       />
       <CadShellMain
-        activePanel={activePanel}
-        setActivePanel={setActivePanel}
-        requestView={requestView}
-        viewName={viewName}
-        selectionMode={selectionMode}
-        selectedBodyName={selectedBody?.name}
-        selectedSketchEntityId={selectedSketchEntityId}
-        activeCommand={activeCommand}
-        commitActiveCommand={commitActiveCommand}
-        cancelCommand={cancelCommand}
+        activePanel={activePanel} setActivePanel={setActivePanel} requestView={requestView} viewName={viewName}
+        selectionMode={selectionMode} selectedBodyName={selectedBody?.name} selectedSketchEntityId={selectedSketchEntityId}
+        activeCommand={activeCommand} commitActiveCommand={commitActiveCommand} cancelCommand={cancelCommand}
         treeContent={
           <DocumentTree
-            document={document}
-            selectedBodyId={selectedBodyId}
-            activeSketchId={activeSketchId}
-            onSelectBody={handleBodySelect}
-            onEditSketch={enterSketch}
-            onEditDimension={beginDimensionEdit}
+            document={document} selectedBodyId={selectedBodyId} activeSketchId={activeSketchId}
+            onSelectBody={handleBodySelect} onEditSketch={enterSketch} onEditDimension={beginDimensionEdit}
           />
         }
         parametersContent={
           <ParameterPanel
-            activeCommand={activeCommand}
-            requiresFaceSelection={hasSolid && activeCommand === 'part.sketch.create'}
-            selectedPick={selectedPick}
-            sketchPlane={sketchPlane}
-            setSketchPlane={setSketchPlane}
-            rectangleWidth={rectangleWidth}
-            rectangleHeight={rectangleHeight}
-            setRectangleWidth={setRectangleWidth}
-            setRectangleHeight={setRectangleHeight}
-            circleDiameter={circleDiameter}
-            setCircleDiameter={setCircleDiameter}
-            extrudeDistance={extrudeDistance}
-            setExtrudeDistance={setExtrudeDistance}
-            filletRadius={filletRadius}
-            setFilletRadius={setFilletRadius}
-            dimensionEditValue={dimensionEditValue}
-            setDimensionEditValue={setDimensionEditValue}
-            onCreateSketch={commitCreateSketch}
-            onCreateRectangle={commitRectangle}
-            onCreateCircle={commitCircle}
-            onExtrude={commitExtrude}
-            onCut={commitCut}
-            onFillet={commitFillet}
-            onDimensionEdit={commitDimensionEdit}
-            onCancel={cancelCommand}
+            activeCommand={activeCommand} requiresFaceSelection={hasSolid && activeCommand === 'part.sketch.create'} selectedPick={selectedPick}
+            sketchPlane={sketchPlane} setSketchPlane={setSketchPlane}
+            rectangleWidth={rectangleWidth} rectangleHeight={rectangleHeight} setRectangleWidth={setRectangleWidth} setRectangleHeight={setRectangleHeight}
+            circleDiameter={circleDiameter} setCircleDiameter={setCircleDiameter}
+            extrudeDistance={extrudeDistance} setExtrudeDistance={setExtrudeDistance}
+            filletRadius={filletRadius} setFilletRadius={setFilletRadius}
+            dimensionEditValue={dimensionEditValue} setDimensionEditValue={setDimensionEditValue}
+            onCreateSketch={commitCreateSketch} onCreateRectangle={commitRectangle} onCreateCircle={commitCircle}
+            onExtrude={commitExtrude} onCut={commitCut} onFillet={commitFillet} onDimensionEdit={commitDimensionEdit} onCancel={cancelCommand}
           />
         }
-        toolsContent={
-          <MobileToolsPanel documentKind={document.kind} workspace={activeWorkspace} getAction={uiAction} />
-        }
+        toolsContent={<MobileToolsPanel documentKind={document.kind} workspace={activeWorkspace} getAction={uiAction} />}
         modelContent={
           document.kind === 'part' ? (
             <CoincidentPartStage
-              document={document}
-              activeSketch={sketch}
-              activeWorkspace={activeWorkspace}
-              activeCommand={activeCommand}
-              revisionToken={revisionToken}
-              renderModel={renderModel}
-              runtimeStatus={runtimeState.status}
-              fixtureError={fixtureError}
-              rectangleReady={rectangleReady}
-              selectionMode={selectionMode}
-              onPick={handleViewportPick}
-              viewCommand={viewCommand}
-              selectedBodyId={selectedBodyId}
-              onBodySelect={handleBodySelect}
-              selectedSketchEntityId={selectedSketchEntityId}
-              onSketchEntitySelect={handleSketchEntitySelect}
-              onSketchEntityTranslate={translateSketchEntity}
-              onSketchDragRejected={setNotice}
-              lineDraft={lineDraft}
-              lineCommitting={lineCommitting}
-              onSketchLinePointMove={handleSketchLinePointMove}
-              onSketchLinePoint={handleSketchLinePoint}
-              rectangleDraft={rectangleDraft}
-              rectangleCommitting={rectangleCommitting}
-              onSketchRectanglePointMove={handleSketchRectanglePointMove}
-              onSketchRectanglePoint={handleSketchRectanglePoint}
-              circleDraft={circleDraft}
-              circleCommitting={circleCommitting}
-              onSketchCirclePointMove={handleSketchCirclePointMove}
-              onSketchCirclePoint={handleSketchCirclePoint}
-              arcDraft={arcDraft}
-              arcCommitting={arcCommitting}
-              onSketchArcPointMove={handleSketchArcPointMove}
-              onSketchArcPoint={handleSketchArcPoint}
-              commit={workspace.applyCoincidentConstraint}
-              parallelCommit={workspace.applyParallelConstraint}
+              document={document} activeSketch={sketch} activeWorkspace={activeWorkspace} activeCommand={activeCommand}
+              revisionToken={revisionToken} renderModel={renderModel} runtimeStatus={runtimeState.status} fixtureError={fixtureError}
+              rectangleReady={rectangleReady} selectionMode={selectionMode} onPick={handleViewportPick} viewCommand={viewCommand}
+              selectedBodyId={selectedBodyId} onBodySelect={handleBodySelect} selectedSketchEntityId={selectedSketchEntityId}
+              onSketchEntitySelect={handleSketchEntitySelect} onSketchEntityTranslate={translateSketchEntity} onSketchDragRejected={setNotice}
+              lineDraft={lineDraft} lineCommitting={lineCommitting} onSketchLinePointMove={handleSketchLinePointMove} onSketchLinePoint={handleSketchLinePoint}
+              rectangleDraft={rectangleDraft} rectangleCommitting={rectangleCommitting} onSketchRectanglePointMove={handleSketchRectanglePointMove} onSketchRectanglePoint={handleSketchRectanglePoint}
+              circleDraft={circleDraft} circleCommitting={circleCommitting} onSketchCirclePointMove={handleSketchCirclePointMove} onSketchCirclePoint={handleSketchCirclePoint}
+              arcDraft={arcDraft} arcCommitting={arcCommitting} onSketchArcPointMove={handleSketchArcPointMove} onSketchArcPoint={handleSketchArcPoint}
+              commit={workspace.applyCoincidentConstraint} parallelCommit={workspace.applyParallelConstraint} perpendicularCommit={workspace.applyPerpendicularConstraint}
             />
           ) : (
             <PlannedDocumentStage kind={document.kind} />

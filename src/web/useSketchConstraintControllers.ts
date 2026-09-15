@@ -21,6 +21,7 @@ export function useSketchConstraintControllers(options: SketchConstraintControll
   const unary = useSketchConstraintController(options);
   const canApplyCoincidentConstraint = (sketch?.entities.filter((entity) => entity.type === 'line').length ?? 0) >= 2;
   const canApplyParallelConstraint = canApplyCoincidentConstraint;
+  const canApplyPerpendicularConstraint = canApplyCoincidentConstraint;
 
   function canBeginBinaryConstraint(): boolean {
     if (activeSketchId && canApplyCoincidentConstraint) return true;
@@ -39,6 +40,14 @@ export function useSketchConstraintControllers(options: SketchConstraintControll
   function beginParallelConstraint(): boolean {
     if (!canBeginBinaryConstraint()) return false;
     setActiveCommand('constraint.parallel');
+    setPanel('closed');
+    setNotice('Выберите первый отрезок');
+    return true;
+  }
+
+  function beginPerpendicularConstraint(): boolean {
+    if (!canBeginBinaryConstraint()) return false;
+    setActiveCommand('constraint.perpendicular');
     setPanel('closed');
     setNotice('Выберите первый отрезок');
     return true;
@@ -68,13 +77,24 @@ export function useSketchConstraintControllers(options: SketchConstraintControll
     );
   }
 
+  async function applyPerpendicularConstraint(aEntityId: CadSketchEntityId, bEntityId: CadSketchEntityId): Promise<boolean> {
+    if (!activeSketchId) { setNotice('Сначала откройте эскиз'); return false; }
+    return finishBinaryConstraint(
+      await app.execute({ id: 'constraint.perpendicular', payload: { sketchId: activeSketchId, aEntityId, bEntityId } }),
+      'Перпендикулярность применена',
+    );
+  }
+
   return {
     ...unary,
     canApplyCoincidentConstraint,
     canApplyParallelConstraint,
+    canApplyPerpendicularConstraint,
     beginCoincidentConstraint,
     beginParallelConstraint,
+    beginPerpendicularConstraint,
     applyCoincidentConstraint,
     applyParallelConstraint,
+    applyPerpendicularConstraint,
   };
 }
