@@ -25,6 +25,7 @@ export function useSketchConstraintControllers(options: SketchConstraintControll
   const canApplyParallelConstraint = canApplyCoincidentConstraint;
   const canApplyPerpendicularConstraint = canApplyCoincidentConstraint;
   const canApplyTangentConstraint = lineCount >= 1 && circleCount >= 1;
+  const canApplyConcentricConstraint = circleCount >= 2;
 
   function canBeginLinePairConstraint(): boolean {
     if (activeSketchId && canApplyCoincidentConstraint) return true;
@@ -67,6 +68,17 @@ export function useSketchConstraintControllers(options: SketchConstraintControll
     return true;
   }
 
+  function beginConcentricConstraint(): boolean {
+    if (!activeSketchId || !canApplyConcentricConstraint) {
+      setNotice('Для концентричности нужны две окружности эскиза');
+      return false;
+    }
+    setActiveCommand('constraint.concentric');
+    setPanel('closed');
+    setNotice('Выберите первую окружность');
+    return true;
+  }
+
   async function finishBinaryConstraint(result: Awaited<ReturnType<CadApplication['execute']>>, success: string): Promise<boolean> {
     if (!result.ok) { setNotice(result.error?.message ?? 'Не удалось применить ограничение'); return false; }
     setActiveCommand(null);
@@ -77,49 +89,33 @@ export function useSketchConstraintControllers(options: SketchConstraintControll
 
   async function applyCoincidentConstraint(a: CadSketchCommandReference, b: CadSketchCommandReference): Promise<boolean> {
     if (!activeSketchId) { setNotice('Сначала откройте эскиз'); return false; }
-    return finishBinaryConstraint(
-      await app.execute({ id: 'constraint.coincident', payload: { sketchId: activeSketchId, a, b } }),
-      'Совпадение применено',
-    );
+    return finishBinaryConstraint(await app.execute({ id: 'constraint.coincident', payload: { sketchId: activeSketchId, a, b } }), 'Совпадение применено');
   }
 
   async function applyParallelConstraint(aEntityId: CadSketchEntityId, bEntityId: CadSketchEntityId): Promise<boolean> {
     if (!activeSketchId) { setNotice('Сначала откройте эскиз'); return false; }
-    return finishBinaryConstraint(
-      await app.execute({ id: 'constraint.parallel', payload: { sketchId: activeSketchId, aEntityId, bEntityId } }),
-      'Параллельность применена',
-    );
+    return finishBinaryConstraint(await app.execute({ id: 'constraint.parallel', payload: { sketchId: activeSketchId, aEntityId, bEntityId } }), 'Параллельность применена');
   }
 
   async function applyPerpendicularConstraint(aEntityId: CadSketchEntityId, bEntityId: CadSketchEntityId): Promise<boolean> {
     if (!activeSketchId) { setNotice('Сначала откройте эскиз'); return false; }
-    return finishBinaryConstraint(
-      await app.execute({ id: 'constraint.perpendicular', payload: { sketchId: activeSketchId, aEntityId, bEntityId } }),
-      'Перпендикулярность применена',
-    );
+    return finishBinaryConstraint(await app.execute({ id: 'constraint.perpendicular', payload: { sketchId: activeSketchId, aEntityId, bEntityId } }), 'Перпендикулярность применена');
   }
 
   async function applyTangentConstraint(aEntityId: CadSketchEntityId, bEntityId: CadSketchEntityId): Promise<boolean> {
     if (!activeSketchId) { setNotice('Сначала откройте эскиз'); return false; }
-    return finishBinaryConstraint(
-      await app.execute({ id: 'constraint.tangent', payload: { sketchId: activeSketchId, aEntityId, bEntityId } }),
-      'Касательность применена',
-    );
+    return finishBinaryConstraint(await app.execute({ id: 'constraint.tangent', payload: { sketchId: activeSketchId, aEntityId, bEntityId } }), 'Касательность применена');
+  }
+
+  async function applyConcentricConstraint(aEntityId: CadSketchEntityId, bEntityId: CadSketchEntityId): Promise<boolean> {
+    if (!activeSketchId) { setNotice('Сначала откройте эскиз'); return false; }
+    return finishBinaryConstraint(await app.execute({ id: 'constraint.concentric', payload: { sketchId: activeSketchId, aEntityId, bEntityId } }), 'Концентричность применена');
   }
 
   return {
     ...unary,
-    canApplyCoincidentConstraint,
-    canApplyParallelConstraint,
-    canApplyPerpendicularConstraint,
-    canApplyTangentConstraint,
-    beginCoincidentConstraint,
-    beginParallelConstraint,
-    beginPerpendicularConstraint,
-    beginTangentConstraint,
-    applyCoincidentConstraint,
-    applyParallelConstraint,
-    applyPerpendicularConstraint,
-    applyTangentConstraint,
+    canApplyCoincidentConstraint, canApplyParallelConstraint, canApplyPerpendicularConstraint, canApplyTangentConstraint, canApplyConcentricConstraint,
+    beginCoincidentConstraint, beginParallelConstraint, beginPerpendicularConstraint, beginTangentConstraint, beginConcentricConstraint,
+    applyCoincidentConstraint, applyParallelConstraint, applyPerpendicularConstraint, applyTangentConstraint, applyConcentricConstraint,
   };
 }
