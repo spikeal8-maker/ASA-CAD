@@ -66,6 +66,7 @@ export function getSketchGrowthCommandAvailability(
     case 'constraint.perpendicular':
     case 'constraint.tangent':
     case 'constraint.concentric':
+    case 'constraint.equal':
     case 'constraint.fixed':
       return sketchConstraintCommandHandlers[id].availability(part);
 
@@ -113,6 +114,8 @@ export function applySketchGrowthCommand(
       return sketchConstraintCommandHandlers['constraint.tangent'].execute(part, command);
     case 'constraint.concentric':
       return sketchConstraintCommandHandlers['constraint.concentric'].execute(part, command);
+    case 'constraint.equal':
+      return sketchConstraintCommandHandlers['constraint.equal'].execute(part, command);
     case 'constraint.fixed':
       return sketchConstraintCommandHandlers['constraint.fixed'].execute(part, command);
 

@@ -32,6 +32,7 @@ export type CadCommandId =
   | 'constraint.perpendicular'
   | 'constraint.tangent'
   | 'constraint.concentric'
+  | 'constraint.equal'
   | 'constraint.fixed'
   | 'dimension.linear'
   | 'dimension.diameter'
@@ -111,6 +112,11 @@ export interface CadCommandMap {
     bEntityId: CadSketchEntityId;
   };
   'constraint.concentric': {
+    sketchId: CadSketchId;
+    aEntityId: CadSketchEntityId;
+    bEntityId: CadSketchEntityId;
+  };
+  'constraint.equal': {
     sketchId: CadSketchId;
     aEntityId: CadSketchEntityId;
     bEntityId: CadSketchEntityId;

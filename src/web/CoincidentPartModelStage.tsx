@@ -10,12 +10,14 @@ export type SketchParallelCommit = SketchLinePairCommit;
 export type SketchPerpendicularCommit = SketchLinePairCommit;
 export type SketchTangentCommit = SketchLinePairCommit;
 export type SketchConcentricCommit = SketchLinePairCommit;
+export type SketchEqualCommit = SketchLinePairCommit;
 
 const CoincidentCommitContext = createContext<SketchCoincidentCommit | null>(null);
 const ParallelCommitContext = createContext<SketchParallelCommit | null>(null);
 const PerpendicularCommitContext = createContext<SketchPerpendicularCommit | null>(null);
 const TangentCommitContext = createContext<SketchTangentCommit | null>(null);
 const ConcentricCommitContext = createContext<SketchConcentricCommit | null>(null);
+const EqualCommitContext = createContext<SketchEqualCommit | null>(null);
 
 /** Binary Sketch-constraint bridge kept outside frozen Part/Sketch stage owners. */
 export function CoincidentPartStage(
@@ -25,16 +27,19 @@ export function CoincidentPartStage(
     perpendicularCommit: SketchPerpendicularCommit;
     tangentCommit: SketchTangentCommit;
     concentricCommit: SketchConcentricCommit;
+    equalCommit: SketchEqualCommit;
   },
 ) {
-  const { commit, parallelCommit, perpendicularCommit, tangentCommit, concentricCommit, ...stageProps } = props;
+  const { commit, parallelCommit, perpendicularCommit, tangentCommit, concentricCommit, equalCommit, ...stageProps } = props;
   return (
     <CoincidentCommitContext.Provider value={commit}>
       <ParallelCommitContext.Provider value={parallelCommit}>
         <PerpendicularCommitContext.Provider value={perpendicularCommit}>
           <TangentCommitContext.Provider value={tangentCommit}>
             <ConcentricCommitContext.Provider value={concentricCommit}>
-              <PartModelStage {...stageProps} />
+              <EqualCommitContext.Provider value={equalCommit}>
+                <PartModelStage {...stageProps} />
+              </EqualCommitContext.Provider>
             </ConcentricCommitContext.Provider>
           </TangentCommitContext.Provider>
         </PerpendicularCommitContext.Provider>
@@ -70,5 +75,11 @@ export function useSketchTangentCommit(): SketchTangentCommit {
 export function useSketchConcentricCommit(): SketchConcentricCommit {
   const commit = useContext(ConcentricCommitContext);
   if (!commit) throw new Error('Sketch Concentric interaction provider is missing');
+  return commit;
+}
+
+export function useSketchEqualCommit(): SketchEqualCommit {
+  const commit = useContext(EqualCommitContext);
+  if (!commit) throw new Error('Sketch Equal interaction provider is missing');
   return commit;
 }

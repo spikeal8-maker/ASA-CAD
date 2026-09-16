@@ -102,6 +102,11 @@ export interface CadConcentricConstraint extends CadConstraintBase<'concentric'>
   data?: undefined;
 }
 
+export interface CadEqualConstraint extends CadConstraintBase<'equal'> {
+  entityIds: [CadSketchEntityId, CadSketchEntityId];
+  data?: undefined;
+}
+
 export interface CadFixedConstraint extends CadConstraintBase<'fixed'> {
   entityIds: [CadSketchEntityId];
   data?: undefined;
@@ -114,7 +119,7 @@ export interface CadCoincidentConstraint extends CadConstraintBase<'coincident'>
   };
 }
 
-/** Current M3-ready constraint surface. Add new constraint kinds explicitly. */
+/** Current M3 constraint surface. Add new constraint kinds explicitly. */
 export type CadConstraint =
   | CadHorizontalConstraint
   | CadVerticalConstraint
@@ -122,6 +127,7 @@ export type CadConstraint =
   | CadPerpendicularConstraint
   | CadTangentConstraint
   | CadConcentricConstraint
+  | CadEqualConstraint
   | CadFixedConstraint
   | CadCoincidentConstraint;
 
@@ -244,6 +250,7 @@ function validateConstraint(value: unknown, path: string): asserts value is CadC
     case 'perpendicular':
     case 'tangent':
     case 'concentric':
+    case 'equal':
       if (constraint.entityIds.length !== 2) throw new Error(`${path}.${String(constraint.type)} requires exactly two entity ids`);
       if (constraint.data !== undefined) throw new Error(`${path}.${String(constraint.type)} must not contain data`);
       return;

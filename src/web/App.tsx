@@ -81,7 +81,7 @@ export function App(props: CadProjectPersistenceOverrides) {
       line: beginLine, rectangle: beginRectangle, circle: beginCircle, arc: beginArc, deleteSketchEntity: deleteSelectedSketchEntity,
       horizontalConstraint: applyHorizontalConstraint, verticalConstraint: applyVerticalConstraint, fixedConstraint: applyFixedConstraint,
       coincidentConstraint: workspace.beginCoincidentConstraint, parallelConstraint: workspace.beginParallelConstraint,
-      perpendicularConstraint: workspace.beginPerpendicularConstraint, tangentConstraint: workspace.beginTangentConstraint, concentricConstraint: workspace.beginConcentricConstraint,
+      perpendicularConstraint: workspace.beginPerpendicularConstraint, tangentConstraint: workspace.beginTangentConstraint, concentricConstraint: workspace.beginConcentricConstraint, equalConstraint: workspace.beginEqualConstraint,
       finishSketch, extrude: beginExtrude, cutExtrude: beginCut, fillet: beginFillet,
       fit: () => requestView('Показать всё'), front: () => requestView('Спереди'), back: () => requestView('Сзади'),
       top: () => requestView('Сверху'), bottom: () => requestView('Снизу'), left: () => requestView('Слева'),
@@ -90,7 +90,7 @@ export function App(props: CadProjectPersistenceOverrides) {
     {
       canUndo: state.canUndo, canRedo: state.canRedo, hasSketch: Boolean(sketch), hasSketchEntitySelection: Boolean(selectedSketchEntityId),
       canApplyOrientationConstraint, canApplyFixedConstraint, canApplyCoincidentConstraint: workspace.canApplyCoincidentConstraint,
-      canApplyParallelConstraint: workspace.canApplyParallelConstraint, canApplyPerpendicularConstraint: workspace.canApplyPerpendicularConstraint, canApplyConcentricConstraint: workspace.canApplyConcentricConstraint,
+      canApplyParallelConstraint: workspace.canApplyParallelConstraint, canApplyPerpendicularConstraint: workspace.canApplyPerpendicularConstraint, canApplyConcentricConstraint: workspace.canApplyConcentricConstraint, canApplyEqualConstraint: workspace.canApplyEqualConstraint,
       canApplyTangentConstraint: workspace.canApplyTangentConstraint, canExtrude, canCutExtrude: canCut, canFillet,
     },
   );
@@ -142,20 +142,7 @@ export function App(props: CadProjectPersistenceOverrides) {
           />
         }
         toolsContent={<MobileToolsPanel documentKind={document.kind} workspace={activeWorkspace} getAction={uiAction} />}
-        modelContent={document.kind === 'part' ? (
-          <CoincidentPartStage
-            document={document} activeSketch={sketch} activeWorkspace={activeWorkspace} activeCommand={activeCommand}
-            revisionToken={revisionToken} renderModel={renderModel} runtimeStatus={runtimeState.status} fixtureError={fixtureError}
-            rectangleReady={rectangleReady} selectionMode={selectionMode} onPick={handleViewportPick} viewCommand={viewCommand}
-            selectedBodyId={selectedBodyId} onBodySelect={handleBodySelect} selectedSketchEntityId={selectedSketchEntityId}
-            onSketchEntitySelect={handleSketchEntitySelect} onSketchEntityTranslate={translateSketchEntity} onSketchDragRejected={setNotice}
-            lineDraft={lineDraft} lineCommitting={lineCommitting} onSketchLinePointMove={handleSketchLinePointMove} onSketchLinePoint={handleSketchLinePoint}
-            rectangleDraft={rectangleDraft} rectangleCommitting={rectangleCommitting} onSketchRectanglePointMove={handleSketchRectanglePointMove} onSketchRectanglePoint={handleSketchRectanglePoint}
-            circleDraft={circleDraft} circleCommitting={circleCommitting} onSketchCirclePointMove={handleSketchCirclePointMove} onSketchCirclePoint={handleSketchCirclePoint}
-            arcDraft={arcDraft} arcCommitting={arcCommitting} onSketchArcPointMove={handleSketchArcPointMove} onSketchArcPoint={handleSketchArcPoint}
-            commit={workspace.applyCoincidentConstraint} parallelCommit={workspace.applyParallelConstraint}
-            perpendicularCommit={workspace.applyPerpendicularConstraint} tangentCommit={workspace.applyTangentConstraint} concentricCommit={workspace.applyConcentricConstraint}
-          />
+        modelContent={document.kind === 'part' ? (<CoincidentPartStage document={document} activeSketch={sketch} activeWorkspace={activeWorkspace} activeCommand={activeCommand} revisionToken={revisionToken} renderModel={renderModel} runtimeStatus={runtimeState.status} fixtureError={fixtureError} rectangleReady={rectangleReady} selectionMode={selectionMode} onPick={handleViewportPick} viewCommand={viewCommand} selectedBodyId={selectedBodyId} onBodySelect={handleBodySelect} selectedSketchEntityId={selectedSketchEntityId} onSketchEntitySelect={handleSketchEntitySelect} onSketchEntityTranslate={translateSketchEntity} onSketchDragRejected={setNotice} lineDraft={lineDraft} lineCommitting={lineCommitting} onSketchLinePointMove={handleSketchLinePointMove} onSketchLinePoint={handleSketchLinePoint} rectangleDraft={rectangleDraft} rectangleCommitting={rectangleCommitting} onSketchRectanglePointMove={handleSketchRectanglePointMove} onSketchRectanglePoint={handleSketchRectanglePoint} circleDraft={circleDraft} circleCommitting={circleCommitting} onSketchCirclePointMove={handleSketchCirclePointMove} onSketchCirclePoint={handleSketchCirclePoint} arcDraft={arcDraft} arcCommitting={arcCommitting} onSketchArcPointMove={handleSketchArcPointMove} onSketchArcPoint={handleSketchArcPoint} commit={workspace.applyCoincidentConstraint} parallelCommit={workspace.applyParallelConstraint} perpendicularCommit={workspace.applyPerpendicularConstraint} tangentCommit={workspace.applyTangentConstraint} concentricCommit={workspace.applyConcentricConstraint} equalCommit={workspace.applyEqualConstraint}/>
         ) : <PlannedDocumentStage kind={document.kind} />}
       />
       <CadShellBottom recomputeStatus={state.recompute.status} notice={notice} devFixture={devFixture} selectedPickKind={selectedPick?.kind} selectedPointText={selectedPointText} selectedBodyName={selectedBody?.name} selectedSketchEntityId={selectedSketchEntityId} documentKind={document.kind} runtimeStatus={runtimeState.status} activePanel={activePanel} setActivePanel={setActivePanel} />

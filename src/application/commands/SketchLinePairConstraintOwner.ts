@@ -4,7 +4,7 @@ import type { CadConstraintId, CadSketchEntityId, CadSketchId } from '../../cont
 import { createCadId } from '../../contracts/ids';
 import { requireSketch, requireSketchEntity } from './SketchCommandHandlerShared';
 
-export type CadLinePairConstraintType = 'parallel' | 'perpendicular';
+export type CadLinePairConstraintType = 'parallel' | 'perpendicular' | 'equal';
 
 /** Focused application owner for symmetric Line↔Line geometric constraints. */
 export function addLinePairConstraint(
@@ -17,7 +17,7 @@ export function addLinePairConstraint(
   const sketch = requireSketch(part, sketchId);
   const a = requireSketchEntity(sketch, aEntityId);
   const b = requireSketchEntity(sketch, bEntityId);
-  const label = type === 'parallel' ? 'Parallel' : 'Perpendicular';
+  const label = type === 'parallel' ? 'Parallel' : type === 'perpendicular' ? 'Perpendicular' : 'Equal';
   if (a.type !== 'line' || b.type !== 'line') throw new Error(`${label} requires two Line entities`);
   if (aEntityId === bEntityId) throw new Error(`${label} requires two distinct Lines`);
 
@@ -32,7 +32,9 @@ export function addLinePairConstraint(
   const id = createCadId<CadConstraintId>('constraint');
   part.constraints.push(type === 'parallel'
     ? { id, type: 'parallel', entityIds: [aEntityId, bEntityId] }
-    : { id, type: 'perpendicular', entityIds: [aEntityId, bEntityId] });
+    : type === 'perpendicular'
+      ? { id, type: 'perpendicular', entityIds: [aEntityId, bEntityId] }
+      : { id, type: 'equal', entityIds: [aEntityId, bEntityId] });
   sketch.constraintIds.push(id);
   return { ok: true, changed: true, createdIds: [id] };
 }
