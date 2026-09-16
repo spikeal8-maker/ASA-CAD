@@ -25,6 +25,7 @@ export function useSketchConstraintControllers(options: SketchConstraintControll
   const canApplyParallelConstraint = canApplyCoincidentConstraint;
   const canApplyPerpendicularConstraint = canApplyCoincidentConstraint;
   const canApplyTangentConstraint = lineCount >= 1 && circleCount >= 1;
+  const canApplyConcentricConstraint = circleCount >= 2;
 
   function canBeginLinePairConstraint(): boolean {
     if (activeSketchId && canApplyCoincidentConstraint) return true;
@@ -64,6 +65,17 @@ export function useSketchConstraintControllers(options: SketchConstraintControll
     setActiveCommand('constraint.tangent');
     setPanel('closed');
     setNotice('Выберите отрезок или окружность');
+    return true;
+  }
+
+  function beginConcentricConstraint(): boolean {
+    if (!activeSketchId || !canApplyConcentricConstraint) {
+      setNotice('Для концентричности нужны две окружности эскиза');
+      return false;
+    }
+    setActiveCommand('constraint.concentric');
+    setPanel('closed');
+    setNotice('Выберите первую окружность');
     return true;
   }
 
@@ -107,19 +119,27 @@ export function useSketchConstraintControllers(options: SketchConstraintControll
     );
   }
 
+  async function applyConcentricConstraint(aEntityId: CadSketchEntityId, bEntityId: CadSketchEntityId): Promise<boolean> {
+    if (!activeSketchId) { setNotice('Сначала откройте эскиз'); return false; }
+    return finishBinaryConstraint(await app.execute({ id: 'constraint.concentric', payload: { sketchId: activeSketchId, aEntityId, bEntityId } }), 'Концентричность применена');
+  }
+
   return {
     ...unary,
     canApplyCoincidentConstraint,
     canApplyParallelConstraint,
     canApplyPerpendicularConstraint,
     canApplyTangentConstraint,
+    canApplyConcentricConstraint,
     beginCoincidentConstraint,
     beginParallelConstraint,
     beginPerpendicularConstraint,
     beginTangentConstraint,
+    beginConcentricConstraint,
     applyCoincidentConstraint,
     applyParallelConstraint,
     applyPerpendicularConstraint,
     applyTangentConstraint,
+    applyConcentricConstraint,
   };
 }
