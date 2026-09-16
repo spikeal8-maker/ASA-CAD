@@ -3,7 +3,7 @@ import type { CadSketchCommandReference } from '../../contracts/commands';
 import type { CadPoint2 } from '../../contracts/document';
 import type { CadSketchEntityId } from '../../contracts/ids';
 import {
-  useSketchCoincidentCommit, useSketchParallelCommit, useSketchPerpendicularCommit,
+  useSketchCoincidentCommit, useSketchParallelCommit, useSketchPerpendicularCommit, useSketchEqualCommit,
   type SketchLinePairCommit,
 } from '../CoincidentPartModelStage';
 import { SketchInteractionSurface } from './SketchInteractionSurface';
@@ -92,11 +92,16 @@ export function SketchPerpendicularInteractionLayer(props: BinaryLayerProps) {
   return <SketchLinePairInteractionLayer {...props} commit={commit} tool="constraint.perpendicular" label="Перпендикулярность отрезков" prefix="perpendicular" />;
 }
 
+export function SketchEqualInteractionLayer(props: BinaryLayerProps) {
+  const commit = useSketchEqualCommit();
+  return <SketchLinePairInteractionLayer {...props} commit={commit} tool="constraint.equal" label="Равенство отрезков" prefix="equal" />;
+}
+
 function SketchLinePairInteractionLayer(props: BinaryLayerProps & {
   commit: SketchLinePairCommit;
-  tool: 'constraint.parallel' | 'constraint.perpendicular';
+  tool: 'constraint.parallel' | 'constraint.perpendicular' | 'constraint.equal';
   label: string;
-  prefix: 'parallel' | 'perpendicular';
+  prefix: 'parallel' | 'perpendicular' | 'equal';
 }) {
   const [first, setFirst] = useState<CadSketchEntityId | null>(null);
   useEffect(() => setFirst(null), [props.active, props.model?.sketchId]);

@@ -26,6 +26,7 @@ export function useSketchConstraintControllers(options: SketchConstraintControll
   const canApplyPerpendicularConstraint = canApplyCoincidentConstraint;
   const canApplyTangentConstraint = lineCount >= 1 && circleCount >= 1;
   const canApplyConcentricConstraint = circleCount >= 2;
+  const canApplyEqualConstraint = canApplyCoincidentConstraint;
 
   function canBeginLinePairConstraint(): boolean {
     if (activeSketchId && canApplyCoincidentConstraint) return true;
@@ -65,6 +66,12 @@ export function useSketchConstraintControllers(options: SketchConstraintControll
     setActiveCommand('constraint.tangent');
     setPanel('closed');
     setNotice('Выберите отрезок или окружность');
+    return true;
+  }
+
+  function beginEqualConstraint(): boolean {
+    if (!canBeginLinePairConstraint()) return false;
+    setActiveCommand('constraint.equal'); setPanel('closed'); setNotice('Выберите первый отрезок');
     return true;
   }
 
@@ -119,6 +126,11 @@ export function useSketchConstraintControllers(options: SketchConstraintControll
     );
   }
 
+  async function applyEqualConstraint(aEntityId: CadSketchEntityId, bEntityId: CadSketchEntityId): Promise<boolean> {
+    if (!activeSketchId) { setNotice('Сначала откройте эскиз'); return false; }
+    return finishBinaryConstraint(await app.execute({ id: 'constraint.equal', payload: { sketchId: activeSketchId, aEntityId, bEntityId } }), 'Равенство применено');
+  }
+
   async function applyConcentricConstraint(aEntityId: CadSketchEntityId, bEntityId: CadSketchEntityId): Promise<boolean> {
     if (!activeSketchId) { setNotice('Сначала откройте эскиз'); return false; }
     return finishBinaryConstraint(await app.execute({ id: 'constraint.concentric', payload: { sketchId: activeSketchId, aEntityId, bEntityId } }), 'Концентричность применена');
@@ -131,15 +143,18 @@ export function useSketchConstraintControllers(options: SketchConstraintControll
     canApplyPerpendicularConstraint,
     canApplyTangentConstraint,
     canApplyConcentricConstraint,
+    canApplyEqualConstraint,
     beginCoincidentConstraint,
     beginParallelConstraint,
     beginPerpendicularConstraint,
     beginTangentConstraint,
     beginConcentricConstraint,
+    beginEqualConstraint,
     applyCoincidentConstraint,
     applyParallelConstraint,
     applyPerpendicularConstraint,
     applyTangentConstraint,
     applyConcentricConstraint,
+    applyEqualConstraint,
   };
 }

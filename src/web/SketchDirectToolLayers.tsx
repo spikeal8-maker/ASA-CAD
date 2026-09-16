@@ -9,7 +9,7 @@ import { SketchCircleInteractionLayer } from './viewport/SketchCircleInteraction
 import { SketchArcInteractionLayer } from './viewport/SketchArcInteractionLayer';
 import { SketchRectangleInteractionLayer } from './viewport/SketchRectangleInteractionLayer';
 import {
-  SketchCoincidentInteractionLayer, SketchParallelInteractionLayer, SketchPerpendicularInteractionLayer,
+  SketchCoincidentInteractionLayer, SketchParallelInteractionLayer, SketchPerpendicularInteractionLayer, SketchEqualInteractionLayer,
 } from './viewport/SketchCoincidentInteractionLayer';
 import { SketchTangentInteractionLayer } from './viewport/SketchTangentInteractionLayer';
 import { SketchConcentricInteractionLayer } from './viewport/SketchConcentricInteractionLayer';
@@ -85,6 +85,7 @@ export function SketchDirectToolLayers(props: SketchDirectToolLayersProps) {
       <SketchCoincidentInteractionLayer {...common} active={props.activeCommand === 'constraint.coincident'} />
       <SketchParallelInteractionLayer {...common} active={props.activeCommand === 'constraint.parallel'} />
       <SketchPerpendicularInteractionLayer {...common} active={props.activeCommand === 'constraint.perpendicular'} />
+      <SketchEqualInteractionLayer {...common} active={props.activeCommand === 'constraint.equal'} />
       <SketchTangentInteractionLayer {...common} active={props.activeCommand === 'constraint.tangent'} />
       <SketchConcentricInteractionLayer {...common} active={props.activeCommand === 'constraint.concentric'} />
     </>
