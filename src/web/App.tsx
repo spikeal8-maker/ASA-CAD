@@ -71,7 +71,7 @@ export function App(props: CadProjectPersistenceOverrides) {
   const requestView = useCallback((label: string) => { const view = viewportViewByLabel[label]; if (!view) return; setViewName(label); requestViewportCommand(view); }, [requestViewportCommand]);
   async function createDocument(kind: CadDocumentKind) { await app.replaceDocument(createEmptyCadDocument(kind, { title: `${documentNames[kind]} 1` })); setNewDialogOpen(false); setActivePanel('tree'); resetForDocument(kind); setNotice(`Создан документ «${documentNames[kind]}»`); }
   const resetAfterOpen = useCallback((kind: CadDocumentKind) => { setActivePanel('tree'); resetForDocument(kind); }, [resetForDocument]);
-  const { save: saveLocal, open: openLocal } = useCadPersistenceCommands({ persistence, remoteHost: Boolean(props.projectHost), setNotice, onOpened: resetAfterOpen });
+  const {save: saveLocal, open: openLocal}=useCadPersistenceCommands({ persistence, remoteHost: Boolean(props.projectHost), setNotice, onOpened: resetAfterOpen });
   async function undo() { clearTransientSelection(); const result = await app.undo(); setNotice(result.changed ? 'Отменено' : 'Нечего отменять'); }
   async function redo() { clearTransientSelection(); const result = await app.redo(); setNotice(result.changed ? 'Повторено' : 'Нечего повторять'); }
   async function rebuild() { clearTransientSelection(); setNotice('Перестроение…'); const result = await app.execute({ id: 'document.rebuild', payload: {} }); setNotice(result.ok ? 'Перестроено' : result.error?.message ?? 'Ошибка перестроения'); }
@@ -81,7 +81,7 @@ export function App(props: CadProjectPersistenceOverrides) {
       line: beginLine, rectangle: beginRectangle, circle: beginCircle, arc: beginArc, deleteSketchEntity: deleteSelectedSketchEntity,
       horizontalConstraint: applyHorizontalConstraint, verticalConstraint: applyVerticalConstraint, fixedConstraint: applyFixedConstraint,
       coincidentConstraint: workspace.beginCoincidentConstraint, parallelConstraint: workspace.beginParallelConstraint,
-      perpendicularConstraint: workspace.beginPerpendicularConstraint, tangentConstraint: workspace.beginTangentConstraint,
+      perpendicularConstraint: workspace.beginPerpendicularConstraint, tangentConstraint: workspace.beginTangentConstraint, concentricConstraint: workspace.beginConcentricConstraint,
       finishSketch, extrude: beginExtrude, cutExtrude: beginCut, fillet: beginFillet,
       fit: () => requestView('Показать всё'), front: () => requestView('Спереди'), back: () => requestView('Сзади'),
       top: () => requestView('Сверху'), bottom: () => requestView('Снизу'), left: () => requestView('Слева'),
@@ -90,11 +90,11 @@ export function App(props: CadProjectPersistenceOverrides) {
     {
       canUndo: state.canUndo, canRedo: state.canRedo, hasSketch: Boolean(sketch), hasSketchEntitySelection: Boolean(selectedSketchEntityId),
       canApplyOrientationConstraint, canApplyFixedConstraint, canApplyCoincidentConstraint: workspace.canApplyCoincidentConstraint,
-      canApplyParallelConstraint: workspace.canApplyParallelConstraint, canApplyPerpendicularConstraint: workspace.canApplyPerpendicularConstraint,
+      canApplyParallelConstraint: workspace.canApplyParallelConstraint, canApplyPerpendicularConstraint: workspace.canApplyPerpendicularConstraint, canApplyConcentricConstraint: workspace.canApplyConcentricConstraint,
       canApplyTangentConstraint: workspace.canApplyTangentConstraint, canExtrude, canCutExtrude: canCut, canFillet,
     },
   );
-  const searchableActions = uiActions.search(search);
+  const searchableActions=uiActions.search(search);
   function uiAction(id: string) { const action = uiActions.byId.get(id); if (!action) throw new Error(`Missing CadUiAction: ${id}`); return action; }
   async function dispatchShortcutAction(action: ShortcutActionId) {
     const sharedActionId = cadUiActionIdForShortcut(action);
@@ -130,32 +130,15 @@ export function App(props: CadProjectPersistenceOverrides) {
   }
   const fixtureError = state.recompute.status === 'error' ? state.recompute.message : undefined;
   return (
-    <div className="cad-app" data-document-kind={document.kind} data-runtime-status={runtimeState.status} data-recompute-status={state.recompute.status}
-      data-dev-fixture={devFixture ?? ''} data-fixture-status={fixtureStatus} data-sketch-count={part?.sketches.length ?? 0}
-      data-feature-count={part?.features.length ?? 0} data-stable-reference-count={part?.stableReferences.length ?? 0}
-      data-selected-kind={selectedPick?.kind ?? ''} data-selected-point={selectedPointText} data-selected-body-id={selectedBodyId ?? ''}
-      data-active-sketch-id={activeSketchId ?? ''} data-selected-sketch-entity-id={selectedSketchEntityId ?? ''}
-      data-shortcuts="central" tabIndex={-1} onKeyDown={handleKeyDown}>
-      <CadShellTop
-        documentKind={document.kind} documentTitle={document.title} dirty={state.dirty} activeWorkspace={activeWorkspace} setActiveWorkspace={setActiveWorkspace}
-        search={search} setSearch={setSearch} searchableActions={searchableActions} getAction={uiAction} openNewDocument={() => setNewDialogOpen(true)}
-        rectangleReady={rectangleReady} rectangleWidth={rectangleWidth} rectangleHeight={rectangleHeight}
-        circleReady={circleReady} circleDiameter={circleDiameter} viewName={viewName}
-      />
+      <div className="cad-app" data-document-kind={document.kind} data-runtime-status={runtimeState.status} data-recompute-status={state.recompute.status} data-dev-fixture={devFixture ?? ''} data-fixture-status={fixtureStatus} data-sketch-count={part?.sketches.length ?? 0} data-feature-count={part?.features.length ?? 0} data-stable-reference-count={part?.stableReferences.length ?? 0} data-selected-kind={selectedPick?.kind ?? ''} data-selected-point={selectedPointText} data-selected-body-id={selectedBodyId ?? ''} data-active-sketch-id={activeSketchId ?? ''} data-selected-sketch-entity-id={selectedSketchEntityId ?? ''} data-shortcuts="central" tabIndex={-1} onKeyDown={handleKeyDown}>
+      <CadShellTop documentKind={document.kind} documentTitle={document.title} dirty={state.dirty} activeWorkspace={activeWorkspace} setActiveWorkspace={setActiveWorkspace} search={search} setSearch={setSearch} searchableActions={searchableActions} getAction={uiAction} openNewDocument={() => setNewDialogOpen(true)} rectangleReady={rectangleReady} rectangleWidth={rectangleWidth} rectangleHeight={rectangleHeight} circleReady={circleReady} circleDiameter={circleDiameter} viewName={viewName} />
       <CadShellMain
         activePanel={activePanel} setActivePanel={setActivePanel} requestView={requestView} viewName={viewName}
         selectionMode={selectionMode} selectedBodyName={selectedBody?.name} selectedSketchEntityId={selectedSketchEntityId}
         activeCommand={activeCommand} commitActiveCommand={commitActiveCommand} cancelCommand={cancelCommand}
         treeContent={<DocumentTree document={document} selectedBodyId={selectedBodyId} activeSketchId={activeSketchId} onSelectBody={handleBodySelect} onEditSketch={enterSketch} onEditDimension={beginDimensionEdit} />}
         parametersContent={
-          <ParameterPanel
-            activeCommand={activeCommand} requiresFaceSelection={hasSolid && activeCommand === 'part.sketch.create'} selectedPick={selectedPick}
-            sketchPlane={sketchPlane} setSketchPlane={setSketchPlane} rectangleWidth={rectangleWidth} rectangleHeight={rectangleHeight}
-            setRectangleWidth={setRectangleWidth} setRectangleHeight={setRectangleHeight} circleDiameter={circleDiameter} setCircleDiameter={setCircleDiameter}
-            extrudeDistance={extrudeDistance} setExtrudeDistance={setExtrudeDistance} filletRadius={filletRadius} setFilletRadius={setFilletRadius}
-            dimensionEditValue={dimensionEditValue} setDimensionEditValue={setDimensionEditValue}
-            onCreateSketch={commitCreateSketch} onCreateRectangle={commitRectangle} onCreateCircle={commitCircle}
-            onExtrude={commitExtrude} onCut={commitCut} onFillet={commitFillet} onDimensionEdit={commitDimensionEdit} onCancel={cancelCommand}
+      <ParameterPanel activeCommand={activeCommand} requiresFaceSelection={hasSolid && activeCommand === 'part.sketch.create'} selectedPick={selectedPick} sketchPlane={sketchPlane} setSketchPlane={setSketchPlane} rectangleWidth={rectangleWidth} rectangleHeight={rectangleHeight} setRectangleWidth={setRectangleWidth} setRectangleHeight={setRectangleHeight} circleDiameter={circleDiameter} setCircleDiameter={setCircleDiameter} extrudeDistance={extrudeDistance} setExtrudeDistance={setExtrudeDistance} filletRadius={filletRadius} setFilletRadius={setFilletRadius} dimensionEditValue={dimensionEditValue} setDimensionEditValue={setDimensionEditValue} onCreateSketch={commitCreateSketch} onCreateRectangle={commitRectangle} onCreateCircle={commitCircle} onExtrude={commitExtrude} onCut={commitCut} onFillet={commitFillet} onDimensionEdit={commitDimensionEdit} onCancel={cancelCommand}
           />
         }
         toolsContent={<MobileToolsPanel documentKind={document.kind} workspace={activeWorkspace} getAction={uiAction} />}
@@ -171,14 +154,11 @@ export function App(props: CadProjectPersistenceOverrides) {
             circleDraft={circleDraft} circleCommitting={circleCommitting} onSketchCirclePointMove={handleSketchCirclePointMove} onSketchCirclePoint={handleSketchCirclePoint}
             arcDraft={arcDraft} arcCommitting={arcCommitting} onSketchArcPointMove={handleSketchArcPointMove} onSketchArcPoint={handleSketchArcPoint}
             commit={workspace.applyCoincidentConstraint} parallelCommit={workspace.applyParallelConstraint}
-            perpendicularCommit={workspace.applyPerpendicularConstraint} tangentCommit={workspace.applyTangentConstraint}
+            perpendicularCommit={workspace.applyPerpendicularConstraint} tangentCommit={workspace.applyTangentConstraint} concentricCommit={workspace.applyConcentricConstraint}
           />
         ) : <PlannedDocumentStage kind={document.kind} />}
       />
-      <CadShellBottom recomputeStatus={state.recompute.status} notice={notice} devFixture={devFixture}
-        selectedPickKind={selectedPick?.kind} selectedPointText={selectedPointText} selectedBodyName={selectedBody?.name}
-        selectedSketchEntityId={selectedSketchEntityId} documentKind={document.kind} runtimeStatus={runtimeState.status}
-        activePanel={activePanel} setActivePanel={setActivePanel} />
+      <CadShellBottom recomputeStatus={state.recompute.status} notice={notice} devFixture={devFixture} selectedPickKind={selectedPick?.kind} selectedPointText={selectedPointText} selectedBodyName={selectedBody?.name} selectedSketchEntityId={selectedSketchEntityId} documentKind={document.kind} runtimeStatus={runtimeState.status} activePanel={activePanel} setActivePanel={setActivePanel} />
       <NewDocumentDialog open={newDialogOpen} onClose={() => setNewDialogOpen(false)} onCreate={createDocument} />
     </div>
   );
