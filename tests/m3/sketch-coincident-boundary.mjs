@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const handler = fs.readFileSync('src/application/commands/SketchConstraintCommandHandlers.ts', 'utf8');
+const coincidentOwner = fs.readFileSync('src/application/commands/SketchCoincidentConstraintOwner.ts', 'utf8');
 const controllers = fs.readFileSync('src/web/useSketchConstraintControllers.ts', 'utf8');
 const unary = fs.readFileSync('src/web/useSketchConstraintController.ts', 'utf8');
 const layer = fs.readFileSync('src/web/viewport/SketchCoincidentInteractionLayer.tsx', 'utf8');
@@ -14,12 +15,13 @@ const mobile = fs.readFileSync('src/web/MobileToolsPanel.tsx', 'utf8');
 const commandGroups = fs.readFileSync('src/web/CadShellCommandGroups.tsx', 'utf8');
 const registry = JSON.parse(fs.readFileSync('spec/ui/command-registry.v1.json', 'utf8'));
 
-assert.match(handler, /requireLineEndpointReference/, 'application owner must validate Coincident point refs');
-assert.match(handler, /entity\.type !== 'line'/, 'M3.7C application owner must remain Line-only');
-assert.match(handler, /ref\.point !== 'a' && ref\.point !== 'b'/, 'only Line endpoints a\/b may enter M3.7C');
-assert.match(handler, /two distinct Lines/, 'same-Line endpoint pairing must be rejected');
-assert.match(handler, /sameUnorderedEndpointPair/, 'symmetric Coincident duplicates must be rejected deterministically');
-assert.doesNotMatch(handler, /PlaneGCS|OpenCascade|vendor\//, 'application constraint owner must remain runtime-neutral');
+assert.match(coincidentOwner, /requireLineEndpointReference/, 'application owner must validate Coincident point refs');
+assert.match(coincidentOwner, /entity\.type !== 'line'/, 'M3.7C application owner must remain Line-only');
+assert.match(coincidentOwner, /ref\.point !== 'a' && ref\.point !== 'b'/, 'only Line endpoints a\/b may enter M3.7C');
+assert.match(coincidentOwner, /two distinct Lines/, 'same-Line endpoint pairing must be rejected');
+assert.match(coincidentOwner, /sameUnorderedEndpointPair/, 'symmetric Coincident duplicates must be rejected deterministically');
+assert.match(handler, /addCoincidentConstraint/, 'central handler must delegate Coincident to its focused owner');
+assert.doesNotMatch(`${handler}\n${coincidentOwner}`, /PlaneGCS|OpenCascade|vendor\//, 'application constraint owners must remain runtime-neutral');
 
 assert.match(controllers, /useSketchConstraintController\(options\)/, 'constraint composition must reuse the accepted unary H\/V\/Fixed owner');
 assert.match(controllers, /canApplyCoincidentConstraint/, 'constraint composition must own Coincident enablement');
