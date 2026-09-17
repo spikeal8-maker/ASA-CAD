@@ -45,8 +45,9 @@ function renderEntity(entity: CadSketchEntity) {
       return (
         <line
           key={entity.id}
-          className="cad-sketch-overlay-entity line"
+          className={`cad-sketch-overlay-entity line${entity.data.construction ? ' construction' : ''}`}
           data-sketch-entity-id={entity.id}
+          data-sketch-construction={entity.data.construction ? 'true' : 'false'}
           x1={entity.data.from[0]}
           y1={-entity.data.from[1]}
           x2={entity.data.to[0]}

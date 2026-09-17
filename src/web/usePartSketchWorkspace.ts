@@ -73,21 +73,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     resetToWorkspace(kind === 'part' ? 'solid' : kind);
   }, [clearActiveSketch, resetToWorkspace]);
 
-  const enterSketch = useCallback((sketchId: CadSketchId) => {
-    const target = findSketch(partDocument(app.getDocument()), sketchId);
-    if (!target) {
-      setNotice('Эскиз больше не существует');
-      clearActiveSketch();
-      return;
-    }
-    activateSketch(sketchId);
-    setActiveCommand(null);
-    dimensions.clearDimensionEdit();
-    setPanel('tree');
-    setActiveWorkspace('sketch');
-    selection.clearTransientSelection();
-    setNotice(`Открыт эскиз «${target.name}»`);
-  }, [activateSketch, app, clearActiveSketch, dimensions.clearDimensionEdit, selection.clearTransientSelection, setNotice, setPanel]);
+const enterSketch = useCallback((sketchId: CadSketchId) => { const target = findSketch(partDocument(app.getDocument()), sketchId); if (!target) { setNotice('Эскиз больше не существует'); clearActiveSketch(); return; } activateSketch(sketchId); setActiveCommand(null); dimensions.clearDimensionEdit(); setPanel('tree'); setActiveWorkspace('sketch'); selection.clearTransientSelection(); setNotice(`Открыт эскиз «${target.name}»`); }, [activateSketch, app, clearActiveSketch, dimensions.clearDimensionEdit, selection.clearTransientSelection, setNotice, setPanel]);
 
   function cancelCommand() {
     editing.resetActiveTool(activeCommand);
@@ -113,26 +99,27 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
   }
 
   return {
-    activeWorkspace, setActiveWorkspace, activeCommand, activeSketchId,
+    activeWorkspace, setActiveWorkspace,activeCommand,activeSketchId,
     selectedSketchEntityId: selectedEntityId,
     ...constraints,
-    selectionMode: selection.selectionMode, selectedPick: selection.selectedPick,
+    selectionMode: selection.selectionMode,selectedPick: selection.selectedPick,
     selectedBodyId: selection.selectedBodyId,
-    sketchPlane: features.sketchPlane, setSketchPlane: features.setSketchPlane,
-    rectangleWidth: editing.rectangleWidth, setRectangleWidth: editing.setRectangleWidth,
-    rectangleHeight: editing.rectangleHeight, setRectangleHeight: editing.setRectangleHeight,
-    circleDiameter: editing.circleDiameter, setCircleDiameter: editing.setCircleDiameter,
-    extrudeDistance: features.extrudeDistance, setExtrudeDistance: features.setExtrudeDistance,
-    filletRadius: features.filletRadius, setFilletRadius: features.setFilletRadius,
-    dimensionEditValue: dimensions.dimensionEditValue, setDimensionEditValue: dimensions.setDimensionEditValue,
-    part: features.part, sketch, rectangleReady: features.rectangleReady, circleReady: features.circleReady,
-    hasSolid: features.hasSolid, canExtrude: features.canExtrude, canCut: features.canCut, canFillet: features.canFillet,
+    sketchPlane: features.sketchPlane,setSketchPlane: features.setSketchPlane,
+    rectangleWidth: editing.rectangleWidth,setRectangleWidth: editing.setRectangleWidth,
+    rectangleHeight: editing.rectangleHeight,setRectangleHeight: editing.setRectangleHeight,
+    circleDiameter: editing.circleDiameter,setCircleDiameter: editing.setCircleDiameter,
+    extrudeDistance: features.extrudeDistance,setExtrudeDistance: features.setExtrudeDistance,
+    filletRadius: features.filletRadius,setFilletRadius: features.setFilletRadius,
+    dimensionEditValue: dimensions.dimensionEditValue,setDimensionEditValue: dimensions.setDimensionEditValue,
+    part: features.part,sketch,rectangleReady: features.rectangleReady,circleReady: features.circleReady,
+    hasSolid: features.hasSolid,canExtrude: features.canExtrude,canCut: features.canCut, canFillet: features.canFillet,
     selectedPointText: selection.selectedPointText, selectedBody: selection.selectedBody,
     clearTransientSelection: selection.clearTransientSelection, clearSelectedPick: selection.clearSelectedPick,
     clearSketchEntitySelection: clearEntitySelection, resetTransient, resetToWorkspace, resetForDocument,
     handleViewportPick: selection.handleViewportPick, handleBodySelect: selection.handleBodySelect,
     handleSketchEntitySelect: selection.handleSketchEntitySelect,
     deleteSelectedSketchEntity: entityMutations.deleteSelectedSketchEntity,
+    toggleSelectedConstruction: entityMutations.toggleSelectedConstruction,
     translateSketchEntity: entityMutations.translateSketchEntity,
     enterSketch, beginLine: editing.beginLine,
     lineDraft: editing.lineDraft, lineCommitting: editing.lineCommitting,

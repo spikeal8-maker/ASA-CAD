@@ -46,6 +46,8 @@
   stroke-width: 1.8px;
 }
 
+.cad-sketch-overlay-entity.construction { stroke-dasharray: 4 2; opacity: 0.78; }
+
 .cad-sketch-interaction {
   position: absolute;
   inset: 0;

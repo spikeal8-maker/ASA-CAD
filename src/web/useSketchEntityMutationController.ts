@@ -32,6 +32,14 @@ export function useSketchEntityMutationController(options: SketchEntityMutationC
     return true;
   }
 
+  async function toggleSelectedConstruction() {
+    if (!activeSketchId || !selectedEntityId) { setNotice('Р’С‹Р±РµСЂРёС‚Рµ РѕС‚СЂРµР·РѕРє СЌСЃРєРёР·Р°'); return false; }
+    const result = await app.execute({ id: 'sketch.construction', payload: { sketchId: activeSketchId, entityId: selectedEntityId } });
+    if (!result.ok) { setNotice(result.error?.message ?? 'РќРµ СѓРґР°Р»РѕСЃСЊ РїРµСЂРµРєР»СЋС‡РёС‚СЊ РІСЃРїРѕРјРѕРіР°С‚РµР»СЊРЅСѓСЋ РіРµРѕРјРµС‚СЂРёСЋ'); return false; }
+    setNotice('Р РµР¶РёРј РІСЃРїРѕРјРѕРіР°С‚РµР»СЊРЅРѕР№ РіРµРѕРјРµС‚СЂРёРё РїРµСЂРµРєР»СЋС‡С‘РЅ');
+    return result.changed;
+  }
+
   async function translateSketchEntity(entityId: CadSketchEntityId, delta: CadSketchDelta) {
     if (!activeSketchId) return false;
     const result = await app.execute({
@@ -46,5 +54,5 @@ export function useSketchEntityMutationController(options: SketchEntityMutationC
     return result.changed;
   }
 
-  return { deleteSelectedSketchEntity, translateSketchEntity };
+  return { deleteSelectedSketchEntity, toggleSelectedConstruction, translateSketchEntity };
 }

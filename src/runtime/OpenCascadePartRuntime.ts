@@ -316,50 +316,50 @@ export class OpenCascadePartRuntime implements CadRuntimeAdapter {
     return { z: live.centroid[2], normal: live.axis };
   }
 
-  private rectangleProfile(part: CadPartDocument, sketch: CadSketch): RectangleProfile {
+  private rectangleProfile(part: CadPartDocument,sketch: CadSketch): RectangleProfile {
     const rectangle = sketch.entities
-      .filter((entity): entity is CadSketchLineEntity => entity.type === 'line' && String(entity.data.role ?? '').startsWith('rectangle-edge-'))
-      .sort((a, b) => String(a.data.role).localeCompare(String(b.data.role)));
+      .filter((entity): entity is CadSketchLineEntity => entity.type === 'line' && !entity.data.construction && String(entity.data.role ?? '').startsWith('rectangle-edge-'))
+      .sort((a,b) => String(a.data.role).localeCompare(String(b.data.role)));
     if (rectangle.length !== 4) throw new Error(`${sketch.name}: M1 extrude requires one rectangle profile`);
 
-    const points: Array<readonly [number, number]> = [];
+    const points: Array<readonly [number,number]> = [];
     for (const entity of rectangle) {
-      points.push(tuple2(entity.data.from, `${entity.id}.from`));
-      points.push(tuple2(entity.data.to, `${entity.id}.to`));
+      points.push(tuple2(entity.data.from,`${entity.id}.from`));
+      points.push(tuple2(entity.data.to,`${entity.id}.to`));
     }
     const xs = points.map((point) => point[0]);
     const ys = points.map((point) => point[1]);
-    const minX = Math.min(...xs);
-    const maxX = Math.max(...xs);
+    const minX=Math.min(...xs);
+    const maxX=Math.max(...xs);
     const minY = Math.min(...ys);
     const maxY = Math.max(...ys);
     const centerX = (minX + maxX) / 2;
     const centerY = (minY + maxY) / 2;
 
     const horizontalIds = rectangle
-      .filter((entity) => ['rectangle-edge-0', 'rectangle-edge-2'].includes(String(entity.data.role)))
+      .filter((entity) => ['rectangle-edge-0','rectangle-edge-2'].includes(String(entity.data.role)))
       .map((entity) => entity.id);
     const verticalIds = rectangle
-      .filter((entity) => ['rectangle-edge-1', 'rectangle-edge-3'].includes(String(entity.data.role)))
+      .filter((entity) => ['rectangle-edge-1','rectangle-edge-3'].includes(String(entity.data.role)))
       .map((entity) => entity.id);
 
-    const widthDimension = this.findDrivingDimension(part, sketch, horizontalIds, 'width');
-    const heightDimension = this.findDrivingDimension(part, sketch, verticalIds, 'height');
+    const widthDimension = this.findDrivingDimension(part,sketch,horizontalIds,'width');
+    const heightDimension = this.findDrivingDimension(part,sketch,verticalIds,'height');
     const width = widthDimension?.value ?? maxX - minX;
     const height = heightDimension?.value ?? maxY - minY;
     if (width <= 0 || height <= 0) throw new Error(`${sketch.name}: rectangle dimensions must be positive`);
 
-    return { centerX, centerY, width, height };
+    return { centerX,centerY,width,height };
   }
 
-  private circleProfile(part: CadPartDocument, sketch: CadSketch): CircleProfile {
+  private circleProfile(part: CadPartDocument,sketch: CadSketch): CircleProfile {
     const circle = sketch.entities.find((entity) => entity.type === 'circle');
     if (!circle) throw new Error(`${sketch.name}: M1 cut requires one circle`);
-    const center = tuple2(circle.data.center, `${circle.id}.center`);
-    const diameterDimension = this.findDrivingDimension(part, sketch, [circle.id], 'diameter');
-    const diameter = diameterDimension?.value ?? finiteNumber(circle.data.diameter, `${circle.id}.diameter`);
+    const center = tuple2(circle.data.center,`${circle.id}.center`);
+    const diameterDimension = this.findDrivingDimension(part,sketch,[circle.id],'diameter');
+    const diameter = diameterDimension?.value ?? finiteNumber(circle.data.diameter,`${circle.id}.diameter`);
     if (diameter <= 0) throw new Error(`${sketch.name}: circle diameter must be positive`);
-    return { centerX: center[0], centerY: center[1], diameter };
+    return { centerX: center[0],centerY: center[1],diameter };
   }
 
   private findDrivingDimension(
@@ -376,7 +376,7 @@ export class OpenCascadePartRuntime implements CadRuntimeAdapter {
     );
   }
 
-  private rectangleWire(profile: RectangleProfile, z: number): any {
+  private rectangleWire(profile: RectangleProfile,z: number): any {
     const halfW = profile.width / 2;
     const halfH = profile.height / 2;
     const points = [

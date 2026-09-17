@@ -34,6 +34,7 @@ function SketchCommandGroups(props: {
         <CadUiActionButton action={props.getAction('sketch.arc')} symbol="⌒" />
       </CommandGroup>
       <CommandGroup label="Ограничения">
+        <CadUiActionButton action={props.getAction('sketch.construction')} symbol="- -" text />
         <CadUiActionButton action={props.getAction('constraint.horizontal')} symbol="—" text />
         <CadUiActionButton action={props.getAction('constraint.vertical')} symbol="|" text />
         <CadUiActionButton action={props.getAction('constraint.fixed')} symbol="⌾" text />

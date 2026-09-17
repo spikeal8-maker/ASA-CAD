@@ -13,6 +13,7 @@ export interface M2CadUiActionHandlers {
   circle(): void | Promise<void>;
   arc(): void | Promise<void>;
   deleteSketchEntity(): void | Promise<void>;
+  constructionToggle(): void | Promise<void>;
   horizontalConstraint(): void | Promise<void>;
   verticalConstraint(): void | Promise<void>;
   fixedConstraint(): void | Promise<void>;
@@ -43,6 +44,7 @@ export interface M2CadUiActionState {
   canRedo: boolean;
   hasSketch: boolean;
   hasSketchEntitySelection: boolean;
+  canToggleConstruction: boolean;
   canApplyOrientationConstraint: boolean;
   canApplyFixedConstraint: boolean;
   canApplyCoincidentConstraint: boolean;
@@ -88,6 +90,7 @@ export function createM2CadUiActionBindings(
     'sketch.circle': binding(handlers.circle, state.hasSketch, 'Сначала создайте эскиз'),
     'sketch.arc': binding(handlers.arc, state.hasSketch, 'Сначала создайте эскиз'),
     'sketch.entity.delete': binding(handlers.deleteSketchEntity, state.hasSketchEntitySelection, 'Выберите элемент эскиза'),
+    'sketch.construction': binding(handlers.constructionToggle, state.canToggleConstruction, 'Select a Sketch Line'),
     'constraint.horizontal': binding(handlers.horizontalConstraint, state.canApplyOrientationConstraint, lineConstraintReason),
     'constraint.vertical': binding(handlers.verticalConstraint, state.canApplyOrientationConstraint, lineConstraintReason),
     'constraint.fixed': binding(handlers.fixedConstraint, state.canApplyFixedConstraint, fixedConstraintReason),
