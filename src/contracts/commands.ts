@@ -33,6 +33,7 @@ export type CadCommandId =
   | 'constraint.tangent'
   | 'constraint.concentric'
   | 'constraint.equal'
+  | 'constraint.symmetric'
   | 'constraint.fixed'
   | 'dimension.linear'
   | 'dimension.diameter'
@@ -120,6 +121,12 @@ export interface CadCommandMap {
     sketchId: CadSketchId;
     aEntityId: CadSketchEntityId;
     bEntityId: CadSketchEntityId;
+  };
+  'constraint.symmetric': {
+    sketchId: CadSketchId;
+    a: CadSketchCommandReference;
+    b: CadSketchCommandReference;
+    axisEntityId: CadSketchEntityId;
   };
   'constraint.fixed': {
     sketchId: CadSketchId;

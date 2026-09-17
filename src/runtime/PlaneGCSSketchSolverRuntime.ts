@@ -169,6 +169,8 @@ export class PlaneGCSSketchSolverRuntime implements CadSketchSolverAdapter {
         return this.vendorConstraint(constraint, 'CONCENTRIC', constraint.entityIds.map((entityId) => ({ entityId })));
       case 'equal':
         return this.vendorConstraint(constraint, 'EQUAL', constraint.entityIds.map((entityId) => ({ entityId })));
+      case 'symmetric':
+        return this.vendorConstraint(constraint, 'SYMMETRY', [constraint.data.refs[0], constraint.data.refs[1], { entityId: constraint.entityIds[2] }]);
       case 'fixed':
         return this.vendorConstraint(constraint, 'FIXED', [{ entityId: constraint.entityIds[0] }]);
       case 'coincident':

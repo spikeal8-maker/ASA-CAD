@@ -24,9 +24,7 @@ export interface CadSketchCircleData {
 export interface CadSketchArcData {
   center: CadPoint2;
   radius: number;
-  /** Canonical start angle in radians, normalized to [0, 2π). */
   startAngle: number;
-  /** Canonical CCW end angle; endAngle > startAngle and sweep < 2π. */
   endAngle: number;
 }
 
@@ -48,7 +46,6 @@ export interface CadSketchArcEntity {
   data: CadSketchArcData;
 }
 
-/** Current persisted M3-ready Sketch entity surface. Extend this union explicitly. */
 export type CadSketchEntity = CadSketchLineEntity | CadSketchCircleEntity | CadSketchArcEntity;
 
 export interface CadSketch {
@@ -107,6 +104,11 @@ export interface CadEqualConstraint extends CadConstraintBase<'equal'> {
   data?: undefined;
 }
 
+export interface CadSymmetricConstraint extends CadConstraintBase<'symmetric'> {
+  entityIds: [CadSketchEntityId, CadSketchEntityId, CadSketchEntityId];
+  data: { refs: [CadConstraintPointReference, CadConstraintPointReference] };
+}
+
 export interface CadFixedConstraint extends CadConstraintBase<'fixed'> {
   entityIds: [CadSketchEntityId];
   data?: undefined;
@@ -119,7 +121,6 @@ export interface CadCoincidentConstraint extends CadConstraintBase<'coincident'>
   };
 }
 
-/** Current M3 constraint surface. Add new constraint kinds explicitly. */
 export type CadConstraint =
   | CadHorizontalConstraint
   | CadVerticalConstraint
@@ -128,6 +129,7 @@ export type CadConstraint =
   | CadTangentConstraint
   | CadConcentricConstraint
   | CadEqualConstraint
+  | CadSymmetricConstraint
   | CadFixedConstraint
   | CadCoincidentConstraint;
 
@@ -147,7 +149,6 @@ export interface CadDiameterDimension extends CadDimensionBase<'diameter'> {
   entityIds: [CadSketchEntityId];
 }
 
-/** Current M3-ready dimension surface. Add new dimension kinds explicitly. */
 export type CadDimension = CadLinearDimension | CadDiameterDimension;
 
 export interface CadPartSketchCollections {
@@ -156,16 +157,6 @@ export interface CadPartSketchCollections {
   dimensions: CadDimension[];
 }
 
-/**
- * Runtime validator for the persisted M3 Sketch surface.
- *
- * This intentionally validates only entities/constraints/dimensions that ASA
- * currently persists. Future kinds must be added to the discriminated unions
- * and this validator together; arbitrary `type`/`Record<string, unknown>` data
- * is rejected rather than silently entering project history. Stable-reference
- * existence/ownership is a semantic document check layered above this shape
- * validator; this function only validates the support token form.
- */
 export function validateCadPartSketchCollections(value: unknown): asserts value is CadPartSketchCollections {
   const record = expectRecord(value, 'CadPartDocument');
   if (!Array.isArray(record.sketches)) throw new Error('CadPartDocument.sketches must be an array');
@@ -254,6 +245,13 @@ function validateConstraint(value: unknown, path: string): asserts value is CadC
       if (constraint.entityIds.length !== 2) throw new Error(`${path}.${String(constraint.type)} requires exactly two entity ids`);
       if (constraint.data !== undefined) throw new Error(`${path}.${String(constraint.type)} must not contain data`);
       return;
+    case 'symmetric': {
+      if (constraint.entityIds.length !== 3) throw new Error(`${path}.symmetric requires exactly three entity ids`);
+      const data = expectRecord(constraint.data, `${path}.data`);
+      if (!Array.isArray(data.refs) || data.refs.length !== 2) throw new Error(`${path}.symmetric data.refs must contain two references`);
+      data.refs.forEach((ref, index) => validateConstraintReference(ref, `${path}.data.refs[${index}]`));
+      return;
+    }
     case 'coincident': {
       if (constraint.entityIds.length !== 2) throw new Error(`${path}.coincident requires exactly two entity ids`);
       const data = expectRecord(constraint.data, `${path}.data`);

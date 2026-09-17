@@ -11,6 +11,7 @@ export type SketchPerpendicularCommit = SketchLinePairCommit;
 export type SketchTangentCommit = SketchLinePairCommit;
 export type SketchConcentricCommit = SketchLinePairCommit;
 export type SketchEqualCommit = SketchLinePairCommit;
+export type SketchSymmetryCommit = (a: CadSketchCommandReference, b: CadSketchCommandReference, axisEntityId: CadSketchEntityId) => Promise<boolean>;
 
 const CoincidentCommitContext = createContext<SketchCoincidentCommit | null>(null);
 const ParallelCommitContext = createContext<SketchParallelCommit | null>(null);
@@ -18,6 +19,7 @@ const PerpendicularCommitContext = createContext<SketchPerpendicularCommit | nul
 const TangentCommitContext = createContext<SketchTangentCommit | null>(null);
 const ConcentricCommitContext = createContext<SketchConcentricCommit | null>(null);
 const EqualCommitContext = createContext<SketchEqualCommit | null>(null);
+const SymmetryCommitContext = createContext<SketchSymmetryCommit | null>(null);
 
 /** Binary Sketch-constraint bridge kept outside frozen Part/Sketch stage owners. */
 export function CoincidentPartStage(
@@ -28,9 +30,10 @@ export function CoincidentPartStage(
     tangentCommit: SketchTangentCommit;
     concentricCommit: SketchConcentricCommit;
     equalCommit: SketchEqualCommit;
+    symmetryCommit: SketchSymmetryCommit;
   },
 ) {
-  const { commit, parallelCommit, perpendicularCommit, tangentCommit, concentricCommit, equalCommit, ...stageProps } = props;
+  const { commit, parallelCommit, perpendicularCommit, tangentCommit, concentricCommit, equalCommit, symmetryCommit, ...stageProps } = props;
   return (
     <CoincidentCommitContext.Provider value={commit}>
       <ParallelCommitContext.Provider value={parallelCommit}>
@@ -38,7 +41,9 @@ export function CoincidentPartStage(
           <TangentCommitContext.Provider value={tangentCommit}>
             <ConcentricCommitContext.Provider value={concentricCommit}>
               <EqualCommitContext.Provider value={equalCommit}>
-                <PartModelStage {...stageProps} />
+                <SymmetryCommitContext.Provider value={symmetryCommit}>
+                  <PartModelStage {...stageProps} />
+                </SymmetryCommitContext.Provider>
               </EqualCommitContext.Provider>
             </ConcentricCommitContext.Provider>
           </TangentCommitContext.Provider>
@@ -81,5 +86,11 @@ export function useSketchConcentricCommit(): SketchConcentricCommit {
 export function useSketchEqualCommit(): SketchEqualCommit {
   const commit = useContext(EqualCommitContext);
   if (!commit) throw new Error('Sketch Equal interaction provider is missing');
+  return commit;
+}
+
+export function useSketchSymmetryCommit(): SketchSymmetryCommit {
+  const commit = useContext(SymmetryCommitContext);
+  if (!commit) throw new Error('Sketch Symmetry interaction provider is missing');
   return commit;
 }

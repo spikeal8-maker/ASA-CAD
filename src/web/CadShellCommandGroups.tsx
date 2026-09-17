@@ -43,6 +43,7 @@ function SketchCommandGroups(props: {
         <CadUiActionButton action={props.getAction('constraint.tangent')} symbol="∿" text />
         <CadUiActionButton action={props.getAction('constraint.concentric')} symbol="◎" text />
         <CadUiActionButton action={props.getAction('constraint.equal')} symbol="=" text />
+        <CadUiActionButton action={props.getAction('constraint.symmetric')} symbol="↔" text />
       </CommandGroup>
       <CommandGroup label="Размеры">
         <RibbonTextButton
