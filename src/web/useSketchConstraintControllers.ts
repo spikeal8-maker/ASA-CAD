@@ -28,6 +28,7 @@ export function useSketchConstraintControllers(options: SketchConstraintControll
   const canApplyConcentricConstraint = circleCount >= 2;
   const canApplyEqualConstraint = canApplyCoincidentConstraint;
   const canApplySymmetryConstraint = lineCount >= 3;
+  const canApplyPointOnCurveConstraint = lineCount >= 2;
 
   function canBeginLinePairConstraint(): boolean {
     if (activeSketchId && canApplyCoincidentConstraint) return true;
@@ -79,6 +80,12 @@ export function useSketchConstraintControllers(options: SketchConstraintControll
   function beginSymmetryConstraint(): boolean {
     if (!activeSketchId || !canApplySymmetryConstraint) { setNotice('Для симметрии нужны три отрезка эскиза'); return false; }
     setActiveCommand('constraint.symmetric'); setPanel('closed'); setNotice('Выберите первую точку');
+    return true;
+  }
+
+  function beginPointOnCurveConstraint(): boolean {
+    if (!activeSketchId || !canApplyPointOnCurveConstraint) { setNotice('Для точки на кривой нужны два отрезка эскиза'); return false; }
+    setActiveCommand('constraint.pointOnCurve'); setPanel('closed'); setNotice('Выберите точку отрезка');
     return true;
   }
 
@@ -143,6 +150,14 @@ export function useSketchConstraintControllers(options: SketchConstraintControll
     return finishBinaryConstraint(await app.execute({ id: 'constraint.symmetric', payload: { sketchId: activeSketchId, a, b, axisEntityId } }), 'Симметрия применена');
   }
 
+  async function applyPointOnCurveConstraint(source: CadSketchCommandReference, targetEntityId: CadSketchEntityId): Promise<boolean> {
+    if (!activeSketchId) { setNotice('Сначала откройте эскиз'); return false; }
+    return finishBinaryConstraint(
+      await app.execute({ id: 'constraint.pointOnCurve', payload: { sketchId: activeSketchId, source, targetEntityId } }),
+      'Точка на кривой применена',
+    );
+  }
+
   async function applyConcentricConstraint(aEntityId: CadSketchEntityId, bEntityId: CadSketchEntityId): Promise<boolean> {
     if (!activeSketchId) { setNotice('Сначала откройте эскиз'); return false; }
     return finishBinaryConstraint(await app.execute({ id: 'constraint.concentric', payload: { sketchId: activeSketchId, aEntityId, bEntityId } }), 'Концентричность применена');
@@ -157,6 +172,7 @@ export function useSketchConstraintControllers(options: SketchConstraintControll
     canApplyConcentricConstraint,
     canApplyEqualConstraint,
     canApplySymmetryConstraint,
+    canApplyPointOnCurveConstraint,
     beginCoincidentConstraint,
     beginParallelConstraint,
     beginPerpendicularConstraint,
@@ -164,6 +180,7 @@ export function useSketchConstraintControllers(options: SketchConstraintControll
     beginConcentricConstraint,
     beginEqualConstraint,
     beginSymmetryConstraint,
+    beginPointOnCurveConstraint,
     applyCoincidentConstraint,
     applyParallelConstraint,
     applyPerpendicularConstraint,
@@ -171,5 +188,6 @@ export function useSketchConstraintControllers(options: SketchConstraintControll
     applyConcentricConstraint,
     applyEqualConstraint,
     applySymmetryConstraint,
+    applyPointOnCurveConstraint,
   };
 }

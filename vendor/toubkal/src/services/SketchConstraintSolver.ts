@@ -572,6 +572,7 @@ export const CONSTRAINT_META: Record<SketchConstraintType, ConstraintMeta> = {
   EQUAL:         { label: 'Equal',         glyph: '=', group: 'geometric',   hasValue: false, sigs: [['line', 'line'], ['circle', 'circle']], eqs: 1 },
   COINCIDENT:    { label: 'Coincident',    glyph: '⊕', group: 'geometric',   hasValue: false, sigs: [['point', 'point']], eqs: 2 },
   SYMMETRY:      { label: 'Symmetry',      glyph: '⋈', group: 'geometric',   hasValue: false, sigs: [['point', 'point', 'line']], eqs: 2 },
+  POINT_ON_CURVE: { label: 'Point on curve', glyph: '⌖', group: 'geometric',   hasValue: false, sigs: [['point', 'line']], eqs: 1 },
   FIXED:         { label: 'Fixed',         glyph: '⚓', group: 'geometric',   hasValue: false, sigs: [['line'], ['circle']], eqs: 0 },
   LENGTH:        { label: 'Length',        glyph: '↦', group: 'dimensional', hasValue: true,  sigs: [['line']], eqs: 1 },
   RADIUS:        { label: 'Radius',        glyph: 'R', group: 'dimensional', hasValue: true,  sigs: [['circle']], eqs: 1 },
@@ -585,7 +586,7 @@ export const CONSTRAINT_META: Record<SketchConstraintType, ConstraintMeta> = {
 
 export const GEOMETRIC_TYPES: SketchConstraintType[] = [
   'COINCIDENT', 'HORIZONTAL', 'VERTICAL', 'PERPENDICULAR', 'PARALLEL',
-  'TANGENT', 'COLLINEAR', 'CONCENTRIC', 'EQUAL', 'SYMMETRY', 'FIXED',
+  'TANGENT', 'COLLINEAR', 'CONCENTRIC', 'EQUAL', 'SYMMETRY', 'POINT_ON_CURVE', 'FIXED',
 ];
 export const DIMENSIONAL_TYPES: SketchConstraintType[] = ['LENGTH', 'RADIUS', 'DISTANCE', 'ANGLE'];
 

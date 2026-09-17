@@ -229,7 +229,7 @@ export type SketchConstraintType =
   // Geometric
   | 'HORIZONTAL' | 'VERTICAL' | 'PARALLEL' | 'PERPENDICULAR'
   | 'COLLINEAR'  | 'TANGENT'  | 'CONCENTRIC' | 'EQUAL'
-  | 'COINCIDENT' | 'SYMMETRY' | 'FIXED'
+  | 'COINCIDENT' | 'SYMMETRY' | 'POINT_ON_CURVE' | 'FIXED'
   // Dimensional (driving)
   | 'LENGTH' | 'RADIUS' | 'DISTANCE' | 'ANGLE'
   // Directional point↔point distance: ΔX (horizontal) / ΔY (vertical), in sketch-

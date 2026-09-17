@@ -34,6 +34,7 @@ export type CadCommandId =
   | 'constraint.concentric'
   | 'constraint.equal'
   | 'constraint.symmetric'
+  | 'constraint.pointOnCurve'
   | 'constraint.fixed'
   | 'dimension.linear'
   | 'dimension.diameter'
@@ -127,6 +128,11 @@ export interface CadCommandMap {
     a: CadSketchCommandReference;
     b: CadSketchCommandReference;
     axisEntityId: CadSketchEntityId;
+  };
+  'constraint.pointOnCurve': {
+    sketchId: CadSketchId;
+    source: CadSketchCommandReference;
+    targetEntityId: CadSketchEntityId;
   };
   'constraint.fixed': {
     sketchId: CadSketchId;

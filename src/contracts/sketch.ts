@@ -104,22 +104,13 @@ export interface CadEqualConstraint extends CadConstraintBase<'equal'> {
   data?: undefined;
 }
 
-export interface CadSymmetricConstraint extends CadConstraintBase<'symmetric'> {
-  entityIds: [CadSketchEntityId, CadSketchEntityId, CadSketchEntityId];
-  data: { refs: [CadConstraintPointReference, CadConstraintPointReference] };
-}
+export interface CadSymmetricConstraint extends CadConstraintBase<'symmetric'> { entityIds: [CadSketchEntityId, CadSketchEntityId, CadSketchEntityId]; data: { refs: [CadConstraintPointReference, CadConstraintPointReference] }; }
 
-export interface CadFixedConstraint extends CadConstraintBase<'fixed'> {
-  entityIds: [CadSketchEntityId];
-  data?: undefined;
-}
+export interface CadPointOnCurveConstraint extends CadConstraintBase<'pointOnCurve'> { entityIds: [CadSketchEntityId, CadSketchEntityId]; data: { source: CadConstraintPointReference }; }
 
-export interface CadCoincidentConstraint extends CadConstraintBase<'coincident'> {
-  entityIds: [CadSketchEntityId, CadSketchEntityId];
-  data: {
-    refs: [CadConstraintPointReference, CadConstraintPointReference];
-  };
-}
+export interface CadFixedConstraint extends CadConstraintBase<'fixed'> { entityIds: [CadSketchEntityId]; data?: undefined; }
+
+export interface CadCoincidentConstraint extends CadConstraintBase<'coincident'> { entityIds: [CadSketchEntityId, CadSketchEntityId]; data: { refs: [CadConstraintPointReference, CadConstraintPointReference] }; }
 
 export type CadConstraint =
   | CadHorizontalConstraint
@@ -130,6 +121,7 @@ export type CadConstraint =
   | CadConcentricConstraint
   | CadEqualConstraint
   | CadSymmetricConstraint
+  | CadPointOnCurveConstraint
   | CadFixedConstraint
   | CadCoincidentConstraint;
 
@@ -228,41 +220,42 @@ function validateConstraint(value: unknown, path: string): asserts value is CadC
   const constraint = expectRecord(value, path);
   expectId(constraint.id, `${path}.id`);
   if (!Array.isArray(constraint.entityIds)) throw new Error(`${path}.entityIds must be an array`);
-  constraint.entityIds.forEach((id, index) => expectId(id, `${path}.entityIds[${index}]`));
+  const entityIds= constraint.entityIds;
+  entityIds.forEach((id, index) => expectId(id, `${path}.entityIds[${index}]`));
+  const type = String(constraint.type);
+  const requireCount = (count: number, label: string) => {
+    if (entityIds.length !== count) throw new Error(`${path}.${type} requires exactly ${label}`);
+  };
+  const requireNoData = () => {
+    if (constraint.data !== undefined) throw new Error(`${path}.${type} must not contain data`);
+  };
 
   switch (constraint.type) {
-    case 'horizontal':
-    case 'vertical':
-    case 'fixed':
-      if (constraint.entityIds.length !== 1) throw new Error(`${path}.${String(constraint.type)} requires exactly one entity`);
-      if (constraint.data !== undefined) throw new Error(`${path}.${String(constraint.type)} must not contain data`);
-      return;
-    case 'parallel':
-    case 'perpendicular':
-    case 'tangent':
-    case 'concentric':
-    case 'equal':
-      if (constraint.entityIds.length !== 2) throw new Error(`${path}.${String(constraint.type)} requires exactly two entity ids`);
-      if (constraint.data !== undefined) throw new Error(`${path}.${String(constraint.type)} must not contain data`);
-      return;
+    case 'horizontal': case 'vertical': case 'fixed':
+      requireCount(1, 'one entity'); requireNoData(); return;
+    case 'parallel': case 'perpendicular': case 'tangent': case 'concentric': case 'equal':
+      requireCount(2, 'two entity ids'); requireNoData(); return;
     case 'symmetric': {
-      if (constraint.entityIds.length !== 3) throw new Error(`${path}.symmetric requires exactly three entity ids`);
+      requireCount(3, 'three entity ids');
       const data = expectRecord(constraint.data, `${path}.data`);
       if (!Array.isArray(data.refs) || data.refs.length !== 2) throw new Error(`${path}.symmetric data.refs must contain two references`);
       data.refs.forEach((ref, index) => validateConstraintReference(ref, `${path}.data.refs[${index}]`));
       return;
     }
-    case 'coincident': {
-      if (constraint.entityIds.length !== 2) throw new Error(`${path}.coincident requires exactly two entity ids`);
+    case 'pointOnCurve': {
+      requireCount(2, 'two entity ids');
       const data = expectRecord(constraint.data, `${path}.data`);
-      if (!Array.isArray(data.refs) || data.refs.length !== 2) {
-        throw new Error(`${path}.data.refs must contain exactly two references`);
-      }
+      validateConstraintReference(data.source, `${path}.data.source`);
+      return;
+    }
+    case 'coincident': {
+      requireCount(2, 'two entity ids');
+      const data = expectRecord(constraint.data, `${path}.data`);
+      if (!Array.isArray(data.refs) || data.refs.length !== 2) throw new Error(`${path}.data.refs must contain exactly two references`);
       data.refs.forEach((ref, index) => validateConstraintReference(ref, `${path}.data.refs[${index}]`));
       return;
     }
-    default:
-      throw new Error(`${path}.type is unsupported: ${String(constraint.type)}`);
+    default: throw new Error(`${path}.type is unsupported: ${type}`);
   }
 }
 
