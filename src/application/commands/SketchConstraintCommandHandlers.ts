@@ -7,8 +7,9 @@ import { addLinePairConstraint } from './SketchLinePairConstraintOwner';
 import { addLineCircleTangentConstraint } from './SketchTangentConstraintOwner';
 import { addCirclePairConcentricConstraint } from './SketchConcentricConstraintOwner';
 import { addCoincidentConstraint } from './SketchCoincidentConstraintOwner';
+import { addSymmetryConstraint } from './SketchSymmetryConstraintOwner';
 
-export const SKETCH_CONSTRAINT_COMMAND_IDS = ['constraint.coincident', 'constraint.horizontal', 'constraint.vertical', 'constraint.parallel', 'constraint.perpendicular', 'constraint.tangent', 'constraint.concentric', 'constraint.equal', 'constraint.fixed'] as const satisfies readonly CadCommandId[];
+export const SKETCH_CONSTRAINT_COMMAND_IDS = ['constraint.coincident', 'constraint.horizontal', 'constraint.vertical', 'constraint.parallel', 'constraint.perpendicular', 'constraint.tangent', 'constraint.concentric', 'constraint.equal', 'constraint.symmetric', 'constraint.fixed'] as const satisfies readonly CadCommandId[];
 export type SketchConstraintCommandId = typeof SKETCH_CONSTRAINT_COMMAND_IDS[number];
 type CadFixedFreezeGeometry = CadCommandMap['constraint.fixed']['frozenGeometry'];
 const FREEZE_TOLERANCE = 1e-6;
@@ -21,6 +22,7 @@ export const sketchConstraintCommandHandlers = {
   'constraint.tangent': defineSketchCommandHandler<'constraint.tangent'>({ availability: requireSketchAvailability, execute: (part, command) => addLineCircleTangentConstraint(part, command.payload.sketchId, command.payload.aEntityId, command.payload.bEntityId) }),
   'constraint.concentric': defineSketchCommandHandler<'constraint.concentric'>({ availability: requireSketchAvailability, execute: (part, command) => addCirclePairConcentricConstraint(part, command.payload.sketchId, command.payload.aEntityId, command.payload.bEntityId) }),
   'constraint.equal': defineSketchCommandHandler<'constraint.equal'>({ availability: requireSketchAvailability, execute: (part, command) => addLinePairConstraint(part, command.payload.sketchId, 'equal', command.payload.aEntityId, command.payload.bEntityId) }),
+  'constraint.symmetric': defineSketchCommandHandler<'constraint.symmetric'>({ availability: requireSketchAvailability, execute: (part, command) => addSymmetryConstraint(part, command.payload.sketchId, command.payload.a, command.payload.b, command.payload.axisEntityId) }),
   'constraint.fixed': defineSketchCommandHandler<'constraint.fixed'>({ availability: requireSketchAvailability, execute: (part, command) => addFixedConstraint(part, command.payload.sketchId, command.payload.entityId, command.payload.frozenGeometry) }),
   'constraint.coincident': defineSketchCommandHandler<'constraint.coincident'>({ availability: requireSketchAvailability, execute: (part, command) => addCoincidentConstraint(part, command.payload.sketchId, [command.payload.a, command.payload.b]) }),
 } satisfies SketchCommandHandlerMap<SketchConstraintCommandId>;

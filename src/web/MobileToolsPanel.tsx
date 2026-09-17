@@ -29,6 +29,7 @@ const SKETCH_TOOLS: readonly MobileToolSpec[] = [
   { id: 'constraint.tangent', symbol: '∿' },
   { id: 'constraint.concentric', symbol: '◎' },
   { id: 'constraint.equal', symbol: '=' },
+  { id: 'constraint.symmetric', symbol: '↔' },
   { id: 'sketch.entity.delete', symbol: '⌫' },
   { id: 'sketch.finish', symbol: '✓' },
 ];
