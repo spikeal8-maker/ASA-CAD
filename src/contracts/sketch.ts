@@ -10,99 +10,41 @@ import type {
 export type CadPoint2 = readonly [number, number];
 export type CadSketchSupport = CadPlaneName | CadStableReferenceId;
 
-export interface CadSketchLineData {
-  from: CadPoint2;
-  to: CadPoint2;
-  role?: string;
-}
+export interface CadSketchLineData { from: CadPoint2; to: CadPoint2; role?: string; construction?: boolean; }
 
-export interface CadSketchCircleData {
-  center: CadPoint2;
-  diameter: number;
-}
+export interface CadSketchCircleData { center: CadPoint2; diameter: number; }
 
-export interface CadSketchArcData {
-  center: CadPoint2;
-  radius: number;
-  startAngle: number;
-  endAngle: number;
-}
+export interface CadSketchArcData { center: CadPoint2; radius: number; startAngle: number; endAngle: number; }
 
-export interface CadSketchLineEntity {
-  id: CadSketchEntityId;
-  type: 'line';
-  data: CadSketchLineData;
-}
+export interface CadSketchLineEntity { id: CadSketchEntityId; type: 'line'; data: CadSketchLineData; }
 
-export interface CadSketchCircleEntity {
-  id: CadSketchEntityId;
-  type: 'circle';
-  data: CadSketchCircleData;
-}
+export interface CadSketchCircleEntity { id: CadSketchEntityId; type: 'circle'; data: CadSketchCircleData; }
 
-export interface CadSketchArcEntity {
-  id: CadSketchEntityId;
-  type: 'arc';
-  data: CadSketchArcData;
-}
+export interface CadSketchArcEntity { id: CadSketchEntityId; type: 'arc'; data: CadSketchArcData; }
 
 export type CadSketchEntity = CadSketchLineEntity | CadSketchCircleEntity | CadSketchArcEntity;
 
-export interface CadSketch {
-  id: CadSketchId;
-  name: string;
-  support: CadSketchSupport;
-  entities: CadSketchEntity[];
-  constraintIds: CadConstraintId[];
-  dimensionIds: CadDimensionId[];
-}
+export interface CadSketch { id: CadSketchId; name: string; support: CadSketchSupport; entities: CadSketchEntity[]; constraintIds: CadConstraintId[]; dimensionIds: CadDimensionId[]; }
 
 export type CadSketchPointSelector = 'a' | 'b' | 'c';
 
-export interface CadConstraintPointReference {
-  entityId: CadSketchEntityId;
-  point?: CadSketchPointSelector;
-}
+export interface CadConstraintPointReference { entityId: CadSketchEntityId; point?: CadSketchPointSelector; }
 
-interface CadConstraintBase<T extends string> {
-  id: CadConstraintId;
-  type: T;
-}
+interface CadConstraintBase<T extends string> { id: CadConstraintId; type: T; }
 
-export interface CadHorizontalConstraint extends CadConstraintBase<'horizontal'> {
-  entityIds: [CadSketchEntityId];
-  data?: undefined;
-}
+export interface CadHorizontalConstraint extends CadConstraintBase<'horizontal'> { entityIds: [CadSketchEntityId]; data?: undefined; }
 
-export interface CadVerticalConstraint extends CadConstraintBase<'vertical'> {
-  entityIds: [CadSketchEntityId];
-  data?: undefined;
-}
+export interface CadVerticalConstraint extends CadConstraintBase<'vertical'> { entityIds: [CadSketchEntityId]; data?: undefined; }
 
-export interface CadParallelConstraint extends CadConstraintBase<'parallel'> {
-  entityIds: [CadSketchEntityId, CadSketchEntityId];
-  data?: undefined;
-}
+export interface CadParallelConstraint extends CadConstraintBase<'parallel'> { entityIds: [CadSketchEntityId, CadSketchEntityId]; data?: undefined; }
 
-export interface CadPerpendicularConstraint extends CadConstraintBase<'perpendicular'> {
-  entityIds: [CadSketchEntityId, CadSketchEntityId];
-  data?: undefined;
-}
+export interface CadPerpendicularConstraint extends CadConstraintBase<'perpendicular'> { entityIds: [CadSketchEntityId, CadSketchEntityId]; data?: undefined; }
 
-export interface CadTangentConstraint extends CadConstraintBase<'tangent'> {
-  entityIds: [CadSketchEntityId, CadSketchEntityId];
-  data?: undefined;
-}
+export interface CadTangentConstraint extends CadConstraintBase<'tangent'> { entityIds: [CadSketchEntityId, CadSketchEntityId]; data?: undefined; }
 
-export interface CadConcentricConstraint extends CadConstraintBase<'concentric'> {
-  entityIds: [CadSketchEntityId, CadSketchEntityId];
-  data?: undefined;
-}
+export interface CadConcentricConstraint extends CadConstraintBase<'concentric'> { entityIds: [CadSketchEntityId, CadSketchEntityId]; data?: undefined; }
 
-export interface CadEqualConstraint extends CadConstraintBase<'equal'> {
-  entityIds: [CadSketchEntityId, CadSketchEntityId];
-  data?: undefined;
-}
+export interface CadEqualConstraint extends CadConstraintBase<'equal'> { entityIds: [CadSketchEntityId, CadSketchEntityId]; data?: undefined; }
 
 export interface CadSymmetricConstraint extends CadConstraintBase<'symmetric'> { entityIds: [CadSketchEntityId, CadSketchEntityId, CadSketchEntityId]; data: { refs: [CadConstraintPointReference, CadConstraintPointReference] }; }
 
@@ -155,29 +97,25 @@ export function validateCadPartSketchCollections(value: unknown): asserts value 
   if (!Array.isArray(record.constraints)) throw new Error('CadPartDocument.constraints must be an array');
   if (!Array.isArray(record.dimensions)) throw new Error('CadPartDocument.dimensions must be an array');
 
-  record.sketches.forEach((sketch, index) => validateSketch(sketch, `sketches[${index}]`));
-  record.constraints.forEach((constraint, index) => validateConstraint(constraint, `constraints[${index}]`));
-  record.dimensions.forEach((dimension, index) => validateDimension(dimension, `dimensions[${index}]`));
+  record.sketches.forEach((sketch,index) => validateSketch(sketch,`sketches[${index}]`));
+  record.constraints.forEach((constraint,index) => validateConstraint(constraint,`constraints[${index}]`));
+  record.dimensions.forEach((dimension,index) => validateDimension(dimension,`dimensions[${index}]`));
 }
 
-function validateSketch(value: unknown, path: string): asserts value is CadSketch {
-  const sketch = expectRecord(value, path);
-  expectId(sketch.id, `${path}.id`);
+function validateSketch(value: unknown,path: string): asserts value is CadSketch {
+  const sketch = expectRecord(value,path);
+  expectId(sketch.id,`${path}.id`);
   if (typeof sketch.name !== 'string') throw new Error(`${path}.name must be a string`);
-  validateSketchSupport(sketch.support, `${path}.support`);
+  validateSketchSupport(sketch.support,`${path}.support`);
   if (!Array.isArray(sketch.entities)) throw new Error(`${path}.entities must be an array`);
   if (!Array.isArray(sketch.constraintIds)) throw new Error(`${path}.constraintIds must be an array`);
   if (!Array.isArray(sketch.dimensionIds)) throw new Error(`${path}.dimensionIds must be an array`);
-  sketch.entities.forEach((entity, index) => validateEntity(entity, `${path}.entities[${index}]`));
+  sketch.entities.forEach((entity,index) => validateEntity(entity, `${path}.entities[${index}]`));
   sketch.constraintIds.forEach((id, index) => expectId(id, `${path}.constraintIds[${index}]`));
   sketch.dimensionIds.forEach((id, index) => expectId(id, `${path}.dimensionIds[${index}]`));
 }
 
-function validateSketchSupport(value: unknown, path: string): asserts value is CadSketchSupport {
-  if (value === 'XY' || value === 'XZ' || value === 'YZ') return;
-  if (typeof value === 'string' && value.startsWith('ref_') && value.length > 4) return;
-  throw new Error(`${path} must be XY, XZ, YZ or a stable reference id`);
-}
+function validateSketchSupport(value: unknown, path: string): asserts value is CadSketchSupport { if (value === 'XY' || value === 'XZ' || value === 'YZ') return; if (typeof value === 'string' && value.startsWith('ref_') && value.length > 4) return; throw new Error(`${path} must be XY, XZ, YZ or a stable reference id`); }
 
 function validateEntity(value: unknown, path: string): asserts value is CadSketchEntity {
   const entity = expectRecord(value, path);
@@ -185,22 +123,10 @@ function validateEntity(value: unknown, path: string): asserts value is CadSketc
   const data = expectRecord(entity.data, `${path}.data`);
 
   switch (entity.type) {
-    case 'line':
-      expectPoint2(data.from, `${path}.data.from`);
-      expectPoint2(data.to, `${path}.data.to`);
-      if (data.role !== undefined && typeof data.role !== 'string') {
-        throw new Error(`${path}.data.role must be a string when provided`);
-      }
-      return;
-    case 'circle':
-      expectPoint2(data.center, `${path}.data.center`);
-      expectPositiveFinite(data.diameter, `${path}.data.diameter`);
-      return;
+    case 'line': expectPoint2(data.from, `${path}.data.from`); expectPoint2(data.to, `${path}.data.to`); if (data.role !== undefined && typeof data.role !== 'string') throw new Error(`${path}.data.role must be a string when provided`); if (data.construction !== undefined && typeof data.construction !== 'boolean') throw new Error(`${path}.data.construction must be boolean when provided`); return;
+    case 'circle': expectPoint2(data.center, `${path}.data.center`); expectPositiveFinite(data.diameter, `${path}.data.diameter`); return;
     case 'arc': {
-      expectPoint2(data.center, `${path}.data.center`);
-      expectPositiveFinite(data.radius, `${path}.data.radius`);
-      expectFinite(data.startAngle, `${path}.data.startAngle`);
-      expectFinite(data.endAngle, `${path}.data.endAngle`);
+      expectPoint2(data.center, `${path}.data.center`); expectPositiveFinite(data.radius, `${path}.data.radius`); expectFinite(data.startAngle, `${path}.data.startAngle`); expectFinite(data.endAngle, `${path}.data.endAngle`);
       const twoPi = Math.PI * 2;
       if (data.startAngle < 0 || data.startAngle >= twoPi) {
         throw new Error(`${path}.data.startAngle must be in [0,2π)`);

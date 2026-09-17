@@ -26,6 +26,7 @@ const handlers: M2CadUiActionHandlers = {
   circle: call('circle'),
   arc: call('arc'),
   deleteSketchEntity: call('deleteSketchEntity'),
+  constructionToggle: call('constructionToggle'),
   horizontalConstraint: call('horizontalConstraint'),
   verticalConstraint: call('verticalConstraint'),
   fixedConstraint: call('fixedConstraint'),
@@ -57,6 +58,7 @@ const bindings = createM2CadUiActionBindings(handlers, {
   canRedo: true,
   hasSketch: true,
   hasSketchEntitySelection: true,
+  canToggleConstruction: true,
   canApplyOrientationConstraint: true,
   canApplyFixedConstraint: true,
   canApplyCoincidentConstraint: true,
@@ -77,6 +79,7 @@ assert.equal(actions.get('system.undo')?.enabled, false);
 assert.equal(actions.get('system.undo')?.disabledReason, 'Нечего отменять');
 assert.equal(actions.get('system.redo')?.enabled, true);
 assert.equal(actions.get('sketch.rectangle')?.enabled, true);
+assert.equal(actions.get('sketch.construction')?.enabled, true);
 assert.equal(actions.get('constraint.horizontal')?.enabled, true);
 assert.equal(actions.get('constraint.vertical')?.enabled, true);
 assert.equal(actions.get('constraint.fixed')?.enabled, true);
@@ -93,6 +96,7 @@ assert.equal(actions.get('part.cutExtrude')?.enabled, true);
 assert.equal(actions.get('part.fillet')?.enabled, false);
 
 assert.equal(await executeCadUiAction(actions.get('system.redo')!), true);
+assert.equal(await executeCadUiAction(actions.get('sketch.construction')!), true);
 assert.equal(await executeCadUiAction(actions.get('constraint.horizontal')!), true);
 assert.equal(await executeCadUiAction(actions.get('constraint.vertical')!), true);
 assert.equal(await executeCadUiAction(actions.get('constraint.fixed')!), true);
@@ -106,13 +110,14 @@ assert.equal(await executeCadUiAction(actions.get('constraint.symmetric')!), tru
 assert.equal(await executeCadUiAction(actions.get('constraint.pointOnCurve')!), true);
 assert.equal(await executeCadUiAction(actions.get('part.cutExtrude')!), true);
 assert.equal(await executeCadUiAction(actions.get('part.extrude')!), false);
-assert.deepEqual(calls, ['redo', 'horizontalConstraint', 'verticalConstraint', 'fixedConstraint', 'coincidentConstraint', 'parallelConstraint', 'perpendicularConstraint', 'tangentConstraint', 'concentricConstraint', 'equalConstraint', 'symmetricConstraint', 'pointOnCurveConstraint', 'cutExtrude']);
+assert.deepEqual(calls, ['redo', 'constructionToggle', 'horizontalConstraint', 'verticalConstraint', 'fixedConstraint', 'coincidentConstraint', 'parallelConstraint', 'perpendicularConstraint', 'tangentConstraint', 'concentricConstraint', 'equalConstraint', 'symmetricConstraint', 'pointOnCurveConstraint', 'cutExtrude']);
 
 const disabledConstraints = indexCadUiActions(createCadUiActions(definitions, createM2CadUiActionBindings(handlers, {
   canUndo: false,
   canRedo: false,
   hasSketch: true,
   hasSketchEntitySelection: false,
+  canToggleConstruction: false,
   canApplyOrientationConstraint: false,
   canApplyFixedConstraint: false,
   canApplyCoincidentConstraint: false,
@@ -127,6 +132,7 @@ const disabledConstraints = indexCadUiActions(createCadUiActions(definitions, cr
   canCutExtrude: false,
   canFillet: false,
 })));
+assert.equal(disabledConstraints.get('sketch.construction')?.enabled, false);
 assert.equal(disabledConstraints.get('constraint.horizontal')?.enabled, false);
 assert.equal(disabledConstraints.get('constraint.horizontal')?.disabledReason, 'Выберите отрезок эскиза');
 assert.equal(disabledConstraints.get('constraint.vertical')?.enabled, false);

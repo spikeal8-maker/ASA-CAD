@@ -24,6 +24,7 @@ export type CadCommandId =
   | 'sketch.arc'
   | 'sketch.entity.delete'
   | 'sketch.entity.translate'
+  | 'sketch.construction'
   | 'sketch.finish'
   | 'constraint.coincident'
   | 'constraint.horizontal'
@@ -82,6 +83,7 @@ export interface CadCommandMap {
     entityId: CadSketchEntityId;
     delta: readonly [number, number];
   };
+  'sketch.construction': { sketchId: CadSketchId; entityId: CadSketchEntityId };
   'sketch.finish': {
     sketchId: CadSketchId;
   };

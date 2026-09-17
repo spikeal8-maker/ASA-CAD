@@ -10,6 +10,7 @@ export const CAD_IMPLEMENTED_COMMAND_IDS = [
   'sketch.line',
   'sketch.rectangle',
   'sketch.circle',
+  'sketch.construction',
   'sketch.finish',
   'constraint.coincident',
   'constraint.horizontal',

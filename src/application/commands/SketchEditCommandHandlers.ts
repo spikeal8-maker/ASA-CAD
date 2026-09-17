@@ -17,6 +17,7 @@ import {
 export const SKETCH_EDIT_COMMAND_IDS = [
   'sketch.entity.delete',
   'sketch.entity.translate',
+  'sketch.construction',
   'sketch.finish',
 ] as const satisfies readonly CadCommandId[];
 
@@ -48,6 +49,18 @@ export const sketchEditCommandHandlers = {
       if (isZeroSketchDelta(command.payload.delta)) return { ok: true, changed: false };
       const index = sketch.entities.findIndex((item) => item.id === entity.id);
       sketch.entities[index] = translateSketchEntity(entity, command.payload.delta);
+      return { ok: true, changed: true };
+    },
+  }),
+
+  'sketch.construction': defineSketchCommandHandler<'sketch.construction'>({
+    availability: requireSketchAvailability,
+    execute: (part, command) => {
+      const sketch = requireSketch(part, command.payload.sketchId);
+      const entity = requireSketchEntity(sketch, command.payload.entityId);
+      if (entity.type !== 'line') throw new Error('Construction toggle currently requires a Line entity');
+      const index = sketch.entities.findIndex((item) => item.id === entity.id);
+      sketch.entities[index] = { ...entity, data: { ...entity.data, construction: !entity.data.construction } };
       return { ok: true, changed: true };
     },
   }),
