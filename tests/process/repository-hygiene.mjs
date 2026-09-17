@@ -16,6 +16,7 @@ const forbiddenDirectoryNames = new Set(hygiene.forbiddenDirectoryNames ?? []);
 const temporaryToolName = new RegExp(hygiene.temporaryToolNamePattern, 'i');
 const largeReviewBytes = Number(hygiene.firstPartyLargeFileReviewBytes);
 const hardFileBytes = Number(hygiene.firstPartyHardFileBytes);
+const textExtensions = new Set(['.ts', '.tsx', '.js', '.mjs', '.cjs', '.json', '.md', '.yml', '.yaml', '.css', '.html']);
 
 const offenders = [];
 const warnings = [];
@@ -51,6 +52,13 @@ walk('.', (file) => {
     offenders.push(`${normalized}: temporary codemod/review-fix artifact must not remain in review`);
   }
 
+  if (textExtensions.has(path.extname(normalized).toLowerCase())) {
+    const text = fs.readFileSync(file, 'utf8');
+    if (text.includes('\uFFFD') || hasLikelyCyrillicMojibake(text)) {
+      offenders.push(`${normalized}: invalid UTF-8 or likely Cyrillic mojibake`);
+    }
+  }
+
   const size = fs.statSync(file).size;
   if (size > hardFileBytes) {
     offenders.push(
@@ -78,6 +86,15 @@ function isExcluded(file) {
 
 function normalize(file) {
   return file.replaceAll('\\', '/');
+}
+
+function hasLikelyCyrillicMojibake(text) {
+  for (let index = 0; index + 3 < text.length; index += 1) {
+    const a = text.charCodeAt(index), b = text.charCodeAt(index + 1);
+    const c = text.charCodeAt(index + 2), d = text.charCodeAt(index + 3);
+    if ((a === 0x420 || a === 0x421) && b > 0x7f && (c === 0x420 || c === 0x421) && d > 0x7f) return true;
+  }
+  return false;
 }
 
 function walk(root, visit) {

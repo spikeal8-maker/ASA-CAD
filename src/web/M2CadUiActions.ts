@@ -98,7 +98,7 @@ export function createM2CadUiActionBindings(
     'constraint.parallel': binding(handlers.parallelConstraint, state.canApplyParallelConstraint, pairConstraintReason),
     'constraint.perpendicular': binding(handlers.perpendicularConstraint, state.canApplyPerpendicularConstraint, pairConstraintReason),
     'constraint.tangent': binding(handlers.tangentConstraint, state.canApplyTangentConstraint, tangentConstraintReason),
-    'constraint.concentric': binding(handlers.concentricConstraint, state.canApplyConcentricConstraint, 'РЎРѕР·РґР°Р№С‚Рµ РґРІРµ РѕРєСЂСѓР¶РЅРѕСЃС‚Рё СЌСЃРєРёР·Р°'),
+    'constraint.concentric': binding(handlers.concentricConstraint, state.canApplyConcentricConstraint, 'Создайте две окружности эскиза'),
     'constraint.equal': binding(handlers.equalConstraint, state.canApplyEqualConstraint, pairConstraintReason),
     'constraint.symmetric': binding(handlers.symmetricConstraint, state.canApplySymmetryConstraint, 'Создайте три отрезка эскиза'),
     'constraint.pointOnCurve': binding(handlers.pointOnCurveConstraint, state.canApplyPointOnCurveConstraint, pairConstraintReason),
