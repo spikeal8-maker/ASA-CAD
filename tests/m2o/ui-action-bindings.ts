@@ -36,6 +36,7 @@ const handlers: M2CadUiActionHandlers = {
   concentricConstraint: call('concentricConstraint'),
   equalConstraint: call('equalConstraint'),
   symmetricConstraint: call('symmetricConstraint'),
+  pointOnCurveConstraint: call('pointOnCurveConstraint'),
   finishSketch: call('finishSketch'),
   extrude: call('extrude'),
   cutExtrude: call('cutExtrude'),
@@ -65,6 +66,7 @@ const bindings = createM2CadUiActionBindings(handlers, {
   canApplyConcentricConstraint: true,
   canApplyEqualConstraint: true,
   canApplySymmetryConstraint: true,
+  canApplyPointOnCurveConstraint: true,
   canExtrude: false,
   canCutExtrude: true,
   canFillet: false,
@@ -85,6 +87,7 @@ assert.equal(actions.get('constraint.tangent')?.enabled, true);
 assert.equal(actions.get('constraint.concentric')?.enabled, true);
 assert.equal(actions.get('constraint.equal')?.enabled, true);
 assert.equal(actions.get('constraint.symmetric')?.enabled, true);
+assert.equal(actions.get('constraint.pointOnCurve')?.enabled, true);
 assert.equal(actions.get('part.extrude')?.enabled, false);
 assert.equal(actions.get('part.cutExtrude')?.enabled, true);
 assert.equal(actions.get('part.fillet')?.enabled, false);
@@ -100,9 +103,10 @@ assert.equal(await executeCadUiAction(actions.get('constraint.tangent')!), true)
 assert.equal(await executeCadUiAction(actions.get('constraint.concentric')!), true);
 assert.equal(await executeCadUiAction(actions.get('constraint.equal')!), true);
 assert.equal(await executeCadUiAction(actions.get('constraint.symmetric')!), true);
+assert.equal(await executeCadUiAction(actions.get('constraint.pointOnCurve')!), true);
 assert.equal(await executeCadUiAction(actions.get('part.cutExtrude')!), true);
 assert.equal(await executeCadUiAction(actions.get('part.extrude')!), false);
-assert.deepEqual(calls, ['redo', 'horizontalConstraint', 'verticalConstraint', 'fixedConstraint', 'coincidentConstraint', 'parallelConstraint', 'perpendicularConstraint', 'tangentConstraint', 'concentricConstraint', 'equalConstraint', 'symmetricConstraint', 'cutExtrude']);
+assert.deepEqual(calls, ['redo', 'horizontalConstraint', 'verticalConstraint', 'fixedConstraint', 'coincidentConstraint', 'parallelConstraint', 'perpendicularConstraint', 'tangentConstraint', 'concentricConstraint', 'equalConstraint', 'symmetricConstraint', 'pointOnCurveConstraint', 'cutExtrude']);
 
 const disabledConstraints = indexCadUiActions(createCadUiActions(definitions, createM2CadUiActionBindings(handlers, {
   canUndo: false,
@@ -118,6 +122,7 @@ const disabledConstraints = indexCadUiActions(createCadUiActions(definitions, cr
   canApplyConcentricConstraint: false,
   canApplyEqualConstraint: false,
   canApplySymmetryConstraint: false,
+  canApplyPointOnCurveConstraint: false,
   canExtrude: false,
   canCutExtrude: false,
   canFillet: false,
@@ -140,6 +145,8 @@ assert.equal(disabledConstraints.get('constraint.equal')?.enabled, false);
 assert.equal(disabledConstraints.get('constraint.equal')?.disabledReason, disabledConstraints.get('constraint.parallel')?.disabledReason);
 assert.equal(disabledConstraints.get('constraint.symmetric')?.enabled, false);
 assert.equal(disabledConstraints.get('constraint.symmetric')?.disabledReason, 'Создайте три отрезка эскиза');
+assert.equal(disabledConstraints.get('constraint.pointOnCurve')?.enabled, false);
+assert.equal(disabledConstraints.get('constraint.pointOnCurve')?.disabledReason, 'Создайте два отрезка эскиза');
 
 assert.equal(cadUiActionIdForShortcut('system.save'), 'system.save');
 assert.equal(cadUiActionIdForShortcut('system.rebuild'), 'system.rebuild');

@@ -23,6 +23,7 @@ export interface M2CadUiActionHandlers {
   concentricConstraint(): void | Promise<void>;
   equalConstraint(): void | Promise<void>;
   symmetricConstraint(): void | Promise<void>;
+  pointOnCurveConstraint(): void | Promise<void>;
   finishSketch(): void | Promise<void>;
   extrude(): void | Promise<void>;
   cutExtrude(): void | Promise<void>;
@@ -51,6 +52,7 @@ export interface M2CadUiActionState {
   canApplyConcentricConstraint: boolean;
   canApplyEqualConstraint: boolean;
   canApplySymmetryConstraint: boolean;
+  canApplyPointOnCurveConstraint: boolean;
   canExtrude: boolean;
   canCutExtrude: boolean;
   canFillet: boolean;
@@ -96,6 +98,7 @@ export function createM2CadUiActionBindings(
     'constraint.concentric': binding(handlers.concentricConstraint, state.canApplyConcentricConstraint, 'РЎРѕР·РґР°Р№С‚Рµ РґРІРµ РѕРєСЂСѓР¶РЅРѕСЃС‚Рё СЌСЃРєРёР·Р°'),
     'constraint.equal': binding(handlers.equalConstraint, state.canApplyEqualConstraint, pairConstraintReason),
     'constraint.symmetric': binding(handlers.symmetricConstraint, state.canApplySymmetryConstraint, 'Создайте три отрезка эскиза'),
+    'constraint.pointOnCurve': binding(handlers.pointOnCurveConstraint, state.canApplyPointOnCurveConstraint, pairConstraintReason),
     'sketch.finish': binding(handlers.finishSketch, state.hasSketch, 'Сначала создайте эскиз'),
     'part.extrude': binding(handlers.extrude, state.canExtrude, 'Завершите прямоугольный эскиз'),
     'part.cutExtrude': binding(handlers.cutExtrude, state.canCutExtrude, 'Создайте окружность на грани и завершите эскиз'),

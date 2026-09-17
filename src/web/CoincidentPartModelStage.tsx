@@ -12,6 +12,7 @@ export type SketchTangentCommit = SketchLinePairCommit;
 export type SketchConcentricCommit = SketchLinePairCommit;
 export type SketchEqualCommit = SketchLinePairCommit;
 export type SketchSymmetryCommit = (a: CadSketchCommandReference, b: CadSketchCommandReference, axisEntityId: CadSketchEntityId) => Promise<boolean>;
+export type SketchPointOnCurveCommit = (source: CadSketchCommandReference, targetEntityId: CadSketchEntityId) => Promise<boolean>;
 
 const CoincidentCommitContext = createContext<SketchCoincidentCommit | null>(null);
 const ParallelCommitContext = createContext<SketchParallelCommit | null>(null);
@@ -20,6 +21,7 @@ const TangentCommitContext = createContext<SketchTangentCommit | null>(null);
 const ConcentricCommitContext = createContext<SketchConcentricCommit | null>(null);
 const EqualCommitContext = createContext<SketchEqualCommit | null>(null);
 const SymmetryCommitContext = createContext<SketchSymmetryCommit | null>(null);
+const PointOnCurveCommitContext = createContext<SketchPointOnCurveCommit | null>(null);
 
 /** Binary Sketch-constraint bridge kept outside frozen Part/Sketch stage owners. */
 export function CoincidentPartStage(
@@ -31,9 +33,10 @@ export function CoincidentPartStage(
     concentricCommit: SketchConcentricCommit;
     equalCommit: SketchEqualCommit;
     symmetryCommit: SketchSymmetryCommit;
+    pointOnCurveCommit: SketchPointOnCurveCommit;
   },
 ) {
-  const { commit, parallelCommit, perpendicularCommit, tangentCommit, concentricCommit, equalCommit, symmetryCommit, ...stageProps } = props;
+  const { commit, parallelCommit, perpendicularCommit, tangentCommit, concentricCommit, equalCommit, symmetryCommit, pointOnCurveCommit, ...stageProps } = props;
   return (
     <CoincidentCommitContext.Provider value={commit}>
       <ParallelCommitContext.Provider value={parallelCommit}>
@@ -42,7 +45,9 @@ export function CoincidentPartStage(
             <ConcentricCommitContext.Provider value={concentricCommit}>
               <EqualCommitContext.Provider value={equalCommit}>
                 <SymmetryCommitContext.Provider value={symmetryCommit}>
-                  <PartModelStage {...stageProps} />
+                  <PointOnCurveCommitContext.Provider value={pointOnCurveCommit}>
+                    <PartModelStage {...stageProps} />
+                  </PointOnCurveCommitContext.Provider>
                 </SymmetryCommitContext.Provider>
               </EqualCommitContext.Provider>
             </ConcentricCommitContext.Provider>
@@ -92,5 +97,11 @@ export function useSketchEqualCommit(): SketchEqualCommit {
 export function useSketchSymmetryCommit(): SketchSymmetryCommit {
   const commit = useContext(SymmetryCommitContext);
   if (!commit) throw new Error('Sketch Symmetry interaction provider is missing');
+  return commit;
+}
+
+export function useSketchPointOnCurveCommit(): SketchPointOnCurveCommit {
+  const commit = useContext(PointOnCurveCommitContext);
+  if (!commit) throw new Error('Sketch Point-on-curve interaction provider is missing');
   return commit;
 }

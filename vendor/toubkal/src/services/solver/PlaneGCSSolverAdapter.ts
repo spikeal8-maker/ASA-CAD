@@ -225,6 +225,11 @@ function emitConstraint(prims: (SketchPrimitive | SketchParam)[], c: SketchConst
     case 'PERPENDICULAR': push({ id, type: 'perpendicular_ll', l1_id: ent(r0), l2_id: ent(r1) }); return;
     case 'HORIZONTAL':    push({ id, type: 'horizontal_l', l_id: ent(r0) }); return;
     case 'VERTICAL':      push({ id, type: 'vertical_l', l_id: ent(r0) }); return;
+    case 'POINT_ON_CURVE': {
+      const p = point(r0);
+      if (p) push({ id, type: 'point_on_line_pl', p_id: p, l_id: ent(r1) });
+      return;
+    }
 
     case 'LENGTH': {
       const a = point({ ...r0, kind: 'point', pt: 'a' }), b = point({ ...r0, kind: 'point', pt: 'b' });
