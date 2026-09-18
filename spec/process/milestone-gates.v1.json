@@ -86,6 +86,8 @@
     "broken refs never silently bind to another subshape"
   ],
   "compatibility": {
+    "schemaVersionRepresentsExactPersistedGrammar": true,
+    "persistedUnionDiscriminantAdditionRequiresSchemaBump": true,
     "schemaBumpRequiresMigrationFixture": true,
     "allDeclaredSupportedSchemasMustOpen": true,
     "readMustNotSilentlyRewriteStoredDocuments": true

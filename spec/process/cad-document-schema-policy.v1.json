@@ -1,0 +1,19 @@
+{
+  "policyVersion": 1,
+  "schemaVersionSemantics": "exact-persisted-grammar",
+  "currentCadDocumentSchemaVersion": 1,
+  "persistedUnionDiscriminantAdditionRequiresSchemaBump": true,
+  "readMustNotSilentlyRewriteStoredDocuments": true,
+  "schemas": [
+    {
+      "version": 1,
+      "dimensionTypes": [
+        "linear",
+        "horizontal",
+        "vertical",
+        "diameter"
+      ],
+      "fixture": "tests/fixtures/schema/v1-part-dimensions.json"
+    }
+  ]
+}
