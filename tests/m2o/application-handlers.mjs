@@ -21,7 +21,7 @@ for (const legacyCase of [
   "case 'sketch.create':", "case 'sketch.line':", "case 'sketch.rectangle':", "case 'sketch.circle':", "case 'sketch.arc':",
   "case 'sketch.entity.delete':", "case 'sketch.entity.translate':", "case 'sketch.finish':",
   "case 'constraint.coincident':", "case 'constraint.horizontal':", "case 'constraint.vertical':", "case 'constraint.parallel':", "case 'constraint.perpendicular':", "case 'constraint.fixed':",
-  "case 'dimension.linear':", "case 'dimension.diameter':", "case 'part.dimension.setValue':",
+  "case 'dimension.linear':", "case 'dimension.horizontal':", "case 'dimension.vertical':", "case 'dimension.diameter':", "case 'part.dimension.setValue':",
 ]) {
   assert.equal(application.includes(legacyCase), false, `M3 growth handler must not return to central application switch: ${legacyCase}`);
 }
@@ -35,7 +35,7 @@ const families = [
   { name: 'geometry', source: geometry, ids: ['sketch.create', 'sketch.line', 'sketch.rectangle', 'sketch.circle', 'sketch.arc'] },
   { name: 'edit', source: edit, ids: ['sketch.entity.delete', 'sketch.entity.translate', 'sketch.finish'] },
   { name: 'constraint', source: constraints, ids: ['constraint.coincident', 'constraint.horizontal', 'constraint.vertical', 'constraint.parallel', 'constraint.perpendicular', 'constraint.fixed'] },
-  { name: 'dimension', source: dimensions, ids: ['dimension.linear', 'dimension.diameter', 'part.dimension.setValue'] },
+  { name: 'dimension', source: dimensions, ids: ['dimension.linear', 'dimension.horizontal', 'dimension.vertical', 'dimension.diameter', 'part.dimension.setValue'] },
 ];
 
 for (const family of families) {
