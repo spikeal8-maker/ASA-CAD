@@ -28,12 +28,11 @@ The audit found one RED blocker, `STATE-DIM-001`: `dimension.linear` was registr
 Frozen ratchets remain non-growing; no hard/frozen violation remains. Audit cadence resets to **0 / 3** at this closeout.
 
 Bounded YELLOW debt:
-1. `SCHEMA-001`: formalize/test same-schema additive discriminant compatibility **before the next new persisted Dimension discriminant**;
-2. `UI-SEARCH-001`: production search still exposes planned/deferred commands disabled instead of hiding them;
-3. size/test pressure remains: M3M-009 owns frozen viewport/runtime hotspots; `useSketchConstraintControllers.ts` is near target; shared M3 browser harness must not grow; each new dimension family gets a separate focused browser spec;
-4. repository hygiene/admin debt: root ignore policy, obsolete bootstrap workflow and historical branch clutter;
-5. pinned vendor/toolchain security/runtime warnings remain bounded maintenance debt;
-6. pre-M4 performance baselines, M3X shared golden host contract and root release license/notices remain required at their existing gates.
+1. `UI-SEARCH-001`: production search still exposes planned/deferred commands disabled instead of hiding them;
+2. size/test pressure remains: M3M-009 owns frozen viewport/runtime hotspots; `useSketchConstraintControllers.ts` is near target; shared M3 browser harness must not grow; each new dimension family gets a separate focused browser spec;
+3. repository hygiene/admin debt: root ignore policy, obsolete bootstrap workflow and historical branch clutter;
+4. pinned vendor/toolchain security/runtime warnings remain bounded maintenance debt;
+5. pre-M4 performance baselines, M3X shared golden host contract and root release license/notices remain required at their existing gates.
 
 ## Gate B closeout
 
@@ -57,9 +56,11 @@ M3-DIM-002 is accepted: Diameter is productized using the existing schema-v1 `di
 - meaningful non-null DoF;
 - visible under/fully/over-constrained diagnostics.
 
-`SCHEMA-001` remains mandatory before Angular or Radius introduces another persisted Dimension discriminant. M3 remains ACTIVE; do not declare M3 exit until the complete machine exit contract is accepted.
+SCHEMA-001 is accepted. `schemaVersion` now means exact persisted grammar; schema-v1 Dimension grammar is frozen as `linear | horizontal | vertical | diameter`. Angular or Radius may proceed only with an explicit schema bump, sequential migration and permanent fixture coverage required by `docs/SCHEMA_EVOLUTION.md` and the machine schema policy.
 
-Cadence after M3-DIM-002 acceptance: **1 / 3**.
+M3 remains ACTIVE; do not declare M3 exit until the complete machine exit contract is accepted.
+
+Cadence after SCHEMA-001 acceptance: **2 / 3**.
 
 M3 extension commands do not block M3 unless deliberately reclassified.
 
