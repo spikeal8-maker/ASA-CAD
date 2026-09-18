@@ -10,6 +10,7 @@ const plannedDocumentStage = readFileSync('src/web/PlannedDocumentStage.tsx', 'u
 const documentPresentation = readFileSync('src/web/CadDocumentPresentation.ts', 'utf8');
 const tree = readFileSync('src/web/DocumentTree.tsx', 'utf8');
 const parameters = readFileSync('src/web/ParameterPanel.tsx', 'utf8');
+const parameterNumeric = readFileSync('src/web/ParameterNumericField.tsx', 'utf8');
 const workspace = readFileSync('src/web/usePartSketchWorkspace.ts', 'utf8');
 const selection = readFileSync('src/web/usePartSelectionController.ts', 'utf8');
 const editing = readFileSync('src/web/useSketchEditingController.ts', 'utf8');
@@ -93,10 +94,12 @@ assert.match(tree, /data-sketch-id=\{props\.sketchId\}/);
 assert.match(tree, /onEditSketch\(item\.id\)/);
 
 assert.match(parameters, /export function ParameterPanel\(/);
-assert.match(parameters, /function NumericField\(/);
-assert.match(parameters, /type="number"/);
-assert.match(parameters, /min="0\.01"/);
-assert.match(parameters, /step="1"/);
+assert.match(parameters, /ParameterNumericField/, 'ParameterPanel must delegate numeric-field presentation');
+assert.doesNotMatch(parameters, /function NumericField\(/, 'NumericField must not regrow inside frozen ParameterPanel');
+assert.match(parameterNumeric, /export function ParameterNumericField\(/);
+assert.match(parameterNumeric, /type="number"/);
+assert.match(parameterNumeric, /props\.min \?\? 0\.01/);
+assert.match(parameterNumeric, /step="1"/);
 
 assert.match(workspace, /export function usePartSketchWorkspace\(/);
 assert.match(workspace, /useSketchSession\(part\)/);

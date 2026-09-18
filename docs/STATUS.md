@@ -15,7 +15,7 @@ Older issue/PR/status text is historical only; if it conflicts, use this file + 
 
 Protected document family: **six document kinds** - Part, Assembly, Drawing, Fragment, Specification and Text - behind `CadDocument` / `CadApplication`.
 
-Accepted M3 includes Line/Circle/Arc/Rectangle, stable-ID selection/delete/drag, the constraint family through Point-on-curve, and Construction Line (#103).
+Accepted M3 includes Line/Circle/Arc/Rectangle, stable-ID selection/delete/drag, the constraint family through Point-on-curve, Construction Line (#103), and productized Horizontal/Vertical driving dimensions through shared desktop/mobile/search actions.
 
 Construction #103 passed all five workflows on review SHA `d513edbb` and merged as `953fc235`. It persists a dedicated construction boolean, remains PlaneGCS geometry, is visually distinct, is excluded from protected Part profile eligibility, and preserves Undo/Redo + Save/Open.
 
@@ -27,7 +27,7 @@ Construction #103 passed all five workflows on review SHA `d513edbb` and merged 
 - #106 added the mandatory bot entry protocol, blocking state-drift rule, machine M3/Gate-B exit policy and iteration-based optimization;
 - final governance head `4ae5fd1` passed M2 shell, M2 browser, M3 browser, Docker and baseline;
 - no file-budget ceiling was raised;
-- audit cadence is now **0 / 3**.
+- audit cadence reset to **0 / 3** at this accepted audit boundary.
 
 Bounded/non-growing YELLOW debt:
 1. M3M-009: `CadViewport.tsx`, `OpenCascadePartRuntime.ts` and remaining pre-M4 hotspots;
@@ -36,6 +36,10 @@ Bounded/non-growing YELLOW debt:
 4. root product LICENSE / THIRD_PARTY_NOTICE before public beta/release;
 5. M3X ASA-CAD <-> ASA Lab shared golden host contract is not yet proven;
 6. large history/topology/runtime scale benchmarks remain required before/through M4/M4B.
+
+## Current iteration cadence
+
+After the post-Construction audit reset, accepted permanent slices #109 (M3-DIM-000) and #110 (M3-DIM-001A) account for **2 / 3**. Acceptance of this H/V productization slice is the third permanent slice and therefore reaches **3 / 3**; the required Full Repository Health Audit is the next action before another feature slice.
 
 ## Gate B closeout
 
@@ -53,7 +57,9 @@ The M3 exit contract is machine-readable in `spec/process/milestone-gates.v1.jso
 
 ## Next M3 work
 
-Choose **one bounded required M3-exit slice**. Current required gaps are primarily driving-dimension coverage and meaningful under/fully/over-constrained + DOF feedback.
+After acceptance of the H/V productization slice, run the required Full Repository Health Audit before another feature slice. M3 remains ACTIVE; do not declare M3 exit.
+
+Remaining required dimension product gaps are Angular, Radius, Diameter productization, plus a focused check/closeout of remaining Linear product completeness. Meaningful under/fully/over-constrained diagnostics and DOF feedback also remain required.
 
 M3 extension commands (polyline/polygon/ellipse/spline/point, trim/extend/split/offset/fillet/chamfer/mirror/move/rotate/scale/project, `dimension.auto`) do not block M3 unless deliberately reclassified.
 
