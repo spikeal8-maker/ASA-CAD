@@ -6,6 +6,11 @@ import type {
   CadSketchId,
   CadStableReferenceId,
 } from './ids';
+import { expectFinite, expectId, expectPositiveFinite, expectRecord } from './contractValidation';
+import { validateCadDimension } from './sketchDimensions';
+import type { CadDimension } from './sketchDimensions';
+
+export type { CadDiameterDimension, CadDimension, CadLinearDimension } from './sketchDimensions';
 
 export type CadPoint2 = readonly [number, number];
 export type CadSketchSupport = CadPlaneName | CadStableReferenceId;
@@ -67,24 +72,6 @@ export type CadConstraint =
   | CadFixedConstraint
   | CadCoincidentConstraint;
 
-interface CadDimensionBase<T extends string> {
-  id: CadDimensionId;
-  type: T;
-  value: number;
-  driving: boolean;
-  name?: string;
-}
-
-export interface CadLinearDimension extends CadDimensionBase<'linear'> {
-  entityIds: [CadSketchEntityId, ...CadSketchEntityId[]];
-}
-
-export interface CadDiameterDimension extends CadDimensionBase<'diameter'> {
-  entityIds: [CadSketchEntityId];
-}
-
-export type CadDimension = CadLinearDimension | CadDiameterDimension;
-
 export interface CadPartSketchCollections {
   sketches: CadSketch[];
   constraints: CadConstraint[];
@@ -99,7 +86,7 @@ export function validateCadPartSketchCollections(value: unknown): asserts value 
 
   record.sketches.forEach((sketch,index) => validateSketch(sketch,`sketches[${index}]`));
   record.constraints.forEach((constraint,index) => validateConstraint(constraint,`constraints[${index}]`));
-  record.dimensions.forEach((dimension,index) => validateDimension(dimension,`dimensions[${index}]`));
+  record.dimensions.forEach((dimension,index) => validateCadDimension(dimension,`dimensions[${index}]`));
 }
 
 function validateSketch(value: unknown,path: string): asserts value is CadSketch {
@@ -193,47 +180,8 @@ function validateConstraintReference(value: unknown, path: string): asserts valu
   }
 }
 
-function validateDimension(value: unknown, path: string): asserts value is CadDimension {
-  const dimension = expectRecord(value, path);
-  expectId(dimension.id, `${path}.id`);
-  if (!Array.isArray(dimension.entityIds)) throw new Error(`${path}.entityIds must be an array`);
-  dimension.entityIds.forEach((id, index) => expectId(id, `${path}.entityIds[${index}]`));
-  expectPositiveFinite(dimension.value, `${path}.value`);
-  if (typeof dimension.driving !== 'boolean') throw new Error(`${path}.driving must be boolean`);
-  if (dimension.name !== undefined && typeof dimension.name !== 'string') throw new Error(`${path}.name must be a string when provided`);
-
-  switch (dimension.type) {
-    case 'linear':
-      if (dimension.entityIds.length < 1) throw new Error(`${path}.linear requires at least one entity id`);
-      return;
-    case 'diameter':
-      if (dimension.entityIds.length !== 1) throw new Error(`${path}.diameter requires exactly one entity id`);
-      return;
-    default:
-      throw new Error(`${path}.type is unsupported: ${String(dimension.type)}`);
-  }
-}
-
-function expectRecord(value: unknown, path: string): Record<string, unknown> {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error(`${path} must be an object`);
-  return value as Record<string, unknown>;
-}
-
-function expectId(value: unknown, path: string): asserts value is string {
-  if (typeof value !== 'string' || !value) throw new Error(`${path} must be a non-empty string`);
-}
-
 function expectPoint2(value: unknown, path: string): asserts value is CadPoint2 {
   if (!Array.isArray(value) || value.length !== 2) throw new Error(`${path} must be [x,y]`);
   expectFinite(value[0], `${path}[0]`);
   expectFinite(value[1], `${path}[1]`);
-}
-
-function expectPositiveFinite(value: unknown, path: string): asserts value is number {
-  expectFinite(value, path);
-  if (value <= 0) throw new Error(`${path} must be positive`);
-}
-
-function expectFinite(value: unknown, path: string): asserts value is number {
-  if (typeof value !== 'number' || !Number.isFinite(value)) throw new Error(`${path} must be finite`);
 }
