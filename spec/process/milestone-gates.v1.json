@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Machine-readable milestone exit classification. This is policy, not live status.",
+  "m3": {
+    "requiredCommandIds": [
+      "sketch.line",
+      "sketch.circle",
+      "sketch.arc",
+      "sketch.rectangle",
+      "sketch.entity.delete",
+      "sketch.construction",
+      "constraint.coincident",
+      "constraint.horizontal",
+      "constraint.vertical",
+      "constraint.parallel",
+      "constraint.perpendicular",
+      "constraint.tangent",
+      "constraint.concentric",
+      "constraint.equal",
+      "constraint.symmetric",
+      "constraint.fixed",
+      "constraint.pointOnCurve",
+      "dimension.linear",
+      "dimension.horizontal",
+      "dimension.vertical",
+      "dimension.angular",
+      "dimension.radius",
+      "dimension.diameter",
+      "sketch.finish"
+    ],
+    "extensionCommandIds": [
+      "sketch.polyline",
+      "sketch.polygon",
+      "sketch.ellipse",
+      "sketch.spline",
+      "sketch.point",
+      "sketch.trim",
+      "sketch.extend",
+      "sketch.split",
+      "sketch.offset",
+      "sketch.fillet",
+      "sketch.chamfer",
+      "sketch.mirror",
+      "sketch.move",
+      "sketch.rotate",
+      "sketch.scale",
+      "sketch.project",
+      "dimension.auto"
+    ],
+    "requiredCapabilities": [
+      "explicit active Sketch and stable entity identity",
+      "transient PlaneGCS solve/preview without document mutation",
+      "stable-ID selection/delete",
+      "mouse/touch rigid drag with one durable commit",
+      "visible under/fully/over-constrained diagnostics",
+      "non-null meaningful DOF feedback",
+      "central Undo/Redo history",
+      "schema-compatible Save/Open and migration fixtures",
+      "shared desktop/mobile/search command presentation"
+    ]
+  },
+  "gateBCloseout": {
+    "requires": [
+      "M2V KOMPAS visual acceptance",
+      "M3 functional exit contract green",
+      "M3X shared ASA-CAD/ASA-Lab golden contract green",
+      "M3M-009 closed",
+      "pre-M4 performance baselines recorded",
+      "Full Repository Health Audit accepted"
+    ]
+  },
+  "preM4PerformanceBaselines": [
+    "Sketch solve latency and entity/constraint scale",
+    "Undo/Redo history scale",
+    "native document Save/Open serialization scale",
+    "WASM cold startup",
+    "protected Part recompute"
+  ],
+  "m4TopologyCorpus": [
+    "upstream Sketch dimension change preserves valid semantic refs",
+    "cut/feature movement preserves valid refs",
+    "edge-count-changing feature explicitly preserves or rejects refs",
+    "feature reorder/rebuild is deterministic",
+    "suppression/restore is deterministic",
+    "Save/Open preserves semantic refs",
+    "broken refs never silently bind to another subshape"
+  ],
+  "compatibility": {
+    "schemaBumpRequiresMigrationFixture": true,
+    "allDeclaredSupportedSchemasMustOpen": true,
+    "readMustNotSilentlyRewriteStoredDocuments": true
+  },
+  "publicBeta": {
+    "rootLicenseRequired": true,
+    "thirdPartyNoticeRequired": true,
+    "unexceptedHighSeverityDependencyFindingsAllowed": false
+  }
+}
