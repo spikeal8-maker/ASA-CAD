@@ -38,6 +38,7 @@ const handlers: M2CadUiActionHandlers = {
   equalConstraint: call('equalConstraint'),
   symmetricConstraint: call('symmetricConstraint'),
   pointOnCurveConstraint: call('pointOnCurveConstraint'),
+  linearDimension: call('linearDimension'),
   horizontalDimension: call('horizontalDimension'),
   verticalDimension: call('verticalDimension'),
   finishSketch: call('finishSketch'),
@@ -71,7 +72,7 @@ const bindings = createM2CadUiActionBindings(handlers, {
   canApplyEqualConstraint: true,
   canApplySymmetryConstraint: true,
   canApplyPointOnCurveConstraint: true,
-  canApplyDirectionalDimension: true,
+  canApplyLineDimension: true,
   canExtrude: false,
   canCutExtrude: true,
   canFillet: false,
@@ -94,6 +95,7 @@ assert.equal(actions.get('constraint.concentric')?.enabled, true);
 assert.equal(actions.get('constraint.equal')?.enabled, true);
 assert.equal(actions.get('constraint.symmetric')?.enabled, true);
 assert.equal(actions.get('constraint.pointOnCurve')?.enabled, true);
+assert.equal(actions.get('dimension.linear')?.enabled, true);
 assert.equal(actions.get('dimension.horizontal')?.enabled, true);
 assert.equal(actions.get('dimension.vertical')?.enabled, true);
 assert.equal(actions.get('part.extrude')?.enabled, false);
@@ -113,11 +115,12 @@ assert.equal(await executeCadUiAction(actions.get('constraint.concentric')!), tr
 assert.equal(await executeCadUiAction(actions.get('constraint.equal')!), true);
 assert.equal(await executeCadUiAction(actions.get('constraint.symmetric')!), true);
 assert.equal(await executeCadUiAction(actions.get('constraint.pointOnCurve')!), true);
+assert.equal(await executeCadUiAction(actions.get('dimension.linear')!), true);
 assert.equal(await executeCadUiAction(actions.get('dimension.horizontal')!), true);
 assert.equal(await executeCadUiAction(actions.get('dimension.vertical')!), true);
 assert.equal(await executeCadUiAction(actions.get('part.cutExtrude')!), true);
 assert.equal(await executeCadUiAction(actions.get('part.extrude')!), false);
-assert.deepEqual(calls, ['redo', 'constructionToggle', 'horizontalConstraint', 'verticalConstraint', 'fixedConstraint', 'coincidentConstraint', 'parallelConstraint', 'perpendicularConstraint', 'tangentConstraint', 'concentricConstraint', 'equalConstraint', 'symmetricConstraint', 'pointOnCurveConstraint', 'horizontalDimension', 'verticalDimension', 'cutExtrude']);
+assert.deepEqual(calls, ['redo', 'constructionToggle', 'horizontalConstraint', 'verticalConstraint', 'fixedConstraint', 'coincidentConstraint', 'parallelConstraint', 'perpendicularConstraint', 'tangentConstraint', 'concentricConstraint', 'equalConstraint', 'symmetricConstraint', 'pointOnCurveConstraint', 'linearDimension', 'horizontalDimension', 'verticalDimension', 'cutExtrude']);
 
 const disabledConstraints = indexCadUiActions(createCadUiActions(definitions, createM2CadUiActionBindings(handlers, {
   canUndo: false,
@@ -135,7 +138,7 @@ const disabledConstraints = indexCadUiActions(createCadUiActions(definitions, cr
   canApplyEqualConstraint: false,
   canApplySymmetryConstraint: false,
   canApplyPointOnCurveConstraint: false,
-  canApplyDirectionalDimension: false,
+  canApplyLineDimension: false,
   canExtrude: false,
   canCutExtrude: false,
   canFillet: false,
@@ -161,6 +164,8 @@ assert.equal(disabledConstraints.get('constraint.symmetric')?.enabled, false);
 assert.equal(disabledConstraints.get('constraint.symmetric')?.disabledReason, 'Создайте три отрезка эскиза');
 assert.equal(disabledConstraints.get('constraint.pointOnCurve')?.enabled, false);
 assert.equal(disabledConstraints.get('constraint.pointOnCurve')?.disabledReason, 'Создайте два отрезка эскиза');
+assert.equal(disabledConstraints.get('dimension.linear')?.enabled, false);
+assert.equal(disabledConstraints.get('dimension.linear')?.disabledReason, 'Выберите отрезок эскиза');
 assert.equal(disabledConstraints.get('dimension.horizontal')?.enabled, false);
 assert.equal(disabledConstraints.get('dimension.horizontal')?.disabledReason, 'Выберите отрезок эскиза');
 assert.equal(disabledConstraints.get('dimension.vertical')?.enabled, false);

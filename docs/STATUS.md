@@ -37,9 +37,13 @@ Bounded/non-growing YELLOW debt:
 5. M3X ASA-CAD <-> ASA Lab shared golden host contract is not yet proven;
 6. large history/topology/runtime scale benchmarks remain required before/through M4/M4B.
 
-## Current iteration cadence
+## Current audit gate
 
-After the post-Construction audit reset, accepted permanent slices #109 (M3-DIM-000) and #110 (M3-DIM-001A) account for **2 / 3**. Acceptance of this H/V productization slice is the third permanent slice and therefore reaches **3 / 3**; the required Full Repository Health Audit is the next action before another feature slice.
+**Full Repository Health Audit #112: RED — feature work frozen.**
+
+Blocking finding: `STATE-DIM-001` — `dimension.linear` is registry=`implemented` while its shared desktop/mobile/search product path is incomplete. Active bounded repair: **#113 AUD-R1-LINEAR-CONVERGENCE**.
+
+M3 remains ACTIVE. Horizontal/Vertical driving dimensions remain accepted. Do not start Angular, Radius, Diameter productization, DoF or constraint-state UX while #113/#112 remain unresolved. Audit cadence remains **3 / 3** and is **not reset** until controller acceptance/reclassification of #112.
 
 ## Gate B closeout
 
@@ -57,9 +61,9 @@ The M3 exit contract is machine-readable in `spec/process/milestone-gates.v1.jso
 
 ## Next M3 work
 
-After acceptance of the H/V productization slice, run the required Full Repository Health Audit before another feature slice. M3 remains ACTIVE; do not declare M3 exit.
+Complete only **#113 AUD-R1-LINEAR-CONVERGENCE**, then return #112 to controller review. No further M3 feature slice starts before the audit is reclassified.
 
-Remaining required dimension product gaps are Angular, Radius, Diameter productization, plus a focused check/closeout of remaining Linear product completeness. Meaningful under/fully/over-constrained diagnostics and DOF feedback also remain required.
+Remaining required product gaps after this repair still include Angular, Radius, Diameter productization, meaningful under/fully/over-constrained diagnostics and DOF feedback. M3 remains ACTIVE; do not declare M3 exit.
 
 M3 extension commands (polyline/polygon/ellipse/spline/point, trim/extend/split/offset/fillet/chamfer/mirror/move/rotate/scale/project, `dimension.auto`) do not block M3 unless deliberately reclassified.
 
