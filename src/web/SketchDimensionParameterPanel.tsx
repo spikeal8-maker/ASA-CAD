@@ -1,19 +1,13 @@
 import React from 'react';
 import { ParameterNumericField } from './ParameterNumericField';
 import { dimensionLabel } from './SketchDimensionPresentation';
-import type { SketchLineDimensionMode } from './useSketchLineDimensionController';
+import type { SketchDimensionCreationState } from './useSketchDimensionCreationControllers';
 
 export interface SketchDimensionParameterPanelProps {
   activeCommand: string;
-  lineMode: SketchLineDimensionMode | null;
-  lineEntityId: string | null;
-  lineValue: number;
-  setLineValue(value: number): void;
-  canCommitLine: boolean;
+  creation: SketchDimensionCreationState;
   dimensionEditValue: number;
   setDimensionEditValue(value: number): void;
-  onLineCommit(): void | Promise<void>;
-  onLineCancel(): void;
   onDimensionEdit(): void | Promise<void>;
   onCancel(): void;
 }
@@ -35,23 +29,23 @@ export function SketchDimensionParameterPanel(props: SketchDimensionParameterPan
     );
   }
 
-  const mode = props.lineMode;
+  const { mode } = props.creation;
   if (!mode || props.activeCommand !== `dimension.${mode}`) return null;
   return (
     <DimensionPanelFrame
       eyebrow="Управляющий размер"
       title={dimensionLabel(undefined, mode)}
-      value={props.lineValue}
-      setValue={props.setLineValue}
-      onApply={props.onLineCommit}
-      onCancel={props.onLineCancel}
+      value={props.creation.value}
+      setValue={props.creation.setValue}
+      onApply={props.creation.commit}
+      onCancel={props.creation.cancel}
       applyLabel="Создать"
-      applyDisabled={!props.canCommitLine}
+      applyDisabled={!props.creation.canCommit}
     >
-      <div className="selection-value selected" data-directional-dimension-target={props.lineEntityId ?? ''}>
+      <div className="selection-value selected" data-directional-dimension-target={props.creation.entityId ?? ''}>
         <span>✓</span>
-        <strong>Выбранный отрезок</strong>
-        <small>{props.lineEntityId ?? '—'}</small>
+        <strong>{mode === 'diameter' ? 'Выбранная окружность' : 'Выбранный отрезок'}</strong>
+        <small>{props.creation.entityId ?? '—'}</small>
       </div>
     </DimensionPanelFrame>
   );

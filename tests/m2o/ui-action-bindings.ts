@@ -41,6 +41,7 @@ const handlers: M2CadUiActionHandlers = {
   linearDimension: call('linearDimension'),
   horizontalDimension: call('horizontalDimension'),
   verticalDimension: call('verticalDimension'),
+  diameterDimension: call('diameterDimension'),
   finishSketch: call('finishSketch'),
   extrude: call('extrude'),
   cutExtrude: call('cutExtrude'),
@@ -73,6 +74,7 @@ const bindings = createM2CadUiActionBindings(handlers, {
   canApplySymmetryConstraint: true,
   canApplyPointOnCurveConstraint: true,
   canApplyLineDimension: true,
+  canApplyDiameterDimension: true,
   canExtrude: false,
   canCutExtrude: true,
   canFillet: false,
@@ -98,6 +100,7 @@ assert.equal(actions.get('constraint.pointOnCurve')?.enabled, true);
 assert.equal(actions.get('dimension.linear')?.enabled, true);
 assert.equal(actions.get('dimension.horizontal')?.enabled, true);
 assert.equal(actions.get('dimension.vertical')?.enabled, true);
+assert.equal(actions.get('dimension.diameter')?.enabled, true);
 assert.equal(actions.get('part.extrude')?.enabled, false);
 assert.equal(actions.get('part.cutExtrude')?.enabled, true);
 assert.equal(actions.get('part.fillet')?.enabled, false);
@@ -118,9 +121,10 @@ assert.equal(await executeCadUiAction(actions.get('constraint.pointOnCurve')!), 
 assert.equal(await executeCadUiAction(actions.get('dimension.linear')!), true);
 assert.equal(await executeCadUiAction(actions.get('dimension.horizontal')!), true);
 assert.equal(await executeCadUiAction(actions.get('dimension.vertical')!), true);
+assert.equal(await executeCadUiAction(actions.get('dimension.diameter')!), true);
 assert.equal(await executeCadUiAction(actions.get('part.cutExtrude')!), true);
 assert.equal(await executeCadUiAction(actions.get('part.extrude')!), false);
-assert.deepEqual(calls, ['redo', 'constructionToggle', 'horizontalConstraint', 'verticalConstraint', 'fixedConstraint', 'coincidentConstraint', 'parallelConstraint', 'perpendicularConstraint', 'tangentConstraint', 'concentricConstraint', 'equalConstraint', 'symmetricConstraint', 'pointOnCurveConstraint', 'linearDimension', 'horizontalDimension', 'verticalDimension', 'cutExtrude']);
+assert.deepEqual(calls, ['redo', 'constructionToggle', 'horizontalConstraint', 'verticalConstraint', 'fixedConstraint', 'coincidentConstraint', 'parallelConstraint', 'perpendicularConstraint', 'tangentConstraint', 'concentricConstraint', 'equalConstraint', 'symmetricConstraint', 'pointOnCurveConstraint', 'linearDimension', 'horizontalDimension', 'verticalDimension', 'diameterDimension', 'cutExtrude']);
 
 const disabledConstraints = indexCadUiActions(createCadUiActions(definitions, createM2CadUiActionBindings(handlers, {
   canUndo: false,
@@ -139,6 +143,7 @@ const disabledConstraints = indexCadUiActions(createCadUiActions(definitions, cr
   canApplySymmetryConstraint: false,
   canApplyPointOnCurveConstraint: false,
   canApplyLineDimension: false,
+  canApplyDiameterDimension: false,
   canExtrude: false,
   canCutExtrude: false,
   canFillet: false,
@@ -170,6 +175,8 @@ assert.equal(disabledConstraints.get('dimension.horizontal')?.enabled, false);
 assert.equal(disabledConstraints.get('dimension.horizontal')?.disabledReason, 'Выберите отрезок эскиза');
 assert.equal(disabledConstraints.get('dimension.vertical')?.enabled, false);
 assert.equal(disabledConstraints.get('dimension.vertical')?.disabledReason, 'Выберите отрезок эскиза');
+assert.equal(disabledConstraints.get('dimension.diameter')?.enabled, false);
+assert.equal(disabledConstraints.get('dimension.diameter')?.disabledReason, 'Выберите окружность эскиза');
 
 assert.equal(cadUiActionIdForShortcut('system.save'), 'system.save');
 assert.equal(cadUiActionIdForShortcut('system.rebuild'), 'system.rebuild');

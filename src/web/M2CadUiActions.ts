@@ -28,6 +28,7 @@ export interface M2CadUiActionHandlers {
   linearDimension(): void | Promise<void>;
   horizontalDimension(): void | Promise<void>;
   verticalDimension(): void | Promise<void>;
+  diameterDimension(): void | Promise<void>;
   finishSketch(): void | Promise<void>;
   extrude(): void | Promise<void>;
   cutExtrude(): void | Promise<void>;
@@ -59,6 +60,7 @@ export interface M2CadUiActionState {
   canApplySymmetryConstraint: boolean;
   canApplyPointOnCurveConstraint: boolean;
   canApplyLineDimension: boolean;
+  canApplyDiameterDimension: boolean;
   canExtrude: boolean;
   canCutExtrude: boolean;
   canFillet: boolean;
@@ -82,6 +84,7 @@ export function createM2CadUiActionBindings(
   const pairConstraintReason = 'Создайте два отрезка эскиза';
   const tangentConstraintReason = 'Создайте отрезок и окружность эскиза';
   const lineDimensionReason = state.canApplyLineDimension ? undefined : 'Выберите отрезок эскиза';
+  const diameterDimensionReason = state.canApplyDiameterDimension ? undefined : 'Выберите окружность эскиза';
   return {
     'system.open': binding(handlers.open),
     'system.save': binding(handlers.save),
@@ -110,6 +113,7 @@ export function createM2CadUiActionBindings(
     'dimension.linear': binding(handlers.linearDimension, state.canApplyLineDimension, lineDimensionReason),
     'dimension.horizontal': binding(handlers.horizontalDimension, state.canApplyLineDimension, lineDimensionReason),
     'dimension.vertical': binding(handlers.verticalDimension, state.canApplyLineDimension, lineDimensionReason),
+    'dimension.diameter': binding(handlers.diameterDimension, state.canApplyDiameterDimension, diameterDimensionReason),
     'sketch.finish': binding(handlers.finishSketch, state.hasSketch, 'Сначала создайте эскиз'),
     'part.extrude': binding(handlers.extrude, state.canExtrude, 'Завершите прямоугольный эскиз'),
     'part.cutExtrude': binding(handlers.cutExtrude, state.canCutExtrude, 'Создайте окружность на грани и завершите эскиз'),

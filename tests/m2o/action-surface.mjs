@@ -8,6 +8,8 @@ const shellBottom = readFileSync('src/web/CadShellBottom.tsx', 'utf8');
 const mobileTools = readFileSync('src/web/MobileToolsPanel.tsx', 'utf8');
 const workspace = readFileSync('src/web/usePartSketchWorkspace.ts', 'utf8');
 const lineDimensions = readFileSync('src/web/useSketchLineDimensionController.ts', 'utf8');
+const circleDimensions = readFileSync('src/web/useSketchCircleDimensionController.ts', 'utf8');
+const dimensionCreation = readFileSync('src/web/useSketchDimensionCreationControllers.ts', 'utf8');
 const dimensionPanel = readFileSync('src/web/SketchDimensionParameterPanel.tsx', 'utf8');
 const dimensionPresentation = readFileSync('src/web/SketchDimensionPresentation.ts', 'utf8');
 const appActionCatalog = readFileSync('src/web/usePartCadUiActionCatalog.ts', 'utf8');
@@ -39,7 +41,7 @@ assert.match(app, /case 'view\.panLeft':/, 'camera-only pan remains an interacti
 for (const ribbonActionId of [
   'sketch.rectangle', 'sketch.circle',
   'constraint.horizontal', 'constraint.vertical', 'constraint.fixed', 'constraint.coincident', 'constraint.parallel', 'constraint.perpendicular',
-  'dimension.linear', 'dimension.horizontal', 'dimension.vertical',
+  'dimension.linear', 'dimension.horizontal', 'dimension.vertical', 'dimension.diameter',
   'sketch.finish', 'part.sketch.create', 'part.extrude', 'part.cutExtrude', 'part.fillet', 'system.rebuild',
 ]) {
   assert.ok(commandGroups.includes(`action={props.getAction('${ribbonActionId}')}`), `${ribbonActionId} ribbon button must consume CadUiAction`);
@@ -57,17 +59,22 @@ assert.match(shellBottom, />⌘<span>Инструменты<\/span><\/button>/, 
 assert.match(mobileTools, /import type \{ CadUiAction \}/, 'mobile Tools presentation must consume typed CadUiAction');
 assert.match(mobileTools, /props\.getAction\(tool\.id\)/, 'mobile Tool buttons must resolve shared action objects');
 for (const id of ['horizontal', 'vertical', 'fixed', 'coincident', 'parallel', 'perpendicular']) assert.match(mobileTools, new RegExp(`id: 'constraint\\.${id}'`), `mobile Sketch tools must expose ${id} through CadUiAction`);
-for (const id of ['linear', 'horizontal', 'vertical']) assert.match(mobileTools, new RegExp(`id: 'dimension\\.${id}'`), `mobile Sketch tools must expose dimension.${id} through CadUiAction`);
+for (const id of ['linear', 'horizontal', 'vertical', 'diameter']) assert.match(mobileTools, new RegExp(`id: 'dimension\\.${id}'`), `mobile Sketch tools must expose dimension.${id} through CadUiAction`);
 assert.doesNotMatch(mobileTools, /querySelector|querySelectorAll|\.click\(\)/, 'mobile Tools must never discover/click desktop DOM');
 
-assert.match(workspace, /useSketchLineDimensionController/, 'workspace must compose the focused selected-Line dimension owner');
-assert.match(lineDimensions, /'linear' \| 'horizontal' \| 'vertical'/, 'one selected-Line dimension owner must cover Linear/H/V creation');
-assert.match(lineDimensions, /app\.execute\(/, 'selected-Line dimension owner must mutate only through CadApplication');
-assert.match(lineDimensions, /targetEntityId/, 'selected-Line dimension owner must retain the selected stable Line ID');
-assert.doesNotMatch(lineDimensions, /PlaneGCS|BrowserSketchSolver|localStorage|querySelector|undoStack|redoStack/, 'selected-Line dimension owner must not absorb solver/persistence/DOM/history responsibilities');
+assert.match(workspace, /useSketchDimensionCreation/, 'workspace must compose focused dimension creation owners');
+assert.match(dimensionCreation, /useSketchLineDimensionController/, 'dimension creation composition must retain the selected-Line owner');
+assert.match(dimensionCreation, /useSketchCircleDimensionController/, 'dimension creation composition must add the focused selected-Circle owner');
+assert.match(lineDimensions, /'linear' \| 'horizontal' \| 'vertical'/, 'selected-Line owner must remain Linear/H/V only');
+assert.doesNotMatch(lineDimensions, /diameter/, 'selected-Line owner must not absorb Circle Diameter responsibility');
+assert.match(circleDimensions, /id: 'dimension\.diameter'/, 'Circle owner must commit only the Diameter command');
+assert.match(circleDimensions, /selectedEntity\?\.type === 'circle'/, 'Diameter eligibility must be Circle-only');
+assert.doesNotMatch(circleDimensions, /PlaneGCS|BrowserSketchSolver|localStorage|querySelector|undoStack|redoStack/, 'Circle dimension owner must not absorb solver/persistence/DOM/history responsibilities');
 assert.match(dimensionPresentation, /type === 'linear'.*Линейный размер/, 'canonical presentation must name Linear Dimension');
 assert.match(dimensionPresentation, /type === 'horizontal'.*Горизонтальный размер/, 'canonical presentation must name Horizontal Dimension');
 assert.match(dimensionPresentation, /type === 'vertical'.*Вертикальный размер/, 'canonical presentation must name Vertical Dimension');
+assert.match(dimensionPresentation, /type === 'diameter'.*Диаметральный размер/, 'canonical presentation must name product Diameter Dimension');
+assert.match(dimensionPanel, /Выбранная окружность/, 'Diameter Parameters must present the selected Circle');
 assert.match(dimensionPanel, /Изменить размер/, 'existing dimension edit presentation must remain distinct');
 
 console.log('M2O O4 action surfaces PASS (shell delegates focused shared-action command groups; desktop/mobile/search stay unified)');

@@ -15,7 +15,7 @@ Older issue/PR/status text is historical only; if it conflicts, use this file + 
 
 Protected document family: **six document kinds** - Part, Assembly, Drawing, Fragment, Specification and Text - behind `CadDocument` / `CadApplication`.
 
-Accepted M3 includes Line/Circle/Arc/Rectangle, stable-ID selection/delete/drag, the constraint family through Point-on-curve, Construction Line, and productized Linear/Horizontal/Vertical driving dimensions through shared desktop/mobile/search actions.
+Accepted M3 includes Line/Circle/Arc/Rectangle, stable-ID selection/delete/drag, the constraint family through Point-on-curve, Construction Line, and productized Linear/Horizontal/Vertical driving dimensions through shared desktop/mobile/search actions. M3-DIM-002 productizes the already-existing Diameter core; on acceptance Diameter joins this productized dimension set without adding a new persisted discriminant.
 
 ## Full Repository Health Audit #112
 
@@ -51,14 +51,15 @@ The M3 exit contract is machine-readable in `spec/process/milestone-gates.v1.jso
 
 ## Next M3 work
 
-Bounded M3 work may resume after this status closeout. Current required product gaps are:
+Bounded M3 work may resume after this status closeout. Current M3-DIM-002 review candidate productizes Diameter using the existing schema-v1 `diameter` discriminant. After acceptance, required product gaps remain:
 - Angular dimension;
 - Radius dimension;
-- Diameter productization;
 - meaningful non-null DoF;
 - visible under/fully/over-constrained diagnostics.
 
-If the next slice introduces a new persisted Dimension discriminant, resolve `SCHEMA-001` first. Do not declare M3 exit until the complete machine exit contract is accepted.
+`SCHEMA-001` remains mandatory before Angular or Radius introduces another persisted Dimension discriminant. M3 remains ACTIVE; do not declare M3 exit until the complete machine exit contract is accepted.
+
+This is the first permanent slice after Audit #112 reset; **on acceptance cadence becomes 1 / 3**.
 
 M3 extension commands do not block M3 unless deliberately reclassified.
 
