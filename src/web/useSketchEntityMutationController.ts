@@ -33,10 +33,10 @@ export function useSketchEntityMutationController(options: SketchEntityMutationC
   }
 
   async function toggleSelectedConstruction() {
-    if (!activeSketchId || !selectedEntityId) { setNotice('Р’С‹Р±РµСЂРёС‚Рµ РѕС‚СЂРµР·РѕРє СЌСЃРєРёР·Р°'); return false; }
+    if (!activeSketchId || !selectedEntityId) { setNotice('Выберите отрезок эскиза'); return false; }
     const result = await app.execute({ id: 'sketch.construction', payload: { sketchId: activeSketchId, entityId: selectedEntityId } });
-    if (!result.ok) { setNotice(result.error?.message ?? 'РќРµ СѓРґР°Р»РѕСЃСЊ РїРµСЂРµРєР»СЋС‡РёС‚СЊ РІСЃРїРѕРјРѕРіР°С‚РµР»СЊРЅСѓСЋ РіРµРѕРјРµС‚СЂРёСЋ'); return false; }
-    setNotice('Р РµР¶РёРј РІСЃРїРѕРјРѕРіР°С‚РµР»СЊРЅРѕР№ РіРµРѕРјРµС‚СЂРёРё РїРµСЂРµРєР»СЋС‡С‘РЅ');
+    if (!result.ok) { setNotice(result.error?.message ?? 'Не удалось переключить вспомогательную геометрию'); return false; }
+    setNotice('Режим вспомогательной геометрии переключён');
     return result.changed;
   }
 
