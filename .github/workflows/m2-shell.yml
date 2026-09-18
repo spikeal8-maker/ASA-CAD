@@ -82,6 +82,9 @@ jobs:
       - name: Verify machine milestone policy structure/classification
         run: node tests/process/milestone-policy.mjs
 
+      - name: Verify CadDocument schema evolution policy
+        run: npm run test:process:schema-evolution
+
       - name: Install pinned frontend toolchain
         run: npm --prefix vendor/toubkal ci
 
