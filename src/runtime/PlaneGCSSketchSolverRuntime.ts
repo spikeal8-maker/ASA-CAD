@@ -184,10 +184,10 @@ export class PlaneGCSSketchSolverRuntime implements CadSketchSolverAdapter {
     const ids = new Set(sketch.dimensionIds);
     return part.dimensions
       .filter((dimension) => ids.has(dimension.id) && dimension.driving)
-      .map((dimension) => this.toVendorDimension(dimension));
+      .map((dimension) => this.toVendorDimension(dimension, sketch));
   }
 
-  private toVendorDimension(dimension: CadDimension): SketchConstraint {
+  private toVendorDimension(dimension: CadDimension, sketch: CadSketch): SketchConstraint {
     switch (dimension.type) {
       case 'linear':
         if (dimension.entityIds.length !== 1) {
@@ -199,6 +199,32 @@ export class PlaneGCSSketchSolverRuntime implements CadSketchSolverAdapter {
           refs: [{ kind: 'entity', id: dimension.entityIds[0] }],
           value: dimension.value,
         };
+      case 'horizontal':
+      case 'vertical': {
+        const entity = sketch.entities.find((item) => item.id === dimension.entityIds[0]);
+        if (!entity) throw new Error(`Directional dimension ${dimension.id} references an unknown entity`);
+        if (entity.type !== 'line') {
+          throw new Error(`Directional dimension ${dimension.id} requires a Line entity, got ${entity.type}`);
+        }
+        const axis = dimension.type === 'horizontal' ? 0 : 1;
+        const fromValue = entity.data.from[axis];
+        const toValue = entity.data.to[axis];
+        const refs: SketchRef[] = fromValue <= toValue
+          ? [
+              { kind: 'point', id: entity.id, pt: 'a' },
+              { kind: 'point', id: entity.id, pt: 'b' },
+            ]
+          : [
+              { kind: 'point', id: entity.id, pt: 'b' },
+              { kind: 'point', id: entity.id, pt: 'a' },
+            ];
+        return {
+          id: dimension.id,
+          type: dimension.type === 'horizontal' ? 'DISTANCE_X' : 'DISTANCE_Y',
+          refs,
+          value: dimension.value,
+        };
+      }
       case 'diameter':
         return {
           id: dimension.id,

@@ -38,6 +38,8 @@ export type CadCommandId =
   | 'constraint.pointOnCurve'
   | 'constraint.fixed'
   | 'dimension.linear'
+  | 'dimension.horizontal'
+  | 'dimension.vertical'
   | 'dimension.diameter'
   | 'feature.extrude'
   | 'feature.cutExtrude'
@@ -149,6 +151,18 @@ export interface CadCommandMap {
   'dimension.linear': {
     sketchId: CadSketchId;
     entityIds: CadSketchEntityId[];
+    value: number;
+    name?: string;
+  };
+  'dimension.horizontal': {
+    sketchId: CadSketchId;
+    entityId: CadSketchEntityId;
+    value: number;
+    name?: string;
+  };
+  'dimension.vertical': {
+    sketchId: CadSketchId;
+    entityId: CadSketchEntityId;
     value: number;
     name?: string;
   };

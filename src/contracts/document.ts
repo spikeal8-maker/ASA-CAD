@@ -24,6 +24,7 @@ export type {
   CadDimension,
   CadFixedConstraint,
   CadHorizontalConstraint,
+  CadHorizontalDimension,
   CadLinearDimension,
   CadPartSketchCollections,
   CadPoint2,
@@ -38,6 +39,7 @@ export type {
   CadSketchPointSelector,
   CadSketchSupport,
   CadVerticalConstraint,
+  CadVerticalDimension,
 } from './sketch';
 
 export const CAD_DOCUMENT_SCHEMA_VERSION = 1 as const;

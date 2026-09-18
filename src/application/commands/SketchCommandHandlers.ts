@@ -74,6 +74,8 @@ export function getSketchGrowthCommandAvailability(
       return sketchConstraintCommandHandlers[id].availability(part);
 
     case 'dimension.linear':
+    case 'dimension.horizontal':
+    case 'dimension.vertical':
     case 'dimension.diameter':
     case 'part.dimension.setValue':
       return sketchDimensionCommandHandlers[id].availability(part);
@@ -130,6 +132,10 @@ export function applySketchGrowthCommand(
 
     case 'dimension.linear':
       return sketchDimensionCommandHandlers['dimension.linear'].execute(part, command);
+    case 'dimension.horizontal':
+      return sketchDimensionCommandHandlers['dimension.horizontal'].execute(part, command);
+    case 'dimension.vertical':
+      return sketchDimensionCommandHandlers['dimension.vertical'].execute(part, command);
     case 'dimension.diameter':
       return sketchDimensionCommandHandlers['dimension.diameter'].execute(part, command);
     case 'part.dimension.setValue':

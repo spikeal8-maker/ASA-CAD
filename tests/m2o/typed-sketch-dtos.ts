@@ -8,12 +8,14 @@ import {
   type CadCoincidentConstraint,
   type CadDiameterDimension,
   type CadHorizontalConstraint,
+  type CadHorizontalDimension,
   type CadLinearDimension,
   type CadSketch,
   type CadSketchCircleEntity,
   type CadSketchEntityId,
   type CadSketchId,
   type CadSketchLineEntity,
+  type CadVerticalDimension,
 } from '../../src';
 import type { CadConstraintId, CadDimensionId } from '../../src/contracts/ids';
 
@@ -62,6 +64,8 @@ const coincident: CadCoincidentConstraint = {
 
 const linearId = createCadId<CadDimensionId>('dimension');
 const diameterId = createCadId<CadDimensionId>('dimension');
+const horizontalDimensionId = createCadId<CadDimensionId>('dimension');
+const verticalDimensionId = createCadId<CadDimensionId>('dimension');
 const linear: CadLinearDimension = {
   id: linearId,
   type: 'linear',
@@ -78,6 +82,22 @@ const diameter: CadDiameterDimension = {
   driving: true,
   name: 'diameter',
 };
+const horizontalDimension: CadHorizontalDimension = {
+  id: horizontalDimensionId,
+  type: 'horizontal',
+  entityIds: [lineAId],
+  value: 60,
+  driving: true,
+  name: 'horizontal-width',
+};
+const verticalDimension: CadVerticalDimension = {
+  id: verticalDimensionId,
+  type: 'vertical',
+  entityIds: [lineBId],
+  value: 40,
+  driving: true,
+  name: 'vertical-height',
+};
 
 const sketch: CadSketch = {
   id: sketchId,
@@ -85,11 +105,11 @@ const sketch: CadSketch = {
   support: 'XY',
   entities: [lineA, lineB, circle],
   constraintIds: [horizontalId, coincidentId],
-  dimensionIds: [linearId, diameterId],
+  dimensionIds: [linearId, diameterId, horizontalDimensionId, verticalDimensionId],
 };
 part.sketches.push(sketch);
 part.constraints.push(horizontal, coincident);
-part.dimensions.push(linear, diameter);
+part.dimensions.push(linear, diameter, horizontalDimension, verticalDimension);
 
 const serialized = serializeCadDocument(part);
 const parsed = parseCadDocument(serialized);
@@ -128,6 +148,22 @@ mutateAndReject(
 mutateAndReject(
   (value) => { value.dimensions[0].type = 'mystery-dimension'; },
   /dimensions\[0\]\.type is unsupported/,
+);
+mutateAndReject(
+  (value) => { value.dimensions[2].entityIds = [lineAId, lineBId]; },
+  /horizontal requires exactly one entity id/,
+);
+mutateAndReject(
+  (value) => { value.dimensions[3].entityIds = []; },
+  /vertical requires exactly one entity id/,
+);
+mutateAndReject(
+  (value) => { value.dimensions[2].value = 0; },
+  /value must be positive/,
+);
+mutateAndReject(
+  (value) => { value.dimensions[3].driving = 'yes'; },
+  /driving must be boolean/,
 );
 
 const legacyCompatible = createEmptyCadDocument('part', { title: 'Legacy compatible' });
