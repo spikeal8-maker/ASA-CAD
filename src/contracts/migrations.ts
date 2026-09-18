@@ -28,6 +28,21 @@ export function registerCadDocumentMigration(fromVersion: number, migration: Cad
   migrations.set(fromVersion, migration);
 }
 
+const SCHEMA_V1_DIMENSION_TYPES = new Set(['linear', 'horizontal', 'vertical', 'diameter']);
+
+registerCadDocumentMigration(1, (input, context) => {
+  if (Array.isArray(input.dimensions)) {
+    input.dimensions.forEach((value, index) => {
+      if (!value || typeof value !== 'object') return;
+      const type = String((value as Record<string, unknown>).type);
+      if (!SCHEMA_V1_DIMENSION_TYPES.has(type)) {
+        throw new Error(`Schema v1 dimensions[${index}].type is unsupported: ${type}`);
+      }
+    });
+  }
+  return { ...input, schemaVersion: context.targetSchemaVersion };
+});
+
 export function migrateCadDocument(value: string | unknown): CadDocument {
   let current: unknown = typeof value === 'string' ? JSON.parse(value) : structuredClone(value);
   if (!current || typeof current !== 'object') throw new Error('CadDocument must be an object');

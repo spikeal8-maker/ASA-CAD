@@ -77,6 +77,7 @@ export function getSketchGrowthCommandAvailability(
     case 'dimension.horizontal':
     case 'dimension.vertical':
     case 'dimension.diameter':
+    case 'dimension.radius':
     case 'part.dimension.setValue':
       return sketchDimensionCommandHandlers[id].availability(part);
   }
@@ -138,6 +139,8 @@ export function applySketchGrowthCommand(
       return sketchDimensionCommandHandlers['dimension.vertical'].execute(part, command);
     case 'dimension.diameter':
       return sketchDimensionCommandHandlers['dimension.diameter'].execute(part, command);
+    case 'dimension.radius':
+      return sketchDimensionCommandHandlers['dimension.radius'].execute(part, command);
     case 'part.dimension.setValue':
       return sketchDimensionCommandHandlers['part.dimension.setValue'].execute(part, command);
   }

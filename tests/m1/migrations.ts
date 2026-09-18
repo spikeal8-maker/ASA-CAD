@@ -6,7 +6,10 @@ import {
   CadDocumentMigrationMissingError,
   createEmptyCadDocument,
   migrateCadDocument,
+  parseCadDocument,
 } from '../../src';
+
+assert.equal(CAD_DOCUMENT_SCHEMA_VERSION, 2);
 
 const current = createEmptyCadDocument('part');
 assert.deepEqual(migrateCadDocument(current), current);
@@ -17,7 +20,6 @@ const schemaPolicy = JSON.parse(
   currentCadDocumentSchemaVersion: number;
   schemas: Array<{ version: number; dimensionTypes: string[]; fixture: string }>;
 };
-
 assert.equal(schemaPolicy.currentCadDocumentSchemaVersion, CAD_DOCUMENT_SCHEMA_VERSION);
 
 for (const schema of schemaPolicy.schemas) {
@@ -32,26 +34,48 @@ assert.ok(v1);
 const v1Fixture = JSON.parse(fs.readFileSync(v1.fixture, 'utf8'));
 const migratedV1 = migrateCadDocument(v1Fixture);
 assert.equal(migratedV1.kind, 'part');
-if (migratedV1.kind !== 'part') throw new Error('Expected Part fixture');
+if (migratedV1.kind !== 'part') throw new Error('Expected migrated v1 Part fixture');
+assert.equal(migratedV1.schemaVersion, 2);
+assert.deepEqual(
+  migratedV1,
+  { ...v1Fixture, schemaVersion: 2 },
+  'v1 -> v2 migration must preserve all persisted content except schemaVersion',
+);
 assert.deepEqual(
   migratedV1.dimensions.map((dimension) => dimension.type),
   ['linear', 'horizontal', 'vertical', 'diameter'],
-  'schema-v1 fixture must preserve the frozen Dimension grammar through migration/open',
+);
+assert.throws(
+  () => parseCadDocument(v1Fixture),
+  /Unsupported CadDocument schemaVersion: 1/,
+  'raw v1 must not masquerade as native v2 outside the migration boundary',
 );
 
-const unknownSameVersion = structuredClone(v1Fixture);
-unknownSameVersion.dimensions[0].type = 'angular';
+const invalidV1Radius = structuredClone(v1Fixture);
+invalidV1Radius.dimensions[0].type = 'radius';
 assert.throws(
-  () => migrateCadDocument(unknownSameVersion),
-  /dimensions\[0\]\.type is unsupported: angular/,
-  'same-version unknown persisted discriminant must be rejected explicitly',
+  () => migrateCadDocument(invalidV1Radius),
+  /Schema v1 dimensions\[0\]\.type is unsupported: radius/,
+  'schema-v1 must reject the new Radius discriminant before migration to v2',
 );
 
+const v2 = schemaPolicy.schemas.find((schema) => schema.version === 2);
+assert.ok(v2);
+const v2Fixture = JSON.parse(fs.readFileSync(v2.fixture, 'utf8'));
+const migratedV2 = migrateCadDocument(v2Fixture);
+assert.equal(migratedV2.kind, 'part');
+if (migratedV2.kind !== 'part') throw new Error('Expected v2 Part fixture');
+assert.equal(migratedV2.schemaVersion, 2);
+assert.ok(migratedV2.dimensions.some((dimension) => dimension.type === 'radius'));
+assert.ok(migratedV2.sketches[0]?.entities.some((entity) => entity.type === 'circle'));
+assert.ok(migratedV2.sketches[0]?.entities.some((entity) => entity.type === 'arc'));
+
 assert.throws(
-  () => migrateCadDocument({ ...current, schemaVersion: CAD_DOCUMENT_SCHEMA_VERSION + 1 }),
+  () => migrateCadDocument({ ...current, schemaVersion: 3 }),
   (error: unknown) => {
     assert.ok(error instanceof CadDocumentFutureVersionError);
-    assert.equal(error.documentVersion, CAD_DOCUMENT_SCHEMA_VERSION + 1);
+    assert.equal(error.documentVersion, 3);
+    assert.equal(error.supportedVersion, 2);
     return true;
   },
 );
@@ -66,7 +90,6 @@ assert.throws(
   },
 );
 
-// Future-proof guard: every declared older-schema fixture above is always opened
-// through migrateCadDocument(). If current becomes v2+ without the required
-// sequential migration registration, that fixture loop fails in CI.
-console.log('ASA-CAD M1 migration contract PASS (declared schema fixtures + exact grammar rejection)');
+// Removing built-in migration 1 -> 2 makes the declared v1 fixture loop above
+// fail with CadDocumentMigrationMissingError. This keeps SCHEMA-001 enforced.
+console.log('ASA-CAD M1 migration contract PASS (v1->v2 identity migration + v2 Radius fixture + exact versioning)');

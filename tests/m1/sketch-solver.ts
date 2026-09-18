@@ -60,6 +60,32 @@ const diameter = await app.execute({
 });
 assert.equal(diameter.ok, true);
 
+const radiusCircleResult = await app.execute({
+  id: 'sketch.circle',
+  payload: { sketchId, center: [70, 10], diameter: 16 },
+});
+const radiusCircleId = radiusCircleResult.createdIds?.[0] as CadSketchEntityId;
+assert.ok(radiusCircleId);
+const circleRadiusDimension = await app.execute({
+  id: 'dimension.radius',
+  payload: { sketchId, entityId: radiusCircleId, value: 12, name: 'solver-circle-radius' },
+});
+assert.equal(circleRadiusDimension.ok, true);
+
+const radiusArcResult = await app.execute({
+  id: 'sketch.arc',
+  payload: { sketchId, center: [100, 20], start: [110, 20], end: [100, 30] },
+});
+const radiusArcId = radiusArcResult.createdIds?.[0] as CadSketchEntityId;
+assert.ok(radiusArcId);
+const arcRadiusDimension = await app.execute({
+  id: 'dimension.radius',
+  payload: { sketchId, entityId: radiusArcId, value: 15, name: 'solver-arc-radius' },
+});
+assert.equal(arcRadiusDimension.ok, true);
+const arcRadiusDimensionId = arcRadiusDimension.createdIds?.[0] as CadDimensionId;
+assert.ok(arcRadiusDimensionId);
+
 const horizontalLineResult = await app.execute({
   id: 'sketch.line',
   payload: { sketchId, from: [30, 15], to: [10, 5] },
@@ -90,6 +116,24 @@ assert.ok(verticalDimensionId);
 
 const solver = new PlaneGCSSketchSolverRuntime();
 await solver.init();
+
+const invalidRadiusDocument = structuredClone(app.getDocument());
+if (invalidRadiusDocument.kind !== 'part') throw new Error('Expected Part document');
+const invalidRadiusDimensionId = 'dimension_radius_line_solver_probe' as CadDimensionId;
+invalidRadiusDocument.dimensions.push({
+  id: invalidRadiusDimensionId,
+  type: 'radius',
+  entityIds: [lineId],
+  value: 5,
+  driving: true,
+});
+const invalidRadiusSketch = invalidRadiusDocument.sketches.find((item) => item.id === sketchId);
+assert.ok(invalidRadiusSketch);
+invalidRadiusSketch.dimensionIds.push(invalidRadiusDimensionId);
+const invalidRadiusSolve = solver.solve(invalidRadiusDocument, sketchId);
+assert.equal(invalidRadiusSolve.ok, false);
+assert.match(invalidRadiusSolve.diagnostics[0]?.message ?? '', /requires a Circle or Arc entity, got line/);
+
 const result = solver.solve(app.getDocument(), sketchId);
 assert.equal(result.ok, true, result.diagnostics.map((item) => item.message).join('; '));
 assert.equal(result.converged, true);
@@ -109,6 +153,19 @@ assert.ok(solvedCircle);
 assert.equal(solvedCircle.type, 'circle');
 if (solvedCircle.type !== 'circle') throw new Error('Expected solved circle');
 assert.ok(Math.abs(solvedCircle.data.diameter - 10) < 1e-5, 'driving diameter was not solved to 10');
+
+const solvedRadiusCircle = result.entities.find((entity) => entity.id === radiusCircleId);
+assert.ok(solvedRadiusCircle && solvedRadiusCircle.type === 'circle');
+if (solvedRadiusCircle.type !== 'circle') throw new Error('Expected solved Radius circle');
+assert.ok(Math.abs(solvedRadiusCircle.data.diameter - 24) < 1e-5, 'Radius 12 must solve Circle diameter to 24');
+
+const solvedRadiusArc = result.entities.find((entity) => entity.id === radiusArcId);
+assert.ok(solvedRadiusArc && solvedRadiusArc.type === 'arc');
+if (solvedRadiusArc.type !== 'arc') throw new Error('Expected solved Radius arc');
+assert.ok(Math.abs(solvedRadiusArc.data.radius - 15) < 1e-5, 'Radius dimension must solve Arc radius to 15');
+assert.ok(solvedRadiusArc.data.startAngle >= 0 && solvedRadiusArc.data.startAngle < Math.PI * 2);
+assert.ok(solvedRadiusArc.data.endAngle > solvedRadiusArc.data.startAngle);
+assert.ok(solvedRadiusArc.data.endAngle - solvedRadiusArc.data.startAngle < Math.PI * 2);
 
 const solvedHorizontalLine = result.entities.find((entity) => entity.id === horizontalLineId);
 assert.ok(solvedHorizontalLine);
@@ -146,6 +203,11 @@ const verticalEdit = await app.execute({
   payload: { dimensionId: verticalDimensionId, value: 45 },
 });
 assert.equal(verticalEdit.ok, true);
+const radiusEdit = await app.execute({
+  id: 'part.dimension.setValue',
+  payload: { dimensionId: arcRadiusDimensionId, value: 20 },
+});
+assert.equal(radiusEdit.ok, true);
 
 const editedResult = solver.solve(app.getDocument(), sketchId);
 assert.equal(editedResult.ok, true, editedResult.diagnostics.map((item) => item.message).join('; '));
@@ -166,6 +228,13 @@ assert.ok(
 );
 assert.ok(editedHorizontalLine.data.from[0] > editedHorizontalLine.data.to[0]);
 assert.ok(editedVerticalLine.data.from[1] > editedVerticalLine.data.to[1]);
+const editedRadiusArc = editedResult.entities.find((entity) => entity.id === radiusArcId);
+assert.ok(editedRadiusArc && editedRadiusArc.type === 'arc');
+if (editedRadiusArc.type !== 'arc') throw new Error('Expected edited Radius arc');
+assert.ok(Math.abs(editedRadiusArc.data.radius - 20) < 1e-5, 'part.dimension.setValue must re-drive Arc radius to 20');
+assert.ok(editedRadiusArc.data.startAngle >= 0 && editedRadiusArc.data.startAngle < Math.PI * 2);
+assert.ok(editedRadiusArc.data.endAngle > editedRadiusArc.data.startAngle);
+assert.ok(editedRadiusArc.data.endAngle - editedRadiusArc.data.startAngle < Math.PI * 2);
 
 solver.dispose();
 app.dispose();

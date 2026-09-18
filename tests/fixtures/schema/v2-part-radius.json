@@ -1,0 +1,90 @@
+{
+  "kind": "part",
+  "schemaVersion": 2,
+  "engineVersion": "schema-v2-fixture",
+  "documentId": "doc_schema_v2_radius",
+  "title": "Schema v2 radius fixture",
+  "units": "mm",
+  "metadata": { "fixture": "radius-v2" },
+  "linkedDocuments": [],
+  "origin": { "planes": ["XY", "XZ", "YZ"] },
+  "variables": {},
+  "sketches": [
+    {
+      "id": "sketch_v2",
+      "name": "Schema v2 sketch",
+      "support": "XY",
+      "entities": [
+        {
+          "id": "entity_line_v2",
+          "type": "line",
+          "data": { "from": [0, 0], "to": [10, 5] }
+        },
+        {
+          "id": "entity_circle_v2",
+          "type": "circle",
+          "data": { "center": [20, 10], "diameter": 8 }
+        },
+        {
+          "id": "entity_arc_v2",
+          "type": "arc",
+          "data": {
+            "center": [40, 10],
+            "radius": 6,
+            "startAngle": 0,
+            "endAngle": 1.5707963267948966
+          }
+        }
+      ],
+      "constraintIds": [],
+      "dimensionIds": [
+        "dimension_linear_v2",
+        "dimension_horizontal_v2",
+        "dimension_vertical_v2",
+        "dimension_diameter_v2",
+        "dimension_radius_v2"
+      ]
+    }
+  ],
+  "constraints": [],
+  "dimensions": [
+    {
+      "id": "dimension_linear_v2",
+      "type": "linear",
+      "entityIds": ["entity_line_v2"],
+      "value": 11.180339887498949,
+      "driving": true
+    },
+    {
+      "id": "dimension_horizontal_v2",
+      "type": "horizontal",
+      "entityIds": ["entity_line_v2"],
+      "value": 10,
+      "driving": true
+    },
+    {
+      "id": "dimension_vertical_v2",
+      "type": "vertical",
+      "entityIds": ["entity_line_v2"],
+      "value": 5,
+      "driving": true
+    },
+    {
+      "id": "dimension_diameter_v2",
+      "type": "diameter",
+      "entityIds": ["entity_circle_v2"],
+      "value": 8,
+      "driving": true
+    },
+    {
+      "id": "dimension_radius_v2",
+      "type": "radius",
+      "entityIds": ["entity_arc_v2"],
+      "value": 6,
+      "driving": true
+    }
+  ],
+  "features": [],
+  "bodies": [],
+  "stableReferences": []
+}

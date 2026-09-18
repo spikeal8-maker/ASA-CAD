@@ -10,6 +10,7 @@ import {
   type CadHorizontalConstraint,
   type CadHorizontalDimension,
   type CadLinearDimension,
+  type CadRadiusDimension,
   type CadSketch,
   type CadSketchCircleEntity,
   type CadSketchEntityId,
@@ -19,7 +20,7 @@ import {
 } from '../../src';
 import type { CadConstraintId, CadDimensionId } from '../../src/contracts/ids';
 
-assert.equal(CAD_DOCUMENT_SCHEMA_VERSION, 1, 'O7 must not change the persisted schema version');
+assert.equal(CAD_DOCUMENT_SCHEMA_VERSION, 2, 'current typed Sketch DTO test must track schema v2');
 
 const part = createEmptyCadDocument('part', { title: 'O7 typed sketch' });
 const sketchId = createCadId<CadSketchId>('sketch');
@@ -66,6 +67,7 @@ const linearId = createCadId<CadDimensionId>('dimension');
 const diameterId = createCadId<CadDimensionId>('dimension');
 const horizontalDimensionId = createCadId<CadDimensionId>('dimension');
 const verticalDimensionId = createCadId<CadDimensionId>('dimension');
+const radiusDimensionId = createCadId<CadDimensionId>('dimension');
 const linear: CadLinearDimension = {
   id: linearId,
   type: 'linear',
@@ -98,6 +100,14 @@ const verticalDimension: CadVerticalDimension = {
   driving: true,
   name: 'vertical-height',
 };
+const radiusDimension: CadRadiusDimension = {
+  id: radiusDimensionId,
+  type: 'radius',
+  entityIds: [circleId],
+  value: 6,
+  driving: true,
+  name: 'circle-radius',
+};
 
 const sketch: CadSketch = {
   id: sketchId,
@@ -105,15 +115,15 @@ const sketch: CadSketch = {
   support: 'XY',
   entities: [lineA, lineB, circle],
   constraintIds: [horizontalId, coincidentId],
-  dimensionIds: [linearId, diameterId, horizontalDimensionId, verticalDimensionId],
+  dimensionIds: [linearId, diameterId, horizontalDimensionId, verticalDimensionId, radiusDimensionId],
 };
 part.sketches.push(sketch);
 part.constraints.push(horizontal, coincident);
-part.dimensions.push(linear, diameter, horizontalDimension, verticalDimension);
+part.dimensions.push(linear, diameter, horizontalDimension, verticalDimension, radiusDimension);
 
 const serialized = serializeCadDocument(part);
 const parsed = parseCadDocument(serialized);
-assert.deepEqual(parsed, part, 'typed schema-v1 Sketch DTO must round-trip without wire-format changes');
+assert.deepEqual(parsed, part, 'typed schema-v2 Sketch DTO must round-trip without wire-format changes');
 assert.equal(parsed.kind, 'part');
 if (parsed.kind !== 'part') throw new Error('expected part');
 assert.equal(parsed.sketches[0]?.entities[0]?.type, 'line');
@@ -165,6 +175,18 @@ mutateAndReject(
   (value) => { value.dimensions[3].driving = 'yes'; },
   /driving must be boolean/,
 );
+mutateAndReject(
+  (value) => { value.dimensions[4].entityIds = [circleId, lineAId]; },
+  /radius requires exactly one entity id/,
+);
+mutateAndReject(
+  (value) => { value.dimensions[4].value = 0; },
+  /value must be positive/,
+);
+mutateAndReject(
+  (value) => { value.dimensions[4].value = Number.POSITIVE_INFINITY; },
+  /value must be finite/,
+);
 
 const legacyCompatible = createEmptyCadDocument('part', { title: 'Legacy compatible' });
 const legacySketchId = createCadId<CadSketchId>('sketch');
@@ -182,4 +204,4 @@ const legacyParsed = parseCadDocument(JSON.stringify(legacyJson));
 assert.equal(legacyParsed.kind, 'part');
 assert.equal(legacyParsed.kind === 'part' ? legacyParsed.sketches.length : -1, 1);
 
-console.log('M2O O7 typed Sketch DTO PASS (schema-v1 round-trip + strict malformed-shape rejection)');
+console.log('M2O O7 typed Sketch DTO PASS (schema-v2 round-trip + Radius + strict malformed-shape rejection)');

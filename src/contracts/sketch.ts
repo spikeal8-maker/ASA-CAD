@@ -15,6 +15,7 @@ export type {
   CadDimension,
   CadHorizontalDimension,
   CadLinearDimension,
+  CadRadiusDimension,
   CadVerticalDimension,
 } from './sketchDimensions';
 

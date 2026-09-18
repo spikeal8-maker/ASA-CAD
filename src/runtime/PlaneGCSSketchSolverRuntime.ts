@@ -232,6 +232,19 @@ export class PlaneGCSSketchSolverRuntime implements CadSketchSolverAdapter {
           refs: [{ kind: 'entity', id: dimension.entityIds[0] }],
           value: dimension.value / 2,
         };
+      case 'radius': {
+        const entity = sketch.entities.find((item) => item.id === dimension.entityIds[0]);
+        if (!entity) throw new Error(`Radius dimension ${dimension.id} references an unknown entity`);
+        if (entity.type !== 'circle' && entity.type !== 'arc') {
+          throw new Error(`Radius dimension ${dimension.id} requires a Circle or Arc entity, got ${entity.type}`);
+        }
+        return {
+          id: dimension.id,
+          type: 'RADIUS',
+          refs: [{ kind: 'entity', id: dimension.entityIds[0] }],
+          value: dimension.value,
+        };
+      }
     }
   }
 
