@@ -15,7 +15,10 @@
       "targetBytes": 5120,
       "hardBytes": 8192,
       "lineReviewTarget": 220,
-      "exactFiles": ["AGENTS.md", "docs/STATUS.md"]
+      "exactFiles": [
+        "AGENTS.md",
+        "docs/STATUS.md"
+      ]
     },
     {
       "id": "focused-narrative-spec",
@@ -24,7 +27,9 @@
       "hardBytes": 20480,
       "lineReviewTarget": 450,
       "prefix": "docs/",
-      "extensions": [".md"]
+      "extensions": [
+        ".md"
+      ]
     },
     {
       "id": "command-handler",
@@ -33,7 +38,9 @@
       "hardBytes": 16384,
       "lineReviewTarget": 350,
       "prefix": "src/application/commands/",
-      "extensions": [".ts"]
+      "extensions": [
+        ".ts"
+      ]
     },
     {
       "id": "application-core",
@@ -42,7 +49,10 @@
       "hardBytes": 20480,
       "lineReviewTarget": 400,
       "prefix": "src/application/",
-      "extensions": [".ts", ".tsx"]
+      "extensions": [
+        ".ts",
+        ".tsx"
+      ]
     },
     {
       "id": "public-contract",
@@ -51,7 +61,10 @@
       "hardBytes": 20480,
       "lineReviewTarget": 400,
       "prefix": "src/contracts/",
-      "extensions": [".ts", ".tsx"]
+      "extensions": [
+        ".ts",
+        ".tsx"
+      ]
     },
     {
       "id": "runtime-adapter",
@@ -60,7 +73,9 @@
       "hardBytes": 24576,
       "lineReviewTarget": 450,
       "prefix": "src/runtime/",
-      "extensions": [".ts"]
+      "extensions": [
+        ".ts"
+      ]
     },
     {
       "id": "ui-controller",
@@ -69,7 +84,10 @@
       "hardBytes": 20480,
       "lineReviewTarget": 350,
       "prefix": "src/web/",
-      "extensions": [".ts", ".tsx"]
+      "extensions": [
+        ".ts",
+        ".tsx"
+      ]
     },
     {
       "id": "domain-css",
@@ -78,7 +96,9 @@
       "hardBytes": 20480,
       "lineReviewTarget": 450,
       "prefix": "src/web/",
-      "extensions": [".css"]
+      "extensions": [
+        ".css"
+      ]
     },
     {
       "id": "m3-browser-harness",
@@ -86,7 +106,9 @@
       "targetBytes": 8192,
       "hardBytes": 12288,
       "lineReviewTarget": 300,
-      "exactFiles": ["tests/m3/M3BrowserHarness.mjs"]
+      "exactFiles": [
+        "tests/m3/M3BrowserHarness.mjs"
+      ]
     },
     {
       "id": "browser-regression",
@@ -123,10 +145,30 @@
     "tests/m2/responsive-browser.mjs": 10684
   },
   "repositoryHygiene": {
-    "excludedPrefixes": ["vendor/", "node_modules/", ".git/"],
-    "forbiddenBasenames": [".DS_Store", "Thumbs.db"],
-    "forbiddenSuffixes": [".bak", ".orig", ".rej", ".swp", ".swo", ".tmp", ".log"],
-    "forbiddenDirectoryNames": ["coverage", "playwright-report", "test-results", ".cache"],
+    "excludedPrefixes": [
+      "vendor/",
+      "node_modules/",
+      ".git/"
+    ],
+    "forbiddenBasenames": [
+      ".DS_Store",
+      "Thumbs.db"
+    ],
+    "forbiddenSuffixes": [
+      ".bak",
+      ".orig",
+      ".rej",
+      ".swp",
+      ".swo",
+      ".tmp",
+      ".log"
+    ],
+    "forbiddenDirectoryNames": [
+      "coverage",
+      "playwright-report",
+      "test-results",
+      ".cache"
+    ],
     "temporaryToolNamePattern": "(codemod|one[-_]?shot|review[-_]?fix|temporary[-_]?workflow)",
     "firstPartyLargeFileReviewBytes": 524288,
     "firstPartyHardFileBytes": 2097152
@@ -142,5 +184,24 @@
     "green": "No blocking violation; next feature slice may start.",
     "yellow": "Debt is explicit and non-growing; it must be removed before the next milestone boundary and may not be worsened by later slices.",
     "red": "Feature work is blocked until a focused maintenance gate returns repository health to green or explicitly accepted yellow."
+  },
+  "ownerOptimization": {
+    "pressureRatioOfTarget": 0.85,
+    "acceptedSlicesTouchingSameOwnerBeforeFocusedReview": 2,
+    "thirdFeatureTouchRequiresFocusedOwnerReview": true,
+    "newResponsibilityOnAboveTargetOwner": "forbidden-until-extraction",
+    "frozenOwnerGrowth": "forbidden",
+    "triggerBasis": "accepted-iterations-not-calendar-time"
+  },
+  "stateSynchronization": {
+    "blockingDrift": true,
+    "sources": [
+      "docs/STATUS.md",
+      "active milestone GitHub issue",
+      "docs/ROADMAP.md",
+      "machine registries"
+    ],
+    "gateChangeMustSyncBeforeNextFeature": true,
+    "commandBehaviorChangeMustSyncRegistry": true
   }
 }

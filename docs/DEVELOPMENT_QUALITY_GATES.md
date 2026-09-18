@@ -35,6 +35,14 @@ Check the touched subsystem for:
 
 The next slice starts only after GREEN, or explicitly accepted non-growing YELLOW debt.
 
+### Focused owner optimization checkpoint
+
+Optimization is iteration-based, not calendar-based. Before a third accepted feature slice touches the same primary owner since its last focused review, run a focused owner check. Run it earlier when the owner reaches the machine-policy pressure ratio (currently 85% of target), crosses target, or would gain a new responsibility family.
+
+The checkpoint must choose one: keep the owner unchanged because the new work fits its existing responsibility, or extract a focused owner before adding responsibility. Frozen owners never grow. When extraction shrinks a frozen ceiling, lower the ceiling in the same change.
+
+This checkpoint is smaller than a Full Repository Health Audit: inspect the touched owner, its direct tests/helpers and duplicated paths only.
+
 ### Full Repository Health Audit
 
 Run after every **three accepted slices** and at every milestone boundary, whichever comes first. Review:
@@ -137,6 +145,14 @@ Do not delete compatibility migrations or pinned vendor source merely because th
 
 Do not create another summary/status file for convenience. Historical documents must be retired or clearly non-authoritative once active contracts absorb them. `STATUS`, `ROADMAP` and active issues must not disagree about the blocking gate.
 
+### State synchronization protocol
+
+Repository state is operational data, not optional documentation. At task start, a bot must compare current `main`, `STATUS.md`, the active milestone issue and open blocking audit/maintenance PRs. If they disagree about the active gate, feature work stops until the drift is repaired.
+
+When a command changes implementation status or backend mapping, update the command registry in the same review. When a gate/phase/next action changes, update the issue and `STATUS.md` in the same review when possible. If final merge evidence is only known after merge, the immediate next review is status-only closeout; no feature slice may start first.
+
+`ROADMAP.md` changes only when sequence/acceptance policy changes. `SYSTEM_SPEC.md` changes only when the intended end product changes.
+
 ## 7. Agent/token efficiency
 
 Agent efficiency is a maintainability requirement.
@@ -168,9 +184,9 @@ Prefer shared/golden fixtures verified independently by ASA-CAD and ASA Lab. M5 
 
 ## 9. Performance/scale review
 
-Benchmarking becomes mandatory when a change can materially affect Sketch solve latency, Part recompute, topology-reference resolution, tessellation/render memory, undo/redo history, large-document serialization, WASM startup, Assembly scale or cross-device save/open.
+Optimization triggers come from behavior/iterations, not elapsed time. Before broad M4, record reproducible baselines for Sketch solve scale, Undo/Redo history scale, native Save/Open serialization, WASM cold startup and the protected Part recompute. Do not invent arbitrary pass/fail milliseconds before measuring the supported hardware/browser matrix.
 
-M4/M4B must include synthetic large-document/history/topology corpora rather than only happy-path fixtures.
+After a baseline exists, a slice that materially affects one of these paths must compare against it and explain significant regression. M4/M4B must turn the relevant baselines into machine-enforced regression thresholds and add synthetic large-document/history/topology corpora rather than only happy-path fixtures.
 
 ## 10. Gate evidence and completion
 

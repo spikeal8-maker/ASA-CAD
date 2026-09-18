@@ -114,7 +114,7 @@ Acceptance: matrix/picking/readability gates pass together. Exact current status
 ### M2V — KOMPAS visual acceptance — #19
 Map deterministic ASA states to approved KOMPAS references; tune hierarchy/proportions/spacing and ASA-owned vector icons.
 
-Acceptance: baseline and responsive visual review passes with deliberate differences recorded.
+Acceptance: baseline and responsive visual review passes with deliberate differences recorded. **M2V is a hard Gate B closeout requirement; broad M4 may not begin before this acceptance.**
 
 ### M2O — Architecture optimization gate — #21
 Stabilize the product architecture before M3 expands the command/data surface.
@@ -133,19 +133,20 @@ Blocking outcomes:
 Acceptance: all O1–O8 entry checkboxes in `M2O_OPTIMIZATION_GATE.md` are green while existing Part/browser/Docker regressions remain green. Toolchain ownership, repository administration and final visual acceptance remain non-blocking follow-up lanes.
 
 ### M3 — Parametric Sketch — #5
-**Entry prerequisite: accepted M2O gate.** Read `STATUS.md` for whether the prerequisite is currently satisfied.
+**Entry prerequisite: accepted M2O gate.** Live work comes from `STATUS.md` + issue #5. Exit classification is machine-readable in `spec/process/milestone-gates.v1.json`.
 
-First complete sketcher foundation:
-- line/circle/arc/rectangle and required construction geometry;
-- constraints;
-- driving dimensions;
-- PlaneGCS solve cycle;
-- under/fully/over-constrained diagnostics and DOF feedback;
-- direct canvas editing;
-- save/reopen/migrations;
-- desktop/mobile command presentation.
+M3 closes only when:
+- required geometry is productized: Line, Circle, Arc, Rectangle and Construction Line;
+- the required constraint family is implemented through typed ASA commands and PlaneGCS;
+- driving dimensions include linear, horizontal, vertical, angular, radius and diameter; `dimension.auto` is an extension;
+- solver UX visibly distinguishes under/fully/over-constrained state and provides meaningful non-null DOF feedback;
+- stable-ID selection/delete, mouse/touch rigid drag and central Undo/Redo are browser-proven;
+- schema-compatible Save/Open and migration fixtures preserve design intent;
+- desktop/mobile/search share one typed command/action model.
 
-Acceptance: a real constrained sketch remains editable/recomputable after save/reopen and drives Part features.
+Polyline/polygon/ellipse/spline/point, trim/extend/split/offset/fillet/chamfer/mirror/move/rotate/scale/project and other commands classified as M3 extensions do not block M3 close unless deliberately reclassified. Every Sketch registry command must be classified by the machine exit policy.
+
+Acceptance: the machine M3 exit contract is green and a constrained sketch remains editable/recomputable after save/reopen and drives Part features.
 
 ### M3X — ASA Lab host-contract preflight
 Start before broad M4 expansion so M5 is not the first real cross-repository integration.
@@ -162,9 +163,17 @@ Required compatibility evidence:
 - unsupported-version failure;
 - golden fixtures/contract tests usable by both ASA-CAD and `asa-lab`.
 
-Acceptance: ASA-CAD and ASA Lab independently pass the same contract fixtures. This lane does not deploy M5 yet; it removes schema/API drift before Part Design and Assembly make the payload harder to change.
+Acceptance: ASA-CAD and ASA Lab independently pass the **same versioned golden fixtures** for load/save, `baseRevision`, repeated `mutationId`, 409 conflict, snapshots/versions, unsupported schema and linked-document identity. Documentation similarity is not acceptance.
 
-**Gate B acceptance:** accepted M2 program + M2O + M3 + green M3X contract preflight.
+**Gate B closeout — hard pre-M4 gate:**
+- M2V KOMPAS visual acceptance GREEN;
+- M3 machine exit contract GREEN;
+- M3X shared golden contract GREEN in both repositories;
+- M3M-009 closed;
+- pre-M4 performance baselines recorded;
+- Full Repository Health Audit accepted.
+
+Broad M4 work may not begin while any item above is open.
 
 ---
 
@@ -176,10 +185,10 @@ Expand exact B-Rep Part features and persistent reference behavior.
 Priority families include extrude/cut/revolve/hole/fillet/chamfer/shell/rib/draft/patterns/sweep/loft as deliberately promoted from the registry.
 
 Acceptance includes:
-- broad StableRef/topology-change corpus;
-- rebuild diagnostics;
-- compatible save/reopen;
-- large-document/history/recompute regression;
+- the semantic-topology corpus in `spec/process/milestone-gates.v1.json`: dimension changes, moving cuts/features, edge-count changes, reorder/rebuild, suppress/restore and Save/Open;
+- every broken reference fails explicitly; silent rebinding to another face/edge is a hard regression;
+- rebuild diagnostics and compatible save/reopen;
+- measured large-document/history/recompute regressions against the pre-M4 baselines;
 - no growth of frozen M3 hotspots;
 - green Full Repository Health Audit before M4 closes.
 
@@ -198,7 +207,7 @@ Acceptance: submitted/reopened Assembly resolves the exact pinned component vers
 ### M4B — Standalone beta hardening — #7
 Versioned `asa-cad-web` image, compatibility corpus, recovery, cleanup, browser/device performance/capability matrix.
 
-Acceptance also requires a pre-release Full Repository Health Audit with no RED findings.
+Acceptance also requires a pre-release Full Repository Health Audit with no RED findings, root product LICENSE + THIRD_PARTY_NOTICE, and no unexcepted High-severity dependency finding.
 
 **Gate C acceptance:** M4 + M4A + M4B.
 

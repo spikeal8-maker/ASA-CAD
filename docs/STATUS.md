@@ -1,58 +1,54 @@
-# ASA-CAD current status
+﻿# ASA-CAD current status
 
-Short execution state for humans and coding agents. Product/end state: `SYSTEM_SPEC.md`; technical boundaries: `ARCHITECTURE.md`; implementation order: `ROADMAP.md`; detailed history: GitHub issues.
+Short execution state for humans and coding agents. Product/end state: `SYSTEM_SPEC.md`; technical boundaries: `ARCHITECTURE.md`; implementation/exit order: `ROADMAP.md` + `spec/process/milestone-gates.v1.json`; detailed history: GitHub issues.
 
-Last synchronized: 2026-09-17.
+Last synchronized: 2026-09-18.
 
 ## Current phase
 
-**Gate A — DONE.**
-**M2O — DONE.**
-**M3 Parametric Sketch (#5): ACTIVE.**
-**M3M #57: 001..008 DONE; M3M-009 remains a hard pre-M4 gate.**
+**Gate A вЂ” DONE.**
+**M2O вЂ” DONE.**
+**M3 Parametric Sketch (#5): ACTIVE after the post-Construction health gate.**
+**M3M #57: 001..008 DONE; M3M-009 remains a hard pre-M4 gate.**`n`nProtected document family: **six document kinds** — Part, Assembly, Drawing, Fragment, Specification and Text — behind `CadDocument` / `CadApplication`.
 
-Accepted M3 slices: M3.1 solve/overlay; M3.2 Line; M3.3 Circle; M3.4 Arc; M3.5 Rectangle; M3.6A stable-ID selection/delete; M3.6B rigid drag/translate (#75); M3.7A Horizontal/Vertical (#77); M3.7B Fixed (#79); M3.7C Coincident (#83); M3.7D Parallel (#85); M3.7E Perpendicular (#87); Tangent Line↔Circle (#90); Concentric Circle↔Circle (#92); Equal Line↔Line (#96); Symmetry endpoint↔endpoint about Line (#99); **Point-on-curve Line endpoint→Line (#101)**.
+Accepted M3 includes Line/Circle/Arc/Rectangle, stable-ID selection/delete/drag, the required current constraint family through Point-on-curve, and **Construction Line (#103)**.
 
-Point-on-curve merged as `eb3f2d14` after all five workflows passed on final review SHA `0aaca594`: M2 shell, M3 browser, M2 browser, Docker and baseline. It persists one stable Line endpoint ref (`a`/`b`) plus a distinct target Line ID, rejects duplicate/self/type/cross-Sketch selections atomically, maps a narrow ASA/vendor `POINT_ON_CURVE` token to the existing PlaneGCS `point_on_line_pl` primitive, shares desktop/mobile/search actions and preserves Undo/Redo + Save/Open. Circle/Arc targets and generalized point kinds remain out of scope.
+Construction #103 passed all five workflows on review SHA `d513edbb` and merged as `953fc235`. It persists a dedicated construction boolean, stays PlaneGCS geometry, is visually distinct, is excluded from protected Part profile eligibility, and preserves Undo/Redo + Save/Open.
 
-## Full Repository Health Audit after Equal — #97/#98
+## Full Repository Health Audit after Construction вЂ” #104/#105
 
-**YELLOW ACCEPTED — no RED blocker for narrow M3 work.**
+**YELLOW ACCEPTED by the audit repair + governance closeout; no RED blocker remains for bounded M3 work.**
 
-Audit cadence after that gate: **2 / 3 permanent feature slices** (Symmetry, Point-on-curve). Run the next Full Repository Health Audit immediately after one more accepted permanent feature slice, or at a milestone boundary if earlier.
+Audit cadence resets to **0 / 3** only when this governance closeout merges.
 
-Audit repair/evidence:
-- repository hygiene and exact frozen ratchets PASS;
-- `SketchConstraintCommandHandlers.ts`: 9,772 B → 7,859 B before later bounded feature additions;
-- focused Coincident/Line-pair/Symmetry/Point-on-curve ownership is preserved;
-- `App.tsx` remains exactly 16,992 B; `M3BrowserHarness.mjs` remains exactly 7,993 B;
-- `src/contracts/sketch.ts` remains at or below its 12,288 B target after Point-on-curve;
-- no file-budget ceiling was raised.
+Audit repair:
+- #105 fixed four real Cyrillic mojibake UI strings and added a permanent UTF-8/mojibake hygiene guard;
+- repository hygiene, exact ratchets, TypeScript, full M2O/M3, browser, Docker and baseline remain green;
+- no file-budget ceiling was raised;
+- iteration-based owner optimization and machine milestone exit policy are now binding.
 
 Bounded/non-growing YELLOW debt:
-1. M3M-009: `CadViewport.tsx`, `OpenCascadePartRuntime.ts` and remaining pre-M4 frozen hotspots;
-2. pinned vendor/toolchain modernization before beta: 1 moderate + 3 high npm audit findings and the known Actions runtime warning;
-3. root product license / third-party notice decision before public beta/release;
-4. ASA-CAD ↔ ASA Lab M3X golden host-contract compatibility before broad M4/M5;
-5. large history/topology/runtime scale benchmarks remain M4/M4B work.
+1. M3M-009: `CadViewport.tsx`, `OpenCascadePartRuntime.ts` and remaining pre-M4 hotspots;
+2. `useSketchConstraintControllers.ts` is near its controller target and must be decomposed before broad new constraint responsibility;
+3. pinned vendor/toolchain modernization: current audit still has 1 moderate + 3 high dependency findings and the known Actions runtime warning;
+4. root product LICENSE / THIRD_PARTY_NOTICE before public beta/release;
+5. M3X ASA-CAD в†” ASA Lab shared golden host contract is not yet proven;
+6. large history/topology/runtime scale benchmarks remain required before/through M4/M4B.
 
-## Protected architecture / regressions
+## Gate B closeout
 
-- six ASA document kinds: Part, Assembly, Drawing, Fragment, Specification and Text, behind `CadDocument` / `CadApplication`;
-- `CadProjectSession -> CadProjectHost`; no browser/kernel persistence authority;
-- centralized history/rollback and shared desktop/mobile/search actions;
-- focused Sketch geometry/edit/constraint owners; transient selection never becomes persisted authority;
-- PlaneGCS/OpenCascade stay lazy; no persisted solver/OCC/Three objects;
-- protected Part and all accepted M3 geometry/edit/constraint regressions through Point-on-curve are green.
+Broad M4 is blocked until all are accepted:
+- M2V KOMPAS visual acceptance;
+- M3 machine exit contract;
+- M3X shared ASA-CAD/ASA Lab golden fixtures;
+- M3M-009;
+- pre-M4 performance baselines;
+- Full Repository Health Audit.
 
-## Next M3 slice
+The M3 exit contract is machine-readable in `spec/process/milestone-gates.v1.json`. Required missing work must be selected from that contract, not inferred from registry order.
 
-**Construction toggle — selected Line only.**
+## Next M3 work
 
-Scope: add an ASA-owned boolean construction flag independent from existing Line `role` metadata; typed toggle/set command for one selected Line; construction Line remains visible/selectable/draggable/constrainable and continues through PlaneGCS, but must not contribute to a Part profile; rectangle/profile semantics must preserve `rectangle-edge-*` roles independently. Shared desktop/mobile/search action, Undo/Redo, Save/Open and focused browser/runtime acceptance are required.
+After this governance closeout merges, choose **one bounded required M3-exit slice**. Current required gaps are primarily driving-dimension coverage and meaningful under/fully/over-constrained + DOF feedback. M3 extension commands (polyline/polygon/ellipse/spline/point, trim/extend/split/offset/fillet/chamfer/mirror/move/rotate/scale/project, `dimension.auto`) do not block M3 unless deliberately reclassified.
 
-Explicitly out of scope: Circle/Arc construction, generalized construction-mode creation, projection tools, trim/extend/split/offset and new dimension types.
-
-After this slice the audit cadence becomes **3 / 3** and feature work pauses for a Full Repository Health Audit before any further M3 feature slice.
-
-Do not start broad M4 before M3M-009 and green M3/M3X entry gates.
+Optimization cadence is iteration-based: every slice gets a Slice Quality Gate; repeated owner pressure triggers a focused owner review; every three accepted permanent slices or milestone boundary triggers a Full Repository Health Audit.

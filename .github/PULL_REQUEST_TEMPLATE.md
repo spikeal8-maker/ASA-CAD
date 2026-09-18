@@ -17,6 +17,8 @@ Result: **GREEN / YELLOW / RED**
 - [ ] Repository-hygiene and file-budget checks are green.
 - [ ] No new god-object, duplicate implementation path or temporary/generated artifact remains.
 - [ ] Any file above target is non-growing or was split in this change.
+- [ ] If the same primary owner was touched by two accepted slices since its last focused review, this change performs/links the required owner optimization before a third feature touch.
+- [ ] If an owner is at >=85% of target, this change adds no new responsibility family without extraction.
 - [ ] If YELLOW, the debt is explicit, frozen and linked to a cleanup owner before the next milestone boundary.
 - [ ] RED findings are resolved before merge.
 - [ ] If this is the third accepted slice since the last full audit or a milestone boundary, the Full Repository Health Audit was performed.
@@ -45,4 +47,6 @@ List the exact checks run and their result.
 
 - [ ] Active GitHub issue reflects what is actually done/next.
 - [ ] `docs/STATUS.md` is updated **in this review change** when phase/gate/next action changes.
+- [ ] Command registry and milestone classification are synchronized when command status/scope changes.
+- [ ] No new feature starts while STATUS/issue/ROADMAP or a blocking audit disagree.
 - [ ] Obsolete PRs/issues are closed or marked superseded rather than left as competing sources of truth.
