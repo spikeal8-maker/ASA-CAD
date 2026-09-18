@@ -1,4 +1,4 @@
-﻿import type { CadApplication } from '../contracts/application';
+import type { CadApplication } from '../contracts/application';
 import { parseCadDocument, serializeCadDocument, type CadDocument } from '../contracts/document';
 import type { CadProjectSession, CadProjectSessionOpenResult } from './CadProjectSession';
 
