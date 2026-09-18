@@ -6,6 +6,8 @@ import {
   type CadRuntimeAdapter,
   type CadRuntimeRecomputeResult,
   type CadRuntimeReferenceCaptureResult,
+  type CadDimensionId,
+  type CadSketchEntityId,
   type CadSketchId,
 } from '../../src';
 import {
@@ -29,6 +31,8 @@ class NoopRuntime implements CadRuntimeAdapter {
 assert.ok(SKETCH_GROWTH_COMMAND_IDS.includes('sketch.rectangle'));
 assert.ok(SKETCH_GROWTH_COMMAND_IDS.includes('constraint.coincident'));
 assert.ok(SKETCH_GROWTH_COMMAND_IDS.includes('dimension.linear'));
+assert.ok(SKETCH_GROWTH_COMMAND_IDS.includes('dimension.horizontal'));
+assert.ok(SKETCH_GROWTH_COMMAND_IDS.includes('dimension.vertical'));
 assert.ok(SKETCH_GROWTH_COMMAND_IDS.includes('part.dimension.setValue'));
 assert.equal(isSketchGrowthCommandId('feature.extrude'), false);
 
@@ -70,6 +74,85 @@ assert.equal(serializeCadDocument(app.getDocument()), beforeInvalid, 'undo stays
 const redo = await app.redo();
 assert.equal(redo.ok, true);
 assert.equal(serializeCadDocument(app.getDocument()), afterRectangle, 'redo stays centralized around extracted handlers');
+
+const line = await app.execute({
+  id: 'sketch.line',
+  payload: { sketchId, from: [30, 20], to: [10, 5] },
+});
+assert.equal(line.ok, true);
+const lineId = line.createdIds?.[0] as CadSketchEntityId;
+assert.ok(lineId);
+assert.equal(app.getCommandAvailability('dimension.horizontal').enabled, true);
+assert.equal(app.getCommandAvailability('dimension.vertical').enabled, true);
+
+const beforeHorizontal = serializeCadDocument(app.getDocument());
+const horizontal = await app.execute({
+  id: 'dimension.horizontal',
+  payload: { sketchId, entityId: lineId, value: 40, name: 'width-x' },
+});
+assert.equal(horizontal.ok, true);
+const horizontalId = horizontal.createdIds?.[0] as CadDimensionId;
+assert.ok(horizontalId);
+const afterHorizontal = serializeCadDocument(app.getDocument());
+assert.notEqual(afterHorizontal, beforeHorizontal);
+
+const undoHorizontal = await app.undo();
+assert.equal(undoHorizontal.ok, true);
+assert.equal(
+  serializeCadDocument(app.getDocument()),
+  beforeHorizontal,
+  'horizontal dimension mutation must remain inside central application history',
+);
+const redoHorizontal = await app.redo();
+assert.equal(redoHorizontal.ok, true);
+assert.equal(serializeCadDocument(app.getDocument()), afterHorizontal);
+
+const vertical = await app.execute({
+  id: 'dimension.vertical',
+  payload: { sketchId, entityId: lineId, value: 25, name: 'height-y' },
+});
+assert.equal(vertical.ok, true);
+assert.ok(vertical.createdIds?.[0]);
+
+const circle = await app.execute({
+  id: 'sketch.circle',
+  payload: { sketchId, center: [50, 10], diameter: 8 },
+});
+assert.equal(circle.ok, true);
+const circleId = circle.createdIds?.[0] as CadSketchEntityId;
+assert.ok(circleId);
+const beforeInvalidCircle = serializeCadDocument(app.getDocument());
+const invalidHorizontalCircle = await app.execute({
+  id: 'dimension.horizontal',
+  payload: { sketchId, entityId: circleId, value: 15 },
+});
+assert.equal(invalidHorizontalCircle.ok, false);
+assert.match(invalidHorizontalCircle.error?.message ?? '', /requires a Line entity/);
+assert.equal(
+  serializeCadDocument(app.getDocument()),
+  beforeInvalidCircle,
+  'invalid Circle target must roll back atomically',
+);
+
+const arc = await app.execute({
+  id: 'sketch.arc',
+  payload: { sketchId, center: [80, 20], start: [90, 20], end: [80, 30] },
+});
+assert.equal(arc.ok, true);
+const arcId = arc.createdIds?.[0] as CadSketchEntityId;
+assert.ok(arcId);
+const beforeInvalidArc = serializeCadDocument(app.getDocument());
+const invalidVerticalArc = await app.execute({
+  id: 'dimension.vertical',
+  payload: { sketchId, entityId: arcId, value: 12 },
+});
+assert.equal(invalidVerticalArc.ok, false);
+assert.match(invalidVerticalArc.error?.message ?? '', /requires a Line entity/);
+assert.equal(
+  serializeCadDocument(app.getDocument()),
+  beforeInvalidArc,
+  'invalid Arc target must roll back atomically',
+);
 
 app.dispose();
 console.log('M2O O6 Sketch handler behavior PASS (typed registry + atomic rollback + centralized undo/redo)');

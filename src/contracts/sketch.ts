@@ -10,7 +10,13 @@ import { expectFinite, expectId, expectPositiveFinite, expectRecord } from './co
 import { validateCadDimension } from './sketchDimensions';
 import type { CadDimension } from './sketchDimensions';
 
-export type { CadDiameterDimension, CadDimension, CadLinearDimension } from './sketchDimensions';
+export type {
+  CadDiameterDimension,
+  CadDimension,
+  CadHorizontalDimension,
+  CadLinearDimension,
+  CadVerticalDimension,
+} from './sketchDimensions';
 
 export type CadPoint2 = readonly [number, number];
 export type CadSketchSupport = CadPlaneName | CadStableReferenceId;

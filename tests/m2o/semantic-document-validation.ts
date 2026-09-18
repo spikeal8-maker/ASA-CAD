@@ -93,6 +93,10 @@ rejectMutation(
   /Dimension .* references entity .* owned by sketch .* not/,
 );
 rejectMutation(
+  (value) => { value.dimensions[0].entityIds = ['entity_missing']; },
+  /Dimension .* references unknown entity entity_missing/,
+);
+rejectMutation(
   (value) => { value.sketches[1].entities[0].id = ids.lineId; },
   /belongs to multiple sketches/,
 );

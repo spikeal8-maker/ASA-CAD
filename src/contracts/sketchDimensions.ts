@@ -13,11 +13,23 @@ export interface CadLinearDimension extends CadDimensionBase<'linear'> {
   entityIds: [CadSketchEntityId, ...CadSketchEntityId[]];
 }
 
+export interface CadHorizontalDimension extends CadDimensionBase<'horizontal'> {
+  entityIds: [CadSketchEntityId];
+}
+
+export interface CadVerticalDimension extends CadDimensionBase<'vertical'> {
+  entityIds: [CadSketchEntityId];
+}
+
 export interface CadDiameterDimension extends CadDimensionBase<'diameter'> {
   entityIds: [CadSketchEntityId];
 }
 
-export type CadDimension = CadLinearDimension | CadDiameterDimension;
+export type CadDimension =
+  | CadLinearDimension
+  | CadHorizontalDimension
+  | CadVerticalDimension
+  | CadDiameterDimension;
 
 export function validateCadDimension(value: unknown, path: string): asserts value is CadDimension {
   const dimension = expectRecord(value, path);
@@ -31,6 +43,10 @@ export function validateCadDimension(value: unknown, path: string): asserts valu
   switch (dimension.type) {
     case 'linear':
       if (dimension.entityIds.length < 1) throw new Error(`${path}.linear requires at least one entity id`);
+      return;
+    case 'horizontal':
+    case 'vertical':
+      if (dimension.entityIds.length !== 1) throw new Error(`${path}.${dimension.type} requires exactly one entity id`);
       return;
     case 'diameter':
       if (dimension.entityIds.length !== 1) throw new Error(`${path}.diameter requires exactly one entity id`);
