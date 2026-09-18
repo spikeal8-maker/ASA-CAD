@@ -325,10 +325,10 @@ npm run install:vendor
 npm run dev
 ```
 
-Current imported baseline dev address:
+Canonical ASA development address:
 
 ```text
-http://localhost:8080
+http://localhost:8090
 ```
 
 This is the fast hot-reload loop for UI work.
