@@ -25,9 +25,4 @@ export function hasCircle(sketch: Readonly<CadSketch> | null): boolean {
   return Boolean(sketch?.entities.some((entity) => entity.type === 'circle'));
 }
 
-export function dimensionLabel(name: string | undefined, type: string): string {
-  if (name === 'width') return 'Ширина';
-  if (name === 'height') return 'Высота';
-  if (name === 'diameter' || type === 'diameter') return 'Диаметр';
-  return name || type;
-}
+export { dimensionLabel } from './SketchDimensionPresentation';

@@ -129,7 +129,7 @@
     "src/web/useSketchEditingController.ts": 8452,
     "src/web/useSketchDimensionController.ts": 3799,
     "src/web/usePartFeatureController.ts": 9333,
-    "src/web/PartSketchWorkspaceModel.ts": 1227,
+    "src/web/PartSketchWorkspaceModel.ts": 1015,
     "src/web/PartSketchWorkspaceTypes.ts": 140,
     "src/web/PartModelStage.tsx": 3423,
     "src/web/SketchEditingStage.tsx": 5989,

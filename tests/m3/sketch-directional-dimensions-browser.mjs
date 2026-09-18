@@ -55,6 +55,7 @@ async function desktopHorizontal() {
     near((await delta(page, id)).dx, 40, 0.1, 'Horizontal ΔX');
     assert.equal(await page.locator('.cad-app').getAttribute('data-selected-sketch-entity-id'), id);
     let saved = await saveLocalDocument(page);
+    assert.deepEqual(saved.dimensions.map((item) => item.type), ['horizontal']);
     const dimensionId = assertDimension(saved, 'horizontal', id, 40).id;
     assert.equal(saved.constraints.some((item) => item.type === 'horizontal'), false);
 
@@ -72,7 +73,7 @@ async function desktopHorizontal() {
     saved = JSON.parse(await page.evaluate(() => localStorage.getItem('asa-cad-m2-shell-document')));
     assert.equal(saved.dimensions.find((item) => item.type === 'horizontal')?.id, dimensionId);
 
-    await page.getByText(/horizontal: 40 мм/i).click();
+    await page.getByText('Горизонтальный размер: 40 мм', { exact: true }).click();
     await page.getByText('Изменить размер', { exact: true }).waitFor();
     await field(page).fill('50');
     await apply(page).click();
@@ -102,6 +103,7 @@ async function mobileVertical() {
     await apply(page).click();
     await waitSolvedOverlay(page, 1, 'mobile Vertical');
     near((await delta(page, id)).dy, 30, 0.1, 'Vertical ΔY');
+    await page.getByText('Вертикальный размер: 30 мм', { exact: true }).waitFor();
     assertDimension(await saveLocalDocument(page), 'vertical', id, 30);
     await assertSketchOnlyWasm(page, 'mobile Vertical');
     assertNoPageErrors(errors, 'mobile Vertical');
