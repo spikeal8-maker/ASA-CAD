@@ -1,18 +1,19 @@
 import React from 'react';
 import { ParameterNumericField } from './ParameterNumericField';
-import type { SketchDirectionalDimensionMode } from './useSketchDirectionalDimensionController';
+import { dimensionLabel } from './SketchDimensionPresentation';
+import type { SketchLineDimensionMode } from './useSketchLineDimensionController';
 
 export interface SketchDimensionParameterPanelProps {
   activeCommand: string;
-  directionalMode: SketchDirectionalDimensionMode | null;
-  directionalEntityId: string | null;
-  directionalValue: number;
-  setDirectionalValue(value: number): void;
-  canCommitDirectional: boolean;
+  lineMode: SketchLineDimensionMode | null;
+  lineEntityId: string | null;
+  lineValue: number;
+  setLineValue(value: number): void;
+  canCommitLine: boolean;
   dimensionEditValue: number;
   setDimensionEditValue(value: number): void;
-  onDirectionalCommit(): void | Promise<void>;
-  onDirectionalCancel(): void;
+  onLineCommit(): void | Promise<void>;
+  onLineCancel(): void;
   onDimensionEdit(): void | Promise<void>;
   onCancel(): void;
 }
@@ -34,24 +35,23 @@ export function SketchDimensionParameterPanel(props: SketchDimensionParameterPan
     );
   }
 
-  const mode = props.directionalMode;
+  const mode = props.lineMode;
   if (!mode || props.activeCommand !== `dimension.${mode}`) return null;
-  const title = mode === 'horizontal' ? 'Горизонтальный размер' : 'Вертикальный размер';
   return (
     <DimensionPanelFrame
       eyebrow="Управляющий размер"
-      title={title}
-      value={props.directionalValue}
-      setValue={props.setDirectionalValue}
-      onApply={props.onDirectionalCommit}
-      onCancel={props.onDirectionalCancel}
+      title={dimensionLabel(undefined, mode)}
+      value={props.lineValue}
+      setValue={props.setLineValue}
+      onApply={props.onLineCommit}
+      onCancel={props.onLineCancel}
       applyLabel="Создать"
-      applyDisabled={!props.canCommitDirectional}
+      applyDisabled={!props.canCommitLine}
     >
-      <div className="selection-value selected" data-directional-dimension-target={props.directionalEntityId ?? ''}>
+      <div className="selection-value selected" data-directional-dimension-target={props.lineEntityId ?? ''}>
         <span>✓</span>
         <strong>Выбранный отрезок</strong>
-        <small>{props.directionalEntityId ?? '—'}</small>
+        <small>{props.lineEntityId ?? '—'}</small>
       </div>
     </DimensionPanelFrame>
   );

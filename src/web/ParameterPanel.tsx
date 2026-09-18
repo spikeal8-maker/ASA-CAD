@@ -3,7 +3,7 @@ import commandRegistryJson from '../../spec/ui/command-registry.v1.json';
 import type { CadViewportPick } from '../contracts/render';
 import { ParameterNumericField } from './ParameterNumericField';
 import { SketchDimensionParameterPanel } from './SketchDimensionParameterPanel';
-import type { SketchDirectionalDimensionMode } from './useSketchDirectionalDimensionController';
+import type { SketchLineDimensionMode } from './useSketchLineDimensionController';
 
 interface RegistryCommand {
   id: string;
@@ -32,11 +32,11 @@ export interface ParameterPanelProps {
   setFilletRadius: (value: number) => void;
   dimensionEditValue: number;
   setDimensionEditValue: (value: number) => void;
-  directionalDimensionMode: SketchDirectionalDimensionMode | null;
-  directionalDimensionEntityId: string | null;
-  directionalDimensionValue: number;
-  setDirectionalDimensionValue: (value: number) => void;
-  canCommitDirectionalDimension: boolean;
+  lineDimensionMode: SketchLineDimensionMode | null;
+  lineDimensionEntityId: string | null;
+  lineDimensionValue: number;
+  setLineDimensionValue: (value: number) => void;
+  canCommitLineDimension: boolean;
   onCreateSketch: () => void;
   onCreateRectangle: () => void;
   onCreateCircle: () => void;
@@ -44,8 +44,8 @@ export interface ParameterPanelProps {
   onCut: () => void;
   onFillet: () => void;
   onDimensionEdit: () => void;
-  onDirectionalDimensionCommit: () => void;
-  onDirectionalDimensionCancel: () => void;
+  onLineDimensionCommit: () => void;
+  onLineDimensionCancel: () => void;
   onCancel: () => void;
 }
 
@@ -231,21 +231,20 @@ export function ParameterPanel(props: ParameterPanelProps) {
 
   if (
     props.activeCommand === 'dimension.edit'
-    || props.activeCommand === 'dimension.horizontal'
-    || props.activeCommand === 'dimension.vertical'
+    || props.lineDimensionMode
   ) {
     return (
       <SketchDimensionParameterPanel
         activeCommand={props.activeCommand}
-        directionalMode={props.directionalDimensionMode}
-        directionalEntityId={props.directionalDimensionEntityId}
-        directionalValue={props.directionalDimensionValue}
-        setDirectionalValue={props.setDirectionalDimensionValue}
-        canCommitDirectional={props.canCommitDirectionalDimension}
+        lineMode={props.lineDimensionMode}
+        lineEntityId={props.lineDimensionEntityId}
+        lineValue={props.lineDimensionValue}
+        setLineValue={props.setLineDimensionValue}
+        canCommitLine={props.canCommitLineDimension}
         dimensionEditValue={props.dimensionEditValue}
         setDimensionEditValue={props.setDimensionEditValue}
-        onDirectionalCommit={props.onDirectionalDimensionCommit}
-        onDirectionalCancel={props.onDirectionalDimensionCancel}
+        onLineCommit={props.onLineDimensionCommit}
+        onLineCancel={props.onLineDimensionCancel}
         onDimensionEdit={props.onDimensionEdit}
         onCancel={props.onCancel}
       />

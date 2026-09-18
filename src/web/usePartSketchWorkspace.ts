@@ -5,7 +5,7 @@ import { useSketchSession } from './useSketchSession';
 import { usePartSelectionController } from './usePartSelectionController';
 import { useSketchEditingController } from './useSketchEditingController';
 import { useSketchDimensionController } from './useSketchDimensionController';
-import { useSketchDirectionalDimensionController } from './useSketchDirectionalDimensionController';
+import { useSketchLineDimensionController } from './useSketchLineDimensionController';
 import { useSketchConstraintControllers } from './useSketchConstraintControllers';
 import { useSketchEntityMutationController } from './useSketchEntityMutationController';
 import { usePartFeatureController } from './usePartFeatureController';
@@ -54,7 +54,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     setRectangleHeight: editing.setRectangleHeight,
     setCircleDiameter: editing.setCircleDiameter,
   });
-  const directionalDimensions = useSketchDirectionalDimensionController({
+  const lineDimensions = useSketchLineDimensionController({
     app, activeCommand, activeSketchId, sketch, selectedEntityId,
     setActiveCommand, setPanel, setNotice,
   });
@@ -72,8 +72,8 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
   });
 
   function cancelCommand() {
-    if (activeCommand === 'dimension.horizontal' || activeCommand === 'dimension.vertical') {
-      directionalDimensions.cancelDirectionalDimension();
+    if (lineDimensions.lineDimensionMode) {
+      lineDimensions.cancelLineDimension();
       return;
     }
     editing.resetActiveTool(activeCommand);
@@ -95,7 +95,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     if (activeCommand === 'part.extrude') return features.commitExtrude();
     if (activeCommand === 'part.cutExtrude') return features.commitCut();
     if (activeCommand === 'part.fillet') return features.commitFillet();
-    if (activeCommand === 'dimension.horizontal' || activeCommand === 'dimension.vertical') return directionalDimensions.commitDirectionalDimension();
+    if (lineDimensions.lineDimensionMode) return lineDimensions.commitLineDimension();
     if (activeCommand === 'dimension.edit') return dimensions.commitDimensionEdit();
   }
 
@@ -103,7 +103,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     activeWorkspace, setActiveWorkspace,activeCommand,activeSketchId,
     selectedSketchEntityId: selectedEntityId,
     ...constraints,
-    ...directionalDimensions,
+    ...lineDimensions,
     selectionMode: selection.selectionMode,selectedPick: selection.selectedPick,
     selectedBodyId: selection.selectedBodyId,
     sketchPlane: features.sketchPlane,setSketchPlane: features.setSketchPlane,

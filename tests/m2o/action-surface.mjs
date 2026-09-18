@@ -7,8 +7,9 @@ const commandGroups = readFileSync('src/web/CadShellCommandGroups.tsx', 'utf8');
 const shellBottom = readFileSync('src/web/CadShellBottom.tsx', 'utf8');
 const mobileTools = readFileSync('src/web/MobileToolsPanel.tsx', 'utf8');
 const workspace = readFileSync('src/web/usePartSketchWorkspace.ts', 'utf8');
-const directionalDimensions = readFileSync('src/web/useSketchDirectionalDimensionController.ts', 'utf8');
+const lineDimensions = readFileSync('src/web/useSketchLineDimensionController.ts', 'utf8');
 const dimensionPanel = readFileSync('src/web/SketchDimensionParameterPanel.tsx', 'utf8');
+const dimensionPresentation = readFileSync('src/web/SketchDimensionPresentation.ts', 'utf8');
 const appActionCatalog = readFileSync('src/web/usePartCadUiActionCatalog.ts', 'utf8');
 
 assert.match(app, /usePartCadUiActionCatalog/, 'App must delegate shared CadUiAction catalog wiring');
@@ -38,7 +39,7 @@ assert.match(app, /case 'view\.panLeft':/, 'camera-only pan remains an interacti
 for (const ribbonActionId of [
   'sketch.rectangle', 'sketch.circle',
   'constraint.horizontal', 'constraint.vertical', 'constraint.fixed', 'constraint.coincident', 'constraint.parallel', 'constraint.perpendicular',
-  'dimension.horizontal', 'dimension.vertical',
+  'dimension.linear', 'dimension.horizontal', 'dimension.vertical',
   'sketch.finish', 'part.sketch.create', 'part.extrude', 'part.cutExtrude', 'part.fillet', 'system.rebuild',
 ]) {
   assert.ok(commandGroups.includes(`action={props.getAction('${ribbonActionId}')}`), `${ribbonActionId} ribbon button must consume CadUiAction`);
@@ -56,15 +57,17 @@ assert.match(shellBottom, />⌘<span>Инструменты<\/span><\/button>/, 
 assert.match(mobileTools, /import type \{ CadUiAction \}/, 'mobile Tools presentation must consume typed CadUiAction');
 assert.match(mobileTools, /props\.getAction\(tool\.id\)/, 'mobile Tool buttons must resolve shared action objects');
 for (const id of ['horizontal', 'vertical', 'fixed', 'coincident', 'parallel', 'perpendicular']) assert.match(mobileTools, new RegExp(`id: 'constraint\\.${id}'`), `mobile Sketch tools must expose ${id} through CadUiAction`);
-for (const id of ['horizontal', 'vertical']) assert.match(mobileTools, new RegExp(`id: 'dimension\\.${id}'`), `mobile Sketch tools must expose dimension.${id} through CadUiAction`);
+for (const id of ['linear', 'horizontal', 'vertical']) assert.match(mobileTools, new RegExp(`id: 'dimension\\.${id}'`), `mobile Sketch tools must expose dimension.${id} through CadUiAction`);
 assert.doesNotMatch(mobileTools, /querySelector|querySelectorAll|\.click\(\)/, 'mobile Tools must never discover/click desktop DOM');
 
-assert.match(workspace, /useSketchDirectionalDimensionController/, 'workspace must compose the focused directional-dimension owner');
-assert.match(directionalDimensions, /app\.execute\(/, 'directional-dimension owner must mutate only through CadApplication');
-assert.match(directionalDimensions, /targetEntityId/, 'directional-dimension owner must retain the selected stable Line ID');
-assert.doesNotMatch(directionalDimensions, /PlaneGCS|BrowserSketchSolver|localStorage|querySelector|undoStack|redoStack/, 'directional-dimension owner must not absorb solver/persistence/DOM/history responsibilities');
-assert.match(dimensionPanel, /Горизонтальный размер/, 'creation Parameters UI must name Horizontal Dimension');
-assert.match(dimensionPanel, /Вертикальный размер/, 'creation Parameters UI must name Vertical Dimension');
+assert.match(workspace, /useSketchLineDimensionController/, 'workspace must compose the focused selected-Line dimension owner');
+assert.match(lineDimensions, /'linear' \| 'horizontal' \| 'vertical'/, 'one selected-Line dimension owner must cover Linear/H/V creation');
+assert.match(lineDimensions, /app\.execute\(/, 'selected-Line dimension owner must mutate only through CadApplication');
+assert.match(lineDimensions, /targetEntityId/, 'selected-Line dimension owner must retain the selected stable Line ID');
+assert.doesNotMatch(lineDimensions, /PlaneGCS|BrowserSketchSolver|localStorage|querySelector|undoStack|redoStack/, 'selected-Line dimension owner must not absorb solver/persistence/DOM/history responsibilities');
+assert.match(dimensionPresentation, /type === 'linear'.*Линейный размер/, 'canonical presentation must name Linear Dimension');
+assert.match(dimensionPresentation, /type === 'horizontal'.*Горизонтальный размер/, 'canonical presentation must name Horizontal Dimension');
+assert.match(dimensionPresentation, /type === 'vertical'.*Вертикальный размер/, 'canonical presentation must name Vertical Dimension');
 assert.match(dimensionPanel, /Изменить размер/, 'existing dimension edit presentation must remain distinct');
 
 console.log('M2O O4 action surfaces PASS (shell delegates focused shared-action command groups; desktop/mobile/search stay unified)');

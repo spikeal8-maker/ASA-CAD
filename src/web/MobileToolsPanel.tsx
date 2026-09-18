@@ -32,6 +32,7 @@ const SKETCH_TOOLS: readonly MobileToolSpec[] = [
   { id: 'constraint.equal', symbol: '=' },
   { id: 'constraint.symmetric', symbol: '↔' },
   { id: 'constraint.pointOnCurve', symbol: '⌖' },
+  { id: 'dimension.linear', symbol: '⟷' },
   { id: 'dimension.horizontal', symbol: '↔' },
   { id: 'dimension.vertical', symbol: '↕' },
   { id: 'sketch.entity.delete', symbol: '⌫' },
