@@ -54,8 +54,9 @@ walk('.', (file) => {
 
   if (textExtensions.has(path.extname(normalized).toLowerCase())) {
     const text = fs.readFileSync(file, 'utf8');
-    if (text.includes('\uFFFD') || hasLikelyCyrillicMojibake(text)) {
-      offenders.push(`${normalized}: invalid UTF-8 or likely Cyrillic mojibake`);
+    const statusEscapeLeak = normalized === 'docs/STATUS.md' && text.includes('`n');
+    if (text.startsWith('\uFEFF') || text.includes('\uFFFD') || statusEscapeLeak || hasLikelyCyrillicMojibake(text)) {
+      offenders.push(`${normalized}: invalid UTF-8, leaked shell newline token or likely Cyrillic mojibake`);
     }
   }
 
@@ -89,6 +90,8 @@ function normalize(file) {
 }
 
 function hasLikelyCyrillicMojibake(text) {
+  const punctuationSignatures = ['\u0432\u0402', '\u0432\u2020', '\u0432\u201e'];
+  if (punctuationSignatures.some((signature) => text.includes(signature))) return true;
   for (let index = 0; index + 3 < text.length; index += 1) {
     const a = text.charCodeAt(index), b = text.charCodeAt(index + 1);
     const c = text.charCodeAt(index + 2), d = text.charCodeAt(index + 3);

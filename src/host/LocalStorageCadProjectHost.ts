@@ -1,4 +1,4 @@
-﻿import type { CadProjectHost, CadProjectLoadResult } from '../contracts/application';
+import type { CadProjectHost, CadProjectLoadResult } from '../contracts/application';
 import type { CadDocument } from '../contracts/document';
 import { migrateCadDocument, serializeCadDocument } from '../contracts';
 

@@ -1,4 +1,4 @@
-﻿import { useMemo } from 'react';
+import { useMemo } from 'react';
 import type { CadProjectHost } from '../contracts/application';
 import type { CadDocument } from '../contracts/document';
 import type { CadClientRoute } from '../browser/routes';
