@@ -4,6 +4,8 @@ Short execution state for humans and coding agents. Product/end state: `SYSTEM_S
 
 Last synchronized: 2026-09-18.
 
+Older issue/PR/status text is historical only; if it conflicts, use this file + the active issue under `DOCS_POLICY.md` precedence, not stale task wording.
+
 ## Current phase
 
 **Gate A - DONE.**
@@ -37,7 +39,9 @@ Bounded/non-growing YELLOW debt:
 
 ## Gate B closeout
 
-Broad M4 is blocked until all are accepted:
+Gate B and closure of umbrella M2 Issue #3 are not the same acceptance boundary. Issue #3 closes only after M2A + M2I + M2V reach their acceptance criteria. For broad M4, M2V is the hard Gate B blocker from the remaining M2 lanes; M2A is supporting visual/fixture evidence and is required wherever that evidence is needed to accept M2V; M2I is a parallel advanced-interaction lane and does not itself block broad M4 unless a specific M2I criterion is explicitly promoted into Gate B.
+
+Broad M4 is blocked until all hard Gate B requirements are accepted:
 - M2V KOMPAS visual acceptance;
 - M3 machine exit contract;
 - M3X shared ASA-CAD/ASA Lab golden fixtures;

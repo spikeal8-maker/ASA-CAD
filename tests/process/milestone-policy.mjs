@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
+// This test validates milestone policy structure/classification only; "milestone policy validation PASS" is not M3 exit readiness or milestone acceptance.
 const registry = JSON.parse(fs.readFileSync('spec/ui/command-registry.v1.json', 'utf8'));
 const gates = JSON.parse(fs.readFileSync('spec/process/milestone-gates.v1.json', 'utf8'));
 const health = JSON.parse(fs.readFileSync('spec/process/repository-health.v1.json', 'utf8'));
@@ -34,4 +35,4 @@ assert.ok(gates.m4TopologyCorpus.some((item) => item.includes('never silently bi
 assert.equal(gates.publicBeta.rootLicenseRequired, true);
 assert.equal(gates.publicBeta.thirdPartyNoticeRequired, true);
 
-console.log('ASA-CAD milestone gate policy PASS');
+console.log('ASA-CAD milestone policy validation PASS (policy structure/classification only; M3 exit readiness is not asserted)');

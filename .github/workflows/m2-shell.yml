@@ -79,8 +79,8 @@ jobs:
       - name: Verify bot-friendly file budgets
         run: node tests/process/file-budgets.mjs
 
-      - name: Verify machine milestone gates
-        run: node tests/process/milestone-gates.mjs
+      - name: Verify machine milestone policy structure/classification
+        run: node tests/process/milestone-policy.mjs
 
       - name: Install pinned frontend toolchain
         run: npm --prefix vendor/toubkal ci

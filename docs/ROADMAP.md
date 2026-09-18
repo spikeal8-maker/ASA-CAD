@@ -114,7 +114,7 @@ Acceptance: matrix/picking/readability gates pass together. Exact current status
 ### M2V — KOMPAS visual acceptance — #19
 Map deterministic ASA states to approved KOMPAS references; tune hierarchy/proportions/spacing and ASA-owned vector icons.
 
-Acceptance: baseline and responsive visual review passes with deliberate differences recorded. **M2V is a hard Gate B closeout requirement; broad M4 may not begin before this acceptance.**
+Acceptance: baseline and responsive visual review passes with deliberate differences recorded. **Gate B is not M2 umbrella closeout:** #3 closes after M2A + M2I + M2V; for broad M4, M2V alone is the hard blocker from those lanes. M2A supplies visual/fixture evidence where M2V acceptance needs it; M2I is parallel and non-blocking unless a criterion is explicitly promoted into Gate B.
 
 ### M2O — Architecture optimization gate — #21
 Stabilize the product architecture before M3 expands the command/data surface.
