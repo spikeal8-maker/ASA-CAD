@@ -121,6 +121,31 @@ const circle = await app.execute({
 assert.equal(circle.ok, true);
 const circleId = circle.createdIds?.[0] as CadSketchEntityId;
 assert.ok(circleId);
+
+const diameter = await app.execute({
+  id: 'dimension.diameter',
+  payload: { sketchId, entityId: circleId, value: 18 },
+});
+assert.equal(diameter.ok, true);
+assert.ok(diameter.createdIds?.[0]);
+const afterDiameter = serializeCadDocument(app.getDocument());
+
+const invalidDiameterLine = await app.execute({
+  id: 'dimension.diameter',
+  payload: { sketchId, entityId: lineId, value: 20 },
+});
+assert.equal(invalidDiameterLine.ok, false);
+assert.match(invalidDiameterLine.error?.message ?? '', /requires a Circle entity, got line/);
+assert.equal(serializeCadDocument(app.getDocument()), afterDiameter, 'invalid Line Diameter target must roll back atomically');
+
+const invalidDiameterValue = await app.execute({
+  id: 'dimension.diameter',
+  payload: { sketchId, entityId: circleId, value: Number.POSITIVE_INFINITY },
+});
+assert.equal(invalidDiameterValue.ok, false);
+assert.match(invalidDiameterValue.error?.message ?? '', /positive finite/);
+assert.equal(serializeCadDocument(app.getDocument()), afterDiameter, 'non-finite Diameter value must roll back atomically');
+
 const beforeInvalidCircle = serializeCadDocument(app.getDocument());
 const invalidHorizontalCircle = await app.execute({
   id: 'dimension.horizontal',
@@ -142,6 +167,15 @@ assert.equal(arc.ok, true);
 const arcId = arc.createdIds?.[0] as CadSketchEntityId;
 assert.ok(arcId);
 const beforeInvalidArc = serializeCadDocument(app.getDocument());
+
+const invalidDiameterArc = await app.execute({
+  id: 'dimension.diameter',
+  payload: { sketchId, entityId: arcId, value: 12 },
+});
+assert.equal(invalidDiameterArc.ok, false);
+assert.match(invalidDiameterArc.error?.message ?? '', /requires a Circle entity, got arc/);
+assert.equal(serializeCadDocument(app.getDocument()), beforeInvalidArc, 'invalid Arc Diameter target must roll back atomically');
+
 const invalidVerticalArc = await app.execute({
   id: 'dimension.vertical',
   payload: { sketchId, entityId: arcId, value: 12 },

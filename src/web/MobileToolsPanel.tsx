@@ -35,6 +35,7 @@ const SKETCH_TOOLS: readonly MobileToolSpec[] = [
   { id: 'dimension.linear', symbol: '⟷' },
   { id: 'dimension.horizontal', symbol: '↔' },
   { id: 'dimension.vertical', symbol: '↕' },
+  { id: 'dimension.diameter', symbol: 'Ø' },
   { id: 'sketch.entity.delete', symbol: '⌫' },
   { id: 'sketch.finish', symbol: '✓' },
 ];

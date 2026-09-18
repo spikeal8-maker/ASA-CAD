@@ -3,7 +3,7 @@ import commandRegistryJson from '../../spec/ui/command-registry.v1.json';
 import type { CadViewportPick } from '../contracts/render';
 import { ParameterNumericField } from './ParameterNumericField';
 import { SketchDimensionParameterPanel } from './SketchDimensionParameterPanel';
-import type { SketchLineDimensionMode } from './useSketchLineDimensionController';
+import type { SketchDimensionCreationState } from './useSketchDimensionCreationControllers';
 
 interface RegistryCommand {
   id: string;
@@ -32,11 +32,7 @@ export interface ParameterPanelProps {
   setFilletRadius: (value: number) => void;
   dimensionEditValue: number;
   setDimensionEditValue: (value: number) => void;
-  lineDimensionMode: SketchLineDimensionMode | null;
-  lineDimensionEntityId: string | null;
-  lineDimensionValue: number;
-  setLineDimensionValue: (value: number) => void;
-  canCommitLineDimension: boolean;
+  dimensionCreation: SketchDimensionCreationState;
   onCreateSketch: () => void;
   onCreateRectangle: () => void;
   onCreateCircle: () => void;
@@ -44,8 +40,7 @@ export interface ParameterPanelProps {
   onCut: () => void;
   onFillet: () => void;
   onDimensionEdit: () => void;
-  onLineDimensionCommit: () => void;
-  onLineDimensionCancel: () => void;
+
   onCancel: () => void;
 }
 
@@ -231,20 +226,14 @@ export function ParameterPanel(props: ParameterPanelProps) {
 
   if (
     props.activeCommand === 'dimension.edit'
-    || props.lineDimensionMode
+    || props.dimensionCreation.mode
   ) {
     return (
       <SketchDimensionParameterPanel
         activeCommand={props.activeCommand}
-        lineMode={props.lineDimensionMode}
-        lineEntityId={props.lineDimensionEntityId}
-        lineValue={props.lineDimensionValue}
-        setLineValue={props.setLineDimensionValue}
-        canCommitLine={props.canCommitLineDimension}
+        creation={props.dimensionCreation}
         dimensionEditValue={props.dimensionEditValue}
         setDimensionEditValue={props.setDimensionEditValue}
-        onLineCommit={props.onLineDimensionCommit}
-        onLineCancel={props.onLineDimensionCancel}
         onDimensionEdit={props.onDimensionEdit}
         onCancel={props.onCancel}
       />

@@ -102,8 +102,13 @@ export const sketchDimensionCommandHandlers = {
     availability: requireSketchAvailability,
     execute: (part, command) => {
       const sketch = requireSketch(part, command.payload.sketchId);
-      if (command.payload.value <= 0) throw new Error('Diameter must be positive');
-      requireSketchEntity(sketch, command.payload.entityId);
+      const entity = requireSketchEntity(sketch, command.payload.entityId);
+      if (entity.type !== 'circle') {
+        throw new Error(`Diameter dimension requires a Circle entity, got ${entity.type}`);
+      }
+      if (!Number.isFinite(command.payload.value) || command.payload.value <= 0) {
+        throw new Error('Diameter must be positive finite');
+      }
       const id = createCadId<CadDimensionId>('dimension');
       const dimension: CadDimension = {
         id,
