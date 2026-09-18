@@ -67,7 +67,7 @@ assert.doesNotMatch(geometryHandlers, /support: String\(command\.payload\.suppor
 for (const id of ['dimension.horizontal', 'dimension.vertical']) {
   const entry = commandRegistry.commands.find((command) => command.id === id);
   assert.ok(entry, `Command registry must retain ${id}`);
-  assert.equal(entry.status, 'planned', `${id} must remain planned until M3-DIM-001B productization`);
+  assert.equal(entry.status, 'implemented', `${id} must remain implemented after M3-DIM-001B productization`);
 }
 
 console.log('M2O O7 Sketch contract boundary PASS (typed DTOs + typed PlaneGCS/focused handler consumption)');

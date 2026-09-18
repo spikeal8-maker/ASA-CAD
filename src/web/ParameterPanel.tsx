@@ -1,6 +1,9 @@
 import React from 'react';
 import commandRegistryJson from '../../spec/ui/command-registry.v1.json';
 import type { CadViewportPick } from '../contracts/render';
+import { ParameterNumericField } from './ParameterNumericField';
+import { SketchDimensionParameterPanel } from './SketchDimensionParameterPanel';
+import type { SketchDirectionalDimensionMode } from './useSketchDirectionalDimensionController';
 
 interface RegistryCommand {
   id: string;
@@ -29,6 +32,11 @@ export interface ParameterPanelProps {
   setFilletRadius: (value: number) => void;
   dimensionEditValue: number;
   setDimensionEditValue: (value: number) => void;
+  directionalDimensionMode: SketchDirectionalDimensionMode | null;
+  directionalDimensionEntityId: string | null;
+  directionalDimensionValue: number;
+  setDirectionalDimensionValue: (value: number) => void;
+  canCommitDirectionalDimension: boolean;
   onCreateSketch: () => void;
   onCreateRectangle: () => void;
   onCreateCircle: () => void;
@@ -36,6 +44,8 @@ export interface ParameterPanelProps {
   onCut: () => void;
   onFillet: () => void;
   onDimensionEdit: () => void;
+  onDirectionalDimensionCommit: () => void;
+  onDirectionalDimensionCancel: () => void;
   onCancel: () => void;
 }
 
@@ -108,8 +118,8 @@ export function ParameterPanel(props: ParameterPanelProps) {
         </div>
         <section className="parameter-section">
           <h3>Размеры</h3>
-          <NumericField label="Ширина" value={props.rectangleWidth} onChange={props.setRectangleWidth} suffix="мм" />
-          <NumericField label="Высота" value={props.rectangleHeight} onChange={props.setRectangleHeight} suffix="мм" />
+          <ParameterNumericField label="Ширина" value={props.rectangleWidth} onChange={props.setRectangleWidth} suffix="мм" />
+          <ParameterNumericField label="Высота" value={props.rectangleHeight} onChange={props.setRectangleHeight} suffix="мм" />
           <p>Прямоугольник создаётся относительно начала координат и получает два управляющих размера.</p>
         </section>
         <div className="parameter-actions">
@@ -132,7 +142,7 @@ export function ParameterPanel(props: ParameterPanelProps) {
         </div>
         <section className="parameter-section">
           <h3>Окружность</h3>
-          <NumericField label="Диаметр" value={props.circleDiameter} onChange={props.setCircleDiameter} suffix="мм" />
+          <ParameterNumericField label="Диаметр" value={props.circleDiameter} onChange={props.setCircleDiameter} suffix="мм" />
           <div className="property-row"><span>Центр</span><strong>0, 0</strong></div>
         </section>
         <div className="parameter-actions">
@@ -155,7 +165,7 @@ export function ParameterPanel(props: ParameterPanelProps) {
         </div>
         <section className="parameter-section">
           <h3>Параметры</h3>
-          <NumericField label="Расстояние" value={props.extrudeDistance} onChange={props.setExtrudeDistance} suffix="мм" />
+          <ParameterNumericField label="Расстояние" value={props.extrudeDistance} onChange={props.setExtrudeDistance} suffix="мм" />
           <p>При применении впервые загружается OpenCascade WASM и строится точный B-Rep на этом устройстве.</p>
         </section>
         <div className="parameter-actions">
@@ -209,7 +219,7 @@ export function ParameterPanel(props: ParameterPanelProps) {
             <strong>{props.selectedPick?.kind === 'edge' ? 'Ребро выбрано' : 'Выберите ребро в модели'}</strong>
             {props.selectedPick?.kind === 'edge' && <small>{props.selectedPick.point.map((value) => value.toFixed(2)).join(', ')}</small>}
           </div>
-          <NumericField label="Радиус" value={props.filletRadius} onChange={props.setFilletRadius} suffix="мм" />
+          <ParameterNumericField label="Радиус" value={props.filletRadius} onChange={props.setFilletRadius} suffix="мм" />
         </section>
         <div className="parameter-actions">
           <button className="primary" type="button" onClick={props.onFillet}>Создать</button>
@@ -219,26 +229,26 @@ export function ParameterPanel(props: ParameterPanelProps) {
     );
   }
 
-  if (props.activeCommand === 'dimension.edit') {
+  if (
+    props.activeCommand === 'dimension.edit'
+    || props.activeCommand === 'dimension.horizontal'
+    || props.activeCommand === 'dimension.vertical'
+  ) {
     return (
-      <div className="parameter-panel">
-        <div className="panel-title-row">
-          <div>
-            <small>Управляющий размер</small>
-            <strong>Изменить размер</strong>
-          </div>
-          <button type="button" onClick={props.onCancel} title="Закрыть">×</button>
-        </div>
-        <section className="parameter-section">
-          <h3>Значение</h3>
-          <NumericField label="Размер" value={props.dimensionEditValue} onChange={props.setDimensionEditValue} suffix="мм" />
-          <p>После применения вся история детали перестраивается от изменённого эскиза вниз.</p>
-        </section>
-        <div className="parameter-actions">
-          <button className="primary" type="button" onClick={props.onDimensionEdit}>Применить</button>
-          <button type="button" onClick={props.onCancel}>Отмена</button>
-        </div>
-      </div>
+      <SketchDimensionParameterPanel
+        activeCommand={props.activeCommand}
+        directionalMode={props.directionalDimensionMode}
+        directionalEntityId={props.directionalDimensionEntityId}
+        directionalValue={props.directionalDimensionValue}
+        setDirectionalValue={props.setDirectionalDimensionValue}
+        canCommitDirectional={props.canCommitDirectionalDimension}
+        dimensionEditValue={props.dimensionEditValue}
+        setDimensionEditValue={props.setDimensionEditValue}
+        onDirectionalCommit={props.onDirectionalDimensionCommit}
+        onDirectionalCancel={props.onDirectionalDimensionCancel}
+        onDimensionEdit={props.onDimensionEdit}
+        onCancel={props.onCancel}
+      />
     );
   }
 
@@ -253,30 +263,6 @@ export function ParameterPanel(props: ParameterPanelProps) {
     </div>
   );
 }
-
-function NumericField(props: {
-  label: string;
-  value: number;
-  suffix: string;
-  onChange: (value: number) => void;
-}) {
-  return (
-    <label className="numeric-field">
-      <span>{props.label}</span>
-      <span className="numeric-control">
-        <input
-          type="number"
-          min="0.01"
-          step="1"
-          value={Number.isFinite(props.value) ? props.value : 0}
-          onChange={(event) => props.onChange(Number(event.target.value))}
-        />
-        <small>{props.suffix}</small>
-      </span>
-    </label>
-  );
-}
-
 function commandLabel(id: string, fallback: string): string {
   return commandById.get(id)?.labelRu ?? fallback;
 }

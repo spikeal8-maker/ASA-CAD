@@ -48,6 +48,8 @@ function SketchCommandGroups(props: {
         <CadUiActionButton action={props.getAction('constraint.pointOnCurve')} symbol="⌖" text />
       </CommandGroup>
       <CommandGroup label="Размеры">
+        <CadUiActionButton action={props.getAction('dimension.horizontal')} symbol="↔" text />
+        <CadUiActionButton action={props.getAction('dimension.vertical')} symbol="↕" text />
         <RibbonTextButton
           label={props.rectangleReady ? `${props.rectangleWidth} × ${props.rectangleHeight} мм` : props.circleReady ? `Ø${props.circleDiameter} мм` : 'Размеры'}
           symbol="↔"

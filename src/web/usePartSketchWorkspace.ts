@@ -1,16 +1,17 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import type { CadApplication } from '../contracts/application';
-import type { CadDocument, CadDocumentKind } from '../contracts/document';
-import type { CadSketchId } from '../contracts/ids';
+import type { CadDocument } from '../contracts/document';
 import { useSketchSession } from './useSketchSession';
 import { usePartSelectionController } from './usePartSelectionController';
 import { useSketchEditingController } from './useSketchEditingController';
 import { useSketchDimensionController } from './useSketchDimensionController';
+import { useSketchDirectionalDimensionController } from './useSketchDirectionalDimensionController';
 import { useSketchConstraintControllers } from './useSketchConstraintControllers';
 import { useSketchEntityMutationController } from './useSketchEntityMutationController';
 import { usePartFeatureController } from './usePartFeatureController';
-import { findSketch, partDocument } from './PartSketchWorkspaceModel';
+import { partDocument } from './PartSketchWorkspaceModel';
 import type { CadWorkspacePanel } from './PartSketchWorkspaceTypes';
+import { usePartWorkspaceNavigation } from './usePartWorkspaceNavigation';
 
 export type { CadWorkspacePanel, PartSketchSelectionMode } from './PartSketchWorkspaceTypes';
 
@@ -53,6 +54,10 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     setRectangleHeight: editing.setRectangleHeight,
     setCircleDiameter: editing.setCircleDiameter,
   });
+  const directionalDimensions = useSketchDirectionalDimensionController({
+    app, activeCommand, activeSketchId, sketch, selectedEntityId,
+    setActiveCommand, setPanel, setNotice,
+  });
   const features = usePartFeatureController({
     app, document, renderModelAvailable, activeSketchId, sketch,
     selectedPick: selection.selectedPick, setActiveCommand, setActiveWorkspace,
@@ -60,22 +65,17 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     clearTransientSelection: selection.clearTransientSelection,
   });
 
-  const resetTransient = useCallback(() => { setActiveCommand(null); dimensions.clearDimensionEdit(); selection.clearTransientSelection(); }, [dimensions.clearDimensionEdit, selection.clearTransientSelection]);
-
-  const resetToWorkspace = useCallback((workspace: string) => {
-    setActiveWorkspace(workspace);
-    setActiveCommand(null);
-    dimensions.clearDimensionEdit();
-    selection.clearTransientSelection();
-  }, [dimensions.clearDimensionEdit, selection.clearTransientSelection]);
-  const resetForDocument = useCallback((kind: CadDocumentKind) => {
-    clearActiveSketch();
-    resetToWorkspace(kind === 'part' ? 'solid' : kind);
-  }, [clearActiveSketch, resetToWorkspace]);
-
-const enterSketch = useCallback((sketchId: CadSketchId) => { const target = findSketch(partDocument(app.getDocument()), sketchId); if (!target) { setNotice('Эскиз больше не существует'); clearActiveSketch(); return; } activateSketch(sketchId); setActiveCommand(null); dimensions.clearDimensionEdit(); setPanel('tree'); setActiveWorkspace('sketch'); selection.clearTransientSelection(); setNotice(`Открыт эскиз «${target.name}»`); }, [activateSketch, app, clearActiveSketch, dimensions.clearDimensionEdit, selection.clearTransientSelection, setNotice, setPanel]);
+  const navigation = usePartWorkspaceNavigation({
+    app, documentKind: document.kind, setActiveCommand, setActiveWorkspace, setPanel, setNotice,
+    activateSketch, clearActiveSketch, clearTransientSelection: selection.clearTransientSelection,
+    clearDimensionEdit: dimensions.clearDimensionEdit,
+  });
 
   function cancelCommand() {
+    if (activeCommand === 'dimension.horizontal' || activeCommand === 'dimension.vertical') {
+      directionalDimensions.cancelDirectionalDimension();
+      return;
+    }
     editing.resetActiveTool(activeCommand);
     const stayInSketch = activeCommand === 'constraint.coincident' || /^(sketch|constraint)\./.test(activeCommand ?? '');
     setActiveCommand(null);
@@ -95,6 +95,7 @@ const enterSketch = useCallback((sketchId: CadSketchId) => { const target = find
     if (activeCommand === 'part.extrude') return features.commitExtrude();
     if (activeCommand === 'part.cutExtrude') return features.commitCut();
     if (activeCommand === 'part.fillet') return features.commitFillet();
+    if (activeCommand === 'dimension.horizontal' || activeCommand === 'dimension.vertical') return directionalDimensions.commitDirectionalDimension();
     if (activeCommand === 'dimension.edit') return dimensions.commitDimensionEdit();
   }
 
@@ -102,6 +103,7 @@ const enterSketch = useCallback((sketchId: CadSketchId) => { const target = find
     activeWorkspace, setActiveWorkspace,activeCommand,activeSketchId,
     selectedSketchEntityId: selectedEntityId,
     ...constraints,
+    ...directionalDimensions,
     selectionMode: selection.selectionMode,selectedPick: selection.selectedPick,
     selectedBodyId: selection.selectedBodyId,
     sketchPlane: features.sketchPlane,setSketchPlane: features.setSketchPlane,
@@ -115,13 +117,13 @@ const enterSketch = useCallback((sketchId: CadSketchId) => { const target = find
     hasSolid: features.hasSolid,canExtrude: features.canExtrude,canCut: features.canCut, canFillet: features.canFillet,
     selectedPointText: selection.selectedPointText, selectedBody: selection.selectedBody,
     clearTransientSelection: selection.clearTransientSelection, clearSelectedPick: selection.clearSelectedPick,
-    clearSketchEntitySelection: clearEntitySelection, resetTransient, resetToWorkspace, resetForDocument,
+    clearSketchEntitySelection: clearEntitySelection, ...navigation,
     handleViewportPick: selection.handleViewportPick, handleBodySelect: selection.handleBodySelect,
     handleSketchEntitySelect: selection.handleSketchEntitySelect,
     deleteSelectedSketchEntity: entityMutations.deleteSelectedSketchEntity,
     toggleSelectedConstruction: entityMutations.toggleSelectedConstruction,
     translateSketchEntity: entityMutations.translateSketchEntity,
-    enterSketch, beginLine: editing.beginLine,
+    beginLine: editing.beginLine,
     lineDraft: editing.lineDraft, lineCommitting: editing.lineCommitting,
     handleSketchLinePointMove: editing.handleSketchLinePointMove, handleSketchLinePoint: editing.handleSketchLinePoint,
     rectangleDraft: editing.rectangleDraft, rectangleCommitting: editing.rectangleCommitting,

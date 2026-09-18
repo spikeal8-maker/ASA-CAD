@@ -1,6 +1,7 @@
 import React from 'react';
 import type { CadDocument } from '../contracts/document';
 import type { CadBodyId, CadDimensionId, CadSketchId } from '../contracts/ids';
+import { dimensionLabel } from './SketchDimensionPresentation';
 
 export interface DocumentTreeProps {
   document: CadDocument;
@@ -123,9 +124,3 @@ function kindIcon(kind: CadDocument['kind']): string {
   }
 }
 
-function dimensionLabel(name: string | undefined, type: string): string {
-  if (name === 'width') return 'Ширина';
-  if (name === 'height') return 'Высота';
-  if (name === 'diameter' || type === 'diameter') return 'Диаметр';
-  return name || type;
-}
