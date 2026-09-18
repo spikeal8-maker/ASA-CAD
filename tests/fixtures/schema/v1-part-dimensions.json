@@ -1,0 +1,72 @@
+{
+  "kind": "part",
+  "schemaVersion": 1,
+  "engineVersion": "schema-v1-fixture",
+  "documentId": "doc_schema_v1_dimensions",
+  "title": "Schema v1 dimensions fixture",
+  "units": "mm",
+  "metadata": {},
+  "linkedDocuments": [],
+  "origin": { "planes": ["XY", "XZ", "YZ"] },
+  "variables": {},
+  "sketches": [
+    {
+      "id": "sketch_v1",
+      "name": "Schema v1 sketch",
+      "support": "XY",
+      "entities": [
+        {
+          "id": "entity_line_v1",
+          "type": "line",
+          "data": { "from": [0, 0], "to": [10, 5] }
+        },
+        {
+          "id": "entity_circle_v1",
+          "type": "circle",
+          "data": { "center": [20, 10], "diameter": 8 }
+        }
+      ],
+      "constraintIds": [],
+      "dimensionIds": [
+        "dimension_linear_v1",
+        "dimension_horizontal_v1",
+        "dimension_vertical_v1",
+        "dimension_diameter_v1"
+      ]
+    }
+  ],
+  "constraints": [],
+  "dimensions": [
+    {
+      "id": "dimension_linear_v1",
+      "type": "linear",
+      "entityIds": ["entity_line_v1"],
+      "value": 11.180339887498949,
+      "driving": true
+    },
+    {
+      "id": "dimension_horizontal_v1",
+      "type": "horizontal",
+      "entityIds": ["entity_line_v1"],
+      "value": 10,
+      "driving": true
+    },
+    {
+      "id": "dimension_vertical_v1",
+      "type": "vertical",
+      "entityIds": ["entity_line_v1"],
+      "value": 5,
+      "driving": true
+    },
+    {
+      "id": "dimension_diameter_v1",
+      "type": "diameter",
+      "entityIds": ["entity_circle_v1"],
+      "value": 8,
+      "driving": true
+    }
+  ],
+  "features": [],
+  "bodies": [],
+  "stableReferences": []
+}
