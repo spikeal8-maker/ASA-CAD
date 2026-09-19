@@ -84,6 +84,54 @@ const line = await app.execute({
 assert.equal(line.ok, true);
 const lineId = line.createdIds?.[0] as CadSketchEntityId;
 assert.ok(lineId);
+
+const beforeLinearValidation = serializeCadDocument(app.getDocument());
+
+async function rejectLinearValue(value: number, label: string) {
+  const result = await app.execute({
+    id: 'dimension.linear',
+    payload: { sketchId, entityIds: [lineId], value },
+  });
+  assert.equal(result.ok, false, `Linear ${label} must be rejected`);
+  assert.match(result.error?.message ?? '', /positive finite/);
+  assert.equal(
+    serializeCadDocument(app.getDocument()),
+    beforeLinearValidation,
+    `rejected Linear ${label} must leave the document unchanged`,
+  );
+  const current = app.getDocument();
+  if (current.kind !== 'part') throw new Error('Expected Part document');
+  assert.equal(
+    current.dimensions.some((dimension) => dimension.type === 'linear'),
+    false,
+    `rejected Linear ${label} must not persist a Linear dimension`,
+  );
+}
+
+for (const [label, value] of [
+  ['NaN', Number.NaN],
+  ['positive infinity', Number.POSITIVE_INFINITY],
+  ['negative infinity', Number.NEGATIVE_INFINITY],
+  ['zero', 0],
+  ['negative', -5],
+] as const) {
+  await rejectLinearValue(value, label);
+}
+
+const validLinear = await app.execute({
+  id: 'dimension.linear',
+  payload: { sketchId, entityIds: [lineId], value: 12, name: 'finite-linear' },
+});
+assert.equal(validLinear.ok, true, 'positive finite Linear value must succeed');
+const validLinearId = validLinear.createdIds?.[0] as CadDimensionId;
+assert.ok(validLinearId);
+const afterValidLinear = app.getDocument();
+if (afterValidLinear.kind !== 'part') throw new Error('Expected Part document');
+const storedLinear = afterValidLinear.dimensions.find((dimension) => dimension.id === validLinearId);
+assert.ok(storedLinear && storedLinear.type === 'linear');
+assert.equal(storedLinear.value, 12);
+assert.deepEqual(storedLinear.entityIds, [lineId]);
+
 assert.equal(app.getCommandAvailability('dimension.horizontal').enabled, true);
 assert.equal(app.getCommandAvailability('dimension.vertical').enabled, true);
 
