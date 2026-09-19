@@ -15,7 +15,7 @@ Older issue/PR/status text is historical only; if it conflicts, use this file + 
 
 Protected document family: **six document kinds** - Part, Assembly, Drawing, Fragment, Specification and Text - behind `CadDocument` / `CadApplication`.
 
-Accepted M3 includes Line/Circle/Arc/Rectangle, stable-ID selection/delete/drag, the constraint family through Point-on-curve, Construction Line, and productized Linear/Horizontal/Vertical/Diameter driving dimensions through shared desktop/mobile/search actions.
+Accepted M3 includes Line/Circle/Arc/Rectangle, stable-ID selection/delete/drag, the constraint family through Point-on-curve, Construction Line, and productized Linear/Horizontal/Vertical/Diameter driving dimensions through shared desktop/mobile/search actions. Radius persisted/core support is accepted on schema v2, but Radius productization remains open.
 
 ## Full Repository Health Audit #112
 
@@ -48,19 +48,30 @@ Broad M4 is blocked until all hard Gate B requirements are accepted:
 
 The M3 exit contract is machine-readable in `spec/process/milestone-gates.v1.json`.
 
-## Next M3 work
+## Current M3 gate
 
-M3-DIM-002 is accepted: Diameter is productized using the existing schema-v1 `diameter` discriminant. Required product gaps remain:
+M3-DIM-003A is accepted: Radius persisted/core support is implemented on CadDocument schema v2.
+
+- `CAD_DOCUMENT_SCHEMA_VERSION = 2`;
+- schema-v1 Dimension grammar remains frozen as `linear | horizontal | vertical | diameter`;
+- schema-v2 adds `radius`;
+- built-in migration `1 -> 2` preserves valid v1 content and advances only `schemaVersion`;
+- Circle/Arc Radius DTO/command/PlaneGCS core is accepted;
+- `dimension.radius` remains registry=`planned` until productization.
+
+Required product/capability gaps remain:
+- Radius productization;
 - Angular dimension;
-- Radius dimension;
 - meaningful non-null DoF;
 - visible under/fully/over-constrained diagnostics.
 
-SCHEMA-001 is accepted. `schemaVersion` now means exact persisted grammar; schema-v1 Dimension grammar is frozen as `linear | horizontal | vertical | diameter`. Angular or Radius may proceed only with an explicit schema bump, sequential migration and permanent fixture coverage required by `docs/SCHEMA_EVOLUTION.md` and the machine schema policy.
+Cadence reached **3 / 3**. Feature work is frozen.
+
+**NEXT REQUIRED GATE: Full Repository Health Audit #123.**
+
+Do not start Radius productization, Angular, DoF or another feature slice until Audit #123 is controller-accepted.
 
 M3 remains ACTIVE; do not declare M3 exit until the complete machine exit contract is accepted.
-
-Cadence after SCHEMA-001 acceptance: **2 / 3**.
 
 M3 extension commands do not block M3 unless deliberately reclassified.
 
