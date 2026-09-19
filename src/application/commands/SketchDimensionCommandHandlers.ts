@@ -29,7 +29,9 @@ export const sketchDimensionCommandHandlers = {
     availability: requireSketchAvailability,
     execute: (part, command) => {
       const sketch = requireSketch(part, command.payload.sketchId);
-      if (command.payload.value <= 0) throw new Error('Dimension value must be positive');
+      if (!Number.isFinite(command.payload.value) || command.payload.value <= 0) {
+        throw new Error('Linear dimension value must be positive finite');
+      }
       const [firstEntityId, ...remainingEntityIds] = command.payload.entityIds;
       if (!firstEntityId) throw new Error('Linear dimension requires at least one entity');
       for (const entityId of command.payload.entityIds) requireSketchEntity(sketch, entityId);
