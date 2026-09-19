@@ -112,6 +112,11 @@ jobs:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m3/sketch-diameter-dimension-browser.mjs
 
+      - name: Exercise M3 Radius driving dimension Circle/Arc desktop/touch/persistence
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
+        run: node tests/m3/sketch-radius-dimension-browser.mjs
+
       - name: Exercise M3.7B Fixed solved-geometry freeze desktop/touch/persistence
         env:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
