@@ -52,6 +52,7 @@ function SketchCommandGroups(props: {
         <CadUiActionButton action={props.getAction('dimension.horizontal')} symbol="↔" text />
         <CadUiActionButton action={props.getAction('dimension.vertical')} symbol="↕" text />
         <CadUiActionButton action={props.getAction('dimension.diameter')} symbol="Ø" text />
+        <CadUiActionButton action={props.getAction('dimension.radius')} symbol="R" text />
         <RibbonTextButton
           label={props.rectangleReady ? `${props.rectangleWidth} × ${props.rectangleHeight} мм` : props.circleReady ? `Ø${props.circleDiameter} мм` : 'Размеры'}
           symbol="↔"

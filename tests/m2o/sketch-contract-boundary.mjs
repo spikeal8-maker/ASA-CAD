@@ -77,6 +77,6 @@ for (const id of ['dimension.horizontal', 'dimension.vertical']) {
 }
 const radiusRegistry = commandRegistry.commands.find((command) => command.id === 'dimension.radius');
 assert.ok(radiusRegistry, 'Command registry must retain dimension.radius');
-assert.equal(radiusRegistry.status, 'planned', 'Radius core must remain registry=planned until productization');
+assert.equal(radiusRegistry.status, 'implemented', 'Radius registry must match the productized Circle/Arc path');
 
 console.log('M2O O7 Sketch contract boundary PASS (typed DTOs + typed PlaneGCS/focused handler consumption)');

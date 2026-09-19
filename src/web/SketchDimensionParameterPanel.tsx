@@ -44,7 +44,13 @@ export function SketchDimensionParameterPanel(props: SketchDimensionParameterPan
     >
       <div className="selection-value selected" data-directional-dimension-target={props.creation.entityId ?? ''}>
         <span>✓</span>
-        <strong>{mode === 'diameter' ? 'Выбранная окружность' : 'Выбранный отрезок'}</strong>
+        <strong>{
+          props.creation.targetKind === 'arc'
+            ? 'Выбранная дуга'
+            : props.creation.targetKind === 'circle'
+              ? 'Выбранная окружность'
+              : 'Выбранный отрезок'
+        }</strong>
         <small>{props.creation.entityId ?? '—'}</small>
       </div>
     </DimensionPanelFrame>

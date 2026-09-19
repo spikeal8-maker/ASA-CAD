@@ -29,6 +29,7 @@ export interface M2CadUiActionHandlers {
   horizontalDimension(): void | Promise<void>;
   verticalDimension(): void | Promise<void>;
   diameterDimension(): void | Promise<void>;
+  radiusDimension(): void | Promise<void>;
   finishSketch(): void | Promise<void>;
   extrude(): void | Promise<void>;
   cutExtrude(): void | Promise<void>;
@@ -61,6 +62,7 @@ export interface M2CadUiActionState {
   canApplyPointOnCurveConstraint: boolean;
   canApplyLineDimension: boolean;
   canApplyDiameterDimension: boolean;
+  canApplyRadiusDimension: boolean;
   canExtrude: boolean;
   canCutExtrude: boolean;
   canFillet: boolean;
@@ -85,6 +87,7 @@ export function createM2CadUiActionBindings(
   const tangentConstraintReason = 'Создайте отрезок и окружность эскиза';
   const lineDimensionReason = state.canApplyLineDimension ? undefined : 'Выберите отрезок эскиза';
   const diameterDimensionReason = state.canApplyDiameterDimension ? undefined : 'Выберите окружность эскиза';
+  const radiusDimensionReason = state.canApplyRadiusDimension ? undefined : 'Выберите окружность или дугу эскиза';
   return {
     'system.open': binding(handlers.open),
     'system.save': binding(handlers.save),
@@ -114,6 +117,7 @@ export function createM2CadUiActionBindings(
     'dimension.horizontal': binding(handlers.horizontalDimension, state.canApplyLineDimension, lineDimensionReason),
     'dimension.vertical': binding(handlers.verticalDimension, state.canApplyLineDimension, lineDimensionReason),
     'dimension.diameter': binding(handlers.diameterDimension, state.canApplyDiameterDimension, diameterDimensionReason),
+    'dimension.radius': binding(handlers.radiusDimension, state.canApplyRadiusDimension, radiusDimensionReason),
     'sketch.finish': binding(handlers.finishSketch, state.hasSketch, 'Сначала создайте эскиз'),
     'part.extrude': binding(handlers.extrude, state.canExtrude, 'Завершите прямоугольный эскиз'),
     'part.cutExtrude': binding(handlers.cutExtrude, state.canCutExtrude, 'Создайте окружность на грани и завершите эскиз'),
