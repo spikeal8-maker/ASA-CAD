@@ -85,6 +85,9 @@ jobs:
       - name: Verify CadDocument schema evolution policy
         run: npm run test:process:schema-evolution
 
+      - name: Verify release schema identity
+        run: npm run test:process:release-schema
+
       - name: Install pinned frontend toolchain
         run: npm --prefix vendor/toubkal ci
 

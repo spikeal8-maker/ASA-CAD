@@ -12,6 +12,8 @@ on:
       - tsconfig.json
       - build/**
       - spec/ui/**
+      - spec/process/cad-document-schema-policy.v1.json
+      - tests/process/release-schema-contract.mjs
       - src/web/**
       - src/browser/**
       - src/runtime/**
@@ -34,6 +36,8 @@ on:
       - tsconfig.json
       - build/**
       - spec/ui/**
+      - spec/process/cad-document-schema-policy.v1.json
+      - tests/process/release-schema-contract.mjs
       - src/web/**
       - src/browser/**
       - src/runtime/**
@@ -100,6 +104,7 @@ jobs:
 
           curl --fail --silent http://127.0.0.1:8088/cad/asa-cad-release.json >/tmp/asa-cad-release.json
           node -e "const m=require('/tmp/asa-cad-release.json'); if(m.releaseVersion!=='0.2.0-m2'||m.productShell!=='asa-m2'||m.mountPath!=='/cad'||m.runtime?.compute!=='client-browser'||m.runtime?.loading!=='lazy-on-first-solid-operation'||m.host?.geometryComputeBackend!==false) process.exit(1)"
+          node tests/process/release-schema-contract.mjs /tmp/asa-cad-release.json
 
           for url in http://127.0.0.1:8088/ http://127.0.0.1:8088/cad/projects/m0d-protected; do
             headers="$(curl --silent --dump-header - --output /dev/null "$url")"
