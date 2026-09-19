@@ -6,6 +6,7 @@ export function ParameterNumericField(props: {
   suffix: string;
   onChange(value: number): void;
   min?: number;
+  max?: number;
 }) {
   return (
     <label className="numeric-field">
@@ -14,6 +15,7 @@ export function ParameterNumericField(props: {
         <input
           type="number"
           min={props.min ?? 0.01}
+          max={props.max}
           step="1"
           value={Number.isFinite(props.value) ? props.value : 0}
           onChange={(event) => props.onChange(Number(event.target.value))}

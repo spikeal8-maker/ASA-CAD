@@ -87,6 +87,6 @@ assert.ok(radiusRegistry, 'Command registry must retain dimension.radius');
 assert.equal(radiusRegistry.status, 'implemented', 'Radius registry must match the productized Circle/Arc path');
 const angularRegistry = commandRegistry.commands.find((command) => command.id === 'dimension.angular');
 assert.ok(angularRegistry, 'Command registry must retain dimension.angular');
-assert.equal(angularRegistry.status, 'planned', 'Angular core must remain registry=planned until productization');
+assert.equal(angularRegistry.status, 'implemented', 'Angular registry must match the productized Line-pair path');
 
 console.log('M2O O7 Sketch contract boundary PASS (typed DTOs + typed PlaneGCS/focused handler consumption)');

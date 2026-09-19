@@ -1,7 +1,7 @@
 import React from 'react';
 import type { CadDocument } from '../contracts/document';
 import type { CadBodyId, CadDimensionId, CadSketchId } from '../contracts/ids';
-import { dimensionLabel } from './SketchDimensionPresentation';
+import { dimensionLabel, dimensionUnit } from './SketchDimensionPresentation';
 
 export interface DocumentTreeProps {
   document: CadDocument;
@@ -54,8 +54,8 @@ export function DocumentTree({
               <TreeRow
                 key={dimension.id}
                 depth={2}
-                icon={dimension.type === 'diameter' ? 'Ø' : '↔'}
-                label={`${dimensionLabel(dimension.name, dimension.type)}: ${dimension.value} мм`}
+                icon={dimension.type === 'diameter' ? 'Ø' : dimension.type === 'angular' ? '∠' : '↔'}
+                label={`${dimensionLabel(dimension.name, dimension.type)}: ${dimension.value} ${dimensionUnit(dimension.type)}`}
                 onClick={() => onEditDimension(dimension.id)}
               />
             ))}

@@ -10,6 +10,7 @@ const workspace = readFileSync('src/web/usePartSketchWorkspace.ts', 'utf8');
 const lineDimensions = readFileSync('src/web/useSketchLineDimensionController.ts', 'utf8');
 const circleDimensions = readFileSync('src/web/useSketchCircleDimensionController.ts', 'utf8');
 const radiusDimensions = readFileSync('src/web/useSketchRadiusDimensionController.ts', 'utf8');
+const angularDimensions = readFileSync('src/web/useSketchAngularDimensionController.ts', 'utf8');
 const dimensionCreation = readFileSync('src/web/useSketchDimensionCreationControllers.ts', 'utf8');
 const dimensionPanel = readFileSync('src/web/SketchDimensionParameterPanel.tsx', 'utf8');
 const dimensionPresentation = readFileSync('src/web/SketchDimensionPresentation.ts', 'utf8');
@@ -42,7 +43,7 @@ assert.match(app, /case 'view\.panLeft':/, 'camera-only pan remains an interacti
 for (const ribbonActionId of [
   'sketch.rectangle', 'sketch.circle',
   'constraint.horizontal', 'constraint.vertical', 'constraint.fixed', 'constraint.coincident', 'constraint.parallel', 'constraint.perpendicular',
-  'dimension.linear', 'dimension.horizontal', 'dimension.vertical', 'dimension.diameter', 'dimension.radius',
+  'dimension.linear', 'dimension.horizontal', 'dimension.vertical', 'dimension.diameter', 'dimension.radius', 'dimension.angular',
   'sketch.finish', 'part.sketch.create', 'part.extrude', 'part.cutExtrude', 'part.fillet', 'system.rebuild',
 ]) {
   assert.ok(commandGroups.includes(`action={props.getAction('${ribbonActionId}')}`), `${ribbonActionId} ribbon button must consume CadUiAction`);
@@ -60,13 +61,14 @@ assert.match(shellBottom, />⌘<span>Инструменты<\/span><\/button>/, 
 assert.match(mobileTools, /import type \{ CadUiAction \}/, 'mobile Tools presentation must consume typed CadUiAction');
 assert.match(mobileTools, /props\.getAction\(tool\.id\)/, 'mobile Tool buttons must resolve shared action objects');
 for (const id of ['horizontal', 'vertical', 'fixed', 'coincident', 'parallel', 'perpendicular']) assert.match(mobileTools, new RegExp(`id: 'constraint\\.${id}'`), `mobile Sketch tools must expose ${id} through CadUiAction`);
-for (const id of ['linear', 'horizontal', 'vertical', 'diameter', 'radius']) assert.match(mobileTools, new RegExp(`id: 'dimension\\.${id}'`), `mobile Sketch tools must expose dimension.${id} through CadUiAction`);
+for (const id of ['linear', 'horizontal', 'vertical', 'diameter', 'radius', 'angular']) assert.match(mobileTools, new RegExp(`id: 'dimension\\.${id}'`), `mobile Sketch tools must expose dimension.${id} through CadUiAction`);
 assert.doesNotMatch(mobileTools, /querySelector|querySelectorAll|\.click\(\)/, 'mobile Tools must never discover/click desktop DOM');
 
 assert.match(workspace, /useSketchDimensionCreation/, 'workspace must compose focused dimension creation owners');
 assert.match(dimensionCreation, /useSketchLineDimensionController/, 'dimension creation composition must retain the selected-Line owner');
 assert.match(dimensionCreation, /useSketchCircleDimensionController/, 'dimension creation composition must retain the focused Diameter Circle owner');
 assert.match(dimensionCreation, /useSketchRadiusDimensionController/, 'dimension creation composition must add the focused Circle-or-Arc Radius owner');
+assert.match(dimensionCreation, /useSketchAngularDimensionController/, 'dimension creation composition must add the focused Angular Line-pair owner');
 assert.match(lineDimensions, /'linear' \| 'horizontal' \| 'vertical'/, 'selected-Line owner must remain Linear/H/V only');
 assert.doesNotMatch(lineDimensions, /diameter/, 'selected-Line owner must not absorb Circle Diameter responsibility');
 assert.match(circleDimensions, /id: 'dimension\.diameter'/, 'Circle owner must commit only the Diameter command');
@@ -78,11 +80,18 @@ assert.match(radiusDimensions, /selectedEntity\?\.type === 'circle'.*selectedEnt
 assert.match(radiusDimensions, /data\.diameter \/ 2/, 'Radius Circle initial value must be half the persisted diameter');
 assert.match(radiusDimensions, /data\.radius/, 'Radius Arc initial value must use persisted arc radius');
 assert.doesNotMatch(radiusDimensions, /PlaneGCS|BrowserSketchSolver|localStorage|querySelector|undoStack|redoStack/, 'Radius owner must not absorb solver/persistence/DOM/history responsibilities');
+assert.match(angularDimensions, /id: 'dimension\.angular'/, 'Angular owner must commit only the existing Angular command');
+assert.match(angularDimensions, /lineCount >= 2/, 'Angular action requires at least two Lines');
+assert.match(angularDimensions, /Number\.isFinite\(draftValue\).*draftValue > 0.*draftValue < 180/s, 'Angular Parameters must guard finite 0<value<180');
+assert.doesNotMatch(angularDimensions, /PlaneGCS|BrowserSketchSolver|localStorage|querySelector|undoStack|redoStack/, 'Angular owner must not absorb solver/persistence/DOM/history responsibilities');
 assert.match(dimensionPresentation, /type === 'linear'.*Линейный размер/, 'canonical presentation must name Linear Dimension');
 assert.match(dimensionPresentation, /type === 'horizontal'.*Горизонтальный размер/, 'canonical presentation must name Horizontal Dimension');
 assert.match(dimensionPresentation, /type === 'vertical'.*Вертикальный размер/, 'canonical presentation must name Vertical Dimension');
 assert.match(dimensionPresentation, /type === 'diameter'.*Диаметральный размер/, 'canonical presentation must name product Diameter Dimension');
 assert.match(dimensionPresentation, /type === 'radius'.*Радиальный размер/, 'canonical presentation must name product Radius Dimension');
+assert.match(dimensionPresentation, /type === 'angular'.*Угловой размер/, 'canonical presentation must name product Angular Dimension');
+assert.match(dimensionPanel, /Выбранные отрезки/, 'Angular Parameters must present both selected Lines');
+assert.match(dimensionPanel, /mode === 'angular'.*'°'/s, 'Angular Parameters must present degrees');
 assert.match(dimensionPanel, /Выбранная окружность/, 'Circle dimension Parameters must present the selected Circle');
 assert.match(dimensionPanel, /Выбранная дуга/, 'Radius Parameters must present the selected Arc');
 assert.match(dimensionPanel, /Изменить размер/, 'existing dimension edit presentation must remain distinct');

@@ -3,8 +3,8 @@ import type { CadSketchCommandReference } from '../../contracts/commands';
 import type { CadPoint2 } from '../../contracts/document';
 import type { CadSketchEntityId } from '../../contracts/ids';
 import {
-  useSketchCoincidentCommit, useSketchParallelCommit, useSketchPerpendicularCommit, useSketchEqualCommit,
-  type SketchLinePairCommit,
+  useSketchAngularPairSelect, useSketchCoincidentCommit, useSketchParallelCommit,
+  useSketchPerpendicularCommit, useSketchEqualCommit, type SketchLinePairCommit,
 } from '../CoincidentPartModelStage';
 import { SketchInteractionSurface } from './SketchInteractionSurface';
 import type { SketchOverlayModel } from './SketchOverlayModel';
@@ -97,14 +97,24 @@ export function SketchEqualInteractionLayer(props: BinaryLayerProps) {
   return <SketchLinePairInteractionLayer {...props} commit={commit} tool="constraint.equal" label="Равенство отрезков" prefix="equal" />;
 }
 
+/** Angular Dimension reuses the accepted whole-Line pair picker before Parameters. */
+export function SketchAngularDimensionInteractionLayer(props: BinaryLayerProps) {
+  const select = useSketchAngularPairSelect();
+  return <SketchLinePairInteractionLayer {...props} commit={select} tool="dimension.angular" label="Угловой размер" prefix="angular" />;
+}
+
 function SketchLinePairInteractionLayer(props: BinaryLayerProps & {
   commit: SketchLinePairCommit;
-  tool: 'constraint.parallel' | 'constraint.perpendicular' | 'constraint.equal';
+  tool: 'constraint.parallel' | 'constraint.perpendicular' | 'constraint.equal' | 'dimension.angular';
   label: string;
-  prefix: 'parallel' | 'perpendicular' | 'equal';
+  prefix: 'parallel' | 'perpendicular' | 'equal' | 'angular';
 }) {
   const [first, setFirst] = useState<CadSketchEntityId | null>(null);
-  useEffect(() => setFirst(null), [props.active, props.model?.sketchId]);
+  const [complete, setComplete] = useState(false);
+  useEffect(() => {
+    setFirst(null);
+    setComplete(false);
+  }, [props.active, props.model?.sketchId]);
   const lines = lineEntities(props.model);
   const pickRadius = props.frame.width * 0.025;
 
@@ -113,7 +123,10 @@ function SketchLinePairInteractionLayer(props: BinaryLayerProps & {
     if (!entityId) return;
     if (!first) { setFirst(entityId); return; }
     if (first === entityId) { setFirst(null); return; }
-    if (await props.commit(first, entityId)) setFirst(null);
+    if (await props.commit(first, entityId)) {
+      setFirst(null);
+      setComplete(true);
+    }
   };
 
   return (
@@ -121,7 +134,7 @@ function SketchLinePairInteractionLayer(props: BinaryLayerProps & {
       frame={props.frame}
       viewportState={props.viewportState}
       onViewportStateChange={props.onViewportStateChange}
-      active={props.active}
+      active={props.active && !complete}
       tool={props.tool}
       ariaLabel={props.label}
       dataAttributes={{

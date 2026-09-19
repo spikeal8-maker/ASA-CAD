@@ -4,8 +4,13 @@ export function dimensionLabel(name: string | undefined, type: string): string {
   if (name === 'diameter') return 'Диаметр';
   if (type === 'diameter') return 'Диаметральный размер';
   if (type === 'radius') return 'Радиальный размер';
+  if (type === 'angular') return 'Угловой размер';
   if (type === 'linear') return 'Линейный размер';
   if (type === 'horizontal') return 'Горизонтальный размер';
   if (type === 'vertical') return 'Вертикальный размер';
   return name || type;
+}
+
+export function dimensionUnit(type: string): string {
+  return type === 'angular' ? '°' : 'мм';
 }
