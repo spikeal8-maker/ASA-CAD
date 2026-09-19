@@ -71,9 +71,11 @@ Required product/capability gaps remain:
 
 `STATE-SCHEMA-RELEASE-001` was repaired by #125 / PR #126: production schema, machine policy and shipped release metadata now converge on v2; M2-shell and Docker permanently verify that identity.
 
-Remaining bounded YELLOW debt includes schema-guard generality/brittleness, UI search visibility, size/test pressure, repository hygiene/toolchain/dependency maintenance, and the existing pre-M4 performance/M3X/legal gates.
+Remaining bounded YELLOW debt includes schema-guard brittleness, UI search visibility, size/test pressure, repository hygiene/toolchain/dependency maintenance, and the existing pre-M4 performance/M3X/legal gates.
 
-Feature work may resume in bounded M3 slices. Audit #123 reset the cadence to 0 / 3; after accepted M3-DIM-003B the cadence is **1 / 3**. Angular remains the only required Dimension product gap.
+Feature work may resume in bounded M3 slices. Audit #123 reset the cadence to 0 / 3; after accepted M3-DIM-003B and SCHEMA-GENERALITY-001 the cadence is **2 / 3**. Angular remains the only required Dimension product gap.
+
+SCHEMA-GENERALITY-001 is accepted: machine policy versions document kinds, Sketch entity kinds, Constraint kinds and Dimension kinds for every schema. `SCHEMA-GUARD-001` remains YELLOW because source extraction is still regex/source-layout based.
 
 M3 remains ACTIVE; do not declare M3 exit until the complete machine exit contract is accepted.
 
