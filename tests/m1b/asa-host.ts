@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import {
+  CAD_DOCUMENT_SCHEMA_VERSION,
   AsaLabCadProjectHost,
   AsaLabCadRevisionConflictError,
   createEmptyCadDocument,
@@ -8,7 +10,8 @@ import {
 const initial = createEmptyCadDocument('part', { title: 'ASA host test' });
 const calls: Array<{ url: string; method: string; credentials?: RequestCredentials; body?: string }> = [];
 let revision = 5;
-let stored = structuredClone(initial);
+const storedV1 = JSON.parse(fs.readFileSync('tests/fixtures/schema/v1-part-dimensions.json', 'utf8'));
+let stored: any = structuredClone(storedV1);
 
 const fakeFetch: typeof globalThis.fetch = async (input, init = {}) => {
   const url = typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
@@ -52,7 +55,10 @@ const fakeFetch: typeof globalThis.fetch = async (input, init = {}) => {
 const host = new AsaLabCadProjectHost({ projectId: 'project one', fetch: fakeFetch });
 const opened = await host.load();
 assert.equal(opened.revision, 5);
-assert.equal(opened.document.title, 'ASA host test');
+assert.equal(opened.document.schemaVersion, CAD_DOCUMENT_SCHEMA_VERSION);
+assert.equal(CAD_DOCUMENT_SCHEMA_VERSION, 2);
+assert.equal(stored.schemaVersion, 1, 'ASA Lab GET draft must remain stored as v1 after in-memory migration');
+assert.deepEqual(calls.map((call) => [call.method, call.url]), [['GET', '/api/projects/project%20one']]);
 
 const edited = structuredClone(opened.document);
 edited.title = 'Saved through Project Core';

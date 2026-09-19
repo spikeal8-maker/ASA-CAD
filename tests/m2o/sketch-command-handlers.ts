@@ -33,6 +33,7 @@ assert.ok(SKETCH_GROWTH_COMMAND_IDS.includes('constraint.coincident'));
 assert.ok(SKETCH_GROWTH_COMMAND_IDS.includes('dimension.linear'));
 assert.ok(SKETCH_GROWTH_COMMAND_IDS.includes('dimension.horizontal'));
 assert.ok(SKETCH_GROWTH_COMMAND_IDS.includes('dimension.vertical'));
+assert.ok(SKETCH_GROWTH_COMMAND_IDS.includes('dimension.radius'));
 assert.ok(SKETCH_GROWTH_COMMAND_IDS.includes('part.dimension.setValue'));
 assert.equal(isSketchGrowthCommandId('feature.extrude'), false);
 
@@ -130,13 +131,37 @@ assert.equal(diameter.ok, true);
 assert.ok(diameter.createdIds?.[0]);
 const afterDiameter = serializeCadDocument(app.getDocument());
 
+const circleRadius = await app.execute({
+  id: 'dimension.radius',
+  payload: { sketchId, entityId: circleId, value: 9, name: 'circle-radius' },
+});
+assert.equal(circleRadius.ok, true);
+assert.ok(circleRadius.createdIds?.[0]);
+const afterCircleRadius = serializeCadDocument(app.getDocument());
+
+const invalidRadiusLine = await app.execute({
+  id: 'dimension.radius',
+  payload: { sketchId, entityId: lineId, value: 10 },
+});
+assert.equal(invalidRadiusLine.ok, false);
+assert.match(invalidRadiusLine.error?.message ?? '', /requires a Circle or Arc entity, got line/);
+assert.equal(serializeCadDocument(app.getDocument()), afterCircleRadius, 'invalid Line Radius target must roll back atomically');
+
+const invalidRadiusValue = await app.execute({
+  id: 'dimension.radius',
+  payload: { sketchId, entityId: circleId, value: Number.POSITIVE_INFINITY },
+});
+assert.equal(invalidRadiusValue.ok, false);
+assert.match(invalidRadiusValue.error?.message ?? '', /positive finite/);
+assert.equal(serializeCadDocument(app.getDocument()), afterCircleRadius, 'non-finite Radius value must roll back atomically');
+
 const invalidDiameterLine = await app.execute({
   id: 'dimension.diameter',
   payload: { sketchId, entityId: lineId, value: 20 },
 });
 assert.equal(invalidDiameterLine.ok, false);
 assert.match(invalidDiameterLine.error?.message ?? '', /requires a Circle entity, got line/);
-assert.equal(serializeCadDocument(app.getDocument()), afterDiameter, 'invalid Line Diameter target must roll back atomically');
+assert.equal(serializeCadDocument(app.getDocument()), afterCircleRadius, 'invalid Line Diameter target must roll back atomically');
 
 const invalidDiameterValue = await app.execute({
   id: 'dimension.diameter',
@@ -144,7 +169,7 @@ const invalidDiameterValue = await app.execute({
 });
 assert.equal(invalidDiameterValue.ok, false);
 assert.match(invalidDiameterValue.error?.message ?? '', /positive finite/);
-assert.equal(serializeCadDocument(app.getDocument()), afterDiameter, 'non-finite Diameter value must roll back atomically');
+assert.equal(serializeCadDocument(app.getDocument()), afterCircleRadius, 'non-finite Diameter value must roll back atomically');
 
 const beforeInvalidCircle = serializeCadDocument(app.getDocument());
 const invalidHorizontalCircle = await app.execute({
@@ -168,13 +193,21 @@ const arcId = arc.createdIds?.[0] as CadSketchEntityId;
 assert.ok(arcId);
 const beforeInvalidArc = serializeCadDocument(app.getDocument());
 
+const arcRadius = await app.execute({
+  id: 'dimension.radius',
+  payload: { sketchId, entityId: arcId, value: 15, name: 'arc-radius' },
+});
+assert.equal(arcRadius.ok, true);
+assert.ok(arcRadius.createdIds?.[0]);
+const afterArcRadius = serializeCadDocument(app.getDocument());
+
 const invalidDiameterArc = await app.execute({
   id: 'dimension.diameter',
   payload: { sketchId, entityId: arcId, value: 12 },
 });
 assert.equal(invalidDiameterArc.ok, false);
 assert.match(invalidDiameterArc.error?.message ?? '', /requires a Circle entity, got arc/);
-assert.equal(serializeCadDocument(app.getDocument()), beforeInvalidArc, 'invalid Arc Diameter target must roll back atomically');
+assert.equal(serializeCadDocument(app.getDocument()), afterArcRadius, 'invalid Arc Diameter target must roll back atomically');
 
 const invalidVerticalArc = await app.execute({
   id: 'dimension.vertical',
@@ -184,7 +217,7 @@ assert.equal(invalidVerticalArc.ok, false);
 assert.match(invalidVerticalArc.error?.message ?? '', /requires a Line entity/);
 assert.equal(
   serializeCadDocument(app.getDocument()),
-  beforeInvalidArc,
+  afterArcRadius,
   'invalid Arc target must roll back atomically',
 );
 

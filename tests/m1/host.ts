@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import {
+  CAD_DOCUMENT_SCHEMA_VERSION,
   CadRevisionConflictError,
+  LocalStorageCadProjectHost,
   MemoryCadProjectHost,
   createEmptyCadDocument,
 } from '../../src';
@@ -44,4 +47,27 @@ await assert.rejects(
   },
 );
 
-console.log('ASA-CAD M1 MemoryCadProjectHost PASS');
+const v1Raw = fs.readFileSync('tests/fixtures/schema/v1-part-dimensions.json', 'utf8');
+const storageValues = new Map<string, string>([['schema-v1-host', v1Raw]]);
+let storageWrites = 0;
+const storage = {
+  get length() { return storageValues.size; },
+  clear() { storageValues.clear(); },
+  getItem(key: string) { return storageValues.get(key) ?? null; },
+  key(index: number) { return [...storageValues.keys()][index] ?? null; },
+  removeItem(key: string) { storageValues.delete(key); },
+  setItem(key: string, value: string) { storageWrites += 1; storageValues.set(key, value); },
+} satisfies Storage;
+
+const localHost = new LocalStorageCadProjectHost({
+  initialDocument: createEmptyCadDocument('part'),
+  storage,
+  storageKey: 'schema-v1-host',
+});
+const migratedLocal = await localHost.load();
+assert.equal(migratedLocal.document.schemaVersion, CAD_DOCUMENT_SCHEMA_VERSION);
+assert.equal(CAD_DOCUMENT_SCHEMA_VERSION, 2);
+assert.equal(storageWrites, 0, 'LocalStorage load must not rewrite migrated schema-v1 content');
+assert.equal(storageValues.get('schema-v1-host'), v1Raw, 'stored raw v1 document must remain byte-identical after load');
+
+console.log('ASA-CAD M1 host PASS (Memory host + LocalStorage v1->v2 ingress without rewrite)');

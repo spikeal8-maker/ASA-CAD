@@ -17,6 +17,7 @@ export const SKETCH_DIMENSION_COMMAND_IDS = [
   'dimension.horizontal',
   'dimension.vertical',
   'dimension.diameter',
+  'dimension.radius',
   'part.dimension.setValue',
 ] as const satisfies readonly CadCommandId[];
 
@@ -113,6 +114,32 @@ export const sketchDimensionCommandHandlers = {
       const dimension: CadDimension = {
         id,
         type: 'diameter',
+        entityIds: [command.payload.entityId],
+        value: command.payload.value,
+        driving: true,
+        name: command.payload.name,
+      };
+      part.dimensions.push(dimension);
+      sketch.dimensionIds.push(id);
+      return { ok: true, changed: true, createdIds: [id] };
+    },
+  }),
+
+  'dimension.radius': defineSketchCommandHandler<'dimension.radius'>({
+    availability: requireSketchAvailability,
+    execute: (part, command) => {
+      const sketch = requireSketch(part, command.payload.sketchId);
+      const entity = requireSketchEntity(sketch, command.payload.entityId);
+      if (entity.type !== 'circle' && entity.type !== 'arc') {
+        throw new Error(`Radius dimension requires a Circle or Arc entity, got ${entity.type}`);
+      }
+      if (!Number.isFinite(command.payload.value) || command.payload.value <= 0) {
+        throw new Error('Radius dimension value must be positive finite');
+      }
+      const id = createCadId<CadDimensionId>('dimension');
+      const dimension: CadDimension = {
+        id,
+        type: 'radius',
         entityIds: [command.payload.entityId],
         value: command.payload.value,
         driving: true,

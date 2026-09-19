@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {
+  CAD_DOCUMENT_SCHEMA_VERSION,
   CadApplicationImpl,
   PlaneGCSSketchSolverRuntime,
   createEmptyCadDocument,
@@ -56,8 +57,8 @@ assert.ok(Math.abs(arc.data.endAngle - Math.PI / 2) < 1e-9);
 
 const serialized = serializeCadDocument(part);
 const reopened = parseCadDocument(serialized);
-assert.deepEqual(reopened, part, 'Arc must round-trip through schema-v1 without alternate representation');
-assert.equal(reopened.schemaVersion, 1);
+assert.deepEqual(reopened, part, 'Arc must round-trip through the current schema without alternate representation');
+assert.equal(reopened.schemaVersion, CAD_DOCUMENT_SCHEMA_VERSION);
 
 function mutateAndReject(mutator: (value: any) => void, pattern: RegExp): void {
   const value = JSON.parse(serialized);
@@ -103,4 +104,4 @@ assert.ok(Math.abs(solvedArc.data.endAngle - Math.PI / 2) < 1e-5);
 
 solver.dispose();
 app.dispose();
-console.log('ASA-CAD M3.4A Arc contract PASS (schema-v1 + typed command + atomic rollback + PlaneGCS readback)');
+console.log('ASA-CAD M3.4A Arc contract PASS (current schema + typed command + atomic rollback + PlaneGCS readback)');

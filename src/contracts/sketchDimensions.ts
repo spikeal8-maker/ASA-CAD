@@ -25,11 +25,16 @@ export interface CadDiameterDimension extends CadDimensionBase<'diameter'> {
   entityIds: [CadSketchEntityId];
 }
 
+export interface CadRadiusDimension extends CadDimensionBase<'radius'> {
+  entityIds: [CadSketchEntityId];
+}
+
 export type CadDimension =
   | CadLinearDimension
   | CadHorizontalDimension
   | CadVerticalDimension
-  | CadDiameterDimension;
+  | CadDiameterDimension
+  | CadRadiusDimension;
 
 export function validateCadDimension(value: unknown, path: string): asserts value is CadDimension {
   const dimension = expectRecord(value, path);
@@ -49,7 +54,8 @@ export function validateCadDimension(value: unknown, path: string): asserts valu
       if (dimension.entityIds.length !== 1) throw new Error(`${path}.${dimension.type} requires exactly one entity id`);
       return;
     case 'diameter':
-      if (dimension.entityIds.length !== 1) throw new Error(`${path}.diameter requires exactly one entity id`);
+    case 'radius':
+      if (dimension.entityIds.length !== 1) throw new Error(`${path}.${dimension.type} requires exactly one entity id`);
       return;
     default:
       throw new Error(`${path}.type is unsupported: ${String(dimension.type)}`);

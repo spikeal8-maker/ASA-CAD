@@ -40,3 +40,11 @@ Schema version 1 permanently defines the Dimension discriminants:
 `linear | horizontal | vertical | diameter`
 
 Angular and Radius must not be added to schema-v1. Introducing either persisted discriminant requires a new schema version and the corresponding sequential migration evidence.
+
+## Current schema-v2 grammar
+
+Schema version 2 extends the exact Dimension grammar with `radius`:
+
+`linear | horizontal | vertical | diameter | radius`
+
+The built-in `1 -> 2` migration preserves the complete v1 document and advances only `schemaVersion` from 1 to 2. Existing IDs, geometry, dimensions, metadata and `engineVersion` are unchanged. Radius is a native v2 discriminant; schema-v1 remains immutable.

@@ -26,6 +26,7 @@ export type {
   CadHorizontalConstraint,
   CadHorizontalDimension,
   CadLinearDimension,
+  CadRadiusDimension,
   CadPartSketchCollections,
   CadPoint2,
   CadSketch,
@@ -42,7 +43,7 @@ export type {
   CadVerticalDimension,
 } from './sketch';
 
-export const CAD_DOCUMENT_SCHEMA_VERSION = 1 as const;
+export const CAD_DOCUMENT_SCHEMA_VERSION = 2 as const;
 export const ASA_CAD_ENGINE_VERSION = '0.1.0-m1' as const;
 
 export type CadDocumentKind =
