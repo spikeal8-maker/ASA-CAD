@@ -384,7 +384,7 @@ Target identity:
 ```text
 moduleKey: cad
 projectType: cad-document
-schemaVersion: 2
+schemaVersion: 3
 editorRoute: /cad/projects/:projectId
 viewerRoute: /cad/view/:versionId
 ```

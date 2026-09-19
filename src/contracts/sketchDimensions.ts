@@ -29,12 +29,17 @@ export interface CadRadiusDimension extends CadDimensionBase<'radius'> {
   entityIds: [CadSketchEntityId];
 }
 
+export interface CadAngularDimension extends CadDimensionBase<'angular'> {
+  entityIds: [CadSketchEntityId, CadSketchEntityId];
+}
+
 export type CadDimension =
   | CadLinearDimension
   | CadHorizontalDimension
   | CadVerticalDimension
   | CadDiameterDimension
-  | CadRadiusDimension;
+  | CadRadiusDimension
+  | CadAngularDimension;
 
 export function validateCadDimension(value: unknown, path: string): asserts value is CadDimension {
   const dimension = expectRecord(value, path);
@@ -56,6 +61,11 @@ export function validateCadDimension(value: unknown, path: string): asserts valu
     case 'diameter':
     case 'radius':
       if (dimension.entityIds.length !== 1) throw new Error(`${path}.${dimension.type} requires exactly one entity id`);
+      return;
+    case 'angular':
+      if (dimension.entityIds.length !== 2) throw new Error(`${path}.angular requires exactly two entity ids`);
+      if (dimension.entityIds[0] === dimension.entityIds[1]) throw new Error(`${path}.angular requires two distinct entity ids`);
+      if (!(dimension.value < 180)) throw new Error(`${path}.angular value must be less than 180 degrees`);
       return;
     default:
       throw new Error(`${path}.type is unsupported: ${String(dimension.type)}`);

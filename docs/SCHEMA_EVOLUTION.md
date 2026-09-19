@@ -45,10 +45,24 @@ Schema version 1 permanently defines these persisted union sets:
 - Constraints: `horizontal | vertical | parallel | perpendicular | tangent | concentric | equal | symmetric | pointOnCurve | fixed | coincident`;
 - Dimensions: `linear | horizontal | vertical | diameter`.
 
-## Current schema-v2 grammar
+## Frozen schema-v2 grammar
 
-Schema version 2 keeps the document-kind, Sketch-entity and Constraint sets exactly unchanged and extends only the Dimension grammar with `radius`:
+Schema version 2 keeps the document-kind, Sketch-entity and Constraint sets exactly unchanged from v1 and extends only the Dimension grammar with `radius`:
 
 `linear | horizontal | vertical | diameter | radius`
 
-Therefore the only persisted-union delta from v1 to v2 is Radius Dimension. The built-in `1 -> 2` migration preserves the complete v1 document and advances only `schemaVersion` from 1 to 2. Existing IDs, geometry, dimensions, metadata and `engineVersion` are unchanged.
+The only persisted-union delta from v1 to v2 is Radius Dimension.
+
+## Current schema-v3 grammar
+
+Schema version 3 again keeps document kinds, Sketch entities and Constraints unchanged and extends only the Dimension grammar with `angular`:
+
+`linear | horizontal | vertical | diameter | radius | angular`
+
+The only persisted-union delta from v2 to v3 is Angular Dimension.
+
+Both built-in migrations are sequential and structurally identity-preserving after validating the frozen source-version Dimension grammar:
+
+`v1 -> +radius grammar -> v2 -> +angular grammar -> v3`
+
+They preserve IDs, geometry, dimensions, values, metadata, linked documents and `engineVersion`; each migration advances only `schemaVersion`.

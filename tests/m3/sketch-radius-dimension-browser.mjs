@@ -45,7 +45,7 @@ async function desktopCircle() {
     await waitSolvedOverlay(page, 1, 'Radius reopen');
     near(await circleDiameter(page, id), 30, 0.1, 'reopen Circle diameter');
     saved = JSON.parse(await page.evaluate(() => localStorage.getItem('asa-cad-m2-shell-document')));
-    assert.equal(saved.schemaVersion, 2);
+    assert.equal(saved.schemaVersion, 3);
     assert.equal(saved.dimensions[0]?.id, dimensionId);
     assert.deepEqual(saved.dimensions[0]?.entityIds, [id]);
 

@@ -34,6 +34,7 @@ assert.ok(SKETCH_GROWTH_COMMAND_IDS.includes('dimension.linear'));
 assert.ok(SKETCH_GROWTH_COMMAND_IDS.includes('dimension.horizontal'));
 assert.ok(SKETCH_GROWTH_COMMAND_IDS.includes('dimension.vertical'));
 assert.ok(SKETCH_GROWTH_COMMAND_IDS.includes('dimension.radius'));
+assert.ok(SKETCH_GROWTH_COMMAND_IDS.includes('dimension.angular'));
 assert.ok(SKETCH_GROWTH_COMMAND_IDS.includes('part.dimension.setValue'));
 assert.equal(isSketchGrowthCommandId('feature.extrude'), false);
 

@@ -1,82 +1,33 @@
 {
   "policyVersion": 1,
   "schemaVersionSemantics": "exact-persisted-grammar",
-  "currentCadDocumentSchemaVersion": 2,
+  "currentCadDocumentSchemaVersion": 3,
   "persistedUnionDiscriminantAdditionRequiresSchemaBump": true,
   "readMustNotSilentlyRewriteStoredDocuments": true,
   "schemas": [
     {
       "version": 1,
-      "documentKinds": [
-        "part",
-        "assembly",
-        "drawing",
-        "fragment",
-        "specification",
-        "text"
-      ],
-      "sketchEntityTypes": [
-        "line",
-        "circle",
-        "arc"
-      ],
-      "constraintTypes": [
-        "horizontal",
-        "vertical",
-        "parallel",
-        "perpendicular",
-        "tangent",
-        "concentric",
-        "equal",
-        "symmetric",
-        "pointOnCurve",
-        "fixed",
-        "coincident"
-      ],
-      "dimensionTypes": [
-        "linear",
-        "horizontal",
-        "vertical",
-        "diameter"
-      ],
+      "documentKinds": ["part", "assembly", "drawing", "fragment", "specification", "text"],
+      "sketchEntityTypes": ["line", "circle", "arc"],
+      "constraintTypes": ["horizontal", "vertical", "parallel", "perpendicular", "tangent", "concentric", "equal", "symmetric", "pointOnCurve", "fixed", "coincident"],
+      "dimensionTypes": ["linear", "horizontal", "vertical", "diameter"],
       "fixture": "tests/fixtures/schema/v1-part-dimensions.json"
     },
     {
       "version": 2,
-      "documentKinds": [
-        "part",
-        "assembly",
-        "drawing",
-        "fragment",
-        "specification",
-        "text"
-      ],
-      "sketchEntityTypes": [
-        "line",
-        "circle",
-        "arc"
-      ],
-      "constraintTypes": [
-        "horizontal",
-        "vertical",
-        "parallel",
-        "perpendicular",
-        "tangent",
-        "concentric",
-        "equal",
-        "symmetric",
-        "pointOnCurve",
-        "fixed",
-        "coincident"
-      ],
-      "dimensionTypes": [
-        "linear",
-        "horizontal",
-        "vertical",
-        "diameter",
-        "radius"
-      ],
+      "documentKinds": ["part", "assembly", "drawing", "fragment", "specification", "text"],
+      "sketchEntityTypes": ["line", "circle", "arc"],
+      "constraintTypes": ["horizontal", "vertical", "parallel", "perpendicular", "tangent", "concentric", "equal", "symmetric", "pointOnCurve", "fixed", "coincident"],
+      "dimensionTypes": ["linear", "horizontal", "vertical", "diameter", "radius"],
       "fixture": "tests/fixtures/schema/v2-part-radius.json"
+    },
+    {
+      "version": 3,
+      "documentKinds": ["part", "assembly", "drawing", "fragment", "specification", "text"],
+      "sketchEntityTypes": ["line", "circle", "arc"],
+      "constraintTypes": ["horizontal", "vertical", "parallel", "perpendicular", "tangent", "concentric", "equal", "symmetric", "pointOnCurve", "fixed", "coincident"],
+      "dimensionTypes": ["linear", "horizontal", "vertical", "diameter", "radius", "angular"],
+      "fixture": "tests/fixtures/schema/v3-part-angular.json"
     }
   ]
 }

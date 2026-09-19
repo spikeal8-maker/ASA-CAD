@@ -11,6 +11,7 @@ import { validateCadDimension } from './sketchDimensions';
 import type { CadDimension } from './sketchDimensions';
 
 export type {
+  CadAngularDimension,
   CadDiameterDimension,
   CadDimension,
   CadHorizontalDimension,
