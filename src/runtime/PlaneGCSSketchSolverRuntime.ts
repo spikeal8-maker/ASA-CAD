@@ -245,6 +245,29 @@ export class PlaneGCSSketchSolverRuntime implements CadSketchSolverAdapter {
           value: dimension.value,
         };
       }
+      case 'angular': {
+        if (dimension.entityIds.length !== 2) {
+          throw new Error(`Angular dimension ${dimension.id} requires exactly two Line entity refs`);
+        }
+        const [aId, bId] = dimension.entityIds;
+        if (aId === bId) throw new Error(`Angular dimension ${dimension.id} requires two distinct Line entities`);
+        const a = sketch.entities.find((item) => item.id === aId);
+        const b = sketch.entities.find((item) => item.id === bId);
+        if (!a) throw new Error(`Angular dimension ${dimension.id} references unknown entity ${aId}`);
+        if (!b) throw new Error(`Angular dimension ${dimension.id} references unknown entity ${bId}`);
+        if (a.type !== 'line' || b.type !== 'line') {
+          throw new Error(`Angular dimension ${dimension.id} requires two Line entities, got ${a.type} and ${b.type}`);
+        }
+        return {
+          id: dimension.id,
+          type: 'ANGLE',
+          refs: [
+            { kind: 'entity', id: aId },
+            { kind: 'entity', id: bId },
+          ],
+          value: dimension.value,
+        };
+      }
     }
   }
 

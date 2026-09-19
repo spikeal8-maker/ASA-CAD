@@ -117,8 +117,10 @@ const protectedV1DimensionTypes = ['linear', 'horizontal', 'vertical', 'diameter
 
 const v1 = schemaPolicy.schemas.find((schema) => schema.version === 1);
 const v2 = schemaPolicy.schemas.find((schema) => schema.version === 2);
+const v3 = schemaPolicy.schemas.find((schema) => schema.version === 3);
 assert.ok(v1, 'Schema-v1 policy entry is required');
 assert.ok(v2, 'Schema-v2 policy entry is required');
+assert.ok(v3, 'Schema-v3 policy entry is required');
 
 assert.deepEqual(v1.documentKinds, protectedDocumentKinds, 'Schema-v1 document-kind grammar is frozen');
 assert.deepEqual(v1.sketchEntityTypes, protectedSketchEntityTypes, 'Schema-v1 Sketch entity grammar is frozen');
@@ -132,6 +134,14 @@ assert.deepEqual(
   v2.dimensionTypes,
   [...v1.dimensionTypes, 'radius'],
   'v1->v2 persisted-union delta must be Radius Dimension only',
+);
+assert.deepEqual(v3.documentKinds, v2.documentKinds, 'v2->v3 must not change document-kind grammar');
+assert.deepEqual(v3.sketchEntityTypes, v2.sketchEntityTypes, 'v2->v3 must not change Sketch entity grammar');
+assert.deepEqual(v3.constraintTypes, v2.constraintTypes, 'v2->v3 must not change Constraint grammar');
+assert.deepEqual(
+  v3.dimensionTypes,
+  [...v2.dimensionTypes, 'angular'],
+  'v2->v3 persisted-union delta must be Angular Dimension only',
 );
 
 const compatibility = milestonePolicy.compatibility ?? {};

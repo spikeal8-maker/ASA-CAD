@@ -42,6 +42,7 @@ export type CadCommandId =
   | 'dimension.vertical'
   | 'dimension.diameter'
   | 'dimension.radius'
+  | 'dimension.angular'
   | 'feature.extrude'
   | 'feature.cutExtrude'
   | 'feature.fillet'
@@ -176,6 +177,13 @@ export interface CadCommandMap {
   'dimension.radius': {
     sketchId: CadSketchId;
     entityId: CadSketchEntityId;
+    value: number;
+    name?: string;
+  };
+  'dimension.angular': {
+    sketchId: CadSketchId;
+    aEntityId: CadSketchEntityId;
+    bEntityId: CadSketchEntityId;
     value: number;
     name?: string;
   };

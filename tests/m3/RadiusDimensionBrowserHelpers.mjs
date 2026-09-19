@@ -30,7 +30,7 @@ export async function arcRadius(page, id) {
 }
 
 export function assertRadius(saved, entityId, value, entityType) {
-  assert.equal(saved.schemaVersion, 2);
+  assert.equal(saved.schemaVersion, 3);
   assert.deepEqual(saved.dimensions.map((item) => item.type), ['radius']);
   assert.equal(saved.sketches[0]?.entities.length, 1);
   assert.equal(saved.sketches[0]?.entities[0]?.type, entityType);

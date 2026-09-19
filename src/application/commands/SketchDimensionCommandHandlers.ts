@@ -18,6 +18,7 @@ export const SKETCH_DIMENSION_COMMAND_IDS = [
   'dimension.vertical',
   'dimension.diameter',
   'dimension.radius',
+  'dimension.angular',
   'part.dimension.setValue',
 ] as const satisfies readonly CadCommandId[];
 
@@ -151,13 +152,48 @@ export const sketchDimensionCommandHandlers = {
     },
   }),
 
+  'dimension.angular': defineSketchCommandHandler<'dimension.angular'>({
+    availability: requireSketchAvailability,
+    execute: (part, command) => {
+      const sketch = requireSketch(part, command.payload.sketchId);
+      if (command.payload.aEntityId === command.payload.bEntityId) {
+        throw new Error('Angular dimension requires two distinct Line entities');
+      }
+      const a = requireSketchEntity(sketch, command.payload.aEntityId);
+      const b = requireSketchEntity(sketch, command.payload.bEntityId);
+      if (a.type !== 'line' || b.type !== 'line') {
+        throw new Error(`Angular dimension requires two Line entities, got ${a.type} and ${b.type}`);
+      }
+      if (!Number.isFinite(command.payload.value) || command.payload.value <= 0 || command.payload.value >= 180) {
+        throw new Error('Angular dimension value must be finite and between 0 and 180 degrees');
+      }
+      const id = createCadId<CadDimensionId>('dimension');
+      const dimension: CadDimension = {
+        id,
+        type: 'angular',
+        entityIds: [command.payload.aEntityId, command.payload.bEntityId],
+        value: command.payload.value,
+        driving: true,
+        name: command.payload.name,
+      };
+      part.dimensions.push(dimension);
+      sketch.dimensionIds.push(id);
+      return { ok: true, changed: true, createdIds: [id] };
+    },
+  }),
+
   'part.dimension.setValue': defineSketchCommandHandler<'part.dimension.setValue'>({
     availability: (part) => part.dimensions.length > 0 ? ENABLED : NO_DRIVING_DIMENSIONS,
     execute: (part, command) => {
-      if (command.payload.value <= 0) throw new Error('Driving dimension value must be positive');
       const dimension = part.dimensions.find((item) => item.id === command.payload.dimensionId);
       if (!dimension) throw new Error(`Unknown dimension: ${command.payload.dimensionId}`);
       if (!dimension.driving) throw new Error(`Dimension is not driving: ${command.payload.dimensionId}`);
+      if (!Number.isFinite(command.payload.value) || command.payload.value <= 0) {
+        throw new Error('Driving dimension value must be positive finite');
+      }
+      if (dimension.type === 'angular' && command.payload.value >= 180) {
+        throw new Error('Angular dimension value must be less than 180 degrees');
+      }
       dimension.value = command.payload.value;
       return { ok: true, changed: true };
     },

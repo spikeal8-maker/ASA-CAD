@@ -86,6 +86,9 @@ jobs:
       - name: ASA M1 PlaneGCS solver boundary
         run: npm run test:m1:solver
 
+      - name: ASA M1 Angular Dimension core
+        run: npm run test:m1:angular-dimension
+
       - name: ASA M1 measurement adapter
         run: npm run test:m1:measurement
 

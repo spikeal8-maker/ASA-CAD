@@ -27,9 +27,11 @@ assert.match(sketchContract, /validateCadDimension/, 'Sketch collection validati
 assert.match(sketchContract, /CadHorizontalDimension/, 'Sketch contract must re-export Horizontal Dimension publicly');
 assert.match(sketchContract, /CadVerticalDimension/, 'Sketch contract must re-export Vertical Dimension publicly');
 assert.match(sketchContract, /CadRadiusDimension/, 'Sketch contract must re-export Radius Dimension publicly');
+assert.match(sketchContract, /CadAngularDimension/, 'Sketch contract must re-export Angular Dimension publicly');
 assert.match(documentContract, /CadHorizontalDimension/, 'CadDocument public contract must re-export Horizontal Dimension');
 assert.match(documentContract, /CadVerticalDimension/, 'CadDocument public contract must re-export Vertical Dimension');
 assert.match(documentContract, /CadRadiusDimension/, 'CadDocument public contract must re-export Radius Dimension');
+assert.match(documentContract, /CadAngularDimension/, 'CadDocument public contract must re-export Angular Dimension');
 assert.doesNotMatch(sketchContract, /interface CadDimensionBase/, 'Dimension DTO definitions must not return to sketch.ts');
 assert.doesNotMatch(sketchContract, /function validateDimension\(/, 'Dimension runtime validation must not return to sketch.ts');
 assert.match(validationContract, /export function expectRecord/, 'Shared contract validation must own record validation');
@@ -44,9 +46,11 @@ assert.doesNotMatch(dimensionContract, /type:\s*string/, 'dimension owner must n
 assert.match(commandsContract, /'dimension\.horizontal'/, 'Typed command contract must own dimension.horizontal');
 assert.match(commandsContract, /'dimension\.vertical'/, 'Typed command contract must own dimension.vertical');
 assert.match(commandsContract, /'dimension\.radius'/, 'Typed command contract must own dimension.radius');
+assert.match(commandsContract, /'dimension\.angular'/, 'Typed command contract must own dimension.angular');
 assert.match(commandsContract, /'dimension\.horizontal':[\s\S]*entityId: CadSketchEntityId;[\s\S]*value: number;/, 'Horizontal payload must use one typed entityId and numeric value');
 assert.match(commandsContract, /'dimension\.vertical':[\s\S]*entityId: CadSketchEntityId;[\s\S]*value: number;/, 'Vertical payload must use one typed entityId and numeric value');
 assert.match(commandsContract, /'dimension\.radius':[\s\S]*entityId: CadSketchEntityId;[\s\S]*value: number;/, 'Radius payload must use one typed entityId and numeric value');
+assert.match(commandsContract, /'dimension\.angular':[\s\S]*aEntityId: CadSketchEntityId;[\s\S]*bEntityId: CadSketchEntityId;[\s\S]*value: number;/, 'Angular payload must use two ordered typed Line ids and degree value');
 assert.match(solverContract, /type CadSolvedSketchEntity = CadSketchEntity/, 'Solved entities must retain their discriminant');
 
 assert.doesNotMatch(solver, /function point2\(/, 'PlaneGCS adapter must not parse typed entity coordinates as unknown');
@@ -60,6 +64,8 @@ assert.match(solver, /const axis = dimension\.type === 'horizontal' \? 0 : 1/, '
 assert.match(solver, /const refs: SketchRef\[\] = fromValue <= toValue/, 'Directional refs must use lower coordinate first and stable a→b tie ordering');
 assert.match(solver, /case 'diameter':/, 'PlaneGCS typed dimension boundary must retain current diameter support');
 assert.match(solver, /case 'radius':[\s\S]*type: 'RADIUS'[\s\S]*value: dimension\.value,/, 'Radius must map directly to PlaneGCS RADIUS without Diameter halving');
+assert.match(solver, /case 'angular':[\s\S]*type: 'ANGLE'[\s\S]*value: dimension\.value,/, 'Angular must map directly to PlaneGCS ANGLE in persisted degrees');
+assert.doesNotMatch(solver, /case 'angular':[\s\S]*Math\.PI\s*\/\s*180/, 'ASA Angular mapping must not convert degrees to radians');
 
 assert.doesNotMatch(constraintHandlers, /function addConstraint\([\s\S]*type: string/, 'Constraint owner must not construct arbitrary string-typed constraints');
 assert.doesNotMatch(constraintHandlers, /data\?: Record<string, unknown>/, 'Constraint owner must not construct arbitrary payload maps');
@@ -68,6 +74,7 @@ assert.match(dimensionHandlers, /const dimension: CadDimension =/, 'Dimension ow
 assert.match(dimensionHandlers, /'dimension\.horizontal'/, 'Focused dimension owner must contain dimension.horizontal');
 assert.match(dimensionHandlers, /'dimension\.vertical'/, 'Focused dimension owner must contain dimension.vertical');
 assert.match(dimensionHandlers, /'dimension\.radius'/, 'Focused dimension owner must contain dimension.radius');
+assert.match(dimensionHandlers, /'dimension\.angular'/, 'Focused dimension owner must contain dimension.angular');
 assert.doesNotMatch(geometryHandlers, /support: String\(command\.payload\.support\)/, 'Geometry owner must retain typed Sketch support');
 
 for (const id of ['dimension.horizontal', 'dimension.vertical']) {
@@ -78,5 +85,8 @@ for (const id of ['dimension.horizontal', 'dimension.vertical']) {
 const radiusRegistry = commandRegistry.commands.find((command) => command.id === 'dimension.radius');
 assert.ok(radiusRegistry, 'Command registry must retain dimension.radius');
 assert.equal(radiusRegistry.status, 'implemented', 'Radius registry must match the productized Circle/Arc path');
+const angularRegistry = commandRegistry.commands.find((command) => command.id === 'dimension.angular');
+assert.ok(angularRegistry, 'Command registry must retain dimension.angular');
+assert.equal(angularRegistry.status, 'planned', 'Angular core must remain registry=planned until productization');
 
 console.log('M2O O7 Sketch contract boundary PASS (typed DTOs + typed PlaneGCS/focused handler consumption)');

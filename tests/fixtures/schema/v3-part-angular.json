@@ -1,0 +1,46 @@
+{
+  "kind": "part",
+  "schemaVersion": 3,
+  "engineVersion": "schema-v3-fixture",
+  "documentId": "doc_schema_v3_angular",
+  "title": "Schema v3 angular fixture",
+  "units": "mm",
+  "metadata": { "fixture": "angular-v3" },
+  "linkedDocuments": [],
+  "origin": { "planes": ["XY", "XZ", "YZ"] },
+  "variables": {},
+  "sketches": [
+    {
+      "id": "sketch_v3",
+      "name": "Schema v3 angular sketch",
+      "support": "XY",
+      "entities": [
+        {
+          "id": "entity_line_a_v3",
+          "type": "line",
+          "data": { "from": [0, 0], "to": [20, 0] }
+        },
+        {
+          "id": "entity_line_b_v3",
+          "type": "line",
+          "data": { "from": [0, 0], "to": [10, 17.32050807568877] }
+        }
+      ],
+      "constraintIds": [],
+      "dimensionIds": ["dimension_angular_v3"]
+    }
+  ],
+  "constraints": [],
+  "dimensions": [
+    {
+      "id": "dimension_angular_v3",
+      "type": "angular",
+      "entityIds": ["entity_line_a_v3", "entity_line_b_v3"],
+      "value": 60,
+      "driving": true
+    }
+  ],
+  "features": [],
+  "bodies": [],
+  "stableReferences": []
+}

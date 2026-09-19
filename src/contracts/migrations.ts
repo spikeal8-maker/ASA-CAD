@@ -29,17 +29,30 @@ export function registerCadDocumentMigration(fromVersion: number, migration: Cad
 }
 
 const SCHEMA_V1_DIMENSION_TYPES = new Set(['linear', 'horizontal', 'vertical', 'diameter']);
+const SCHEMA_V2_DIMENSION_TYPES = new Set(['linear', 'horizontal', 'vertical', 'diameter', 'radius']);
+
+function assertFrozenDimensionGrammar(
+  input: Record<string, unknown>,
+  schemaVersion: number,
+  allowedTypes: ReadonlySet<string>,
+): void {
+  if (!Array.isArray(input.dimensions)) return;
+  input.dimensions.forEach((value, index) => {
+    if (!value || typeof value !== 'object') return;
+    const type = String((value as Record<string, unknown>).type);
+    if (!allowedTypes.has(type)) {
+      throw new Error(`Schema v${schemaVersion} dimensions[${index}].type is unsupported: ${type}`);
+    }
+  });
+}
 
 registerCadDocumentMigration(1, (input, context) => {
-  if (Array.isArray(input.dimensions)) {
-    input.dimensions.forEach((value, index) => {
-      if (!value || typeof value !== 'object') return;
-      const type = String((value as Record<string, unknown>).type);
-      if (!SCHEMA_V1_DIMENSION_TYPES.has(type)) {
-        throw new Error(`Schema v1 dimensions[${index}].type is unsupported: ${type}`);
-      }
-    });
-  }
+  assertFrozenDimensionGrammar(input, 1, SCHEMA_V1_DIMENSION_TYPES);
+  return { ...input, schemaVersion: context.targetSchemaVersion };
+});
+
+registerCadDocumentMigration(2, (input, context) => {
+  assertFrozenDimensionGrammar(input, 2, SCHEMA_V2_DIMENSION_TYPES);
   return { ...input, schemaVersion: context.targetSchemaVersion };
 });
 
