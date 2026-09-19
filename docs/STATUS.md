@@ -65,11 +65,17 @@ Required product/capability gaps remain:
 - meaningful non-null DoF;
 - visible under/fully/over-constrained diagnostics.
 
-Cadence reached **3 / 3**. Feature work is frozen.
+Cadence remains **3 / 3**. Feature work is frozen.
 
-**NEXT REQUIRED GATE: Full Repository Health Audit #123.**
+## Full Repository Health Audit #123 — RED / blocking repair active
 
-Do not start Radius productization, Angular, DoF or another feature slice until Audit #123 is controller-accepted.
+Audit #123 is controller-accepted **RED** on `STATE-SCHEMA-RELEASE-001`: production/schema policy is v2 while shipped release metadata still advertises schema v1.
+
+Active bounded repair: **#125 — AUD-R1-RELEASE-SCHEMA-CONVERGENCE**.
+
+Do not start Radius productization, Angular, DoF, constraint-state UX or another feature slice while Audit #123 remains RED. Radius remains registry=`planned`; Radius productization and Angular remain open.
+
+Cadence remains **3 / 3** and is not reset by this repair candidate.
 
 M3 remains ACTIVE; do not declare M3 exit until the complete machine exit contract is accepted.
 

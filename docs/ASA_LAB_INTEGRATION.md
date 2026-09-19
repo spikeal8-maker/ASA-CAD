@@ -52,7 +52,7 @@ Target manifest:
 ```text
 moduleKey: cad
 projectType: cad-document
-schemaVersion: 1
+schemaVersion: 2
 editorRoute: /cad/projects/:projectId
 viewerRoute: /cad/view/:versionId
 availability: active

@@ -3,7 +3,7 @@
   "releaseVersion": "0.2.0-m2",
   "releaseChannel": "development",
   "productShell": "asa-m2",
-  "cadDocumentSchemaVersion": 1,
+  "cadDocumentSchemaVersion": 2,
   "engineVersion": "0.1.0-m1",
   "mountPath": "/cad",
   "editorRoute": "/cad/projects/:projectId",
