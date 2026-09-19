@@ -7,6 +7,32 @@
   "schemas": [
     {
       "version": 1,
+      "documentKinds": [
+        "part",
+        "assembly",
+        "drawing",
+        "fragment",
+        "specification",
+        "text"
+      ],
+      "sketchEntityTypes": [
+        "line",
+        "circle",
+        "arc"
+      ],
+      "constraintTypes": [
+        "horizontal",
+        "vertical",
+        "parallel",
+        "perpendicular",
+        "tangent",
+        "concentric",
+        "equal",
+        "symmetric",
+        "pointOnCurve",
+        "fixed",
+        "coincident"
+      ],
       "dimensionTypes": [
         "linear",
         "horizontal",
@@ -17,6 +43,32 @@
     },
     {
       "version": 2,
+      "documentKinds": [
+        "part",
+        "assembly",
+        "drawing",
+        "fragment",
+        "specification",
+        "text"
+      ],
+      "sketchEntityTypes": [
+        "line",
+        "circle",
+        "arc"
+      ],
+      "constraintTypes": [
+        "horizontal",
+        "vertical",
+        "parallel",
+        "perpendicular",
+        "tangent",
+        "concentric",
+        "equal",
+        "symmetric",
+        "pointOnCurve",
+        "fixed",
+        "coincident"
+      ],
       "dimensionTypes": [
         "linear",
         "horizontal",

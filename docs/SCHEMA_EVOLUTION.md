@@ -12,10 +12,13 @@ This document defines the persisted-grammar compatibility contract. Machine-read
 
 A schema bump is required whenever a persisted grammar change can cause an older reader of the same `schemaVersion` to reject or misinterpret a newly written document.
 
-This includes adding a new member to any persisted discriminated union, for example:
-- a new Dimension type such as Angular or Radius;
+This includes adding a new member to any persisted discriminated union, including:
+- a new CadDocument kind;
 - a new persisted Sketch entity type;
-- a new persisted Constraint type.
+- a new persisted Constraint type;
+- a new Dimension type such as Angular or Radius.
+
+The machine schema policy versions all four current persisted union families explicitly: document kinds, Sketch entity kinds, Constraint kinds and Dimension kinds.
 
 Changing only runtime behavior or implementation metadata does not by itself change the persisted grammar.
 
@@ -33,18 +36,19 @@ Loading and migrating a document must not silently rewrite the stored project. T
 
 A document whose `schemaVersion` is newer than the current reader is rejected explicitly. ASA-CAD does not attempt best-effort parsing of unknown future grammars.
 
-## Frozen schema-v1 Dimension grammar
+## Frozen schema-v1 grammar
 
-Schema version 1 permanently defines the Dimension discriminants:
+Schema version 1 permanently defines these persisted union sets:
 
-`linear | horizontal | vertical | diameter`
-
-Angular and Radius must not be added to schema-v1. Introducing either persisted discriminant requires a new schema version and the corresponding sequential migration evidence.
+- document kinds: `part | assembly | drawing | fragment | specification | text`;
+- Sketch entities: `line | circle | arc`;
+- Constraints: `horizontal | vertical | parallel | perpendicular | tangent | concentric | equal | symmetric | pointOnCurve | fixed | coincident`;
+- Dimensions: `linear | horizontal | vertical | diameter`.
 
 ## Current schema-v2 grammar
 
-Schema version 2 extends the exact Dimension grammar with `radius`:
+Schema version 2 keeps the document-kind, Sketch-entity and Constraint sets exactly unchanged and extends only the Dimension grammar with `radius`:
 
 `linear | horizontal | vertical | diameter | radius`
 
-The built-in `1 -> 2` migration preserves the complete v1 document and advances only `schemaVersion` from 1 to 2. Existing IDs, geometry, dimensions, metadata and `engineVersion` are unchanged. Radius is a native v2 discriminant; schema-v1 remains immutable.
+Therefore the only persisted-union delta from v1 to v2 is Radius Dimension. The built-in `1 -> 2` migration preserves the complete v1 document and advances only `schemaVersion` from 1 to 2. Existing IDs, geometry, dimensions, metadata and `engineVersion` are unchanged.
