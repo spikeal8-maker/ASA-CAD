@@ -41,17 +41,31 @@ export function SketchDimensionParameterPanel(props: SketchDimensionParameterPan
       onCancel={props.creation.cancel}
       applyLabel="Создать"
       applyDisabled={!props.creation.canCommit}
+      suffix={mode === 'angular' ? '°' : 'мм'}
+      max={mode === 'angular' ? 180 : undefined}
+      valueLabel={mode === 'angular' ? 'Угол' : 'Размер'}
     >
-      <div className="selection-value selected" data-directional-dimension-target={props.creation.entityId ?? ''}>
+      <div
+        className="selection-value selected"
+        data-directional-dimension-target={props.creation.entityId ?? ''}
+        data-angular-dimension-a={mode === 'angular' ? props.creation.entityId ?? '' : undefined}
+        data-angular-dimension-b={mode === 'angular' ? props.creation.secondaryEntityId ?? '' : undefined}
+      >
         <span>✓</span>
         <strong>{
-          props.creation.targetKind === 'arc'
-            ? 'Выбранная дуга'
-            : props.creation.targetKind === 'circle'
-              ? 'Выбранная окружность'
-              : 'Выбранный отрезок'
+          props.creation.targetKind === 'line-pair'
+            ? 'Выбранные отрезки'
+            : props.creation.targetKind === 'arc'
+              ? 'Выбранная дуга'
+              : props.creation.targetKind === 'circle'
+                ? 'Выбранная окружность'
+                : 'Выбранный отрезок'
         }</strong>
-        <small>{props.creation.entityId ?? '—'}</small>
+        <small>{
+          props.creation.targetKind === 'line-pair'
+            ? `${props.creation.entityId ?? '—'} + ${props.creation.secondaryEntityId ?? '—'}`
+            : props.creation.entityId ?? '—'
+        }</small>
       </div>
     </DimensionPanelFrame>
   );
@@ -66,6 +80,9 @@ function DimensionPanelFrame(props: React.PropsWithChildren<{
   onCancel(): void;
   applyLabel: string;
   applyDisabled?: boolean;
+  suffix?: string;
+  max?: number;
+  valueLabel?: string;
 }>) {
   return (
     <div className="parameter-panel">
@@ -77,11 +94,12 @@ function DimensionPanelFrame(props: React.PropsWithChildren<{
         <h3>Значение</h3>
         {props.children}
         <ParameterNumericField
-          label="Размер"
+          label={props.valueLabel ?? 'Размер'}
           value={props.value}
           onChange={props.setValue}
-          suffix="мм"
+          suffix={props.suffix ?? 'мм'}
           min={0}
+          max={props.max}
         />
       </section>
       <div className="parameter-actions">

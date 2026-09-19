@@ -9,7 +9,8 @@ import { SketchCircleInteractionLayer } from './viewport/SketchCircleInteraction
 import { SketchArcInteractionLayer } from './viewport/SketchArcInteractionLayer';
 import { SketchRectangleInteractionLayer } from './viewport/SketchRectangleInteractionLayer';
 import {
-  SketchCoincidentInteractionLayer, SketchParallelInteractionLayer, SketchPerpendicularInteractionLayer, SketchEqualInteractionLayer,
+  SketchAngularDimensionInteractionLayer, SketchCoincidentInteractionLayer, SketchParallelInteractionLayer,
+  SketchPerpendicularInteractionLayer, SketchEqualInteractionLayer,
 } from './viewport/SketchCoincidentInteractionLayer';
 import { SketchTangentInteractionLayer } from './viewport/SketchTangentInteractionLayer';
 import { SketchConcentricInteractionLayer } from './viewport/SketchConcentricInteractionLayer';
@@ -88,6 +89,7 @@ export function SketchDirectToolLayers(props: SketchDirectToolLayersProps) {
       <SketchParallelInteractionLayer {...common} active={props.activeCommand === 'constraint.parallel'} />
       <SketchPerpendicularInteractionLayer {...common} active={props.activeCommand === 'constraint.perpendicular'} />
       <SketchEqualInteractionLayer {...common} active={props.activeCommand === 'constraint.equal'} />
+      <SketchAngularDimensionInteractionLayer {...common} active={props.activeCommand === 'dimension.angular'} />
       <SketchSymmetryInteractionLayer {...common} active={props.activeCommand === 'constraint.symmetric'} />
       <SketchPointOnCurveInteractionLayer {...common} active={props.activeCommand === 'constraint.pointOnCurve'} />
       <SketchTangentInteractionLayer {...common} active={props.activeCommand === 'constraint.tangent'} />
