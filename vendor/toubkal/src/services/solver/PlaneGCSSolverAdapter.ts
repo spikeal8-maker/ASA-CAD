@@ -43,6 +43,10 @@ import type {
   SketchEllipse,
 } from '@salusoft89/planegcs';
 
+export interface PlaneGCSSolveResult extends SolveResult {
+  degreesOfFreedom: number;
+}
+
 // Per-entity record kept during one solve — maps an entity to its PlaneGCS
 // point ids (and the geom primitive id, which is the entity id itself).
 type Rec =
@@ -67,7 +71,7 @@ export class PlaneGCSSolverAdapter implements ISketchSolver {
     this.wrapper = new GcsWrapper(new this.mod.GcsSystem());
   }
 
-  solve(geoms: EntityGeom[], constraints: SketchConstraint[], dragPin?: DragPin): SolveResult {
+  solve(geoms: EntityGeom[], constraints: SketchConstraint[], dragPin?: DragPin): PlaneGCSSolveResult {
     const w = this.wrapper;
     if (!w) throw new Error('PlaneGCSSolverAdapter.init() not awaited before solve()');
     w.clear_data();
@@ -101,6 +105,7 @@ export class PlaneGCSSolverAdapter implements ISketchSolver {
     w.push_primitives_and_params(prims);
     w.set_max_iterations(100);
     const status = w.solve(Algorithm.LevenbergMarquardt);
+    const degreesOfFreedom = w.gcs.dof();
     w.apply_solution();
 
     const solved = new Map(w.sketch_index.get_primitives().map((p) => [p.id, p]));
@@ -110,6 +115,7 @@ export class PlaneGCSSolverAdapter implements ISketchSolver {
       converged,
       residual: converged ? 0 : 1,
       iterations: 0,
+      degreesOfFreedom,
     };
   }
 }

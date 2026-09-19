@@ -23,6 +23,83 @@ class NoopGeometryRuntime implements CadRuntimeAdapter {
   dispose(): void {}
 }
 
+async function assertPlaneGcsNativeDegreesOfFreedom() {
+  const probeApp = new CadApplicationImpl(createEmptyCadDocument('part'), new NoopGeometryRuntime());
+  const sketchResult = await probeApp.execute({
+    id: 'sketch.create',
+    payload: { support: 'XY', name: 'DoF probe' },
+  });
+  const sketchId = sketchResult.createdIds?.[0] as CadSketchId;
+  assert.ok(sketchId);
+  const lineResult = await probeApp.execute({
+    id: 'sketch.line',
+    payload: { sketchId, from: [0, 0], to: [30, 5] },
+  });
+  const lineId = lineResult.createdIds?.[0] as CadSketchEntityId;
+  assert.ok(lineId);
+
+  const solver = new PlaneGCSSketchSolverRuntime();
+  await solver.init();
+  const unconstrained = solver.solve(probeApp.getDocument(), sketchId);
+  assert.equal(unconstrained.ok, true);
+  assert.ok(
+    unconstrained.degreesOfFreedom !== null && unconstrained.degreesOfFreedom > 0,
+    `unconstrained Line must report solver-native DoF > 0, got ${unconstrained.degreesOfFreedom}`,
+  );
+
+  assert.equal((await probeApp.execute({
+    id: 'constraint.horizontal',
+    payload: { sketchId, entityId: lineId },
+  })).ok, true);
+  const partiallyConstrained = solver.solve(probeApp.getDocument(), sketchId);
+  assert.ok(
+    partiallyConstrained.degreesOfFreedom !== null
+      && partiallyConstrained.degreesOfFreedom > 0
+      && partiallyConstrained.degreesOfFreedom < unconstrained.degreesOfFreedom,
+    `Horizontal Line DoF must be between free and fixed, got ${partiallyConstrained.degreesOfFreedom}`,
+  );
+
+  const fixedApp = new CadApplicationImpl(createEmptyCadDocument('part'), new NoopGeometryRuntime());
+  const fixedSketchResult = await fixedApp.execute({
+    id: 'sketch.create',
+    payload: { support: 'XY', name: 'Fixed DoF probe' },
+  });
+  const fixedSketchId = fixedSketchResult.createdIds?.[0] as CadSketchId;
+  assert.ok(fixedSketchId);
+  const fixedLineResult = await fixedApp.execute({
+    id: 'sketch.line',
+    payload: { sketchId: fixedSketchId, from: [0, 0], to: [30, 5] },
+  });
+  const fixedLineId = fixedLineResult.createdIds?.[0] as CadSketchEntityId;
+  assert.ok(fixedLineId);
+  const beforeFixed = solver.solve(fixedApp.getDocument(), fixedSketchId);
+  assert.equal(beforeFixed.ok, true);
+  const solvedFixedLine = beforeFixed.entities.find((entity) => entity.id === fixedLineId);
+  assert.ok(solvedFixedLine && solvedFixedLine.type === 'line');
+  if (!solvedFixedLine || solvedFixedLine.type !== 'line') throw new Error('Expected solved Fixed probe Line');
+  assert.equal((await fixedApp.execute({
+    id: 'constraint.fixed',
+    payload: {
+      sketchId: fixedSketchId,
+      entityId: fixedLineId,
+      frozenGeometry: {
+        type: 'line',
+        from: solvedFixedLine.data.from,
+        to: solvedFixedLine.data.to,
+      },
+    },
+  })).ok, true);
+  const fixed = solver.solve(fixedApp.getDocument(), fixedSketchId);
+  assert.equal(fixed.ok, true);
+  assert.equal(fixed.degreesOfFreedom, 0, 'Fixed Line must report solver-native DoF = 0');
+
+  solver.dispose();
+  probeApp.dispose();
+  fixedApp.dispose();
+}
+
+await assertPlaneGcsNativeDegreesOfFreedom();
+
 const app = new CadApplicationImpl(createEmptyCadDocument('part'), new NoopGeometryRuntime());
 const sketchResult = await app.execute({ id: 'sketch.create', payload: { support: 'XY', name: 'Solver test' } });
 const sketchId = sketchResult.createdIds?.[0] as CadSketchId;

@@ -169,7 +169,7 @@ async function createProtectedExtrude() {
   await solvedOverlay.waitFor();
   assert.equal(await solvedOverlay.getAttribute('data-overlay-source'), 'solver-preview');
   assert.equal(await solvedOverlay.getAttribute('data-entity-count'), '4');
-  assert.equal(await page.locator('[data-testid="sketch-dof"]').textContent(), 'DoF: н/д');
+  assert.equal(await page.locator('[data-testid="sketch-dof"]').textContent(), 'DoF: 14');
 
   const sketchWasm = await loadedWasmResources();
   assert.ok(sketchWasm.some(isPlaneGcsWasm), 'PlaneGCS WASM was not loaded for active Sketch solve: ' + sketchWasm.join(', '));
