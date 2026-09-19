@@ -2,7 +2,7 @@
 
 Short execution state for humans and coding agents. Product/end state: `SYSTEM_SPEC.md`; technical boundaries: `ARCHITECTURE.md`; implementation/exit order: `ROADMAP.md` + `spec/process/milestone-gates.v1.json`; detailed history: GitHub issues.
 
-Last synchronized: 2026-09-18.
+Last synchronized: 2026-09-19.
 
 Older issue/PR/status text is historical only; if it conflicts, use this file + the active issue under `DOCS_POLICY.md` precedence, not stale task wording.
 
@@ -74,9 +74,20 @@ Remaining bounded YELLOW debt includes schema-guard brittleness, UI search visib
 
 SCHEMA-GENERALITY-001 is accepted; `SCHEMA-GUARD-001` regex/source-layout brittleness remains YELLOW.
 
-Cadence reached **3 / 3** after Radius productization → schema-generality → Angular core. **Feature work is frozen. NEXT REQUIRED GATE: Full Repository Health Audit #136.**
+## Full Repository Health Audit #136
 
-M3 remains ACTIVE; do not declare M3 exit until the complete machine exit contract is accepted.
+**YELLOW ACCEPTED - no RED blockers remain.**
+
+`DIM-LINEAR-FINITE-001` was repaired by PR #138, merged as `5a90d6a34eb823a899f4842a2d332eb1fed42b12`. Post-merge CI on that merge SHA passed **5 / 5**: M2 shell, M2 browser, M3 browser, Docker and baseline.
+
+Feature freeze is **lifted**. Audit cadence resets to **0 / 3**.
+
+M3 remains **ACTIVE**. Required M3 gaps remain open:
+- Angular productization;
+- meaningful non-null DoF;
+- visible under/fully/over-constrained diagnostics.
+
+Do not declare M3 exit until the complete machine exit contract is accepted.
 
 M3 extension commands do not block M3 unless deliberately reclassified.
 
