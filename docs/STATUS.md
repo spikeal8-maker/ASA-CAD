@@ -65,17 +65,15 @@ Required product/capability gaps remain:
 - meaningful non-null DoF;
 - visible under/fully/over-constrained diagnostics.
 
-Cadence remains **3 / 3**. Feature work is frozen.
+## Full Repository Health Audit #123
 
-## Full Repository Health Audit #123 — RED / blocking repair active
+**YELLOW ACCEPTED - no RED blocker remains for bounded M3 work.**
 
-Audit #123 is controller-accepted **RED** on `STATE-SCHEMA-RELEASE-001`: production/schema policy is v2 while shipped release metadata still advertises schema v1.
+`STATE-SCHEMA-RELEASE-001` was repaired by #125 / PR #126: production schema, machine policy and shipped release metadata now converge on v2; M2-shell and Docker permanently verify that identity.
 
-Active bounded repair: **#125 — AUD-R1-RELEASE-SCHEMA-CONVERGENCE**.
+Remaining bounded YELLOW debt includes schema-guard generality/brittleness, UI search visibility, size/test pressure, repository hygiene/toolchain/dependency maintenance, and the existing pre-M4 performance/M3X/legal gates.
 
-Do not start Radius productization, Angular, DoF, constraint-state UX or another feature slice while Audit #123 remains RED. Radius remains registry=`planned`; Radius productization and Angular remain open.
-
-Cadence remains **3 / 3** and is not reset by this repair candidate.
+Feature work may resume in bounded M3 slices. Cadence resets to **0 / 3**. Radius remains registry=`planned`; Radius productization and Angular remain open.
 
 M3 remains ACTIVE; do not declare M3 exit until the complete machine exit contract is accepted.
 
