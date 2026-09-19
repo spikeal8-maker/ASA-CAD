@@ -15,7 +15,7 @@ Older issue/PR/status text is historical only; if it conflicts, use this file + 
 
 Protected document family: **six document kinds** - Part, Assembly, Drawing, Fragment, Specification and Text - behind `CadDocument` / `CadApplication`.
 
-Accepted M3 includes Line/Circle/Arc/Rectangle, stable-ID selection/delete/drag, the constraint family through Point-on-curve, Construction Line, and productized Linear/Horizontal/Vertical/Diameter driving dimensions through shared desktop/mobile/search actions. Radius persisted/core support is accepted on schema v2, but Radius productization remains open.
+Accepted M3 includes Line/Circle/Arc/Rectangle, stable-ID selection/delete/drag, the constraint family through Point-on-curve, Construction Line, and productized Linear/Horizontal/Vertical/Diameter/Radius driving dimensions through shared desktop/mobile/search actions.
 
 ## Full Repository Health Audit #112
 
@@ -50,17 +50,17 @@ The M3 exit contract is machine-readable in `spec/process/milestone-gates.v1.jso
 
 ## Current M3 gate
 
-M3-DIM-003A is accepted: Radius persisted/core support is implemented on CadDocument schema v2.
+M3-DIM-003B is accepted: Radius driving dimension is productized end-to-end for selected Circle or Arc.
 
-- `CAD_DOCUMENT_SCHEMA_VERSION = 2`;
-- schema-v1 Dimension grammar remains frozen as `linear | horizontal | vertical | diameter`;
-- schema-v2 adds `radius`;
-- built-in migration `1 -> 2` preserves valid v1 content and advances only `schemaVersion`;
-- Circle/Arc Radius DTO/command/PlaneGCS core is accepted;
-- `dimension.radius` remains registry=`planned` until productization.
+- shared desktop/mobile/search CadUiAction;
+- Circle starts from diameter / 2;
+- Arc starts from persisted radius;
+- Cancel is no-mutation;
+- Undo/Redo, Save/Open and same-ID editing are browser-proven;
+- `dimension.radius` registry status is `implemented`;
+- schema remains v2; migration/release/vendor semantics are unchanged.
 
 Required product/capability gaps remain:
-- Radius productization;
 - Angular dimension;
 - meaningful non-null DoF;
 - visible under/fully/over-constrained diagnostics.
@@ -73,7 +73,7 @@ Required product/capability gaps remain:
 
 Remaining bounded YELLOW debt includes schema-guard generality/brittleness, UI search visibility, size/test pressure, repository hygiene/toolchain/dependency maintenance, and the existing pre-M4 performance/M3X/legal gates.
 
-Feature work may resume in bounded M3 slices. Cadence resets to **0 / 3**. Radius remains registry=`planned`; Radius productization and Angular remain open.
+Feature work may resume in bounded M3 slices. Audit #123 reset the cadence to 0 / 3; after accepted M3-DIM-003B the cadence is **1 / 3**. Angular remains the only required Dimension product gap.
 
 M3 remains ACTIVE; do not declare M3 exit until the complete machine exit contract is accepted.
 
