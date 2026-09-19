@@ -75,7 +75,7 @@ Remaining bounded YELLOW debt includes schema-guard brittleness, UI search visib
 
 Feature work may resume in bounded M3 slices. Audit #123 reset the cadence to 0 / 3; after accepted M3-DIM-003B and SCHEMA-GENERALITY-001 the cadence is **2 / 3**. Angular remains the only required Dimension product gap.
 
-SCHEMA-GENERALITY-001 is accepted: the machine schema policy versions document kinds, Sketch entity kinds, Constraint kinds and Dimension kinds for every declared schema. `SCHEMA-GUARD-001` remains bounded YELLOW because source extraction is still regex/source-layout based.
+SCHEMA-GENERALITY-001 is accepted: machine policy versions document kinds, Sketch entity kinds, Constraint kinds and Dimension kinds for every schema. `SCHEMA-GUARD-001` remains YELLOW because source extraction is still regex/source-layout based.
 
 M3 remains ACTIVE; do not declare M3 exit until the complete machine exit contract is accepted.
 
