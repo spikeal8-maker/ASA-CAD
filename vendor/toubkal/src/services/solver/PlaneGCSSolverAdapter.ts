@@ -45,6 +45,8 @@ import type {
 
 export interface PlaneGCSSolveResult extends SolveResult {
   degreesOfFreedom: number;
+  conflictingConstraintIds: string[];
+  redundantConstraintIds: string[];
 }
 
 // Per-entity record kept during one solve — maps an entity to its PlaneGCS
@@ -106,6 +108,8 @@ export class PlaneGCSSolverAdapter implements ISketchSolver {
     w.set_max_iterations(100);
     const status = w.solve(Algorithm.LevenbergMarquardt);
     const degreesOfFreedom = w.gcs.dof();
+    const conflictingConstraintIds = w.get_gcs_conflicting_constraints();
+    const redundantConstraintIds = w.get_gcs_redundant_constraints();
     w.apply_solution();
 
     const solved = new Map(w.sketch_index.get_primitives().map((p) => [p.id, p]));
@@ -116,6 +120,8 @@ export class PlaneGCSSolverAdapter implements ISketchSolver {
       residual: converged ? 0 : 1,
       iterations: 0,
       degreesOfFreedom,
+      conflictingConstraintIds,
+      redundantConstraintIds,
     };
   }
 }

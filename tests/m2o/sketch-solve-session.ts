@@ -16,6 +16,9 @@ class FakeSolver implements CadSketchSolverAdapter {
   solveCount = 0;
   disposed = false;
   degreesOfFreedom: number | null = 2;
+  ok = true;
+  converged = true;
+  diagnostics: CadSketchSolveResult['diagnostics'] = [];
 
   async init(): Promise<void> {
     this.initCount += 1;
@@ -34,13 +37,13 @@ class FakeSolver implements CadSketchSolverAdapter {
       };
     });
     return {
-      ok: true,
-      converged: true,
+      ok: this.ok,
+      converged: this.converged,
       residual: 0,
       iterations: 4,
       degreesOfFreedom: this.degreesOfFreedom,
       entities,
-      diagnostics: [],
+      diagnostics: structuredClone(this.diagnostics),
     };
   }
 
@@ -101,6 +104,22 @@ solver.degreesOfFreedom = 0;
 const fully = await session.solve(part, sketchId);
 assert.equal(fully.constraintState, 'fully-constrained');
 assert.equal(solver.initCount, 1, 'solver initialization must be reused across solve requests');
+
+solver.degreesOfFreedom = 2;
+solver.diagnostics = [{
+  severity: 'warning',
+  code: 'PLANEGCS_REDUNDANT_CONSTRAINTS',
+  message: 'PlaneGCS redundant constraints: native-1',
+}];
+const over = await session.solve(part, sketchId);
+assert.equal(over.status, 'solved', 'native redundancy may still converge');
+assert.equal(over.constraintState, 'over-constrained');
+
+solver.diagnostics = [];
+solver.ok = false;
+solver.converged = false;
+const unknown = await session.solve(part, sketchId);
+assert.equal(unknown.constraintState, 'unknown', 'non-convergence alone must not imply over-constrained');
 
 session.clear();
 assert.equal(session.getSnapshot().status, 'idle');

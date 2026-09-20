@@ -9,7 +9,8 @@ import type {
 export type CadSketchConstraintState =
   | 'unknown'
   | 'under-constrained'
-  | 'fully-constrained';
+  | 'fully-constrained'
+  | 'over-constrained';
 
 export type CadSketchSolveStatus = 'idle' | 'solving' | 'solved' | 'error';
 
@@ -87,7 +88,7 @@ export class SketchSolveSession {
         residual: result.residual,
         iterations: result.iterations,
         degreesOfFreedom: result.degreesOfFreedom,
-        constraintState: solved ? constraintState(result.degreesOfFreedom) : 'unknown',
+        constraintState: constraintState(result),
         diagnostics: structuredClone(result.diagnostics),
       };
       this.emit();
@@ -159,7 +160,19 @@ function idleSnapshot(requestId: number): CadSketchSolveSnapshot {
   };
 }
 
-function constraintState(degreesOfFreedom: number | null): CadSketchConstraintState {
-  if (degreesOfFreedom == null) return 'unknown';
-  return degreesOfFreedom === 0 ? 'fully-constrained' : 'under-constrained';
+function constraintState(result: {
+  ok: boolean;
+  converged: boolean;
+  degreesOfFreedom: number | null;
+  diagnostics: readonly CadSketchSolveDiagnostic[];
+}): CadSketchConstraintState {
+  if (result.diagnostics.some((diagnostic) => (
+    diagnostic.code === 'PLANEGCS_CONFLICTING_CONSTRAINTS'
+    || diagnostic.code === 'PLANEGCS_REDUNDANT_CONSTRAINTS'
+  ))) {
+    return 'over-constrained';
+  }
+  if (!result.ok || !result.converged || result.degreesOfFreedom == null) return 'unknown';
+  if (result.degreesOfFreedom === 0) return 'fully-constrained';
+  return result.degreesOfFreedom > 0 ? 'under-constrained' : 'unknown';
 }

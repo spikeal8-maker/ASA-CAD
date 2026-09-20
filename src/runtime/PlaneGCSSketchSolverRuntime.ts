@@ -8,7 +8,7 @@ import type {
   CadSketchEntity,
 } from '../contracts/document';
 import type { CadSketchId } from '../contracts/ids';
-import type { CadSketchSolveResult, CadSketchSolverAdapter } from '../contracts/sketchSolver';
+import type { CadSketchSolveDiagnostic, CadSketchSolveResult, CadSketchSolverAdapter } from '../contracts/sketchSolver';
 import { PlaneGCSSolverAdapter } from '../../vendor/toubkal/src/services/solver/PlaneGCSSolverAdapter';
 import type { EntityGeom } from '../../vendor/toubkal/src/services/solver/model';
 import type { SketchConstraint, SketchRef } from '../../vendor/toubkal/src/store/cadStore';
@@ -94,6 +94,29 @@ export class PlaneGCSSketchSolverRuntime implements CadSketchSolverAdapter {
         return structuredClone(entity);
       });
 
+      const diagnostics: CadSketchSolveDiagnostic[] = [];
+      if (result.conflictingConstraintIds.length > 0) {
+        diagnostics.push({
+          severity: 'error',
+          code: 'PLANEGCS_CONFLICTING_CONSTRAINTS',
+          message: `PlaneGCS conflicting constraints: ${result.conflictingConstraintIds.join(', ')}`,
+        });
+      }
+      if (result.redundantConstraintIds.length > 0) {
+        diagnostics.push({
+          severity: 'warning',
+          code: 'PLANEGCS_REDUNDANT_CONSTRAINTS',
+          message: `PlaneGCS redundant constraints: ${result.redundantConstraintIds.join(', ')}`,
+        });
+      }
+      if (!result.converged) {
+        diagnostics.push({
+          severity: 'error',
+          code: 'SKETCH_SOLVE_NOT_CONVERGED',
+          message: `PlaneGCS did not converge (residual ${result.residual})`,
+        });
+      }
+
       return {
         ok: result.converged,
         converged: result.converged,
@@ -101,9 +124,7 @@ export class PlaneGCSSketchSolverRuntime implements CadSketchSolverAdapter {
         iterations: result.iterations,
         degreesOfFreedom: result.degreesOfFreedom,
         entities,
-        diagnostics: result.converged
-          ? []
-          : [{ severity: 'error', code: 'SKETCH_SOLVE_NOT_CONVERGED', message: `PlaneGCS did not converge (residual ${result.residual})` }],
+        diagnostics,
       };
     } catch (error) {
       return this.failure('SKETCH_SOLVE_FAILED', error instanceof Error ? error.message : String(error));
