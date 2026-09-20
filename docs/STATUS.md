@@ -2,7 +2,7 @@
 
 Short execution state for humans and coding agents. Product/end state: `SYSTEM_SPEC.md`; technical boundaries: `ARCHITECTURE.md`; implementation/exit order: `ROADMAP.md` + `spec/process/milestone-gates.v1.json`; detailed history: GitHub issues.
 
-Last synchronized: 2026-09-19.
+Last synchronized: 2026-09-20.
 
 Older issue/PR/status text is historical only; if it conflicts, use this file + the active issue under `DOCS_POLICY.md` precedence, not stale task wording.
 
@@ -10,12 +10,12 @@ Older issue/PR/status text is historical only; if it conflicts, use this file + 
 
 **Gate A - DONE.**
 **M2O - DONE.**
-**M3 Parametric Sketch (#5): ACTIVE.**
+**M3 Parametric Sketch (#5): DONE.**
 **M3M #57: 001..008 DONE; M3M-009 remains a hard pre-M4 gate.**
 
 Protected document family: **six document kinds** - Part, Assembly, Drawing, Fragment, Specification and Text - behind `CadDocument` / `CadApplication`.
 
-Accepted M3 includes Line/Circle/Arc/Rectangle, stable-ID selection/delete/drag, constraints through Point-on-curve, Construction Line, productized Linear/H/V/Diameter/Radius dimensions, and Angular persisted/core support on schema v3.
+Accepted M3 includes Line/Circle/Arc/Rectangle, stable-ID selection/delete/drag, constraints through Point-on-curve, Construction Line, productized Linear/H/V/Diameter/Radius/Angular dimensions, solver-native PlaneGCS DoF, and visible under/fully/over-constrained state.
 
 ## Full Repository Health Audit #112
 
@@ -38,31 +38,34 @@ Bounded YELLOW debt:
 
 Gate B and closure of umbrella M2 Issue #3 are not the same acceptance boundary. Issue #3 closes only after M2A + M2I + M2V reach their acceptance criteria. For broad M4, M2V is the hard Gate B blocker from the remaining M2 lanes.
 
-Broad M4 is blocked until all hard Gate B requirements are accepted:
+Broad M4 is blocked until the remaining hard Gate B requirements are accepted:
 - M2V KOMPAS visual acceptance;
-- M3 machine exit contract;
 - M3X shared ASA-CAD/ASA Lab golden fixtures;
 - M3M-009;
-- pre-M4 performance baselines;
-- required Full Repository Health Audit.
+- pre-M4 performance baselines.
+
+M3 functional exit and the required 3/3 milestone health review are accepted.
 
 The M3 exit contract is machine-readable in `spec/process/milestone-gates.v1.json`.
 
-## Current M3 gate
+## M3 exit accepted
 
-M3-DIM-004A is accepted: Angular persisted/core support is implemented on CadDocument schema v3.
+**M3 FUNCTIONAL EXIT — PASS.**
 
-- schema-v1/v2 grammars remain frozen; v3 adds only `angular` to Dimension grammar;
-- migration `2 -> 3` preserves valid v2 content and rejects illegal Angular-in-v2 before bump;
-- Angular = two distinct Lines, degrees, `0 < value < 180`;
-- typed command/handler and PlaneGCS ANGLE core are accepted;
-- source/policy/release identity = schema 3;
-- `dimension.angular` remains registry=`planned`; product UI is still open.
+Accepted on main `71707127348a179a87add5369cf2d4f415a9e111` after PR #142.
 
-Required M3 gaps:
-- Angular productization;
-- meaningful non-null DoF;
-- visible under/fully/over-constrained diagnostics.
+- all 24/24 required M3 command IDs are implemented;
+- all required driving dimensions are productized, including Angular;
+- PlaneGCS native `dof()` provides meaningful non-null DoF;
+- native PlaneGCS conflict/redundancy diagnostics drive visible under/fully/over-constrained state;
+- stable-ID selection/delete and mouse/touch rigid drag remain browser-proven;
+- central Undo/Redo and schema-compatible Save/Open/migrations remain green;
+- desktop/mobile/search share the typed action path;
+- post-merge CI on the M3 exit SHA passed M2 shell, M2 browser, M3 browser, Docker and baseline.
+
+Post-#136 cadence reached **3 / 3** through Angular productization → native DoF → constraint-state UX. The milestone health review is **YELLOW ACCEPTED**: no RED blocker was found. Current pressure remains bounded/non-growing; in particular, no frozen ceiling was raised.
+
+M3 Issue #5 may close as completed. M3 extension commands remain non-blocking unless deliberately reclassified.
 
 ## Full Repository Health Audit #123
 
@@ -80,14 +83,7 @@ SCHEMA-GENERALITY-001 is accepted; `SCHEMA-GUARD-001` regex/source-layout brittl
 
 `DIM-LINEAR-FINITE-001` was repaired by PR #138, merged as `5a90d6a34eb823a899f4842a2d332eb1fed42b12`. Post-merge CI on that merge SHA passed **5 / 5**: M2 shell, M2 browser, M3 browser, Docker and baseline.
 
-Feature freeze is **lifted**. Audit cadence resets to **0 / 3**.
-
-M3 remains **ACTIVE**. Required M3 gaps remain open:
-- Angular productization;
-- meaningful non-null DoF;
-- visible under/fully/over-constrained diagnostics.
-
-Do not declare M3 exit until the complete machine exit contract is accepted.
+Feature freeze was lifted after Audit #136. The subsequent three accepted M3 slices were Angular productization, solver-native DoF and constraint-state UX; those now satisfy the machine M3 exit contract.
 
 M3 extension commands do not block M3 unless deliberately reclassified.
 
