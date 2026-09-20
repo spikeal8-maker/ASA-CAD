@@ -7,17 +7,6 @@ param(
     [int] $TargetClientWidth = 1920,
     [int] $TargetClientHeight = 1080,
     [switch] $SkipResize,
-    [switch] $CanonicalBaselineConfirmed,
-    [ValidateSet('light', 'dark', 'unknown')]
-    [string] $KompasTheme = 'unknown',
-    [string] $KompasThemeDisplayedName = 'unknown',
-    [ValidateSet('standard', 'large', 'small', 'unknown')]
-    [string] $KompasUiSize = 'unknown',
-    [string] $KompasUiSizeDisplayedName = 'unknown',
-    [ValidateSet('monochrome', 'color', 'unknown')]
-    [string] $KompasIconStyle = 'unknown',
-    [string] $KompasIconStyleDisplayedName = 'unknown',
-    [string] $PanelConfiguration = 'unknown',
     [switch] $KeepCaptureSize
 )
 
@@ -47,6 +36,7 @@ if ([string]::IsNullOrWhiteSpace($captureToolGitSha)) {
 $stateDir = Join-Path $OutputRoot "states\$State"
 $screenshotDir = Join-Path $ScreenshotRoot $State
 $screenshotPath = Join-Path $screenshotDir 'kompas.png'
+$baselineEvidencePath = Join-Path $ScreenshotRoot 'baseline-evidence\kompas-interface.png'
 New-Item -ItemType Directory -Force -Path $stateDir, $screenshotDir | Out-Null
 
 try {
@@ -55,10 +45,12 @@ try {
     } else {
         [AsaCad.KompasCapture.NativeCapture]::ResizeClient($window.Hwnd, $TargetClientWidth, $TargetClientHeight)
     }
+    $kompasSettingsEvidence = Get-KompasOfficialSettingsEvidence -MainWindow $window -ScreenshotPath $baselineEvidencePath
+    $windowsAccessibility = Get-WindowsAccessibilitySnapshot
     $stable = Get-KompasStableState -Hwnd $window.Hwnd
     $window = [AsaCad.KompasCapture.NativeCapture]::ReadWindow($window.Hwnd)
-    $environment = Get-KompasEnvironment -Window $window -DpiAwareness $dpiAwareness -CaptureToolGitSha $captureToolGitSha -CanonicalBaselineConfirmed $CanonicalBaselineConfirmed.IsPresent -KompasTheme $KompasTheme -KompasThemeDisplayedName $KompasThemeDisplayedName -KompasUiSize $KompasUiSize -KompasUiSizeDisplayedName $KompasUiSizeDisplayedName -KompasIconStyle $KompasIconStyle -KompasIconStyleDisplayedName $KompasIconStyleDisplayedName -PanelConfiguration $PanelConfiguration
     $screenshot = Save-KompasClientScreenshot -Hwnd $window.Hwnd -Path $screenshotPath
+    $environment = Get-KompasEnvironment -Window $window -UiaTree $stable.tree -KompasSettingsEvidence $kompasSettingsEvidence -WindowsAccessibility $windowsAccessibility -DpiAwareness $dpiAwareness -CaptureToolGitSha $captureToolGitSha
 
     $environmentPath = Join-Path $OutputRoot 'environment.json'
     Write-JsonUtf8Lf -Value $environment -Path $environmentPath
@@ -83,7 +75,7 @@ try {
     $raw = [ordered]@{
         schemaVersion = 1
         stateId = $State
-        canonicalBaselineConfirmed = $CanonicalBaselineConfirmed.IsPresent
+        canonicalBaselineConfirmed = $environment.canonicalBaselineConfirmed
         environmentPath = 'environment.json'
         environmentSha256 = $environmentHash
         captureToolGitSha = $captureToolGitSha

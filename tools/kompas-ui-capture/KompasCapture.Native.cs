@@ -69,6 +69,7 @@ namespace AsaCad.KompasCapture
         public int ProcessId { get; set; }
         public string AutomationId { get; set; }
         public string Name { get; set; }
+        public string Value { get; set; }
         public string ControlType { get; set; }
         public string LocalizedControlType { get; set; }
         public string ClassName { get; set; }
@@ -508,6 +509,7 @@ namespace AsaCad.KompasCapture
                 ProcessId = Safe(delegate { return element.Current.ProcessId; }, 0),
                 AutomationId = Safe(delegate { return element.Current.AutomationId; }, ""),
                 Name = name,
+                Value = ReadValue(element),
                 ControlType = Safe(delegate { return TrimProgrammaticName(element.Current.ControlType.ProgrammaticName); }, "unknown"),
                 LocalizedControlType = Safe(delegate { return element.Current.LocalizedControlType; }, ""),
                 ClassName = Safe(delegate { return element.Current.ClassName; }, ""),
@@ -566,6 +568,29 @@ namespace AsaCad.KompasCapture
             catch { }
             result.Sort(StringComparer.Ordinal);
             return result;
+        }
+
+        private static string ReadValue(AutomationElement element)
+        {
+            try
+            {
+                object pattern;
+                if (element.TryGetCurrentPattern(ValuePattern.Pattern, out pattern))
+                    return ((ValuePattern)pattern).Current.Value ?? "";
+                if (element.TryGetCurrentPattern(SelectionPattern.Pattern, out pattern))
+                {
+                    AutomationElement[] selected = ((SelectionPattern)pattern).Current.GetSelection();
+                    var names = new List<string>();
+                    foreach (AutomationElement item in selected)
+                    {
+                        string name = Safe(delegate { return item.Current.Name; }, "");
+                        if (!String.IsNullOrWhiteSpace(name)) names.Add(name);
+                    }
+                    return String.Join("; ", names.ToArray());
+                }
+            }
+            catch { }
+            return "";
         }
 
         private static string PatternName(string value)

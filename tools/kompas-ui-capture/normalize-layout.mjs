@@ -260,7 +260,21 @@ const clientScreenRect = { x: Number(clientScreen.X ?? clientScreen.x), y: Numbe
 const spacesValidation = coordinateValidation(nodes, clientScreenRect, dpiX, dpiY, clientWidth, clientHeight);
 const screenshotPipelineResult = raw.screenshot.windowWasForeground && raw.screenshot.windowWasUnobscured && !raw.screenshot.cursorIncluded && !raw.screenshot.scaledAfterCapture && raw.screenshot.width === clientWidth && raw.screenshot.height === clientHeight ? 'PASS' : 'FAIL';
 const dpiAwareResult = environment.windows.dpiAwareness === 'per-monitor-v2' && dpiX > 0 && dpiY > 0 ? 'PASS' : 'FAIL';
-const canonicalBaselineResult = raw.canonicalBaselineConfirmed && environment.kompas.theme === 'light' && environment.kompas.uiSizeMode === 'standard' && environment.windows.textScalePercent === 100 && environment.windows.highContrastEnabled === false ? 'PASS' : 'FAIL';
+const requiredBaselineFields = ['kompasVersion', 'uiLanguage', 'theme', 'uiSize', 'iconStyle', 'panelConfiguration', 'windowsTextScale', 'highContrast'];
+const baselineFields = environment.baselineConfirmation?.fields ?? {};
+const allBaselineFieldsPass = requiredBaselineFields.every((field) => baselineFields[field]?.result === 'PASS');
+const canonicalBaselineResult = raw.canonicalBaselineConfirmed === true &&
+  environment.canonicalBaselineConfirmed === true &&
+  environment.baselineConfirmation?.result === 'PASS' &&
+  allBaselineFieldsPass &&
+  environment.kompas.productVersion === 'v25' &&
+  environment.kompas.uiLanguage === 'ru-RU' &&
+  environment.kompas.theme === 'light' &&
+  environment.kompas.uiSizeMode === 'standard' &&
+  environment.kompas.iconStyle === 'monochrome' &&
+  environment.kompas.panelConfiguration === 'normal-docked-desktop' &&
+  environment.windows.textScalePercent === 100 &&
+  environment.windows.highContrastEnabled === false ? 'PASS' : 'FAIL';
 const layout = {
   schemaVersion: 1,
   stateId: args.state,
@@ -287,6 +301,7 @@ const layout = {
     environmentPath: relative(root, join(root, raw.environmentPath)).replaceAll('\\', '/'),
     environmentSha256: raw.environmentSha256,
     captureToolGitSha: raw.captureToolGitSha,
+    baselineConfirmationResult: environment.baselineConfirmation?.result ?? 'FAIL',
     screenshot: raw.screenshot,
     kompas: {
       processName: environment.kompas.processName,
@@ -315,7 +330,6 @@ const layout = {
   },
 };
 validateLayout(layout);
-assert(layout.validations.canonicalBaseline === 'PASS', 'canonical baseline validation failed');
 assert(layout.validations.dpiAwareCapture === 'PASS', 'capture process is not Per-Monitor V2 DPI-aware');
 assert(layout.validations.coordinateSpace.result === 'PASS', 'coordinate space validation failed');
 assert(layout.validations.screenshotPipeline === 'PASS', 'screenshot provenance validation failed');
@@ -324,7 +338,8 @@ assert(layout.validations.partEmpty === 'PASS', 'part-empty evidence was not fou
 writeFileSync(join(stateDir, 'layout.json'), `${JSON.stringify(layout, null, 2)}\n`);
 writeFileSync(join(stateDir, 'layout.svg'), buildSvg(layout));
 
-const notes = `# KOMPAS-3D v25 — part-empty capture\n\n- State: temporary empty Part; no geometry created or saved.\n- Canonical baseline confirmed: ${layout.canonicalBaselineConfirmed}.\n- Physical client: ${clientWidth} x ${clientHeight} px.\n- Client DIP: ${clientDip.width} x ${clientDip.height} DIP at ${dpiX}/${dpiY} DPI.\n- UIA: ${uia.coverage}; ${uia.visibleNodeCount} visible Control View nodes.\n- Major zones resolved: ${zones.length ? zones.map((zone) => zone.id).join(', ') : 'none'}.\n- Unresolved zones: ${layout.unresolvedMajorZones.length ? layout.unresolvedMajorZones.join(', ') : 'none'}. No rectangles were invented.\n- Coordinate-space validation: ${layout.validations.coordinateSpace.result}; ${layout.validations.coordinateSpace.validatedNodeCount} nodes; max DIP error ${layout.validations.coordinateSpace.maxDipConversionError}.\n- DPI-aware capture: ${layout.validations.dpiAwareCapture}; screenshot pipeline: ${layout.validations.screenshotPipeline}.\n- Screenshot is local only: ${raw.screenshot.localPath}\n- Screenshot SHA-256: ${raw.screenshot.sha256}\n- Screenshot method: ${raw.screenshot.captureMethod}; foreground=${raw.screenshot.windowWasForeground}; unobscured=${raw.screenshot.windowWasUnobscured}; cursorIncluded=${raw.screenshot.cursorIncluded}; scaledAfterCapture=${raw.screenshot.scaledAfterCapture}.\n- Stabilization: ${raw.stability.stabilityResult}; ${raw.stability.stableSamples} stable samples, ${raw.stability.sampleIntervalMs} ms interval, ${raw.stability.settleDurationMs} ms settle duration.\n- Capture tool Git SHA: ${raw.captureToolGitSha}.\n- Environment SHA-256: ${raw.environmentSha256}.\n`;
+const baselineResults = requiredBaselineFields.map((field) => `${field}=${baselineFields[field]?.result ?? 'FAIL'}`).join(', ');
+const notes = `# KOMPAS-3D v25 — part-empty capture\n\n- State: temporary empty Part; no geometry created or saved.\n- Canonical baseline confirmed: ${layout.canonicalBaselineConfirmed}; validation=${layout.validations.canonicalBaseline}.\n- Baseline evidence: ${baselineResults}.\n- Physical client: ${clientWidth} x ${clientHeight} px.\n- Client DIP: ${clientDip.width} x ${clientDip.height} DIP at ${dpiX}/${dpiY} DPI.\n- UIA: ${uia.coverage}; ${uia.visibleNodeCount} visible Control View nodes.\n- Major zones resolved: ${zones.length ? zones.map((zone) => zone.id).join(', ') : 'none'}.\n- Unresolved zones: ${layout.unresolvedMajorZones.length ? layout.unresolvedMajorZones.join(', ') : 'none'}. No rectangles were invented.\n- Coordinate-space validation: ${layout.validations.coordinateSpace.result}; ${layout.validations.coordinateSpace.validatedNodeCount} nodes; max DIP error ${layout.validations.coordinateSpace.maxDipConversionError}.\n- DPI-aware capture: ${layout.validations.dpiAwareCapture}; screenshot pipeline: ${layout.validations.screenshotPipeline}.\n- Screenshot is local only: ${raw.screenshot.localPath}\n- Screenshot SHA-256: ${raw.screenshot.sha256}\n- Screenshot method: ${raw.screenshot.captureMethod}; foreground=${raw.screenshot.windowWasForeground}; unobscured=${raw.screenshot.windowWasUnobscured}; cursorIncluded=${raw.screenshot.cursorIncluded}; scaledAfterCapture=${raw.screenshot.scaledAfterCapture}.\n- Stabilization: ${raw.stability.stabilityResult}; ${raw.stability.stableSamples} stable samples, ${raw.stability.sampleIntervalMs} ms interval, ${raw.stability.settleDurationMs} ms settle duration.\n- Capture tool Git SHA: ${raw.captureToolGitSha}.\n- Environment SHA-256: ${raw.environmentSha256}.\n`;
 writeFileSync(join(stateDir, 'notes.md'), notes);
 
 const manifestPath = join(root, 'manifest.json');
@@ -338,8 +353,10 @@ const manifest = {
     actualClientDip: clientDip,
     windowsScalePercent: layout.window.windowsScalePercent,
     windowsTextScalePercent: environment.windows.textScalePercent,
+    highContrastEnabled: environment.windows.highContrastEnabled,
     kompasUiSize: environment.kompas.uiSizeMode,
     canonicalBaselineConfirmed: layout.canonicalBaselineConfirmed,
+    baselineConfirmationResult: environment.baselineConfirmation?.result ?? 'FAIL',
   },
   states: [{
     id: args.state,

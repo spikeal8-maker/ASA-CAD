@@ -16,19 +16,14 @@ It reads the already running KOMPAS-3D v25 window through public Win32 and Windo
 ## Stage 0 capture
 
 ```powershell
-pwsh -File tools/kompas-ui-capture/capture.ps1 `
-  -State part-empty `
-  -CanonicalBaselineConfirmed `
-  -KompasTheme light `
-  -KompasThemeDisplayedName 'Согласно теме ОС (effective light)' `
-  -KompasUiSize standard `
-  -KompasUiSizeDisplayedName 'Стандартный' `
-  -KompasIconStyle monochrome `
-  -KompasIconStyleDisplayedName 'Монохромные' `
-  -PanelConfiguration normal-docked-desktop
+pwsh -File tools/kompas-ui-capture/capture.ps1 -State part-empty
 ```
 
-Only pass `-CanonicalBaselineConfirmed` after the official KOMPAS UI has visibly confirmed Russian UI, Light theme, Standard icon/text size, normal docked panels, Windows Text Scale 100%, and High Contrast off.
+`canonicalBaselineConfirmed` is derived from evidence; there is no operator switch that can force it to `true`. The tool opens the official KOMPAS Parameters dialog, reads the exact Theme, icon/text size, icon style, and language values through UI Automation, saves a local-only settings screenshot under `baseline-evidence`, and cancels the dialog without changing settings. The normal docked panel configuration is proven from the `part-empty` UIA geometry.
+
+Windows Text Scale and High Contrast are read through the public Windows Runtime APIs `UISettings.TextScaleFactor` and `AccessibilitySettings.HighContrast`. Any query error or missing value is recorded as `null` and makes the canonical baseline fail; neither field has a default-value fallback.
+
+Every required baseline field is recorded under `environment.json.baselineConfirmation` with `expected`, `observed`, `source`, `evidence`, and `result`. The required fields are KOMPAS v25, Russian UI, effective-light theme, Standard UI size, monochrome icon style, normal docked panels, Windows Text Scale 100%, and High Contrast off.
 
 Generated committed evidence:
 
