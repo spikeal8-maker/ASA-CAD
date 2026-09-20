@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://asa-cad.local/schemas/kompas-state.schema.json",
+  "title": "KOMPAS UI Automation tree",
+  "type": "object",
+  "required": ["schemaVersion", "stateId", "view", "coverage", "totalNodeCount", "visibleNodeCount", "root"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "stateId": { "const": "part-empty" },
+    "view": { "const": "Control" },
+    "coverage": { "enum": ["pass", "partial", "fail"] },
+    "totalNodeCount": { "type": "integer", "minimum": 0 },
+    "visibleNodeCount": { "type": "integer", "minimum": 0 },
+    "root": { "$ref": "#/$defs/node" }
+  },
+  "$defs": {
+    "node": {
+      "type": ["object", "null"],
+      "properties": {
+        "RuntimeId": { "type": "array", "items": { "type": "integer" } },
+        "ParentRuntimeId": { "type": ["array", "null"], "items": { "type": "integer" } },
+        "SiblingOrder": { "type": "integer", "minimum": 0 },
+        "AutomationId": { "type": "string" },
+        "Name": { "type": "string" },
+        "ControlType": { "type": "string" },
+        "BoundingRect": { "type": "object" },
+        "Children": { "type": "array", "items": { "$ref": "#/$defs/node" } }
+      }
+    }
+  }
+}
