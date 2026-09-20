@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "stateId": "part-empty",
-  "capturedAt": "2026-09-20T21:23:33.2979414+00:00",
+  "capturedAt": "2026-09-20T21:49:58.8780219+00:00",
   "canonicalBaselineConfirmed": true,
   "coordinateSpaces": {
     "measurement": "physical-screen-px",
@@ -34,15 +34,16 @@
   },
   "provenance": {
     "environmentPath": "environment.json",
-    "environmentSha256": "1a5d64c37171c9b4fa6b11c052106627b263834a618181f76eb3bfcefb8b3483",
-    "captureToolGitSha": "c934968e4915289352559a57f19fe4fce83456d1",
+    "environmentSha256": "1df087faf054c925c2ac13dd1a56afb61be20541461d21cc5e8bd758d4c34574",
+    "captureToolGitSha": "3e8bc9c9ae7906695e5119ec89ab9de5d768c24a",
+    "baselineConfirmationResult": "PASS",
     "screenshot": {
       "captureMethod": "physical-screen-client-crop-copyfromscreen",
       "localPath": "C:\\Users\\spike\\Documents\\VisualReviews\\ASA-CAD\\KOMPAS-v25\\part-empty\\kompas.png",
       "width": 1920,
       "height": 1080,
       "sha256": "71a4d5a29180475ff43ccf4420e861b8333d9ba510fec17be2e032d63eae21de",
-      "capturedAt": "2026-09-20T21:23:33.2979414+00:00",
+      "capturedAt": "2026-09-20T21:49:58.8780219+00:00",
       "captureRectPhysicalPx": {
         "X": 1248,
         "Y": 91,
@@ -63,13 +64,13 @@
   },
   "stability": {
     "stabilityResult": "PASS",
-    "settleDurationMs": 4798,
+    "settleDurationMs": 4707,
     "stableSamples": 3,
     "requiredStableSamples": 3,
     "sampleIntervalMs": 300,
     "samples": [
       {
-        "capturedAt": "2026-09-20T21:23:23.8998175+00:00",
+        "capturedAt": "2026-09-20T21:49:49.6654966+00:00",
         "clientRectPhysicalPx": {
           "X": 1248,
           "Y": 91,
@@ -82,7 +83,7 @@
         "visibleTooltipCount": 0
       },
       {
-        "capturedAt": "2026-09-20T21:23:25.6935741+00:00",
+        "capturedAt": "2026-09-20T21:49:51.3309201+00:00",
         "clientRectPhysicalPx": {
           "X": 1248,
           "Y": 91,
@@ -95,7 +96,7 @@
         "visibleTooltipCount": 0
       },
       {
-        "capturedAt": "2026-09-20T21:23:27.3174968+00:00",
+        "capturedAt": "2026-09-20T21:49:52.9504775+00:00",
         "clientRectPhysicalPx": {
           "X": 1248,
           "Y": 91,

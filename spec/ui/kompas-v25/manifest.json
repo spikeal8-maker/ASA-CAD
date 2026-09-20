@@ -17,8 +17,10 @@
     },
     "windowsScalePercent": 100,
     "windowsTextScalePercent": 100,
+    "highContrastEnabled": false,
     "kompasUiSize": "standard",
-    "canonicalBaselineConfirmed": true
+    "canonicalBaselineConfirmed": true,
+    "baselineConfirmationResult": "PASS"
   },
   "states": [
     {
