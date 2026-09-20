@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "referenceProduct": "KOMPAS-3D v25",
+  "captureToolVersion": 1,
+  "baseline": {
+    "targetClientPx": {
+      "width": 1920,
+      "height": 1080
+    },
+    "actualClientPx": {
+      "width": 1920,
+      "height": 1080
+    },
+    "actualClientDip": {
+      "width": 1920,
+      "height": 1080
+    },
+    "windowsScalePercent": 100,
+    "windowsTextScalePercent": 100,
+    "kompasUiSize": "standard",
+    "canonicalBaselineConfirmed": true
+  },
+  "states": [
+    {
+      "id": "part-empty",
+      "captured": true,
+      "localScreenshotPath": "C:\\Users\\spike\\Documents\\VisualReviews\\ASA-CAD\\KOMPAS-v25\\part-empty\\kompas.png",
+      "screenshotSha256": "71a4d5a29180475ff43ccf4420e861b8333d9ba510fec17be2e032d63eae21de",
+      "actualClientSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "actualClientDip": {
+        "width": 1920,
+        "height": 1080
+      },
+      "uiaCoverage": "partial",
+      "layoutPath": "states/part-empty/layout.json",
+      "uiaTreePath": "states/part-empty/uia-tree.json",
+      "svgPath": "states/part-empty/layout.svg",
+      "notesPath": "states/part-empty/notes.md",
+      "validations": {
+        "canonicalBaseline": "PASS",
+        "dpiAwareCapture": "PASS",
+        "dpiConversion": "PASS",
+        "coordinateSpace": {
+          "result": "PASS",
+          "validatedNodeCount": 369,
+          "tolerancePx": 0.01,
+          "maxScreenToClientErrorPx": 0,
+          "maxDipConversionError": 0,
+          "maxNormalizedError": 5e-7
+        },
+        "screenshotPipeline": "PASS",
+        "stateStability": "PASS",
+        "partEmpty": "PASS"
+      }
+    }
+  ]
+}

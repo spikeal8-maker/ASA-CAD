@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-20T21:23:32.6320121+00:00",
+  "canonicalBaselineConfirmed": true,
+  "referenceProduct": "KOMPAS-3D v25",
+  "kompas": {
+    "productVersion": "v25",
+    "fileVersion": "25.0.0.2735",
+    "productName": "KOMPAS v25 (x64)",
+    "processName": "kStudy",
+    "processPath": "C:\\Program Files\\ASCON\\KOMPAS-3D v25 Study\\Bin\\kStudy.exe",
+    "processId": 42828,
+    "windowTitle": "КОМПАС-3D v25 Учебная версия (Не для коммерческого использования)",
+    "uiLanguage": "ru-RU",
+    "theme": "light",
+    "themeDisplayedName": "Согласно теме ОС (effective light)",
+    "uiSizeMode": "standard",
+    "uiSizeDisplayedName": "Стандартный",
+    "iconStyle": "monochrome",
+    "iconStyleDisplayedName": "Монохромные",
+    "activeDocumentType": "part-empty",
+    "panelConfiguration": "normal-docked-desktop"
+  },
+  "windows": {
+    "caption": "Майкрософт Windows 11 Pro",
+    "version": "10.0.26200",
+    "build": "26200",
+    "architecture": "64-разрядная",
+    "language": "ru-RU",
+    "dpiAwareness": "per-monitor-v2",
+    "dpi": {
+      "x": 96,
+      "y": 96
+    },
+    "scalePercent": 100.0,
+    "textScalePercent": 100,
+    "highContrastEnabled": false,
+    "systemTheme": "light",
+    "appTheme": "light",
+    "systemAccentColor": "unknown",
+    "fontSmoothingEnabled": "unknown",
+    "hdrMode": "unknown"
+  },
+  "monitor": {
+    "id": "\\\\.\\DISPLAY1",
+    "boundsPhysicalPx": {
+      "X": 0.0,
+      "Y": 0.0,
+      "Width": 3440.0,
+      "Height": 1440.0,
+      "IsValid": true
+    },
+    "workAreaPhysicalPx": {
+      "X": 0.0,
+      "Y": 0.0,
+      "Width": 3440.0,
+      "Height": 1392.0,
+      "IsValid": true
+    }
+  },
+  "window": {
+    "hwnd": "0x240086A",
+    "windowRectPhysicalPx": {
+      "X": 1248.0,
+      "Y": 91.0,
+      "Width": 1920.0,
+      "Height": 1080.0,
+      "IsValid": true
+    },
+    "extendedFrameRectPhysicalPx": {
+      "X": 1248.0,
+      "Y": 91.0,
+      "Width": 1920.0,
+      "Height": 1080.0,
+      "IsValid": true
+    },
+    "clientRectScreenPhysicalPx": {
+      "X": 1248.0,
+      "Y": 91.0,
+      "Width": 1920.0,
+      "Height": 1080.0,
+      "IsValid": true
+    }
+  },
+  "captureTool": {
+    "version": 1,
+    "gitSha": "c934968e4915289352559a57f19fe4fce83456d1"
+  }
+}
