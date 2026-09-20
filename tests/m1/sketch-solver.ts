@@ -2,10 +2,12 @@ import assert from 'node:assert/strict';
 import {
   CadApplicationImpl,
   PlaneGCSSketchSolverRuntime,
+  SketchSolveSession,
   createEmptyCadDocument,
   type CadRuntimeAdapter,
   type CadRuntimeRecomputeResult,
   type CadRuntimeReferenceCaptureResult,
+  type CadConstraintId,
   type CadDimensionId,
   type CadSketchEntityId,
   type CadSketchId,
@@ -45,6 +47,49 @@ async function assertPlaneGcsNativeDegreesOfFreedom() {
   assert.ok(
     unconstrained.degreesOfFreedom !== null && unconstrained.degreesOfFreedom > 0,
     `unconstrained Line must report solver-native DoF > 0, got ${unconstrained.degreesOfFreedom}`,
+  );
+
+  const stateSession = new SketchSolveSession(new PlaneGCSSketchSolverRuntime());
+  const under = await stateSession.solve(probeApp.getDocument(), sketchId);
+  assert.equal(under.constraintState, 'under-constrained');
+  assert.ok(under.degreesOfFreedom !== null && under.degreesOfFreedom > 0);
+
+  const redundantDocument = structuredClone(probeApp.getDocument());
+  if (redundantDocument.kind !== 'part') throw new Error('Expected Part DoF probe');
+  const redundantSketch = redundantDocument.sketches.find((item) => item.id === sketchId);
+  assert.ok(redundantSketch);
+  const redundantA = 'constraint_native_redundant_a' as CadConstraintId;
+  const redundantB = 'constraint_native_redundant_b' as CadConstraintId;
+  redundantDocument.constraints.push(
+    { id: redundantA, type: 'horizontal', entityIds: [lineId] },
+    { id: redundantB, type: 'horizontal', entityIds: [lineId] },
+  );
+  redundantSketch.constraintIds.push(redundantA, redundantB);
+  const over = await stateSession.solve(redundantDocument, sketchId);
+  assert.equal(over.status, 'solved', 'native redundancy may converge successfully');
+  assert.equal(over.constraintState, 'over-constrained');
+  assert.ok(
+    over.diagnostics.some((diagnostic) => diagnostic.code === 'PLANEGCS_REDUNDANT_CONSTRAINTS'),
+    'native PlaneGCS redundancy diagnostics must drive over-constrained state',
+  );
+
+  const conflictingDocument = structuredClone(probeApp.getDocument());
+  if (conflictingDocument.kind !== 'part') throw new Error('Expected Part conflict probe');
+  const conflictingSketch = conflictingDocument.sketches.find((item) => item.id === sketchId);
+  assert.ok(conflictingSketch);
+  const conflictA = 'dimension_native_conflict_a' as CadDimensionId;
+  const conflictB = 'dimension_native_conflict_b' as CadDimensionId;
+  conflictingDocument.dimensions.push(
+    { id: conflictA, type: 'linear', entityIds: [lineId], value: 10, driving: true },
+    { id: conflictB, type: 'linear', entityIds: [lineId], value: 20, driving: true },
+  );
+  conflictingSketch.dimensionIds.push(conflictA, conflictB);
+  const conflicting = await stateSession.solve(conflictingDocument, sketchId);
+  assert.equal(conflicting.status, 'error', 'native conflict must remain a failed solve');
+  assert.equal(conflicting.constraintState, 'over-constrained');
+  assert.ok(
+    conflicting.diagnostics.some((diagnostic) => diagnostic.code === 'PLANEGCS_CONFLICTING_CONSTRAINTS'),
+    'native PlaneGCS conflict diagnostics must drive over-constrained state',
   );
 
   assert.equal((await probeApp.execute({
@@ -92,7 +137,11 @@ async function assertPlaneGcsNativeDegreesOfFreedom() {
   const fixed = solver.solve(fixedApp.getDocument(), fixedSketchId);
   assert.equal(fixed.ok, true);
   assert.equal(fixed.degreesOfFreedom, 0, 'Fixed Line must report solver-native DoF = 0');
+  const fully = await stateSession.solve(fixedApp.getDocument(), fixedSketchId);
+  assert.equal(fully.constraintState, 'fully-constrained');
+  assert.equal(fully.degreesOfFreedom, 0);
 
+  stateSession.dispose();
   solver.dispose();
   probeApp.dispose();
   fixedApp.dispose();
