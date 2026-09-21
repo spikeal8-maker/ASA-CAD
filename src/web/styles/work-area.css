@@ -92,3 +92,46 @@
 .status-indicator.dirty { background: var(--warning); }
 .status-indicator.running { background: var(--accent); }
 .status-indicator.error { background: var(--danger); }
+
+
+/* Captured KOMPAS quick-access row begins 16px inside the graphics area. */
+@media (min-width: 900px) {
+  .viewport-quick-access {
+    top: 0;
+    left: 16px;
+    width: 591px;
+    height: 25px;
+    transform: none;
+    justify-content: flex-start;
+    gap: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .viewport-quick-access > button {
+    width: 26px;
+    height: 25px;
+    border-radius: 0;
+  }
+
+  .quick-separator {
+    height: 18px;
+    margin: 0 3px;
+  }
+}
+
+
+/* Stage 0 D3View reaches y=1077 in a 1080px client; keep status as an overlay. */
+@media (min-width: 900px) {
+  .status-bar {
+    position: absolute;
+    z-index: 24;
+    left: 3px;
+    right: 3px;
+    bottom: 3px;
+    height: 25px;
+  }
+}

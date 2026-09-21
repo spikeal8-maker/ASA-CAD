@@ -22,7 +22,7 @@
   .main-menu-items button:nth-child(n+3) { display: none; }
   .ribbon-command { min-width: 54px; max-width: 76px; }
   .ribbon-command span:not(.ribbon-command-icon):not(.planned-badge) { font-size: 10px; }
-  .content-area { grid-template-columns: 42px minmax(220px, var(--panel-w)) minmax(0, 1fr); }
+  .content-area { grid-template-columns: var(--rail-w) minmax(220px, var(--panel-w)) minmax(0, 1fr); }
 }
 
 /* Tablet */
@@ -124,7 +124,7 @@
 
 @media (min-width: 2560px) {
   :root { --panel-w: 320px; }
-  .command-search-wrap { width: 420px; }
+  .command-search-wrap { width: 166px; }
   .work-area { border-left: 0; }
 }
 

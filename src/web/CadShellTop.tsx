@@ -21,10 +21,22 @@ export function CadShellTop(props: CadShellTopProps) {
     <>
       <header className="main-menu-bar">
         <button className="brand-button" type="button" onClick={props.openNewDocument} aria-label="ASA-CAD">
-          <span className="brand-mark">A</span><span>ASA-CAD</span>
+          <span className="brand-mark">A</span><span className="brand-label">ASA-CAD</span>
         </button>
         <nav className="main-menu-items" aria-label="Главное меню">
-          <button type="button">Файл</button><button type="button">Главная</button><button type="button">Сервис</button>
+          <button type="button">Файл</button>
+          <button type="button">Правка</button>
+          <button type="button">Выделить</button>
+          <button type="button">Вид</button>
+          <button type="button">Эскиз</button>
+          <button type="button">Моделирование</button>
+          <button type="button">Оформление</button>
+          <button type="button">Диагностика</button>
+          <button type="button">Управление</button>
+          <button type="button">Настройка</button>
+          <button type="button">Приложения</button>
+          <button type="button">Окно</button>
+          <button type="button">Справка</button>
         </nav>
         <div className="command-search-wrap">
           <span aria-hidden="true">⌕</span>
@@ -55,8 +67,8 @@ export function CadShellTop(props: CadShellTopProps) {
           {props.documentKind === 'part' ? (
             <>
               <WorkspaceTab active={props.activeWorkspace === 'solid'} onClick={() => props.setActiveWorkspace('solid')}>Твердотельное моделирование</WorkspaceTab>
-              {props.activeWorkspace === 'sketch' && <WorkspaceTab active>Эскиз</WorkspaceTab>}
               <WorkspaceTab active={props.activeWorkspace === 'surfaces'} onClick={() => props.setActiveWorkspace('surfaces')}>Каркас и поверхности</WorkspaceTab>
+              <WorkspaceTab active={props.activeWorkspace === 'sketch'} disabled={props.activeWorkspace !== 'sketch'}>Эскиз</WorkspaceTab>
               <WorkspaceTab active={props.activeWorkspace === 'diagnostics'} onClick={() => props.setActiveWorkspace('diagnostics')}>Проверка / Измерения</WorkspaceTab>
               <WorkspaceTab active={props.activeWorkspace === 'view'} onClick={() => props.setActiveWorkspace('view')}>Вид</WorkspaceTab>
             </>
@@ -82,9 +94,9 @@ export function CadShellTop(props: CadShellTopProps) {
   );
 }
 
-function WorkspaceTab(props: React.PropsWithChildren<{ active?: boolean; onClick?: () => void }>) {
+function WorkspaceTab(props: React.PropsWithChildren<{ active?: boolean; disabled?: boolean; onClick?: () => void }>) {
   return (
-    <button className={props.active ? 'active' : ''} type="button" onClick={props.onClick} role="tab" aria-selected={props.active}>
+    <button className={props.active ? 'active' : ''} type="button" disabled={props.disabled} onClick={props.onClick} role="tab" aria-selected={props.active}>
       {props.children}
     </button>
   );

@@ -17,13 +17,13 @@
   --danger: #c63333;
   --success: #2f7d43;
   --warning: #ad6b00;
-  --mainbar-h: 38px;
-  --tabs-h: 32px;
-  --workspace-h: 31px;
-  --ribbon-h: 78px;
-  --status-h: 26px;
-  --rail-w: 46px;
-  --panel-w: 292px;
+  --mainbar-h: 28px;
+  --tabs-h: 27px;
+  --workspace-h: 25px;
+  --ribbon-h: 68px;
+  --status-h: 3px;
+  --rail-w: 26px;
+  --panel-w: 310px;
   --radius: 4px;
 }
 
@@ -41,6 +41,7 @@ button:focus-visible, input:focus-visible, select:focus-visible {
   width: 100%;
   height: 100dvh;
   min-width: 0;
+  position: relative;
   display: grid;
   grid-template-rows: var(--mainbar-h) var(--tabs-h) calc(var(--workspace-h) + var(--ribbon-h)) minmax(0, 1fr) var(--status-h);
   background: var(--bg-app);

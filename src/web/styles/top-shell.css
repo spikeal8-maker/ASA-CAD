@@ -132,3 +132,135 @@
 .document-kind-icon { color: #4e5e71; }
 .dirty-dot { color: var(--accent); font-size: 8px; margin-left: auto; }
 .tab-close { color: #77808a; font-size: 17px; margin-left: auto; }
+
+
+/* KOMPAS-3D v25 captured desktop shell: 1920x1080 client, 100% UI scale. */
+@media (min-width: 900px) {
+  .main-menu-bar {
+    position: relative;
+    gap: 0;
+    padding: 0 3px;
+    border-bottom: 0;
+  }
+
+  .brand-button {
+    width: 26px;
+    height: 28px;
+    flex: 0 0 26px;
+    justify-content: center;
+    gap: 0;
+    padding: 0;
+  }
+
+  .brand-button .brand-mark {
+    width: 20px;
+    height: 19px;
+    border-radius: 2px;
+    font-size: 11px;
+  }
+
+  .brand-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .main-menu-items {
+    align-self: center;
+    height: 22px;
+    gap: 0;
+  }
+
+  .main-menu-items button {
+    min-width: 0;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 0;
+    font-size: 12px;
+    line-height: 22px;
+    white-space: nowrap;
+  }
+
+  .main-menu-items button:nth-child(1) { width: 41px; }
+  .main-menu-items button:nth-child(2) { width: 52px; }
+  .main-menu-items button:nth-child(3) { width: 65px; }
+  .main-menu-items button:nth-child(4) { width: 32px; }
+  .main-menu-items button:nth-child(5) { width: 43px; }
+  .main-menu-items button:nth-child(6) { width: 102px; }
+  .main-menu-items button:nth-child(7) { width: 86px; }
+  .main-menu-items button:nth-child(8) { width: 82px; }
+  .main-menu-items button:nth-child(9) { width: 78px; }
+  .main-menu-items button:nth-child(10) { width: 71px; }
+  .main-menu-items button:nth-child(11) { width: 84px; }
+  .main-menu-items button:nth-child(12) { width: 41px; }
+  .main-menu-items button:nth-child(13) { width: 58px; }
+
+  .command-search-wrap {
+    position: absolute;
+    top: 3px;
+    right: 103px;
+    width: 166px;
+    height: 22px;
+    margin: 0;
+    gap: 4px;
+    padding: 0 5px;
+    border-radius: 2px;
+  }
+
+  .command-search-wrap input {
+    font-size: 12px;
+  }
+
+  .global-actions {
+    position: static;
+    display: contents;
+  }
+
+  .main-menu-bar .global-actions button {
+    position: absolute;
+    top: 3px;
+    height: 25px;
+    border-radius: 0;
+    font-size: 13px;
+  }
+
+  .main-menu-bar .global-actions > :nth-child(1) { right: 323px; width: 26px; }
+  .main-menu-bar .global-actions > :nth-child(2) { right: 297px; width: 26px; }
+  .main-menu-bar .global-actions > :nth-child(3) { right: 65px; width: 32px; }
+  .main-menu-bar .global-actions > :nth-child(4) { right: 33px; width: 32px; }
+  .main-menu-bar .global-actions > :nth-child(5) { right: 1px; width: 32px; }
+
+  .document-tabs {
+    align-items: flex-start;
+    gap: 0;
+    padding: 1px 3px 0;
+    border-bottom: 0;
+  }
+
+  .new-tab-button {
+    width: 20px;
+    height: 20px;
+    margin: 0 0 0 27px;
+    border-radius: 0;
+    line-height: 20px;
+  }
+
+  .document-tab {
+    width: 166px;
+    min-width: 166px;
+    max-width: 260px;
+    height: 20px;
+    gap: 5px;
+    padding: 0 6px;
+    border-radius: 0;
+    font-size: 12px;
+    line-height: 20px;
+  }
+
+  .tab-close {
+    font-size: 14px;
+  }
+}
