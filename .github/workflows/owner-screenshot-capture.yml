@@ -1,0 +1,71 @@
+name: OWNER_SCREENSHOT_CAPTURE
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - tests/visual/**
+      - .github/workflows/owner-screenshot-capture.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  owner-screenshot-capture:
+    name: OWNER_SCREENSHOT_CAPTURE
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.19.0'
+          cache: npm
+          cache-dependency-path: vendor/toubkal/package-lock.json
+
+      - name: Install browser-test dependencies
+        run: npm --prefix vendor/toubkal ci
+
+      - name: Install Chromium for Playwright
+        run: npx --yes playwright@1.60.0 install --with-deps chromium
+
+      - name: Build accepted ASA-CAD image
+        run: docker build -t asa-cad:owner-review .
+
+      - name: Start accepted ASA-CAD image
+        run: docker run -d --name asa-cad-owner-review -p 8088:8080 asa-cad:owner-review
+
+      - name: Wait for ASA-CAD
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:8088/health/live >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          docker logs asa-cad-owner-review
+          exit 1
+
+      - name: Capture real owner-review screenshots
+        env:
+          ASA_CAD_OWNER_REVIEW_URL: http://127.0.0.1:8088
+          ASA_CAD_SCREENSHOT_ROOT: owner-visual-review/screenshots
+        run: node tests/visual/owner-review-screenshots.mjs
+
+      - name: Upload owner visual review artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: asa-cad-owner-visual-review
+          path: owner-visual-review/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 0
+
+      - name: Show container logs on failure
+        if: failure()
+        run: docker logs asa-cad-owner-review || true

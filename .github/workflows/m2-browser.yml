@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
     paths:
+      - tests/visual/**
       - src/web/**
       - src/browser/**
       - src/runtime/**
@@ -17,6 +18,7 @@ on:
       - .github/workflows/m2-browser.yml
   pull_request:
     paths:
+      - tests/visual/**
       - src/web/**
       - src/browser/**
       - src/runtime/**
