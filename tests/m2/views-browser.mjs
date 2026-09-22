@@ -121,7 +121,7 @@ try {
   assert.ok(dot(zoomedDirection, fittedDirection) > 0.999, 'Fit changed the current viewing direction');
   assert.ok(Math.abs(fittedDistance - zoomedDistance) > 0.5, 'Fit did not change camera distance after zoom');
   assert.equal(fitted.revision, initial.revision, 'Fit triggered CAD recompute');
-  await page.getByText('Показать всё', { exact: true }).waitFor();
+  await page.locator('.view-caption').filter({ hasText: 'Показать всё' }).waitFor();
 
   assert.deepEqual(pageErrors, [], `page errors: ${pageErrors.join('; ')}`);
   assert.deepEqual(failedRequests, [], `failed requests: ${failedRequests.join('; ')}`);
