@@ -8,6 +8,97 @@ async function waitForShell(page) {
   await page.getByRole('button', { name: 'ASA-CAD', exact: true }).waitFor();
 }
 
+
+function near(actual, expected, tolerance = 4, label = 'value') {
+  assert.ok(Number.isFinite(actual), `${label} is not finite: ${actual}`);
+  assert.ok(Math.abs(actual - expected) <= tolerance, `${label}: expected ${expected}±${tolerance}, got ${actual}`);
+}
+
+async function assertDesktopGeometry(page) {
+  const metrics = await page.evaluate(() => {
+    const rect = (selector) => {
+      const node = document.querySelector(selector);
+      if (!(node instanceof HTMLElement)) return null;
+      const box = node.getBoundingClientRect();
+      return { x: box.x, y: box.y, width: box.width, height: box.height };
+    };
+    return {
+      mainBar: rect('.main-menu-bar'),
+      menu: rect('.main-menu-items'),
+      tabs: rect('.document-tabs'),
+      instrument: rect('.instrument-area'),
+      search: rect('.command-search-wrap'),
+      rail: rect('.management-rail'),
+      panel: rect('.management-panel'),
+      work: rect('.work-area'),
+      quick: rect('.viewport-quick-access'),
+    };
+  });
+
+  for (const [name, value] of Object.entries(metrics)) {
+    assert.ok(value, `missing desktop geometry node: ${name}`);
+  }
+
+  near(metrics.mainBar.y, 0, 1, 'main top');
+  near(metrics.mainBar.height, 28, 1, 'main height');
+  near(metrics.tabs.y, 28, 1, 'document row y');
+  near(metrics.tabs.height, 27, 1, 'document row height');
+  near(metrics.instrument.y, 55, 1, 'instrument y');
+  near(metrics.instrument.height, 93, 1, 'instrument height');
+  near(metrics.menu.x, 29, 1, 'main menu x');
+  near(metrics.menu.width, 835, 1, 'main menu width');
+  near(metrics.search.x, 1651, 1, 'search x');
+  near(metrics.search.y, 5, 1, 'search y');
+  near(metrics.search.width, 166, 1, 'search width');
+  near(metrics.search.height, 22, 1, 'search height');
+  near(metrics.rail.x, 3, 1, 'rail x');
+  near(metrics.rail.width, 26, 1, 'rail width');
+  near(metrics.panel.x, 29, 1, 'panel x');
+  near(metrics.panel.width, 310, 1, 'panel width');
+  near(metrics.work.x, 340, 1, 'graphics x');
+  near(metrics.work.y, 148, 1, 'graphics y');
+  near(metrics.work.width, 1577, 1, 'graphics width');
+  near(metrics.work.height, 929, 1, 'graphics height');
+  near(metrics.quick.x, 356, 1, 'quick access x');
+  near(metrics.quick.y, 148, 1, 'quick access y');
+  near(metrics.quick.width, 591, 1, 'quick access width');
+  near(metrics.quick.height, 25, 1, 'quick access height');
+}
+
+async function assertRibbonIntegrity(page, label) {
+  const rects = await page.locator('.command-ribbon .ribbon-command').evaluateAll((nodes) => nodes
+    .filter((node) => {
+      const box = node.getBoundingClientRect();
+      const style = getComputedStyle(node);
+      return style.display !== 'none' && style.visibility !== 'hidden' && box.width > 0 && box.height > 0;
+    })
+    .map((node) => {
+      const box = node.getBoundingClientRect();
+      return {
+        id: node.getAttribute('data-command-id') ?? node.textContent?.trim() ?? 'unknown',
+        x: box.x, y: box.y, width: box.width, height: box.height,
+        svg: Boolean(node.querySelector('.ribbon-command-icon svg.cad-icon')),
+      };
+    }));
+
+  assert.ok(rects.length > 0, `${label}: no visible commands`);
+  for (const rect of rects) {
+    assert.equal(rect.svg, true, `${label}: ${rect.id} is missing ASA-owned SVG icon`);
+  }
+
+  for (let i = 0; i < rects.length; i += 1) {
+    for (let j = i + 1; j < rects.length; j += 1) {
+      const a = rects[i], b = rects[j];
+      const overlapX = Math.min(a.x + a.width, b.x + b.width) - Math.max(a.x, b.x);
+      const overlapY = Math.min(a.y + a.height, b.y + b.height) - Math.max(a.y, b.y);
+      assert.ok(
+        overlapX <= 0.5 || overlapY <= 0.5,
+        `${label}: ${a.id} overlaps ${b.id} by ${overlapX.toFixed(1)}×${overlapY.toFixed(1)}px`,
+      );
+    }
+  }
+}
+
 async function runDesktop() {
   const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
   const pageErrors = [];
@@ -23,6 +114,10 @@ async function runDesktop() {
   await page.locator('.management-panel .panel-title-row strong').filter({ hasText: 'Дерево' }).waitFor();
   await page.getByText('Новая деталь', { exact: true }).waitFor();
 
+  await assertDesktopGeometry(page);
+  await assertRibbonIntegrity(page, 'Part ribbon');
+  await page.locator('.management-rail button[title^="Библиотеки"]').waitFor();
+
   assert.equal(await page.evaluate(() => crossOriginIsolated), true, 'CAD browser route is not cross-origin isolated');
 
   // Shell boot must remain cheap: no OCC WASM until a solid feature is rebuilt.
@@ -35,6 +130,7 @@ async function runDesktop() {
   await page.getByRole('button', { name: /XY/ }).click();
   await page.getByRole('button', { name: 'Создать', exact: true }).click();
   await page.getByText('Эскиз 1', { exact: true }).waitFor();
+  await assertRibbonIntegrity(page, 'Sketch ribbon');
 
   // New-document routing is ASA-owned for all six kinds.
   await page.locator('.new-tab-button').click();
@@ -82,6 +178,8 @@ try {
   await runDesktop();
   await runPhone();
   console.log('ASA-CAD M2 shell real-browser smoke PASS');
+  console.log('  ✓ captured 1920×1080 geometry within ±4 CSS px');
+  console.log('  ✓ Part/Sketch ribbon bounding boxes do not overlap and use ASA SVG icons');
 } finally {
   await browser.close();
 }

@@ -64,8 +64,10 @@ async function cameraState() {
   }));
 }
 
-async function assertView(label, view, expectedDirection) {
-  await page.getByRole('button', { name: new RegExp(label) }).click();
+async function assertView(commandId, label, view, expectedDirection) {
+  const command = page.locator(`[data-command-id="${commandId}"]`).first();
+  await command.waitFor();
+  await command.click();
   await page.locator(`[data-testid="cad-viewport"][data-view-name="${view}"]`).waitFor();
   const state = await cameraState();
   const direction = normalize(subtract(parseVector(state.position), parseVector(state.target)));
@@ -79,15 +81,13 @@ try {
   const initial = await cameraState();
   assert.match(initial.revision ?? '', /^occ-\d+$/);
 
-  await page.getByRole('tab', { name: 'Вид', exact: true }).click();
-
-  const front = await assertView('Спереди', 'front', [0, -1, 0]);
-  const back = await assertView('Сзади', 'back', [0, 1, 0]);
-  const top = await assertView('Сверху', 'top', [0, 0, 1]);
-  const bottom = await assertView('Снизу', 'bottom', [0, 0, -1]);
-  const left = await assertView('Слева', 'left', [-1, 0, 0]);
-  const right = await assertView('Справа', 'right', [1, 0, 0]);
-  const iso = await assertView('Изометрия', 'isometric', [1, -1, 1]);
+  const front = await assertView('view.front', 'Спереди', 'front', [0, -1, 0]);
+  const back = await assertView('view.back', 'Сзади', 'back', [0, 1, 0]);
+  const top = await assertView('view.top', 'Сверху', 'top', [0, 0, 1]);
+  const bottom = await assertView('view.bottom', 'Снизу', 'bottom', [0, 0, -1]);
+  const left = await assertView('view.left', 'Слева', 'left', [-1, 0, 0]);
+  const right = await assertView('view.right', 'Справа', 'right', [1, 0, 0]);
+  const iso = await assertView('view.iso', 'Изометрия', 'isometric', [1, -1, 1]);
 
   for (const state of [front, back, top, bottom, left, right, iso]) {
     assert.equal(state.revision, initial.revision, `${state.view} triggered CAD recompute`);
@@ -108,7 +108,9 @@ try {
   const zoomedDirection = normalize(subtract(zoomedPosition, zoomedTarget));
   const zoomedDistance = length(subtract(zoomedPosition, zoomedTarget));
 
-  await page.getByTitle('Показать всё').click();
+  const fitCommand = page.locator('[data-command-id="view.fit"]').first();
+  await fitCommand.waitFor();
+  await fitCommand.click();
   await page.locator('[data-testid="cad-viewport"][data-view-name="fit"]').waitFor();
   const fitted = await cameraState();
   const fittedPosition = parseVector(fitted.position);
