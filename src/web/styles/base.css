@@ -47,3 +47,11 @@ button:focus-visible, input:focus-visible, select:focus-visible {
   background: var(--bg-app);
   overflow: hidden;
 }
+
+.cad-icon {
+  display: block;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  color: currentColor;
+}

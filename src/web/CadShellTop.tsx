@@ -2,7 +2,8 @@ import React from 'react';
 import type { CadDocumentKind } from '../contracts/document';
 import type { CadUiAction } from './CadUiAction';
 import { CadUiActionSearchResults, CadUiGlobalActionButton } from './CadUiActionControls';
-import { documentKindIcon, documentNames } from './CadDocumentPresentation';
+import { documentNames } from './CadDocumentPresentation';
+import { CadIcon, type CadIconName } from './CadIcon';
 import { CadShellCommandGroups } from './CadShellCommandGroups';
 
 export type CadWorkspaceId = 'solid' | 'sketch' | 'surfaces' | 'diagnostics' | 'view';
@@ -39,26 +40,26 @@ export function CadShellTop(props: CadShellTopProps) {
           <button type="button">Справка</button>
         </nav>
         <div className="command-search-wrap">
-          <span aria-hidden="true">⌕</span>
+          <CadIcon name="search" size={15} />
           <input value={props.search} onChange={(event) => props.setSearch(event.target.value)} placeholder="Поиск команд" aria-label="Поиск команд" />
           <CadUiActionSearchResults actions={props.searchableActions} onPicked={() => props.setSearch('')} />
         </div>
         <div className="global-actions">
-          <CadUiGlobalActionButton action={props.getAction('system.open')}>⌂</CadUiGlobalActionButton>
-          <CadUiGlobalActionButton action={props.getAction('system.save')} titleSuffix="(Ctrl+S)">▣</CadUiGlobalActionButton>
-          <CadUiGlobalActionButton action={props.getAction('system.undo')} titleSuffix="(Ctrl+Z)">↶</CadUiGlobalActionButton>
-          <CadUiGlobalActionButton action={props.getAction('system.redo')} titleSuffix="(Ctrl+Y / Ctrl+Shift+Z)">↷</CadUiGlobalActionButton>
-          <button type="button" title="Настройки">⚙</button>
+          <CadUiGlobalActionButton action={props.getAction('system.open')}><CadIcon name="open" /></CadUiGlobalActionButton>
+          <CadUiGlobalActionButton action={props.getAction('system.save')} titleSuffix="(Ctrl+S)"><CadIcon name="save" /></CadUiGlobalActionButton>
+          <CadUiGlobalActionButton action={props.getAction('system.undo')} titleSuffix="(Ctrl+Z)"><CadIcon name="undo" /></CadUiGlobalActionButton>
+          <CadUiGlobalActionButton action={props.getAction('system.redo')} titleSuffix="(Ctrl+Y / Ctrl+Shift+Z)"><CadIcon name="redo" /></CadUiGlobalActionButton>
+          <button type="button" title="Настройки"><CadIcon name="settings" /></button>
         </div>
       </header>
 
       <div className="document-tabs" role="tablist" aria-label="Документы">
-        <button type="button" className="new-tab-button" onClick={props.openNewDocument} title="Новый документ">＋</button>
+        <button type="button" className="new-tab-button" onClick={props.openNewDocument} title="Новый документ" aria-label="Новый документ"><CadIcon name="new" size={15} /></button>
         <button className="document-tab active" type="button" role="tab" aria-selected="true">
-          <span className="document-kind-icon">{documentKindIcon(props.documentKind)}</span>
+          <span className="document-kind-icon"><CadIcon name={documentIcon(props.documentKind)} size={15} /></span>
           <span>{props.documentTitle}</span>
-          {props.dirty && <span className="dirty-dot" title="Изменено">●</span>}
-          <span className="tab-close" aria-hidden="true">×</span>
+          {props.dirty && <span className="dirty-dot" title="Изменено" />}
+          <span className="tab-close" aria-hidden="true"><CadIcon name="close" size={12} /></span>
         </button>
       </div>
 
@@ -100,4 +101,15 @@ function WorkspaceTab(props: React.PropsWithChildren<{ active?: boolean; disable
       {props.children}
     </button>
   );
+}
+
+function documentIcon(kind: CadDocumentKind): CadIconName {
+  switch (kind) {
+    case 'part': return 'part';
+    case 'assembly': return 'assembly';
+    case 'drawing':
+    case 'fragment': return 'drawing';
+    case 'specification': return 'tree';
+    case 'text': return 'text';
+  }
 }

@@ -197,3 +197,72 @@
     overflow-y: hidden;
   }
 }
+
+/* Captured KOMPAS desktop shell geometry. Responsive ownership belongs here. */
+@media (min-width: 900px) {
+  .main-menu-bar { position: relative; gap: 0; padding: 0 3px; border-bottom: 0; }
+  .brand-button { width: 26px; height: 28px; flex: 0 0 26px; justify-content: center; gap: 0; padding: 0; }
+  .brand-button .brand-mark { width: 20px; height: 19px; border-radius: 2px; font-size: 11px; }
+  .brand-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+  .main-menu-items { align-self: center; height: 22px; gap: 0; }
+  .main-menu-items button { min-width: 0; height: 22px; padding: 0 6px; border-radius: 0; font-size: 12px; line-height: 22px; white-space: nowrap; }
+  .main-menu-items button:nth-child(1) { width: 41px; }
+  .main-menu-items button:nth-child(2) { width: 52px; }
+  .main-menu-items button:nth-child(3) { width: 65px; }
+  .main-menu-items button:nth-child(4) { width: 32px; }
+  .main-menu-items button:nth-child(5) { width: 43px; }
+  .main-menu-items button:nth-child(6) { width: 102px; }
+  .main-menu-items button:nth-child(7) { width: 86px; }
+  .main-menu-items button:nth-child(8) { width: 82px; }
+  .main-menu-items button:nth-child(9) { width: 78px; }
+  .main-menu-items button:nth-child(10) { width: 71px; }
+  .main-menu-items button:nth-child(11) { width: 84px; }
+  .main-menu-items button:nth-child(12) { width: 41px; }
+  .main-menu-items button:nth-child(13) { width: 58px; }
+
+  .command-search-wrap { position: absolute; top: 5px; right: 103px; width: 166px; height: 22px; margin: 0; gap: 4px; padding: 0 5px; border-radius: 2px; }
+  .command-search-wrap input { font-size: 12px; }
+  .global-actions { position: static; display: contents; }
+  .main-menu-bar .global-actions button { position: absolute; top: 3px; height: 25px; border-radius: 0; font-size: 13px; display: grid; place-items: center; }
+  .main-menu-bar .global-actions > :nth-child(1) { right: 323px; width: 26px; }
+  .main-menu-bar .global-actions > :nth-child(2) { right: 297px; width: 26px; }
+  .main-menu-bar .global-actions > :nth-child(3) { right: 65px; width: 32px; }
+  .main-menu-bar .global-actions > :nth-child(4) { right: 33px; width: 32px; }
+  .main-menu-bar .global-actions > :nth-child(5) { right: 1px; width: 32px; }
+
+  .document-tabs { align-items: flex-start; gap: 0; padding: 1px 3px 0; border-bottom: 0; }
+  .new-tab-button { width: 20px; height: 20px; margin: 0 0 0 27px; border-radius: 0; line-height: 20px; display: grid; place-items: center; }
+  .document-tab { width: 166px; min-width: 166px; max-width: 260px; height: 20px; gap: 5px; padding: 0 6px; border-radius: 0; font-size: 12px; line-height: 20px; }
+  .tab-close { font-size: 14px; display: inline-flex; }
+
+  .instrument-area { position: relative; height: calc(var(--workspace-h) + var(--ribbon-h)); border-bottom: 0; }
+  .workspace-tabs { position: absolute; z-index: 2; top: 0; left: 3px; width: 120px; height: 100%; flex-direction: column; align-items: stretch; gap: 0; padding: 0; border-bottom: 0; overflow: hidden; }
+  .workspace-tabs button { display: flex; align-items: center; width: 120px; height: 25px; min-height: 25px; flex: 0 0 25px; justify-content: flex-start; padding: 0 6px; border: 0; border-radius: 0; font-size: 12px; line-height: 25px; text-align: left; overflow: hidden; text-overflow: ellipsis; }
+  .workspace-tabs button:nth-child(3) { height: auto; min-height: 43px; flex: 1 1 auto; align-items: flex-start; padding-top: 4px; }
+  .workspace-tabs button:nth-child(n+4) { display: none; }
+  .workspace-tabs button.active { border: 0; box-shadow: inset 2px 0 0 var(--accent); background: #e5e8ec; color: var(--text); font-weight: 600; }
+
+  .command-ribbon { position: absolute; top: 0; left: 124px; right: 3px; width: auto; height: 100%; gap: 12px; padding: 0; overflow-x: auto; overflow-y: hidden; }
+  .command-group { width: max-content; min-width: 120px; height: 100%; grid-template-rows: 75px 18px; align-content: start; padding: 0 12px 0 0; border-right: 3px solid #d2d5da; }
+  .command-group-content { display: grid; grid-auto-flow: column; grid-template-rows: repeat(3, 25px); grid-auto-columns: 120px; width: max-content; min-width: 120px; align-content: start; gap: 0; }
+  .command-group-label { height: 18px; justify-content: center; font-size: 10px; line-height: 18px; }
+  .ribbon-command, .ribbon-command.large { width: 120px; min-width: 120px; max-width: 120px; height: 25px; min-height: 25px; flex-direction: row; justify-content: flex-start; gap: 5px; padding: 0 6px; border-radius: 0; font-size: 12px; line-height: 25px; text-align: left; overflow: hidden; }
+  .ribbon-command > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ribbon-command-icon { width: 18px; min-height: 0; font-size: 14px; line-height: 1; }
+  .ribbon-command-icon .cad-icon { width: 16px; height: 16px; }
+
+  .content-area { grid-template-columns: var(--rail-w) var(--panel-w) minmax(0, 1fr); padding: 0 3px; }
+  .management-rail { width: var(--rail-w); padding: 0; gap: 0; border-right: 0; }
+  .management-rail button { width: var(--rail-w); height: 25px; min-height: 25px; gap: 0; border-radius: 0; font-size: 13px; }
+  .management-rail button.active { box-shadow: inset 2px 0 0 var(--accent); }
+  .management-panel { width: var(--panel-w); border-right: 1px solid var(--border-strong); }
+  .work-area { margin-left: 1px; }
+  .content-area.panel-closed { grid-template-columns: var(--rail-w) minmax(0, 1fr); }
+
+  .viewport-quick-access { top: 0; left: 16px; width: 591px; height: 25px; transform: none; justify-content: flex-start; gap: 0; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+  .viewport-quick-access > button { width: 26px; height: 25px; border-radius: 0; display: grid; place-items: center; }
+  .quick-separator { height: 18px; margin: 0 3px; }
+  .status-bar { position: absolute; z-index: 24; left: 3px; right: 3px; bottom: 3px; height: 25px; }
+}
+

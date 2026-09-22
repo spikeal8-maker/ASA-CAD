@@ -1,6 +1,7 @@
 import React from 'react';
 import type { CadUiAction } from './CadUiAction';
 import { CadUiActionButton } from './CadUiActionControls';
+import { CadIcon, type CadIconName } from './CadIcon';
 
 export function CadShellCommandGroups(props: {
   workspace: string;
@@ -14,7 +15,31 @@ export function CadShellCommandGroups(props: {
 }) {
   if (props.workspace === 'sketch') return <SketchCommandGroups {...props} />;
   if (props.workspace === 'view') return <ViewCommandGroups viewName={props.viewName} getAction={props.getAction} />;
-  return <PartCommandGroups getAction={props.getAction} />;
+  return <PartCommandGroups getAction={props.getAction} viewName={props.viewName} />;
+}
+
+function ActionButton(props: {
+  action: CadUiAction;
+  icon: CadIconName;
+  large?: boolean;
+  accent?: boolean;
+  text?: boolean;
+  selected?: boolean;
+  className?: string;
+  titleSuffix?: string;
+}) {
+  return (
+    <CadUiActionButton
+      action={props.action}
+      symbol={<CadIcon name={props.icon} size={16} />}
+      large={props.large}
+      accent={props.accent}
+      text={props.text}
+      selected={props.selected}
+      className={props.className}
+      titleSuffix={props.titleSuffix}
+    />
+  );
 }
 
 function SketchCommandGroups(props: {
@@ -28,87 +53,93 @@ function SketchCommandGroups(props: {
   return (
     <>
       <CommandGroup label="Геометрия">
-        <CadUiActionButton action={props.getAction('sketch.line')} symbol="╱" large accent />
-        <CadUiActionButton action={props.getAction('sketch.rectangle')} symbol={commandSymbol('sketch.rectangle')} />
-        <CadUiActionButton action={props.getAction('sketch.circle')} symbol={commandSymbol('sketch.circle')} />
-        <CadUiActionButton action={props.getAction('sketch.arc')} symbol="⌒" />
+        <ActionButton action={props.getAction('sketch.line')} icon="line" large accent />
+        <ActionButton action={props.getAction('sketch.rectangle')} icon="rectangle" />
+        <ActionButton action={props.getAction('sketch.circle')} icon="circle" />
+        <ActionButton action={props.getAction('sketch.arc')} icon="arc" />
       </CommandGroup>
       <CommandGroup label="Ограничения">
-        <CadUiActionButton action={props.getAction('sketch.construction')} symbol="- -" text />
-        <CadUiActionButton action={props.getAction('constraint.horizontal')} symbol="—" text />
-        <CadUiActionButton action={props.getAction('constraint.vertical')} symbol="|" text />
-        <CadUiActionButton action={props.getAction('constraint.fixed')} symbol="⌾" text />
-        <CadUiActionButton action={props.getAction('constraint.coincident')} symbol="●" text />
-        <CadUiActionButton action={props.getAction('constraint.parallel')} symbol="∥" text />
-        <CadUiActionButton action={props.getAction('constraint.perpendicular')} symbol="⊥" text />
-        <CadUiActionButton action={props.getAction('constraint.tangent')} symbol="∿" text />
-        <CadUiActionButton action={props.getAction('constraint.concentric')} symbol="◎" text />
-        <CadUiActionButton action={props.getAction('constraint.equal')} symbol="=" text />
-        <CadUiActionButton action={props.getAction('constraint.symmetric')} symbol="↔" text />
-        <CadUiActionButton action={props.getAction('constraint.pointOnCurve')} symbol="⌖" text />
+        <ActionButton action={props.getAction('sketch.construction')} icon="construction" text />
+        <ActionButton action={props.getAction('constraint.horizontal')} icon="horizontal" text />
+        <ActionButton action={props.getAction('constraint.vertical')} icon="vertical" text />
+        <ActionButton action={props.getAction('constraint.fixed')} icon="fixed" text />
+        <ActionButton action={props.getAction('constraint.coincident')} icon="coincident" text />
+        <ActionButton action={props.getAction('constraint.parallel')} icon="parallel" text />
+        <ActionButton action={props.getAction('constraint.perpendicular')} icon="perpendicular" text />
+        <ActionButton action={props.getAction('constraint.tangent')} icon="tangent" text />
+        <ActionButton action={props.getAction('constraint.concentric')} icon="concentric" text />
+        <ActionButton action={props.getAction('constraint.equal')} icon="equal" text />
+        <ActionButton action={props.getAction('constraint.symmetric')} icon="symmetric" text />
+        <ActionButton action={props.getAction('constraint.pointOnCurve')} icon="point" text />
       </CommandGroup>
       <CommandGroup label="Размеры">
-        <CadUiActionButton action={props.getAction('dimension.linear')} symbol="⟷" text />
-        <CadUiActionButton action={props.getAction('dimension.horizontal')} symbol="↔" text />
-        <CadUiActionButton action={props.getAction('dimension.vertical')} symbol="↕" text />
-        <CadUiActionButton action={props.getAction('dimension.diameter')} symbol="Ø" text />
-        <CadUiActionButton action={props.getAction('dimension.radius')} symbol="R" text />
-        <CadUiActionButton action={props.getAction('dimension.angular')} symbol="∠" text />
-        <RibbonTextButton
-          label={props.rectangleReady ? `${props.rectangleWidth} × ${props.rectangleHeight} мм` : props.circleReady ? `Ø${props.circleDiameter} мм` : 'Размеры'}
-          symbol="↔"
-          disabled
-        />
+        <ActionButton action={props.getAction('dimension.linear')} icon="dimension" text />
+        <ActionButton action={props.getAction('dimension.horizontal')} icon="horizontal" text />
+        <ActionButton action={props.getAction('dimension.vertical')} icon="vertical" text />
+        <ActionButton action={props.getAction('dimension.diameter')} icon="diameter" text />
+        <ActionButton action={props.getAction('dimension.radius')} icon="radius" text />
+        <ActionButton action={props.getAction('dimension.angular')} icon="angle" text />
       </CommandGroup>
       <CommandGroup label="Эскиз" compact>
-        <CadUiActionButton action={props.getAction('sketch.finish')} symbol="✓" text />
+        <ActionButton action={props.getAction('sketch.finish')} icon="accept" text />
       </CommandGroup>
     </>
   );
 }
 
-function PartCommandGroups(props: { getAction(id: string): CadUiAction }) {
+function PartCommandGroups(props: { getAction(id: string): CadUiAction; viewName: string }) {
   return (
     <>
       <CommandGroup label="Эскиз">
-        <CadUiActionButton action={props.getAction('part.sketch.create')} symbol={commandSymbol('part.sketch.create')} large accent />
+        <ActionButton action={props.getAction('part.sketch.create')} icon="sketch" large accent />
       </CommandGroup>
       <CommandGroup label="Элементы тела">
-        <CadUiActionButton action={props.getAction('part.extrude')} symbol={commandSymbol('part.extrude')} />
-        <CadUiActionButton action={props.getAction('part.cutExtrude')} symbol={commandSymbol('part.cutExtrude')} />
-        <CadUiActionButton action={props.getAction('part.fillet')} symbol={commandSymbol('part.fillet')} />
+        <ActionButton action={props.getAction('part.extrude')} icon="extrude" />
+        <ActionButton action={props.getAction('part.cutExtrude')} icon="cut" />
+        <ActionButton action={props.getAction('part.fillet')} icon="fillet" />
       </CommandGroup>
       <CommandGroup label="Сервис модели" compact>
-        <CadUiActionButton action={props.getAction('system.rebuild')} symbol="↻" text titleSuffix="(F5)" />
-        <RibbonTextButton label="Свойства" symbol="ⓘ" disabled />
+        <ActionButton action={props.getAction('system.rebuild')} icon="rebuild" text titleSuffix="(F5)" />
+      </CommandGroup>
+      <CommandGroup label="Вид">
+        <ViewButtons viewName={props.viewName} getAction={props.getAction} />
       </CommandGroup>
     </>
   );
 }
 
 function ViewCommandGroups(props: { viewName: string; getAction(id: string): CadUiAction }) {
-  const views = [
-    { label: 'Спереди', id: 'view.front', shortcut: '1' },
-    { label: 'Сзади', id: 'view.back' },
-    { label: 'Сверху', id: 'view.top', shortcut: '2' },
-    { label: 'Снизу', id: 'view.bottom' },
-    { label: 'Слева', id: 'view.left', shortcut: '3' },
-    { label: 'Справа', id: 'view.right' },
-    { label: 'Изометрия', id: 'view.iso', shortcut: '0' },
-  ];
   return (
     <CommandGroup label="Ориентация">
+      <ViewButtons viewName={props.viewName} getAction={props.getAction} />
+    </CommandGroup>
+  );
+}
+
+function ViewButtons(props: { viewName: string; getAction(id: string): CadUiAction }) {
+  const views = [
+    { label: 'Показать всё', id: 'view.fit', shortcut: 'F', icon: 'fit' as const },
+    { label: 'Спереди', id: 'view.front', shortcut: '1', icon: 'view' as const },
+    { label: 'Сзади', id: 'view.back', icon: 'view' as const },
+    { label: 'Сверху', id: 'view.top', shortcut: '2', icon: 'view' as const },
+    { label: 'Снизу', id: 'view.bottom', icon: 'view' as const },
+    { label: 'Слева', id: 'view.left', shortcut: '3', icon: 'view' as const },
+    { label: 'Справа', id: 'view.right', icon: 'view' as const },
+    { label: 'Изометрия', id: 'view.iso', shortcut: '0', icon: 'view' as const },
+  ];
+  return (
+    <>
       {views.map((view) => (
-        <CadUiActionButton
+        <ActionButton
           key={view.id}
           action={props.getAction(view.id)}
-          symbol="◇"
+          icon={view.icon}
           className="view-command"
-          selected={props.viewName === view.label}
+          selected={view.id !== 'view.fit' && props.viewName === view.label}
           titleSuffix={view.shortcut ? `(${view.shortcut})` : undefined}
         />
       ))}
-    </CommandGroup>
+    </>
   );
 }
 
@@ -119,22 +150,4 @@ function CommandGroup(props: React.PropsWithChildren<{ label: string; compact?: 
       <div className="command-group-label">{props.label}</div>
     </section>
   );
-}
-
-function RibbonTextButton(props: { label: string; symbol: string; disabled?: boolean }) {
-  return (
-    <button className="ribbon-command text-command" type="button" disabled={props.disabled}>
-      <span className="ribbon-command-icon">{props.symbol}</span>
-      <span>{props.label}</span>
-    </button>
-  );
-}
-
-function commandSymbol(id: string): string {
-  if (id.includes('sketch')) return '▱';
-  if (id.includes('circle')) return '○';
-  if (id.includes('cut')) return '▣';
-  if (id.includes('extrude')) return '▤';
-  if (id.includes('fillet')) return '◜';
-  return '◇';
 }

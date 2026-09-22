@@ -83,10 +83,11 @@
   white-space: nowrap;
 }
 .tree-row:hover { background: #e4edf9; }
+.tree-row:not(.interactive) { cursor: default; }
 .tree-row.bold .tree-label { font-weight: 650; }
 .tree-row.muted { color: #8b929b; }
-.tree-chevron { width: 10px; color: #747b84; }
-.tree-icon { width: 18px; color: #596979; text-align: center; }
+.tree-chevron { width: 10px; color: #747b84; display: grid; place-items: center; }
+.tree-icon { width: 18px; color: #596979; display: grid; place-items: center; }
 .tree-label { overflow: hidden; text-overflow: ellipsis; font-size: 13px; }
 
 .parameter-section { padding: 12px 12px 10px; border-bottom: 1px solid #dde0e4; }
@@ -138,45 +139,3 @@
 .empty-panel-message > span { font-size: 38px; color: #abb3bc; margin-bottom: 8px; }
 .empty-panel-message strong { color: #515860; }
 .empty-panel-message p { max-width: 220px; font-size: 12px; line-height: 1.45; }
-
-
-/* Captured KOMPAS left docking geometry: x=3, rail=26, panel=310, splitter=1. */
-@media (min-width: 900px) {
-  .content-area {
-    grid-template-columns: 26px 310px minmax(0, 1fr);
-    padding: 0 3px;
-  }
-
-  .management-rail {
-    width: 26px;
-    padding: 0;
-    gap: 0;
-    border-right: 0;
-  }
-
-  .management-rail button {
-    width: 26px;
-    height: 25px;
-    min-height: 25px;
-    gap: 0;
-    border-radius: 0;
-    font-size: 13px;
-  }
-
-  .management-rail button.active {
-    box-shadow: inset 2px 0 0 var(--accent);
-  }
-
-  .management-panel {
-    width: 310px;
-    border-right: 1px solid var(--border-strong);
-  }
-
-  .work-area {
-    margin-left: 1px;
-  }
-
-  .content-area.panel-closed {
-    grid-template-columns: 26px minmax(0, 1fr);
-  }
-}
