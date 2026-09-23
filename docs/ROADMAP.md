@@ -1,18 +1,20 @@
 # ASA-CAD — воспроизведение КОМПАСа с видимыми поставками
 
-Редакция 2026-09-23. План, не готовность. STATUS/#10 — состояние; SYSTEM_SPEC — полный объём; KOMPAS_SHELL_LAYOUT_SPEC — ТЗ оболочки и первого пакета; VISUAL_REFERENCE_SPEC — эталоны; DEVELOPMENT_QUALITY_GATES — проверки.
+Редакция 2026-09-24. План, не готовность. STATUS/#10 — состояние; SYSTEM_SPEC — полный объём; KOMPAS_SHELL_LAYOUT_SPEC — ТЗ оболочки и первого пакета; VISUAL_REFERENCE_SPEC — эталоны; DEVELOPMENT_QUALITY_GATES — проверки.
 
 ## Цель
 
 Воспроизвести интерфейс согласованной конфигурации КОМПАС-3D v25: состав, порядок, положение, плотность, оформление и поведение рабочих состояний. Не заменить его просто удобным учебным CAD. Бренд/пиктограммы — ASA; browser/touch отличия перечисляются отдельно. Работающий урок не доказывает визуального паритета.
 Полный объём SYSTEM_SPEC сохраняется: Деталь, Сборка, Чертёж, Фрагмент, Спецификация, Текст и связи. Ближайший набор — оболочка Детали/Эскиза и существующие операции. CadApplication/CadDocument, клиентские OCC/PlaneGCS, история, миграции, CadUiAction и тесты сохраняются. Ядро не переписывать; установленный КОМПАС не сканировать.
 
-## 1. В1 принят; следующая видимая поставка — В2
+## 1. В1 и В2 приняты; следующая видимая поставка — В3
 
 **В1 / CAD-VIS-001 — DONE / accepted regional result.** Инструментальная область Детали и планшетный repair технически интегрированы в main merge-коммитом `cd343bb7219052c2a9b6080466da5b22b44d561f`; accepted tree `74a0c8806ea53dbee99e6e7184e817ff9d0f388a`.
 В1 закрывает только доказанный региональный delta верхней области. FULL M2V = NOT ACCEPTED; полный Part/Sketch parity не принят.
 
-**NEXT: В2 / CAD-VIS-002 — живой эскиз.** Один и тот же sketch ID должен быть видимым/выбираемым вне скрытого edit-state, затем входить в edit, finish, re-edit/reopen с корректной опорой и Save/Open semantics. Реализация В2 начинается только отдельной командой; эта редакция roadmap её не запускает.
+**В2 / CAD-VIS-002 — DONE / accepted regional result.** PR #152 merged как `397229c4ff5e6325aeb169c12fba66398ab2aada`; accepted candidate `397cf0dbf3567ab05c6cbb25b768fa9b075ef18a`. Один Sketch проходит finish/select/re-edit/reopen с тем же ID/support/entity/dimension IDs; 60→80 даёт закрытый 80×40; exact-head и post-merge применимые gates зелёные. Это single-Sketch regional acceptance: full multi-sketch view/selection policy не закрыта.
+
+**NEXT: В3 / CAD-VIS-003 — раскрытое меню «Файл».** Реализация начинается только отдельной командой после status-closeout; В4+, M4 и deploy не запускаются этой редакцией.
 
 ## 2. База и интеграция
 
