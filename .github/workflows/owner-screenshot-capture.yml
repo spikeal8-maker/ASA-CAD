@@ -4,20 +4,60 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - src/web/CadShellCommandGroups.tsx
+      - src/web/responsive.css
       - tests/visual/**
       - .github/workflows/owner-screenshot-capture.yml
   workflow_dispatch:
 
 permissions:
+  actions: read
   contents: read
 
 jobs:
   owner-screenshot-capture:
-    name: OWNER_SCREENSHOT_CAPTURE
+    name: CAD-VIS-001
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout exact PR head
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 1
+
+      - name: Record exact checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "ASA_CAD_ACTUAL_CHECKOUT_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Download accepted before artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: asa-cad-owner-visual-review
+          path: accepted-before
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          run-id: 35721665516
+
+      - name: Prepare accepted before evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p cad-vis-001/before
+          cp accepted-before/screenshots/1920x1080/part-empty.png cad-vis-001/before/full-1920x1080.png
+
+          if command -v magick >/dev/null 2>&1; then
+            IMAGE_TOOL=magick
+          elif command -v convert >/dev/null 2>&1; then
+            IMAGE_TOOL=convert
+          else
+            sudo apt-get update
+            sudo apt-get install -y imagemagick
+            IMAGE_TOOL=convert
+          fi
+
+          "$IMAGE_TOOL" cad-vis-001/before/full-1920x1080.png             -crop 1914x93+3+55 +repage             cad-vis-001/before/instrument-1920x1080.png
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -32,11 +72,11 @@ jobs:
       - name: Install Chromium for Playwright
         run: npx --yes playwright@1.60.0 install --with-deps chromium
 
-      - name: Build accepted ASA-CAD image
-        run: docker build -t asa-cad:owner-review .
+      - name: Build exact-head ASA-CAD image
+        run: docker build -t asa-cad:cad-vis-001 .
 
-      - name: Start accepted ASA-CAD image
-        run: docker run -d --name asa-cad-owner-review -p 8088:8080 asa-cad:owner-review
+      - name: Start exact-head ASA-CAD image
+        run: docker run -d --name asa-cad-vis-001 -p 8088:8080 asa-cad:cad-vis-001
 
       - name: Wait for ASA-CAD
         shell: bash
@@ -48,24 +88,28 @@ jobs:
             fi
             sleep 1
           done
-          docker logs asa-cad-owner-review
+          docker logs asa-cad-vis-001
           exit 1
 
-      - name: Capture real owner-review screenshots
+      - name: Capture CAD-VIS-001 before/after evidence
         env:
-          ASA_CAD_OWNER_REVIEW_URL: http://127.0.0.1:8088
-          ASA_CAD_SCREENSHOT_ROOT: owner-visual-review/screenshots
-        run: node tests/visual/owner-review-screenshots.mjs
+          ASA_CAD_VIS_URL: http://127.0.0.1:8088
+          ASA_CAD_VIS_ROOT: cad-vis-001
+          ASA_CAD_BEFORE_FULL: cad-vis-001/before/full-1920x1080.png
+          ASA_CAD_BEFORE_CROP: cad-vis-001/before/instrument-1920x1080.png
+          ASA_CAD_RESULT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          ASA_CAD_ACTUAL_CHECKOUT_SHA: ${{ env.ASA_CAD_ACTUAL_CHECKOUT_SHA }}
+        run: node tests/visual/cad-vis-001.mjs
 
-      - name: Upload owner visual review artifact
+      - name: Upload CAD-VIS-001 artifact
         uses: actions/upload-artifact@v4
         with:
-          name: asa-cad-owner-visual-review
-          path: owner-visual-review/
+          name: asa-cad-vis-001
+          path: cad-vis-001/
           if-no-files-found: error
-          retention-days: 7
+          retention-days: 30
           compression-level: 0
 
       - name: Show container logs on failure
         if: failure()
-        run: docker logs asa-cad-owner-review || true
+        run: docker logs asa-cad-vis-001 || true

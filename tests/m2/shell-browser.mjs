@@ -65,6 +65,49 @@ async function assertDesktopGeometry(page) {
   near(metrics.quick.height, 25, 1, 'quick access height');
 }
 
+async function assertPartSourceComposition(page) {
+  const metrics = await page.evaluate(() => {
+    const rect = (selector) => {
+      const node = document.querySelector(selector);
+      if (!(node instanceof HTMLElement)) return null;
+      const box = node.getBoundingClientRect();
+      return { x: box.x, y: box.y, width: box.width, height: box.height, text: node.textContent?.trim() ?? '' };
+    };
+    return {
+      system: rect('.part-system-group'),
+      systemLabel: rect('.part-system-group .command-group-label'),
+      rebuild: rect('.part-system-group [data-command-id="system.rebuild"]'),
+      sketch: rect('.part-sketch-group'),
+      sketchLabel: rect('.part-sketch-group .command-group-label'),
+      solid: rect('.part-solid-group'),
+      order: [...document.querySelectorAll('.part-command-groups [data-command-id]')].map((node) => node.getAttribute('data-command-id')),
+    };
+  });
+
+  assert.ok(metrics.system && metrics.systemLabel && metrics.rebuild && metrics.sketch && metrics.sketchLabel && metrics.solid);
+  near(metrics.system.x, 124, 1, 'Part SYSTEM x');
+  near(metrics.system.width, 78, 1, 'Part SYSTEM command span');
+  near(metrics.systemLabel.x, 124, 1, 'Part SYSTEM label x');
+  near(metrics.systemLabel.y, 130, 1, 'Part SYSTEM label y');
+  near(metrics.systemLabel.width, 66, 1, 'Part SYSTEM label width');
+  near(metrics.rebuild.x, 124, 1, 'Part system.rebuild x');
+  near(metrics.rebuild.y, 55, 1, 'Part system.rebuild y');
+  near(metrics.rebuild.width, 26, 1, 'Part system.rebuild width');
+  near(metrics.rebuild.height, 25, 1, 'Part system.rebuild height');
+  near(metrics.sketch.x, 203, 1, 'Part Sketch group x');
+  near(metrics.sketchLabel.width, 108, 1, 'Part Sketch label width');
+  near(metrics.solid.x, 324, 1, 'Part Solid_elements group x');
+  assert.equal(metrics.systemLabel.text, 'Система');
+  assert.equal(metrics.sketchLabel.text, 'Эскиз');
+  assert.deepEqual(metrics.order.slice(0, 5), [
+    'system.rebuild',
+    'part.sketch.create',
+    'part.extrude',
+    'part.cutExtrude',
+    'part.fillet',
+  ]);
+}
+
 async function assertRibbonIntegrity(page, label) {
   const rects = await page.locator('.command-ribbon .ribbon-command').evaluateAll((nodes) => nodes
     .filter((node) => {
@@ -115,6 +158,7 @@ async function runDesktop() {
   await page.getByText('Новая деталь', { exact: true }).waitFor();
 
   await assertDesktopGeometry(page);
+  await assertPartSourceComposition(page);
   await assertRibbonIntegrity(page, 'Part ribbon');
   await page.locator('.management-rail button[title^="Библиотеки"]').waitFor();
 
@@ -124,6 +168,27 @@ async function runDesktop() {
   const resources = await page.evaluate(() => performance.getEntriesByType('resource').map((entry) => entry.name));
   assert.equal(resources.some((name) => /\.wasm(?:\?|$)/i.test(name)), false, 'M2 shell eagerly loaded WASM');
   assert.equal(failedRuntimeRequests.length, 0);
+
+  const stateBeforeCancel = await page.locator('.cad-app').evaluate((node) => ({
+    sketches: node.getAttribute('data-sketch-count'),
+    features: node.getAttribute('data-feature-count'),
+    refs: node.getAttribute('data-stable-reference-count'),
+    dirty: document.querySelectorAll('.dirty-dot').length,
+  }));
+
+  await page.getByRole('button', { name: /Создать эскиз/i }).click();
+  await page.getByText('Плоскость построения', { exact: true }).waitFor();
+  assert.equal(await page.locator('.cad-app').getAttribute('data-sketch-count'), '0', 'opening Create Sketch mutated the document');
+  await page.getByRole('button', { name: 'Отмена', exact: true }).click();
+  await page.getByText('Плоскость построения', { exact: true }).waitFor({ state: 'detached' });
+
+  const stateAfterCancel = await page.locator('.cad-app').evaluate((node) => ({
+    sketches: node.getAttribute('data-sketch-count'),
+    features: node.getAttribute('data-feature-count'),
+    refs: node.getAttribute('data-stable-reference-count'),
+    dirty: document.querySelectorAll('.dirty-dot').length,
+  }));
+  assert.deepEqual(stateAfterCancel, stateBeforeCancel, 'Cancel changed the new Part document');
 
   await page.getByRole('button', { name: /Создать эскиз/i }).click();
   await page.getByText('Плоскость построения', { exact: true }).waitFor();
@@ -179,6 +244,8 @@ try {
   await runPhone();
   console.log('ASA-CAD M2 shell real-browser smoke PASS');
   console.log('  ✓ captured 1920×1080 geometry within ±4 CSS px');
+  console.log('  ✓ Part source groups start at SYSTEM x124, Sketch x203, Solid_elements x324');
+  console.log('  ✓ Create Sketch opens plane parameters; Cancel leaves the Part unchanged');
   console.log('  ✓ Part/Sketch ribbon bounding boxes do not overlap and use ASA SVG icons');
 } finally {
   await browser.close();

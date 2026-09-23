@@ -252,6 +252,56 @@
   .ribbon-command-icon { width: 18px; min-height: 0; font-size: 14px; line-height: 1; }
   .ribbon-command-icon .cad-icon { width: 16px; height: 16px; }
 
+  /* CAD-VIS-001: preserved KOMPAS Part source grouping from captured UIA. */
+  .part-command-groups {
+    display: flex;
+    align-items: stretch;
+    gap: 1px;
+    width: max-content;
+    height: 100%;
+  }
+  .part-command-groups .command-group {
+    padding: 0;
+    border-right: 0;
+  }
+  .part-system-group {
+    width: 78px;
+    min-width: 78px;
+  }
+  .part-system-group .command-group-content {
+    grid-auto-columns: 26px;
+    width: 78px;
+    min-width: 78px;
+  }
+  .part-system-group .command-group-label {
+    width: 66px;
+    justify-self: start;
+  }
+  .part-system-group .part-system-command {
+    width: 26px;
+    min-width: 26px;
+    max-width: 26px;
+    justify-content: center;
+    gap: 0;
+    padding: 0;
+  }
+  .part-system-group .part-system-command > span:not(.ribbon-command-icon):not(.planned-badge) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .part-sketch-group {
+    width: 120px;
+    min-width: 120px;
+  }
+  .part-sketch-group .command-group-label {
+    width: 108px;
+    justify-self: start;
+  }
+
   .content-area { grid-template-columns: var(--rail-w) var(--panel-w) minmax(0, 1fr); padding: 0 3px; }
   .management-rail { width: var(--rail-w); padding: 0; gap: 0; border-right: 0; }
   .management-rail button { width: var(--rail-w); height: 25px; min-height: 25px; gap: 0; border-radius: 0; font-size: 13px; }

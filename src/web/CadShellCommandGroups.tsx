@@ -89,22 +89,22 @@ function SketchCommandGroups(props: {
 
 function PartCommandGroups(props: { getAction(id: string): CadUiAction; viewName: string }) {
   return (
-    <>
-      <CommandGroup label="Эскиз">
+    <div className="part-command-groups">
+      <CommandGroup label="Система" className="part-system-group">
+        <ActionButton action={props.getAction('system.rebuild')} icon="rebuild" className="part-system-command" titleSuffix="(F5)" />
+      </CommandGroup>
+      <CommandGroup label="Эскиз" className="part-sketch-group">
         <ActionButton action={props.getAction('part.sketch.create')} icon="sketch" large accent />
       </CommandGroup>
-      <CommandGroup label="Элементы тела">
+      <CommandGroup label="Элементы тела" className="part-solid-group">
         <ActionButton action={props.getAction('part.extrude')} icon="extrude" />
         <ActionButton action={props.getAction('part.cutExtrude')} icon="cut" />
         <ActionButton action={props.getAction('part.fillet')} icon="fillet" />
       </CommandGroup>
-      <CommandGroup label="Сервис модели" compact>
-        <ActionButton action={props.getAction('system.rebuild')} icon="rebuild" text titleSuffix="(F5)" />
-      </CommandGroup>
-      <CommandGroup label="Вид">
+      <CommandGroup label="Вид" className="part-view-group">
         <ViewButtons viewName={props.viewName} getAction={props.getAction} />
       </CommandGroup>
-    </>
+    </div>
   );
 }
 
@@ -143,9 +143,9 @@ function ViewButtons(props: { viewName: string; getAction(id: string): CadUiActi
   );
 }
 
-function CommandGroup(props: React.PropsWithChildren<{ label: string; compact?: boolean }>) {
+function CommandGroup(props: React.PropsWithChildren<{ label: string; compact?: boolean; className?: string }>) {
   return (
-    <section className={`command-group ${props.compact ? 'compact' : ''}`}>
+    <section className={`command-group ${props.compact ? 'compact' : ''} ${props.className ?? ''}`.trim()}>
       <div className="command-group-content">{props.children}</div>
       <div className="command-group-label">{props.label}</div>
     </section>
