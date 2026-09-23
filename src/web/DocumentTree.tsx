@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import type { CadDocument } from '../contracts/document';
 import type { CadBodyId, CadDimensionId, CadSketchId } from '../contracts/ids';
 import { CadIcon, type CadIconName } from './CadIcon';
@@ -25,8 +25,16 @@ export function DocumentTree({
   onEditSketch,
   onEditDimension,
 }: DocumentTreeProps) {
+  const [selectedSketchId, setSelectedSketchId] = useState<CadSketchId | null>(null);
+  useEffect(() => setSelectedSketchId(null), [document]);
+  const selectedSketch = document.kind === 'part'
+    && selectedSketchId
+    && document.sketches.some((item) => item.id === selectedSketchId)
+      ? selectedSketchId
+      : null;
+
   return (
-    <div className="tree-panel">
+    <div className="tree-panel" data-selected-sketch-id={selectedSketch ?? ''}>
       <div className="panel-title-row">
         <strong>Дерево</strong>
         <button type="button" title="Параметры дерева">⋯</button>
@@ -41,14 +49,14 @@ export function DocumentTree({
             <TreeRow depth={2} icon="plane" label="Плоскость XZ" muted />
             <TreeRow depth={2} icon="plane" label="Плоскость YZ" muted />
             {document.sketches.map((item) => (
-              <TreeRow
+              <SketchTreeEntry
                 key={item.id}
-                depth={1}
-                icon="sketch"
+                id={item.id}
                 label={item.name}
-                selected={item.id === activeSketchId}
-                sketchId={item.id}
-                onClick={() => onEditSketch(item.id)}
+                selected={item.id === activeSketchId || item.id === selectedSketch}
+                showEdit={item.id === selectedSketch}
+                onSelect={() => setSelectedSketchId(item.id)}
+                onEdit={() => onEditSketch(item.id)}
               />
             ))}
             {document.dimensions.map((dimension) => (
@@ -82,6 +90,39 @@ export function DocumentTree({
         {document.kind === 'specification' && <TreeRow depth={1} icon="tree" label="Разделы появятся в M6A" muted />}
         {document.kind === 'text' && <TreeRow depth={1} icon="text" label="Структура появится в M6A" muted />}
       </div>
+    </div>
+  );
+}
+
+function SketchTreeEntry(props: {
+  id: CadSketchId;
+  label: string;
+  selected: boolean;
+  showEdit: boolean;
+  onSelect(): void;
+  onEdit(): void;
+}) {
+  return (
+    <div className="tree-sketch-entry">
+      <TreeRow
+        depth={1}
+        icon="sketch"
+        label={props.label}
+        selected={props.selected}
+        sketchId={props.id}
+        onClick={props.onSelect}
+      />
+      {props.showEdit && (
+        <button
+          className="tree-sketch-edit"
+          type="button"
+          data-sketch-edit-id={props.id}
+          aria-label={`Редактировать ${props.label}`}
+          onClick={props.onEdit}
+        >
+          Редактировать
+        </button>
+      )}
     </div>
   );
 }

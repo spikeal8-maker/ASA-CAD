@@ -2,6 +2,7 @@ import React, { createContext, useContext } from 'react';
 import type { CadSketchCommandReference } from '../contracts/commands';
 import type { CadSketchEntityId } from '../contracts/ids';
 import { PartModelStage } from './PartModelStage';
+import { SketchReadOnlyStage } from './SketchReadOnlyStage';
 
 type PartModelStageProps = React.ComponentProps<typeof PartModelStage>;
 export type SketchCoincidentCommit = (a: CadSketchCommandReference, b: CadSketchCommandReference) => Promise<boolean>;
@@ -43,6 +44,15 @@ export function CoincidentPartStage(
     commit, parallelCommit, perpendicularCommit, tangentCommit, concentricCommit,
     equalCommit, symmetryCommit, pointOnCurveCommit, angularPair, ...stageProps
   } = props;
+  const readOnlySketch = stageProps.activeWorkspace !== 'sketch'
+    && !stageProps.renderModel
+    && stageProps.document.bodies.length === 0
+    && !stageProps.fixtureError
+    ? stageProps.document.sketches[stageProps.document.sketches.length - 1] ?? null
+    : null;
+  const stage = readOnlySketch
+    ? <SketchReadOnlyStage document={stageProps.document} sketch={readOnlySketch} revisionToken={stageProps.revisionToken} />
+    : <PartModelStage {...stageProps} />;
   return (
     <CoincidentCommitContext.Provider value={commit}>
       <ParallelCommitContext.Provider value={parallelCommit}>
@@ -53,7 +63,7 @@ export function CoincidentPartStage(
                 <SymmetryCommitContext.Provider value={symmetryCommit}>
                   <PointOnCurveCommitContext.Provider value={pointOnCurveCommit}>
                     <AngularPairSelectContext.Provider value={angularPair}>
-                      <PartModelStage {...stageProps} />
+                      {stage}
                     </AngularPairSelectContext.Provider>
                   </PointOnCurveCommitContext.Provider>
                 </SymmetryCommitContext.Provider>

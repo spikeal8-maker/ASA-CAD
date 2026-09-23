@@ -1,34 +1,30 @@
-import { useState, type Dispatch, type SetStateAction } from 'react';
-import type { CadApplication } from '../contracts/application';
-import type { CadSketch } from '../contracts/document';
-import type { CadSketchEntityId, CadSketchId } from '../contracts/ids';
-import type { CadWorkspacePanel } from './PartSketchWorkspaceTypes';
-import { findSketch, partDocument } from './PartSketchWorkspaceModel';
-import { useSketchLineTool } from './useSketchLineTool';
-import { useSketchCircleTool } from './useSketchCircleTool';
-import { useSketchArcTool } from './useSketchArcTool';
-import { useSketchRectangleTool } from './useSketchRectangleTool';
+import {useState,type Dispatch,type SetStateAction} from 'react';
+import type {CadApplication} from '../contracts/application';
+import type {CadSketch} from '../contracts/document';
+import type {CadSketchEntityId,CadSketchId} from '../contracts/ids';
+import type {CadWorkspacePanel} from './PartSketchWorkspaceTypes';
+import {findSketch,partDocument} from './PartSketchWorkspaceModel';
+import {useSketchLineTool} from './useSketchLineTool';
+import {useSketchCircleTool} from './useSketchCircleTool';
+import {useSketchArcTool} from './useSketchArcTool';
+import {useSketchRectangleTool} from './useSketchRectangleTool';
+import {commitParametricRectangle} from './SketchParametricRectangleOwner';
 
 export interface SketchEditingControllerOptions {
-  app: CadApplication;
-  activeSketchId: CadSketchId | null;
-  sketch: Readonly<CadSketch> | null;
-  activeCommand: string | null;
-  setActiveCommand: Dispatch<SetStateAction<string | null>>;
-  setActiveWorkspace: Dispatch<SetStateAction<string>>;
-  setPanel(panel: CadWorkspacePanel): void;
-  setNotice(message: string): void;
-  clearTransientSelection(): void;
+  app: CadApplication; activeSketchId: CadSketchId | null; sketch: Readonly<CadSketch> | null;
+  activeCommand: string | null; setActiveCommand: Dispatch<SetStateAction<string | null>>;
+  setActiveWorkspace: Dispatch<SetStateAction<string>>; setPanel(panel: CadWorkspacePanel): void;
+  setNotice(message: string): void; clearTransientSelection(): void; finishSession(): void;
 }
 
 export function useSketchEditingController(options: SketchEditingControllerOptions) {
   const {
-    app, activeSketchId, sketch, activeCommand, setActiveCommand,
-    setActiveWorkspace, setPanel, setNotice, clearTransientSelection,
+    app,activeSketchId,sketch,activeCommand,setActiveCommand,
+    setActiveWorkspace,setPanel,setNotice,clearTransientSelection,finishSession,
   } = options;
-  const [rectangleWidth, setRectangleWidth] = useState(60);
-  const [rectangleHeight, setRectangleHeight] = useState(40);
-  const [circleDiameter, setCircleDiameter] = useState(12);
+  const [rectangleWidth,setRectangleWidth]=useState(60);
+  const [rectangleHeight,setRectangleHeight]=useState(40);
+  const [circleDiameter,setCircleDiameter]=useState(12);
 
   const onToolCommitted = () => {
     setActiveCommand(null);
@@ -86,30 +82,9 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
       setNotice('Размеры прямоугольника должны быть больше нуля');
       return;
     }
-    const rectangle = await app.execute({
-      id: 'sketch.rectangle',
-      payload: {
-        sketchId: currentSketch.id,
-        origin: [-rectangleWidth / 2, -rectangleHeight / 2],
-        width: rectangleWidth,
-        height: rectangleHeight,
-      },
-    });
-    if (!rectangle.ok || !rectangle.createdIds || rectangle.createdIds.length < 2) {
-      setNotice(rectangle.error?.message ?? 'Не удалось создать прямоугольник');
-      return;
-    }
-    const edges = rectangle.createdIds as CadSketchEntityId[];
-    const widthDimension = await app.execute({
-      id: 'dimension.linear',
-      payload: { sketchId: currentSketch.id, entityIds: [edges[0]], value: rectangleWidth, name: 'width' },
-    });
-    const heightDimension = await app.execute({
-      id: 'dimension.linear',
-      payload: { sketchId: currentSketch.id, entityIds: [edges[1]], value: rectangleHeight, name: 'height' },
-    });
-    if (!widthDimension.ok || !heightDimension.ok) {
-      setNotice(widthDimension.error?.message ?? heightDimension.error?.message ?? 'Не удалось создать размеры');
+    const rectangle = await commitParametricRectangle(app,currentSketch.id,rectangleWidth,rectangleHeight);
+    if (!rectangle.ok) {
+      setNotice(rectangle.error ?? 'Не удалось создать прямоугольник');
       return;
     }
     setActiveCommand(null);
@@ -174,6 +149,7 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
     setPanel('tree');
     setActiveWorkspace('solid');
     clearTransientSelection();
+    finishSession();
     setNotice('Эскиз завершен');
   }
 
@@ -185,11 +161,11 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
   }
 
   return {
-    rectangleWidth, setRectangleWidth, rectangleHeight, setRectangleHeight,
-    circleDiameter, setCircleDiameter, beginLine,
-    lineDraft: lineTool.draft, lineCommitting: lineTool.committing,
+    rectangleWidth,setRectangleWidth,rectangleHeight,setRectangleHeight,
+    circleDiameter,setCircleDiameter,beginLine,
+    lineDraft:lineTool.draft,lineCommitting: lineTool.committing,
     handleSketchLinePointMove: lineTool.move, handleSketchLinePoint: lineTool.point,
-    beginRectangle, commitRectangle,
+    beginRectangle,commitRectangle,
     rectangleDraft: rectangleTool.draft, rectangleCommitting: rectangleTool.committing,
     handleSketchRectanglePointMove: rectangleTool.move, handleSketchRectanglePoint: rectangleTool.point,
     beginCircle, commitCircle,
