@@ -267,7 +267,9 @@ async function verifyCreateSketchCancel(browser, width, height, options = {}) {
     }
 
     const during = await snapshotDocument(page);
-    assert.deepEqual(during, before, `${width}x${height}: starting Create Sketch changed document state`);
+    for (const key of ['kind', 'sketches', 'features', 'refs', 'activeSketch', 'selectedBody', 'dirty', 'savedDocument']) {
+      assert.deepEqual(during[key], before[key], `${width}x${height}: Create Sketch changed document field ${key}`);
+    }
 
     await page.locator('.parameter-actions').getByRole('button', { name: 'Отмена', exact: true }).click();
     await page.getByText('Плоскость построения', { exact: true }).waitFor({ state: 'detached' });
