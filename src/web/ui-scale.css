@@ -108,34 +108,24 @@ html {
  */
 @media (min-width: 900px) {
   html[data-ui-scale="100"] {
-    --mainbar-h: 30px;
-    --tabs-h: 20px;
-    --workspace-h: 17px;
-    --ribbon-h: 62px;
+    --mainbar-h: 28px;
+    --tabs-h: 27px;
+    --workspace-h: 25px;
+    --ribbon-h: 68px;
+    --status-h: 3px;
+    --rail-w: 26px;
+    --panel-w: 310px;
+    --ui-workspace-font: 12px;
+    --ui-command-font: 12px;
+    --ui-global-action: 32px;
+    --ui-brand-mark: 20px;
+    --ui-ribbon-icon: 16px;
+    --ui-ribbon-command-min: 120px;
   }
-  html[data-ui-scale="100"] .document-tabs { padding-top: 1px; }
-  html[data-ui-scale="100"] .new-tab-button {
-    height: 18px;
-    margin-bottom: 0;
-    line-height: 1;
-  }
-  html[data-ui-scale="100"] .document-tab {
-    height: 18px;
-    line-height: 1;
-  }
-  html[data-ui-scale="100"] .workspace-tabs button {
-    line-height: 1;
-    padding-top: 2px;
-    padding-bottom: 0;
-  }
-  html[data-ui-scale="100"] .command-ribbon { padding-top: 1px; padding-bottom: 1px; }
-  html[data-ui-scale="100"] .command-group { grid-template-rows: 1fr 10px; }
-  html[data-ui-scale="100"] .command-group-label { font-size: 9.5px; line-height: 10px; }
-  html[data-ui-scale="100"] .ribbon-command {
-    padding-top: 0;
-    padding-bottom: 0;
-    gap: 0;
-    line-height: .8;
+
+  html[data-ui-scale="100"] .ui-scale-status {
+    bottom: 3px;
+    height: 25px;
   }
 
   html[data-ui-scale="90"] {

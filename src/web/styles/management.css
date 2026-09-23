@@ -83,10 +83,11 @@
   white-space: nowrap;
 }
 .tree-row:hover { background: #e4edf9; }
+.tree-row:not(.interactive) { cursor: default; }
 .tree-row.bold .tree-label { font-weight: 650; }
 .tree-row.muted { color: #8b929b; }
-.tree-chevron { width: 10px; color: #747b84; }
-.tree-icon { width: 18px; color: #596979; text-align: center; }
+.tree-chevron { width: 10px; color: #747b84; display: grid; place-items: center; }
+.tree-icon { width: 18px; color: #596979; display: grid; place-items: center; }
 .tree-label { overflow: hidden; text-overflow: ellipsis; font-size: 13px; }
 
 .parameter-section { padding: 12px 12px 10px; border-bottom: 1px solid #dde0e4; }
