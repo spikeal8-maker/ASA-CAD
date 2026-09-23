@@ -197,13 +197,9 @@ async function runDesktop() {
   await page.getByText('Эскиз 1', { exact: true }).waitFor();
   await assertRibbonIntegrity(page, 'Sketch ribbon');
 
-  // New-document routing shares the V3 dirty replacement guard.
   await page.locator('.new-tab-button').click();
-  const replacementGuard = page.getByRole('dialog', { name: 'Есть несохранённые изменения', exact: true });
-  await replacementGuard.waitFor();
-  await replacementGuard.getByRole('button', { name: 'Не сохранять', exact: true }).click();
-  const dialog = page.getByRole('dialog', { name: 'Новый документ' });
-  await dialog.waitFor();
+  await page.getByRole('dialog',{name:'Есть несохранённые изменения'}).getByRole('button',{name:'Не сохранять'}).click();
+  const dialog=page.getByRole('dialog',{name:'Новый документ'});
   for (const label of ['Деталь', 'Сборка', 'Чертеж', 'Фрагмент', 'Спецификация', 'Текстовый документ']) {
     await dialog.getByRole('button', { name: new RegExp(label) }).waitFor();
   }
