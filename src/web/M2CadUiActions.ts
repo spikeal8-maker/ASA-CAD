@@ -2,6 +2,7 @@ import type { CadUiActionBinding, CadUiActionBindings } from './CadUiAction';
 import type { ShortcutActionId } from './ShortcutRegistry';
 
 export interface M2CadUiActionHandlers {
+  newDocument(): void | Promise<void>;
   open(): void | Promise<void>;
   save(): void | Promise<void>;
   undo(): void | Promise<void>;
@@ -92,6 +93,7 @@ export function createM2CadUiActionBindings(
   const radiusDimensionReason = state.canApplyRadiusDimension ? undefined : 'Выберите окружность или дугу эскиза';
   const angularDimensionReason = state.canApplyAngularDimension ? undefined : 'Создайте два отрезка эскиза';
   return {
+    'system.new': binding(handlers.newDocument),
     'system.open': binding(handlers.open),
     'system.save': binding(handlers.save),
     'system.undo': binding(handlers.undo, state.canUndo, 'Нечего отменять'),

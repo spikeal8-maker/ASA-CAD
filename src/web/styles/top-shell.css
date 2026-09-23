@@ -132,3 +132,29 @@
 .document-kind-icon { display: inline-flex; color: #4e5e71; }
 .dirty-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-left: auto; flex: none; }
 .tab-close { color: #77808a; font-size: 17px; margin-left: auto; }
+
+.file-menu-root { position: relative; display: flex; align-items: stretch; }
+.file-menu-trigger[aria-expanded="true"] { background: #e4e7eb; }
+.file-menu-popup {
+  position: absolute; left: 0; top: 100%; z-index: 60;
+  min-width: 184px; padding: 4px;
+  background: white; border: 1px solid var(--border-strong);
+  border-radius: 0 0 4px 4px; box-shadow: 0 8px 20px rgba(0,0,0,.16);
+}
+.file-menu-item {
+  min-height: 28px; display: flex; align-items: center;
+  padding: 0 10px; border-radius: 2px; cursor: pointer; white-space: nowrap;
+}
+.file-menu-item:hover, .file-menu-item:focus-visible { background: var(--accent-soft); outline: 0; }
+.file-menu-item[aria-disabled="true"] { color: var(--text-muted); cursor: default; }
+.unsaved-changes-dialog { width: min(480px, 100%); }
+.unsaved-changes-body { display: grid; gap: 16px; padding: 16px; }
+.unsaved-changes-body > p { margin: 0; color: var(--text); font-size: 13px; }
+.unsaved-changes-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.unsaved-changes-actions button {
+  min-height: 32px; padding: 0 12px; border: 1px solid var(--border);
+  border-radius: 4px; background: #f7f8fa; cursor: pointer;
+}
+.unsaved-changes-actions button:hover:not(:disabled) { background: #eceff2; }
+.unsaved-changes-actions button.primary { border-color: var(--accent); background: var(--accent); color: white; }
+.unsaved-changes-actions button:disabled { opacity: .55; cursor: default; }
