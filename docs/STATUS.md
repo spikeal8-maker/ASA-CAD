@@ -1,94 +1,41 @@
-# ASA-CAD current status
+# ASA-CAD — состояние и следующий видимый результат
 
-Short execution state for humans and coding agents. Product/end state: `SYSTEM_SPEC.md`; technical boundaries: `ARCHITECTURE.md`; implementation/exit order: `ROADMAP.md` + `spec/process/milestone-gates.v1.json`; detailed history: GitHub issues.
+Снимок 2026-09-23. Координатор #10, визуальная очередь #19. В1 уже принята как региональный результат и merged; Draft PR #148 синхронизирует план/статус, но не является разрешением на В2/deploy.
 
-Last synchronized: 2026-09-19.
+## Зафиксированные версии
 
-Older issue/PR/status text is historical only; if it conflicts, use this file + the active issue under `DOCS_POLICY.md` precedence, not stale task wording.
+- Принятый продуктовый main В1: `cd343bb7219052c2a9b6080466da5b22b44d561f` — merge #150.
+- Accepted tree В1: `74a0c8806ea53dbee99e6e7184e817ff9d0f388a`.
+- #147 `d57aa7e8a2696caa53ec66f020aaa866b7911dec` и #149 `812c7eacc1e9303e4f6dc321a80cd310fdcab174` закрыты без merge как superseded; это исторические product/evidence checkpoints.
+- #146: `dfa849513ad957c8782c8de4f618ca14b883a59f`, Stage 0 измерений. Повторный сбор остановлен.
+- Screenshot evidence В1 self-contained: baseline/result собираются раздельно, retention 30 дней; старый 7-day artifact не является зависимостью.
+- Версия нового сервера здесь не установлена; не приравнивать её к main/PR.
 
-## Current phase
+## Вердикт
 
-**Gate A - DONE.**
-**M2O - DONE.**
-**M3 Parametric Sketch (#5): ACTIVE.**
-**M3M #57: 001..008 DONE; M3M-009 remains a hard pre-M4 gate.**
+Gate A/M2O и M3 core сохраняются. Angular/DoF/диагностику заново не делать. Six document kinds в CadDocument/CadApplication: Part, Assembly, Drawing, Fragment, Specification, Text. Эти шесть типов документа не означают шесть готовых редакторов.
+M2V = NOT ACCEPTED. Общий интерфейс владельцем не принят. Урок и GREEN не доказывают копирование КОМПАСа.
 
-Protected document family: **six document kinds** - Part, Assembly, Drawing, Fragment, Specification and Text - behind `CadDocument` / `CadApplication`.
+| Пробел | Поставка |
+|---|---|
+| Группы/контролы трактовались по крупным rect, подписи обрезаны | В1: DONE — regional result accepted, merge `cd343bb7…`; общий Part/Sketch parity не закрыт |
+| Эскиз вне edit заменяется сообщением | В2: view/select/edit/finish/reopen |
+| Названия меню без раскрытия | В3 «Файл», затем В6 по меню |
+| Неполная приёмка активных параметров | В4 существующее выдавливание, В6 другие команды |
+| Дерево/вкладки частично декоративны | В6 с ownership и реальными действиями |
+| Целый урок/интерактивная версия не приняты | В5, не ждать всей оболочки |
+| Не доказан паритет состояний/resize | В7/В8; UNKNOWN не PASS |
+| Порядок операций ограничен шаблоном | M4 после Gate B с kernel proof |
 
-Accepted M3 includes Line/Circle/Arc/Rectangle, stable-ID selection/delete/drag, constraints through Point-on-curve, Construction Line, productized Linear/H/V/Diameter/Radius dimensions, and Angular persisted/core support on schema v3.
+## Следующее задание
 
-## Full Repository Health Audit #112
+Единственная следующая продуктовая задача — **В2 / CAD-VIS-002 — живой эскиз**. Запуск только отдельной исполнительной командой после принятия этой плановой синхронизации.
+Цель В2: один и тот же эскиз видим в edit и после finish, поддерживает view/select/edit/finish/re-edit/reopen на своей опоре и сохраняет корректную document semantics. Не начинать В3–В8, M4 или новый capture framework в рамках этой синхронизации.
+В1 / CAD-VIS-001 = MERGED / REGIONAL RESULT ACCEPTED. Это не означает полный паритет оболочки: M2V = NOT ACCEPTED, FULL_KOMPAS_PARITY = NO.
 
-**YELLOW ACCEPTED - no RED blocker remains for bounded M3 work.**
+## Открыто и сохранено
 
-Trigger: #109 M3-DIM-000 -> #110 M3-DIM-001A -> #111 M3-DIM-001B reached 3/3.
-
-The audit found one RED blocker, `STATE-DIM-001`: `dimension.linear` was registry=`implemented` without a complete shared product path. #113 / PR #114 repaired it by productizing Linear for one selected Sketch Line with shared desktop/mobile/search action, Parameters, Cancel no-mutation, Undo/Redo, Save/Open and same-ID editing. PR #114 merged as `9d1dca92...`; M2 shell, M2 browser, M3 browser, Docker and baseline all passed on the merge SHA.
-
-Frozen ratchets remain non-growing; no hard/frozen violation remains. Audit cadence resets to **0 / 3** at this closeout.
-
-Bounded YELLOW debt:
-1. `UI-SEARCH-001`: production search still exposes planned/deferred commands disabled instead of hiding them;
-2. size/test pressure remains: M3M-009 owns frozen viewport/runtime hotspots; `useSketchConstraintControllers.ts` is near target; shared M3 browser harness must not grow; each new dimension family gets a separate focused browser spec;
-3. repository hygiene/admin debt: root ignore policy, obsolete bootstrap workflow and historical branch clutter;
-4. pinned vendor/toolchain security/runtime warnings remain bounded maintenance debt;
-5. pre-M4 performance baselines, M3X shared golden host contract and root release license/notices remain required at their existing gates.
-
-## Gate B closeout
-
-Gate B and closure of umbrella M2 Issue #3 are not the same acceptance boundary. Issue #3 closes only after M2A + M2I + M2V reach their acceptance criteria. For broad M4, M2V is the hard Gate B blocker from the remaining M2 lanes.
-
-Broad M4 is blocked until all hard Gate B requirements are accepted:
-- M2V KOMPAS visual acceptance;
-- M3 machine exit contract;
-- M3X shared ASA-CAD/ASA Lab golden fixtures;
-- M3M-009;
-- pre-M4 performance baselines;
-- required Full Repository Health Audit.
-
-The M3 exit contract is machine-readable in `spec/process/milestone-gates.v1.json`.
-
-## Current M3 gate
-
-M3-DIM-004A is accepted: Angular persisted/core support is implemented on CadDocument schema v3.
-
-- schema-v1/v2 grammars remain frozen; v3 adds only `angular` to Dimension grammar;
-- migration `2 -> 3` preserves valid v2 content and rejects illegal Angular-in-v2 before bump;
-- Angular = two distinct Lines, degrees, `0 < value < 180`;
-- typed command/handler and PlaneGCS ANGLE core are accepted;
-- source/policy/release identity = schema 3;
-- `dimension.angular` remains registry=`planned`; product UI is still open.
-
-Required M3 gaps:
-- Angular productization;
-- meaningful non-null DoF;
-- visible under/fully/over-constrained diagnostics.
-
-## Full Repository Health Audit #123
-
-**YELLOW ACCEPTED - no RED blocker remains for bounded M3 work.**
-
-`STATE-SCHEMA-RELEASE-001` was repaired by #125 / PR #126: production schema, machine policy and shipped release metadata now converge on v2; M2-shell and Docker permanently verify that identity.
-
-Remaining bounded YELLOW debt includes schema-guard brittleness, UI search visibility, size/test pressure, repository hygiene/toolchain/dependency maintenance, and the existing pre-M4 performance/M3X/legal gates.
-
-SCHEMA-GENERALITY-001 is accepted; `SCHEMA-GUARD-001` regex/source-layout brittleness remains YELLOW.
-
-## Full Repository Health Audit #136
-
-**YELLOW ACCEPTED - no RED blockers remain.**
-
-`DIM-LINEAR-FINITE-001` was repaired by PR #138, merged as `5a90d6a34eb823a899f4842a2d332eb1fed42b12`. Post-merge CI on that merge SHA passed **5 / 5**: M2 shell, M2 browser, M3 browser, Docker and baseline.
-
-Feature freeze is **lifted**. Audit cadence resets to **0 / 3**.
-
-M3 remains **ACTIVE**. Required M3 gaps remain open:
-- Angular productization;
-- meaningful non-null DoF;
-- visible under/fully/over-constrained diagnostics.
-
-Do not declare M3 exit until the complete machine exit contract is accepted.
-
-M3 extension commands do not block M3 unless deliberately reclassified.
-
-Optimization cadence is iteration-based: every permanent slice gets a Slice Quality Gate; repeated owner pressure triggers focused review; every three accepted permanent slices or milestone boundary triggers a Full Repository Health Audit.
+Gate B открыт: M2V, M3 exit, M3X обеих сторон, M3M-009, baselines, Full Audit. #57 009 открыт; cadence/frozen budgets/совместимость сохранены. Счётчик берётся из accepted records, не commits/CI.
+Текущая очередь #10/#19; исторические NEXT в #5/#145 и статусный #143 не поручение повторять core/capture. #148 не считается автоматически принятым. Текущие указатели синхронизирует контролёр, историю сохраняет.
+ПК, КОМПАС/UIA/Desktop Commander, сеть/сервер и ремонт worktree/runtime/cache не входят в UI-задачи. Никаких новых clones ради ремонта старой среды. Только сохранённые материалы и изолированный build ASA-CAD.
+CORE/USER_PATH/DOCUMENT/VISUAL_DELTA/PARITY/PREVIEW фиксируются отдельно. План не является выполненным продуктовым изменением.

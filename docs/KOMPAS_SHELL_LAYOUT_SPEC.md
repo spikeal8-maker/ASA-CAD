@@ -1,196 +1,68 @@
-# ASA-CAD KOMPAS-oriented shell layout specification
+# ASA-CAD — ТЗ воспроизведения оболочки КОМПАСа
 
-This document is the binding **default desktop composition** for the ASA shell. It refines generic `AppFrame` diagrams in older documents when exact placement matters.
+Редакция 2026-09-23. Уточняет SYSTEM_SPEC для desktop; очередь ROADMAP/#10, эталоны VISUAL_REFERENCE_SPEC. Это ТЗ, не готовый интерфейс.
 
-## 1. Reference principle
+## 1. Система оболочки
 
-The target is not a generic web dashboard with a ribbon placed above three permanent columns.
+Настоящее ASA-CAD: меню/поиск, вкладки, список наборов инструментальных панелей и панели текущего набора, блок управления, графическая область, контекстный быстрый доступ и статус. Не mock HTML и не SaaS-карточки.
+Idle Part показывает дерево; команда — свои параметры; завершение/отмена возвращает корректную панель. В базовом блоке одна активная панель; его можно свернуть. Перенос/плавающие панели — отдельный согласованный объём, не первая правка.
+Содержимое зависит от документа/режима. Labels/group order/command IDs — существующие реестры/CadUiAction, не независимые JSX-списки. UI не обращается к raw OCC/vendor store. Незавершённое нельзя представить как действующую команду.
 
-The default desktop composition follows the KOMPAS-3D v25 mental model:
+## 2. Что означают полученные размеры
 
-- main menu/search/system controls at the top;
-- document tab strip;
-- instrument/workspace area with command groups;
-- a large graphical/work area;
-- a management-panel rail/block (Tree, Parameters, Variables, Layers and other document-specific panels);
-- a contextual quick-access bar attached to the graphical area;
-- status/diagnostic feedback;
-- context menus/context panels.
+#146 `dfa849513ad957c8782c8de4f618ca14b883a59f`: `spec/ui/kompas-v25/states/part-empty/layout.json`, UIA/notes/environment. DIP — baseline при одинаковом UI mode, не размер физического монитора.
 
-ASA may adapt details for browser/responsive use, but deliberate deviations must be recorded in the visual reference manifest.
+| 1920×1080 baseline | Граница доказательства |
+|---|---|
+| mainMenu x29 y5 w835 h22 | Меню, не вся верхняя строка/раскрытый список |
+| documentTabs x3 y28 w1914 h27 | Общая область, не каждый дочерний элемент |
+| instrumentArea x3 y55 w1914 h93 | Общая область, не универсальная сетка |
+| workspaceTabs x3 y55 w120 h25 | Один active workspace selector, НЕ доказанная колонка 120×93 |
+| rail x3 w26, panel x29 w310, graphics x340 y148 | Базовые отношения, не всё наполнение |
+| quickAccess x356 y148 w591 h25 | Idle rect, не постоянный состав всех режимов |
 
-## 2. Desktop default structure
+Прежние «все cells 120×25», «все группы три ряда», «режимы — три одинаковые кнопки» не являются эталоном без дочерних узлов/изображения. Direct UIA и derived rect различаются. Нельзя подменять системные кнопки окна Undo/Redo ради координат.
+Справка v25 «Окно системы» описывает список наборов слева и панели текущего набора справа. По одному переключателю нельзя определить весь список; сверять type/parent/children/Name и существующий reference. Другой skin не подставлять незаметно.
 
-```text
-┌──────────────────────────────────────────────────────────────┐
-│ Main menu / Search / global application state               │
-├──────────────────────────────────────────────────────────────┤
-│ Document tabs                                                │
-├──────────────────────────────────────────────────────────────┤
-│ Workspace / Instrument area + command groups                │
-├────┬─────────────────────────────────────────────────────────┤
-│ P  │  Management panel     │                                │
-│ a  │  Tree / Parameters /  │   Graphical / work area       │
-│ n  │  Variables / Layers   │                                │
-│ e  │                       │  [Viewport Quick Access]       │
-│ l  │                       │                                │
-│    │                       │                                │
-├────┴───────────────────────┴────────────────────────────────┤
-│ Status / selection / solve / rebuild / save feedback        │
-└──────────────────────────────────────────────────────────────┘
-```
+## 3. Исполнительная карточка В1 / CAD-VIS-001 — accepted historical contract
 
-`Panel rail` is a narrow vertical switcher. The active management panel is adjacent to it.
+Статус: **MERGED / REGIONAL RESULT ACCEPTED**. Принятый product merge: `cd343bb7219052c2a9b6080466da5b22b44d561f`; accepted tree: `74a0c8806ea53dbee99e6e7184e817ff9d0f388a`. Исторические #147 (`d57aa7e8…`) и repair #149 (`812c7eac…`) сохранены как evidence и закрыты без merge как superseded.
+FULL M2V = NOT ACCEPTED. FULL KOMPAS PARITY = NO. Ниже сохраняется исходный contract/evidence В1; он не является текущей NEXT-командой.
 
-## 3. Management panel model
+Историческая цель В1: исправить вид и состав верхней инструментальной области Детали по подтверждённым данным, сохранив команды. Это был первый видимый региональный результат, не весь CAD.
 
-Default panel buttons depend on document kind.
+### До кода
 
-### Part / Assembly
-Initial rail:
-- `Параметры`;
-- `Дерево`;
-- `Переменные` when implemented;
-- document-specific panels later.
+Исходный экран — настоящий part-empty из artifact `10691312625`, run `35721665516`; проверить SHA/viewport/UI scale. При несовпадении условий снять ДО из exact baseline ASA build в Actions. Старый synthetic preview не использовать.
+Прочитать source layout и только релевантные узлы сохранённого UIA-файла. Не запускать capture helper. Сверить с официальным изображением/описанием v25 из VISUAL_REFERENCE_SPEC.
+В карточке #19 записать конкретные различия состава/типа/расположения, target/source и неизвестное. Не ограничиться «исправлены подписи», если структура не сверена. Подготовка карточки входит в В1; отдельный парсер/PR для измерений запрещён. Если обязательный target не подтверждается, REFERENCE_BLOCKED именно этого свойства; остальной доказанный прогресс можно предъявить отдельно, не заявляя полного паритета.
 
-### Drawing / Fragment
-Initial rail:
-- `Параметры`;
-- `Дерево`;
-- `Слои`;
-- additional document panels later.
+### Разрешённые owners
 
-### Specification
-- document/tree/sections;
-- parameters/properties as needed.
+`src/web/CadShellCommandGroups.tsx`, `CadShellTop.tsx`, существующие `styles/ribbon.css`, `responsive.css`, `styles/shell-responsive.css`, `ui-scale.css` — только необходимые строки. `CadIcon.tsx` — лишь затронутые команды. Layout/command registry — mapping/метаданные той же области, без новых статусов implemented.
+Сохранить CSS ownership и frozen/file budgets. Один каталог/actions. Тип/размер контрола определяется источником, не общей шириной наугад. Длинный текст не лечить масштабированием всего UI; недоступная команда имеет причину.
+Tests/visual и текущий screenshot workflow — минимальные before/after, semantic wait, manifest, retention30. Без нового browser/capture framework; assertions не ослаблять.
 
-### Text
-- document structure/tree;
-- formatting/properties as needed.
+### Не входит
 
-Rules:
+Дерево, persistence/multi-document, новые параметры/команды, геометрия/solver/runtime/schema/vendor. Исчезающий эскиз — В2, не В1. КОМПАС/UIA/Desktop Commander, ПК/VPN/сеть/сервер/Docker architecture, deploy/merge и другие проекты не трогать.
 
-1. `Дерево` is the normal/default management panel for an idle Part/Assembly.
-2. Starting a command that requires engineering parameters automatically opens `Параметры`.
-3. When the command finishes/cancels, the previous management panel is restored unless the user explicitly pinned another layout.
-4. Only one panel from the default panel block is shown at a time in the baseline KOMPAS-like layout.
-5. Later, advanced docking may allow multiple blocks/panels simultaneously; this is optional, not required for first M2 release.
-6. A panel may be collapsed completely to maximize work area.
-7. Panel width is resizable and follows `DISPLAY_LAYOUT_SPEC.md` min/default/max rules.
-8. On compact-height/small-width desktop the panel may overlay rather than permanently consume the work area.
+### Действие и приёмка
 
-This replaces the assumption that Tree must always be permanently open on the left while Parameters is always permanently open on the right.
+Обычный `/cad/` → новая Деталь → существующее «Создать эскиз» открывает панель плоскости; Отмена не меняет документ. Проверить shared action enablement и затронутый путь вызова. Будущие команды не реализовывать для наполнения.
+ДО/ПОСЛЕ idle Part 1920×1080, UI/zoom100%, DPR1; одинаковый crop панели без деформации. Ещё ПОСЛЕ 1366×768; phone smoke390×844 сохраняется. Для перехода — PNG панели/короткий trace. Ждать реальное состояние, не DOM-кнопку.
+По затронутым свойствам: состав/порядок/тип, плотность/подписи/ASA-иконки, отсутствие clipping/overlap/pointer interception. Измеренные major zones ±4 CSS px. Не менять старую числовую цель теста без source-доказательства её ошибки и review.
+Если нет изображения для полного artwork comparison, принимается лишь доказанный региональный прогресс, PARITY=PARTIAL. Не выдавать уменьшение обрезания за копию всей панели. Полная приёмка набора остаётся В8.
 
-## 4. Viewport Quick Access Bar
+### Что вернуть
 
-ASA has a distinct `ViewportQuickAccessBar` attached to the upper edge of the graphical/work area.
+Показать after.png, дать before.png и эталон/источник. Затем коротко: что пользователь видит иначе; оставшиеся расхождения; base/final/checkout SHA/build; изменённые файлы; действие/cancel/document; focused + required exact-head CI; доступные файлы/hashes; VISUAL_DELTA/PARITY/PREVIEW отдельно. Только отчёт PASS без PNG не завершение.
+Один commit подготовленного пакета, не на каждую строку. Больший scope требует сохранённого diff и решения контролёра, не переписи проекта. Screenshot-поставка входит в эту же работу. После показа STOP, не начинать весь roadmap.
 
-It is **not the same thing** as the application Main Menu or instrument/workspace command groups.
+## 4. NEXT — В2 / CAD-VIS-002 — живой эскиз
 
-Initial responsibilities:
-- viewport/navigation actions appropriate to current document;
-- context-dependent confirmation/finish controls during active operations;
-- other high-frequency context actions admitted by KOMPAS reference audit.
+Единственная следующая продуктовая задача зафиксирована в Issue #19. Требуемый результат: тот же sketch ID виден после finish, доступен для view/select без скрытого edit, затем re-edit/reopen на той же опоре; edit/finish/reopen и Save/Open не должны создавать вторую скрытую сущность или мутировать документ от одного просмотра. Точный implementation scope подтверждается отдельной исполнительной командой; эта плановая синхронизация В2 не запускает.
 
-Rules:
+## 5. Следующие части
 
-- horizontal;
-- positioned inside/at the top edge of the graphical work area;
-- does not permanently consume a full additional global header row;
-- contents change by document/command context;
-- `Создать/Применить`, `Отмена`, `Завершить` may also be mirrored in ParameterPanel where required for touch/accessibility, but desktop KOMPAS-oriented flow exposes the quick-access/context action area clearly;
-- no important command exists only as an unlabeled mystery icon without tooltip/search path.
-
-## 5. Instrument/workspace area
-
-The top engineering command area contains document/workspace-specific command groups, not global project/storage navigation mixed arbitrarily with modeling commands.
-
-Examples:
-
-Part:
-- Твердотельное моделирование;
-- contextual Эскиз;
-- Каркас и поверхности later;
-- Проверка/Измерения;
-- Вид.
-
-Assembly:
-- Сборка;
-- contextual Редактирование компонента;
-- Проверка/Измерения;
-- Вид.
-
-Drawing:
-- Черчение;
-- Виды;
-- Размеры;
-- Обозначения;
-- Листы/Оформление;
-- Вид.
-
-Exact group/command order is registry-v2 data, not hardcoded independently by components.
-
-## 6. Full-screen/maximize-work-area mode
-
-ASA-CAD must support a workspace-maximize mode that hides/collapses nonessential panels/chrome while keeping a path back to commands.
-
-Target behavior:
-- collapse management panel;
-- collapse instrument area where supported;
-- retain minimum document/global access and a compact way to restore panels/commands;
-- preserve active command/document/runtime state;
-- no B-Rep recompute merely because UI chrome was hidden.
-
-Shortcut is selected during shortcut audit; do not steal browser-reserved keys.
-
-## 7. Large-display behavior
-
-On 2K/4K/ultrawide:
-- management panel does not grow indefinitely;
-- instrument groups stay content-sized/bounded;
-- graphical area receives most additional space;
-- optional second panel block is a later user preference, not automatic clutter;
-- UI Scale may increase chrome/text independently from geometry units.
-
-## 8. Small desktop behavior
-
-On 1280x720 / 1366x768:
-- panel rail remains reachable;
-- active management panel clamps toward minimum width or overlays;
-- low-priority command groups collapse/overflow;
-- ViewportQuickAccessBar remains usable;
-- top chrome compacts by height rules;
-- text is not shrunk below readability floor.
-
-## 9. Tablet/phone derivation
-
-The desktop panel model maps to:
-- Tree/Parameters/Tools bottom sheets or drawers;
-- compact command workspace selector;
-- active-command sheet;
-- quick-access/confirm actions reachable by touch.
-
-Phone does not preserve the exact desktop physical placement; it preserves the same command/panel semantics.
-
-## 10. KOMPAS-specific settings to track
-
-KOMPAS v25 exposes interface settings such as theme, highlight color, size of icons/text, icon style, language, keyboard configuration, remembering the last command in a group, and tab-opening position.
-
-ASA mapping:
-- Theme -> M2/M7 setting;
-- Highlight/selection theme -> M2/M7 tokens;
-- Icon/text size -> ASA UI Scale in M2R;
-- Keyboard -> `SHORTCUTS_SPEC.md`;
-- Remember last group command -> registry/group behavior, M7 unless needed earlier;
-- New tab position -> document-tab setting, M7 unless owner requests earlier.
-
-## 11. Acceptance
-
-Default desktop shell is not accepted until:
-- visual references confirm Main Menu / document tabs / instrument area / management panels / graphical quick-access relationship;
-- active command automatically exposes Parameters;
-- idle Part/Assembly restores Tree by default;
-- panel collapse/maximize increases work area without losing state;
-- graphical quick-access is visually tied to the work area;
-- compact and 4K layouts preserve the same hierarchy;
-- deliberate differences from KOMPAS are recorded.
+После В2 — В3–В8 по ROADMAP: меню, параметры, урок, остальные состояния, resize и сверка. View/select/edit различаются; вкладки требуют независимых data/history/dirty/save/command/selection/camera, без второго persistence. Quick access контекстный; status не выводится из canvas. Панели/resize не пересчитывают B-Rep. На компактных размерах сохраняются действия, на телефоне общая семантика. Полная приёмка по VISUAL_REFERENCE_SPEC, не по сумме прямоугольников.

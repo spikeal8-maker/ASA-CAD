@@ -1,220 +1,60 @@
-# ASA-CAD continuous development quality gates
+# ASA-CAD — приёмка видимых изменений
 
-Binding quality/audit contract for ASA-CAD. Its purpose is to prevent large mixed owners, duplicate status/spec prose, tracked artifacts, expensive agent context and late integration drift.
+Редакция 2026-09-23. Machine rules неизменны: repository-health.v1.json и milestone-gates.v1.json. ROADMAP — очередь, VISUAL_REFERENCE_SPEC — эталоны, STATUS/#10 — состояние.
 
-Numeric limits live in `spec/process/repository-health.v1.json` and are enforced by `tests/process/*`. `AGENTS.md` is the short agent entrypoint. This document owns durable audit/process rules; execution evidence belongs in the active PR/issue.
+## 1. Единица исполнения
 
-## 1. Permanent development cycle
+Один пакет — одна область интерфейса с действием либо одна functional/maintenance-проблема. Карточка: exact base/branch, owner, scope, источник, различия ДО, ожидаемое ПОСЛЕ, positive/cancel/error, проверки и STOP. Не весь roadmap.
+Контролёр отвечает за эталон/критерии, исполнитель за код/evidence, владелец за visual verdict, оператор preview за отдельно разрешённую публикацию. Не выяснять требования заново после каждого результата.
+Визуальный пакет не заканчивается только документацией или «стало лучше»: нужен изменённый реальный build. Functional repair получает нужные слои явно; запрет только CSS не делает его неисполнимым. Нужная локальная декомпозиция допустима, новый универсальный framework — нет.
 
-```text
-scope/contract
--> smallest vertical slice
--> focused regression
--> Slice Quality Gate
--> cleanup/refactor if required
--> affected browser/Docker/compatibility gates
--> issue + STATUS sync
--> next slice
-```
+## 2. Выход UI-пакета
 
-A feature is not accepted merely because it works. The repository must remain maintainable after it. Do not postpone debt created by a slice until the end of a long milestone.
+Полный реальный ДО/ПОСЛЕ при одинаковых условиях, одинаковые crops, эталон/источник, устранённые/оставшиеся различия, действие/документ, точные SHA/build/CI обязательны. Контролёр просматривает и показывает ключевой PNG в ответе, а не только ZIP/флаги PASS.
+Существующий screenshot Actions минимально дополняется в том же пакете: before/after, semantic wait, manifest, retention >=30 дней. Нельзя завершить UI-пакет с «снимки получим следующей задачей». Требование не равно выполненной настройке.
+После результата STOP; следующая правка области после verdict. Отказ превращается в конкретные расхождения, не перепись проекта. Baseline screenshot не обновляется автоматически, иначе дефект становится эталоном.
+В1 может получить приёмку регионального прогресса. Полный PARITY запрещён при MISSING/несогласованных отличиях обязательного набора. Промежуточное согласие не снимает конечную цель.
 
-## 2. Audit cadence
+## 3. Независимые статусы
 
-### Slice Quality Gate — every permanent slice
+| Статус | Доказательство |
+|---|---|
+| CORE | Алгоритмы/protected regression |
+| USER_PATH | Реальные клики/ввод |
+| DOCUMENT | Геометрия/IDs/параметры/история/ссылки/save |
+| VISUAL_DELTA | Показанная проверенная разница ДО/ПОСЛЕ |
+| PARITY | Соответствие закрытому набору эталонных свойств/состояний |
+| PREVIEW | Интерактивная сборка с установленной идентичностью |
 
-Check the touched subsystem for:
-- focused responsibility/ownership;
-- file budgets and frozen-hotspot ratchets;
-- duplicate logic/parallel paths;
-- temporary/generated/review artifacts;
-- focused regression coverage;
-- save/reopen compatibility when persisted data changed;
-- registry/spec/status synchronization when contracts changed;
-- agent context growth.
+NOT_TESTED/BLOCKED не PASS, N/A обосновать. Technical merge по разрешению не visual approval. Docs CI не доказывает продукт. При недоступном сервере кадры обязательны, PREVIEW=BLOCKED; В5/В8 не приняты. Основной сайт/сервер не менять без отдельной команды.
 
-The next slice starts only after GREEN, or explicitly accepted non-growing YELLOW debt.
+## 4. Работа вместо декораций
 
-### Focused owner optimization checkpoint
+Урок на обычном `/cad/` с чистым документом; предмет проверки не создавать hidden API/app.execute/localStorage/fixture. Для изолированной регрессии fixtures допустимы; читать документ для проверки можно.
+Start → input/selection → preview где предусмотрен → apply/cancel → edit → Undo/Redo → Save/Open. Ошибка не портит документ, отказ save не сообщает «Сохранено». Выбор не edit; просмотр не мутация; вкладки не разделяют history/dirty/command/selection. До multi-document — ownership contract без второго persistence.
+Параметры способов ввода имеют один draft/handler; menu/ribbon/search/mobile используют CadUiAction. Не добавлять пустые активные кнопки, не скрывать неподдержанное ради паритета.
+Новая операция: классы входов, минимум два допустимых и один недопустимый плюс релевантный topology corpus. Масштаб одного fixture не новый класс. UI-запрет не снимать без команды/ядра.
+Проверять text bounds, focus/клики, дочерние подписи, состояние/содержимое. Assertions не ослаблять, force-click и маскировка overlap через z-index/pointer-events запрещены; штатные popup-слои допустимы.
 
-Optimization is iteration-based, not calendar-based. Before a third accepted feature slice touches the same primary owner since its last focused review, run a focused owner check. Run it earlier when the owner reaches the machine-policy pressure ratio (currently 85% of target), crosses target, or would gain a new responsibility family.
+## 5. Расход и безопасность
 
-The checkpoint must choose one: keep the owner unchanged because the new work fits its existing responsibility, or extract a focused owner before adding responsibility. Frozen owners never grow. When extraction shrinks a frozen ceiling, lower the ceiling in the same change.
+Вход: STATUS + карточка + AGENTS, затем затронутые файлы. SYSTEM_SPEC — при изменении объёма, ARCHITECTURE — границ. Не читать весь vendor/UIA/docs ради панели.
+Одна воспроизводимая проблема/гипотеза, сначала focused tests, итоговые required checks на конечном HEAD. Не коммит API-запросом для каждой строки. Старый GREEN после изменения SHA не свежий. Фиксировать фактический checkout, включая synthetic merge, либо явно собирать exact HEAD.
+Две проверенные гипотезы без новой информации → сохранённый diff/checkpoint контролёру. Доказанную причину доводить; это не лимит двух запусков. Повтор внешней ошибки прекращает внешние попытки, не меняет toolchain и не создаёт новый helper.
+Без отдельного разрешения запрещены КОМПАС/UIA даже read-only/Desktop Commander, ремонт ПК/среды/worktree/cache/VPN/сети/сервера. Сохранённые данные повторно не добывать. Фактические токены/проверки по доступным метрикам, иначе UNKNOWN; сроки/стоимость не обещать.
 
-This checkpoint is smaller than a Full Repository Health Audit: inspect the touched owner, its direct tests/helpers and duplicated paths only.
+## 6. Maintenance
 
-### Full Repository Health Audit
+Каждый permanent slice → Slice Quality Gate: owners/budgets/frozen ratchets, дубли/артефакты, regression, compatibility, registry/status/контекст. Cadence считает accepted slices, не commits/CI; задним числом перегруппировывать ради обхода нельзя.
+Перед третьим accepted feature touch owner — focused review; раньше при 85% target/новой ответственности. Frozen owner не растёт, extraction снижает ответственность и ceiling. Лимит не повышать ради PASS; bytes авторитетны.
+Full Audit после трёх accepted slices и на milestone/integration/release; актуальное evidence переиспользуется, совпавшие триггеры закрывает один полный аудит. План cadence не сбрасывает; промежуточный CSS-edit не отдельный аудит.
+GREEN: нет blockers. YELLOW: явный долг/owner/gate, без hard violation/роста/новой ответственности. RED: hard/frozen/architecture/protected regression/compatibility/host drift/запрещённые артефакты; focused repair до расширения. Старый GREEN не отменяет новый product blocker.
+Аудит включает upstream/dependencies, schema/persistence/performance, документы/дубли. Tracked caches/logs/backups/build/one-shot workflows запрещены; постоянный screenshot pipeline остаётся. Миграции/pinned vendor не удалять из-за возраста.
 
-Run after every **three accepted slices** and at every milestone boundary, whichever comes first. Review:
-- size/ownership hotspots;
-- dead/duplicate code and obsolete adapters;
-- stale/duplicate documentation;
-- tracked artifacts/generated output;
-- duplicated/oversized test infrastructure;
-- dependency/upstream drift;
-- persistence/schema migration safety;
-- relevant runtime/browser performance risk;
-- issue/`STATUS`/`ROADMAP` consistency;
-- ASA Lab host-contract drift when that boundary is touched.
+## 7. Архитектура, Git и выпуск
 
-This is a development gate, not a retrospective report. Blocking findings are fixed before normal feature growth resumes.
-
-### Integration/release audits
-
-Before broad M5 integration, ASA-CAD and ASA Lab must already agree on their Project Core contract. Every beta/release candidate requires a full health audit plus protected functional/browser/Docker/compatibility regressions.
-
-## 3. Result model
-
-### GREEN
-No blocking architecture, hygiene, regression or compatibility issue remains. Development may continue.
-
-### YELLOW
-Debt may remain only when it:
-- violates no hard limit;
-- is explicitly recorded;
-- is frozen/non-growing;
-- receives no new responsibility;
-- has a defined cleanup owner/gate;
-- is removed before its declared boundary, no later than the next milestone unless explicitly specified otherwise.
-
-A newly introduced target-budget warning should normally be fixed by the slice that created it.
-
-### RED
-Normal feature work stops until a focused maintenance change restores GREEN or justified YELLOW.
-
-RED includes hard-budget violations, growth of frozen hotspots, broken architecture boundaries, failed protected regressions, silent saved-document incompatibility, integration-contract drift, prohibited tracked artifacts, or a new unreviewable god-object.
-
-## 4. File size and ownership
-
-File size is an architecture property because mixed large owners increase defect probability, review cost and AI context cost.
-
-`spec/process/repository-health.v1.json` is authoritative for byte/line targets, hard limits, frozen ceilings and grandfathering. Do not duplicate exact hotspot numbers here.
-
-Rules:
-1. Never raise a ceiling merely to make CI pass.
-2. If a file is above target, extract before adding a new responsibility family.
-3. A frozen/grandfathered hotspot may only shrink; lower/remove its exception in the same refactor that makes it smaller.
-4. Byte size is authoritative; line count is a secondary review signal.
-5. Vendor source, generated registries and deliberate fixture datasets need explicit policy rather than accidental exemption.
-6. Large first-party binaries/assets require explicit purpose and ownership; the repo is not an asset dump.
-
-Current high-risk owners intentionally tracked by maintenance policy include `CadViewport.tsx` and `OpenCascadePartRuntime.ts`; exact state belongs only in the machine policy/`STATUS.md`.
-
-## 5. Responsibility boundaries
-
-A file should have one primary reason to change. Typical owners:
-- application orchestration/history;
-- command families;
-- Sketch editing/tools;
-- Part feature construction;
-- selection/picking;
-- viewport input/camera/render bridge;
-- shell and focused panels;
-- persistence/session/recovery;
-- runtime adapters;
-- document validation/migrations;
-- shared browser-test infrastructure.
-
-Extraction is required before further growth when a component mixes rendering/persistence/commands, a controller handles unrelated command families, a runtime mixes kernel/topology/import-export/UI state, browser specs copy boot/touch/save helpers, CSS owns unrelated surfaces, or a localized change requires reading many unrelated files.
-
-Moving or renaming the same monolith is not decomposition.
-
-## 6. Repository and documentation hygiene
-
-First-party source may contain product code, contracts, tests, deliberate fixtures/assets and permanent tools. Do not retain editor/system junk, backup/reject/temp/log files, coverage/playwright/cache output, reproducible build output, one-shot codemods/review-fix workflows, or informal `old/copy/final2` backups.
-
-A temporary codemod may exist on a work branch but must disappear before review unless promoted to a tested permanent tool.
-
-At each full audit inspect for:
-- superseded adapters/components/hooks/services;
-- duplicate handlers or parallel implementations;
-- old CSS/fixture/routes after extraction;
-- obsolete migration helpers not needed for supported schemas;
-- duplicate status/architecture plans;
-- historical audits already absorbed into active contracts.
-
-Do not delete compatibility migrations or pinned vendor source merely because they are old.
-
-### Sources of truth
-
-- live state: active GitHub issue + short `docs/STATUS.md`;
-- product/end state: `SYSTEM_SPEC.md`;
-- technical boundaries: `ARCHITECTURE.md`;
-- sequence/acceptance: `ROADMAP.md`;
-- focused behavior: subsystem spec/machine registry.
-
-Do not create another summary/status file for convenience. Historical documents must be retired or clearly non-authoritative once active contracts absorb them. `STATUS`, `ROADMAP` and active issues must not disagree about the blocking gate.
-
-### State synchronization protocol
-
-Repository state is operational data, not optional documentation. At task start, a bot must compare current `main`, `STATUS.md`, the active milestone issue and open blocking audit/maintenance PRs. If they disagree about the active gate, feature work stops until the drift is repaired.
-
-When a command changes implementation status or backend mapping, update the command registry in the same review. When a gate/phase/next action changes, update the issue and `STATUS.md` in the same review when possible. If final merge evidence is only known after merge, the immediate next review is status-only closeout; no feature slice may start first.
-
-`ROADMAP.md` changes only when sequence/acceptance policy changes. `SYSTEM_SPEC.md` changes only when the intended end product changes.
-
-## 7. Agent/token efficiency
-
-Agent efficiency is a maintainability requirement.
-
-1. Ordinary work starts with `STATUS.md`, `SYSTEM_SPEC.md`, `ARCHITECTURE.md` and the active issue, then opens only relevant subsystem sources.
-2. Never require the full documentation tree as default context.
-3. Prefer machine-readable registries/contracts to duplicated prose.
-4. Prefer deterministic fixtures and focused regressions to manual state reconstruction.
-5. Keep owners small enough that localized work does not require reading the application.
-6. One PR = one vertical slice or one focused maintenance concern.
-7. Large cross-cutting diffs must be split or explicitly classified as architecture/maintenance work.
-8. Refactors must reduce ownership ambiguity, regression risk or future context cost—not satisfy aesthetics alone.
-
-## 8. ASA Lab compatibility preflight
-
-M5 must not be the first time both repositories discover whether their contracts agree. Before broad M4 completion maintain cross-repository evidence for at least:
-- module/project identity and routes;
-- `CadDocument` envelope/schema version;
-- load/save request/response;
-- `baseRevision` concurrency;
-- `mutationId` retry/idempotency;
-- `409` conflict behavior;
-- snapshot/version semantics;
-- same-origin session expectations;
-- unsupported/newer schema failure;
-- pinned linked-document resolution required by Assembly and later Drawing/Specification.
-
-Prefer shared/golden fixtures verified independently by ASA-CAD and ASA Lab. M5 deployment is blocked while this preflight is RED.
-
-## 9. Performance/scale review
-
-Optimization triggers come from behavior/iterations, not elapsed time. Before broad M4, record reproducible baselines for Sketch solve scale, Undo/Redo history scale, native Save/Open serialization, WASM cold startup and the protected Part recompute. Do not invent arbitrary pass/fail milliseconds before measuring the supported hardware/browser matrix.
-
-After a baseline exists, a slice that materially affects one of these paths must compare against it and explain significant regression. M4/M4B must turn the relevant baselines into machine-enforced regression thresholds and add synthetic large-document/history/topology corpora rather than only happy-path fixtures.
-
-## 10. Gate evidence and completion
-
-A completed Slice Quality Gate records concisely in the PR/issue:
-- affected owners;
-- budget/hygiene result;
-- focused tests;
-- required browser/Docker/compatibility result;
-- GREEN/YELLOW/RED;
-- cleanup performed or named debt owner;
-- status/contract synchronization when applicable.
-
-Do not create one audit-report file per slice.
-
-A maintainable permanent slice ends with:
-
-```text
-product contract
--> typed command/API
--> runtime/document behavior
--> UI/registry metadata where applicable
--> deterministic fixture
--> focused regression
--> save/reopen compatibility where applicable
--> repository-health audit
--> cleanup if required
--> affected gates green
--> issue/STATUS sync
-```
-
-Functionality without maintainability is not accepted completion.
+UI → typed actions/registries → CadApplication/CadDocument → ASA adapters → OCC/solvers, вычисления клиентские. Без raw OCC/vendor store/UI; сохранять intent, не mesh/pointers. Неоднозначные ссылки отклонять, schema change требует migration/fixture. Upstream автоматически не обновлять.
+Protected Part: `60x40 Sketch -> Extrude 10 -> Ø12 cut -> Fillet R1 -> 60→80 -> rebuild -> Save/Open -> edit again`; после M4A — protected Assembly.
+Gate B: M2V + M3 exit + M3X обеих сторон + M3M-009 + baselines solve/history/serialization/WASM/recompute + accepted Full Audit. M3X — одинаковые versioned golden fixtures; другой repo отдельно разрешается. Topology corpus: upstream edits/movement/edge-count/reorder/suppress/restore/Save-Open; broken refs never silently bind. До beta — LICENSE/THIRD_PARTY_NOTICE, без неразрешённых High findings, browser/Docker/compatibility/recovery.
+Один PR/пакет, review <=6 commits. #147/#149 — historical evidence В1; текущий NEXT берётся из синхронизированных STATUS/#10/#19 и сейчас равен В2 / CAD-VIS-002. Свежие main/PR перед записью, без отката чужого/force-push/автомержа. Docs #148 синхронизирует план/статус и не запускает product-реализацию.
+Live STATUS/#10, визуальная карточка #19; исторические NEXT в #5/#145/#143 не текущая задача. Указатели синхронизирует контролёр, history сохраняет. Нет STATUS_V2/AUDIT_FINAL; behavior sync — registry, gate sync — STATUS/Issue, post-merge evidence до следующего пакета.
