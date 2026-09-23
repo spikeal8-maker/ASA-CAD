@@ -1,274 +1,74 @@
-# ASA-CAD roadmap
+# ASA-CAD — воспроизведение КОМПАСа с видимыми поставками
 
-This file defines **implementation order and acceptance boundaries only**.
+Редакция 2026-09-23. План, не готовность. STATUS/#10 — состояние; SYSTEM_SPEC — полный объём; KOMPAS_SHELL_LAYOUT_SPEC — ТЗ оболочки и первого пакета; VISUAL_REFERENCE_SPEC — эталоны; DEVELOPMENT_QUALITY_GATES — проверки.
 
-Current implementation state and immediate work: [`STATUS.md`](STATUS.md).  
-Product/end-state contract: [`SYSTEM_SPEC.md`](SYSTEM_SPEC.md).  
-Continuous audit/maintenance contract: [`DEVELOPMENT_QUALITY_GATES.md`](DEVELOPMENT_QUALITY_GATES.md).
+## Цель
 
-Do not turn this file into a commit diary. Milestone progress belongs in GitHub issues and `STATUS.md`.
+Воспроизвести интерфейс согласованной конфигурации КОМПАС-3D v25: состав, порядок, положение, плотность, оформление и поведение рабочих состояний. Не заменить его просто удобным учебным CAD. Бренд/пиктограммы — ASA; browser/touch отличия перечисляются отдельно. Работающий урок не доказывает визуального паритета.
+Полный объём SYSTEM_SPEC сохраняется: Деталь, Сборка, Чертёж, Фрагмент, Спецификация, Текст и связи. Ближайший набор — оболочка Детали/Эскиза и существующие операции. CadApplication/CadDocument, клиентские OCC/PlaneGCS, история, миграции, CadUiAction и тесты сохраняются. Ядро не переписывать; установленный КОМПАС не сканировать.
 
-## Program invariants
+## 1. В1 принят; следующая видимая поставка — В2
 
-Every milestone preserves:
-- client-side CAD computation;
-- ASA-owned `CadDocument` / `CadApplication` boundary;
-- standalone browser/Docker operation;
-- saved-document compatibility or explicit migrations;
-- protected Part workflow;
-- protected Assembly workflow after M4A;
-- intentional/pinned vendor updates only;
-- continuous repository-health gates and non-growing architecture debt.
+**В1 / CAD-VIS-001 — DONE / accepted regional result.** Инструментальная область Детали и планшетный repair технически интегрированы в main merge-коммитом `cd343bb7219052c2a9b6080466da5b22b44d561f`; accepted tree `74a0c8806ea53dbee99e6e7184e817ff9d0f388a`.
+В1 закрывает только доказанный региональный delta верхней области. FULL M2V = NOT ACCEPTED; полный Part/Sketch parity не принят.
 
-Permanent UI is ASA-owned. Toubkal visible UI is diagnostic/reference only.
+**NEXT: В2 / CAD-VIS-002 — живой эскиз.** Один и тот же sketch ID должен быть видимым/выбираемым вне скрытого edit-state, затем входить в edit, finish, re-edit/reopen с корректной опорой и Save/Open semantics. Реализация В2 начинается только отдельной командой; эта редакция roadmap её не запускает.
 
-## Continuous quality gate
+## 2. База и интеграция
 
-Every permanent vertical slice ends with the Slice Quality Gate from `DEVELOPMENT_QUALITY_GATES.md`.
+План — существующий Draft PR #148. Продуктовый результат В1 уже находится в main: merge #150 `cd343bb7219052c2a9b6080466da5b22b44d561f`, accepted tree `74a0c8806ea53dbee99e6e7184e817ff9d0f388a`.
+Исторические #147 (`d57aa7e8…`) и #149 (`812c7eac…`) закрыты без merge как superseded; их product/evidence сохраняются как история В1. Эталонные данные #146 `dfa849513ad957c8782c8de4f618ca14b883a59f` сохраняются.
+Следующие продуктовые пакеты идут отдельными PR от fresh main. Никакой acceptance В1 автоматически не переносится на В2 или общий M2V; каждый следующий пакет получает собственный exact-head evidence/verdict.
 
-Every three accepted slices and every milestone boundary, whichever comes first, require a Full Repository Health Audit.
+## 3. Ближайшая очередь видимых результатов
 
-A RED audit blocks feature work. A YELLOW item must be explicit, frozen/non-growing and removed before the next milestone boundary. File-budget ceilings may not be raised merely to make a feature merge.
+| Пакет | Что предъявить | Функция и предел |
+|---|---|---|
+| В1 Верх Детали — DONE / accepted regional | Список наборов и группы инструментов по подтверждённой структуре, подписи/ASA-иконки, ДО/ПОСЛЕ | Существующая команда создания эскиза; не новые команды/дерево/вкладки |
+| В2 Живой эскиз — NEXT | Геометрия/размеры видны в edit и после finish, кадры обоих режимов | View/select/edit разделены; тот же ID/опора, re-edit и Save/Open; не скрытое edit ради кадра |
+| В3 Меню «Файл» | Раскрытый список по отдельному эталону и его действие | Новый/Открыть/Сохранить, отмена/dirty protection; не многодокументность |
+| В4 Выдавливание | Активная панель, выбор, подтверждение/отмена, итоговое тело | Существующий поддержанный профиль; не новые режимы/контуры |
+| В5 Первый показ детали | Запись и интерактивная сборка: `/cad/` → размерный эскиз → тело → 60→80 → rebuild → Save/Open | Реальные действия, без готовой dev-модели; не ждёт всей оболочки |
+| В6 Остальная оболочка | Меню, дерево, параметры, панели, вкладки — отдельными показанными поставками | Одна область/команда за задачу |
+| В7 Разные окна | Рабочие состояния и подтверждённые правила resize | Работоспособность и паритет — разные статусы |
+| В8 Приёмка Детали/Эскиза | Закрытый набор состояний, сравнения, отсутствие несогласованных отличий | CI + документ + visual verdict + интерактивный показ; не весь КОМПАС |
 
-The definition of done for every milestone therefore includes both product behavior and repository maintainability.
+В2 — единственная NEXT-задача после принятого merge В1. В3/В4 зависят от собственных эталонов/существующих функций; В5 требует В2–В4. Если один эталон заблокирован, контролёр может выдать независимую работу, не записывая заблокированное как принятое. Набор В8 не сокращается ради PASS.
+Просмотр не мутирует документ, выбор не edit; геометрия соответствует опоре. XY — пример, существующие XZ/YZ/грань — регрессии, не новые профили.
 
----
+## 4. В6 — не одна большая задача
 
-## Gate A — ASA CAD Core
+Меню: «Правка», «Вид», «Эскиз», «Моделирование» — по одному; остальные разделы классифицируются до приёмки, пустые активные пункты запрещены.
+Параметры: Отрезок, затем Дуга, согласование числового/графического ввода; один draft/handler. Размеры и ограничения отдельными задачами.
+Дерево: раскрытие → поиск → выбор/иерархия → контекстное действие существующего редактора. Новая семантика прошлых операций — M4, не скрытый gate В6.
+Панели: скрытие/показ, ширина, возврат после команды, максимум рабочей области; resize не меняет документ и не вызывает B-Rep rebuild.
+Документы: до кода определить ownership data/history/dirty/save identity/active command/selection/camera; затем safe close, две независимые вкладки, отказ save/recovery. Без второго persistence; чужая вкладка не меняется, ошибка сохранения не закрывает её.
+Будущая disabled-функция остаётся незавершённой. Визуальное наполнение и продуктовая возможность принимаются раздельно.
 
-### M0 — Imported CAD baseline — #1
-Pin/reproduce upstream runtime, licenses and protected geometry baseline.
+## 5. Gate B перед расширением моделирования
 
-Acceptance: clean checkout reproduces protected Part kernel workflow.
-
-### M0D — Standalone release surface — #12
-Standalone Docker/browser surface, `/cad/*` deep mounting, COOP/COEP and browser E2E.
-
-Acceptance: release image runs protected Part locally without ASA Lab or CAD backend compute.
-
-### M1 — ASA application/document boundary — #2
-Six document kinds, stable IDs, commands, migrations, undo/redo, runtime/solver/reference/render/measurement boundaries.
-
-Acceptance: product UI never requires raw OCC/Toubkal/store objects.
-
-### M1U — KOMPAS v25 inventory — #16
-Maintain the classified KOMPAS command/reference inventory.
-
-Acceptance: every adopted/omitted command family has an explicit classification.
-
-### M1B — Client runtime + host contract — #4
-Lazy runtime, capability probe, recovery, standalone/ASA Lab `CadProjectHost`, `/cad/*` mount contract.
-
-Acceptance: CAD loads only when needed and calculations stay on the client.
-
-**Gate A acceptance:** M0 + M0D + M1 + M1U baseline + M1B.
-
----
-
-## Gate B — ASA CAD Editor Alpha
-
-### M2 — Permanent KOMPAS-oriented shell — #3
-Build the ASA-owned product shell and keep the protected Part vertical slice working through it.
-
-Required shell owners:
-- application/document tabs;
-- workspace/command presentation;
-- Tree/Parameters surfaces;
-- WorkArea/viewport;
-- quick access/status/search;
-- desktop/mobile composition.
-
-Do not keep growing a single `App.tsx`; responsibilities must move to focused controllers/components before M3 expands the command surface.
-
-### M2A — Deterministic visual fixtures — #15
-Stable `/dev/...` states for owner review and browser/screenshot regression.
-
-Part baseline:
-- `/dev/part/empty`;
-- `/dev/part/sketch`;
-- `/dev/part/extrude`;
-- `/dev/part/reference`;
-- `/dev/part/rebuild-error`.
-
-Acceptance: visual correction never requires manually recreating the model or starting ASA Lab.
-
-### M2I — Workspace/input/mobile — #17
-One interaction model for desktop, touch and hybrid devices:
-- selection/preselection;
-- Tree↔Viewport sync;
-- typed face/edge/subshape picking;
-- orbit/pan/zoom/views;
-- central shortcuts;
-- touch gestures;
-- mobile Tree/Parameters/Tools surfaces;
-- command preview/phantom;
-- ambiguity/context handling.
-
-Acceptance: desktop and supported touch device operate the same native Part document and command IDs without DOM delegation between presentations.
-
-### M2R — Display/DPI/zoom/UI Scale — #18
-Effective viewport layout, HD→4K/ultrawide, DPR, browser zoom, phone/tablet and UI Scale.
-
-Acceptance: matrix/picking/readability gates pass together. Exact current status is in `STATUS.md`/issue #18.
-
-### M2V — KOMPAS visual acceptance — #19
-Map deterministic ASA states to approved KOMPAS references; tune hierarchy/proportions/spacing and ASA-owned vector icons.
-
-Acceptance: baseline and responsive visual review passes with deliberate differences recorded. **Gate B is not M2 umbrella closeout:** #3 closes after M2A + M2I + M2V; for broad M4, M2V alone is the hard blocker from those lanes. M2A supplies visual/fixture evidence where M2V acceptance needs it; M2I is parallel and non-blocking unless a criterion is explicitly promoted into Gate B.
-
-### M2O — Architecture optimization gate — #21
-Stabilize the product architecture before M3 expands the command/data surface.
-
-Execution/acceptance source of truth: [`M2O_OPTIMIZATION_GATE.md`](M2O_OPTIMIZATION_GATE.md).
-
-Blocking outcomes:
-- mandatory docs agree on the six-document architecture;
-- command/layout registries are cross-validated and statuses are truthful;
-- editor persistence uses the `CadProjectSession` / host boundary;
-- desktop/mobile consume one typed command/action model;
-- `App.tsx`, `CadApplicationImpl` and viewport responsibilities are decomposed enough for M3 growth;
-- Sketch DTOs/semantic references are strongly validated;
-- active Sketch, transient solve-cycle and Sketch preview ownership are explicit.
-
-Acceptance: all O1–O8 entry checkboxes in `M2O_OPTIMIZATION_GATE.md` are green while existing Part/browser/Docker regressions remain green. Toolchain ownership, repository administration and final visual acceptance remain non-blocking follow-up lanes.
-
-### M3 — Parametric Sketch — #5
-**Entry prerequisite: accepted M2O gate.** Live work comes from `STATUS.md` + issue #5. Exit classification is machine-readable in `spec/process/milestone-gates.v1.json`.
-
-M3 closes only when:
-- required geometry is productized: Line, Circle, Arc, Rectangle and Construction Line;
-- the required constraint family is implemented through typed ASA commands and PlaneGCS;
-- driving dimensions include linear, horizontal, vertical, angular, radius and diameter; `dimension.auto` is an extension;
-- solver UX visibly distinguishes under/fully/over-constrained state and provides meaningful non-null DOF feedback;
-- stable-ID selection/delete, mouse/touch rigid drag and central Undo/Redo are browser-proven;
-- schema-compatible Save/Open and migration fixtures preserve design intent;
-- desktop/mobile/search share one typed command/action model.
-
-Polyline/polygon/ellipse/spline/point, trim/extend/split/offset/fillet/chamfer/mirror/move/rotate/scale/project and other commands classified as M3 extensions do not block M3 close unless deliberately reclassified. Every Sketch registry command must be classified by the machine exit policy.
-
-Acceptance: the machine M3 exit contract is green and a constrained sketch remains editable/recomputable after save/reopen and drives Part features.
-
-### M3X — ASA Lab host-contract preflight
-Start before broad M4 expansion so M5 is not the first real cross-repository integration.
-
-Required compatibility evidence:
-- shared project/module identity;
-- `CadDocument` envelope/schema version;
-- load/save payload semantics;
-- `baseRevision` optimistic concurrency;
-- `mutationId` retry/idempotency semantics;
-- `409` conflict behavior;
-- snapshot/version semantics;
-- same-origin session assumptions;
-- unsupported-version failure;
-- golden fixtures/contract tests usable by both ASA-CAD and `asa-lab`.
-
-Acceptance: ASA-CAD and ASA Lab independently pass the **same versioned golden fixtures** for load/save, `baseRevision`, repeated `mutationId`, 409 conflict, snapshots/versions, unsupported schema and linked-document identity. Documentation similarity is not acceptance.
-
-**Gate B closeout — hard pre-M4 gate:**
-- M2V KOMPAS visual acceptance GREEN;
-- M3 machine exit contract GREEN;
-- M3X shared golden contract GREEN in both repositories;
+Существующий machine contract неизменен:
+- M2V KOMPAS visual acceptance;
+- M3 functional exit contract green;
+- M3X shared ASA-CAD/ASA-Lab golden contract green;
 - M3M-009 closed;
 - pre-M4 performance baselines recorded;
 - Full Repository Health Audit accepted.
+M2V до M4 — согласованный набор Part/Sketch В1–В8, не Сборки и не будущие профили. M3X требует одинаковых versioned golden fixtures обеих сторон; другой repo только отдельно разрешённо. M3M-009 и baselines solve/history/serialization/WASM/recompute планируются до В8. Аудит использует актуальное evidence; cadence не сбрасывается. Ответственные контуры и состояние gates — #10.
 
-Broad M4 work may not begin while any item above is open.
+## 6. Полный продукт после ближнего результата
 
----
+| Этап | Поставки и выход |
+|---|---|
+| M4 Разные детали | Окружность/поддержанные контуры → повторное добавление → вырез без искусственного порядка → раннее скругление → прошлые операции/recompute → reorder/suppress/restore; затем полилиния/обрезка/смещение/зеркало и остальные согласованные семьи |
+| M4A Сборки | Компоненты, положение/фиксация, сопряжения, pinned версии, вхождения/подсборки, замена, top-down/context edit; protected Assembly |
+| M4B/M5 Выпуск/обучение | Recovery/совместимость/обмен; существующий Project Core ASA Lab, другое устройство, версия/задание/pinned сдача/учитель; без новой БД/авторизации |
+| M6 Чертёж/Фрагмент | Общее 2D, лист/рамка, ассоциативные виды/проекции/разрезы/размеры, PDF/SVG/DXF; не screenshot |
+| M6A Спецификация/Текст | Состав из Сборки и контролируемое обновление; страницы/таблицы/символы/ссылки; воспроизводимый комплект |
+| M7+ | Поверхности, листовое тело, переменные, шаблоны и остаток инвентаря — без молчаливого исключения |
 
-## Gate C — Standalone CAD Beta
+Перед семейством: ID → выпуск/позже/исключено владельцем → классы поддержанных/отклонённых входов → сценарий/эталон. Два масштаба одного fixture не доказывают обобщение. Полный релевантный topology corpus и совместимость сохраняются; запреты UI не снимать без kernel proof. Gate A/M2O и Gate C/D/E/F не отменяются. Требования лицензий/security/release — DEVELOPMENT_QUALITY_GATES.
 
-### M4 — Part Design + topology robustness — #6
-Expand exact B-Rep Part features and persistent reference behavior.
+## 7. Интерактивный показ
 
-Priority families include extrude/cut/revolve/hole/fillet/chamfer/shell/rib/draft/patterns/sweep/loft as deliberately promoted from the registry.
-
-Acceptance includes:
-- the semantic-topology corpus in `spec/process/milestone-gates.v1.json`: dimension changes, moving cuts/features, edge-count changes, reorder/rebuild, suppress/restore and Save/Open;
-- every broken reference fails explicitly; silent rebinding to another face/edge is a hard regression;
-- rebuild diagnostics and compatible save/reopen;
-- measured large-document/history/recompute regressions against the pre-M4 baselines;
-- no growth of frozen M3 hotspots;
-- green Full Repository Health Audit before M4 closes.
-
-### M4A — Assembly — #11
-Bottom-up and top-down Assembly:
-- Part/subassembly occurrences;
-- pinned versions;
-- positioning/mates;
-- base fixation;
-- context Part editing;
-- explicit component update/replace;
-- protected Assembly regression.
-
-Acceptance: submitted/reopened Assembly resolves the exact pinned component versions and mates without server CAD computation.
-
-### M4B — Standalone beta hardening — #7
-Versioned `asa-cad-web` image, compatibility corpus, recovery, cleanup, browser/device performance/capability matrix.
-
-Acceptance also requires a pre-release Full Repository Health Audit with no RED findings, root product LICENSE + THIRD_PARTY_NOTICE, and no unexcepted High-severity dependency finding.
-
-**Gate C acceptance:** M4 + M4A + M4B.
-
----
-
-## Gate D — ASA Lab CAD Module
-
-### M5 — ASA Lab integration — #8
-Deploy pinned `asa-cad-web` behind `/cad/*` and connect existing ASA Lab Project Core/classes/assignments/versions/submission/teacher review.
-
-Entry prerequisite: M3X cross-repository contract preflight remains green against the current ASA Lab API/schema.
-
-Acceptance:
-- no duplicate CAD persistence service;
-- unrelated ASA pages do not fetch CAD/WASM;
-- same native document opens across supported devices;
-- geometry computation remains client-side;
-- `baseRevision`/`mutationId` and `409` behavior pass real integration E2E;
-- cross-device recovery/version/submission semantics pass against ASA Lab staging.
-
----
-
-## Gate E — Engineering documentation suite
-
-### M6 — Drawing + Fragment — #13
-Shared 2D drafting engine, sheets/views/sections/dimensions/annotations and reusable Fragment workflow.
-
-### M6A — Specification + Text — #14
-Structured BOM/specification and linked engineering text documents.
-
-**Gate E acceptance:** model-derived documentation remains version-aware and exportable without becoming screenshot-only data.
-
----
-
-## Gate F — Broader KOMPAS parity
-
-### M7+ — Advanced functions — #9
-Promote advanced commands deliberately from the maintained KOMPAS inventory: surfaces, sheet metal, advanced mates/drawing symbols, variables/templates/exchange and other approved workflows.
-
-No automatic parity chase. Each promotion is a normal vertical slice with contract, UI metadata, fixture, regression and Slice Quality Gate.
-
----
-
-## Definition of a completed feature
-
-A feature is not done because a button is visible.
-
-```text
-ASA command/API
--> parameter/selection contract
--> document/runtime behavior
--> registry/layout metadata
--> desktop/mobile presentation
--> deterministic fixture
--> affected browser/kernel regression
--> save/reopen compatibility where applicable
--> Slice Quality Gate
--> cleanup/refactor if required
--> issue/STATUS update
-```
-
-## Current work
-
-Do not infer current work from milestone order. Read [`STATUS.md`](STATUS.md) and the active GitHub issue. For M2O history/follow-ups, use [`M2O_OPTIMIZATION_GATE.md`](M2O_OPTIMIZATION_GATE.md). Current maintenance gates remain authoritative until `STATUS.md` marks them accepted.
+Ключевой PNG показывается с В1, не после всего CAD. После первого исправления контролёр готовит запрос отдельной публикации существующим оператором; В5 и В8 не принимаются без интерактивного просмотра той же сборки. SHA/digest, обратимость и изолированный адрес обязательны. Нет разрешения/доступа — PREVIEW_BLOCKED; реальные ДО/ПОСЛЕ всё равно предъявляются. Не чинить сервер/ПК, не подменять основной сайт. URL или health=200 не доказывают готовый показ.

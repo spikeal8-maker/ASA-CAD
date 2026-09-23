@@ -1,235 +1,69 @@
-# ASA-CAD visual reference specification
+# ASA-CAD — договор визуального соответствия КОМПАСу
 
-This document defines how ASA-CAD uses KOMPAS-3D as a visual/workflow reference without turning screenshots into vague inspiration or copying proprietary artwork.
+Редакция 2026-09-23. Уточняет desktop-цель SYSTEM_SPEC. Очередь ROADMAP/#10; В1 регионально принята, единственный NEXT — В2 / CAD-VIS-002. Требование процесса не равно реализованному тесту.
 
-## 1. Reference hierarchy
+## 1. Что принимается
 
-ASA-CAD uses two reference classes:
+Работоспособность CAD и воспроизведение интерфейса КОМПАСа проверяются независимо. Урок, крупные прямоугольники, SVG и GREEN не заменяют паритет. В принятом наборе совпадают состав/порядок, типы контролов, иерархия, оформление и поведение.
+Исключения: ASA branding/artwork, browser-safe shortcuts, системная рамка вне приложения, touch-композиция, ASA Lab save-status, растеризация платформ при одинаковой типографике. Другие существенные отличия согласует владелец. Принятый промежуточный прогресс не разрешает иной конечный дизайн.
 
-1. **Official KOMPAS-3D v25 help** — authoritative for command terminology, workspace/group semantics, management-panel behavior, command lifecycle and documented interaction structure.
-2. **Owner-provided KOMPAS screenshots** — preferred for exact visual measurement of the installed KOMPAS appearance the owner wants to reproduce: spacing, panel proportions, command density, row heights and other state-specific visual details.
+Принятый региональный результат: Part instrument-area delta В1 / CAD-VIS-001, merge `cd343bb7219052c2a9b6080466da5b22b44d561f`, accepted tree `74a0c8806ea53dbee99e6e7184e817ff9d0f388a`. Это **не** принятие overall Part/Sketch parity: FULL M2V = NOT ACCEPTED, FULL KOMPAS PARITY = NO.
 
-An owner screenshot is not required to begin structural M2 implementation when an official-help reference already defines the state. It is required before claiming pixel/spacing parity with a particular installed KOMPAS layout if that exact appearance is part of acceptance.
+## 2. Имеющиеся источники
 
-KOMPAS proprietary icon artwork is reference-only. ASA-CAD uses its own vector icons/assets.
+#146 `dfa849513ad957c8782c8de4f618ca14b883a59f`: `spec/ui/kompas-v25/states/part-empty/layout.json`, UIA-файл/notes/environment; один idle Part, 1920×1080 DIP, DPI96. Читать сохранённые данные, не вызывать программу.
+`workspaceTabs` 120×25 описывает один active workspace selector, а не доказанную колонку 120×93. `commandRibbon` — производные границы области. Нельзя считать их внутренней сеткой и переносить размер одного контрола на все кнопки. UIA direct и derived geometry различаются; шрифт/цвет/иконки не выводятся из rect.
+Официальные источники v25: [Окно системы](https://help.ascon.ru/KOMPAS/25/ru-RU/63_1_2_1_okno_sistemy.html), [Панели управления](https://help.ascon.ru/KOMPAS/25/ru-RU/ae1730271.html). Остальные reference IDs/ссылки — существующий `visual-reference-manifest.v1.json`. Схема без подтверждённого масштаба — источник структуры, не точных CSS px.
+ASA artifact `10691312625`, run `35721665516`, HEAD `a9d37cafef043e2db4a4b04334e71755d7df9d29` — исторические исходные дефекты, НЕ КОМПАС-эталон. Принятый В1 evidence pipeline после repair self-contained: baseline/result собираются раздельно и не требуют старого 7-day artifact. Старый mock `asa_cad_pr147_preview` запрещён как доказательство.
 
-## 2. Machine reference manifest
+## 3. Карточка и закрытие неизвестного
 
-`spec/ui/visual-reference-manifest.v1.json` is the machine-readable reference map.
+До правки конкретной области контролёр/исполнитель заполняют одну карточку в текущей задаче или существующем manifest: reference ID/version/config, состояние/действия, состав, целевые свойства, источник каждого свойства, различия ДО, критерии ПОСЛЕ. Нового реестра/framework не создавать.
+Источник свойства: MEASURED / IMAGE_AVAILABLE / STRUCTURE_DOCUMENTED / MISSING. Verdict паритета — отдельно. UNKNOWN не PASS.
+Пробел закрывает контролёр ДО приёмки свойства: сохранённые материалы → конкретная официальная иллюстрация → точный запрос эталона или решения об отличии владельцу. Фиксировать версию/масштаб, не смешивать skin. Источники исчерпаны — REFERENCE_BLOCKED с одним названным свойством/состоянием. Независимые правки идут дальше; точный паритет участка и набора не принимается.
+Запрещены установленный КОМПАС, новый scanner/OCR/UIA и поиск по всему диску. Для каждого следующего visual-пакета карточка эталона входит в продуктовую поставку, не отдельный подготовительный PR. Недостаток эталона нельзя лечить картинкой ASA или фантазией исполнителя.
 
-For each reference state it records, where applicable:
+## 4. Обязательный набор к В8
 
-- stable reference ID;
-- document kind;
-- workspace;
-- active state/command;
-- official KOMPAS help URL;
-- deterministic ASA fixture route that must exist when the workspace is implemented;
-- owner screenshot slot where exact visual tuning is desired;
-- regions/behaviors to measure or compare.
+Связать каждую строку с reference ID и реальными действиями. Незавершённое не удалять ради приёмки.
 
-The manifest is no longer an empty scaffold. It contains official-help-bound references for:
+| Область | Обязательные состояния |
+|---|---|
+| Верх Детали | Список наборов, группы/контролы/подписи/разделители, enabled/disabled/selected |
+| Меню | Закрыто/раскрыто, вложенность, клавиатура/focus, действие/причина недоступности |
+| Документы | Active/inactive/dirty, длинное имя, закрыть/отменить, две независимые сессии |
+| Дерево | Раскрытие, поиск, выбор, контекстное действие, эскиз/размеры/существующая история |
+| Эскиз | View/select/edit/finish/re-edit/reopen, геометрия/размеры, under/full/over и DoF |
+| Параметры | Отрезок/Дуга/размер/ограничение; существующие Выдавливание/Вырез/Скругление: active/input/error/apply/cancel |
+| Рабочая область | Геометрия на опоре, ориентация/выбор, quick access idle/command |
+| Панели/низ | Скрытие, ширина, возврат, максимум области, сохранение/rebuild/error |
+| Resize | Обычное окно, малые высоты, разные пропорции; реальный fullscreen отдельно |
 
-- management-panel behavior;
-- graphical Quick Access;
-- Part shell;
-- Sketch;
-- Extrusion / Cut Extrusion / Shell operation states;
-- Assembly shell, replacement and context editing;
-- Drawing view/annotation states;
-- Specification;
-- Text;
-- advanced surfaces and sheet-metal workspaces.
+Будущие возможности M4+ принимаются своим набором и не блокируют ранний ремонт. Неподдержанная команда честно disabled с причиной и backlog. Это не реализованная функция; неполное обязательное содержимое не получает полного паритета. Предварительная сборка может иметь ограниченный объём, но так и называется.
 
-## 3. Reference record
+## 5. Обязательные ДО/ПОСЛЕ
 
-A complete reference record may contain:
+Каждый UI-пакет: полный реальный кадр ДО и ПОСЛЕ, одинаковый crop, эталон/измерения, устранённые/оставшиеся различия, запись изменённого действия при необходимости. Контролёр просматривает и показывает ключевой PNG, не только ZIP/флаги PASS.
+Условия одинаковые: viewport/UI scale/zoom/state/geometry/camera/theme/browser/OS. Existing PNG применим только при совпадении условий; иначе ДО снимается из exact baseline ASA build в Actions, не из КОМПАСа. Эталон автоматически не обновляется.
+Manifest артефакта: reference ID, base/result SHA, фактический checkout SHA, build/tree identity, browser/OS, viewport/DPR/UI mode, route/действия, PNG hashes и CI. Synthetic merge checkout не приписывать PR HEAD; явно записать оба либо собирать exact tested HEAD.
+Только реальная сборка и `page.screenshot`; ждать геометрию/команду/параметры, не canvas/fixture-ready. `/dev/*` — изолированная регрессия, урок — обычный `/cad/` без скрытой подготовки. Mock/генерация/схема не screenshot продукта. Не перекрашивать и не деформировать сравниваемые изображения.
+Существующий pipeline, retention >=30 дней либо долговечный пакет. Для В1 self-contained before/after, semantic waits и retention 30 дней реализованы и приняты вместе с merge `cd343bb7…`; старый 7-day artifact не является обязательной зависимостью. Raw КОМПАС автоматически не публиковать.
 
-```text
-referenceId
-KOMPAS version
-official source URL
-owner screenshot slot/identifier
-document kind
-workspace/tab
-active command/state
-source resolution if known
-OS scale if known
-browser/application scale if known
-important panel visibility
-ASA target fixture URL
-ASA components covered
-layout observations/measure targets
-allowed/deliberate differences
-review status
-```
+## 6. Сравнение по областям
 
-Do not infer absolute CSS dimensions from a screenshot whose display scale is unknown. Such a screenshot may still define hierarchy/proportions.
+Проверять состав/порядок/тип контрола, типографику/отступы, различимость ASA-иконок, состояния и реальные клики. Для измеренных major zones baseline ±4 CSS px — только geometry gate, не общий допуск на сходство. Для иных свойств — конкретное source-сравнение, не выдуманный процент.
+Pixel diff не усреднять по пустой графической области. Свои иконки исключены из artwork equality, но не из проверки положения/размера/смысла. Обрезание ключевых подписей и неверная вложенность — реальные дефекты, даже когда button boxes совпали.
+Одна вкладка — одна строка с контролируемым многоточием/полным именем. Нельзя лечить текст универсальным увеличением кнопок без выяснения типа эталонного элемента. Force-click/маскировка дефектов запрещены; штатные popup-слои допустимы.
+Полный PARITY: все обязательные карточки закрыты, нет MISSING/REFERENCE_BLOCKED по заявляемым свойствам, нет несогласованных расхождений, действия работают и есть явный owner verdict. Региональный VISUAL_DELTA может быть принят раньше; он не закрывает весь набор.
 
-## 4. Required M2 reference states
+## 7. Разные окна
 
-The machine manifest now binds the structural M2 reference baseline. M2 implementation still must create/validate deterministic ASA fixtures for at least:
+Source — client DIP; target — фактический CSS-контейнер ASA-CAD, не монитор/рамка браузера. Baseline 1920×1080, UI100%, zoom100%. В1 дополнительно 1366×768 и phone smoke 390×844.
+К В7/В8: 1024×768, 1500×1000, 1440×900, 1366×768, 1920×900, 1920×1080, 2560×1440, 3440×1440, 3840×1080, 3840×2160; touch 768×1024/390×844. 5120×1440 — стресс, не native parity. Новые breakpoints W−1/W/W+1 и малая высота; не отдельный CSS-пресет на каждый размер.
+Resize не мутирует документ. Одинаковый контейнер/UI mode — одинаковая компоновка. Browser fullscreen, обычное/развёрнутое окно и максимум области CAD различаются. F11 не перехватывать; viewport emulation не доказывает fullscreen. Zoom80/100/125/150, DPR1/2 — с методом проверки; visualViewport.scale не единственный индикатор zoom.
+Linux Chromium не доказывает Windows/macOS/Safari: TESTED/NOT_TESTED раздельно. Работоспособность и соответствие КОМПАСу на данном размере — разные результаты. Неизвестные native minimum/resize правила остаются MISSING; ниже известного диапазона явная browser policy.
 
-- application shell with Part open;
-- idle Part with Tree;
-- Parameters panel during feature creation;
-- Sketch active;
-- Extrusion active;
-- Cut Extrusion active;
-- Fillet/feature parameter state;
-- multiple document tabs;
-- management-panel switcher;
-- graphical Quick Access/context controls;
-- command overflow/compact layout;
-- standard orientation controls;
-- tree context menu;
-- maximize/collapsed panel state;
-- save/rebuild/error state.
+## 8. Показ и учебный перенос
 
-## 5. Later reference sets
-
-### M3 Sketch
-
-- geometry group;
-- constraints group;
-- dimensions group;
-- fully constrained state;
-- conflicting/redundant constraint state;
-- projected/reference geometry.
-
-### M4 Part Design
-
-- Hole family/split menu;
-- arrays;
-- reference geometry;
-- feature editing;
-- rebuild error;
-- measurement/diagnostics.
-
-### M4A Assembly
-
-- components group;
-- placement/mates group;
-- assembly tree;
-- in-context Part editing;
-- unresolved mate/reference state;
-- component version/update state.
-
-### M6/M6A
-
-- Drawing shell/sheets/views/dimensions/annotations;
-- Fragment;
-- Specification grid;
-- Text document page editor.
-
-### M7+
-
-- Wireframe/surfaces;
-- sheet-metal modeling;
-- other commands promoted from the maintained KOMPAS inventory.
-
-## 6. Measurements to extract from owner-approved screenshots
-
-Where visible/relevant:
-
-- main-menu height;
-- document-tab height;
-- workspace/instrument-area height;
-- management-panel rail and panel width;
-- status height;
-- command group order/separators;
-- button/split/dropdown presentation;
-- icon-to-label relationship;
-- tree row height/indent rhythm;
-- ParameterPanel field rhythm;
-- viewport margins;
-- graphical Quick Access placement;
-- confirmation/cancel placement.
-
-Exact physical-pixel equality is not required across monitors because ASA is responsive. Measurements are translated into the effective CSS/layout system defined by `DISPLAY_LAYOUT_SPEC.md`.
-
-## 7. Primary baseline and responsive validation
-
-Primary visual tuning fixture:
-
-```text
-1920x1080 effective CSS viewport
-UI Scale 100%
-browser zoom 100%
-```
-
-It is then validated against `spec/ui/viewport-matrix.v1.json`, including HD, FHD, 2K, 4K/HiDPI, ultrawide, zoom, tablet and phone cases.
-
-## 8. ASA visual parity statuses
-
-A reference/fixture progresses through:
-
-- `reference-missing`;
-- `reference-bound` — official/owner reference is identified;
-- `fixture-ready` — deterministic ASA state exists;
-- `structural-parity` — hierarchy/placement/workflow accepted;
-- `visual-review-passed` — owner-approved at baseline;
-- `responsive-review-passed` — accepted across required viewport matrix.
-
-A milestone cannot claim visual completion while required states are below the applicable acceptance status.
-
-## 9. Deliberate differences
-
-Acceptable examples include:
-
-- ASA branding and ASA-owned icons;
-- browser-safe shortcut changes;
-- larger touch targets/mobile command sheets;
-- accessibility/readability adjustments;
-- deterministic compact/overflow behavior;
-- ASA Lab save/network/submission status;
-- technical changes forced by browser runtime.
-
-Every material deviation should be documented as deliberate rather than becoming an accidental divergence.
-
-## 10. Mobile reference policy
-
-KOMPAS desktop screenshots are not simply shrunk onto a phone.
-
-The same command/document information architecture maps to:
-
-- phone Tools sheet;
-- bottom-sheet ParameterPanel;
-- Tree drawer;
-- persistent work area;
-- reachable confirm/cancel;
-- search/context discovery.
-
-Mobile acceptance follows `MOBILE_RESPONSIVE_SPEC.md`, not pixel similarity to a desktop screenshot.
-
-## 11. Storage policy
-
-Prefer source links, metadata and ASA-owned annotated measurements/diagrams in the repository. Do not commit proprietary KOMPAS icon packs or copied artwork for convenience.
-
-## 12. Two different completion states
-
-### Reference-baseline complete
-
-Requires:
-
-- official-help reference mapping for required structural states;
-- stable machine reference IDs;
-- KOMPAS shell/panel/Quick Access decisions resolved;
-- layout registry present;
-- owner screenshot needs represented explicitly rather than assumed.
-
-**Status: COMPLETE.**
-
-### Visual implementation accepted
-
-Requires the actual ASA shell and therefore remains implementation work:
-
-1. corresponding deterministic `/dev/...` fixtures exist;
-2. ASA screenshots are generated at required viewport cases;
-3. owner screenshots are used where exact installed appearance is requested;
-4. structural/visual differences are reviewed;
-5. responsive/browser regression passes.
-
-**Status: PENDING M2 IMPLEMENTATION.**
-
-This distinction lets us finish the specification/reference preparation without pretending that an interface which has not yet been implemented has passed visual review.
+Изображения с В1; запрос интерактивного preview после первого исправления. В5/В8 требуют просмотра той же сборки. Публикация отдельно разрешается, по SHA/digest с rollback; нет доступа — PREVIEW_BLOCKED, реальные файлы всё равно обязательны. Сервер/ПК не чинить.
+Преподаватель отдельно проверяет перенос названий, места, выбора/ввода/завершения на тех же упражнениях КОМПАСа. Пилот отдельно согласуется, персональные данные в Git не сохраняются. Успешный урок не разрешает другой внешний вид.
