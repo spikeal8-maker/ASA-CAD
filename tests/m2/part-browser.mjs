@@ -67,9 +67,6 @@ async function clickProjectedWorldPoint(worldPoint) {
   const box = await canvas.boundingBox();
   assert.ok(box && box.width > 0 && box.height > 0, 'CAD viewport canvas has no usable bounds');
 
-  // Project through the viewport's actual camera state. This deliberately does
-  // not reproduce CadViewport's camera-placement formula: Fit/standard views
-  // are allowed to change that formula without making topology-pick E2E stale.
   const cameraState = await viewport.evaluate((node) => ({
     position: node.getAttribute('data-camera-position'),
     target: node.getAttribute('data-camera-target'),
@@ -176,7 +173,7 @@ async function createProtectedExtrude() {
   assert.deepEqual(nonPlaneGcsWasm(sketchWasm), [], 'OpenCascade/other WASM loaded during Sketch solve: ' + sketchWasm.join(', '));
 
   await finishSketch();
-  await page.locator('[data-testid="cad-sketch-overlay"]').waitFor({ state: 'detached' });
+  await page.locator('[data-testid="part-model-stage"][data-sketch-context="read-only"] [data-testid="cad-sketch-overlay"]').waitFor();
 
   const extrudeButton = page.getByRole('button', { name: /Элемент выдавливания/i });
   assert.equal(await extrudeButton.isEnabled(), true, 'Extrude should be enabled after the rectangle sketch is finished');

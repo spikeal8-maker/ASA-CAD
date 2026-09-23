@@ -86,6 +86,21 @@
 .tree-row:not(.interactive) { cursor: default; }
 .tree-row.bold .tree-label { font-weight: 650; }
 .tree-row.muted { color: #8b929b; }
+.tree-sketch-entry { display: flex; align-items: center; min-width: 0; }
+.tree-sketch-entry > .tree-row { flex: 1 1 auto; width: auto; min-width: 0; }
+.tree-sketch-edit {
+  flex: 0 0 auto;
+  min-height: 26px;
+  margin-right: 5px;
+  padding: 0 7px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: white;
+  color: #1f6690;
+  font-size: 10.5px;
+  cursor: pointer;
+}
+.tree-sketch-edit:hover, .tree-sketch-edit:focus-visible { background: #e9f4fa; }
 .tree-chevron { width: 10px; color: #747b84; display: grid; place-items: center; }
 .tree-icon { width: 18px; color: #596979; display: grid; place-items: center; }
 .tree-label { overflow: hidden; text-overflow: ellipsis; font-size: 13px; }
