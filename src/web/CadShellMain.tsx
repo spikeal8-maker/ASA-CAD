@@ -1,4 +1,5 @@
 import React from 'react';
+import { CadIcon } from './CadIcon';
 
 export type CadShellPanel = 'tree' | 'parameters' | 'tools' | 'closed';
 
@@ -29,7 +30,7 @@ export function CadShellMain(props: CadShellMainProps) {
           onClick={() => props.setActivePanel('tree')}
           title="Дерево"
         >
-          ☷
+          <CadIcon name="tree" size={16} />
           <span>Дерево</span>
         </button>
         <button
@@ -38,12 +39,16 @@ export function CadShellMain(props: CadShellMainProps) {
           onClick={() => props.setActivePanel('parameters')}
           title="Параметры"
         >
-          ≡
+          <CadIcon name="parameters" size={16} />
           <span>Параметры</span>
         </button>
         <button type="button" disabled title="Переменные — M7">
-          ƒ
+          <CadIcon name="variables" size={16} />
           <span>Переменные</span>
+        </button>
+        <button type="button" disabled title="Библиотеки — roadmap">
+          <CadIcon name="library" size={16} />
+          <span>Библиотеки</span>
         </button>
       </aside>
 
@@ -57,8 +62,8 @@ export function CadShellMain(props: CadShellMainProps) {
 
       <section className="work-area" aria-label="Рабочая область">
         <div className="viewport-quick-access" aria-label="Быстрый доступ рабочей области">
-          <button type="button" title="Показать всё (F)" onClick={() => props.requestView('Показать всё')}>⌗</button>
-          <button type="button" title="Изометрия (0)" onClick={() => props.requestView('Изометрия')}>◇</button>
+          <button type="button" title="Показать всё (F)" onClick={() => props.requestView('Показать всё')}><CadIcon name="fit" size={16} /></button>
+          <button type="button" title="Изометрия (0)" onClick={() => props.requestView('Изометрия')}><CadIcon name="view" size={16} /></button>
           <span className="quick-separator" />
           <span className="view-caption">{props.viewName}</span>
           {props.selectionMode !== 'none' && (
@@ -73,8 +78,8 @@ export function CadShellMain(props: CadShellMainProps) {
           {props.activeCommand && (
             <>
               <span className="quick-separator" />
-              <button className="quick-accept" type="button" onClick={props.commitActiveCommand} title="Применить (Ctrl+Enter)">✓</button>
-              <button className="quick-cancel" type="button" onClick={props.cancelCommand} title="Отмена (Esc)">×</button>
+              <button className="quick-accept" type="button" onClick={props.commitActiveCommand} title="Применить (Ctrl+Enter)"><CadIcon name="accept" size={16} /></button>
+              <button className="quick-cancel" type="button" onClick={props.cancelCommand} title="Отмена (Esc)"><CadIcon name="cancel" size={16} /></button>
             </>
           )}
         </div>

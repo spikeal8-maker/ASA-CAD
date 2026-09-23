@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
     paths:
+      - tests/visual/**
       - Dockerfile
       - compose.yaml
       - docker/**
@@ -28,6 +29,7 @@ on:
       - vendor/toubkal/src/**
   pull_request:
     paths:
+      - tests/visual/**
       - Dockerfile
       - compose.yaml
       - docker/**

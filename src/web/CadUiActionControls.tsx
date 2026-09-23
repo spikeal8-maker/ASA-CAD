@@ -3,7 +3,7 @@ import type { CadUiAction } from './CadUiAction';
 
 export interface CadUiActionButtonProps {
   action: CadUiAction;
-  symbol: string;
+  symbol: React.ReactNode;
   large?: boolean;
   accent?: boolean;
   text?: boolean;

@@ -129,6 +129,6 @@
   cursor: default;
 }
 .document-tab.active { background: #f8f9fa; }
-.document-kind-icon { color: #4e5e71; }
-.dirty-dot { color: var(--accent); font-size: 8px; margin-left: auto; }
+.document-kind-icon { display: inline-flex; color: #4e5e71; }
+.dirty-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-left: auto; flex: none; }
 .tab-close { color: #77808a; font-size: 17px; margin-left: auto; }

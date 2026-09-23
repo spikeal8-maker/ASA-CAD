@@ -75,6 +75,7 @@
 .ribbon-command.accent:not(:disabled) .ribbon-command-icon { color: var(--accent); }
 .ribbon-command:disabled { opacity: .47; cursor: default; }
 .ribbon-command-icon { font-size: 25px; line-height: 1; min-height: 26px; display: grid; place-items: center; }
+.ribbon-command-icon .cad-icon { width: 20px; height: 20px; }
 .ribbon-command.view-command.selected { background: var(--accent-soft); }
 .planned-badge {
   position: absolute;
