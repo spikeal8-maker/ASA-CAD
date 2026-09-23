@@ -141,6 +141,20 @@
 }
 
 /*
+ * CAD-VIS-001-REPAIR: keep Part command groups in one horizontal row on
+ * tablet widths where the desktop ribbon remains visible.
+ */
+@media (min-width: 600px) and (max-width: 899px) {
+  .part-command-groups {
+    display: flex;
+    align-items: stretch;
+    flex: 0 0 auto;
+    min-width: max-content;
+    height: 100%;
+  }
+}
+
+/*
  * Phone layout must use the actual CSS viewport as its containing block.
  * The app's base grid defines only rows, so without an explicit phone column
  * CSS Grid is allowed to size the implicit auto column from wide toolbar

@@ -211,6 +211,51 @@ async function runDesktop() {
   await page.close();
 }
 
+async function runPartRibbonBoundaryMatrix() {
+  for (const width of [768, 899, 900, 901]) {
+    const page = await browser.newPage({ viewport: { width, height: 1024 } });
+    try {
+      await page.goto(url, { waitUntil: 'networkidle' });
+      await waitForShell(page);
+
+      const snapshot = await page.evaluate(() => {
+        const rect = (node) => {
+          const box = node.getBoundingClientRect();
+          return { x: box.x, y: box.y, right: box.right, bottom: box.bottom, width: box.width, height: box.height };
+        };
+        const ribbon = document.querySelector('.command-ribbon');
+        const wrapper = document.querySelector('.part-command-groups');
+        if (!(ribbon instanceof HTMLElement) || !(wrapper instanceof HTMLElement)) return null;
+        return {
+          ribbon: { ...rect(ribbon), scrollWidth: ribbon.scrollWidth, clientWidth: ribbon.clientWidth },
+          display: getComputedStyle(wrapper).display,
+          groups: [...wrapper.querySelectorAll('.command-group')].map((node) => ({
+            label: node.querySelector('.command-group-label')?.textContent?.trim() ?? '',
+            ...rect(node),
+          })),
+        };
+      });
+
+      assert.ok(snapshot, `${width}x1024: Part ribbon snapshot missing`);
+      assert.equal(snapshot.display, 'flex', `${width}x1024: Part wrapper must stay horizontal`);
+      for (const group of snapshot.groups) {
+        assert.ok(group.y >= snapshot.ribbon.y - 0.5, `${width}x1024: ${group.label} starts above ribbon`);
+        assert.ok(group.bottom <= snapshot.ribbon.bottom + 0.5, `${width}x1024: ${group.label} falls below visible ribbon`);
+      }
+      for (let i = 0; i < snapshot.groups.length; i += 1) {
+        for (let j = i + 1; j < snapshot.groups.length; j += 1) {
+          const a = snapshot.groups[i], b = snapshot.groups[j];
+          const overlapX = Math.min(a.right, b.right) - Math.max(a.x, b.x);
+          const overlapY = Math.min(a.bottom, b.bottom) - Math.max(a.y, b.y);
+          assert.ok(overlapX <= 0.5 || overlapY <= 0.5, `${width}x1024: ${a.label} overlaps ${b.label}`);
+        }
+      }
+    } finally {
+      await page.close();
+    }
+  }
+}
+
 async function runPhone() {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   const pageErrors = [];
@@ -241,10 +286,12 @@ async function runPhone() {
 
 try {
   await runDesktop();
+  await runPartRibbonBoundaryMatrix();
   await runPhone();
   console.log('ASA-CAD M2 shell real-browser smoke PASS');
   console.log('  ✓ captured 1920×1080 geometry within ±4 CSS px');
   console.log('  ✓ Part source groups start at SYSTEM x124, Sketch x203, Solid_elements x324');
+  console.log('  ✓ Part ribbon remains horizontally composed at 768/899/900/901 CSS px');
   console.log('  ✓ Create Sketch opens plane parameters; Cancel leaves the Part unchanged');
   console.log('  ✓ Part/Sketch ribbon bounding boxes do not overlap and use ASA SVG icons');
 } finally {

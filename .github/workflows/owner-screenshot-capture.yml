@@ -2,7 +2,9 @@ name: OWNER_SCREENSHOT_CAPTURE
 
 on:
   pull_request:
-    branches: [main]
+    branches:
+      - main
+      - visual/kompas-captured-shell-001
     paths:
       - src/web/CadShellCommandGroups.tsx
       - src/web/responsive.css
@@ -16,100 +18,107 @@ permissions:
 
 jobs:
   owner-screenshot-capture:
-    name: CAD-VIS-001
+    name: CAD-VIS-001-REPAIR
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout exact PR head
+      - name: Checkout exact repair head
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          path: after-source
           fetch-depth: 1
 
-      - name: Record exact checkout
-        shell: bash
-        run: |
-          set -euo pipefail
-          echo "ASA_CAD_ACTUAL_CHECKOUT_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
-
-      - name: Download accepted before artifact
-        uses: actions/download-artifact@v4
+      - name: Checkout fixed source baseline
+        uses: actions/checkout@v4
         with:
-          name: asa-cad-owner-visual-review
-          path: accepted-before
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          repository: ${{ github.repository }}
-          run-id: 35721665516
+          ref: d57aa7e8a2696caa53ec66f020aaa866b7911dec
+          path: before-source
+          fetch-depth: 1
 
-      - name: Prepare accepted before evidence
+      - name: Record exact checkouts
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p cad-vis-001/before
-          cp accepted-before/screenshots/1920x1080/part-empty.png cad-vis-001/before/full-1920x1080.png
-
-          if command -v magick >/dev/null 2>&1; then
-            IMAGE_TOOL=magick
-          elif command -v convert >/dev/null 2>&1; then
-            IMAGE_TOOL=convert
-          else
-            sudo apt-get update
-            sudo apt-get install -y imagemagick
-            IMAGE_TOOL=convert
-          fi
-
-          "$IMAGE_TOOL" cad-vis-001/before/full-1920x1080.png             -crop 1914x93+3+55 +repage             cad-vis-001/before/instrument-1920x1080.png
+          echo "ASA_CAD_SOURCE_CHECKOUT_SHA=$(git -C before-source rev-parse HEAD)" >> "$GITHUB_ENV"
+          echo "ASA_CAD_RESULT_CHECKOUT_SHA=$(git -C after-source rev-parse HEAD)" >> "$GITHUB_ENV"
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20.19.0'
           cache: npm
-          cache-dependency-path: vendor/toubkal/package-lock.json
+          cache-dependency-path: after-source/vendor/toubkal/package-lock.json
 
       - name: Install browser-test dependencies
-        run: npm --prefix vendor/toubkal ci
+        run: npm --prefix after-source/vendor/toubkal ci
 
       - name: Install Chromium for Playwright
+        working-directory: after-source
         run: npx --yes playwright@1.60.0 install --with-deps chromium
 
-      - name: Build exact-head ASA-CAD image
-        run: docker build -t asa-cad:cad-vis-001 .
+      - name: Build source product image
+        run: docker build -t asa-cad:cad-vis-source before-source
 
-      - name: Start exact-head ASA-CAD image
-        run: docker run -d --name asa-cad-vis-001 -p 8088:8080 asa-cad:cad-vis-001
+      - name: Build repair product image
+        run: docker build -t asa-cad:cad-vis-repair after-source
 
-      - name: Wait for ASA-CAD
+      - name: Record local image identities
         shell: bash
         run: |
           set -euo pipefail
-          for attempt in $(seq 1 30); do
-            if curl --fail --silent http://127.0.0.1:8088/health/live >/dev/null; then
-              exit 0
-            fi
-            sleep 1
-          done
-          docker logs asa-cad-vis-001
-          exit 1
+          echo "ASA_CAD_SOURCE_IMAGE_ID=$(docker image inspect -f '{{.Id}}' asa-cad:cad-vis-source)" >> "$GITHUB_ENV"
+          echo "ASA_CAD_RESULT_IMAGE_ID=$(docker image inspect -f '{{.Id}}' asa-cad:cad-vis-repair)" >> "$GITHUB_ENV"
 
-      - name: Capture CAD-VIS-001 before/after evidence
+      - name: Start isolated source and repair images
+        run: |
+          docker run -d --name asa-cad-vis-source -p 8087:8080 asa-cad:cad-vis-source
+          docker run -d --name asa-cad-vis-repair -p 8088:8080 asa-cad:cad-vis-repair
+
+      - name: Wait for both ASA-CAD builds
+        shell: bash
+        run: |
+          set -euo pipefail
+          for port in 8087 8088; do
+            ready=0
+            for attempt in $(seq 1 30); do
+              if curl --fail --silent "http://127.0.0.1:$port/health/live" >/dev/null; then
+                ready=1
+                break
+              fi
+              sleep 1
+            done
+            if [ "$ready" -ne 1 ]; then
+              docker logs asa-cad-vis-source || true
+              docker logs asa-cad-vis-repair || true
+              exit 1
+            fi
+          done
+
+      - name: Reproduce source defect and verify repair
+        working-directory: after-source
         env:
-          ASA_CAD_VIS_URL: http://127.0.0.1:8088
-          ASA_CAD_VIS_ROOT: cad-vis-001
-          ASA_CAD_BEFORE_FULL: cad-vis-001/before/full-1920x1080.png
-          ASA_CAD_BEFORE_CROP: cad-vis-001/before/instrument-1920x1080.png
+          ASA_CAD_BEFORE_URL: http://127.0.0.1:8087
+          ASA_CAD_AFTER_URL: http://127.0.0.1:8088
+          ASA_CAD_VIS_ROOT: cad-vis-001-repair
+          ASA_CAD_SOURCE_SHA: d57aa7e8a2696caa53ec66f020aaa866b7911dec
           ASA_CAD_RESULT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-          ASA_CAD_ACTUAL_CHECKOUT_SHA: ${{ env.ASA_CAD_ACTUAL_CHECKOUT_SHA }}
+          ASA_CAD_SOURCE_CHECKOUT_SHA: ${{ env.ASA_CAD_SOURCE_CHECKOUT_SHA }}
+          ASA_CAD_RESULT_CHECKOUT_SHA: ${{ env.ASA_CAD_RESULT_CHECKOUT_SHA }}
+          ASA_CAD_SOURCE_IMAGE_ID: ${{ env.ASA_CAD_SOURCE_IMAGE_ID }}
+          ASA_CAD_RESULT_IMAGE_ID: ${{ env.ASA_CAD_RESULT_IMAGE_ID }}
         run: node tests/visual/cad-vis-001.mjs
 
-      - name: Upload CAD-VIS-001 artifact
+      - name: Upload CAD-VIS-001 repair artifact
         uses: actions/upload-artifact@v4
         with:
-          name: asa-cad-vis-001
-          path: cad-vis-001/
+          name: asa-cad-vis-001-repair
+          path: after-source/cad-vis-001-repair/
           if-no-files-found: error
           retention-days: 30
           compression-level: 0
 
       - name: Show container logs on failure
         if: failure()
-        run: docker logs asa-cad-vis-001 || true
+        run: |
+          docker logs asa-cad-vis-source || true
+          docker logs asa-cad-vis-repair || true
