@@ -6,6 +6,7 @@ const layer = fs.readFileSync('src/web/viewport/SketchRectangleInteractionLayer.
 const tool = fs.readFileSync('src/web/useSketchRectangleTool.ts', 'utf8');
 const workspace = fs.readFileSync('src/web/usePartSketchWorkspace.ts', 'utf8');
 const editing = fs.readFileSync('src/web/useSketchEditingController.ts', 'utf8');
+const parametricRectangle = fs.readFileSync('src/web/SketchParametricRectangleOwner.ts', 'utf8');
 const stage = fs.readFileSync('src/web/PartModelStage.tsx', 'utf8');
 const sketchStage = fs.readFileSync('src/web/SketchEditingStage.tsx', 'utf8');
 const directTools = fs.readFileSync('src/web/SketchDirectToolLayers.tsx', 'utf8');
@@ -49,7 +50,11 @@ assert.match(workspace, /useSketchEditingController/, 'Part/Sketch facade must c
 assert.match(editing, /useSketchRectangleTool/, 'Sketch editing owner must own Rectangle transient state');
 assert.match(editing, /rectangleTool\.reset\(\)/, 'Rectangle activation/cancel must reset transient tool state');
 assert.match(editing, /hasRectangleDraft/, 'central commit must distinguish direct Rectangle from numeric fallback');
-assert.match(editing, /id:\s*'dimension\.linear'/, 'numeric/driving Rectangle fallback must remain available for the protected Part path');
+assert.match(editing, /commitParametricRectangle/, 'numeric Rectangle must delegate to its focused parametric owner');
+assert.match(parametricRectangle, /id:\s*'dimension\.linear'/, 'numeric/driving Rectangle fallback must retain driving dimensions');
+assert.match(parametricRectangle, /constraint\.horizontal/, 'numeric Rectangle must retain horizontal relations');
+assert.match(parametricRectangle, /constraint\.vertical/, 'numeric Rectangle must retain vertical relations');
+assert.match(parametricRectangle, /constraint\.coincident/, 'numeric Rectangle must keep all four edges connected');
 assert.match(stage, /SketchEditingStage/, 'Part stage must delegate direct Sketch presentation');
 assert.match(sketchStage, /<SketchDirectToolLayers/, 'Sketch editing stage must delegate direct-tool composition');
 assert.match(directTools, /SketchRectangleInteractionLayer/, 'direct-tool owner must compose Rectangle outside B-Rep Three interaction');

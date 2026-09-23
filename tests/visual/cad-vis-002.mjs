@@ -114,12 +114,18 @@ async function width80(page){
   await page.getByRole('button',{name:'Применить',exact:true}).click();
   await page.getByText('Ширина изменен на 80 мм; модель перестроена',{exact:true}).waitFor({timeout:60000});
 }
-async function overlaySpan(overlay){
-  return overlay.locator('line').evaluateAll((lines)=>{
-    const xs=lines.flatMap((line)=>[Number(line.getAttribute('x1')),Number(line.getAttribute('x2'))]);
-    const ys=lines.flatMap((line)=>[Number(line.getAttribute('y1')),Number(line.getAttribute('y2'))]);
-    return {width:Math.max(...xs)-Math.min(...xs),height:Math.max(...ys)-Math.min(...ys)};
-  });
+async function assertRectangleOverlay(overlay,width,height,label){
+  const lines=await overlay.locator('line[data-sketch-entity-id]').evaluateAll((nodes)=>nodes.map((line)=>({
+    x1:Number(line.getAttribute('x1')),y1:Number(line.getAttribute('y1')),
+    x2:Number(line.getAttribute('x2')),y2:Number(line.getAttribute('y2')),
+  })));
+  assert.equal(lines.length,4,`${label}: expected four rectangle edges`);
+  const horizontal=lines.filter((line)=>Math.abs(line.y1-line.y2)<0.2);
+  const vertical=lines.filter((line)=>Math.abs(line.x1-line.x2)<0.2);
+  assert.equal(horizontal.length,2,`${label}: expected two horizontal edges`);
+  assert.equal(vertical.length,2,`${label}: expected two vertical edges`);
+  for(const line of horizontal) assert.ok(Math.abs(Math.abs(line.x2-line.x1)-width)<0.2,`${label}: horizontal edge length`);
+  for(const line of vertical) assert.ok(Math.abs(Math.abs(line.y2-line.y1)-height)<0.2,`${label}: vertical edge length`);
 }
 
 await mkdir(outputRoot,{recursive:true});
@@ -157,6 +163,7 @@ try{
   assert.equal(await after.page.getByText('1 эскиз(а)',{exact:true}).count(),0);
   await finished.stage.getByText('Ширина: 60 мм',{exact:true}).waitFor();
   await finished.stage.getByText('Высота: 40 мм',{exact:true}).waitFor();
+  await assertRectangleOverlay(finished.overlay,60,40,'finished 60×40');
   afterEvidence.push(await shot(after.page,'after/finished-sketch-1920x1080.png',1920,1080));
 
   await select(after.page,sketchId);
@@ -172,9 +179,7 @@ try{
   await finish(after.page);
   const finished80=await readOnly(after.page,sketchId);
   await after.page.waitForFunction(()=>document.querySelector('[data-testid="cad-sketch-overlay"]')?.getAttribute('data-overlay-source')==='solver-preview');
-  const span=await overlaySpan(finished80.overlay);
-  assert.ok(Math.abs(span.width-80)<0.2,`width expected 80 got ${span.width}`);
-  assert.ok(Math.abs(span.height-40)<0.2,`height expected 40 got ${span.height}`);
+  await assertRectangleOverlay(finished80.overlay,80,40,'finished 80×40');
   afterEvidence.push(await shot(after.page,'after/finished-sketch-80x40-1920x1080.png',1920,1080));
 
   const savedFinal=await save(after.page);
@@ -187,7 +192,8 @@ try{
   await after.page.getByTitle('Открыть').click();
   await after.page.getByText('Локальный документ открыт',{exact:true}).waitFor({timeout:60000});
   await after.page.locator('.cad-app[data-active-sketch-id=""][data-sketch-count="1"]').waitFor();
-  await readOnly(after.page,sketchId);
+  const reopenedStage=await readOnly(after.page,sketchId);
+  await assertRectangleOverlay(reopenedStage.overlay,80,40,'reopened 80×40');
   afterEvidence.push(await shot(after.page,'after/reopen-sketch-1920x1080.png',1920,1080));
   const reopenedSaved=await save(after.page);
   const reopenedId=identity(reopenedSaved.document,sketchId);

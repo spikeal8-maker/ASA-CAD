@@ -80,15 +80,26 @@ function sketchIdentity(document, sketchId) {
   };
 }
 
-async function overlaySpan(overlay) {
-  return overlay.locator('line').evaluateAll((lines) => {
-    const xs = lines.flatMap((line) => [Number(line.getAttribute('x1')), Number(line.getAttribute('x2'))]);
-    const ys = lines.flatMap((line) => [Number(line.getAttribute('y1')), Number(line.getAttribute('y2'))]);
-    return {
-      width: Math.max(...xs) - Math.min(...xs),
-      height: Math.max(...ys) - Math.min(...ys),
-    };
-  });
+async function assertRectangleOverlay(overlay, width, height, label) {
+  const lines = await overlay.locator('line[data-sketch-entity-id]').evaluateAll((nodes) => nodes.map((line) => ({
+    x1: Number(line.getAttribute('x1')), y1: Number(line.getAttribute('y1')),
+    x2: Number(line.getAttribute('x2')), y2: Number(line.getAttribute('y2')),
+  })));
+  assert.equal(lines.length, 4, `${label}: expected four rectangle edges`);
+  const horizontal = lines.filter((line) => Math.abs(line.y1 - line.y2) < 0.2);
+  const vertical = lines.filter((line) => Math.abs(line.x1 - line.x2) < 0.2);
+  assert.equal(horizontal.length, 2, `${label}: expected two horizontal edges`);
+  assert.equal(vertical.length, 2, `${label}: expected two vertical edges`);
+  for (const line of horizontal) {
+    assert.ok(Math.abs(Math.abs(line.x2 - line.x1) - width) < 0.2, `${label}: horizontal edge is not ${width} mm`);
+  }
+  for (const line of vertical) {
+    assert.ok(Math.abs(Math.abs(line.y2 - line.y1) - height) < 0.2, `${label}: vertical edge is not ${height} mm`);
+  }
+  const xs = lines.flatMap((line) => [line.x1, line.x2]);
+  const ys = lines.flatMap((line) => [line.y1, line.y2]);
+  assert.ok(Math.abs((Math.max(...xs) - Math.min(...xs)) - width) < 0.2, `${label}: width span mismatch`);
+  assert.ok(Math.abs((Math.max(...ys) - Math.min(...ys)) - height) < 0.2, `${label}: height span mismatch`);
 }
 
 async function selectSketch(id) {
@@ -145,6 +156,7 @@ try {
   assert.equal(await firstFinished.overlay.getAttribute('data-entity-count'), '4');
   await firstFinished.stage.getByText('Ширина: 60 мм', { exact: true }).waitFor();
   await firstFinished.stage.getByText('Высота: 40 мм', { exact: true }).waitFor();
+  await assertRectangleOverlay(firstFinished.overlay, 60, 40, 'finished 60×40');
 
   await selectSketch(sketchId);
   const afterSelect = await saveAndRead();
@@ -168,9 +180,7 @@ try {
   await page.waitForFunction(() => (
     document.querySelector('[data-testid="cad-sketch-overlay"]')?.getAttribute('data-overlay-source') === 'solver-preview'
   ));
-  const span = await overlaySpan(secondFinished.overlay);
-  assert.ok(Math.abs(span.width - 80) < 0.2, `finished width expected 80, got ${span.width}`);
-  assert.ok(Math.abs(span.height - 40) < 0.2, `finished height expected 40, got ${span.height}`);
+  await assertRectangleOverlay(secondFinished.overlay, 80, 40, 'finished 80×40');
 
   const finalSaved = await saveAndRead();
   const finalIdentity = sketchIdentity(finalSaved.document, sketchId);
@@ -185,6 +195,7 @@ try {
   const reopened = await waitReadOnly(sketchId);
   assert.equal(await reopened.stage.getAttribute('data-sketch-support'), 'XY');
   await reopened.stage.getByText('Ширина: 80 мм', { exact: true }).waitFor();
+  await assertRectangleOverlay(reopened.overlay, 80, 40, 'reopened 80×40');
   const reopenedSaved = await saveAndRead();
   assert.deepEqual(sketchIdentity(reopenedSaved.document, sketchId), initialIdentity);
 

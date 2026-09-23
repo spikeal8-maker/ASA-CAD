@@ -8,6 +8,7 @@ import {useSketchLineTool} from './useSketchLineTool';
 import {useSketchCircleTool} from './useSketchCircleTool';
 import {useSketchArcTool} from './useSketchArcTool';
 import {useSketchRectangleTool} from './useSketchRectangleTool';
+import {commitParametricRectangle} from './SketchParametricRectangleOwner';
 
 export interface SketchEditingControllerOptions {
   app: CadApplication; activeSketchId: CadSketchId | null; sketch: Readonly<CadSketch> | null;
@@ -81,30 +82,9 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
       setNotice('Размеры прямоугольника должны быть больше нуля');
       return;
     }
-    const rectangle = await app.execute({
-      id: 'sketch.rectangle',
-      payload: {
-        sketchId: currentSketch.id,
-        origin: [-rectangleWidth / 2, -rectangleHeight / 2],
-        width: rectangleWidth,
-        height: rectangleHeight,
-      },
-    });
-    if (!rectangle.ok || !rectangle.createdIds || rectangle.createdIds.length < 2) {
-      setNotice(rectangle.error?.message ?? 'Не удалось создать прямоугольник');
-      return;
-    }
-    const edges = rectangle.createdIds as CadSketchEntityId[];
-    const widthDimension = await app.execute({
-      id: 'dimension.linear',
-      payload: { sketchId: currentSketch.id, entityIds: [edges[0]], value: rectangleWidth, name: 'width' },
-    });
-    const heightDimension = await app.execute({
-      id: 'dimension.linear',
-      payload: { sketchId: currentSketch.id, entityIds: [edges[1]], value: rectangleHeight, name: 'height' },
-    });
-    if (!widthDimension.ok || !heightDimension.ok) {
-      setNotice(widthDimension.error?.message ?? heightDimension.error?.message ?? 'Не удалось создать размеры');
+    const rectangle = await commitParametricRectangle(app,currentSketch.id,rectangleWidth,rectangleHeight);
+    if (!rectangle.ok) {
+      setNotice(rectangle.error ?? 'Не удалось создать прямоугольник');
       return;
     }
     setActiveCommand(null);
