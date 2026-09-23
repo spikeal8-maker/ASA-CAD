@@ -291,7 +291,6 @@ try {
   console.log('ASA-CAD M2 shell real-browser smoke PASS');
   console.log('  ✓ captured 1920×1080 geometry within ±4 CSS px');
   console.log('  ✓ Part source groups start at SYSTEM x124, Sketch x203, Solid_elements x324');
-  console.log('  ✓ Part ribbon remains horizontally composed at 768/899/900/901 CSS px');
   console.log('  ✓ Create Sketch opens plane parameters; Cancel leaves the Part unchanged');
   console.log('  ✓ Part/Sketch ribbon bounding boxes do not overlap and use ASA SVG icons');
 } finally {
