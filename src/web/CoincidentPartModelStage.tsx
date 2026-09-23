@@ -44,7 +44,10 @@ export function CoincidentPartStage(
     commit, parallelCommit, perpendicularCommit, tangentCommit, concentricCommit,
     equalCommit, symmetryCommit, pointOnCurveCommit, angularPair, ...stageProps
   } = props;
-  const readOnlySketch = stageProps.activeWorkspace !== 'sketch' && !stageProps.renderModel && !stageProps.fixtureError
+  const readOnlySketch = stageProps.activeWorkspace !== 'sketch'
+    && !stageProps.renderModel
+    && stageProps.document.bodies.length === 0
+    && !stageProps.fixtureError
     ? stageProps.document.sketches[stageProps.document.sketches.length - 1] ?? null
     : null;
   const stage = readOnlySketch
