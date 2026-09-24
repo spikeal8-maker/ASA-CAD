@@ -31,7 +31,7 @@ export function CadFileMenu(props: { getAction(id: string): CadUiAction }) {
   const close = (returnFocus = false) => {
     setOpen(false);
     setFocusIndex(null);
-    if (returnFocus) requestAnimationFrame(() => triggerRef.current?.focus());
+    if (returnFocus) triggerRef.current?.focus();
   };
   const openAt = (index: number | null) => {
     setOpen(true);

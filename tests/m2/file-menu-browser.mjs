@@ -63,7 +63,7 @@ async function assertFileMenuContract() {
 
   await trigger.click();
   await fileMenu().waitFor();
-  await page.locator('.document-tab').click();
+  await page.locator('.work-area').click();
   assert.equal(await fileMenu().count(), 0, 'outside click did not close popup');
 
   await trigger.focus();

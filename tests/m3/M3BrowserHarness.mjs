@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { chromium } from '../../vendor/toubkal/node_modules/playwright-core/index.mjs';
+import { reloadAndOpenSavedDocument } from './M3DocumentReplacement.mjs';
 
 export const baseUrl = (process.env.ASA_CAD_SHELL_URL ?? 'http://127.0.0.1:8090/').replace(/\/$/,'');
 export const shellUrl = `${baseUrl}/`;
@@ -114,9 +115,7 @@ export async function saveLocalDocument(page) {
   return JSON.parse(saved);
 }
 export async function reopenFirstSketch(page,entityCount) {
-  await page.reload({ waitUntil: 'networkidle' });
-  await page.locator('[data-command-id="system.open"]').click();
-  await page.getByText('Локальный документ открыт',{ exact: true }).waitFor();
+  await reloadAndOpenSavedDocument(page);
   await page.locator('[data-sketch-id]').first().click();
   await page.getByRole('button',{ name: /Редактировать Эскиз/ }).click();
   await page.locator(`[data-testid="cad-sketch-overlay"][data-entity-count="${entityCount}"]`).waitFor({ timeout: 20_000 });

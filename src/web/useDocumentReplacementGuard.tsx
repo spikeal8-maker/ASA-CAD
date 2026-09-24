@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import type { CadDocumentKind } from '../contracts/document';
+import { serializeCadDocument, type CadDocument, type CadDocumentKind } from '../contracts/document';
 import { NewDocumentDialog } from './NewDocumentDialog';
 import { UnsavedChangesDialog } from './UnsavedChangesDialog';
 
@@ -7,6 +7,7 @@ type ReplacementAction = 'new' | 'open';
 
 export interface DocumentReplacementGuardOptions {
   dirty: boolean;
+  document: Readonly<CadDocument>;
   save(): Promise<boolean>;
   open(): Promise<boolean>;
   onCreate(kind: CadDocumentKind): void | Promise<void>;
@@ -16,6 +17,16 @@ export function useDocumentReplacementGuard(options: DocumentReplacementGuardOpt
   const [newDialogOpen, setNewDialogOpen] = useState(false);
   const [pending, setPending] = useState<ReplacementAction | null>(null);
   const [busy, setBusy] = useState(false);
+  const [cleanFingerprint, setCleanFingerprint] = useState<string | null>(null);
+  const fingerprint = serializeCadDocument(options.document);
+  const dirty = options.dirty && cleanFingerprint !== fingerprint;
+
+  const saveDocument = useCallback(async () => {
+    const savedFingerprint = fingerprint;
+    const saved = await options.save();
+    if (saved) setCleanFingerprint(savedFingerprint);
+    return saved;
+  }, [fingerprint, options.save]);
 
   const perform = useCallback(async (action: ReplacementAction) => {
     if (action === 'new') {
@@ -26,12 +37,12 @@ export function useDocumentReplacementGuard(options: DocumentReplacementGuardOpt
   }, [options.open]);
 
   const request = useCallback(async (action: ReplacementAction) => {
-    if (options.dirty) {
+    if (dirty) {
       setPending(action);
       return;
     }
     await perform(action);
-  }, [options.dirty, perform]);
+  }, [dirty, perform]);
 
   const newDocument = useCallback(async () => request('new'), [request]);
   const openDocument = useCallback(async () => request('open'), [request]);
@@ -49,13 +60,13 @@ export function useDocumentReplacementGuard(options: DocumentReplacementGuardOpt
     const action = pending;
     setBusy(true);
     try {
-      if (!(await options.save())) return;
+      if (!(await saveDocument())) return;
       setPending(null);
       await perform(action);
     } finally {
       setBusy(false);
     }
-  }, [busy, options.save, pending, perform]);
+  }, [busy, pending, perform, saveDocument]);
 
   const createDocument = useCallback(async (kind: CadDocumentKind) => {
     await options.onCreate(kind);
@@ -69,5 +80,5 @@ export function useDocumentReplacementGuard(options: DocumentReplacementGuardOpt
     </>
   );
 
-  return { newDocument, openDocument, dialogs };
+  return { newDocument, openDocument, saveDocument, dirty, dialogs };
 }

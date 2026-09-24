@@ -8,7 +8,12 @@ const errors = [];
 page.on('pageerror', (error) => errors.push(error.message));
 
 async function createNewPart() {
+  const wasDirty = await page.locator('.dirty-dot').count() > 0;
   await page.locator('.new-tab-button').click();
+  if (wasDirty) {
+    await page.getByRole('dialog', { name: 'Есть несохранённые изменения' })
+      .getByRole('button', { name: 'Не сохранять' }).click();
+  }
   const dialog = page.getByRole('dialog', { name: 'Новый документ' });
   await dialog.waitFor();
   await dialog.getByRole('button', { name: /Деталь/ }).click();
