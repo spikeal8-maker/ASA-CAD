@@ -19,8 +19,6 @@
 - #148 merged в main как историческое plan/status изменение: `e1ef771edc560cd4c697395e8ebeca22097628a9`.
 - #147 `d57aa7e8a2696caa53ec66f020aaa866b7911dec` и #149 `812c7eacc1e9303e4f6dc321a80cd310fdcab174` закрыты без merge как superseded; это исторические product/evidence checkpoints.
 - #146: `dfa849513ad957c8782c8de4f618ca14b883a59f`, Stage 0 измерений. Повторный сбор остановлен.
-- Screenshot evidence В1 self-contained: baseline/result собираются раздельно, retention 30 дней; старый 7-day artifact не является зависимостью.
-- Версия нового сервера здесь не установлена; не приравнивать её к main/PR.
 
 ## Вердикт
 
