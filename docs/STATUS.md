@@ -1,10 +1,11 @@
 # ASA-CAD — состояние и следующий видимый результат
 
-Снимок 2026-09-24. Координатор #10, визуальная очередь #19. В4 / CAD-VIS-004 принята как региональный результат и merged в #156; post-merge push CI на merge SHA зелёный. Полный M2V и полный паритет КОМПАСа не приняты. Следующий продуктовый пакет — В5 / CAD-VIS-005; этот status-closeout не является началом В5 и не разрешает deploy.
+Снимок 2026-09-24. Координатор #10, визуальная очередь #19. В1–В4 приняты как региональные результаты. Full Repository Health Audit #158 после В4 = YELLOW_ACCEPTED; cadence = 0/3; feature freeze lifted. FULL_M2V и FULL_KOMPAS_PARITY не приняты. NEXT = В5 / CAD-VIS-005; этот closeout не начинает В5 и не разрешает deploy.
 
 ## Зафиксированные версии
 
 - Текущий product main перед этим status-only closeout: `c73ed9a4f3a33b16c96645f162894c8e5f8d9e2e` — merge #156.
+- Full Audit #158: **YELLOW_ACCEPTED**, accepted/completed на base main `55d4d397f4ee7c461bd3ca631263a384b36d5b8c`; RED findings = NONE; cadence reset = **0/3**; feature freeze lifted.
 - Принятый продуктовый merge В4: `c73ed9a4f3a33b16c96645f162894c8e5f8d9e2e` — merge #156; accepted candidate tree `3a0fda6e553c0c85194123881f55e153346e11ff`.
 - В4 exact-head evidence: artifact `asa-cad-vis-004` id `10797593467`, retention 30 days; pre-merge exact-head M2 shell / M2 browser / M3 browser / Docker / baseline / OWNER_SCREENSHOT_CAPTURE — SUCCESS; post-merge M2 shell / M2 browser / M3 browser / Docker / baseline — SUCCESS.
 - В4 regional result: section/profile shown; method = `На расстояние`; distance; reverse; symmetric; invalid and Cancel no-mutation; direct/reverse/symmetric real B-Rep; Save/Open; XZ/YZ fail-closed. PARITY = PARTIAL.
@@ -16,9 +17,6 @@
 - Принятый продуктовый merge В2: `397229c4ff5e6325aeb169c12fba66398ab2aada` — merge #152; accepted candidate tree `397cf0dbf3567ab05c6cbb25b768fa9b075ef18a`.
 - В2 exact-head evidence: artifact `asa-cad-vis-002` id `10775390067`, retention 30 days; pre-merge exact-head gates и post-merge M2 shell / M2 browser / M3 browser / Docker / baseline — SUCCESS.
 - Принятый продуктовый merge В1: `cd343bb7219052c2a9b6080466da5b22b44d561f` — merge #150; accepted tree `74a0c8806ea53dbee99e6e7184e817ff9d0f388a`.
-- #148 merged в main как историческое plan/status изменение: `e1ef771edc560cd4c697395e8ebeca22097628a9`.
-- #147 `d57aa7e8a2696caa53ec66f020aaa866b7911dec` и #149 `812c7eacc1e9303e4f6dc321a80cd310fdcab174` закрыты без merge как superseded; это исторические product/evidence checkpoints.
-- #146: `dfa849513ad957c8782c8de4f618ca14b883a59f`, Stage 0 измерений. Повторный сбор остановлен.
 
 ## Вердикт
 
@@ -46,7 +44,7 @@ M2V = NOT ACCEPTED. Общий интерфейс владельцем не пр
 
 ## Открыто и сохранено
 
-Gate B открыт: M2V, M3 exit, M3X обеих сторон, M3M-009, baselines, Full Audit. #57 009 открыт; cadence/frozen budgets/совместимость сохранены. Счётчик берётся из accepted records, не commits/CI.
-Текущая очередь #10/#19; исторические NEXT в #5/#145 и статусный #143 не поручение повторять core/capture. #148 уже merged и является историческим plan/status изменением, не активной задачей. Текущие указатели синхронизирует контролёр, историю сохраняет.
+Gate B открыт: M2V, M3 exit, M3X обеих сторон, M3M-009 и baselines. Full Audit #158 принят YELLOW_ACCEPTED; cadence = 0/3. #57 009 открыт; frozen budgets/совместимость сохранены.
+Текущая очередь #10/#19. #143 остаётся stale status-only parallel work, #146 — parallel Stage-0 capture Draft; они не являются current-main blockers. Текущие указатели синхронизирует контролёр.
 ПК, КОМПАС/UIA/Desktop Commander, сеть/сервер и ремонт worktree/runtime/cache не входят в UI-задачи. Никаких новых clones ради ремонта старой среды. Только сохранённые материалы и изолированный build ASA-CAD.
 CORE/USER_PATH/DOCUMENT/VISUAL_DELTA/PARITY/PREVIEW фиксируются отдельно. План не является выполненным продуктовым изменением.
