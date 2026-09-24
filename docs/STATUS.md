@@ -74,7 +74,7 @@ V6A не закрывает: расстояние, до объекта, до б�
 
 ## Gates
 
-Gate A/M2O и M3 core сохраняются. Gate B остаётся OPEN по M2V, M3 exit, M3X, M3M-009 и performance baselines.
+Gate A/M2O и M3 core сохраняются. M1 ASA-owned `CadDocument` сохраняет six first-class document kinds: Part, Assembly, Drawing, Fragment, Specification, Text. Gate B остаётся OPEN по M2V, M3 exit, M3X, M3M-009 и performance baselines.
 
 Принятый integration checkpoint CAD-VIS-005 cadence не увеличивает: после #158 остаётся **0/3**, пока machine policy прямо не определит иначе.
 
