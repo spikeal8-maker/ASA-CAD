@@ -7,7 +7,7 @@
 Воспроизвести интерфейс согласованной конфигурации КОМПАС-3D v25: состав, порядок, положение, плотность, оформление и поведение рабочих состояний. Не заменить его просто удобным учебным CAD. Бренд/пиктограммы — ASA; browser/touch отличия перечисляются отдельно. Работающий урок не доказывает визуального паритета.
 Полный объём SYSTEM_SPEC сохраняется: Деталь, Сборка, Чертёж, Фрагмент, Спецификация, Текст и связи. Ближайший набор — оболочка Детали/Эскиза и существующие операции. CadApplication/CadDocument, клиентские OCC/PlaneGCS, история, миграции, CadUiAction и тесты сохраняются. Ядро не переписывать; установленный КОМПАС не сканировать.
 
-## 1. В1–В3 приняты; следующая видимая поставка — В4
+## 1. В1–В4 приняты; следующая видимая поставка — В5
 
 **В1 / CAD-VIS-001 — DONE / accepted regional result.** Инструментальная область Детали и планшетный repair технически интегрированы в main merge-коммитом `cd343bb7219052c2a9b6080466da5b22b44d561f`; accepted tree `74a0c8806ea53dbee99e6e7184e817ff9d0f388a`.
 В1 закрывает только доказанный региональный delta верхней области. FULL M2V = NOT ACCEPTED; полный Part/Sketch parity не принят.
@@ -16,11 +16,13 @@
 
 **В3 / CAD-VIS-003 — DONE / accepted regional result.** PR #154 merged как `0cca7a4fa85eb1fdac648778fb6a1d5340cedaea`; accepted candidate `25b2b739343a8ec8fbbed2bcdbe38571d1bc602b`. Рабочее раскрытое меню «Файл» использует shared New/Open/Save, общий dirty replacement guard и keyboard/focus contract. PARITY = PARTIAL; Save As / Close / Recent / Export / остальные команды и точный proprietary artwork остаются later work.
 
-**NEXT: В4 / CAD-VIS-004 — параметры существующего выдавливания.** Реализация начинается только отдельной командой после status-closeout; В5+, M4 и deploy не запускаются этой редакцией.
+**В4 / CAD-VIS-004 — DONE / accepted regional result.** PR #156 merged как `c73ed9a4f3a33b16c96645f162894c8e5f8d9e2e`; accepted candidate `3a0fda6e553c0c85194123881f55e153346e11ff`. Приняты section/profile, способ `На расстояние`, distance, reverse, symmetric, invalid/Cancel no-mutation, direct/reverse/symmetric real B-Rep, Save/Open и XZ/YZ fail-closed. PARITY = PARTIAL; full B-Rep phantom, second direction, other end conditions, draft angle, thin wall, application scope, properties, editing existing feature, multi-profile selection, exact proprietary artwork и unmeasured exact spacing остаются later work.
+
+**NEXT: В5 / CAD-VIS-005 — первый целый интерактивный урок Детали.** Реализация начинается только отдельной командой после status-closeout; В6+, M4 и deploy не запускаются этой редакцией.
 
 ## 2. База и интеграция
 
-Текущая product integration база после В3: merge #154 `0cca7a4fa85eb1fdac648778fb6a1d5340cedaea`, accepted candidate tree `25b2b739343a8ec8fbbed2bcdbe38571d1bc602b`. В2 остаётся принятым региональным результатом: merge #152 `397229c4ff5e6325aeb169c12fba66398ab2aada`, accepted candidate tree `397cf0dbf3567ab05c6cbb25b768fa9b075ef18a`; В1 — merge #150 `cd343bb7219052c2a9b6080466da5b22b44d561f`, accepted tree `74a0c8806ea53dbee99e6e7184e817ff9d0f388a`. Этот отдельный status-only closeout не начинает В4.
+Текущая product integration база после В4: merge #156 `c73ed9a4f3a33b16c96645f162894c8e5f8d9e2e`, accepted candidate tree `3a0fda6e553c0c85194123881f55e153346e11ff`. В3 остаётся принятым региональным результатом: merge #154 `0cca7a4fa85eb1fdac648778fb6a1d5340cedaea`, accepted candidate tree `25b2b739343a8ec8fbbed2bcdbe38571d1bc602b`. В2 остаётся принятым региональным результатом: merge #152 `397229c4ff5e6325aeb169c12fba66398ab2aada`, accepted candidate tree `397cf0dbf3567ab05c6cbb25b768fa9b075ef18a`; В1 — merge #150 `cd343bb7219052c2a9b6080466da5b22b44d561f`, accepted tree `74a0c8806ea53dbee99e6e7184e817ff9d0f388a`. Этот отдельный status-only closeout не начинает В5.
 Исторические #147 (`d57aa7e8…`) и #149 (`812c7eac…`) закрыты без merge как superseded; их product/evidence сохраняются как история В1. Эталонные данные #146 `dfa849513ad957c8782c8de4f618ca14b883a59f` сохраняются.
 Следующие продуктовые пакеты идут отдельными PR от fresh main. Никакой acceptance В1 автоматически не переносится на В2 или общий M2V; каждый следующий пакет получает собственный exact-head evidence/verdict.
 
@@ -31,13 +33,13 @@
 | В1 Верх Детали — DONE / accepted regional | Список наборов и группы инструментов по подтверждённой структуре, подписи/ASA-иконки, ДО/ПОСЛЕ | Существующая команда создания эскиза; не новые команды/дерево/вкладки |
 | В2 Живой эскиз — DONE / accepted regional | Геометрия/размеры видны в edit и после finish; merge #152 `397229c4…` | View/select/edit разделены; тот же ID/опора, re-edit и Save/Open; single-Sketch acceptance, не full multi-sketch policy |
 | В3 Меню «Файл» — DONE / accepted regional | Рабочий dropdown и self-contained evidence; merge #154 `0cca7a4…` | Shared Новый/Открыть/Сохранить, dirty guard, keyboard/focus; PARITY PARTIAL |
-| В4 / CAD-VIS-004 Выдавливание — NEXT | Активная панель, выбор, подтверждение/отмена, итоговое тело | Параметры существующего поддержанного выдавливания; не новые режимы/контуры |
-| В5 Первый показ детали | Запись и интерактивная сборка: `/cad/` → размерный эскиз → тело → 60→80 → rebuild → Save/Open | Реальные действия, без готовой dev-модели; не ждёт всей оболочки |
+| В4 / CAD-VIS-004 Выдавливание — DONE / accepted regional | Полная поддерживаемая панель Extrude и self-contained evidence; merge #156 `c73ed9a4…` | Section/profile + На расстояние + distance/reverse/symmetric + no-mutation + real B-Rep + Save/Open + XZ/YZ fail-closed; PARITY PARTIAL |
+| В5 / CAD-VIS-005 Первый показ детали — NEXT | Запись и интерактивная сборка: `/cad/` → размерный эскиз → тело → 60→80 → rebuild → Save/Open | Реальные действия, без готовой dev-модели; не ждёт всей оболочки |
 | В6 Остальная оболочка | Меню, дерево, параметры, панели, вкладки — отдельными показанными поставками | Одна область/команда за задачу |
 | В7 Разные окна | Рабочие состояния и подтверждённые правила resize | Работоспособность и паритет — разные статусы |
 | В8 Приёмка Детали/Эскиза | Закрытый набор состояний, сравнения, отсутствие несогласованных отличий | CI + документ + visual verdict + интерактивный показ; не весь КОМПАС |
 
-В4 / CAD-VIS-004 — единственная NEXT-задача после принятого merge В3. В4 зависит от собственного эталона/существующих функций; В5 требует В2–В4. Если один эталон заблокирован, контролёр может выдать независимую работу, не записывая заблокированное как принятое. Набор В8 не сокращается ради PASS.
+В5 / CAD-VIS-005 — единственная NEXT-задача после принятого merge В4. В5 использует уже принятые В2–В4 как пользовательский путь и не расширяет автоматически общий M2V verdict. Если один эталон заблокирован, контролёр может выдать независимую работу, не записывая заблокированное как принятое. Набор В8 не сокращается ради PASS.
 Просмотр не мутирует документ, выбор не edit; геометрия соответствует опоре. XY — пример, существующие XZ/YZ/грань — регрессии, не новые профили.
 
 ## 4. В6 — не одна большая задача
