@@ -14,7 +14,7 @@
 - CAD-VIS-005 PRODUCT_DELTA = **NONE**.
 - FULL_M2V = **NOT ACCEPTED**.
 - FULL_KOMPAS_PARITY = **NO**.
-- Full Repository Health Audit #158 = **YELLOW_ACCEPTED**; RED findings = NONE; cadence = **0/3**; feature freeze lifted.
+- Full Repository Health Audit #158 = **YELLOW_ACCEPTED**; RED findings = NONE; cadence = **1/3**; feature freeze lifted.
 
 ## Что доказал CAD-VIS-005
 
@@ -76,6 +76,6 @@ V6A не закрывает: расстояние, до объекта, до б�
 
 Gate A/M2O и M3 core сохраняются. M1 ASA-owned `CadDocument` сохраняет six first-class document kinds: Part, Assembly, Drawing, Fragment, Specification, Text. Gate B остаётся OPEN по M2V, M3 exit, M3X, M3M-009 и performance baselines.
 
-Принятый integration checkpoint CAD-VIS-005 cadence не увеличивает: после #158 остаётся **0/3**, пока machine policy прямо не определит иначе.
+Machine registry `spec/process/repository-health.v1.json` считает каждый accepted permanent slice. Поэтому после #158 и принятого permanent checkpoint CAD-VIS-005 cadence = **1/3**; следующий Full Repository Health Audit требуется на 3/3 либо на milestone boundary.
 
 ПК, Ali_Robs, Desktop Commander, локальные Docker/browser tests и изменения сети не являются test environment для этой очереди.
