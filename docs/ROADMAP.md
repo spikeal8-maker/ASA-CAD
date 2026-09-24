@@ -1,80 +1,95 @@
 # ASA-CAD — воспроизведение КОМПАСа с видимыми поставками
 
-Редакция 2026-09-24. План, не готовность. STATUS/#10 — состояние; SYSTEM_SPEC — полный объём; KOMPAS_SHELL_LAYOUT_SPEC — ТЗ оболочки; VISUAL_REFERENCE_SPEC — эталоны; DEVELOPMENT_QUALITY_GATES — проверки. Full Audit #158 после В1–В4 = YELLOW_ACCEPTED, cadence 0/3.
+Редакция 2026-09-24. План, не готовность. STATUS/#10 — состояние; SYSTEM_SPEC — полный объём; KOMPAS_SHELL_LAYOUT_SPEC — ТЗ оболочки; VISUAL_REFERENCE_SPEC — эталоны; DEVELOPMENT_QUALITY_GATES — проверки.
 
 ## Цель
 
-Воспроизвести интерфейс согласованной конфигурации КОМПАС-3D v25: состав, порядок, положение, плотность, оформление и поведение рабочих состояний. Не заменить его просто удобным учебным CAD. Бренд/пиктограммы — ASA; browser/touch отличия перечисляются отдельно. Работающий урок не доказывает визуального паритета.
-Полный объём SYSTEM_SPEC сохраняется: Деталь, Сборка, Чертёж, Фрагмент, Спецификация, Текст и связи. Ближайший набор — оболочка Детали/Эскиза и существующие операции. CadApplication/CadDocument, клиентские OCC/PlaneGCS, история, миграции, CadUiAction и тесты сохраняются. Ядро не переписывать; установленный КОМПАС не сканировать.
+Воспроизвести согласованную конфигурацию КОМПАС-3D v25 в браузере: интерфейс, структуру, панели, состояния, команды и поведение. Работающий учебный сценарий сам по себе не доказывает визуального паритета.
 
-## 1. В1–В4 приняты; следующая видимая поставка — В5
+FULL_M2V = **NOT ACCEPTED**. FULL_KOMPAS_PARITY = **NO**.
 
-**В1 / CAD-VIS-001 — DONE / accepted regional result.** Инструментальная область Детали и планшетный repair технически интегрированы в main merge-коммитом `cd343bb7219052c2a9b6080466da5b22b44d561f`; accepted tree `74a0c8806ea53dbee99e6e7184e817ff9d0f388a`.
-В1 закрывает только доказанный региональный delta верхней области. FULL M2V = NOT ACCEPTED; полный Part/Sketch parity не принят.
+## Принятые продуктовые слои
 
-**В2 / CAD-VIS-002 — DONE / accepted regional result.** PR #152 merged как `397229c4ff5e6325aeb169c12fba66398ab2aada`; accepted candidate `397cf0dbf3567ab05c6cbb25b768fa9b075ef18a`. Один Sketch проходит finish/select/re-edit/reopen с тем же ID/support/entity/dimension IDs; 60→80 даёт закрытый 80×40; exact-head и post-merge применимые gates зелёные. Это single-Sketch regional acceptance: full multi-sketch view/selection policy не закрыта.
+**В1 / CAD-VIS-001 — DONE / accepted regional result.** Верхняя область Детали и responsive repair.
 
-**В3 / CAD-VIS-003 — DONE / accepted regional result.** PR #154 merged как `0cca7a4fa85eb1fdac648778fb6a1d5340cedaea`; accepted candidate `25b2b739343a8ec8fbbed2bcdbe38571d1bc602b`. Рабочее раскрытое меню «Файл» использует shared New/Open/Save, общий dirty replacement guard и keyboard/focus contract. PARITY = PARTIAL; Save As / Close / Recent / Export / остальные команды и точный proprietary artwork остаются later work.
+**В2 / CAD-VIS-002 — DONE / accepted regional result.** Один Sketch проходит finish/select/re-edit/reopen с тем же identity; single-Sketch acceptance не закрывает full multi-sketch policy.
 
-**В4 / CAD-VIS-004 — DONE / accepted regional result.** PR #156 merged как `c73ed9a4f3a33b16c96645f162894c8e5f8d9e2e`; accepted candidate `3a0fda6e553c0c85194123881f55e153346e11ff`. Приняты section/profile, способ `На расстояние`, distance, reverse, symmetric, invalid/Cancel no-mutation, direct/reverse/symmetric real B-Rep, Save/Open и XZ/YZ fail-closed. PARITY = PARTIAL; full B-Rep phantom, second direction, other end conditions, draft angle, thin wall, application scope, properties, editing existing feature, multi-profile selection, exact proprietary artwork и unmeasured exact spacing остаются later work.
+**В3 / CAD-VIS-003 — DONE / accepted regional result.** Рабочее меню «Файл», shared New/Open/Save, dirty replacement guard, keyboard/focus. PARITY = PARTIAL.
 
-**NEXT: В5 / CAD-VIS-005 — первый целый интерактивный урок Детали.** Реализация начинается только отдельной командой после status-closeout; В6+, M4 и deploy не запускаются этой редакцией.
+**В4 / CAD-VIS-004 — DONE / accepted regional result.** Поддерживаемая панель Extrude: section/profile, «На расстояние», distance/reverse/symmetric, invalid/Cancel no-mutation, real B-Rep, Save/Open, XZ/YZ fail-closed. PARITY = PARTIAL.
 
-## 2. База и интеграция
+## CAD-VIS-005 — integration checkpoint
 
-Текущая product integration база после В4: merge #156 `c73ed9a4f3a33b16c96645f162894c8e5f8d9e2e`, accepted candidate tree `3a0fda6e553c0c85194123881f55e153346e11ff`. В3 остаётся принятым региональным результатом: merge #154 `0cca7a4fa85eb1fdac648778fb6a1d5340cedaea`, accepted candidate tree `25b2b739343a8ec8fbbed2bcdbe38571d1bc602b`. В2 остаётся принятым региональным результатом: merge #152 `397229c4ff5e6325aeb169c12fba66398ab2aada`, accepted candidate tree `397cf0dbf3567ab05c6cbb25b768fa9b075ef18a`; В1 — merge #150 `cd343bb7219052c2a9b6080466da5b22b44d561f`, accepted tree `74a0c8806ea53dbee99e6e7184e817ff9d0f388a`. Этот отдельный status-only closeout не начинает В5.
-Исторические #147 (`d57aa7e8…`) и #149 (`812c7eac…`) закрыты без merge как superseded; их product/evidence сохраняются как история В1. Эталонные данные #146 `dfa849513ad957c8782c8de4f618ca14b883a59f` сохраняются.
-Следующие продуктовые пакеты идут отдельными PR от fresh main. Full Audit #158 принят: RED=NONE, cadence=0/3, feature freeze lifted. Никакая regional acceptance не переносится автоматически на общий M2V; каждый следующий пакет получает собственный exact-head evidence/verdict.
+CAD-VIS-005 принят через PR #160, merge `b79e488ed1a42e2f061eecd44fead279a6b335b2`.
 
-## 3. Ближайшая очередь видимых результатов
+Это **integration checkpoint / end-to-end Part verification**, а не отдельная новая функция ASA-CAD и не новый визуальный слой КОМПАСа.
 
-| Пакет | Что предъявить | Функция и предел |
-|---|---|---|
-| В1 Верх Детали — DONE / accepted regional | Список наборов и группы инструментов по подтверждённой структуре, подписи/ASA-иконки, ДО/ПОСЛЕ | Существующая команда создания эскиза; не новые команды/дерево/вкладки |
-| В2 Живой эскиз — DONE / accepted regional | Геометрия/размеры видны в edit и после finish; merge #152 `397229c4…` | View/select/edit разделены; тот же ID/опора, re-edit и Save/Open; single-Sketch acceptance, не full multi-sketch policy |
-| В3 Меню «Файл» — DONE / accepted regional | Рабочий dropdown и self-contained evidence; merge #154 `0cca7a4…` | Shared Новый/Открыть/Сохранить, dirty guard, keyboard/focus; PARITY PARTIAL |
-| В4 / CAD-VIS-004 Выдавливание — DONE / accepted regional | Полная поддерживаемая панель Extrude и self-contained evidence; merge #156 `c73ed9a4…` | Section/profile + На расстояние + distance/reverse/symmetric + no-mutation + real B-Rep + Save/Open + XZ/YZ fail-closed; PARITY PARTIAL |
-| В5 / CAD-VIS-005 Первый показ детали — NEXT | Запись и интерактивная сборка: `/cad/` → размерный эскиз → тело → 60→80 → rebuild → Save/Open | Реальные действия, без готовой dev-модели; не ждёт всей оболочки |
-| В6 Остальная оболочка | Меню, дерево, параметры, панели, вкладки — отдельными показанными поставками | Одна область/команда за задачу |
-| В7 Разные окна | Рабочие состояния и подтверждённые правила resize | Работоспособность и паритет — разные статусы |
-| В8 Приёмка Детали/Эскиза | Закрытый набор состояний, сравнения, отсутствие несогласованных отличий | CI + документ + visual verdict + интерактивный показ; не весь КОМПАС |
+PRODUCT_DELTA = **NONE**.
 
-В5 / CAD-VIS-005 — единственная NEXT-задача после принятого merge В4. В5 использует уже принятые В2–В4 как пользовательский путь и не расширяет автоматически общий M2V verdict. Если один эталон заблокирован, контролёр может выдать независимую работу, не записывая заблокированное как принятое. Набор В8 не сокращается ради PASS.
-Просмотр не мутирует документ, выбор не edit; геометрия соответствует опоре. XY — пример, существующие XZ/YZ/грань — регрессии, не новые профили.
+Checkpoint доказал совместный обычный пользовательский путь уже принятых В1–В4:
 
-## 4. В6 — не одна большая задача
+`/cad/` → новая Деталь → XY 60×40 → Finish → Extrude 10 → 60→80 → Rebuild → Save/Open → re-edit same Sketch.
 
-Меню: «Правка», «Вид», «Эскиз», «Моделирование» — по одному; остальные разделы классифицируются до приёмки, пустые активные пункты запрещены.
-Параметры: Отрезок, затем Дуга, согласование числового/графического ввода; один draft/handler. Размеры и ограничения отдельными задачами.
-Дерево: раскрытие → поиск → выбор/иерархия → контекстное действие существующего редактора. Новая семантика прошлых операций — M4, не скрытый gate В6.
-Панели: скрытие/показ, ширина, возврат после команды, максимум рабочей области; resize не меняет документ и не вызывает B-Rep rebuild.
-Документы: до кода определить ownership data/history/dirty/save identity/active command/selection/camera; затем safe close, две независимые вкладки, отказ save/recovery. Без второго persistence; чужая вкладка не меняется, ошибка сохранения не закрывает её.
-Будущая disabled-функция остаётся незавершённой. Визуальное наполнение и продуктовая возможность принимаются раздельно.
+Exact-head и post-merge применимые GitHub gates — SUCCESS. Artifact: `asa-cad-vis-005` id `10815509187`, retention 30 days, oldArtifactDependency=false.
 
-## 5. Gate B перед расширением моделирования
+Full Repository Health Audit #158 остаётся YELLOW_ACCEPTED; RED findings = NONE; cadence после audit = **0/3**. CAD-VIS-005 cadence не увеличивает, потому что product delta отсутствует.
 
-Существующий machine contract неизменен:
-- M2V KOMPAS visual acceptance;
-- M3 functional exit contract green;
-- M3X shared ASA-CAD/ASA-Lab golden contract green;
-- M3M-009 closed;
-- pre-M4 performance baselines recorded;
-- Full Repository Health Audit accepted; current cadence gate satisfied by #158 (YELLOW_ACCEPTED, 0/3).
-M2V до M4 — согласованный набор Part/Sketch В1–В8, не Сборки и не будущие профили. M3X требует одинаковых versioned golden fixtures обеих сторон; другой repo только отдельно разрешённо. M3M-009 и baselines solve/history/serialization/WASM/recompute планируются до В8. Аудит использует актуальное evidence; cadence не сбрасывается. Ответственные контуры и состояние gates — #10.
+## NEXT — V6A / CAD-VIS-006A
 
-## 6. Полный продукт после ближнего результата
+**V6A / CAD-VIS-006A — панель «Вырезать выдавливанием».**
 
-| Этап | Поставки и выход |
+Цель — привести активную панель к структуре КОМПАСа только в пределах реально поддерживаемой ASA семантики:
+
+- реальное сечение / имя Sketch;
+- направляющий объект: нормаль к плоскости эскиза;
+- способ: «Сквозь всё»;
+- «Создать объект» / «Отмена»;
+- begin/cancel без мутации document;
+- Apply через существующий `part.cutExtrude → feature.cutExtrude`;
+- Save/Open сохраняет Sketch / cut Feature / Body identity;
+- protected Part regression остаётся GREEN.
+
+V6A не расширяет kernel, CadDocument schema, migrations или persistence protocol.
+
+Не заявлять реализованными:
+- «На расстояние»;
+- «До объекта»;
+- «До ближайшей поверхности»;
+- второе направление;
+- «Симметрично»;
+- уклон;
+- тонкую стенку;
+- редактирование существующей операции;
+- multi-body application scope.
+
+Эти пункты остаются REMAINING_CUT_EXTRUDE_PARITY.
+
+V6A visual evidence:
+- BEFORE = exact fresh main после CAD-VIS-005 closeout;
+- AFTER = exact V6A PR HEAD;
+- ordinary `/cad/`, без primary fixture;
+- artifact `asa-cad-vis-006a`, retention >=30 days, oldArtifactDependency=false.
+
+V6A PR остаётся Draft и не merge.
+
+## Дальнейшая очередь
+
+| Пакет | Статус / результат |
 |---|---|
-| M4 Разные детали | Окружность/поддержанные контуры → повторное добавление → вырез без искусственного порядка → раннее скругление → прошлые операции/recompute → reorder/suppress/restore; затем полилиния/обрезка/смещение/зеркало и остальные согласованные семьи |
-| M4A Сборки | Компоненты, положение/фиксация, сопряжения, pinned версии, вхождения/подсборки, замена, top-down/context edit; protected Assembly |
-| M4B/M5 Выпуск/обучение | Recovery/совместимость/обмен; существующий Project Core ASA Lab, другое устройство, версия/задание/pinned сдача/учитель; без новой БД/авторизации |
-| M6 Чертёж/Фрагмент | Общее 2D, лист/рамка, ассоциативные виды/проекции/разрезы/размеры, PDF/SVG/DXF; не screenshot |
-| M6A Спецификация/Текст | Состав из Сборки и контролируемое обновление; страницы/таблицы/символы/ссылки; воспроизводимый комплект |
-| M7+ | Поверхности, листовое тело, переменные, шаблоны и остаток инвентаря — без молчаливого исключения |
+| В1 / CAD-VIS-001 | DONE / regional accepted |
+| В2 / CAD-VIS-002 | DONE / regional accepted |
+| В3 / CAD-VIS-003 | DONE / regional accepted / PARITY PARTIAL |
+| В4 / CAD-VIS-004 | DONE / regional accepted / PARITY PARTIAL |
+| CAD-VIS-005 | INTEGRATION CHECKPOINT / ACCEPTED / PRODUCT_DELTA NONE |
+| V6A / CAD-VIS-006A | NEXT — Cut-Extrude parameters |
+| V6B+ | позже, отдельными показанными slices |
+| V7 | resize / state matrix позже |
+| V8 | закрытая Part/Sketch acceptance позже |
 
-Перед семейством: ID → выпуск/позже/исключено владельцем → классы поддержанных/отклонённых входов → сценарий/эталон. Два масштаба одного fixture не доказывают обобщение. Полный релевантный topology corpus и совместимость сохраняются; запреты UI не снимать без kernel proof. Gate A/M2O и Gate C/D/E/F не отменяются. Требования лицензий/security/release — DEVELOPMENT_QUALITY_GATES.
+## Gates
 
-## 7. Интерактивный показ
+Gate A/M2O и M3 core сохраняются. Gate B перед broad M4 остаётся OPEN: M2V, M3 exit, M3X, M3M-009, performance baselines.
 
-Ключевой PNG показывается с В1, не после всего CAD. После первого исправления контролёр готовит запрос отдельной публикации существующим оператором; В5 и В8 не принимаются без интерактивного просмотра той же сборки. SHA/digest, обратимость и изолированный адрес обязательны. Нет разрешения/доступа — PREVIEW_BLOCKED; реальные ДО/ПОСЛЕ всё равно предъявляются. Не чинить сервер/ПК, не подменять основной сайт. URL или health=200 не доказывают готовый показ.
+Regional acceptance и integration checkpoint не переносят acceptance автоматически на следующий slice или весь КОМПАС.
+
+Работа этой очереди выполняется через GitHub repository/branch/PR/Issues/Actions/artifacts. Локальные ПК, Ali_Robs, Desktop Commander и локальный Docker не являются test environment.
