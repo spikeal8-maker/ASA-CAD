@@ -1,10 +1,14 @@
 # ASA-CAD — состояние и следующий видимый результат
 
-Снимок 2026-09-24. Координатор #10, визуальная очередь #19. В3 / CAD-VIS-003 принята как региональный результат и merged в #154; post-merge push CI на merge SHA зелёный. Полный M2V и полный паритет КОМПАСа не приняты. Следующий продуктовый пакет — В4 / CAD-VIS-004; этот status-closeout не является началом В4 и не разрешает deploy.
+Снимок 2026-09-24. Координатор #10, визуальная очередь #19. В4 / CAD-VIS-004 принята как региональный результат и merged в #156; post-merge push CI на merge SHA зелёный. Полный M2V и полный паритет КОМПАСа не приняты. Следующий продуктовый пакет — В5 / CAD-VIS-005; этот status-closeout не является началом В5 и не разрешает deploy.
 
 ## Зафиксированные версии
 
-- Текущий product main перед этим status-only closeout: `0cca7a4fa85eb1fdac648778fb6a1d5340cedaea` — merge #154.
+- Текущий product main перед этим status-only closeout: `c73ed9a4f3a33b16c96645f162894c8e5f8d9e2e` — merge #156.
+- Принятый продуктовый merge В4: `c73ed9a4f3a33b16c96645f162894c8e5f8d9e2e` — merge #156; accepted candidate tree `3a0fda6e553c0c85194123881f55e153346e11ff`.
+- В4 exact-head evidence: artifact `asa-cad-vis-004` id `10797593467`, retention 30 days; pre-merge exact-head M2 shell / M2 browser / M3 browser / Docker / baseline / OWNER_SCREENSHOT_CAPTURE — SUCCESS; post-merge M2 shell / M2 browser / M3 browser / Docker / baseline — SUCCESS.
+- В4 regional result: section/profile shown; method = `На расстояние`; distance; reverse; symmetric; invalid and Cancel no-mutation; direct/reverse/symmetric real B-Rep; Save/Open; XZ/YZ fail-closed. PARITY = PARTIAL.
+- Remaining Extrude parity: full B-Rep phantom; second direction; other end conditions; draft angle; thin wall; application scope; properties; editing existing feature; multi-profile selection; exact proprietary artwork; unmeasured exact spacing.
 - Принятый продуктовый merge В3: `0cca7a4fa85eb1fdac648778fb6a1d5340cedaea` — merge #154; accepted candidate tree `25b2b739343a8ec8fbbed2bcdbe38571d1bc602b`.
 - В3 exact-head evidence: artifact `asa-cad-vis-003` id `10792069532`, retention 30 days; pre-merge exact-head M2 shell / M2 browser / M3 browser / Docker / baseline / OWNER_SCREENSHOT_CAPTURE — SUCCESS; post-merge M2 shell / M2 browser / M3 browser / Docker / baseline — SUCCESS.
 - В3 regional result: working File dropdown; shared New/Open/Save; shared dirty replacement guard; keyboard/focus behavior. PARITY = PARTIAL.
@@ -28,19 +32,19 @@ M2V = NOT ACCEPTED. Общий интерфейс владельцем не пр
 | Группы/контролы трактовались по крупным rect, подписи обрезаны | В1: DONE — regional result accepted, merge `cd343bb7…`; общий Part/Sketch parity не закрыт |
 | Эскиз вне edit заменяется сообщением | В2: DONE — regional result accepted, merge `397229c4…`; same Sketch ID/support survives finish/select/re-edit/reopen; multi-sketch policy остаётся позже |
 | Названия меню без раскрытия | В3: DONE — regional result accepted, merge `0cca7a4…`; File dropdown/New/Open/Save/dirty guard/keyboard-focus accepted, PARITY PARTIAL |
-| Неполная приёмка активных параметров | В4 / CAD-VIS-004: NEXT — параметры существующего выдавливания; В6 другие команды |
+| Неполная приёмка активных параметров | В4: DONE — regional result accepted, merge `c73ed9a4…`; Extrude supported subset accepted, PARITY PARTIAL; В6 другие команды |
+| Целый урок/интерактивная версия не приняты | В5 / CAD-VIS-005: NEXT — первый целый интерактивный урок Детали |
 | Дерево/вкладки частично декоративны | В6 с ownership и реальными действиями |
-| Целый урок/интерактивная версия не приняты | В5, не ждать всей оболочки |
 | Не доказан паритет состояний/resize | В7/В8; UNKNOWN не PASS |
 | Порядок операций ограничен шаблоном | M4 после Gate B с kernel proof |
 
 ## Следующее задание
 
-Единственная следующая продуктовая задача — **В4 / CAD-VIS-004 — параметры существующего выдавливания**. Запуск только отдельной исполнительной командой после принятия этой status-only синхронизации.
-В3 / CAD-VIS-003 = MERGED / REGIONAL RESULT ACCEPTED: merge #154 `0cca7a4fa85eb1fdac648778fb6a1d5340cedaea`, accepted candidate `25b2b739343a8ec8fbbed2bcdbe38571d1bc602b`; working File dropdown, shared `system.new/system.open/system.save`, shared dirty replacement guard и keyboard/focus behavior приняты. PARITY = PARTIAL; Save As / Close / Recent / Export / other KOMPAS File commands / exact proprietary artwork / exact unmeasured spacing-grouping остаются позже.
-В2 / CAD-VIS-002 остаётся MERGED / REGIONAL RESULT ACCEPTED: merge #152 `397229c4ff5e6325aeb169c12fba66398ab2aada`, accepted candidate `397cf0dbf3567ab05c6cbb25b768fa9b075ef18a`; full multi-sketch view/selection policy остаётся более поздней работой.
-В4–В8, M4, multi-sketch UX и deploy не запускаются этим closeout.
-В1, В2 и В3 = MERGED / REGIONAL RESULT ACCEPTED. Это не означает полный паритет оболочки: M2V = NOT ACCEPTED, FULL_KOMPAS_PARITY = NO.
+Единственная следующая продуктовая задача — **В5 / CAD-VIS-005 — первый целый интерактивный урок Детали**. Запуск только отдельной исполнительной командой после принятия этой status-only синхронизации.
+В4 / CAD-VIS-004 = MERGED / REGIONAL RESULT ACCEPTED: merge #156 `c73ed9a4f3a33b16c96645f162894c8e5f8d9e2e`, accepted candidate `3a0fda6e553c0c85194123881f55e153346e11ff`; section/profile, method `На расстояние`, distance, reverse, symmetric, invalid/Cancel no-mutation, direct/reverse/symmetric real B-Rep, Save/Open и XZ/YZ fail-closed приняты. PARITY = PARTIAL; remaining Extrude parity остаётся позже.
+В3 / CAD-VIS-003 остаётся MERGED / REGIONAL RESULT ACCEPTED: merge #154 `0cca7a4fa85eb1fdac648778fb6a1d5340cedaea`, accepted candidate `25b2b739343a8ec8fbbed2bcdbe38571d1bc602b`.
+В5–В8, M4, multi-sketch UX и deploy не запускаются этим closeout.
+В1, В2, В3 и В4 = MERGED / REGIONAL RESULT ACCEPTED. Это не означает полный паритет оболочки: M2V = NOT ACCEPTED, FULL_KOMPAS_PARITY = NO.
 
 ## Открыто и сохранено
 
