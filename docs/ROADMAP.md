@@ -1,6 +1,6 @@
 # ASA-CAD — воспроизведение КОМПАСа с видимыми поставками
 
-Редакция 2026-09-24. План, не готовность. STATUS/#10 — состояние; SYSTEM_SPEC — полный объём; KOMPAS_SHELL_LAYOUT_SPEC — ТЗ оболочки и первого пакета; VISUAL_REFERENCE_SPEC — эталоны; DEVELOPMENT_QUALITY_GATES — проверки.
+Редакция 2026-09-24. План, не готовность. STATUS/#10 — состояние; SYSTEM_SPEC — полный объём; KOMPAS_SHELL_LAYOUT_SPEC — ТЗ оболочки; VISUAL_REFERENCE_SPEC — эталоны; DEVELOPMENT_QUALITY_GATES — проверки. Full Audit #158 после В1–В4 = YELLOW_ACCEPTED, cadence 0/3.
 
 ## Цель
 
@@ -24,7 +24,7 @@
 
 Текущая product integration база после В4: merge #156 `c73ed9a4f3a33b16c96645f162894c8e5f8d9e2e`, accepted candidate tree `3a0fda6e553c0c85194123881f55e153346e11ff`. В3 остаётся принятым региональным результатом: merge #154 `0cca7a4fa85eb1fdac648778fb6a1d5340cedaea`, accepted candidate tree `25b2b739343a8ec8fbbed2bcdbe38571d1bc602b`. В2 остаётся принятым региональным результатом: merge #152 `397229c4ff5e6325aeb169c12fba66398ab2aada`, accepted candidate tree `397cf0dbf3567ab05c6cbb25b768fa9b075ef18a`; В1 — merge #150 `cd343bb7219052c2a9b6080466da5b22b44d561f`, accepted tree `74a0c8806ea53dbee99e6e7184e817ff9d0f388a`. Этот отдельный status-only closeout не начинает В5.
 Исторические #147 (`d57aa7e8…`) и #149 (`812c7eac…`) закрыты без merge как superseded; их product/evidence сохраняются как история В1. Эталонные данные #146 `dfa849513ad957c8782c8de4f618ca14b883a59f` сохраняются.
-Следующие продуктовые пакеты идут отдельными PR от fresh main. Никакой acceptance В1 автоматически не переносится на В2 или общий M2V; каждый следующий пакет получает собственный exact-head evidence/verdict.
+Следующие продуктовые пакеты идут отдельными PR от fresh main. Full Audit #158 принят: RED=NONE, cadence=0/3, feature freeze lifted. Никакая regional acceptance не переносится автоматически на общий M2V; каждый следующий пакет получает собственный exact-head evidence/verdict.
 
 ## 3. Ближайшая очередь видимых результатов
 
@@ -59,7 +59,7 @@
 - M3X shared ASA-CAD/ASA-Lab golden contract green;
 - M3M-009 closed;
 - pre-M4 performance baselines recorded;
-- Full Repository Health Audit accepted.
+- Full Repository Health Audit accepted; current cadence gate satisfied by #158 (YELLOW_ACCEPTED, 0/3).
 M2V до M4 — согласованный набор Part/Sketch В1–В8, не Сборки и не будущие профили. M3X требует одинаковых versioned golden fixtures обеих сторон; другой repo только отдельно разрешённо. M3M-009 и baselines solve/history/serialization/WASM/recompute планируются до В8. Аудит использует актуальное evidence; cadence не сбрасывается. Ответственные контуры и состояние gates — #10.
 
 ## 6. Полный продукт после ближнего результата
