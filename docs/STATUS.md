@@ -1,81 +1,84 @@
 # ASA-CAD — состояние и следующий видимый результат
 
-Снимок 2026-09-24. Координатор #10, визуальная очередь #19.
+Снимок 2026-09-25. Координатор #10, визуальная очередь #19.
 
 ## Текущий статус
 
 - В1 / CAD-VIS-001 — DONE / MERGED / REGIONAL RESULT ACCEPTED.
 - В2 / CAD-VIS-002 — DONE / MERGED / REGIONAL RESULT ACCEPTED.
-- В3 / CAD-VIS-003 — DONE / MERGED / REGIONAL RESULT ACCEPTED.
-- В4 / CAD-VIS-004 — DONE / MERGED / REGIONAL RESULT ACCEPTED.
-- CAD-VIS-005 — **INTEGRATION CHECKPOINT / ACCEPTED**.
-- CAD-VIS-005 merge: `b79e488ed1a42e2f061eecd44fead279a6b335b2` через PR #160.
-- CAD-VIS-005 accepted candidate: `2560e117f3957e9d6bd2cf5b6ac29347cdd20d44`.
-- CAD-VIS-005 PRODUCT_DELTA = **NONE**.
+- В3 / CAD-VIS-003 — DONE / MERGED / REGIONAL RESULT ACCEPTED / PARITY PARTIAL.
+- В4 / CAD-VIS-004 — DONE / MERGED / REGIONAL RESULT ACCEPTED / PARITY PARTIAL.
+- CAD-VIS-005 — INTEGRATION CHECKPOINT / ACCEPTED / PRODUCT_DELTA NONE.
+- V6A / CAD-VIS-006A — **DONE / MERGED / REGIONAL RESULT ACCEPTED**.
 - FULL_M2V = **NOT ACCEPTED**.
 - FULL_KOMPAS_PARITY = **NO**.
-- Full Repository Health Audit #158 = **YELLOW_ACCEPTED**; RED findings = NONE; cadence = **1/3**; feature freeze lifted.
+- Full Repository Health Audit #158 = **YELLOW_ACCEPTED**; RED findings = NONE.
+- Audit cadence = **2/3**.
 
-## Что доказал CAD-VIS-005
+## V6A / CAD-VIS-006A
 
-CAD-VIS-005 не является новой функцией продукта и не является новым слоем визуального паритета КОМПАСа.
+Accepted candidate:
+`ff57cec29d20f36b8c39ea038ad53c42ff26b55d`
 
-Checkpoint доказал, что уже принятые В1–В4 работают одним обычным пользовательским путем:
+Product merge:
+`1aed43cb483098aa8d474d9c83623c70aa7cdede` through PR #162.
 
-`/cad/` → новая Деталь → XY-эскиз 60×40 → Finish → Extrude 10 → изменение ширины 60→80 → Rebuild → Save → reload → Open → повторное редактирование того же Sketch.
+Accepted:
+- real profile **Эскиз 2**;
+- «Направляющий объект» = **Нормаль к плоскости эскиза**;
+- method = **Сквозь всё**;
+- begin does not mutate CadDocument;
+- Cancel does not mutate CadDocument;
+- Apply creates a real through-all `cut-extrude`;
+- Save/Open preserves Sketch / cut Feature / Body identity;
+- protected Part regression remains PASS;
+- visual delta evidence = PASS.
 
-В PR #160 менялись только evidence/workflow файлы:
+Pre-merge exact-head CI:
+- M2 shell `36054101423` — SUCCESS
+- M2 browser `36054101434` — SUCCESS
+- M3 browser `36054101379` — SUCCESS
+- Docker `36054101378` — SUCCESS
+- baseline `36054101436` — SUCCESS
+- OWNER_SCREENSHOT_CAPTURE `36054101394` — SUCCESS
+- artifact `asa-cad-vis-006a`, id `10832000991`, retention 30 days
 
-- `.github/workflows/m2-browser.yml`
-- `.github/workflows/owner-screenshot-capture.yml`
-- `tests/m2/part-lesson-browser.mjs`
-- `tests/visual/cad-vis-005.mjs`
+Post-product-merge CI on `1aed43cb…`:
+- M2 shell `36069527024` — SUCCESS
+- M2 browser `36069527195` — SUCCESS
+- M3 browser `36069527197` — SUCCESS
+- Docker `36069527175` — SUCCESS
+- baseline `36069527121` — SUCCESS
 
-Product files = **NONE**.
+PARITY = **PARTIAL**.
 
-Exact-head #160:
-- M2 shell `36019391893` — SUCCESS
-- M2 browser `36019391989` — SUCCESS
-- M3 browser `36019391969` — SUCCESS
-- Docker `36019391961` — SUCCESS
-- baseline `36019391923` — SUCCESS
-- OWNER_SCREENSHOT_CAPTURE `36019391962` — SUCCESS
-- artifact `asa-cad-vis-005`, id `10815509187`, retention 30 days, oldArtifactDependency=false
+## V6A YELLOW
 
-Post-merge `b79e488e…`:
-- M2 shell `36051938366` — SUCCESS
-- M2 browser `36051938311` — SUCCESS
-- M3 browser `36051938332` — SUCCESS
-- Docker `36051938450` — SUCCESS
-- baseline `36051938409` — SUCCESS
+**Cut profile ownership — YELLOW / non-blocking.**
 
-## Принятые продуктовые слои
+`CutExtrudeParameterPanel` currently receives `profileId/profileName` through `ExtrudeOperationController`.
 
-- В1: верхняя область Детали / responsive repair — regional result accepted.
-- В2: живой Sketch, same-ID finish/select/re-edit/reopen — regional result accepted.
-- В3: рабочее меню «Файл», shared New/Open/Save, dirty guard, keyboard/focus — PARITY PARTIAL.
-- В4: поддерживаемая панель Extrude, section/profile, «На расстояние», distance/reverse/symmetric, no-mutation, real B-Rep, Save/Open, XZ/YZ fail-closed — PARITY PARTIAL.
+The accepted V6A path is single-profile and tested. Do not extend this coupling to:
+- multi-profile selection;
+- edit-existing feature;
+- generalized feature selection.
 
-Эти результаты не означают полный Part/Sketch parity и не означают полный КОМПАС.
+When that scope begins, profile ownership must be separated from `ExtrudeOperationController`.
 
-## Следующая продуктовая задача
+This YELLOW does not block accepted V6A.
 
-**NEXT = V6A / CAD-VIS-006A — панель «Вырезать выдавливанием».**
+## NEXT
 
-Цель V6A — привести активную панель Cut-Extrude к структуре КОМПАСа в пределах уже поддерживаемой семантики ASA:
+**V6B / CAD-VIS-006B — Дерево построения.**
 
-- Сечение — реальное имя Sketch;
-- Направляющий объект — нормаль к плоскости эскиза;
-- Способ — «Сквозь всё»;
-- «Создать объект» / «Отмена»;
-- без fake end conditions и без расширения kernel/persistence/schema.
-
-V6A не закрывает: расстояние, до объекта, до ближайшей поверхности, второе направление, симметрию, уклон, тонкую стенку, редактирование существующей операции, multi-body application scope, точные proprietary artwork/spacing.
+Next scope is hierarchy/disclosure of the construction tree. V6B implementation is **not started** by this closeout.
 
 ## Gates
 
-Gate A/M2O и M3 core сохраняются. M1 ASA-owned `CadDocument` сохраняет six first-class document kinds: Part, Assembly, Drawing, Fragment, Specification, Text. Gate B остаётся OPEN по M2V, M3 exit, M3X, M3M-009 и performance baselines.
+Gate A/M2O and M3 core remain in force. M1 ASA-owned `CadDocument` preserves six first-class document kinds: Part, Assembly, Drawing, Fragment, Specification, Text.
 
-Machine registry `spec/process/repository-health.v1.json` считает каждый accepted permanent slice. Поэтому после #158 и принятого permanent checkpoint CAD-VIS-005 cadence = **1/3**; следующий Full Repository Health Audit требуется на 3/3 либо на milestone boundary.
+Gate B remains OPEN on M2V, M3 exit, M3X, M3M-009 and performance baselines.
 
-ПК, Ali_Robs, Desktop Commander, локальные Docker/browser tests и изменения сети не являются test environment для этой очереди.
+Machine registry `spec/process/repository-health.v1.json` counts every accepted permanent slice. After accepted CAD-VIS-005 and V6A, cadence = **2/3**. Full Repository Health Audit is required at 3/3 or at a milestone boundary.
+
+GitHub is the test environment for this queue. Ali_Robs, Desktop Commander, Remote Desktop, local Docker and local browser tests were not used.
