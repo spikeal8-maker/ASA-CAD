@@ -99,6 +99,11 @@ jobs:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m2/part-lesson-browser.mjs
 
+      - name: Exercise V6A Cut-Extrude parameters and persistence
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
+        run: node tests/m2/cut-extrude-parameters-browser.mjs
+
       - name: Exercise live Sketch finish/select/re-edit/persistence
         env:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/

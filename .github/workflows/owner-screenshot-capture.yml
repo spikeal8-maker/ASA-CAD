@@ -14,77 +14,107 @@ permissions:
 
 jobs:
   owner-screenshot-capture:
-    name: CAD-VIS-005
+    name: CAD-VIS-006A
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout exact V5 head
+      - name: Checkout exact V6A head
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
-          path: source
+          path: after-source
           fetch-depth: 1
 
-      - name: Record exact checkout
+      - name: Checkout fixed V6A baseline
+        uses: actions/checkout@v4
+        with:
+          ref: 4dce4d088c561e5942b06a7c2fdfca88ffae5b62
+          path: before-source
+          fetch-depth: 1
+
+      - name: Record exact checkouts
         shell: bash
-        run: echo "ASA_CAD_CHECKOUT_SHA=$(git -C source rev-parse HEAD)" >> "$GITHUB_ENV"
+        run: |
+          set -euo pipefail
+          echo "ASA_CAD_SOURCE_CHECKOUT_SHA=$(git -C before-source rev-parse HEAD)" >> "$GITHUB_ENV"
+          echo "ASA_CAD_RESULT_CHECKOUT_SHA=$(git -C after-source rev-parse HEAD)" >> "$GITHUB_ENV"
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20.19.0'
           cache: npm
-          cache-dependency-path: source/vendor/toubkal/package-lock.json
+          cache-dependency-path: after-source/vendor/toubkal/package-lock.json
 
       - name: Install browser-test dependencies
-        run: npm --prefix source/vendor/toubkal ci
+        run: npm --prefix after-source/vendor/toubkal ci
 
       - name: Install Chromium for Playwright
-        working-directory: source
+        working-directory: after-source
         run: npx --yes playwright@1.60.0 install --with-deps chromium
 
-      - name: Build exact V5 product image
-        run: docker build -t asa-cad:cad-vis-005 source
+      - name: Build source product image
+        run: docker build -t asa-cad:cad-vis-006a-source before-source
 
-      - name: Record local image identity
-        shell: bash
-        run: echo "ASA_CAD_IMAGE_ID=$(docker image inspect -f '{{.Id}}' asa-cad:cad-vis-005)" >> "$GITHUB_ENV"
+      - name: Build V6A product image
+        run: docker build -t asa-cad:cad-vis-006a-result after-source
 
-      - name: Start isolated exact V5 image
-        run: docker run -d --name asa-cad-vis-005 -p 8088:8080 asa-cad:cad-vis-005
-
-      - name: Wait for ASA-CAD build
+      - name: Record local image identities
         shell: bash
         run: |
           set -euo pipefail
-          for attempt in $(seq 1 30); do
-            if curl --fail --silent http://127.0.0.1:8088/health/live >/dev/null; then
-              exit 0
+          echo "ASA_CAD_SOURCE_IMAGE_ID=$(docker image inspect -f '{{.Id}}' asa-cad:cad-vis-006a-source)" >> "$GITHUB_ENV"
+          echo "ASA_CAD_RESULT_IMAGE_ID=$(docker image inspect -f '{{.Id}}' asa-cad:cad-vis-006a-result)" >> "$GITHUB_ENV"
+
+      - name: Start isolated source and V6A images
+        run: |
+          docker run -d --name asa-cad-vis-006a-source -p 8087:8080 asa-cad:cad-vis-006a-source
+          docker run -d --name asa-cad-vis-006a-result -p 8088:8080 asa-cad:cad-vis-006a-result
+
+      - name: Wait for both ASA-CAD builds
+        shell: bash
+        run: |
+          set -euo pipefail
+          for port in 8087 8088; do
+            ready=0
+            for attempt in $(seq 1 30); do
+              if curl --fail --silent "http://127.0.0.1:$port/health/live" >/dev/null; then
+                ready=1
+                break
+              fi
+              sleep 1
+            done
+            if [ "$ready" -ne 1 ]; then
+              docker logs asa-cad-vis-006a-source || true
+              docker logs asa-cad-vis-006a-result || true
+              exit 1
             fi
-            sleep 1
           done
-          docker logs asa-cad-vis-005 || true
-          exit 1
 
-      - name: Capture CAD-VIS-005 lesson sequence and video
-        working-directory: source
+      - name: Capture CAD-VIS-006A before/after evidence
+        working-directory: after-source
         env:
-          ASA_CAD_URL: http://127.0.0.1:8088
-          ASA_CAD_VIS_ROOT: cad-vis-005
-          ASA_CAD_BASE_MAIN: 337bf6c802997ad2561c593f555751bd55a67f56
+          ASA_CAD_BEFORE_URL: http://127.0.0.1:8087
+          ASA_CAD_AFTER_URL: http://127.0.0.1:8088
+          ASA_CAD_VIS_ROOT: cad-vis-006a
+          ASA_CAD_SOURCE_SHA: 4dce4d088c561e5942b06a7c2fdfca88ffae5b62
           ASA_CAD_RESULT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-          ASA_CAD_CHECKOUT_SHA: ${{ env.ASA_CAD_CHECKOUT_SHA }}
-          ASA_CAD_IMAGE_ID: ${{ env.ASA_CAD_IMAGE_ID }}
-        run: node tests/visual/cad-vis-005.mjs
+          ASA_CAD_SOURCE_CHECKOUT_SHA: ${{ env.ASA_CAD_SOURCE_CHECKOUT_SHA }}
+          ASA_CAD_RESULT_CHECKOUT_SHA: ${{ env.ASA_CAD_RESULT_CHECKOUT_SHA }}
+          ASA_CAD_SOURCE_IMAGE_ID: ${{ env.ASA_CAD_SOURCE_IMAGE_ID }}
+          ASA_CAD_RESULT_IMAGE_ID: ${{ env.ASA_CAD_RESULT_IMAGE_ID }}
+        run: node tests/visual/cad-vis-006a.mjs
 
-      - name: Upload CAD-VIS-005 artifact
+      - name: Upload CAD-VIS-006A artifact
         uses: actions/upload-artifact@v4
         with:
-          name: asa-cad-vis-005
-          path: source/cad-vis-005/
+          name: asa-cad-vis-006a
+          path: after-source/cad-vis-006a/
           if-no-files-found: error
           retention-days: 30
           compression-level: 0
 
       - name: Show container logs on failure
         if: failure()
-        run: docker logs asa-cad-vis-005 || true
+        run: |
+          docker logs asa-cad-vis-006a-source || true
+          docker logs asa-cad-vis-006a-result || true
