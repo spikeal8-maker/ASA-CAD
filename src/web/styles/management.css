@@ -154,3 +154,20 @@
 .empty-panel-message > span { font-size: 38px; color: #abb3bc; margin-bottom: 8px; }
 .empty-panel-message strong { color: #515860; }
 .empty-panel-message p { max-width: 220px; font-size: 12px; line-height: 1.45; }
+
+.extrude-main-section { display: grid; gap: 11px; overflow: auto; }
+.extrude-summary { display: grid; gap: 8px; padding: 9px; border: 1px solid var(--border); border-radius: 4px; background: white; }
+.extrude-summary .property-row { align-items: start; }
+.extrude-summary .property-row strong { max-width: 160px; text-align: right; }
+.extrude-method { color: var(--accent) !important; }
+.extrude-direction-control { display: grid; gap: 7px; padding-top: 2px; }
+.extrude-direction-control > button { min-height: 32px; border: 1px solid var(--border); border-radius: 4px; background: white; cursor: pointer; text-align: left; padding: 0 9px; }
+.extrude-direction-control > button:hover:not(:disabled) { background: var(--accent-soft); }
+.extrude-direction-control > button:disabled { color: var(--text-muted); cursor: default; background: #f0f1f3; }
+.extrude-symmetric-control { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px; border: 1px solid var(--border); border-radius: 4px; background: white; }
+.extrude-symmetric-control > span { display: grid; gap: 2px; }
+.extrude-symmetric-control small { color: var(--text-muted); font-size: 10px; }
+.extrude-symmetric-control button { min-width: 52px; min-height: 28px; border: 1px solid var(--border-strong); border-radius: 14px; background: #eef0f3; cursor: pointer; }
+.extrude-symmetric-control button[aria-checked="true"] { background: var(--accent); border-color: var(--accent); color: white; }
+.parameter-inline-error { margin: -4px 0 0 !important; color: var(--danger) !important; font-size: 11px !important; }
+.extrude-engineering-note { margin: 0 !important; }

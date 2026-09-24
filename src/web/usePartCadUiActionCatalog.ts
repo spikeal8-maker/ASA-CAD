@@ -64,7 +64,7 @@ export function usePartCadUiActionCatalog(options: PartCadUiActionCatalogOptions
     radiusDimension: ignoreResult(workspace.beginRadiusDimension),
     angularDimension: ignoreResult(workspace.beginAngularDimension),
     finishSketch: workspace.finishSketch,
-    extrude: workspace.beginExtrude,
+    extrude: workspace.extrude.begin,
     cutExtrude: workspace.beginCut,
     fillet: workspace.beginFillet,
     fit: () => requestView('Показать всё'),
@@ -99,7 +99,8 @@ export function usePartCadUiActionCatalog(options: PartCadUiActionCatalogOptions
     canApplyDiameterDimension: workspace.canApplyDiameterDimension,
     canApplyRadiusDimension: workspace.canApplyRadiusDimension,
     canApplyAngularDimension: workspace.canApplyAngularDimension,
-    canExtrude: workspace.canExtrude,
+    canExtrude: workspace.extrude.canStart,
+    extrudeDisabledReason: workspace.extrude.disabledReason,
     canCutExtrude: workspace.canCut,
     canFillet: workspace.canFillet,
   });

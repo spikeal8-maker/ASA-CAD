@@ -2,6 +2,8 @@ import React from 'react';
 import commandRegistryJson from '../../spec/ui/command-registry.v1.json';
 import type { CadViewportPick } from '../contracts/render';
 import { ParameterNumericField } from './ParameterNumericField';
+import { ExtrudeParameterPanel } from './ExtrudeParameterPanel';
+import type { ExtrudeOperationController } from './useExtrudeOperationController';
 import { SketchDimensionParameterPanel } from './SketchDimensionParameterPanel';
 import type { SketchDimensionCreationState } from './useSketchDimensionCreationControllers';
 
@@ -26,8 +28,7 @@ export interface ParameterPanelProps {
   setRectangleHeight: (value: number) => void;
   circleDiameter: number;
   setCircleDiameter: (value: number) => void;
-  extrudeDistance: number;
-  setExtrudeDistance: (value: number) => void;
+  extrude: ExtrudeOperationController;
   filletRadius: number;
   setFilletRadius: (value: number) => void;
   dimensionEditValue: number;
@@ -36,7 +37,6 @@ export interface ParameterPanelProps {
   onCreateSketch: () => void;
   onCreateRectangle: () => void;
   onCreateCircle: () => void;
-  onExtrude: () => void;
   onCut: () => void;
   onFillet: () => void;
   onDimensionEdit: () => void;
@@ -149,26 +149,7 @@ export function ParameterPanel(props: ParameterPanelProps) {
   }
 
   if (props.activeCommand === 'part.extrude') {
-    return (
-      <div className="parameter-panel">
-        <div className="panel-title-row">
-          <div>
-            <small>Элемент тела</small>
-            <strong>{commandLabel('part.extrude', 'Элемент выдавливания')}</strong>
-          </div>
-          <button type="button" onClick={props.onCancel} title="Закрыть">×</button>
-        </div>
-        <section className="parameter-section">
-          <h3>Параметры</h3>
-          <ParameterNumericField label="Расстояние" value={props.extrudeDistance} onChange={props.setExtrudeDistance} suffix="мм" />
-          <p>При применении впервые загружается OpenCascade WASM и строится точный B-Rep на этом устройстве.</p>
-        </section>
-        <div className="parameter-actions">
-          <button className="primary" type="button" onClick={props.onExtrude}>Создать</button>
-          <button type="button" onClick={props.onCancel}>Отмена</button>
-        </div>
-      </div>
-    );
+    return <ExtrudeParameterPanel extrude={props.extrude} onCancel={props.onCancel} />;
   }
 
   if (props.activeCommand === 'part.cutExtrude') {
