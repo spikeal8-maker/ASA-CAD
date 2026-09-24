@@ -1,95 +1,94 @@
 # ASA-CAD — воспроизведение КОМПАСа с видимыми поставками
 
-Редакция 2026-09-24. План, не готовность. STATUS/#10 — состояние; SYSTEM_SPEC — полный объём; KOMPAS_SHELL_LAYOUT_SPEC — ТЗ оболочки; VISUAL_REFERENCE_SPEC — эталоны; DEVELOPMENT_QUALITY_GATES — проверки.
+Редакция 2026-09-25. План, не готовность. STATUS/#10 — текущее состояние; #19 — визуальная исполнительная очередь.
 
 ## Цель
 
-Воспроизвести согласованную конфигурацию КОМПАС-3D v25 в браузере: интерфейс, структуру, панели, состояния, команды и поведение. Работающий учебный сценарий сам по себе не доказывает визуального паритета.
+Воспроизвести согласованную конфигурацию КОМПАС-3D v25 в браузере: интерфейс, структуру, панели, состояния, команды и поведение.
 
 FULL_M2V = **NOT ACCEPTED**. FULL_KOMPAS_PARITY = **NO**.
 
-## Принятые продуктовые слои
+## Принятые поставки
 
-**В1 / CAD-VIS-001 — DONE / accepted regional result.** Верхняя область Детали и responsive repair.
+**В1 / CAD-VIS-001 — DONE / accepted regional result.**
+Верхняя область Детали и responsive repair.
 
-**В2 / CAD-VIS-002 — DONE / accepted regional result.** Один Sketch проходит finish/select/re-edit/reopen с тем же identity; single-Sketch acceptance не закрывает full multi-sketch policy.
+**В2 / CAD-VIS-002 — DONE / accepted regional result.**
+Single-Sketch finish/select/re-edit/reopen с сохранением identity.
 
-**В3 / CAD-VIS-003 — DONE / accepted regional result.** Рабочее меню «Файл», shared New/Open/Save, dirty replacement guard, keyboard/focus. PARITY = PARTIAL.
+**В3 / CAD-VIS-003 — DONE / accepted regional result.**
+Рабочее меню «Файл», shared New/Open/Save, dirty replacement guard, keyboard/focus. PARITY = PARTIAL.
 
-**В4 / CAD-VIS-004 — DONE / accepted regional result.** Поддерживаемая панель Extrude: section/profile, «На расстояние», distance/reverse/symmetric, invalid/Cancel no-mutation, real B-Rep, Save/Open, XZ/YZ fail-closed. PARITY = PARTIAL.
+**В4 / CAD-VIS-004 — DONE / accepted regional result.**
+Поддерживаемая панель Extrude: section/profile, «На расстояние», distance/reverse/symmetric, no-mutation, real B-Rep, Save/Open, XZ/YZ fail-closed. PARITY = PARTIAL.
 
-## CAD-VIS-005 — integration checkpoint
+**CAD-VIS-005 — INTEGRATION CHECKPOINT / ACCEPTED.**
+End-to-end Part verification В1–В4. PRODUCT_DELTA = NONE.
 
-CAD-VIS-005 принят через PR #160, merge `b79e488ed1a42e2f061eecd44fead279a6b335b2`.
+**V6A / CAD-VIS-006A — DONE / MERGED / REGIONAL RESULT ACCEPTED.**
 
-Это **integration checkpoint / end-to-end Part verification**, а не отдельная новая функция ASA-CAD и не новый визуальный слой КОМПАСа.
+Accepted candidate:
+`ff57cec29d20f36b8c39ea038ad53c42ff26b55d`
 
-PRODUCT_DELTA = **NONE**.
+Product merge:
+`1aed43cb483098aa8d474d9c83623c70aa7cdede` through PR #162.
 
-Checkpoint доказал совместный обычный пользовательский путь уже принятых В1–В4:
+Accepted V6A behavior:
+- real section/profile = «Эскиз 2»;
+- guide = «Нормаль к плоскости эскиза»;
+- method = «Сквозь всё»;
+- begin/cancel no mutation;
+- real through-all cut;
+- Save/Open identity;
+- protected Part regression;
+- self-contained visual evidence.
 
-`/cad/` → новая Деталь → XY 60×40 → Finish → Extrude 10 → 60→80 → Rebuild → Save/Open → re-edit same Sketch.
+Artifact:
+`asa-cad-vis-006a`, id `10832000991`, retention 30 days.
 
-Exact-head и post-merge применимые GitHub gates — SUCCESS. Artifact: `asa-cad-vis-005` id `10815509187`, retention 30 days, oldArtifactDependency=false.
+PARITY = **PARTIAL**.
 
-Full Repository Health Audit #158 остаётся YELLOW_ACCEPTED; RED findings = NONE; cadence после audit и принятого permanent checkpoint CAD-VIS-005 = **1/3**. Machine registry `spec/process/repository-health.v1.json` считает каждый accepted permanent slice независимо от product delta.
+### V6A YELLOW ownership note
 
-## NEXT — V6A / CAD-VIS-006A
+`CutExtrudeParameterPanel` currently receives `profileId/profileName` through `ExtrudeOperationController`.
 
-**V6A / CAD-VIS-006A — панель «Вырезать выдавливанием».**
+Severity = **YELLOW / non-blocking** for the accepted single-profile V6A path.
 
-Цель — привести активную панель к структуре КОМПАСа только в пределах реально поддерживаемой ASA семантики:
+Do not extend this coupling to multi-profile selection, edit-existing feature or generalized feature selection. When that scope begins, profile ownership must be separated from `ExtrudeOperationController`.
 
-- реальное сечение / имя Sketch;
-- направляющий объект: нормаль к плоскости эскиза;
-- способ: «Сквозь всё»;
-- «Создать объект» / «Отмена»;
-- begin/cancel без мутации document;
-- Apply через существующий `part.cutExtrude → feature.cutExtrude`;
-- Save/Open сохраняет Sketch / cut Feature / Body identity;
-- protected Part regression остаётся GREEN.
+## NEXT — V6B / CAD-VIS-006B
 
-V6A не расширяет kernel, CadDocument schema, migrations или persistence protocol.
+**V6B — Дерево построения: hierarchy/disclosure.**
 
-Не заявлять реализованными:
-- «На расстояние»;
-- «До объекта»;
-- «До ближайшей поверхности»;
-- второе направление;
-- «Симметрично»;
-- уклон;
-- тонкую стенку;
-- редактирование существующей операции;
-- multi-body application scope.
+V6B is the next visible product slice. This closeout does not create a V6B branch and does not start its implementation.
 
-Эти пункты остаются REMAINING_CUT_EXTRUDE_PARITY.
+V6B will be scoped separately before code. It must not inherit acceptance from V6A automatically.
 
-V6A visual evidence:
-- BEFORE = exact fresh main после CAD-VIS-005 closeout;
-- AFTER = exact V6A PR HEAD;
-- ordinary `/cad/`, без primary fixture;
-- artifact `asa-cad-vis-006a`, retention >=30 days, oldArtifactDependency=false.
+## Queue
 
-V6A PR остаётся Draft и не merge.
-
-## Дальнейшая очередь
-
-| Пакет | Статус / результат |
+| Package | Status |
 |---|---|
 | В1 / CAD-VIS-001 | DONE / regional accepted |
 | В2 / CAD-VIS-002 | DONE / regional accepted |
 | В3 / CAD-VIS-003 | DONE / regional accepted / PARITY PARTIAL |
 | В4 / CAD-VIS-004 | DONE / regional accepted / PARITY PARTIAL |
-| CAD-VIS-005 | INTEGRATION CHECKPOINT / ACCEPTED / PRODUCT_DELTA NONE |
-| V6A / CAD-VIS-006A | NEXT — Cut-Extrude parameters |
-| V6B+ | позже, отдельными показанными slices |
-| V7 | resize / state matrix позже |
-| V8 | закрытая Part/Sketch acceptance позже |
+| CAD-VIS-005 | ACCEPTED integration checkpoint / PRODUCT_DELTA NONE |
+| V6A / CAD-VIS-006A | DONE / MERGED / regional accepted / PARITY PARTIAL |
+| V6B / CAD-VIS-006B | **NEXT — Дерево построения** |
+| V6C+ | later, separate visible slices |
+| V7 | resize/state matrix later |
+| V8 | closed Part/Sketch acceptance later |
 
 ## Gates
 
-Gate A/M2O и M3 core сохраняются. Gate B перед broad M4 остаётся OPEN: M2V, M3 exit, M3X, M3M-009, performance baselines.
+Full Repository Health Audit #158 remains YELLOW_ACCEPTED with no RED findings.
 
-Regional acceptance и integration checkpoint не переносят acceptance автоматически на следующий slice или весь КОМПАС.
+Machine registry `spec/process/repository-health.v1.json` counts every accepted permanent slice:
+- CAD-VIS-005 → cadence 1/3;
+- V6A → cadence **2/3**.
 
-Работа этой очереди выполняется через GitHub repository/branch/PR/Issues/Actions/artifacts. Локальные ПК, Ali_Robs, Desktop Commander и локальный Docker не являются test environment.
+The next Full Repository Health Audit is required at 3/3 or at a milestone boundary.
+
+Gate B before broad M4 remains OPEN: M2V, M3 exit, M3X, M3M-009 and performance baselines.
+
+GitHub repository/branches/PRs/Issues/Actions/artifacts remain the execution environment for this queue. No local computer or deployment is part of this closeout.
