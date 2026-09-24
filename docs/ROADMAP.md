@@ -32,7 +32,7 @@ Checkpoint доказал совместный обычный пользоват
 
 Exact-head и post-merge применимые GitHub gates — SUCCESS. Artifact: `asa-cad-vis-005` id `10815509187`, retention 30 days, oldArtifactDependency=false.
 
-Full Repository Health Audit #158 остаётся YELLOW_ACCEPTED; RED findings = NONE; cadence после audit = **0/3**. CAD-VIS-005 cadence не увеличивает, потому что product delta отсутствует.
+Full Repository Health Audit #158 остаётся YELLOW_ACCEPTED; RED findings = NONE; cadence после audit и принятого permanent checkpoint CAD-VIS-005 = **1/3**. Machine registry `spec/process/repository-health.v1.json` считает каждый accepted permanent slice независимо от product delta.
 
 ## NEXT — V6A / CAD-VIS-006A
 
