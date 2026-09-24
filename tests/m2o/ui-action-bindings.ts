@@ -15,6 +15,7 @@ import {
 const calls: string[] = [];
 const call = (id: string) => () => { calls.push(id); };
 const handlers: M2CadUiActionHandlers = {
+  newDocument: call('newDocument'),
   open: call('open'),
   save: call('save'),
   undo: call('undo'),
@@ -85,6 +86,7 @@ const bindings = createM2CadUiActionBindings(handlers, {
 });
 const actions = indexCadUiActions(createCadUiActions(definitions, bindings));
 
+assert.equal(actions.get('system.new')?.enabled, true);
 assert.equal(actions.get('system.undo')?.enabled, false);
 assert.equal(actions.get('system.undo')?.disabledReason, 'Нечего отменять');
 assert.equal(actions.get('system.redo')?.enabled, true);
@@ -111,6 +113,7 @@ assert.equal(actions.get('part.extrude')?.enabled, false);
 assert.equal(actions.get('part.cutExtrude')?.enabled, true);
 assert.equal(actions.get('part.fillet')?.enabled, false);
 
+assert.equal(await executeCadUiAction(actions.get('system.new')!), true);
 assert.equal(await executeCadUiAction(actions.get('system.redo')!), true);
 assert.equal(await executeCadUiAction(actions.get('sketch.construction')!), true);
 assert.equal(await executeCadUiAction(actions.get('constraint.horizontal')!), true);
@@ -132,7 +135,7 @@ assert.equal(await executeCadUiAction(actions.get('dimension.radius')!), true);
 assert.equal(await executeCadUiAction(actions.get('dimension.angular')!), true);
 assert.equal(await executeCadUiAction(actions.get('part.cutExtrude')!), true);
 assert.equal(await executeCadUiAction(actions.get('part.extrude')!), false);
-assert.deepEqual(calls, ['redo', 'constructionToggle', 'horizontalConstraint', 'verticalConstraint', 'fixedConstraint', 'coincidentConstraint', 'parallelConstraint', 'perpendicularConstraint', 'tangentConstraint', 'concentricConstraint', 'equalConstraint', 'symmetricConstraint', 'pointOnCurveConstraint', 'linearDimension', 'horizontalDimension', 'verticalDimension', 'diameterDimension', 'radiusDimension', 'angularDimension', 'cutExtrude']);
+assert.deepEqual(calls, ['newDocument', 'redo', 'constructionToggle', 'horizontalConstraint', 'verticalConstraint', 'fixedConstraint', 'coincidentConstraint', 'parallelConstraint', 'perpendicularConstraint', 'tangentConstraint', 'concentricConstraint', 'equalConstraint', 'symmetricConstraint', 'pointOnCurveConstraint', 'linearDimension', 'horizontalDimension', 'verticalDimension', 'diameterDimension', 'radiusDimension', 'angularDimension', 'cutExtrude']);
 
 const disabledConstraints = indexCadUiActions(createCadUiActions(definitions, createM2CadUiActionBindings(handlers, {
   canUndo: false,

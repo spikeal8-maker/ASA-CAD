@@ -13,6 +13,7 @@ export interface PartCadUiActionCatalogOptions {
   workspace: PartSketchWorkspace;
   canUndo: boolean;
   canRedo: boolean;
+  newDocument: CadUiActionExecutor;
   open: CadUiActionExecutor;
   save: CadUiActionExecutor;
   undo: CadUiActionExecutor;
@@ -31,13 +32,13 @@ export interface PartCadUiActionCatalogOptions {
 /** App-level wiring for the one shared desktop/mobile/search CadUiAction catalog. */
 export function usePartCadUiActionCatalog(options: PartCadUiActionCatalogOptions) {
   const {
-    workspace, canUndo, canRedo, open, save, undo, redo, rebuild,
+    workspace, canUndo, canRedo, newDocument, open, save, undo, redo, rebuild,
     horizontalConstraint, verticalConstraint, fixedConstraint,
     concentricConstraint, equalConstraint, symmetricConstraint, pointOnCurveConstraint,
     requestView,
   } = options;
   return useM2CadUiActions({
-    open, save, undo, redo, rebuild,
+    newDocument, open, save, undo, redo, rebuild,
     createSketch: workspace.beginCreateSketch,
     line: workspace.beginLine,
     rectangle: workspace.beginRectangle,

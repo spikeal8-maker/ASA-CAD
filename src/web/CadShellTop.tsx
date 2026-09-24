@@ -5,6 +5,7 @@ import { CadUiActionSearchResults, CadUiGlobalActionButton } from './CadUiAction
 import { documentNames } from './CadDocumentPresentation';
 import { CadIcon, type CadIconName } from './CadIcon';
 import { CadShellCommandGroups } from './CadShellCommandGroups';
+import { CadFileMenu } from './CadFileMenu';
 
 export type CadWorkspaceId = 'solid' | 'sketch' | 'surfaces' | 'diagnostics' | 'view';
 
@@ -12,20 +13,21 @@ export interface CadShellTopProps {
   documentKind: CadDocumentKind; documentTitle: string; dirty: boolean;
   activeWorkspace: CadWorkspaceId; setActiveWorkspace: (workspace: CadWorkspaceId) => void;
   search: string; setSearch: (value: string) => void; searchableActions: CadUiAction[];
-  getAction: (id: string) => CadUiAction; openNewDocument: () => void;
+  getAction: (id: string) => CadUiAction;
   rectangleReady: boolean; rectangleWidth: number; rectangleHeight: number;
   circleReady: boolean; circleDiameter: number; viewName: string;
 }
 
 export function CadShellTop(props: CadShellTopProps) {
+  const newAction = props.getAction('system.new');
   return (
     <>
       <header className="main-menu-bar">
-        <button className="brand-button" type="button" onClick={props.openNewDocument} aria-label="ASA-CAD">
+        <button className="brand-button" type="button" disabled={!newAction.enabled} onClick={() => { void newAction.execute(); }} data-command-id={newAction.id} aria-label="ASA-CAD">
           <span className="brand-mark">A</span><span className="brand-label">ASA-CAD</span>
         </button>
         <nav className="main-menu-items" aria-label="Главное меню">
-          <button type="button">Файл</button>
+          <CadFileMenu getAction={props.getAction} />
           <button type="button">Правка</button>
           <button type="button">Выделить</button>
           <button type="button">Вид</button>
@@ -54,7 +56,7 @@ export function CadShellTop(props: CadShellTopProps) {
       </header>
 
       <div className="document-tabs" role="tablist" aria-label="Документы">
-        <button type="button" className="new-tab-button" onClick={props.openNewDocument} title="Новый документ" aria-label="Новый документ"><CadIcon name="new" size={15} /></button>
+        <button type="button" className="new-tab-button" disabled={!newAction.enabled} onClick={() => { void newAction.execute(); }} data-command-id={newAction.id} title="Новый документ" aria-label="Новый документ"><CadIcon name="new" size={15} /></button>
         <button className="document-tab active" type="button" role="tab" aria-selected="true">
           <span className="document-kind-icon"><CadIcon name={documentIcon(props.documentKind)} size={15} /></span>
           <span>{props.documentTitle}</span>

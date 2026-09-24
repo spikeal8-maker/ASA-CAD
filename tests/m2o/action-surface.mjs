@@ -3,6 +3,8 @@ import { readFileSync } from 'node:fs';
 
 const app = readFileSync('src/web/App.tsx', 'utf8');
 const shellTop = readFileSync('src/web/CadShellTop.tsx', 'utf8');
+const fileMenu = readFileSync('src/web/CadFileMenu.tsx', 'utf8');
+const replacementGuard = readFileSync('src/web/useDocumentReplacementGuard.tsx', 'utf8');
 const commandGroups = readFileSync('src/web/CadShellCommandGroups.tsx', 'utf8');
 const shellBottom = readFileSync('src/web/CadShellBottom.tsx', 'utf8');
 const mobileTools = readFileSync('src/web/MobileToolsPanel.tsx', 'utf8');
@@ -20,6 +22,11 @@ assert.match(app, /usePartCadUiActionCatalog/, 'App must delegate shared CadUiAc
 assert.match(appActionCatalog, /useM2CadUiActions/, 'focused action-catalog owner must build the shared M2 CadUiAction catalog');
 assert.match(shellTop, /CadUiActionSearchResults/, 'command search must render CadUiAction results in shell presentation');
 assert.match(shellTop, /CadUiGlobalActionButton/, 'global toolbar must render CadUiAction buttons in shell presentation');
+assert.match(shellTop, /<CadFileMenu getAction=\{props\.getAction\}/, 'File menu must consume the shared action catalog');
+for (const id of ['system.new', 'system.open', 'system.save']) assert.ok(fileMenu.includes(`'${id}'`), `File menu must expose ${id}`);
+assert.match(replacementGuard, /options\.dirty/, 'document replacement guard must own dirty gating');
+assert.match(replacementGuard, /await options\.save\(\)/, 'save-and-continue must reuse the existing save path');
+assert.doesNotMatch(replacementGuard, /window\.(confirm|alert)/, 'replacement guard must not use browser confirm/alert');
 assert.match(shellTop, /props\.getAction\('system\.open'\)/, 'Open must consume the shared action catalog');
 assert.match(shellTop, /props\.getAction\('system\.save'\)/, 'Save must consume the shared action catalog');
 assert.match(shellTop, /props\.getAction\('system\.undo'\)/, 'Undo must consume the shared action catalog');

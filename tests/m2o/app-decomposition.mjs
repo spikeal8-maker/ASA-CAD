@@ -6,6 +6,8 @@ const shellTop = readFileSync('src/web/CadShellTop.tsx', 'utf8');
 const shellMain = readFileSync('src/web/CadShellMain.tsx', 'utf8');
 const shellBottom = readFileSync('src/web/CadShellBottom.tsx', 'utf8');
 const newDocumentDialog = readFileSync('src/web/NewDocumentDialog.tsx', 'utf8');
+const unsavedChangesDialog = readFileSync('src/web/UnsavedChangesDialog.tsx', 'utf8');
+const replacementGuard = readFileSync('src/web/useDocumentReplacementGuard.tsx', 'utf8');
 const plannedDocumentStage = readFileSync('src/web/PlannedDocumentStage.tsx', 'utf8');
 const documentPresentation = readFileSync('src/web/CadDocumentPresentation.ts', 'utf8');
 const tree = readFileSync('src/web/DocumentTree.tsx', 'utf8');
@@ -23,13 +25,17 @@ for (const [importName, fileName] of [
   ['CadShellTop', 'CadShellTop'],
   ['CadShellMain', 'CadShellMain'],
   ['CadShellBottom', 'CadShellBottom'],
-  ['NewDocumentDialog', 'NewDocumentDialog'],
   ['PlannedDocumentStage', 'PlannedDocumentStage'],
 ]) {
   assert.match(app, new RegExp(`import \\{ ${importName} \\} from '\\.\\/${fileName}';`));
   assert.match(app, new RegExp(`<${importName}\\b`));
 }
 assert.match(app, /import \{ documentNames \} from '\.\/CadDocumentPresentation';/);
+assert.match(app, /import \{ useDocumentReplacementGuard \} from '\.\/useDocumentReplacementGuard';/);
+assert.match(app, /useDocumentReplacementGuard\(/, 'App must delegate new/open dirty protection');
+assert.doesNotMatch(app, /import \{ NewDocumentDialog \}/, 'NewDocumentDialog ownership must stay outside frozen App');
+assert.match(replacementGuard, /<NewDocumentDialog\b/, 'replacement guard must reuse the existing NewDocumentDialog');
+assert.match(replacementGuard, /<UnsavedChangesDialog\b/, 'replacement guard must own the unsaved-changes dialog');
 for (const legacyShellFragment of [
   'function WorkspaceTab(',
   'function CommandGroup(',
@@ -153,6 +159,7 @@ for (const [name, source] of [
   ['CadShellMain', shellMain],
   ['CadShellBottom', shellBottom],
   ['NewDocumentDialog', newDocumentDialog],
+  ['UnsavedChangesDialog', unsavedChangesDialog],
   ['PlannedDocumentStage', plannedDocumentStage],
   ['CadDocumentPresentation', documentPresentation],
   ['DocumentTree', tree],

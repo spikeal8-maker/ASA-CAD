@@ -10,27 +10,31 @@ export interface CadPersistenceCommandOptions {
 }
 
 export function useCadPersistenceCommands(options: CadPersistenceCommandOptions) {
-  const save = useCallback(async () => {
+  const save = useCallback(async (): Promise<boolean> => {
     try {
       await options.persistence.save();
       options.setNotice(options.remoteHost ? 'Сохранено' : 'Сохранено локально');
+      return true;
     } catch (error) {
       options.setNotice(error instanceof Error ? error.message : String(error));
+      return false;
     }
   }, [options.persistence, options.remoteHost, options.setNotice]);
 
-  const open = useCallback(async () => {
+  const open = useCallback(async (): Promise<boolean> => {
     try {
       if (!(await options.persistence.hasPersistedDocument())) {
         options.setNotice('Нет локально сохраненного документа');
-        return;
+        return false;
       }
       options.setNotice('Открытие документа…');
       const result = await options.persistence.open();
       options.onOpened(result.document.kind);
       options.setNotice(options.remoteHost ? 'Документ открыт' : 'Локальный документ открыт');
+      return true;
     } catch (error) {
       options.setNotice(error instanceof Error ? error.message : String(error));
+      return false;
     }
   }, [options.onOpened, options.persistence, options.remoteHost, options.setNotice]);
 
