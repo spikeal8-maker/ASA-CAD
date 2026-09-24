@@ -54,7 +54,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
   });
   const featureSketch=sketch??part?.sketches.at(-1)??null;
   const features=usePartFeatureController({
-    app,document,renderModelAvailable,activeSketchId: activeSketchId??featureSketch?.id ?? null,sketch: featureSketch,
+    app,document,renderModelAvailable,activeSketchId,sketch: featureSketch,
     selectedPick: selection.selectedPick,setActiveCommand,setActiveWorkspace,
     setPanel,setNotice,activateSketch,beginPartSelection: selection.beginPartSelection,
     clearTransientSelection: selection.clearTransientSelection,
@@ -70,6 +70,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
       return;
     }
     editing.resetActiveTool(activeCommand);
+    if (activeCommand === 'part.extrude') features.extrude.reset();
     const stayInSketch=activeCommand === 'constraint.coincident' || /^(sketch|constraint)\./.test(activeCommand ?? '');
     setActiveCommand(null);
     dimensions.clearDimensionEdit();
@@ -84,7 +85,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     if (activeCommand === 'part.sketch.create') return features.commitCreateSketch();
     if (activeCommand === 'sketch.rectangle') return editing.hasRectangleDraft ? editing.commitRectanglePreview() : editing.commitRectangle();
     if (activeCommand === 'sketch.circle') return editing.hasCircleDraft ? editing.commitCirclePreview() : editing.commitCircle();
-    if (activeCommand === 'part.extrude') return features.commitExtrude();
+    if (activeCommand === 'part.extrude') return features.extrude.commit();
     if (activeCommand === 'part.cutExtrude') return features.commitCut();
     if (activeCommand === 'part.fillet') return features.commitFillet();
     if (creation.dimensionCreation.mode) return creation.dimensionCreation.commit();
@@ -101,11 +102,11 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     rectangleWidth: editing.rectangleWidth,setRectangleWidth: editing.setRectangleWidth,
     rectangleHeight: editing.rectangleHeight,setRectangleHeight: editing.setRectangleHeight,
     circleDiameter: editing.circleDiameter,setCircleDiameter: editing.setCircleDiameter,
-    extrudeDistance: features.extrudeDistance,setExtrudeDistance: features.setExtrudeDistance,
+    extrude: features.extrude,
     filletRadius: features.filletRadius,setFilletRadius: features.setFilletRadius,
     dimensionEditValue: dimensions.dimensionEditValue,setDimensionEditValue: dimensions.setDimensionEditValue,
     part: features.part,sketch,rectangleReady: features.rectangleReady,circleReady: features.circleReady,
-    hasSolid: features.hasSolid,canExtrude: features.canExtrude,canCut: features.canCut,canFillet: features.canFillet,
+    hasSolid: features.hasSolid,canCut: features.canCut,canFillet: features.canFillet,
     selectedPointText: selection.selectedPointText,selectedBody: selection.selectedBody,
     clearTransientSelection: selection.clearTransientSelection,clearSelectedPick: selection.clearSelectedPick,
     clearSketchEntitySelection: clearEntitySelection,...navigation,
@@ -126,7 +127,6 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     beginCreateSketch: features.beginCreateSketch,commitCreateSketch: features.commitCreateSketch,
     beginRectangle: editing.beginRectangle,commitRectangle: editing.commitRectangle,
     beginCircle: editing.beginCircle,commitCircle: editing.commitCircle,finishSketch: editing.finishSketch,
-    beginExtrude: features.beginExtrude,commitExtrude: features.commitExtrude,
     beginCut: features.beginCut,commitCut: features.commitCut,
     beginFillet: features.beginFillet,commitFillet: features.commitFillet,
     beginDimensionEdit: dimensions.beginDimensionEdit,commitDimensionEdit: dimensions.commitDimensionEdit,

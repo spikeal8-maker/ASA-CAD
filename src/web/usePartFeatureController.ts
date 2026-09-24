@@ -6,6 +6,7 @@ import type { CadSketchId, CadStableReferenceId } from '../contracts/ids';
 import type { CadViewportPick } from '../contracts/render';
 import type { CadWorkspacePanel, PartSketchSelectionMode } from './PartSketchWorkspaceTypes';
 import { findSketch, hasCircle, hasRectangle, partDocument } from './PartSketchWorkspaceModel';
+import { useExtrudeOperationController } from './useExtrudeOperationController';
 
 export interface PartFeatureControllerOptions {
   app: CadApplication;
@@ -41,7 +42,6 @@ export function usePartFeatureController(options: PartFeatureControllerOptions) 
   } = options;
 
   const [sketchPlane, setSketchPlane] = useState<CadPlaneName>('XY');
-  const [extrudeDistance, setExtrudeDistance] = useState(10);
   const [filletRadius, setFilletRadius] = useState(1);
 
   const part = partDocument(document);
@@ -49,9 +49,12 @@ export function usePartFeatureController(options: PartFeatureControllerOptions) 
   const circleReady = hasCircle(sketch);
   const hasSolid = Boolean(part?.bodies.length);
   const lastFeature = part?.features.at(-1);
-  const canExtrude = Boolean(sketch && rectangleReady && !hasSolid && part?.features.length === 0);
   const canCut = Boolean(sketch && circleReady && hasSolid && lastFeature?.type === 'extrude');
   const canFillet = Boolean(hasSolid && lastFeature?.type === 'cut-extrude');
+  const extrude = useExtrudeOperationController({
+    app, document, activeSketchId, sketch, setActiveCommand, setActiveWorkspace,
+    setPanel, setNotice, clearTransientSelection,
+  });
 
   function beginCreateSketch() {
     if (document.kind !== 'part') return;
@@ -105,47 +108,6 @@ export function usePartFeatureController(options: PartFeatureControllerOptions) 
     setNotice(`Создан эскиз на ${supportText}`);
   }
 
-  function beginExtrude() {
-    if (!canExtrude || !sketch) return;
-    setActiveCommand('part.extrude');
-    setPanel('parameters');
-    clearTransientSelection();
-    setNotice('Задайте расстояние выдавливания');
-  }
-
-  async function commitExtrude() {
-    const currentSketch = findSketch(partDocument(app.getDocument()), activeSketchId);
-    if (!currentSketch || !hasRectangle(currentSketch)) {
-      setNotice('Для выдавливания нужен прямоугольный эскиз');
-      return;
-    }
-    if (!(extrudeDistance > 0)) {
-      setNotice('Расстояние выдавливания должно быть больше нуля');
-      return;
-    }
-
-    const feature = await app.execute({
-      id: 'feature.extrude',
-      payload: { sketchId: currentSketch.id, distance: extrudeDistance },
-    });
-    if (!feature.ok) {
-      setNotice(feature.error?.message ?? 'Не удалось создать выдавливание');
-      return;
-    }
-    setNotice('Загрузка OpenCascade и перестроение детали…');
-    const rebuildResult = await app.execute({ id: 'document.rebuild', payload: {} });
-    if (!rebuildResult.ok) {
-      setNotice(rebuildResult.error?.message ?? 'Ошибка перестроения');
-      return;
-    }
-
-    setActiveCommand(null);
-    setPanel('tree');
-    setActiveWorkspace('solid');
-    clearTransientSelection();
-    setNotice(`Выдавливание ${extrudeDistance} мм построено локально`);
-  }
-
   function beginCut() {
     if (!canCut) return;
     setActiveCommand('part.cutExtrude');
@@ -155,7 +117,7 @@ export function usePartFeatureController(options: PartFeatureControllerOptions) 
   }
 
   async function commitCut() {
-    const currentSketch = findSketch(partDocument(app.getDocument()), activeSketchId);
+    const currentSketch = findSketch(partDocument(app.getDocument()), sketch?.id ?? null);
     if (!currentSketch || !hasCircle(currentSketch)) {
       setNotice('Для выреза нужен эскиз с окружностью');
       return;
@@ -237,20 +199,16 @@ export function usePartFeatureController(options: PartFeatureControllerOptions) 
     part,
     sketchPlane,
     setSketchPlane,
-    extrudeDistance,
-    setExtrudeDistance,
     filletRadius,
     setFilletRadius,
     rectangleReady,
     circleReady,
     hasSolid,
-    canExtrude,
     canCut,
     canFillet,
+    extrude,
     beginCreateSketch,
     commitCreateSketch,
-    beginExtrude,
-    commitExtrude,
     beginCut,
     commitCut,
     beginFillet,
