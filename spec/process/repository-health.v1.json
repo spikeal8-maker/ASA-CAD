@@ -123,7 +123,7 @@
   "frozenCeilings": {
     "src/web/App.tsx": 15167,
     "src/web/CadViewport.tsx": 27846,
-    "src/web/ParameterPanel.tsx": 10275,
+    "src/web/ParameterPanel.tsx": 9590,
     "src/web/usePartSketchWorkspace.ts": 8454,
     "src/web/usePartSelectionController.ts": 3227,
     "src/web/useSketchEditingController.ts": 7638,

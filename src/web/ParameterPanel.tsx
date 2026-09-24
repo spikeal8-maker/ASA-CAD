@@ -3,6 +3,7 @@ import commandRegistryJson from '../../spec/ui/command-registry.v1.json';
 import type { CadViewportPick } from '../contracts/render';
 import { ParameterNumericField } from './ParameterNumericField';
 import { ExtrudeParameterPanel } from './ExtrudeParameterPanel';
+import { CutExtrudeParameterPanel } from './CutExtrudeParameterPanel';
 import type { ExtrudeOperationController } from './useExtrudeOperationController';
 import { SketchDimensionParameterPanel } from './SketchDimensionParameterPanel';
 import type { SketchDimensionCreationState } from './useSketchDimensionCreationControllers';
@@ -154,27 +155,12 @@ export function ParameterPanel(props: ParameterPanelProps) {
 
   if (props.activeCommand === 'part.cutExtrude') {
     return (
-      <div className="parameter-panel">
-        <div className="panel-title-row">
-          <div>
-            <small>Вырез</small>
-            <strong>{commandLabel('part.cutExtrude', 'Вырезать выдавливанием')}</strong>
-          </div>
-          <button type="button" onClick={props.onCancel} title="Закрыть">×</button>
-        </div>
-        <section className="parameter-section">
-          <h3>Условие окончания</h3>
-          <div className="selection-value selected">
-            <span>↕</span>
-            <strong>Сквозь всё</strong>
-            <small>Вдоль нормали эскиза</small>
-          </div>
-        </section>
-        <div className="parameter-actions">
-          <button className="primary" type="button" onClick={props.onCut}>Создать</button>
-          <button type="button" onClick={props.onCancel}>Отмена</button>
-        </div>
-      </div>
+      <CutExtrudeParameterPanel
+        profileId={props.extrude.profileId}
+        profileName={props.extrude.profileName}
+        onApply={props.onCut}
+        onCancel={props.onCancel}
+      />
     );
   }
 
