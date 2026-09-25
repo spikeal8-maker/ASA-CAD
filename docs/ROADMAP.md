@@ -1,94 +1,79 @@
 # ASA-CAD — воспроизведение КОМПАСа с видимыми поставками
 
-Редакция 2026-09-25. План, не готовность. STATUS/#10 — текущее состояние; #19 — визуальная исполнительная очередь.
+Редакция 2026-09-25. План, не готовность. STATUS/#10 — текущее состояние; #19 — визуальная очередь.
 
 ## Цель
 
-Воспроизвести согласованную конфигурацию КОМПАС-3D v25 в браузере: интерфейс, структуру, панели, состояния, команды и поведение.
-
-FULL_M2V = **NOT ACCEPTED**. FULL_KOMPAS_PARITY = **NO**.
+Воспроизвести согласованную конфигурацию КОМПАС-3D v25 в браузере. FULL_M2V = **NOT ACCEPTED**. FULL_KOMPAS_PARITY = **NO**.
 
 ## Принятые поставки
 
-**В1 / CAD-VIS-001 — DONE / accepted regional result.**
-Верхняя область Детали и responsive repair.
+- В1 / CAD-VIS-001 — DONE / regional accepted.
+- В2 / CAD-VIS-002 — DONE / regional accepted.
+- В3 / CAD-VIS-003 — DONE / regional accepted / PARITY PARTIAL.
+- В4 / CAD-VIS-004 — DONE / regional accepted / PARITY PARTIAL.
+- CAD-VIS-005 — accepted integration checkpoint / PRODUCT_DELTA NONE.
+- V6A / CAD-VIS-006A — DONE / MERGED / regional accepted / PARITY PARTIAL.
+- V6B / CAD-VIS-006B — **DONE / MERGED / regional accepted / PARITY PARTIAL**.
 
-**В2 / CAD-VIS-002 — DONE / accepted regional result.**
-Single-Sketch finish/select/re-edit/reopen с сохранением identity.
-
-**В3 / CAD-VIS-003 — DONE / accepted regional result.**
-Рабочее меню «Файл», shared New/Open/Save, dirty replacement guard, keyboard/focus. PARITY = PARTIAL.
-
-**В4 / CAD-VIS-004 — DONE / accepted regional result.**
-Поддерживаемая панель Extrude: section/profile, «На расстояние», distance/reverse/symmetric, no-mutation, real B-Rep, Save/Open, XZ/YZ fail-closed. PARITY = PARTIAL.
-
-**CAD-VIS-005 — INTEGRATION CHECKPOINT / ACCEPTED.**
-End-to-end Part verification В1–В4. PRODUCT_DELTA = NONE.
-
-**V6A / CAD-VIS-006A — DONE / MERGED / REGIONAL RESULT ACCEPTED.**
+## V6B / CAD-VIS-006B
 
 Accepted candidate:
-`ff57cec29d20f36b8c39ea038ad53c42ff26b55d`
+`b1254352ca93f2a22c11cdae457139d29f3f68d3`
 
 Product merge:
-`1aed43cb483098aa8d474d9c83623c70aa7cdede` through PR #162.
+`cb6ffbc59e1e07bf1dad8372a49aef36d71618e7` through PR #164.
 
-Accepted V6A behavior:
-- real section/profile = «Эскиз 2»;
-- guide = «Нормаль к плоскости эскиза»;
-- method = «Сквозь всё»;
-- begin/cancel no mutation;
-- real through-all cut;
-- Save/Open identity;
-- protected Part regression;
-- self-contained visual evidence.
+Accepted:
+- Part root is a real branch;
+- Origin is a real branch;
+- XY/XZ/YZ are leaf nodes without fake disclosure;
+- Part and Origin have real expand/collapse;
+- disclosure is transient presentation state and does not mutate the document;
+- protected Part remains green.
 
 Artifact:
-`asa-cad-vis-006a`, id `10832000991`, retention 30 days.
+`asa-cad-vis-006b`, id `10848472873`, retention 30 days, oldArtifactDependency=false.
 
-PARITY = **PARTIAL**.
+V6B closes only the first Part/Origin hierarchy slice. FULL_TREE_PARITY = **NOT ACCEPTED**.
 
-### V6A YELLOW ownership note
+## Preserved V6A YELLOW
 
 `CutExtrudeParameterPanel` currently receives `profileId/profileName` through `ExtrudeOperationController`.
 
-Severity = **YELLOW / non-blocking** for the accepted single-profile V6A path.
+Severity = **YELLOW / non-blocking / non-growing**.
 
-Do not extend this coupling to multi-profile selection, edit-existing feature or generalized feature selection. When that scope begins, profile ownership must be separated from `ExtrudeOperationController`.
+Do not extend this coupling to multi-profile selection, edit-existing feature or generalized feature selection. Separate profile ownership when that scope begins.
 
-## NEXT — V6B / CAD-VIS-006B
+## Cadence gate
 
-**V6B — Дерево построения: hierarchy/disclosure.**
+Full Repository Health Audit #158 is the last accepted Full Audit.
 
-V6B is the next visible product slice. This closeout does not create a V6B branch and does not start its implementation.
+Machine registry requires a Full Audit every three accepted permanent slices:
 
-V6B will be scoped separately before code. It must not inherit acceptance from V6A automatically.
+1. CAD-VIS-005
+2. CAD-VIS-006A
+3. CAD-VIS-006B
 
-## Queue
+Current cadence = **3/3**.
 
-| Package | Status |
-|---|---|
-| В1 / CAD-VIS-001 | DONE / regional accepted |
-| В2 / CAD-VIS-002 | DONE / regional accepted |
-| В3 / CAD-VIS-003 | DONE / regional accepted / PARITY PARTIAL |
-| В4 / CAD-VIS-004 | DONE / regional accepted / PARITY PARTIAL |
-| CAD-VIS-005 | ACCEPTED integration checkpoint / PRODUCT_DELTA NONE |
-| V6A / CAD-VIS-006A | DONE / MERGED / regional accepted / PARITY PARTIAL |
-| V6B / CAD-VIS-006B | **NEXT — Дерево построения** |
-| V6C+ | later, separate visible slices |
-| V7 | resize/state matrix later |
-| V8 | closed Part/Sketch acceptance later |
+**FEATURE_FREEZE = ACTIVE.**
 
-## Gates
+**NEXT = mandatory Full Repository Health Audit after CAD-VIS-006B.**
 
-Full Repository Health Audit #158 remains YELLOW_ACCEPTED with no RED findings.
+All feature work is blocked until that audit is accepted. In particular:
+- V6C = BLOCKED_BY_AUDIT;
+- V7 = BLOCKED_BY_AUDIT;
+- Sketch hierarchy = BLOCKED_BY_AUDIT;
+- dimension ownership = BLOCKED_BY_AUDIT;
+- tree search/context menu = BLOCKED_BY_AUDIT.
 
-Machine registry `spec/process/repository-health.v1.json` counts every accepted permanent slice:
-- CAD-VIS-005 → cadence 1/3;
-- V6A → cadence **2/3**.
+No V6C branch or implementation is started by this closeout.
 
-The next Full Repository Health Audit is required at 3/3 or at a milestone boundary.
+## After the audit
 
-Gate B before broad M4 remains OPEN: M2V, M3 exit, M3X, M3M-009 and performance baselines.
+Only an accepted Full Audit may lift the feature freeze and establish the next product slice. Acceptance of V6B does not imply full Tree parity or overall M2V acceptance.
 
-GitHub repository/branches/PRs/Issues/Actions/artifacts remain the execution environment for this queue. No local computer or deployment is part of this closeout.
+Gate B before broad M4 remains OPEN: M2V, M3 exit, M3X, M3M-009, performance baselines, and the currently required Full Repository Health Audit.
+
+GitHub repository/PR/Issues/Actions/artifacts remain the execution environment. No deploy is part of this closeout.
