@@ -74,6 +74,6 @@ No V6C branch or implementation is started by this closeout.
 
 Only an accepted Full Audit may lift the feature freeze and establish the next product slice. Acceptance of V6B does not imply full Tree parity or overall M2V acceptance.
 
-Gate B before broad M4 remains OPEN: M2V, M3 exit, M3X, M3M-009 and performance baselines.
+Gate B before broad M4 remains OPEN: M2V, M3 exit, M3X, M3M-009, performance baselines, and the currently required Full Repository Health Audit.
 
 GitHub repository/PR/Issues/Actions/artifacts remain the execution environment. No deploy is part of this closeout.
