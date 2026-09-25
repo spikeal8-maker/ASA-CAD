@@ -26,7 +26,15 @@ export function DocumentTree({
   onEditDimension,
 }: DocumentTreeProps) {
   const [selectedSketchId, setSelectedSketchId] = useState<CadSketchId | null>(null);
+  const [partExpanded, setPartExpanded] = useState(true);
+  const [originExpanded, setOriginExpanded] = useState(true);
+
   useEffect(() => setSelectedSketchId(null), [document]);
+  useEffect(() => {
+    setPartExpanded(true);
+    setOriginExpanded(true);
+  }, [document.documentId]);
+
   const selectedSketch = document.kind === 'part'
     && selectedSketchId
     && document.sketches.some((item) => item.id === selectedSketchId)
@@ -41,55 +49,113 @@ export function DocumentTree({
       </div>
       <div className="tree-search"><CadIcon name="search" size={14} /><input placeholder="Найти в дереве" /></div>
       <div className="tree-root">
-        <TreeRow depth={0} icon={kindIcon(document.kind)} label={document.title} bold />
-        {document.kind === 'part' && (
+        {document.kind === 'part' ? (
           <>
-            <TreeRow depth={1} icon="origin" label="Начало координат" />
-            <TreeRow depth={2} icon="plane" label="Плоскость XY" muted />
-            <TreeRow depth={2} icon="plane" label="Плоскость XZ" muted />
-            <TreeRow depth={2} icon="plane" label="Плоскость YZ" muted />
-            {document.sketches.map((item) => (
-              <SketchTreeEntry
-                key={item.id}
-                id={item.id}
-                label={item.name}
-                selected={item.id === activeSketchId || item.id === selectedSketch}
-                showEdit={item.id === selectedSketch}
-                onSelect={() => setSelectedSketchId(item.id)}
-                onEdit={() => onEditSketch(item.id)}
-              />
-            ))}
-            {document.dimensions.map((dimension) => (
-              <TreeRow
-                key={dimension.id}
-                depth={2}
-                icon={dimension.type === 'diameter' ? 'diameter' : dimension.type === 'angular' ? 'angle' : 'dimension'}
-                label={`${dimensionLabel(dimension.name, dimension.type)}: ${dimension.value} ${dimensionUnit(dimension.type)}`}
-                onClick={() => onEditDimension(dimension.id)}
-              />
-            ))}
-            {document.features.map((feature) => (
-              <TreeRow key={feature.id} depth={1} icon="feature" label={feature.name} />
-            ))}
-            {document.bodies.map((body) => (
-              <TreeRow
-                key={body.id}
-                depth={1}
-                icon="body"
-                label={body.name}
-                selected={body.id === selectedBodyId}
-                bodyId={body.id}
-                onClick={() => onSelectBody(body.id)}
-              />
-            ))}
+            <TreeBranchRow
+              branchId="part-root"
+              depth={0}
+              icon={kindIcon(document.kind)}
+              label={document.title}
+              bold
+              expanded={partExpanded}
+              onToggle={() => setPartExpanded((value) => !value)}
+            />
+            {partExpanded && (
+              <>
+                <TreeBranchRow
+                  branchId="origin"
+                  depth={1}
+                  icon="origin"
+                  label="Начало координат"
+                  expanded={originExpanded}
+                  onToggle={() => setOriginExpanded((value) => !value)}
+                />
+                {originExpanded && (
+                  <>
+                    <TreeRow depth={2} icon="plane" label="Плоскость XY" muted nodeId="plane-xy" />
+                    <TreeRow depth={2} icon="plane" label="Плоскость XZ" muted nodeId="plane-xz" />
+                    <TreeRow depth={2} icon="plane" label="Плоскость YZ" muted nodeId="plane-yz" />
+                  </>
+                )}
+                {document.sketches.map((item) => (
+                  <SketchTreeEntry
+                    key={item.id}
+                    id={item.id}
+                    label={item.name}
+                    selected={item.id === activeSketchId || item.id === selectedSketch}
+                    showEdit={item.id === selectedSketch}
+                    onSelect={() => setSelectedSketchId(item.id)}
+                    onEdit={() => onEditSketch(item.id)}
+                  />
+                ))}
+                {document.dimensions.map((dimension) => (
+                  <TreeRow
+                    key={dimension.id}
+                    depth={2}
+                    icon={dimension.type === 'diameter' ? 'diameter' : dimension.type === 'angular' ? 'angle' : 'dimension'}
+                    label={`${dimensionLabel(dimension.name, dimension.type)}: ${dimension.value} ${dimensionUnit(dimension.type)}`}
+                    onClick={() => onEditDimension(dimension.id)}
+                  />
+                ))}
+                {document.features.map((feature) => (
+                  <TreeRow key={feature.id} depth={1} icon="feature" label={feature.name} />
+                ))}
+                {document.bodies.map((body) => (
+                  <TreeRow
+                    key={body.id}
+                    depth={1}
+                    icon="body"
+                    label={body.name}
+                    selected={body.id === selectedBodyId}
+                    bodyId={body.id}
+                    onClick={() => onSelectBody(body.id)}
+                  />
+                ))}
+              </>
+            )}
+          </>
+        ) : (
+          <>
+            <TreeRow depth={0} icon={kindIcon(document.kind)} label={document.title} bold />
+            {document.kind === 'assembly' && <TreeRow depth={1} icon="assembly" label="Компоненты появятся в M4A" muted />}
+            {document.kind === 'drawing' && <TreeRow depth={1} icon="drawing" label="Листы появятся в M6" muted />}
+            {document.kind === 'fragment' && <TreeRow depth={1} icon="drawing" label="Геометрия появится в M6" muted />}
+            {document.kind === 'specification' && <TreeRow depth={1} icon="tree" label="Разделы появятся в M6A" muted />}
+            {document.kind === 'text' && <TreeRow depth={1} icon="text" label="Структура появится в M6A" muted />}
           </>
         )}
-        {document.kind === 'assembly' && <TreeRow depth={1} icon="assembly" label="Компоненты появятся в M4A" muted />}
-        {document.kind === 'drawing' && <TreeRow depth={1} icon="drawing" label="Листы появятся в M6" muted />}
-        {document.kind === 'fragment' && <TreeRow depth={1} icon="drawing" label="Геометрия появится в M6" muted />}
-        {document.kind === 'specification' && <TreeRow depth={1} icon="tree" label="Разделы появятся в M6A" muted />}
-        {document.kind === 'text' && <TreeRow depth={1} icon="text" label="Структура появится в M6A" muted />}
       </div>
+    </div>
+  );
+}
+
+function TreeBranchRow(props: {
+  branchId: 'part-root' | 'origin';
+  depth: number;
+  icon: CadIconName;
+  label: string;
+  bold?: boolean;
+  expanded: boolean;
+  onToggle(): void;
+}) {
+  return (
+    <div
+      className={`tree-row tree-branch-row ${props.bold ? 'bold' : ''}`}
+      style={{ paddingInlineStart: 10 + props.depth * 18 }}
+      data-tree-branch={props.branchId}
+    >
+      <button
+        className="tree-disclosure"
+        type="button"
+        data-tree-disclosure={props.branchId}
+        aria-label={`${props.expanded ? 'Свернуть' : 'Развернуть'} ${props.label}`}
+        aria-expanded={props.expanded}
+        onClick={props.onToggle}
+      >
+        <CadIcon name="chevron" size={11} />
+      </button>
+      <span className="tree-icon"><CadIcon name={props.icon} size={15} /></span>
+      <span className="tree-label">{props.label}</span>
     </div>
   );
 }
@@ -136,6 +202,7 @@ function TreeRow(props: {
   selected?: boolean;
   bodyId?: CadBodyId;
   sketchId?: CadSketchId;
+  nodeId?: string;
   onClick?: () => void;
 }) {
   return (
@@ -146,9 +213,10 @@ function TreeRow(props: {
       onClick={props.onClick}
       data-body-id={props.bodyId}
       data-sketch-id={props.sketchId}
+      data-tree-node={props.nodeId}
       aria-pressed={props.bodyId || props.sketchId ? Boolean(props.selected) : undefined}
     >
-      <span className="tree-chevron">{props.depth < 2 ? <CadIcon name="chevron" size={11} /> : null}</span>
+      <span className="tree-chevron" aria-hidden="true" />
       <span className="tree-icon"><CadIcon name={props.icon} size={15} /></span>
       <span className="tree-label">{props.label}</span>
     </button>

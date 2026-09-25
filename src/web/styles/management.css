@@ -101,7 +101,22 @@
   cursor: pointer;
 }
 .tree-sketch-edit:hover, .tree-sketch-edit:focus-visible { background: #e9f4fa; }
-.tree-chevron { width: 10px; color: #747b84; display: grid; place-items: center; }
+.tree-chevron { width: 10px; flex: 0 0 10px; color: #747b84; display: grid; place-items: center; }
+.tree-branch-row { cursor: default; }
+.tree-disclosure {
+  width: 10px;
+  height: 24px;
+  flex: 0 0 10px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #747b84;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.tree-disclosure:hover, .tree-disclosure:focus-visible { color: var(--text); background: #e4edf9; }
+.tree-disclosure[aria-expanded="true"] .cad-icon { transform: rotate(90deg); }
 .tree-icon { width: 18px; color: #596979; display: grid; place-items: center; }
 .tree-label { overflow: hidden; text-overflow: ellipsis; font-size: 13px; }
 
