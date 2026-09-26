@@ -1,6 +1,6 @@
-# ASA-CAD — состояние и следующий gate
+# ASA-CAD — состояние и следующий видимый результат
 
-Снимок 2026-09-25. Координатор #10, визуальная очередь #19.
+Снимок 2026-09-26. Координатор #10, визуальная очередь #19.
 
 ## Текущий статус
 
@@ -10,75 +10,74 @@
 - В4 / CAD-VIS-004 — DONE / MERGED / REGIONAL RESULT ACCEPTED / PARITY PARTIAL.
 - CAD-VIS-005 — INTEGRATION CHECKPOINT / ACCEPTED / PRODUCT_DELTA NONE.
 - V6A / CAD-VIS-006A — DONE / MERGED / REGIONAL RESULT ACCEPTED / PARITY PARTIAL.
-- V6B / CAD-VIS-006B — **DONE / MERGED / REGIONAL RESULT ACCEPTED / PARITY PARTIAL**.
+- V6B / CAD-VIS-006B — DONE / MERGED / REGIONAL RESULT ACCEPTED / PARITY PARTIAL.
+- Full Repository Health Audit #166 — **YELLOW_ACCEPTED / completed**.
+- Accepted audit final main: `fa13134bf7397a20a9b02790a6644e9084e943e0`.
+- RED findings = **NONE**.
+- CADENCE = **0/3**.
+- FEATURE_FREEZE = **LIFTED**.
 - FULL_TREE_PARITY = **NOT ACCEPTED**.
 - FULL_M2V = **NOT ACCEPTED**.
 - FULL_KOMPAS_PARITY = **NO**.
-- CADENCE = **3/3**.
-- FULL_REPOSITORY_HEALTH_AUDIT_REQUIRED = **YES**.
-- FEATURE_FREEZE = **ACTIVE**.
 
-## V6B / CAD-VIS-006B
+## Full Audit #166
 
-Accepted candidate:
-`b1254352ca93f2a22c11cdae457139d29f3f68d3`
+Audit base:
+`a03f84e21447817639f0fb9ea3f83ab86a24efb6`
 
-Product merge:
-`cb6ffbc59e1e07bf1dad8372a49aef36d71618e7` through PR #164.
+CI-maintenance repair:
+- PR #167;
+- repair HEAD `5a8402a1e19b2c1e5223fcce2e94ab41370a899e`;
+- merge `fa13134bf7397a20a9b02790a6644e9084e943e0`;
+- permanent M2 shell now runs `npm run test:m2:architecture`;
+- post-repair M2 shell `36233235054` — SUCCESS;
+- post-repair baseline `36233235046` — SUCCESS;
+- M2 UI architecture — PASS;
+- `test:asa` constituent coverage — PASS;
+- `check` constituent coverage — PASS;
+- literal `npm run check` — NOT_RUN.
 
-Accepted scope only:
-- real Part disclosure;
-- real Origin disclosure;
-- XY/XZ/YZ are leaf rows;
-- Part/Origin expand-collapse is real UI state;
-- disclosure does not mutate serialized CadDocument, dirty state, counts or observable undo state;
-- protected Part regression preserved.
+Resolved:
+- `Y-AUD-166-M2-ARCH`.
 
-Pre-merge exact-head:
-- M2 shell `36100313454` — SUCCESS
-- M2 browser `36100313416` — SUCCESS
-- M3 browser `36100313400` — SUCCESS
-- Docker `36100313414` — SUCCESS
-- baseline `36100313607` — SUCCESS
-- OWNER_SCREENSHOT_CAPTURE `36100313402` — SUCCESS
-- artifact `asa-cad-vis-006b`, id `10848472873`, retention 30 days, oldArtifactDependency=false
+Remaining accepted YELLOW:
+- `Y-AUD-166-BUDGETS` — hard/frozen gates PASS; do not grow pressured owners.
+- `Y-AUD-166-THIRD-TOUCH` — focused owner review completed in #166; next qualifying third touch requires review before the touch.
+- `Y-AUD-166-STALE-PRS` — #143/#146 remain historical/stale; do not merge as-is.
+- `Y-AUD-166-V6A-OWNERSHIP` — CutExtrude profile ownership still flows through `ExtrudeOperationController`; keep non-growing and separate ownership before multi-profile, edit-existing, or generalized feature-selection scope.
 
-Post-product-merge on `cb6ffbc…`:
-- M2 shell `36120390088` — SUCCESS
-- M2 browser `36120390207` — SUCCESS
-- M3 browser `36120390240` — SUCCESS
-- Docker `36120390117` — SUCCESS
-- baseline `36120390225` — SUCCESS
+Audit #158 is historical; #166 is now the latest accepted Full Repository Health Audit.
 
-This acceptance does **not** mean full Tree parity. Sketch hierarchy, dimension ownership, search, context menu and later tree work remain outside V6B.
+## Accepted V6B scope
 
-## Preserved V6A YELLOW
+V6B accepted only:
+```text
+Деталь 1
+└─ Начало координат
+   ├─ Плоскость XY
+   ├─ Плоскость XZ
+   └─ Плоскость YZ
++ real expand/collapse
+```
 
-**Cut profile ownership — YELLOW / non-blocking / non-growing.**
+This does not close full Tree parity.
 
-`CutExtrudeParameterPanel` receives `profileId/profileName` through `ExtrudeOperationController`.
+## NEXT
 
-The accepted V6A single-profile path is valid. Do not extend this coupling to multi-profile selection, edit-existing feature or generalized feature selection. When that scope begins, profile ownership must be separated from `ExtrudeOperationController`.
+**V6C / CAD-VIS-006C — Sketch hierarchy + dimension ownership.**
 
-## Mandatory next gate
+Target next visible hierarchy:
+```text
+Эскиз 1
+  ├─ Ширина
+  └─ Высота
 
-Machine registry `spec/process/repository-health.v1.json` requires a Full Repository Health Audit every three accepted permanent slices.
+Эскиз 2
+  └─ Диаметр
+```
 
-Accepted permanent slices since Full Audit #158:
-1. CAD-VIS-005
-2. CAD-VIS-006A
-3. CAD-VIS-006B
+V6C is **not started** by this closeout.
 
-Therefore:
+Machine policy remains authoritative: every permanent slice gets a Slice Quality Gate; Full Audit cadence restarts at **0/3** from accepted #166. Existing owner/frozen-budget constraints remain in force.
 
-- CADENCE = **3/3**
-- FEATURE_FREEZE = **ACTIVE**
-- NEXT = **Full Repository Health Audit after V6B**
-- NEXT_FEATURE = **BLOCKED**
-- V6C = **BLOCKED_BY_AUDIT**
-
-Do not start V6C, V7, Sketch hierarchy, dimension ownership, tree search or context menu until the Full Audit is accepted.
-
-Gate A/M2O and M3 core remain in force. M1 ASA-owned `CadDocument` preserves six first-class document kinds: Part, Assembly, Drawing, Fragment, Specification, Text.
-
-GitHub is the execution/test environment for this queue. No local computer, local Docker or deploy was used.
+GitHub remains the execution/test environment for this queue.
