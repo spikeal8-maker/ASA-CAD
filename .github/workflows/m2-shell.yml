@@ -94,6 +94,9 @@ jobs:
       - name: Typecheck ASA M2 presentation boundary
         run: npm run typecheck:asa
 
+      - name: Verify M2 UI architecture
+        run: npm run test:m2:architecture
+
       - name: Verify M2O optimization gates
         run: npm run test:m2o
 
