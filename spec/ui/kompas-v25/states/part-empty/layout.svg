@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" role="img" aria-labelledby="title desc">
+  <title id="title">KOMPAS v25 part-empty derived layout</title>
+  <desc id="desc">Text-only derived rectangles; no KOMPAS raster or proprietary artwork.</desc>
+  <rect x="0" y="0" width="1920" height="1080" fill="#fafafa" stroke="#111" stroke-width="3"/>
+  <g><rect x="29" y="5" width="835" height="22" fill="none" stroke="#1f77b4" stroke-width="2"/><text x="33" y="21" fill="#1f77b4" font-size="13">mainMenu x=29 y=5 w=835 h=22</text></g>
+  <g><rect x="1651" y="5" width="166" height="22" fill="none" stroke="#d62728" stroke-width="2"/><text x="1655" y="21" fill="#d62728" font-size="13">commandSearch x=1651 y=5 w=166 h=22</text></g>
+  <g><rect x="3" y="28" width="1914" height="27" fill="none" stroke="#2ca02c" stroke-width="2"/><text x="7" y="44" fill="#2ca02c" font-size="13">documentTabs x=3 y=28 w=1914 h=27</text></g>
+  <g><rect x="3" y="55" width="1914" height="93" fill="none" stroke="#9467bd" stroke-width="2"/><text x="7" y="71" fill="#9467bd" font-size="13">instrumentArea x=3 y=55 w=1914 h=93</text></g>
+  <g><rect x="3" y="55" width="120" height="25" fill="none" stroke="#ff7f0e" stroke-width="2"/><text x="7" y="71" fill="#ff7f0e" font-size="13">workspaceTabs x=3 y=55 w=120 h=25</text></g>
+  <g><rect x="3" y="55" width="1914" height="93" fill="none" stroke="#17becf" stroke-width="2"/><text x="7" y="71" fill="#17becf" font-size="13">commandRibbon x=3 y=55 w=1914 h=93</text></g>
+  <g><rect x="3" y="148" width="26" height="929" fill="none" stroke="#8c564b" stroke-width="2"/><text x="7" y="164" fill="#8c564b" font-size="13">managementRail x=3 y=148 w=26 h=929</text></g>
+  <g><rect x="29" y="148" width="310" height="929" fill="none" stroke="#1f77b4" stroke-width="2"/><text x="33" y="164" fill="#1f77b4" font-size="13">managementPanel x=29 y=148 w=310 h=929</text></g>
+  <g><rect x="29" y="148" width="310" height="929" fill="none" stroke="#d62728" stroke-width="2"/><text x="33" y="164" fill="#d62728" font-size="13">treePanel x=29 y=148 w=310 h=929</text></g>
+  <g><rect x="340" y="148" width="1577" height="929" fill="none" stroke="#2ca02c" stroke-width="2"/><text x="344" y="164" fill="#2ca02c" font-size="13">graphicsArea x=340 y=148 w=1577 h=929</text></g>
+  <g><rect x="356" y="148" width="591" height="25" fill="none" stroke="#9467bd" stroke-width="2"/><text x="360" y="164" fill="#9467bd" font-size="13">quickAccess x=356 y=148 w=591 h=25</text></g>
+</svg>

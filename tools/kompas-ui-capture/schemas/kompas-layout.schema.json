@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://asa-cad.local/schemas/kompas-layout.schema.json",
+  "title": "KOMPAS UI derived layout",
+  "type": "object",
+  "required": ["schemaVersion", "stateId", "coordinateSpaces", "window", "provenance", "stability", "uiaCoverage", "zones"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "stateId": { "const": "part-empty" },
+    "canonicalBaselineConfirmed": { "type": "boolean" },
+    "coordinateSpaces": {
+      "type": "object",
+      "required": ["measurement", "canonicalSource", "target"],
+      "properties": {
+        "measurement": { "const": "physical-screen-px" },
+        "canonicalSource": { "const": "kompas-client-dip" },
+        "target": { "const": "browser-css-px" }
+      }
+    },
+    "window": {
+      "type": "object",
+      "required": ["dpi", "clientPhysicalPx", "clientDip"],
+      "properties": {
+        "dpi": {
+          "type": "object",
+          "required": ["x", "y"],
+          "properties": {
+            "x": { "type": "number", "exclusiveMinimum": 0 },
+            "y": { "type": "number", "exclusiveMinimum": 0 }
+          }
+        },
+        "clientPhysicalPx": { "$ref": "#/$defs/size" },
+        "clientDip": { "$ref": "#/$defs/size" }
+      }
+    },
+    "zones": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "source", "confidence", "rectPhysicalPx", "rectDip", "rectNormalized"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "source": { "enum": ["uia", "image", "mixed", "manual-confirmed"] },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "rectPhysicalPx": { "$ref": "#/$defs/rect" },
+          "rectDip": { "$ref": "#/$defs/rect" },
+          "rectNormalized": { "$ref": "#/$defs/rect" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "size": {
+      "type": "object",
+      "required": ["width", "height"],
+      "properties": { "width": { "type": "number", "exclusiveMinimum": 0 }, "height": { "type": "number", "exclusiveMinimum": 0 } }
+    },
+    "rect": {
+      "type": "object",
+      "required": ["x", "y", "width", "height"],
+      "properties": {
+        "x": { "type": "number" }, "y": { "type": "number" },
+        "width": { "type": "number", "exclusiveMinimum": 0 },
+        "height": { "type": "number", "exclusiveMinimum": 0 }
+      }
+    }
+  }
+}

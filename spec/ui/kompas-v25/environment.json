@@ -1,0 +1,263 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-20T21:49:58.8856431+00:00",
+  "canonicalBaselineConfirmed": true,
+  "referenceProduct": "KOMPAS-3D v25",
+  "baselineConfirmation": {
+    "capturedAt": "2026-09-20T21:49:58.8856431+00:00",
+    "requiredFields": [
+      "kompasVersion",
+      "uiLanguage",
+      "theme",
+      "uiSize",
+      "iconStyle",
+      "panelConfiguration",
+      "windowsTextScale",
+      "highContrast"
+    ],
+    "fields": {
+      "kompasVersion": {
+        "expected": "v25",
+        "observed": "v25",
+        "source": "win32-file-version-and-window-title",
+        "evidence": {
+          "settingName": "KOMPAS product version",
+          "displayedValue": "КОМПАС-3D v25 Учебная версия (Не для коммерческого использования)",
+          "verifiedBy": "Win32 executable version metadata plus visible main-window title",
+          "capturedAt": "2026-09-20T21:49:58.8856431+00:00"
+        },
+        "result": "PASS"
+      },
+      "uiLanguage": {
+        "expected": "ru-RU",
+        "observed": "Русский (Россия)",
+        "source": "official-kompas-ui",
+        "evidence": {
+          "settingName": "Язык",
+          "displayedValue": "Русский (Россия)",
+          "verifiedBy": "Windows UI Automation labels and ValuePattern values from the official KOMPAS Parameters dialog",
+          "capturedAt": "2026-09-20T21:49:47.2516533+00:00",
+          "screenshot": {
+            "localPath": "C:\\Users\\spike\\Documents\\VisualReviews\\ASA-CAD\\KOMPAS-v25\\baseline-evidence\\kompas-interface.png",
+            "sha256": "b2c6447ca788d745574c5126680d68ae65769ae36569ceba9b3053aca7b7d1be",
+            "capturedAt": "2026-09-20T21:49:47.2516533+00:00"
+          }
+        },
+        "result": "PASS"
+      },
+      "theme": {
+        "expected": "light/effective-light",
+        "observed": "Согласно теме ОС (effective light)",
+        "source": "official-kompas-ui",
+        "evidence": {
+          "settingName": "Тема",
+          "displayedValue": "Согласно теме ОС",
+          "verifiedBy": "Windows UI Automation labels and ValuePattern values from the official KOMPAS Parameters dialog; effective theme resolved from HKCU Personalize AppsUseLightTheme",
+          "capturedAt": "2026-09-20T21:49:47.2516533+00:00",
+          "effectiveTheme": "light",
+          "screenshot": {
+            "localPath": "C:\\Users\\spike\\Documents\\VisualReviews\\ASA-CAD\\KOMPAS-v25\\baseline-evidence\\kompas-interface.png",
+            "sha256": "b2c6447ca788d745574c5126680d68ae65769ae36569ceba9b3053aca7b7d1be",
+            "capturedAt": "2026-09-20T21:49:47.2516533+00:00"
+          }
+        },
+        "result": "PASS"
+      },
+      "uiSize": {
+        "expected": "standard",
+        "observed": "Стандартный",
+        "source": "official-kompas-ui",
+        "evidence": {
+          "settingName": "Размер значков и текста",
+          "displayedValue": "Стандартный",
+          "verifiedBy": "Windows UI Automation labels and ValuePattern values from the official KOMPAS Parameters dialog",
+          "capturedAt": "2026-09-20T21:49:47.2516533+00:00",
+          "screenshot": {
+            "localPath": "C:\\Users\\spike\\Documents\\VisualReviews\\ASA-CAD\\KOMPAS-v25\\baseline-evidence\\kompas-interface.png",
+            "sha256": "b2c6447ca788d745574c5126680d68ae65769ae36569ceba9b3053aca7b7d1be",
+            "capturedAt": "2026-09-20T21:49:47.2516533+00:00"
+          }
+        },
+        "result": "PASS"
+      },
+      "iconStyle": {
+        "expected": "monochrome",
+        "observed": "Монохромные",
+        "source": "official-kompas-ui",
+        "evidence": {
+          "settingName": "Значки",
+          "displayedValue": "Монохромные",
+          "verifiedBy": "Windows UI Automation labels and ValuePattern values from the official KOMPAS Parameters dialog",
+          "capturedAt": "2026-09-20T21:49:47.2516533+00:00",
+          "screenshot": {
+            "localPath": "C:\\Users\\spike\\Documents\\VisualReviews\\ASA-CAD\\KOMPAS-v25\\baseline-evidence\\kompas-interface.png",
+            "sha256": "b2c6447ca788d745574c5126680d68ae65769ae36569ceba9b3053aca7b7d1be",
+            "capturedAt": "2026-09-20T21:49:47.2516533+00:00"
+          }
+        },
+        "result": "PASS"
+      },
+      "panelConfiguration": {
+        "expected": "normal-docked-desktop",
+        "observed": "model tree and management panel docked left of the D3View graphics area",
+        "source": "windows-ui-automation",
+        "evidence": {
+          "settingName": "KOMPAS desktop panel configuration",
+          "displayedValue": "model tree and management panel docked left of the D3View graphics area",
+          "verifiedBy": "UIA Control View geometry for model tree, docked management panel, and D3View",
+          "capturedAt": "2026-09-20T21:49:58.8856431+00:00",
+          "requiredNodes": [
+            "Resizable_LeftHub_DockingTabControl_0|",
+            "Дерево",
+            "D3View"
+          ],
+          "observedNodes": {
+            "managementPanel": {
+              "automationId": "Resizable_LeftHub_DockingTabControl_0|",
+              "rect": {
+                "X": 3.0,
+                "Y": 148.0,
+                "Width": 336.0,
+                "Height": 929.0,
+                "IsValid": true
+              }
+            },
+            "treeTab": {
+              "name": "Дерево",
+              "automationId": "LongDelayItem_LOBJ_MASTER_DETAIL:1002",
+              "rect": {
+                "X": 3.0,
+                "Y": 148.0,
+                "Width": 26.0,
+                "Height": 25.0,
+                "IsValid": true
+              }
+            },
+            "graphicsBacking": {
+              "className": "D3View",
+              "rect": {
+                "X": 3.0,
+                "Y": 148.0,
+                "Width": 1914.0,
+                "Height": 929.0,
+                "IsValid": true
+              }
+            }
+          }
+        },
+        "result": "PASS"
+      },
+      "windowsTextScale": {
+        "expected": 100,
+        "observed": 100,
+        "source": "windows-runtime-api",
+        "evidence": {
+          "settingName": "Windows Text size",
+          "displayedValue": 100,
+          "verifiedBy": "Windows.UI.ViewManagement.UISettings.TextScaleFactor",
+          "capturedAt": "2026-09-20T21:49:47.9467313+00:00",
+          "error": null
+        },
+        "result": "PASS"
+      },
+      "highContrast": {
+        "expected": false,
+        "observed": false,
+        "source": "windows-runtime-api",
+        "evidence": {
+          "settingName": "Windows High Contrast",
+          "displayedValue": false,
+          "verifiedBy": "Windows.UI.ViewManagement.AccessibilitySettings.HighContrast",
+          "capturedAt": "2026-09-20T21:49:47.9467313+00:00",
+          "error": null
+        },
+        "result": "PASS"
+      }
+    },
+    "errors": [],
+    "result": "PASS"
+  },
+  "kompas": {
+    "productVersion": "v25",
+    "fileVersion": "25.0.0.2735",
+    "productName": "KOMPAS v25 (x64)",
+    "processName": "kStudy",
+    "processPath": "C:\\Program Files\\ASCON\\KOMPAS-3D v25 Study\\Bin\\kStudy.exe",
+    "processId": 42828,
+    "windowTitle": "КОМПАС-3D v25 Учебная версия (Не для коммерческого использования)",
+    "uiLanguage": "ru-RU",
+    "theme": "light",
+    "themeDisplayedName": "Согласно теме ОС",
+    "uiSizeMode": "standard",
+    "uiSizeDisplayedName": "Стандартный",
+    "iconStyle": "monochrome",
+    "iconStyleDisplayedName": "Монохромные",
+    "activeDocumentType": "part-empty",
+    "panelConfiguration": "normal-docked-desktop"
+  },
+  "windows": {
+    "caption": "Майкрософт Windows 11 Pro",
+    "version": "10.0.26200",
+    "build": "26200",
+    "architecture": "64-разрядная",
+    "language": "ru-RU",
+    "dpiAwareness": "per-monitor-v2",
+    "dpi": {
+      "x": 96,
+      "y": 96
+    },
+    "scalePercent": 100.0,
+    "textScalePercent": 100,
+    "highContrastEnabled": false,
+    "systemTheme": "light",
+    "appTheme": "light",
+    "systemAccentColor": "unknown",
+    "fontSmoothingEnabled": "unknown",
+    "hdrMode": "unknown"
+  },
+  "monitor": {
+    "id": "\\\\.\\DISPLAY1",
+    "boundsPhysicalPx": {
+      "X": 0.0,
+      "Y": 0.0,
+      "Width": 3440.0,
+      "Height": 1440.0,
+      "IsValid": true
+    },
+    "workAreaPhysicalPx": {
+      "X": 0.0,
+      "Y": 0.0,
+      "Width": 3440.0,
+      "Height": 1392.0,
+      "IsValid": true
+    }
+  },
+  "window": {
+    "hwnd": "0x240086A",
+    "windowRectPhysicalPx": {
+      "X": 1248.0,
+      "Y": 91.0,
+      "Width": 1920.0,
+      "Height": 1080.0,
+      "IsValid": true
+    },
+    "extendedFrameRectPhysicalPx": {
+      "X": 1248.0,
+      "Y": 91.0,
+      "Width": 1920.0,
+      "Height": 1080.0,
+      "IsValid": true
+    },
+    "clientRectScreenPhysicalPx": {
+      "X": 1248.0,
+      "Y": 91.0,
+      "Width": 1920.0,
+      "Height": 1080.0,
+      "IsValid": true
+    }
+  },
+  "captureTool": {
+    "version": 1,
+    "gitSha": "3e8bc9c9ae7906695e5119ec89ab9de5d768c24a"
+  }
+}
