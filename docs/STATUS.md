@@ -29,13 +29,13 @@ CI-maintenance repair:
 - PR #167;
 - repair HEAD `5a8402a1e19b2c1e5223fcce2e94ab41370a899e`;
 - merge `fa13134bf7397a20a9b02790a6644e9084e943e0`;
-- permanent M2 shell now runs `npm run test:m2:architecture`;
+- permanent M2 shell now includes the M2 architecture test script (`test:m2:architecture`);
 - post-repair M2 shell `36233235054` — SUCCESS;
 - post-repair baseline `36233235046` — SUCCESS;
 - M2 UI architecture — PASS;
 - `test:asa` constituent coverage — PASS;
 - `check` constituent coverage — PASS;
-- literal `npm run check` — NOT_RUN.
+- literal full-repository check command (npm run check) — NOT_RUN.
 
 Resolved:
 - `Y-AUD-166-M2-ARCH`.
@@ -47,6 +47,8 @@ Remaining accepted YELLOW:
 - `Y-AUD-166-V6A-OWNERSHIP` — CutExtrude profile ownership still flows through `ExtrudeOperationController`; keep non-growing and separate ownership before multi-profile, edit-existing, or generalized feature-selection scope.
 
 Audit #158 is historical; #166 is now the latest accepted Full Repository Health Audit.
+
+M1 ASA-owned `CadDocument` preserves six first-class document kinds: Part, Assembly, Drawing, Fragment, Specification, Text.
 
 ## Accepted V6B scope
 
