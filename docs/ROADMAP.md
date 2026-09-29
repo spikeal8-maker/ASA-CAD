@@ -1,6 +1,6 @@
 # ASA-CAD — воспроизведение КОМПАСа с видимыми поставками
 
-Редакция 2026-09-25. План, не готовность. STATUS/#10 — текущее состояние; #19 — визуальная очередь.
+Редакция 2026-09-26. STATUS/#10 — текущее состояние; #19 — визуальная очередь.
 
 ## Цель
 
@@ -14,66 +14,71 @@
 - В4 / CAD-VIS-004 — DONE / regional accepted / PARITY PARTIAL.
 - CAD-VIS-005 — accepted integration checkpoint / PRODUCT_DELTA NONE.
 - V6A / CAD-VIS-006A — DONE / MERGED / regional accepted / PARITY PARTIAL.
-- V6B / CAD-VIS-006B — **DONE / MERGED / regional accepted / PARITY PARTIAL**.
+- V6B / CAD-VIS-006B — DONE / MERGED / regional accepted / PARITY PARTIAL.
 
-## V6B / CAD-VIS-006B
+FULL_TREE_PARITY = **NOT ACCEPTED**.
 
-Accepted candidate:
-`b1254352ca93f2a22c11cdae457139d29f3f68d3`
+## Full Repository Health Audit #166
 
-Product merge:
-`cb6ffbc59e1e07bf1dad8372a49aef36d71618e7` through PR #164.
+#166 = **YELLOW_ACCEPTED / completed**.
 
-Accepted:
-- Part root is a real branch;
-- Origin is a real branch;
-- XY/XZ/YZ are leaf nodes without fake disclosure;
-- Part and Origin have real expand/collapse;
-- disclosure is transient presentation state and does not mutate the document;
-- protected Part remains green.
+Accepted final main:
+`fa13134bf7397a20a9b02790a6644e9084e943e0`
 
-Artifact:
-`asa-cad-vis-006b`, id `10848472873`, retention 30 days, oldArtifactDependency=false.
+RED findings:
+**NONE**
 
-V6B closes only the first Part/Origin hierarchy slice. FULL_TREE_PARITY = **NOT ACCEPTED**.
+Resolved in audit maintenance:
+- `Y-AUD-166-M2-ARCH` — permanent M2 shell executes `npm run test:m2:architecture`; post-repair CI PASS.
 
-## Preserved V6A YELLOW
+Remaining accepted YELLOW:
+- `Y-AUD-166-BUDGETS` — target pressure only; hard/frozen gates PASS; no growth.
+- `Y-AUD-166-THIRD-TOUCH` — focused owner review completed in #166; repeat before the next qualifying third touch.
+- `Y-AUD-166-STALE-PRS` — #143/#146 are stale/historical and must not merge as-is.
+- `Y-AUD-166-V6A-OWNERSHIP` — CutExtrude profile ownership coupling is non-growing; separate before broader profile/edit-existing/generalized-selection scope.
 
-`CutExtrudeParameterPanel` currently receives `profileId/profileName` through `ExtrudeOperationController`.
+Audit #158 is now historical. #166 is the latest accepted Full Repository Health Audit.
 
-Severity = **YELLOW / non-blocking / non-growing**.
+## Cadence
 
-Do not extend this coupling to multi-profile selection, edit-existing feature or generalized feature selection. Separate profile ownership when that scope begins.
+Accepted Full Audit #166 resets cadence:
 
-## Cadence gate
+**CADENCE = 0/3**
 
-Full Repository Health Audit #158 is the last accepted Full Audit.
+**FEATURE_FREEZE = LIFTED**
 
-Machine registry requires a Full Audit every three accepted permanent slices:
+Every permanent slice still receives a Slice Quality Gate. The next Full Repository Health Audit is required again at 3 accepted permanent slices or another machine-policy trigger.
 
-1. CAD-VIS-005
-2. CAD-VIS-006A
-3. CAD-VIS-006B
+## NEXT — V6C / CAD-VIS-006C
 
-Current cadence = **3/3**.
+**V6C — Sketch hierarchy + dimension ownership.**
 
-**FEATURE_FREEZE = ACTIVE.**
+Target next visible hierarchy:
 
-**NEXT = mandatory Full Repository Health Audit after CAD-VIS-006B.**
+```text
+Эскиз 1
+  ├─ Ширина
+  └─ Высота
 
-All feature work is blocked until that audit is accepted. In particular:
-- V6C = BLOCKED_BY_AUDIT;
-- V7 = BLOCKED_BY_AUDIT;
-- Sketch hierarchy = BLOCKED_BY_AUDIT;
-- dimension ownership = BLOCKED_BY_AUDIT;
-- tree search/context menu = BLOCKED_BY_AUDIT.
+Эскиз 2
+  └─ Диаметр
+```
 
-No V6C branch or implementation is started by this closeout.
+V6C is the next visual slice, but this audit closeout does **not** create its branch, PR, or implementation.
 
-## After the audit
+The accepted V6B Part/Origin hierarchy remains only a regional result; full Tree parity stays open.
 
-Only an accepted Full Audit may lift the feature freeze and establish the next product slice. Acceptance of V6B does not imply full Tree parity or overall M2V acceptance.
+## Gates
 
-Gate B before broad M4 remains OPEN: M2V, M3 exit, M3X, M3M-009, performance baselines, and the currently required Full Repository Health Audit.
+Gate A/M2O and M3 core remain in force.
 
-GitHub repository/PR/Issues/Actions/artifacts remain the execution environment. No deploy is part of this closeout.
+Gate B before broad M4 remains OPEN on:
+- M2V KOMPAS visual acceptance;
+- M3 functional exit contract;
+- M3X shared ASA-CAD/ASA-Lab golden contract;
+- M3M-009;
+- pre-M4 performance baselines.
+
+The Full Repository Health Audit requirement for this cadence cycle is satisfied by accepted #166.
+
+GitHub repository/PR/Issues/Actions/artifacts remain the execution environment.
