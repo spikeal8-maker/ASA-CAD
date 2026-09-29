@@ -14,6 +14,7 @@ export interface CadShellTopProps {
   activeWorkspace: CadWorkspaceId; setActiveWorkspace: (workspace: CadWorkspaceId) => void;
   search: string; setSearch: (value: string) => void; searchableActions: CadUiAction[];
   getAction: (id: string) => CadUiAction;
+  showRoadmapCommands: boolean;
   rectangleReady: boolean; rectangleWidth: number; rectangleHeight: number;
   circleReady: boolean; circleDiameter: number; viewName: string;
 }
@@ -44,7 +45,7 @@ export function CadShellTop(props: CadShellTopProps) {
         <div className="command-search-wrap">
           <CadIcon name="search" size={15} />
           <input value={props.search} onChange={(event) => props.setSearch(event.target.value)} placeholder="Поиск команд" aria-label="Поиск команд" />
-          <CadUiActionSearchResults actions={props.searchableActions} onPicked={() => props.setSearch('')} />
+          <CadUiActionSearchResults actions={props.searchableActions} showRoadmapCommands={props.showRoadmapCommands} onPicked={() => props.setSearch('')} />
         </div>
         <div className="global-actions">
           <CadUiGlobalActionButton action={props.getAction('system.open')}><CadIcon name="open" /></CadUiGlobalActionButton>
@@ -71,7 +72,7 @@ export function CadShellTop(props: CadShellTopProps) {
             <>
               <WorkspaceTab active={props.activeWorkspace === 'solid'} onClick={() => props.setActiveWorkspace('solid')}>Твердотельное моделирование</WorkspaceTab>
               <WorkspaceTab active={props.activeWorkspace === 'surfaces'} onClick={() => props.setActiveWorkspace('surfaces')}>Каркас и поверхности</WorkspaceTab>
-              <WorkspaceTab active={props.activeWorkspace === 'sketch'} disabled={props.activeWorkspace !== 'sketch'}>Эскиз</WorkspaceTab>
+              <WorkspaceTab active={props.activeWorkspace === 'sketch'} disabled={props.activeWorkspace !== 'sketch'}>Инструменты эскиза</WorkspaceTab>
               <WorkspaceTab active={props.activeWorkspace === 'diagnostics'} onClick={() => props.setActiveWorkspace('diagnostics')}>Проверка / Измерения</WorkspaceTab>
               <WorkspaceTab active={props.activeWorkspace === 'view'} onClick={() => props.setActiveWorkspace('view')}>Вид</WorkspaceTab>
             </>
@@ -81,7 +82,7 @@ export function CadShellTop(props: CadShellTopProps) {
         <div className="command-ribbon">
           {props.documentKind === 'part' ? (
             <CadShellCommandGroups
-              workspace={props.activeWorkspace} getAction={props.getAction}
+              workspace={props.activeWorkspace} getAction={props.getAction} showRoadmapCommands={props.showRoadmapCommands}
               rectangleReady={props.rectangleReady} rectangleWidth={props.rectangleWidth} rectangleHeight={props.rectangleHeight}
               circleReady={props.circleReady} circleDiameter={props.circleDiameter} viewName={props.viewName}
             />

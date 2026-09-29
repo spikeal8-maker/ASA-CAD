@@ -253,7 +253,7 @@
   .instrument-area { position: relative; height: calc(var(--workspace-h) + var(--ribbon-h)); border-bottom: 0; }
   .workspace-tabs { position: absolute; z-index: 2; top: 0; left: 3px; width: 120px; height: 100%; flex-direction: column; align-items: stretch; gap: 0; padding: 0; border-bottom: 0; overflow: hidden; }
   .workspace-tabs button { display: flex; align-items: center; width: 120px; height: 25px; min-height: 25px; flex: 0 0 25px; justify-content: flex-start; padding: 0 6px; border: 0; border-radius: 0; font-size: 12px; line-height: 25px; text-align: left; overflow: hidden; text-overflow: ellipsis; }
-  .workspace-tabs button:nth-child(3) { height: auto; min-height: 43px; flex: 1 1 auto; align-items: flex-start; padding-top: 4px; }
+  .workspace-tabs button:nth-child(3) { height: 25px; min-height: 25px; flex: 0 0 25px; align-items: center; padding-top: 0; }
   .workspace-tabs button:nth-child(n+4) { display: none; }
   .workspace-tabs button.active { border: 0; box-shadow: inset 2px 0 0 var(--accent); background: #e5e8ec; color: var(--text); font-weight: 600; }
 
