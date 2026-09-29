@@ -2,54 +2,21 @@ import React from 'react';
 import type { CadUiAction } from './CadUiAction';
 import { CadUiActionButton } from './CadUiActionControls';
 import { CadIcon, type CadIconName } from './CadIcon';
-
-type CommandSpec = readonly [id: string, icon: CadIconName];
-
-const SOLID_FEATURES: readonly CommandSpec[] = [
-  ['part.extrude', 'extrude'], ['part.cutExtrude', 'cut'], ['part.fillet', 'fillet'],
-  ['part.revolve', 'feature'], ['part.cutRevolve', 'cut'], ['part.hole.simple', 'feature'],
-  ['part.chamfer', 'feature'], ['part.shell', 'feature'], ['part.rib', 'feature'],
-  ['part.draft', 'feature'], ['part.sweep', 'feature'], ['part.loft', 'feature'],
-];
-const PATTERNS: readonly CommandSpec[] = [
-  ['part.pattern.grid', 'feature'], ['part.pattern.circular', 'feature'],
-  ['part.pattern.mirror', 'symmetric'], ['part.pattern.path', 'feature'], ['part.collection', 'feature'],
-];
-const DATUM: readonly CommandSpec[] = [
-  ['part.datum.plane', 'plane'], ['part.datum.axis', 'origin'], ['part.datum.point', 'point'],
-  ['part.controlPoint', 'point'], ['part.connectionPoint', 'point'],
-];
-const MEASURE: readonly CommandSpec[] = [
-  ['part.measureDistanceAngle', 'info'], ['part.measureEdge', 'info'], ['part.measureArea', 'info'],
-];
-const SKETCH_GEOMETRY: readonly CommandSpec[] = [
-  ['sketch.line', 'line'], ['sketch.polyline', 'line'], ['sketch.rectangle', 'rectangle'],
-  ['sketch.circle', 'circle'], ['sketch.arc', 'arc'], ['sketch.polygon', 'rectangle'],
-  ['sketch.ellipse', 'circle'], ['sketch.spline', 'line'], ['sketch.point', 'point'],
-  ['sketch.construction', 'construction'],
-];
-const SKETCH_EDIT: readonly CommandSpec[] = [
-  ['sketch.entity.delete', 'close'], ['sketch.trim', 'feature'], ['sketch.extend', 'feature'],
-  ['sketch.split', 'feature'], ['sketch.offset', 'feature'], ['sketch.fillet', 'fillet'],
-  ['sketch.chamfer', 'feature'], ['sketch.mirror', 'symmetric'], ['sketch.move', 'feature'],
-  ['sketch.rotate', 'feature'], ['sketch.scale', 'feature'],
-];
-const SKETCH_CONSTRAINTS: readonly CommandSpec[] = [
-  ['constraint.horizontal', 'horizontal'], ['constraint.vertical', 'vertical'], ['constraint.fixed', 'fixed'],
-  ['constraint.coincident', 'coincident'], ['constraint.parallel', 'parallel'],
-  ['constraint.perpendicular', 'perpendicular'], ['constraint.tangent', 'tangent'],
-  ['constraint.concentric', 'concentric'], ['constraint.equal', 'equal'],
-  ['constraint.symmetric', 'symmetric'], ['constraint.pointOnCurve', 'point'],
-];
-const SKETCH_DIMENSIONS: readonly CommandSpec[] = [
-  ['dimension.auto', 'dimension'], ['dimension.linear', 'dimension'],
-  ['dimension.horizontal', 'horizontal'], ['dimension.vertical', 'vertical'],
-  ['dimension.diameter', 'diameter'], ['dimension.radius', 'radius'], ['dimension.angular', 'angle'],
-];
+import {
+  DiagnosticsReferenceGroups,
+  PartReferenceSupplementGroups,
+  PartSolidPlannedActions,
+  SketchAutoDimensionAction,
+  SketchEditPlannedActions,
+  SketchGeometryPlannedActions,
+  SketchProjectionGroup,
+  SurfaceReferenceGroups,
+} from './CadShellReferenceGroups';
 
 export function CadShellCommandGroups(props: {
   workspace: string;
   getAction(id: string): CadUiAction;
+  showRoadmapCommands: boolean;
   rectangleReady: boolean;
   rectangleWidth: number;
   rectangleHeight: number;
@@ -57,45 +24,75 @@ export function CadShellCommandGroups(props: {
   circleDiameter: number;
   viewName: string;
 }) {
-  if (props.workspace === 'sketch') return <SketchCommandGroups getAction={props.getAction} />;
-  if (props.workspace === 'surfaces') return <SurfaceCommandGroups getAction={props.getAction} />;
-  if (props.workspace === 'diagnostics') return <DiagnosticsCommandGroups getAction={props.getAction} />;
+  if (props.workspace === 'sketch') return <SketchCommandGroups getAction={props.getAction} showRoadmapCommands={props.showRoadmapCommands} />;
+  if (props.workspace === 'surfaces') return <SurfaceReferenceGroups getAction={props.getAction} showRoadmapCommands={props.showRoadmapCommands} />;
+  if (props.workspace === 'diagnostics') return <DiagnosticsReferenceGroups getAction={props.getAction} showRoadmapCommands={props.showRoadmapCommands} />;
   if (props.workspace === 'view') return <ViewCommandGroups viewName={props.viewName} getAction={props.getAction} />;
-  return <PartCommandGroups getAction={props.getAction} viewName={props.viewName} />;
+  return <PartCommandGroups getAction={props.getAction} viewName={props.viewName} showRoadmapCommands={props.showRoadmapCommands} />;
 }
 
 function ActionButton(props: {
-  action: CadUiAction; icon: CadIconName; large?: boolean; accent?: boolean;
-  text?: boolean; selected?: boolean; className?: string; titleSuffix?: string;
+  action: CadUiAction;
+  icon: CadIconName;
+  large?: boolean;
+  accent?: boolean;
+  text?: boolean;
+  selected?: boolean;
+  className?: string;
+  titleSuffix?: string;
 }) {
   return (
     <CadUiActionButton
       action={props.action}
       symbol={<CadIcon name={props.icon} size={16} />}
-      large={props.large} accent={props.accent} text={props.text}
-      selected={props.selected} className={props.className} titleSuffix={props.titleSuffix}
+      large={props.large}
+      accent={props.accent}
+      text={props.text}
+      selected={props.selected}
+      className={props.className}
+      titleSuffix={props.titleSuffix}
     />
   );
 }
 
-function ActionList(props: { commands: readonly CommandSpec[]; getAction(id: string): CadUiAction }) {
-  return <>{props.commands.map(([id, icon]) => <ActionButton key={id} action={props.getAction(id)} icon={icon} text />)}</>;
-}
-
-function RegistryCommandGroup(props: {
-  label: string; commands: readonly CommandSpec[]; getAction(id: string): CadUiAction; className?: string;
-}) {
-  return <CommandGroup label={props.label} className={props.className}><ActionList {...props} /></CommandGroup>;
-}
-
-function SketchCommandGroups(props: { getAction(id: string): CadUiAction }) {
+function SketchCommandGroups(props: { getAction(id: string): CadUiAction; showRoadmapCommands: boolean }) {
   return (
     <>
-      <RegistryCommandGroup label="Геометрия" commands={SKETCH_GEOMETRY} getAction={props.getAction} />
-      <RegistryCommandGroup label="Редактирование" commands={SKETCH_EDIT} getAction={props.getAction} />
-      <RegistryCommandGroup label="Ограничения" commands={SKETCH_CONSTRAINTS} getAction={props.getAction} />
-      <RegistryCommandGroup label="Размеры" commands={SKETCH_DIMENSIONS} getAction={props.getAction} />
-      <RegistryCommandGroup label="Проекция" commands={[['sketch.project', 'view']]} getAction={props.getAction} />
+      <CommandGroup label="Геометрия">
+        <ActionButton action={props.getAction('sketch.line')} icon="line" text />
+        <SketchGeometryPlannedActions getAction={props.getAction} showRoadmapCommands={props.showRoadmapCommands} />
+        <ActionButton action={props.getAction('sketch.rectangle')} icon="rectangle" text />
+        <ActionButton action={props.getAction('sketch.circle')} icon="circle" text />
+        <ActionButton action={props.getAction('sketch.arc')} icon="arc" text />
+        <ActionButton action={props.getAction('sketch.construction')} icon="construction" text />
+      </CommandGroup>
+      <CommandGroup label="Редактирование">
+        <ActionButton action={props.getAction('sketch.entity.delete')} icon="close" text />
+        <SketchEditPlannedActions getAction={props.getAction} showRoadmapCommands={props.showRoadmapCommands} />
+      </CommandGroup>
+      <CommandGroup label="Ограничения">
+        <ActionButton action={props.getAction('constraint.horizontal')} icon="horizontal" text />
+        <ActionButton action={props.getAction('constraint.vertical')} icon="vertical" text />
+        <ActionButton action={props.getAction('constraint.coincident')} icon="coincident" text />
+        <ActionButton action={props.getAction('constraint.parallel')} icon="parallel" text />
+        <ActionButton action={props.getAction('constraint.perpendicular')} icon="perpendicular" text />
+        <ActionButton action={props.getAction('constraint.tangent')} icon="tangent" text />
+        <ActionButton action={props.getAction('constraint.concentric')} icon="concentric" text />
+        <ActionButton action={props.getAction('constraint.equal')} icon="equal" text />
+        <ActionButton action={props.getAction('constraint.symmetric')} icon="symmetric" text />
+        <ActionButton action={props.getAction('constraint.fixed')} icon="fixed" text />
+        <ActionButton action={props.getAction('constraint.pointOnCurve')} icon="point" text />
+      </CommandGroup>
+      <CommandGroup label="Размеры">
+        <SketchAutoDimensionAction getAction={props.getAction} showRoadmapCommands={props.showRoadmapCommands} />
+        <ActionButton action={props.getAction('dimension.linear')} icon="dimension" text />
+        <ActionButton action={props.getAction('dimension.horizontal')} icon="horizontal" text />
+        <ActionButton action={props.getAction('dimension.vertical')} icon="vertical" text />
+        <ActionButton action={props.getAction('dimension.diameter')} icon="diameter" text />
+        <ActionButton action={props.getAction('dimension.radius')} icon="radius" text />
+        <ActionButton action={props.getAction('dimension.angular')} icon="angle" text />
+      </CommandGroup>
+      <SketchProjectionGroup getAction={props.getAction} showRoadmapCommands={props.showRoadmapCommands} />
       <CommandGroup label="Эскиз" compact>
         <ActionButton action={props.getAction('sketch.finish')} icon="accept" text />
       </CommandGroup>
@@ -103,22 +100,27 @@ function SketchCommandGroups(props: { getAction(id: string): CadUiAction }) {
   );
 }
 
-function PartCommandGroups(props: { getAction(id: string): CadUiAction; viewName: string }) {
+function PartCommandGroups(props: { getAction(id: string): CadUiAction; viewName: string; showRoadmapCommands: boolean }) {
   return (
     <div className="part-command-groups">
       <CommandGroup label="Система" className="part-system-group">
-        <ActionButton action={props.getAction('system.rebuild')} icon="rebuild" className="part-system-command" titleSuffix="(F5)" />
+        <ActionButton
+          action={props.getAction('system.rebuild')}
+          icon="rebuild"
+          className="part-system-command"
+          titleSuffix="(F5)"
+        />
       </CommandGroup>
       <CommandGroup label="Эскиз" className="part-sketch-group">
         <ActionButton action={props.getAction('part.sketch.create')} icon="sketch" large accent />
       </CommandGroup>
       <CommandGroup label="Элементы тела" className="part-solid-group">
-        <ActionList commands={SOLID_FEATURES} getAction={props.getAction} />
+        <ActionButton action={props.getAction('part.extrude')} icon="extrude" />
+        <ActionButton action={props.getAction('part.cutExtrude')} icon="cut" />
+        <ActionButton action={props.getAction('part.fillet')} icon="fillet" />
+        <PartSolidPlannedActions getAction={props.getAction} showRoadmapCommands={props.showRoadmapCommands} />
       </CommandGroup>
-      <RegistryCommandGroup label="Массив, копирование" commands={PATTERNS} getAction={props.getAction} />
-      <RegistryCommandGroup label="Вспомогательные объекты" commands={DATUM} getAction={props.getAction} />
-      <DiagnosticsCommandGroups getAction={props.getAction} />
-      <RegistryCommandGroup label="Чертеж" commands={[['part.linkedDrawings', 'drawing']]} getAction={props.getAction} />
+      <PartReferenceSupplementGroups getAction={props.getAction} showRoadmapCommands={props.showRoadmapCommands} />
       <CommandGroup label="Вид" className="part-view-group">
         <ViewButtons viewName={props.viewName} getAction={props.getAction} />
       </CommandGroup>
@@ -126,34 +128,12 @@ function PartCommandGroups(props: { getAction(id: string): CadUiAction; viewName
   );
 }
 
-function SurfaceCommandGroups(props: { getAction(id: string): CadUiAction }) {
-  return (
-    <>
-      <CommandGroup label="Эскиз">
-        <ActionButton action={props.getAction('part.sketch.create')} icon="sketch" large accent />
-      </CommandGroup>
-      <RegistryCommandGroup label="Массив, копирование" commands={PATTERNS} getAction={props.getAction} />
-      <RegistryCommandGroup label="Вспомогательные объекты" commands={DATUM} getAction={props.getAction} />
-      <DiagnosticsCommandGroups getAction={props.getAction} />
-      <div className="planned-workspace-note surfaces-reference-gap" role="note">
-        <strong>Каркас и поверхности</strong>
-        <span>Команды каркаса и поверхностей ещё не зарегистрированы; показаны только существующие registry-backed действия.</span>
-      </div>
-    </>
-  );
-}
-
-function DiagnosticsCommandGroups(props: { getAction(id: string): CadUiAction }) {
-  return (
-    <>
-      <RegistryCommandGroup label="Измерения" commands={MEASURE} getAction={props.getAction} />
-      <RegistryCommandGroup label="Диагностика" commands={[['part.checkGeometry', 'info']]} getAction={props.getAction} />
-    </>
-  );
-}
-
 function ViewCommandGroups(props: { viewName: string; getAction(id: string): CadUiAction }) {
-  return <CommandGroup label="Ориентация"><ViewButtons {...props} /></CommandGroup>;
+  return (
+    <CommandGroup label="Ориентация">
+      <ViewButtons viewName={props.viewName} getAction={props.getAction} />
+    </CommandGroup>
+  );
 }
 
 function ViewButtons(props: { viewName: string; getAction(id: string): CadUiAction }) {
@@ -171,7 +151,10 @@ function ViewButtons(props: { viewName: string; getAction(id: string): CadUiActi
     <>
       {views.map((view) => (
         <ActionButton
-          key={view.id} action={props.getAction(view.id)} icon={view.icon} className="view-command"
+          key={view.id}
+          action={props.getAction(view.id)}
+          icon={view.icon}
+          className="view-command"
           selected={view.id !== 'view.fit' && props.viewName === view.label}
           titleSuffix={view.shortcut ? `(${view.shortcut})` : undefined}
         />

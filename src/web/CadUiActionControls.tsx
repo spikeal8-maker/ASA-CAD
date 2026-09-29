@@ -1,5 +1,5 @@
 import React from 'react';
-import type { CadUiAction } from './CadUiAction';
+import { isCadUiActionVisible, type CadUiAction } from './CadUiAction';
 
 export interface CadUiActionButtonProps {
   action: CadUiAction;
@@ -10,6 +10,7 @@ export interface CadUiActionButtonProps {
   selected?: boolean;
   className?: string;
   titleSuffix?: string;
+  showRoadmapCommands?: boolean;
 }
 
 /**
@@ -18,6 +19,8 @@ export interface CadUiActionButtonProps {
  */
 export function CadUiActionButton(props: CadUiActionButtonProps) {
   const { action } = props;
+  if (!isCadUiActionVisible(action, props.showRoadmapCommands)) return null;
+
   const title = action.enabled
     ? `${action.label}${props.titleSuffix ? ` ${props.titleSuffix}` : ''}`
     : `${action.label}: ${action.disabledReason ?? 'Недоступно'}`;
@@ -43,7 +46,9 @@ export function CadUiGlobalActionButton(props: {
   action: CadUiAction;
   children: React.ReactNode;
   titleSuffix?: string;
+  showRoadmapCommands?: boolean;
 }) {
+  if (!isCadUiActionVisible(props.action, props.showRoadmapCommands)) return null;
   const title = props.action.enabled
     ? `${props.action.label}${props.titleSuffix ? ` ${props.titleSuffix}` : ''}`
     : `${props.action.label}: ${props.action.disabledReason ?? 'Недоступно'}`;
@@ -63,11 +68,13 @@ export function CadUiGlobalActionButton(props: {
 export function CadUiActionSearchResults(props: {
   actions: readonly CadUiAction[];
   onPicked?: (action: CadUiAction) => void;
+  showRoadmapCommands?: boolean;
 }) {
-  if (props.actions.length === 0) return null;
+  const actions = props.actions.filter((action) => isCadUiActionVisible(action, props.showRoadmapCommands));
+  if (actions.length === 0) return null;
   return (
     <div className="command-search-results">
-      {props.actions.map((action) => (
+      {actions.map((action) => (
         <button
           key={action.id}
           type="button"

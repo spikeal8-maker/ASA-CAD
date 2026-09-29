@@ -119,3 +119,8 @@ export async function executeCadUiAction(action: CadUiAction): Promise<boolean> 
   await action.execute();
   return true;
 }
+
+/** Production hides non-implemented commands; explicit dev/reference surfaces may reveal them disabled. */
+export function isCadUiActionVisible(action: CadUiAction, showRoadmapCommands = false): boolean {
+  return action.status === 'implemented' || showRoadmapCommands;
+}
