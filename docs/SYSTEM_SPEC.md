@@ -8,7 +8,69 @@ ASA-CAD is a browser-native parametric engineering CAD module for ASA Lab.
 
 It is a separate engineering module and does not replace the existing beginner `three-d` editor.
 
-The product goal is to give learners a browser CAD environment whose desktop information architecture, command organization, terminology and modeling workflow are as close as practical to KOMPAS-3D, so that skills learned in ASA Lab transfer to professional KOMPAS workflows.
+### Product goal
+
+The primary product goal is **educational transfer to real KOMPAS-3D**. Within the selected KOMPAS-3D v25 teaching scope — **Деталь / Part**, **Сборка / Assembly**, and **Чертеж / Drawing** — ASA-CAD targets approximately **90% learner-facing visual identity** and **90% functional/workflow identity**. A learner trained in ASA-CAD should be able to open the corresponding KOMPAS-3D section, recognize the interface, find familiar commands, follow familiar operation sequences and continue work with minimal retraining.
+
+The `90%` figure is a **target level**, not a claim about current completion and not a synthetic progress formula. Current parity remains whatever `docs/STATUS.md` and the active acceptance issues actually prove.
+
+### Educational goal
+
+ASA-CAD should teach the same user-facing mental model that the learner will encounter in the selected KOMPAS-3D scope: where commands are found, when they are available, what is selected, how parameters are entered, what preview is shown, how an operation is confirmed or cancelled, how its result appears in the model tree and how it is edited later.
+
+### Mandatory KOMPAS parity scope
+
+The mandatory educational parity scope contains exactly three KOMPAS-3D sections:
+
+1. **Деталь / Part**;
+2. **Сборка / Assembly**;
+3. **Чертеж / Drawing**.
+
+This is a parity boundary, not a removal of ASA-CAD's broader document architecture. Fragment, Specification and Text remain first-class ASA-CAD document kinds, but they are not part of the mandatory `~90% KOMPAS-3D educational-transfer` target unless a later deliberate product decision adds them.
+
+### Parity target
+
+Parity is evaluated across four distinct dimensions:
+
+- **Visual parity** — workspace layout, command areas, tree, parameter panel, viewport/sheet area, control hierarchy, selected/disabled states and the visual logic of the taught workflow should be recognizably close to the KOMPAS-3D reference, using ASA-owned lawful assets.
+- **Command parity** — a corresponding command should appear in the expected place, have compatible availability/selection/parameter behavior, provide the expected preview and confirm/cancel lifecycle, create the expected result and support later re-editing.
+- **Workflow parity** — taught tasks should follow substantially the same sequence of actions as in KOMPAS-3D rather than replacing that sequence with an unrelated "improved" ASA-specific UX.
+- **Educational-transfer parity** — the decisive criterion is whether what a learner memorizes in ASA-CAD matches what they encounter in real KOMPAS-3D closely enough to continue with minimal retraining.
+
+No invented weighted formula is implied by these dimensions. If a later approved machine-readable parity model is introduced, it becomes the measurement contract; until then, the dimensions are evaluated through explicit reference/acceptance evidence.
+
+### Out of scope for the parity goal
+
+The parity goal does **not** require:
+
+- copying all of KOMPAS-3D or 100% of its functions;
+- copying KOMPAS-3D source code, internal architecture, binaries or proprietary artwork;
+- replacing ASA-CAD's client-side architecture with KOMPAS internals;
+- making CAD geometry a normal server-side compute service;
+- changing a familiar KOMPAS workflow merely to create a different ASA-specific UX when that would reduce skill transfer.
+
+### Acceptance principle
+
+The target and the current state are separate:
+
+```text
+TARGET
+~90% learner-facing visual + functional/workflow identity
+within Part + Assembly + Drawing
+
+CURRENT STATE
+only the parity explicitly accepted by STATUS/issues/evidence
+```
+
+The intended separation is:
+
+```text
+USER EXPERIENCE IN THE MANDATORY TEACHING SCOPE
+≈ KOMPAS-3D
+
+INTERNAL IMPLEMENTATION
+= ASA-CAD architecture
+```
 
 The visible interface is ASA-owned. We do not ship proprietary KOMPAS binaries, source code, icons or protected artwork.
 
@@ -472,6 +534,10 @@ The end-state contains all six document kinds, but implementation follows risk/d
 See `docs/ROADMAP.md` for milestone gates.
 
 ## 23. Definition of product success
+
+The primary success criterion is educational transfer in the mandatory KOMPAS parity scope: **Деталь / Part**, **Сборка / Assembly**, and **Чертеж / Drawing**. For those sections, the learner-facing target is approximately 90% visual and functional/workflow identity, with the current achieved level accepted only through explicit evidence.
+
+The broader six-document ASA-CAD end state remains a product capability goal, but it does not expand the mandatory KOMPAS parity scope.
 
 The complete product is successful when a learner can:
 
