@@ -8,9 +8,11 @@ ASA-CAD is a browser-native parametric engineering CAD module for ASA Lab.
 
 It is a separate engineering module and does not replace the existing beginner `three-d` editor.
 
-The product goal is to give learners a browser CAD environment whose desktop information architecture, command organization, terminology and modeling workflow are as close as practical to KOMPAS-3D, so that skills learned in ASA Lab transfer to professional KOMPAS workflows.
+Product goal: ~**90% learner-facing visual + functional/workflow identity** with KOMPAS-3D v25 **Деталь / Part**, **Сборка / Assembly**, **Чертеж / Drawing**, so learners transfer with minimal retraining. This is a target, not current acceptance.
 
-The visible interface is ASA-owned. We do not ship proprietary KOMPAS binaries, source code, icons or protected artwork.
+UI is ASA-owned; proprietary KOMPAS binaries, source, icons and artwork are not shipped.
+
+Parity evidence: `VISUAL_REFERENCE_SPEC.md`.
 
 ASA-CAD end state includes six first-class document kinds:
 

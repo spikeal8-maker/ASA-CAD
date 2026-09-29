@@ -2,7 +2,7 @@
 
 ## Goal
 
-Build an ASA-owned browser CAD application with six first-class engineering document kinds, a replaceable KOMPAS-oriented product UI, local client computation and an independently deployable frontend container that integrates with ASA Lab through the same public origin and Project Core APIs.
+Build ASA-owned browser CAD for the ~90% KOMPAS-3D Part/Assembly/Drawing user-experience target in `SYSTEM_SPEC.md`, while keeping six document kinds, client-side compute and ASA Lab integration as ASA-owned implementation boundaries.
 
 The public document family is:
 
