@@ -2,17 +2,7 @@
 
 ## Goal
 
-Build the ASA-owned technical architecture that supports the canonical product goal in `docs/SYSTEM_SPEC.md`: the mandatory learner-facing **Part / Assembly / Drawing** teaching scope targets approximately 90% visual and functional/workflow identity with KOMPAS-3D, while the implementation remains independently owned by ASA-CAD.
-
-The architectural end state still contains six first-class engineering document kinds, local client computation and an independently deployable frontend container that integrates with ASA Lab through the same public origin and Project Core APIs. The KOMPAS parity target applies to user-facing behavior in the selected teaching scope; it does not require copying KOMPAS internal architecture.
-
-```text
-USER EXPERIENCE: Part / Assembly / Drawing
-≈ KOMPAS-3D
-
-INTERNAL IMPLEMENTATION
-= ASA-CAD architecture
-```
+Build an ASA-owned browser CAD application with six first-class engineering document kinds, a replaceable KOMPAS-oriented product UI, local client computation and an independently deployable frontend container that integrates with ASA Lab through the same public origin and Project Core APIs.
 
 The public document family is:
 
