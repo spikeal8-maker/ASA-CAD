@@ -255,7 +255,6 @@
   .workspace-tabs button { display: flex; align-items: center; width: 120px; height: 25px; min-height: 25px; flex: 0 0 25px; justify-content: flex-start; padding: 0 6px; border: 0; border-radius: 0; font-size: 12px; line-height: 25px; text-align: left; overflow: hidden; text-overflow: ellipsis; }
   .workspace-tabs button:nth-child(3) { height: 25px; min-height: 25px; flex: 0 0 25px; align-items: center; padding-top: 0; }
   .workspace-tabs button:nth-child(n+4) { display: none; }
-  .workspace-tabs::after { content: ""; height: 18px; min-height: 18px; flex: 0 0 18px; border-top: 1px solid #d2d5da; background: #eef0f2; }
   .workspace-tabs button.active { border: 0; box-shadow: inset 2px 0 0 var(--accent); background: #e5e8ec; color: var(--text); font-weight: 600; }
 
   .command-ribbon { position: absolute; top: 0; left: 124px; right: 3px; width: auto; height: 100%; gap: 12px; padding: 0; overflow-x: auto; overflow-y: hidden; }
@@ -315,21 +314,6 @@
   .part-sketch-group .command-group-label {
     width: 108px;
     justify-self: start;
-  }
-
-  .surfaces-reference-gap {
-    flex: 0 0 300px;
-    height: 75px;
-    align-self: flex-start;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 2px;
-    padding: 0 10px;
-    border-left: 1px solid #d2d5da;
-    white-space: normal;
-    font-size: 11px;
-    line-height: 1.2;
   }
 
   .content-area { grid-template-columns: var(--rail-w) var(--panel-w) minmax(0, 1fr); padding: 0 3px; }
