@@ -1,6 +1,6 @@
 # ASA-CAD — воспроизведение КОМПАСа с видимыми поставками
 
-Редакция 2026-09-26. STATUS/#10 — текущее состояние; #19 — визуальная очередь.
+Редакция 2026-09-29. STATUS/#10 — текущее состояние; #19 — визуальная очередь.
 
 ## Цель
 
@@ -49,22 +49,17 @@ Accepted Full Audit #166 resets cadence:
 
 Every permanent slice still receives a Slice Quality Gate. The next Full Repository Health Audit is required again at 3 accepted permanent slices or another machine-policy trigger.
 
-## NEXT — V6C / CAD-VIS-006C
+## NEXT — KOMPAS-SHELL-ADOPTION-001
 
-**V6C — Sketch hierarchy + dimension ownership.**
+Следующий продуктовый этап — перенос visual/UX reference из PR #170 в существующий `src/web` ASA-CAD.
 
-Target next visible hierarchy:
+PR #170 (`0d23bf19fbfcba7fbf4789afdd18f7d632adeb50`) остаётся **REFERENCE / PROTOTYPE ONLY**; его не нужно merge-ить как product implementation. Reference-файлы: `prototypes/kompas-shell/index.html` и `prototypes/kompas-shell/README.md`.
 
-```text
-Эскиз 1
-  ├─ Ширина
-  └─ Высота
+Первый implementation slice = **PART TOP SHELL ONLY**: главное меню, вкладка документа, Part workspace/toolset selector, группы команд и quick-access chrome. Три toolset первого Part-shell slice: «Твердотельное моделирование», «Каркас и поверхности», «Инструменты эскиза». Это toolsets внутри **Деталь / Part**, а не глобальный scope; канонический educational parity scope остаётся **Деталь / Part, Сборка / Assembly, Чертеж / Drawing** согласно `SYSTEM_SPEC.md`.
 
-Эскиз 2
-  └─ Диаметр
-```
+REFERENCE_READY = **YES**. ADOPTION_STARTED = **NO**.
 
-V6C is the next visual slice, but this audit closeout does **not** create its branch, PR, or implementation.
+**V6C / CAD-VIS-006C — Sketch hierarchy + dimension ownership** не отменён: он **QUEUED AFTER INITIAL KOMPAS SHELL ADOPTION** и не считается выполненным.
 
 The accepted V6B Part/Origin hierarchy remains only a regional result; full Tree parity stays open.
 

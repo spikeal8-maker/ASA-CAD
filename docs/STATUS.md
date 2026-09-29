@@ -1,6 +1,6 @@
 # ASA-CAD — состояние и следующий видимый результат
 
-Снимок 2026-09-26. Координатор #10, визуальная очередь #19.
+Снимок 2026-09-29. Координатор #10, визуальная очередь #19.
 
 ## Текущий статус
 
@@ -66,20 +66,36 @@ This does not close full Tree parity.
 
 ## NEXT
 
-**V6C / CAD-VIS-006C — Sketch hierarchy + dimension ownership.**
+**KOMPAS-SHELL-ADOPTION-001** — следующий продуктовый этап.
 
-Target next visible hierarchy:
-```text
-Эскиз 1
-  ├─ Ширина
-  └─ Высота
+Цель: начать перенос эталонной оболочки КОМПАСа из PR #170 в существующий рабочий ASA-CAD без создания второго приложения или второго runtime.
 
-Эскиз 2
-  └─ Диаметр
-```
+Reference source:
+- PR #170, HEAD `0d23bf19fbfcba7fbf4789afdd18f7d632adeb50`;
+- `prototypes/kompas-shell/index.html`;
+- `prototypes/kompas-shell/README.md`.
 
-V6C is **not started** by this closeout.
+PR #170 = **REFERENCE / PROTOTYPE ONLY**. Он не является product implementation, replacement application, runtime или second UI и не должен merge-иться как способ внедрения интерфейса.
 
-Machine policy remains authoritative: every permanent slice gets a Slice Quality Gate; Full Audit cadence restarts at **0/3** from accepted #166. Existing owner/frozen-budget constraints remain in force.
+Первый implementation slice после этого state transition = **PART TOP SHELL ONLY**:
+- главное меню;
+- вкладка документа;
+- Part workspace/toolset selector;
+- группы команд;
+- quick-access chrome.
+
+Три toolset первого Part-shell slice:
+1. Твердотельное моделирование
+2. Каркас и поверхности
+3. Инструменты эскиза
+
+Это инструментальные наборы внутри первого этапа оболочки **Деталь / Part**, а не глобальный product scope. Канонический educational parity scope остаётся: **Деталь / Part, Сборка / Assembly, Чертеж / Drawing** согласно `SYSTEM_SPEC.md`.
+
+REFERENCE_READY = **YES**.
+ADOPTION_STARTED = **NO**.
+
+**V6C / CAD-VIS-006C — Sketch hierarchy + dimension ownership = DEFERRED UNTIL AFTER INITIAL KOMPAS SHELL ADOPTION.** V6C не закрыт, не выполнен и остаётся в очереди после начального shell adoption.
+
+Machine policy remains authoritative: every permanent slice gets a Slice Quality Gate; Full Audit cadence remains **0/3** after accepted #166. Existing owner/frozen-budget constraints remain in force.
 
 GitHub remains the execution/test environment for this queue.
