@@ -1,6 +1,8 @@
 # ASA-CAD
 
-Browser-native parametric engineering CAD for ASA Lab, with an ASA-owned interface/workflow intentionally close to KOMPAS-3D.
+Browser-native parametric engineering CAD for ASA Lab. Its primary teaching target is approximately **90% learner-facing visual and functional/workflow identity** with the selected KOMPAS-3D v25 sections **Деталь / Part**, **Сборка / Assembly**, and **Чертеж / Drawing**, so a learner can transfer to real KOMPAS-3D with minimal retraining.
+
+This is a target, not a claim of current completion. Current parity/acceptance is defined by [`docs/STATUS.md`](docs/STATUS.md) and active acceptance issues; the canonical product goal is [`docs/SYSTEM_SPEC.md`](docs/SYSTEM_SPEC.md).
 
 CAD geometry/solving runs on the active client device. ASA Lab provides identity, classes, projects, versions, assignments and submissions; it is not the normal geometry-compute server.
 
