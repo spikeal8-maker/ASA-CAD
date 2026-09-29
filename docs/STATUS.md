@@ -77,17 +77,19 @@ Reference source:
 
 PR #170 = **REFERENCE / PROTOTYPE ONLY**. Он не является product implementation, replacement application, runtime или second UI и не должен merge-иться как способ внедрения интерфейса.
 
-Первый implementation slice после этого state transition = **TOP SHELL ONLY**:
+Первый implementation slice после этого state transition = **PART TOP SHELL ONLY**:
 - главное меню;
 - вкладка документа;
-- три целевые инструментальные области;
+- Part workspace/toolset selector;
 - группы команд;
 - quick-access chrome.
 
-Целевые пользовательские области:
+Три toolset первого Part-shell slice:
 1. Твердотельное моделирование
 2. Каркас и поверхности
 3. Инструменты эскиза
+
+Это инструментальные наборы внутри первого этапа оболочки **Деталь / Part**, а не глобальный product scope. Канонический educational parity scope остаётся: **Деталь / Part, Сборка / Assembly, Чертеж / Drawing** согласно `SYSTEM_SPEC.md`.
 
 REFERENCE_READY = **YES**.
 ADOPTION_STARTED = **NO**.

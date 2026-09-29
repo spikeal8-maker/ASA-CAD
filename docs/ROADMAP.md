@@ -55,7 +55,7 @@ Every permanent slice still receives a Slice Quality Gate. The next Full Reposit
 
 PR #170 (`0d23bf19fbfcba7fbf4789afdd18f7d632adeb50`) остаётся **REFERENCE / PROTOTYPE ONLY**; его не нужно merge-ить как product implementation. Reference-файлы: `prototypes/kompas-shell/index.html` и `prototypes/kompas-shell/README.md`.
 
-Первый implementation slice = **TOP SHELL ONLY**: главное меню, вкладка документа, три целевые инструментальные области, группы команд и quick-access chrome. Целевые пользовательские области: «Твердотельное моделирование», «Каркас и поверхности», «Инструменты эскиза».
+Первый implementation slice = **PART TOP SHELL ONLY**: главное меню, вкладка документа, Part workspace/toolset selector, группы команд и quick-access chrome. Три toolset первого Part-shell slice: «Твердотельное моделирование», «Каркас и поверхности», «Инструменты эскиза». Это toolsets внутри **Деталь / Part**, а не глобальный scope; канонический educational parity scope остаётся **Деталь / Part, Сборка / Assembly, Чертеж / Drawing** согласно `SYSTEM_SPEC.md`.
 
 REFERENCE_READY = **YES**. ADOPTION_STARTED = **NO**.
 
