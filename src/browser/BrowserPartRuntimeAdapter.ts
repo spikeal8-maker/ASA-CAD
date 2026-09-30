@@ -46,14 +46,18 @@ export class BrowserPartRuntimeAdapter implements CadRuntimeAdapter, CadRenderMo
   }
 
   async recompute(document: Readonly<CadDocument>): Promise<CadRuntimeRecomputeResult> {
-    this.renderCurrent = false;
     if (document.kind !== 'part' || document.features.every((feature) => feature.suppressed)) {
+      this.renderCurrent = false;
       return {
         ok: true,
         diagnostics: [],
         runtimeRevision: document.kind === 'part' ? 'part-no-brep' : `${document.kind}-no-runtime`,
       };
     }
+
+    // Keep the last valid render model available while a rebuild is running so
+    // presentation state (notably the user's camera) survives the new revision.
+    // A failed rebuild still invalidates the render model immediately afterwards.
     const result = await (await this.loader.load()).runtime.recompute(document);
     this.renderCurrent = result.ok;
     return result;
