@@ -11,6 +11,7 @@ const replacementGuard = readFileSync('src/web/useDocumentReplacementGuard.tsx',
 const plannedDocumentStage = readFileSync('src/web/PlannedDocumentStage.tsx', 'utf8');
 const documentPresentation = readFileSync('src/web/CadDocumentPresentation.ts', 'utf8');
 const tree = readFileSync('src/web/DocumentTree.tsx', 'utf8');
+const sketchTreeBranch = readFileSync('src/web/SketchTreeBranch.tsx', 'utf8');
 const parameters = readFileSync('src/web/ParameterPanel.tsx', 'utf8');
 const parameterNumeric = readFileSync('src/web/ParameterNumericField.tsx', 'utf8');
 const workspace = readFileSync('src/web/usePartSketchWorkspace.ts', 'utf8');
@@ -96,8 +97,12 @@ for (const legacyRootFragment of [
 
 assert.match(tree, /export function DocumentTree\(/);
 assert.match(tree, /data-body-id=\{props\.bodyId\}/);
-assert.match(tree, /data-sketch-id=\{props\.sketchId\}/);
-assert.match(tree, /onEditSketch\(item\.id\)/);
+assert.match(tree, /<SketchTreeBranch\b/, 'DocumentTree must delegate Sketch branch presentation');
+assert.match(tree, /onEdit=\{\(\) => onEditSketch\(sketch\.id\)\}/);
+assert.match(sketchTreeBranch, /export function SketchTreeBranch\(/);
+assert.match(sketchTreeBranch, /data-sketch-id=\{sketch\.id\}/);
+assert.match(sketchTreeBranch, /data-tree-sketch-entity-id/);
+assert.match(sketchTreeBranch, /data-dimension-id/);
 
 assert.match(parameters, /export function ParameterPanel\(/);
 assert.match(parameters, /ParameterNumericField/, 'ParameterPanel must delegate numeric-field presentation');

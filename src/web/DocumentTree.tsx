@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import type { CadDocument } from '../contracts/document';
 import type { CadBodyId, CadDimensionId, CadSketchId } from '../contracts/ids';
+import type { CadSketch } from '../contracts/sketch';
 import { CadIcon, type CadIconName } from './CadIcon';
 import { dimensionLabel, dimensionUnit } from './SketchDimensionPresentation';
+import { SketchTreeBranch } from './SketchTreeBranch';
 
 export interface DocumentTreeProps {
   document: CadDocument;
@@ -13,10 +15,6 @@ export interface DocumentTreeProps {
   onEditDimension(id: CadDimensionId): void;
 }
 
-/**
- * Document-tree presentation only. It receives ASA document DTOs and UI
- * callbacks; it owns no CAD runtime, persistence or command execution.
- */
 export function DocumentTree({
   document,
   selectedBodyId,
@@ -40,6 +38,12 @@ export function DocumentTree({
     && document.sketches.some((item) => item.id === selectedSketchId)
       ? selectedSketchId
       : null;
+  const dimensionOwnerCounts = document.kind === 'part'
+    ? countDimensionOwners(document.sketches)
+    : new Map<CadDimensionId, number>();
+  const ownershipIssues = document.kind === 'part'
+    ? document.dimensions.filter((dimension) => (dimensionOwnerCounts.get(dimension.id) ?? 0) !== 1)
+    : [];
 
   return (
     <div className="tree-panel" data-selected-sketch-id={selectedSketch ?? ''}>
@@ -77,26 +81,33 @@ export function DocumentTree({
                     <TreeRow depth={2} icon="plane" label="Плоскость YZ" muted nodeId="plane-yz" />
                   </>
                 )}
-                {document.sketches.map((item) => (
-                  <SketchTreeEntry
-                    key={item.id}
-                    id={item.id}
-                    label={item.name}
-                    selected={item.id === activeSketchId || item.id === selectedSketch}
-                    showEdit={item.id === selectedSketch}
-                    onSelect={() => setSelectedSketchId(item.id)}
-                    onEdit={() => onEditSketch(item.id)}
+                {document.sketches.map((sketch) => (
+                  <SketchTreeBranch
+                    key={sketch.id}
+                    sketch={sketch}
+                    dimensions={document.dimensions.filter(
+                      (dimension) => sketch.dimensionIds.includes(dimension.id)
+                        && dimensionOwnerCounts.get(dimension.id) === 1,
+                    )}
+                    selected={sketch.id === activeSketchId || sketch.id === selectedSketch}
+                    showEdit={sketch.id === selectedSketch}
+                    onSelect={() => setSelectedSketchId(sketch.id)}
+                    onEdit={() => onEditSketch(sketch.id)}
+                    onEditDimension={onEditDimension}
                   />
                 ))}
-                {document.dimensions.map((dimension) => (
-                  <TreeRow
-                    key={dimension.id}
-                    depth={2}
-                    icon={dimension.type === 'diameter' ? 'diameter' : dimension.type === 'angular' ? 'angle' : 'dimension'}
-                    label={`${dimensionLabel(dimension.name, dimension.type)}: ${dimension.value} ${dimensionUnit(dimension.type)}`}
-                    onClick={() => onEditDimension(dimension.id)}
-                  />
-                ))}
+                {ownershipIssues.map((dimension) => {
+                  const ownerCount = dimensionOwnerCounts.get(dimension.id) ?? 0;
+                  return (
+                    <TreeRow
+                      key={dimension.id}
+                      depth={1}
+                      icon="info"
+                      label={`${ownerCount === 0 ? 'Несвязанный размер' : 'Конфликт владельца размера'}: ${dimensionLabel(dimension.name, dimension.type)}: ${dimension.value} ${dimensionUnit(dimension.type)}`}
+                      nodeId={`dimension-ownership-${dimension.id}`}
+                    />
+                  );
+                })}
                 {document.features.map((feature) => (
                   <TreeRow key={feature.id} depth={1} icon="feature" label={feature.name} />
                 ))}
@@ -127,6 +138,16 @@ export function DocumentTree({
       </div>
     </div>
   );
+}
+
+function countDimensionOwners(sketches: readonly CadSketch[]): Map<CadDimensionId, number> {
+  const counts = new Map<CadDimensionId, number>();
+  for (const sketch of sketches) {
+    for (const id of new Set(sketch.dimensionIds)) {
+      counts.set(id, (counts.get(id) ?? 0) + 1);
+    }
+  }
+  return counts;
 }
 
 function TreeBranchRow(props: {
@@ -160,39 +181,6 @@ function TreeBranchRow(props: {
   );
 }
 
-function SketchTreeEntry(props: {
-  id: CadSketchId;
-  label: string;
-  selected: boolean;
-  showEdit: boolean;
-  onSelect(): void;
-  onEdit(): void;
-}) {
-  return (
-    <div className="tree-sketch-entry">
-      <TreeRow
-        depth={1}
-        icon="sketch"
-        label={props.label}
-        selected={props.selected}
-        sketchId={props.id}
-        onClick={props.onSelect}
-      />
-      {props.showEdit && (
-        <button
-          className="tree-sketch-edit"
-          type="button"
-          data-sketch-edit-id={props.id}
-          aria-label={`Редактировать ${props.label}`}
-          onClick={props.onEdit}
-        >
-          Редактировать
-        </button>
-      )}
-    </div>
-  );
-}
-
 function TreeRow(props: {
   depth: number;
   icon: CadIconName;
@@ -201,7 +189,6 @@ function TreeRow(props: {
   bold?: boolean;
   selected?: boolean;
   bodyId?: CadBodyId;
-  sketchId?: CadSketchId;
   nodeId?: string;
   onClick?: () => void;
 }) {
@@ -212,9 +199,8 @@ function TreeRow(props: {
       style={{ paddingInlineStart: 10 + props.depth * 18 }}
       onClick={props.onClick}
       data-body-id={props.bodyId}
-      data-sketch-id={props.sketchId}
       data-tree-node={props.nodeId}
-      aria-pressed={props.bodyId || props.sketchId ? Boolean(props.selected) : undefined}
+      aria-pressed={props.bodyId ? Boolean(props.selected) : undefined}
     >
       <span className="tree-chevron" aria-hidden="true" />
       <span className="tree-icon"><CadIcon name={props.icon} size={15} /></span>
