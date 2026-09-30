@@ -86,12 +86,27 @@
 .tree-row:not(.interactive) { cursor: default; }
 .tree-row.bold .tree-label { font-weight: 650; }
 .tree-row.muted { color: #8b929b; }
-.tree-sketch-entry { display: flex; align-items: center; min-width: 0; }
-.tree-sketch-entry > .tree-row { flex: 1 1 auto; width: auto; min-width: 0; }
+.tree-sketch-branch { min-width: 0; }
+.tree-sketch-header { gap: 0; padding-inline-end: 5px; }
+.tree-sketch-header.selected { background: #dce9f8; }
+.tree-sketch-select {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+.tree-sketch-select:hover, .tree-sketch-select:focus-visible { background: #e4edf9; }
+.tree-sketch-select .tree-label { min-width: 0; }
 .tree-sketch-edit {
   flex: 0 0 auto;
   min-height: 26px;
-  margin-right: 5px;
   padding: 0 7px;
   border: 1px solid var(--border);
   border-radius: 3px;
