@@ -42,11 +42,15 @@ Audit #158 is now historical. #166 is the latest accepted Full Repository Health
 
 ## Cadence
 
-Accepted Full Audit #166 resets cadence:
+Accepted Full Audit #166 reset cadence to **0/3**.
+
+After accepted permanent product slice #173:
 
 **CADENCE = 1/3**
 
 **FEATURE_FREEZE = LIFTED**
+
+Governance/docs PRs #168/#171/#172 do not count as permanent product slices.
 
 Every permanent slice still receives a Slice Quality Gate. The next Full Repository Health Audit is required again at 3 accepted permanent slices or another machine-policy trigger.
 
