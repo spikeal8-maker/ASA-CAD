@@ -1,0 +1,170 @@
+:root {
+  color-scheme: dark;
+  --bg-app: #000000;
+  --bg-panel: #484848;
+  --bg-panel-strong: #333333;
+  --bg-ribbon: #484848;
+  --bg-work: #3a3a3a;
+  --border: #2b2b2b;
+  --border-strong: #000000;
+  --text: #f0f0f0;
+  --text-muted: #bdbdbd;
+  --accent: #33cce5;
+  --accent-soft: #3f5961;
+  --danger: #ff4b4b;
+  --success: #3fcf5c;
+  --warning: #e3a21a;
+}
+
+body, .cad-app { background: var(--bg-app); color: var(--text); }
+button:focus-visible, input:focus-visible, select:focus-visible {
+  outline-color: var(--accent);
+}
+.main-menu-bar {
+  background: #333333;
+  border-color: #000000;
+}
+.brand-mark { background: #333333; color: #f0f0f0; }
+.main-menu-items button:hover,
+.global-actions button:hover:not(:disabled) { background: #4c4c4c; }
+.command-search-wrap,
+.tree-search {
+  background: #666666;
+  border-color: #2b2b2b;
+}
+.command-search-wrap input,
+.tree-search input {
+  color: #f6f6f6;
+  background: transparent;
+}
+.command-search-wrap input::placeholder,
+.tree-search input::placeholder { color: #d0d0d0; }
+.command-search-results,
+.file-menu-popup {
+  background: #3d3d3d;
+  border-color: #000000;
+  box-shadow: 0 8px 20px rgba(0,0,0,.45);
+}
+.command-search-results button:hover,
+.file-menu-item:hover,
+.file-menu-item:focus-visible { background: #5f5f5f; }
+
+.document-tabs {
+  background: #4c4c4c;
+  border-color: #000000;
+}
+.new-tab-button:hover { background: #5f5f5f; }
+.document-tab {
+  background: #333333;
+  border-color: #000000;
+}
+.document-tab.active { background: #000000; color: #f2f2f2; }
+.document-kind-icon { color: #d5d5d5; }
+.instrument-area {
+  background: #484848;
+  border-color: #000000;
+}
+.workspace-tabs { border-color: #000000; }
+.workspace-tabs button:hover { background: #5f5f5f; }
+.workspace-tabs button.active {
+  color: #f2f2f2;
+  border-bottom-color: #5ed08b;
+  background: #000000;
+}
+.command-group { border-color: #000000; }
+.command-group-label { color: #bdbdbd; }
+.ribbon-command { color: #f0f0f0; }
+.ribbon-command:hover:not(:disabled) { background: #5f5f5f; }
+.ribbon-command.view-command.selected { background: #000000; }
+.planned-badge { background: #333333; color: #bdbdbd; }
+
+.management-rail {
+  background: #333333;
+  border-color: #000000;
+}
+.management-rail button:hover:not(:disabled) { background: #5f5f5f; }
+.management-rail button.active {
+  background: #000000;
+  box-shadow: inset 3px 0 0 #33cce5;
+}
+.management-panel { background: #484848; border-color: #000000; }
+.panel-title-row { background: #333333; border-color: #000000; }
+.panel-title-row button:hover:not(:disabled) { background: #5f5f5f; }
+.panel-title-row button:disabled { opacity: .45; cursor: not-allowed; }
+.tree-row:hover,
+.tree-sketch-select:hover,
+.tree-sketch-select:focus-visible,
+.tree-disclosure:hover,
+.tree-disclosure:focus-visible { background: #5a5a5a; }
+.tree-sketch-header.selected { background: #666666; }
+.tree-row.muted { color: #b0b0b0; }
+.tree-chevron, .tree-disclosure { color: #bdbdbd; }
+.tree-icon { color: #d0d0d0; }
+.tree-sketch-edit {
+  background: #3d3d3d;
+  color: #57b8ff;
+  border-color: #2b2b2b;
+}
+.tree-sketch-edit:hover, .tree-sketch-edit:focus-visible { background: #5f5f5f; }
+.tree-search-empty { padding: 10px 12px; color: var(--text-muted); font-size: 12px; }
+
+.parameter-section { border-color: #333333; }
+.plane-grid button,
+.extrude-summary,
+.extrude-direction-control > button,
+.extrude-symmetric-control {
+  background: #555555;
+  border-color: #2b2b2b;
+}
+.plane-grid button.selected,
+.extrude-direction-control > button:hover:not(:disabled) { background: #3f5961; }
+.parameter-actions {
+  background: #333333;
+  border-color: #000000;
+}
+.parameter-actions button { background: #484848; border-color: #2b2b2b; }
+.work-area { background: #3a3a3a; }
+.model-stage { background: linear-gradient(#4b4b4c, #3a3a3a); }
+.stage-grid {
+  background-image:
+    linear-gradient(rgba(220,220,220,.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(220,220,220,.06) 1px, transparent 1px);
+}
+.viewport-quick-access {
+  background: rgba(72,72,72,.96);
+  border-color: #000000;
+  box-shadow: 0 2px 7px rgba(0,0,0,.4);
+}
+.viewport-quick-access button:hover { background: #5f5f5f; }
+.quick-separator { background: #222222; }
+.view-caption, .stage-message { color: #bdbdbd; }
+.stage-symbol { color: #7d858d; }
+.stage-message strong { color: #f0f0f0; }
+.stage-message small { color: #a8a8a8; }
+.origin-widget {
+  background: rgba(72,72,72,.78);
+  border-color: rgba(0,0,0,.6);
+  color: #d4d4d4;
+}
+.status-bar {
+  background: #333333;
+  border-color: #000000;
+  color: #bdbdbd;
+}
+.status-right span { border-color: #1d1d1d; }
+.modal-backdrop { background: rgba(0,0,0,.62); }
+.new-document-dialog {
+  background: #484848;
+  border-color: #000000;
+  box-shadow: 0 16px 42px rgba(0,0,0,.55);
+}
+.new-document-dialog header { border-color: #2b2b2b; }
+.new-document-dialog header button:hover { background: #5f5f5f; }
+.document-kind-grid > button {
+  background: #3d3d3d;
+  border-color: #2b2b2b;
+}
+.document-kind-grid > button:hover { border-color: #33cce5; background: #46585c; }
+.kind-card-icon { background: #333333; color: #d8d8d8; }
+.unsaved-changes-actions button { background: #484848; border-color: #2b2b2b; }
+.unsaved-changes-actions button:hover:not(:disabled) { background: #5f5f5f; }

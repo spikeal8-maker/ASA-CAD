@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { SketchSolveSession, type CadSketchSolveSnapshot } from '../application/SketchSolveSession';
-import { BrowserSketchSolverAdapter } from '../browser/BrowserSketchSolverAdapter';
+import { createSharedBrowserSketchSolverClient } from '../browser/SharedBrowserSketchSolver';
 import type { CadDocument, CadPartDocument, CadSketch } from '../contracts/document';
 import {
   buildSketchOverlayModel,
@@ -32,7 +32,7 @@ export function useActiveSketchSolveOverlay(
   options: ActiveSketchSolveOverlayOptions,
 ): ActiveSketchSolveOverlayResult {
   const { document, sketch, active, revisionToken } = options;
-  const solver = useMemo(() => new BrowserSketchSolverAdapter(), []);
+  const solver = useMemo(() => createSharedBrowserSketchSolverClient(), []);
   const session = useMemo(() => new SketchSolveSession(solver), [solver]);
   const [snapshot, setSnapshot] = useState<Readonly<CadSketchSolveSnapshot>>(
     () => session.getSnapshot(),

@@ -133,7 +133,7 @@
     "src/web/PartSketchWorkspaceTypes.ts": 140,
     "src/web/PartModelStage.tsx": 3423,
     "src/web/SketchEditingStage.tsx": 5989,
-    "src/runtime/OpenCascadePartRuntime.ts": 20347,
+    "src/runtime/OpenCascadePartRuntime.ts": 17799,
     "tests/m3/M3BrowserHarness.mjs": 7891
   },
   "grandfatheredHardCeilings": {

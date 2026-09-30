@@ -113,6 +113,15 @@ jobs:
         env:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m2/sketch-hierarchy-browser.mjs
+      - name: Exercise Part core parametric geometry recovery
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
+        run: node tests/m2/part-core-parametric-browser.mjs
+
+      - name: Exercise Part core linear profile flow
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
+        run: node tests/m2/part-core-profile-browser.mjs
 
       - name: Exercise live Sketch finish/select/re-edit/persistence
         env:
