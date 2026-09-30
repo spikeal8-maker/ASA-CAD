@@ -1,6 +1,6 @@
 # ASA-CAD — воспроизведение КОМПАСа с видимыми поставками
 
-Редакция 2026-09-29. STATUS/#10 — текущее состояние; #19 — визуальная очередь.
+Редакция 2026-09-30. STATUS/#10 — текущее состояние; #19 — визуальная очередь.
 
 ## Цель
 
@@ -15,6 +15,7 @@
 - CAD-VIS-005 — accepted integration checkpoint / PRODUCT_DELTA NONE.
 - V6A / CAD-VIS-006A — DONE / MERGED / regional accepted / PARITY PARTIAL.
 - V6B / CAD-VIS-006B — DONE / MERGED / regional accepted / PARITY PARTIAL.
+- KOMPAS-SHELL-ADOPTION-001 — **DONE / MERGED / REGIONAL RESULT ACCEPTED**; PR #173; accepted HEAD `5719a8a8b3f357d1448ea68f7d30b41ef586bb35`; merge `027d4ea6a5b2549609b0b3a9cfdefd397fe8559b`; accepted scope = **PART TOP SHELL ONLY**.
 
 FULL_TREE_PARITY = **NOT ACCEPTED**.
 
@@ -41,27 +42,47 @@ Audit #158 is now historical. #166 is the latest accepted Full Repository Health
 
 ## Cadence
 
-Accepted Full Audit #166 resets cadence:
+Accepted Full Audit #166 reset cadence to **0/3**.
 
-**CADENCE = 0/3**
+After accepted permanent product slice #173:
+
+**CADENCE = 1/3**
 
 **FEATURE_FREEZE = LIFTED**
 
+Governance/docs PRs #168/#171/#172 do not count as permanent product slices.
+
 Every permanent slice still receives a Slice Quality Gate. The next Full Repository Health Audit is required again at 3 accepted permanent slices or another machine-policy trigger.
 
-## NEXT — KOMPAS-SHELL-ADOPTION-001
+## Accepted — KOMPAS-SHELL-ADOPTION-001
 
-Следующий продуктовый этап — перенос visual/UX reference из PR #170 в существующий `src/web` ASA-CAD.
+KOMPAS-SHELL-ADOPTION-001 = **DONE / MERGED / REGIONAL RESULT ACCEPTED**.
 
-PR #170 (`0d23bf19fbfcba7fbf4789afdd18f7d632adeb50`) остаётся **REFERENCE / PROTOTYPE ONLY**; его не нужно merge-ить как product implementation. Reference-файлы: `prototypes/kompas-shell/index.html` и `prototypes/kompas-shell/README.md`.
+Accepted implementation:
+- PR #173;
+- accepted HEAD `5719a8a8b3f357d1448ea68f7d30b41ef586bb35`;
+- merge `027d4ea6a5b2549609b0b3a9cfdefd397fe8559b`;
+- scope = **PART TOP SHELL ONLY**.
 
-Первый implementation slice = **PART TOP SHELL ONLY**: главное меню, вкладка документа, Part workspace/toolset selector, группы команд и quick-access chrome. Три toolset первого Part-shell slice: «Твердотельное моделирование», «Каркас и поверхности», «Инструменты эскиза». Это toolsets внутри **Деталь / Part**, а не глобальный scope; канонический educational parity scope остаётся **Деталь / Part, Сборка / Assembly, Чертеж / Drawing** согласно `SYSTEM_SPEC.md`.
+Accepted regional delta includes the existing main-menu/document-tab owners, Part workspace/toolset selector, three Part toolsets, registry-backed command-group composition, preserved quick-access owner, and the production/dev roadmap-command visibility boundary.
 
-REFERENCE_READY = **YES**. ADOPTION_STARTED = **NO**.
+**PRODUCTION_VISIBILITY_CONTRACT = ACCEPTED**:
+- normal product hides planned/deferred commands;
+- explicit `/dev/part/*` may show them disabled with roadmap markers.
 
-**V6C / CAD-VIS-006C — Sketch hierarchy + dimension ownership** не отменён: он **QUEUED AFTER INITIAL KOMPAS SHELL ADOPTION** и не считается выполненным.
+PR #170 remains **REFERENCE / PROTOTYPE ONLY**, OPEN / NOT MERGED.
 
-The accepted V6B Part/Origin hierarchy remains only a regional result; full Tree parity stays open.
+This does not accept full M2V, full KOMPAS parity, full Tree parity, Part completion, Assembly, Drawing, or the 90% target. Canonical educational parity scope remains **Деталь / Part, Сборка / Assembly, Чертеж / Drawing**.
+
+## NEXT — V6C / CAD-VIS-006C
+
+**Sketch hierarchy + dimension ownership**.
+
+V6C is the next separate product slice after accepted initial KOMPAS shell adoption. It owns Sketch hierarchy and dimension ownership; implementation has not started.
+
+**V6C_STARTED = NO**.
+
+Cadence after accepted #173 = **1/3**. FEATURE_FREEZE = **LIFTED**.
 
 ## Gates
 
