@@ -112,7 +112,11 @@ try{
   const reopened=await saveAndRead();
   assert.deepEqual(reopened.sketches.map((sketch)=>({id:sketch.id,dimensionIds:sketch.dimensionIds})),edited.sketches.map((sketch)=>({id:sketch.id,dimensionIds:sketch.dimensionIds})),'save/open changed sketch dimension ownership');
   assert.deepEqual(reopened.dimensions.map((dimension)=>dimension.id),edited.dimensions.map((dimension)=>dimension.id),'save/open changed dimension IDs');
+  const reopenedWidth=reopened.dimensions.find((dimension)=>dimension.id===width.id);
+  assert.ok(reopenedWidth,'reopened width dimension must preserve the same id');
+  assert.equal(reopenedWidth.value,62,'edited width value must survive save/reopen');
   await assertTreeMatches(reopened);
+  await branch('Эскиз 1').getByText('Ширина: 62 мм',{exact:true}).waitFor();
 
   assert.equal(await page.locator('button button').count(),0,'tree must not nest buttons');
   assert.deepEqual(errors,[],`page errors: ${errors.join(' | ')}`);
@@ -127,6 +131,7 @@ try{
   console.log('V6C_DIMENSION_EDIT_FROM_TREE PASS');
   console.log('V6C_DISCLOSURE_DOCUMENT_MUTATION NO');
   console.log('V6C_SAVE_REOPEN_OWNERSHIP PASS');
+  console.log('V6C_EDITED_VALUE_AFTER_REOPEN PASS');
 }finally{
   await browser.close();
 }
