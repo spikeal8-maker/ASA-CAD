@@ -36,7 +36,7 @@ async function assertTreeMatches(document){
     await node.waitFor();
     assert.equal(await disclosure(sketch.name).getAttribute('aria-expanded'),'true',`${sketch.name} must default expanded`);
     assert.deepEqual(
-      await ids(node.locator('[data-sketch-entity-id]'),'data-sketch-entity-id'),
+      await ids(node.locator('[data-tree-sketch-entity-id]'),'data-tree-sketch-entity-id'),
       sketch.entities.map((entity)=>entity.id),
       `${sketch.name} entity rows must come from sketch.entities`,
     );

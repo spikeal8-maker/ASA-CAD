@@ -100,7 +100,7 @@ function SketchLeafRow(props: {
   const common = {
     className: `tree-row ${props.onClick ? 'interactive' : ''}`,
     style: { paddingInlineStart: 46 },
-    'data-sketch-entity-id': props.entityId,
+    'data-tree-sketch-entity-id': props.entityId,
     'data-sketch-entity-type': props.entityType,
     'data-dimension-id': props.dimensionId,
   } as const;

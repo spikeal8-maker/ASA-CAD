@@ -101,7 +101,7 @@ assert.match(tree, /<SketchTreeBranch\b/, 'DocumentTree must delegate Sketch bra
 assert.match(tree, /onEdit=\{\(\) => onEditSketch\(sketch\.id\)\}/);
 assert.match(sketchTreeBranch, /export function SketchTreeBranch\(/);
 assert.match(sketchTreeBranch, /data-sketch-id=\{sketch\.id\}/);
-assert.match(sketchTreeBranch, /data-sketch-entity-id/);
+assert.match(sketchTreeBranch, /data-tree-sketch-entity-id/);
 assert.match(sketchTreeBranch, /data-dimension-id/);
 
 assert.match(parameters, /export function ParameterPanel\(/);
