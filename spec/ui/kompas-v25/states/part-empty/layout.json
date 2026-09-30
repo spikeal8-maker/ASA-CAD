@@ -1,0 +1,506 @@
+{
+  "schemaVersion": 1,
+  "stateId": "part-empty",
+  "capturedAt": "2026-09-20T21:49:58.8780219+00:00",
+  "canonicalBaselineConfirmed": true,
+  "coordinateSpaces": {
+    "measurement": "physical-screen-px",
+    "physical": "kompas-client-physical-px",
+    "canonicalSource": "kompas-client-dip",
+    "normalized": "kompas-client-normalized",
+    "target": "browser-css-px",
+    "dipFormula": "clientDip = clientPhysicalPx * 96 / windowDpi"
+  },
+  "window": {
+    "hwnd": "0x240086A",
+    "title": "КОМПАС-3D v25 Учебная версия (Не для коммерческого использования)",
+    "dpi": {
+      "x": 96,
+      "y": 96
+    },
+    "windowsScalePercent": 100,
+    "clientPhysicalPx": {
+      "width": 1920,
+      "height": 1080
+    },
+    "clientDip": {
+      "width": 1920,
+      "height": 1080
+    },
+    "clientNormalized": {
+      "width": 1,
+      "height": 1
+    }
+  },
+  "provenance": {
+    "environmentPath": "environment.json",
+    "environmentSha256": "1df087faf054c925c2ac13dd1a56afb61be20541461d21cc5e8bd758d4c34574",
+    "captureToolGitSha": "3e8bc9c9ae7906695e5119ec89ab9de5d768c24a",
+    "baselineConfirmationResult": "PASS",
+    "screenshot": {
+      "captureMethod": "physical-screen-client-crop-copyfromscreen",
+      "localPath": "C:\\Users\\spike\\Documents\\VisualReviews\\ASA-CAD\\KOMPAS-v25\\part-empty\\kompas.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "71a4d5a29180475ff43ccf4420e861b8333d9ba510fec17be2e032d63eae21de",
+      "capturedAt": "2026-09-20T21:49:58.8780219+00:00",
+      "captureRectPhysicalPx": {
+        "X": 1248,
+        "Y": 91,
+        "Width": 1920,
+        "Height": 1080,
+        "IsValid": true
+      },
+      "windowWasForeground": true,
+      "windowWasUnobscured": true,
+      "cursorIncluded": false,
+      "scaledAfterCapture": false
+    },
+    "kompas": {
+      "processName": "kStudy",
+      "productVersion": "v25",
+      "fileVersion": "25.0.0.2735"
+    }
+  },
+  "stability": {
+    "stabilityResult": "PASS",
+    "settleDurationMs": 4707,
+    "stableSamples": 3,
+    "requiredStableSamples": 3,
+    "sampleIntervalMs": 300,
+    "samples": [
+      {
+        "capturedAt": "2026-09-20T21:49:49.6654966+00:00",
+        "clientRectPhysicalPx": {
+          "X": 1248,
+          "Y": 91,
+          "Width": 1920,
+          "Height": 1080,
+          "IsValid": true
+        },
+        "uiaTreeSha256": "d2ab4a7e0e6fd31fbcdfa83b0564fe43ee8ea86ab95c0b6b2b9965a480193830",
+        "visibleNodeCount": 8,
+        "visibleTooltipCount": 0
+      },
+      {
+        "capturedAt": "2026-09-20T21:49:51.3309201+00:00",
+        "clientRectPhysicalPx": {
+          "X": 1248,
+          "Y": 91,
+          "Width": 1920,
+          "Height": 1080,
+          "IsValid": true
+        },
+        "uiaTreeSha256": "d2ab4a7e0e6fd31fbcdfa83b0564fe43ee8ea86ab95c0b6b2b9965a480193830",
+        "visibleNodeCount": 8,
+        "visibleTooltipCount": 0
+      },
+      {
+        "capturedAt": "2026-09-20T21:49:52.9504775+00:00",
+        "clientRectPhysicalPx": {
+          "X": 1248,
+          "Y": 91,
+          "Width": 1920,
+          "Height": 1080,
+          "IsValid": true
+        },
+        "uiaTreeSha256": "d2ab4a7e0e6fd31fbcdfa83b0564fe43ee8ea86ab95c0b6b2b9965a480193830",
+        "visibleNodeCount": 8,
+        "visibleTooltipCount": 0
+      }
+    ]
+  },
+  "uiaCoverage": {
+    "result": "partial",
+    "totalNodeCount": 478,
+    "visibleNodeCount": 200,
+    "validBoundingRectCount": 369,
+    "namedNodeCount": 295
+  },
+  "zones": [
+    {
+      "id": "mainMenu",
+      "source": "uia",
+      "confidence": 1,
+      "visible": true,
+      "rectPx": {
+        "x": 29,
+        "y": 5,
+        "width": 835,
+        "height": 22
+      },
+      "rectPhysicalPx": {
+        "x": 29,
+        "y": 5,
+        "width": 835,
+        "height": 22
+      },
+      "rectDip": {
+        "x": 29,
+        "y": 5,
+        "width": 835,
+        "height": 22
+      },
+      "rectNormalized": {
+        "x": 0.015104,
+        "y": 0.00463,
+        "width": 0.434896,
+        "height": 0.02037
+      },
+      "sourceNodeRuntimeId": [
+        7,
+        42828,
+        34087372
+      ],
+      "notes": "Exact UIA Menu rect; application controls outside the menu are separate."
+    },
+    {
+      "id": "commandSearch",
+      "source": "uia",
+      "confidence": 1,
+      "visible": true,
+      "rectPx": {
+        "x": 1651,
+        "y": 5,
+        "width": 166,
+        "height": 22
+      },
+      "rectPhysicalPx": {
+        "x": 1651,
+        "y": 5,
+        "width": 166,
+        "height": 22
+      },
+      "rectDip": {
+        "x": 1651,
+        "y": 5,
+        "width": 166,
+        "height": 22
+      },
+      "rectNormalized": {
+        "x": 0.859896,
+        "y": 0.00463,
+        "width": 0.086458,
+        "height": 0.02037
+      },
+      "sourceNodeRuntimeId": [
+        7,
+        42828,
+        60714510
+      ],
+      "notes": "Exact UIA Edit rect."
+    },
+    {
+      "id": "documentTabs",
+      "source": "mixed",
+      "confidence": 0.95,
+      "visible": true,
+      "rectPx": {
+        "x": 3,
+        "y": 28,
+        "width": 1914,
+        "height": 27
+      },
+      "rectPhysicalPx": {
+        "x": 3,
+        "y": 28,
+        "width": 1914,
+        "height": 27
+      },
+      "rectDip": {
+        "x": 3,
+        "y": 28,
+        "width": 1914,
+        "height": 27
+      },
+      "rectNormalized": {
+        "x": 0.001563,
+        "y": 0.025926,
+        "width": 0.996875,
+        "height": 0.025
+      },
+      "sourceNodeRuntimeId": [],
+      "notes": "Bounded by UIA ContextPresenter top and LayoutPresenter top."
+    },
+    {
+      "id": "instrumentArea",
+      "source": "mixed",
+      "confidence": 0.95,
+      "visible": true,
+      "rectPx": {
+        "x": 3,
+        "y": 55,
+        "width": 1914,
+        "height": 93
+      },
+      "rectPhysicalPx": {
+        "x": 3,
+        "y": 55,
+        "width": 1914,
+        "height": 93
+      },
+      "rectDip": {
+        "x": 3,
+        "y": 55,
+        "width": 1914,
+        "height": 93
+      },
+      "rectNormalized": {
+        "x": 0.001563,
+        "y": 0.050926,
+        "width": 0.996875,
+        "height": 0.086111
+      },
+      "sourceNodeRuntimeId": [],
+      "notes": "Bounded by UIA LayoutPresenter top and D3View top."
+    },
+    {
+      "id": "workspaceTabs",
+      "source": "uia",
+      "confidence": 1,
+      "visible": true,
+      "rectPx": {
+        "x": 3,
+        "y": 55,
+        "width": 120,
+        "height": 25
+      },
+      "rectPhysicalPx": {
+        "x": 3,
+        "y": 55,
+        "width": 120,
+        "height": 25
+      },
+      "rectDip": {
+        "x": 3,
+        "y": 55,
+        "width": 120,
+        "height": 25
+      },
+      "rectNormalized": {
+        "x": 0.001563,
+        "y": 0.050926,
+        "width": 0.0625,
+        "height": 0.023148
+      },
+      "sourceNodeRuntimeId": [
+        7,
+        42828,
+        51934934
+      ],
+      "notes": "Active Solid Modeling workspace selector UIA rect."
+    },
+    {
+      "id": "commandRibbon",
+      "source": "mixed",
+      "confidence": 0.95,
+      "visible": true,
+      "rectPx": {
+        "x": 3,
+        "y": 55,
+        "width": 1914,
+        "height": 93
+      },
+      "rectPhysicalPx": {
+        "x": 3,
+        "y": 55,
+        "width": 1914,
+        "height": 93
+      },
+      "rectDip": {
+        "x": 3,
+        "y": 55,
+        "width": 1914,
+        "height": 93
+      },
+      "rectNormalized": {
+        "x": 0.001563,
+        "y": 0.050926,
+        "width": 0.996875,
+        "height": 0.086111
+      },
+      "sourceNodeRuntimeId": [],
+      "notes": "Command ribbon bounds derived from UIA command rows and D3View boundary."
+    },
+    {
+      "id": "managementRail",
+      "source": "mixed",
+      "confidence": 0.95,
+      "visible": true,
+      "rectPx": {
+        "x": 3,
+        "y": 148,
+        "width": 26,
+        "height": 929
+      },
+      "rectPhysicalPx": {
+        "x": 3,
+        "y": 148,
+        "width": 26,
+        "height": 929
+      },
+      "rectDip": {
+        "x": 3,
+        "y": 148,
+        "width": 26,
+        "height": 929
+      },
+      "rectNormalized": {
+        "x": 0.001563,
+        "y": 0.137037,
+        "width": 0.013542,
+        "height": 0.860185
+      },
+      "sourceNodeRuntimeId": [],
+      "notes": "Width from UIA TabButton union; height from docked TabControl."
+    },
+    {
+      "id": "managementPanel",
+      "source": "mixed",
+      "confidence": 0.95,
+      "visible": true,
+      "rectPx": {
+        "x": 29,
+        "y": 148,
+        "width": 310,
+        "height": 929
+      },
+      "rectPhysicalPx": {
+        "x": 29,
+        "y": 148,
+        "width": 310,
+        "height": 929
+      },
+      "rectDip": {
+        "x": 29,
+        "y": 148,
+        "width": 310,
+        "height": 929
+      },
+      "rectNormalized": {
+        "x": 0.015104,
+        "y": 0.137037,
+        "width": 0.161458,
+        "height": 0.860185
+      },
+      "sourceNodeRuntimeId": [],
+      "notes": "Docked TabControl minus the UIA rail width."
+    },
+    {
+      "id": "treePanel",
+      "source": "mixed",
+      "confidence": 0.95,
+      "visible": true,
+      "rectPx": {
+        "x": 29,
+        "y": 148,
+        "width": 310,
+        "height": 929
+      },
+      "rectPhysicalPx": {
+        "x": 29,
+        "y": 148,
+        "width": 310,
+        "height": 929
+      },
+      "rectDip": {
+        "x": 29,
+        "y": 148,
+        "width": 310,
+        "height": 929
+      },
+      "rectNormalized": {
+        "x": 0.015104,
+        "y": 0.137037,
+        "width": 0.161458,
+        "height": 0.860185
+      },
+      "sourceNodeRuntimeId": [],
+      "notes": "Tree is the selected idle Part tab; rect equals the visible management panel content."
+    },
+    {
+      "id": "graphicsArea",
+      "source": "mixed",
+      "confidence": 0.9,
+      "visible": true,
+      "rectPx": {
+        "x": 340,
+        "y": 148,
+        "width": 1577,
+        "height": 929
+      },
+      "rectPhysicalPx": {
+        "x": 340,
+        "y": 148,
+        "width": 1577,
+        "height": 929
+      },
+      "rectDip": {
+        "x": 340,
+        "y": 148,
+        "width": 1577,
+        "height": 929
+      },
+      "rectNormalized": {
+        "x": 0.177083,
+        "y": 0.137037,
+        "width": 0.821354,
+        "height": 0.860185
+      },
+      "sourceNodeRuntimeId": [],
+      "notes": "D3View backing rect clipped at the UIA dock splitter boundary."
+    },
+    {
+      "id": "quickAccess",
+      "source": "uia",
+      "confidence": 1,
+      "visible": true,
+      "rectPx": {
+        "x": 356,
+        "y": 148,
+        "width": 591,
+        "height": 25
+      },
+      "rectPhysicalPx": {
+        "x": 356,
+        "y": 148,
+        "width": 591,
+        "height": 25
+      },
+      "rectDip": {
+        "x": 356,
+        "y": 148,
+        "width": 591,
+        "height": 25
+      },
+      "rectNormalized": {
+        "x": 0.185417,
+        "y": 0.137037,
+        "width": 0.307813,
+        "height": 0.023148
+      },
+      "sourceNodeRuntimeId": [],
+      "notes": "Union of visible direct UIA children in WorkareaControl quick-access row."
+    }
+  ],
+  "unresolvedMajorZones": [
+    "parametersPanel",
+    "statusBar"
+  ],
+  "validations": {
+    "canonicalBaseline": "PASS",
+    "dpiAwareCapture": "PASS",
+    "dpiConversion": "PASS",
+    "coordinateSpace": {
+      "result": "PASS",
+      "validatedNodeCount": 369,
+      "tolerancePx": 0.01,
+      "maxScreenToClientErrorPx": 0,
+      "maxDipConversionError": 0,
+      "maxNormalizedError": 5e-7
+    },
+    "screenshotPipeline": "PASS",
+    "stateStability": "PASS",
+    "partEmpty": "PASS"
+  }
+}
