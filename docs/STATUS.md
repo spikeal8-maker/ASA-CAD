@@ -11,113 +11,73 @@
 - CAD-VIS-005 — INTEGRATION CHECKPOINT / ACCEPTED / PRODUCT_DELTA NONE.
 - V6A / CAD-VIS-006A — DONE / MERGED / REGIONAL RESULT ACCEPTED / PARITY PARTIAL.
 - V6B / CAD-VIS-006B — DONE / MERGED / REGIONAL RESULT ACCEPTED / PARITY PARTIAL.
-- KOMPAS-SHELL-ADOPTION-001 — **DONE / MERGED / REGIONAL RESULT ACCEPTED**; accepted scope = **PART TOP SHELL ONLY**.
-- Full Repository Health Audit #166 — **YELLOW_ACCEPTED / completed**.
-- Accepted audit final main: `fa13134bf7397a20a9b02790a6644e9084e943e0`.
-- RED findings = **NONE**.
-- CADENCE = **1/3**.
+- KOMPAS-SHELL-ADOPTION-001 — DONE / MERGED / REGIONAL RESULT ACCEPTED; accepted scope = PART TOP SHELL ONLY.
+- V6C / CAD-VIS-006C — **DONE / MERGED / REGIONAL RESULT ACCEPTED**.
+- Full Repository Health Audit #166 — **YELLOW_ACCEPTED / completed**; RED findings = **NONE**.
+- CADENCE = **2/3**.
 - FEATURE_FREEZE = **LIFTED**.
+- FULL_AUDIT_REQUIRED_NOW = **NO**.
+- FULL_AUDIT_REQUIRED_AFTER_NEXT_ACCEPTED_PERMANENT_SLICE = **YES**.
 - FULL_TREE_PARITY = **NOT ACCEPTED**.
 - FULL_M2V = **NOT ACCEPTED**.
 - FULL_KOMPAS_PARITY = **NO**.
+- 90_PERCENT_STATUS = **TARGET / NOT CURRENT ACCEPTANCE**.
 
-## Full Audit #166
+M1 ASA-owned `CadDocument` preserves six first-class document kinds: Part, Assembly, Drawing, Fragment, Specification, Text. Canonical educational parity scope remains **Part / Assembly / Drawing**.
 
-Audit base:
-`a03f84e21447817639f0fb9ea3f83ab86a24efb6`
-
-CI-maintenance repair:
-- PR #167;
-- repair HEAD `5a8402a1e19b2c1e5223fcce2e94ab41370a899e`;
-- merge `fa13134bf7397a20a9b02790a6644e9084e943e0`;
-- permanent M2 shell now includes the M2 architecture test script (`test:m2:architecture`);
-- post-repair M2 shell `36233235054` — SUCCESS;
-- post-repair baseline `36233235046` — SUCCESS;
-- M2 UI architecture — PASS;
-- `test:asa` constituent coverage — PASS;
-- `check` constituent coverage — PASS;
-- literal full-repository check command (npm run check) — NOT_RUN.
-
-Resolved:
-- `Y-AUD-166-M2-ARCH`.
-
-Remaining accepted YELLOW:
-- `Y-AUD-166-BUDGETS` — hard/frozen gates PASS; do not grow pressured owners.
-- `Y-AUD-166-THIRD-TOUCH` — focused owner review completed in #166; next qualifying third touch requires review before the touch.
-- `Y-AUD-166-STALE-PRS` — #143/#146 remain historical/stale; do not merge as-is.
-- `Y-AUD-166-V6A-OWNERSHIP` — CutExtrude profile ownership still flows through `ExtrudeOperationController`; keep non-growing and separate ownership before multi-profile, edit-existing, or generalized feature-selection scope.
-
-Audit #158 is historical; #166 is now the latest accepted Full Repository Health Audit.
-
-M1 ASA-owned `CadDocument` preserves six first-class document kinds: Part, Assembly, Drawing, Fragment, Specification, Text.
-
-## Accepted V6B scope
-
-V6B accepted only:
-```text
-Деталь 1
-└─ Начало координат
-   ├─ Плоскость XY
-   ├─ Плоскость XZ
-   └─ Плоскость YZ
-+ real expand/collapse
-```
-
-This does not close full Tree parity.
-
-## KOMPAS-SHELL-ADOPTION-001 — accepted closeout
+## V6C / CAD-VIS-006C — accepted closeout
 
 **DONE / MERGED / REGIONAL RESULT ACCEPTED**.
 
-Accepted implementation:
-- PR #173;
-- accepted HEAD `5719a8a8b3f357d1448ea68f7d30b41ef586bb35`;
-- merge `027d4ea6a5b2549609b0b3a9cfdefd397fe8559b`;
-- accepted scope = **PART TOP SHELL ONLY**.
+Accepted evidence:
+- PR #175;
+- accepted HEAD `476d04c8917493adad995f8dca2a16b858927410`;
+- merge `cda903d762b7e52e9345fe09e6dfa0be508a0d6a`;
+- accepted scope = **Sketch hierarchy + dimension ownership presentation**.
 
-Accepted regional result:
-- existing main-menu owner preserved;
-- real document-tab identity preserved;
-- Part workspace/toolset selector;
-- «Твердотельное моделирование»;
-- «Каркас и поверхности»;
-- «Инструменты эскиза»;
-- registry-backed command groups;
-- existing quick-access owner preserved;
-- production/dev roadmap-command visibility boundary.
+Accepted result:
+- Part disclosure — PRESERVED;
+- Origin disclosure — PRESERVED;
+- Sketch branches — ACCEPTED;
+- independent Sketch disclosure — ACCEPTED;
+- real entity rows come from `sketch.entities`;
+- dimension ownership source = `CadSketch.dimensionIds`;
+- owned dimension duplicates = **0**;
+- orphan/multi-owner handling = **FAIL-HONEST / no guessed owner**;
+- nested dimension edit — ACCEPTED;
+- save/reopen ownership — ACCEPTED;
+- edited value after reopen — ACCEPTED.
 
-**PRODUCTION_VISIBILITY_CONTRACT = ACCEPTED**:
-- normal product: implemented = visible; planned/deferred = hidden;
-- explicit `/dev/part/*`: planned/deferred may be visible, remain disabled, and may carry roadmap markers.
+Accepted proof: `Ширина` 60 → 62; after save/reopen the same dimension id keeps the same Sketch ownership, value = 62, tree = `Ширина: 62 мм`.
+
+Ownership boundaries:
+- NEW_PERSISTENCE_MODEL_REQUIRED = **NO**;
+- CONTRACTS_CHANGED = **NO**;
+- APPLICATION_COMMANDS_CHANGED = **NO**;
+- RUNTIME_CHANGED = **NO**;
+- PERSISTENCE_SCHEMA_CHANGED = **NO**.
+
+V6C does not accept Part completion, full Tree parity, full M2V, full KOMPAS parity, Assembly, Drawing, or the 90% target.
+
+## Cadence
+
+Machine policy: `spec/process/repository-health.v1.json`.
+
+- Full Audit #166 → reset **0/3**.
+- KOMPAS-SHELL-ADOPTION-001 / PR #173 → first accepted permanent product slice → **1/3**.
+- V6C / PR #175 → second accepted permanent product slice → **2/3**.
+- Governance/docs PRs do not count as permanent product slices.
+
+NEXT_FULL_AUDIT_TRIGGER = **after the next accepted permanent product slice**. Its acceptance moves cadence **2/3 → 3/3**; before any later product slice, Full Repository Health Audit is required.
+
+## NEXT — V7 / Resize
+
+- NEXT = **V7 / Resize**.
+- V7_STARTED = **NO**.
+- V7_SCOPE_DEFINITION_REQUIRED = **YES**.
+- The next implementation task must first perform fresh gap analysis and define a narrow V7 contract; Resize behavior is not defined by this closeout.
+- V8 remains later.
 
 PR #170 / `0d23bf19fbfcba7fbf4789afdd18f7d632adeb50` remains **REFERENCE / PROTOTYPE ONLY**, OPEN / NOT MERGED.
-
-Honesty boundaries remain unchanged:
-- FULL_TREE_PARITY = **NOT ACCEPTED**;
-- FULL_M2V = **NOT ACCEPTED**;
-- FULL_KOMPAS_PARITY = **NO**;
-- 90% learner-facing visual + functional/workflow identity remains a **TARGET / NOT CURRENT ACCEPTANCE**;
-- canonical educational parity scope remains **Деталь / Part, Сборка / Assembly, Чертеж / Drawing**.
-
-Full Audit #166 reset cadence to 0/3. PR #173 is the first accepted permanent product slice after #166; docs/governance PRs #168/#171/#172 do not count as product slices. Therefore **CADENCE = 1/3** and **FEATURE_FREEZE = LIFTED**.
-
-## NEXT
-
-**V6C / CAD-VIS-006C — Sketch hierarchy + dimension ownership**.
-
-Цель следующего отдельного slice:
-```text
-Деталь 1
-├─ Начало координат
-│  ├─ Плоскость XY
-│  ├─ Плоскость XZ
-│  └─ Плоскость YZ
-├─ Эскиз 1
-│  ├─ реальные элементы / структура
-│  └─ размеры принадлежат эскизу
-└─ следующие элементы модели
-```
-
-V6C_STARTED = **NO**.
 
 GitHub remains the primary source of truth and execution/test environment.

@@ -4,7 +4,9 @@
 
 ## Цель
 
-Каноническая цель: ~90% визуального + функционального/workflow соответствия разделам КОМПАС-3D v25 **Деталь / Сборка / Чертеж** ради минимального переобучения; полный контракт — `SYSTEM_SPEC.md`. FULL_M2V = **NOT ACCEPTED**. FULL_KOMPAS_PARITY = **NO**.
+Каноническая цель: ~90% визуального + функционального/workflow соответствия разделам КОМПАС-3D v25 **Деталь / Part, Сборка / Assembly, Чертеж / Drawing** ради минимального переобучения. Это цель, не текущая приёмка.
+
+FULL_TREE_PARITY = **NOT ACCEPTED**. FULL_M2V = **NOT ACCEPTED**. FULL_KOMPAS_PARITY = **NO**. 90_PERCENT_STATUS = **TARGET / NOT CURRENT ACCEPTANCE**.
 
 ## Принятые поставки
 
@@ -15,74 +17,60 @@
 - CAD-VIS-005 — accepted integration checkpoint / PRODUCT_DELTA NONE.
 - V6A / CAD-VIS-006A — DONE / MERGED / regional accepted / PARITY PARTIAL.
 - V6B / CAD-VIS-006B — DONE / MERGED / regional accepted / PARITY PARTIAL.
-- KOMPAS-SHELL-ADOPTION-001 — **DONE / MERGED / REGIONAL RESULT ACCEPTED**; PR #173; accepted HEAD `5719a8a8b3f357d1448ea68f7d30b41ef586bb35`; merge `027d4ea6a5b2549609b0b3a9cfdefd397fe8559b`; accepted scope = **PART TOP SHELL ONLY**.
-
-FULL_TREE_PARITY = **NOT ACCEPTED**.
-
-## Full Repository Health Audit #166
-
-#166 = **YELLOW_ACCEPTED / completed**.
-
-Accepted final main:
-`fa13134bf7397a20a9b02790a6644e9084e943e0`
-
-RED findings:
-**NONE**
-
-Resolved in audit maintenance:
-- `Y-AUD-166-M2-ARCH` — permanent M2 shell executes `npm run test:m2:architecture`; post-repair CI PASS.
-
-Remaining accepted YELLOW:
-- `Y-AUD-166-BUDGETS` — target pressure only; hard/frozen gates PASS; no growth.
-- `Y-AUD-166-THIRD-TOUCH` — focused owner review completed in #166; repeat before the next qualifying third touch.
-- `Y-AUD-166-STALE-PRS` — #143/#146 are stale/historical and must not merge as-is.
-- `Y-AUD-166-V6A-OWNERSHIP` — CutExtrude profile ownership coupling is non-growing; separate before broader profile/edit-existing/generalized-selection scope.
-
-Audit #158 is now historical. #166 is the latest accepted Full Repository Health Audit.
-
-## Cadence
-
-Accepted Full Audit #166 reset cadence to **0/3**.
-
-After accepted permanent product slice #173:
-
-**CADENCE = 1/3**
-
-**FEATURE_FREEZE = LIFTED**
-
-Governance/docs PRs #168/#171/#172 do not count as permanent product slices.
-
-Every permanent slice still receives a Slice Quality Gate. The next Full Repository Health Audit is required again at 3 accepted permanent slices or another machine-policy trigger.
-
-## Accepted — KOMPAS-SHELL-ADOPTION-001
-
-KOMPAS-SHELL-ADOPTION-001 = **DONE / MERGED / REGIONAL RESULT ACCEPTED**.
-
-Accepted implementation:
-- PR #173;
-- accepted HEAD `5719a8a8b3f357d1448ea68f7d30b41ef586bb35`;
-- merge `027d4ea6a5b2549609b0b3a9cfdefd397fe8559b`;
-- scope = **PART TOP SHELL ONLY**.
-
-Accepted regional delta includes the existing main-menu/document-tab owners, Part workspace/toolset selector, three Part toolsets, registry-backed command-group composition, preserved quick-access owner, and the production/dev roadmap-command visibility boundary.
-
-**PRODUCTION_VISIBILITY_CONTRACT = ACCEPTED**:
-- normal product hides planned/deferred commands;
-- explicit `/dev/part/*` may show them disabled with roadmap markers.
+- KOMPAS-SHELL-ADOPTION-001 — DONE / MERGED / REGIONAL RESULT ACCEPTED; PR #173; accepted HEAD `5719a8a8b3f357d1448ea68f7d30b41ef586bb35`; merge `027d4ea6a5b2549609b0b3a9cfdefd397fe8559b`; scope = **PART TOP SHELL ONLY**.
+- V6C / CAD-VIS-006C — **DONE / MERGED / REGIONAL RESULT ACCEPTED**; PR #175; accepted HEAD `476d04c8917493adad995f8dca2a16b858927410`; merge `cda903d762b7e52e9345fe09e6dfa0be508a0d6a`; scope = **Sketch hierarchy + dimension ownership presentation**.
 
 PR #170 remains **REFERENCE / PROTOTYPE ONLY**, OPEN / NOT MERGED.
 
-This does not accept full M2V, full KOMPAS parity, full Tree parity, Part completion, Assembly, Drawing, or the 90% target. Canonical educational parity scope remains **Деталь / Part, Сборка / Assembly, Чертеж / Drawing**.
+## V6C / CAD-VIS-006C — accepted result
 
-## NEXT — V6C / CAD-VIS-006C
+Accepted presentation/result:
+- Part and Origin disclosures preserved;
+- Sketch branches and independent Sketch disclosure accepted;
+- entity rows are the real `sketch.entities`;
+- dimension ownership source = `CadSketch.dimensionIds`;
+- owned dimension duplicates = 0;
+- orphan/multi-owner handling is fail-honest with no guessed owner;
+- nested dimension edit accepted;
+- save/reopen preserves ownership;
+- edited value after reopen accepted.
 
-**Sketch hierarchy + dimension ownership**.
+Accepted proof: `Ширина` 60 → 62; save/reopen preserves the same dimension id, the same Sketch ownership, value 62 and tree label `Ширина: 62 мм`.
 
-V6C is the next separate product slice after accepted initial KOMPAS shell adoption. It owns Sketch hierarchy and dimension ownership; implementation has not started.
+Ownership boundaries:
+- NEW_PERSISTENCE_MODEL_REQUIRED = **NO**;
+- CONTRACTS_CHANGED = **NO**;
+- APPLICATION_COMMANDS_CHANGED = **NO**;
+- RUNTIME_CHANGED = **NO**;
+- PERSISTENCE_SCHEMA_CHANGED = **NO**.
 
-**V6C_STARTED = NO**.
+This acceptance is regional only. It does not accept Part completion, full Tree parity, full M2V, full KOMPAS parity, Assembly, Drawing, or the 90% target.
 
-Cadence after accepted #173 = **1/3**. FEATURE_FREEZE = **LIFTED**.
+## Full Repository Health Audit #166 and cadence
+
+#166 = **YELLOW_ACCEPTED / completed**; RED findings = **NONE**.
+
+Cadence history for the current cycle:
+- Full Audit #166 → reset **0/3**;
+- accepted permanent product slice PR #173 → **1/3**;
+- accepted permanent product slice PR #175 → **2/3**.
+
+**CADENCE = 2/3**. **FEATURE_FREEZE = LIFTED**.
+
+Governance/docs PRs do not count as permanent product slices. Machine policy remains `fullAuditEveryAcceptedSlices = 3` and `sliceGate = after-every-permanent-vertical-slice`.
+
+FULL_AUDIT_REQUIRED_NOW = **NO**.
+
+Acceptance of the next permanent product slice moves cadence **2/3 → 3/3**, therefore FULL_AUDIT_REQUIRED_AFTER_NEXT_ACCEPTED_PERMANENT_SLICE = **YES**. A later product slice must not start until that Full Repository Health Audit is completed/accepted.
+
+## NEXT — V7 / Resize
+
+- NEXT = **V7 / Resize**.
+- V7_STARTED = **NO**.
+- V7_SCOPE_DEFINITION_REQUIRED = **YES**.
+- V7 implementation is not part of this closeout.
+- The next separate task must perform fresh gap analysis and define a narrow V7 contract before product changes.
+- V8 remains later.
 
 ## Gates
 
@@ -94,7 +82,5 @@ Gate B before broad M4 remains OPEN on:
 - M3X shared ASA-CAD/ASA-Lab golden contract;
 - M3M-009;
 - pre-M4 performance baselines.
-
-The Full Repository Health Audit requirement for this cadence cycle is satisfied by accepted #166.
 
 GitHub repository/PR/Issues/Actions/artifacts remain the execution environment.
