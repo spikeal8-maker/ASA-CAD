@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import { chromium } from '../../vendor/toubkal/node_modules/playwright-core/index.mjs';
 
 const base=(process.env.ASA_CAD_SHELL_URL??'http://127.0.0.1:8090/').replace(/\/$/,'');
-const browser=await chromium.launch({headless:true});
+const executablePath=process.env.ASA_CAD_BROWSER_EXECUTABLE;
+const browser=await chromium.launch(executablePath?{headless:true,executablePath}:{headless:true});
 const page=await browser.newPage({viewport:{width:1920,height:1080}});
 const errors=[]; page.on('pageerror',(error)=>errors.push(error.message));
 
@@ -147,7 +148,7 @@ try{
     await newPart(); await profile(support);
     const button=extrudeButton();
     assert.equal(await button.isDisabled(),true,`${support}: Extrude must fail closed`);
-    assert.match(await button.getAttribute('title')??'',/прямоугольный эскиз.*XY/i);
+    assert.match(await button.getAttribute('title')??'',/линейный профиль.*XY/i);
     await assertCounts(0,0);
     const saved=await save();
     assert.equal(saved.doc.features.length,0,`${support}: disabled Extrude mutated features`);

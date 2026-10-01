@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import type { CadDocument } from '../contracts/document';
 import type { CadBodyId, CadDimensionId, CadSketchId } from '../contracts/ids';
-import type { CadSketch } from '../contracts/sketch';
 import { CadIcon, type CadIconName } from './CadIcon';
 import { dimensionLabel, dimensionUnit } from './SketchDimensionPresentation';
+import { documentTreeFilter } from './DocumentTreeFilter';
 import { SketchTreeBranch } from './SketchTreeBranch';
 
 export interface DocumentTreeProps {
@@ -26,6 +26,7 @@ export function DocumentTree({
   const [selectedSketchId, setSelectedSketchId] = useState<CadSketchId | null>(null);
   const [partExpanded, setPartExpanded] = useState(true);
   const [originExpanded, setOriginExpanded] = useState(true);
+  const [treeQuery, setTreeQuery] = useState('');
 
   useEffect(() => setSelectedSketchId(null), [document]);
   useEffect(() => {
@@ -38,20 +39,35 @@ export function DocumentTree({
     && document.sketches.some((item) => item.id === selectedSketchId)
       ? selectedSketchId
       : null;
-  const dimensionOwnerCounts = document.kind === 'part'
-    ? countDimensionOwners(document.sketches)
-    : new Map<CadDimensionId, number>();
-  const ownershipIssues = document.kind === 'part'
-    ? document.dimensions.filter((dimension) => (dimensionOwnerCounts.get(dimension.id) ?? 0) !== 1)
-    : [];
+  const {
+    dimensionOwnerCounts,
+    filtering,
+    matches,
+    visibleSketches,
+    visibleFeatures,
+    visibleBodies,
+    visibleOwnershipIssues,
+    originMatches,
+    noMatches,
+  } = documentTreeFilter(document, treeQuery);
+  const partChildrenVisible = partExpanded || filtering;
+  const originChildrenVisible = originExpanded || filtering;
 
   return (
     <div className="tree-panel" data-selected-sketch-id={selectedSketch ?? ''}>
       <div className="panel-title-row">
         <strong>Дерево</strong>
-        <button type="button" title="Параметры дерева">⋯</button>
+        <button type="button" title="Параметры дерева — пока недоступно" aria-disabled="true" disabled>⋯</button>
       </div>
-      <div className="tree-search"><CadIcon name="search" size={14} /><input placeholder="Найти в дереве" /></div>
+      <label className="tree-search">
+        <CadIcon name="search" size={14} />
+        <input
+          aria-label="Найти в дереве"
+          placeholder="Найти в дереве"
+          value={treeQuery}
+          onChange={(event) => setTreeQuery(event.target.value)}
+        />
+      </label>
       <div className="tree-root">
         {document.kind === 'part' ? (
           <>
@@ -64,24 +80,26 @@ export function DocumentTree({
               expanded={partExpanded}
               onToggle={() => setPartExpanded((value) => !value)}
             />
-            {partExpanded && (
+            {partChildrenVisible && (
               <>
-                <TreeBranchRow
-                  branchId="origin"
-                  depth={1}
-                  icon="origin"
-                  label="Начало координат"
-                  expanded={originExpanded}
-                  onToggle={() => setOriginExpanded((value) => !value)}
-                />
-                {originExpanded && (
+                {originMatches && (
+                  <TreeBranchRow
+                    branchId="origin"
+                    depth={1}
+                    icon="origin"
+                    label="Начало координат"
+                    expanded={originExpanded || filtering}
+                    onToggle={() => setOriginExpanded((value) => !value)}
+                  />
+                )}
+                {originMatches && originChildrenVisible && (
                   <>
-                    <TreeRow depth={2} icon="plane" label="Плоскость XY" muted nodeId="plane-xy" />
-                    <TreeRow depth={2} icon="plane" label="Плоскость XZ" muted nodeId="plane-xz" />
-                    <TreeRow depth={2} icon="plane" label="Плоскость YZ" muted nodeId="plane-yz" />
+                    {(!filtering || matches('Плоскость XY')) && <TreeRow depth={2} icon="plane" label="Плоскость XY" muted nodeId="plane-xy" />}
+                    {(!filtering || matches('Плоскость XZ')) && <TreeRow depth={2} icon="plane" label="Плоскость XZ" muted nodeId="plane-xz" />}
+                    {(!filtering || matches('Плоскость YZ')) && <TreeRow depth={2} icon="plane" label="Плоскость YZ" muted nodeId="plane-yz" />}
                   </>
                 )}
-                {document.sketches.map((sketch) => (
+                {visibleSketches.map((sketch) => (
                   <SketchTreeBranch
                     key={sketch.id}
                     sketch={sketch}
@@ -96,7 +114,7 @@ export function DocumentTree({
                     onEditDimension={onEditDimension}
                   />
                 ))}
-                {ownershipIssues.map((dimension) => {
+                {visibleOwnershipIssues.map((dimension) => {
                   const ownerCount = dimensionOwnerCounts.get(dimension.id) ?? 0;
                   return (
                     <TreeRow
@@ -108,10 +126,10 @@ export function DocumentTree({
                     />
                   );
                 })}
-                {document.features.map((feature) => (
+                {visibleFeatures.map((feature) => (
                   <TreeRow key={feature.id} depth={1} icon="feature" label={feature.name} />
                 ))}
-                {document.bodies.map((body) => (
+                {visibleBodies.map((body) => (
                   <TreeRow
                     key={body.id}
                     depth={1}
@@ -122,6 +140,7 @@ export function DocumentTree({
                     onClick={() => onSelectBody(body.id)}
                   />
                 ))}
+                {noMatches && <div className="tree-search-empty">Совпадений нет</div>}
               </>
             )}
           </>
@@ -138,16 +157,6 @@ export function DocumentTree({
       </div>
     </div>
   );
-}
-
-function countDimensionOwners(sketches: readonly CadSketch[]): Map<CadDimensionId, number> {
-  const counts = new Map<CadDimensionId, number>();
-  for (const sketch of sketches) {
-    for (const id of new Set(sketch.dimensionIds)) {
-      counts.set(id, (counts.get(id) ?? 0) + 1);
-    }
-  }
-  return counts;
 }
 
 function TreeBranchRow(props: {

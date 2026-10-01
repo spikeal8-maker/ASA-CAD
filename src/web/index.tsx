@@ -14,6 +14,7 @@ import './responsive.css';
 import './ui-scale.css';
 import './mobile-settings.css';
 import './mobile-tools.css';
+import './styles/kompas-dark.css';
 
 const root = document.getElementById('root');
 if (!root) throw new Error('ASA-CAD root element not found');

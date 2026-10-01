@@ -1,7 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { CadApplication } from '../contracts/application';
 import type { CadSketch, CadSketchEntity } from '../contracts/document';
 import type { CadSketchEntityId, CadSketchId } from '../contracts/ids';
+import {
+  preflightAngularDimension,
+  type AngularDimensionPreflightResult,
+} from '../browser/AngularDimensionPreflight';
+import {
+  AngularDimensionAttemptEpoch,
+  formatAngularDimensionPreflightMessage,
+  isAngularDimensionAttemptCurrent,
+  runAngularDimensionAttempt,
+  type AngularDimensionAttemptSnapshot,
+} from './AngularDimensionAttemptLifecycle';
 import type { CadWorkspacePanel } from './PartSketchWorkspaceTypes';
 import { dimensionLabel } from './SketchDimensionPresentation';
 
@@ -24,6 +35,20 @@ export function useSketchAngularDimensionController(options: SketchAngularDimens
   const [aEntityId, setAEntityId] = useState<CadSketchEntityId | null>(null);
   const [bEntityId, setBEntityId] = useState<CadSketchEntityId | null>(null);
   const [draftValue, setDraftValue] = useState(0);
+  const [preflightPending, setPreflightPending] = useState(false);
+
+  const mountedRef = useRef(false);
+  const appRevisionRef = useRef(0);
+  const attemptEpochRef = useRef(new AngularDimensionAttemptEpoch());
+  const activeCommandRef = useRef(activeCommand);
+  const activeSketchIdRef = useRef(activeSketchId);
+  const targetSketchIdRef = useRef<CadSketchId | null>(null);
+  const aEntityIdRef = useRef<CadSketchEntityId | null>(null);
+  const bEntityIdRef = useRef<CadSketchEntityId | null>(null);
+  const draftValueRef = useRef(0);
+
+  activeCommandRef.current = activeCommand;
+  activeSketchIdRef.current = activeSketchId;
 
   const lineCount = sketch?.entities.filter((entity) => entity.type === 'line').length ?? 0;
   const canApplyAngularDimension = Boolean(activeSketchId && lineCount >= 2);
@@ -34,19 +59,40 @@ export function useSketchAngularDimensionController(options: SketchAngularDimens
       && bEntityId
       && Number.isFinite(draftValue)
       && draftValue > 0
-      && draftValue < 180,
+      && draftValue < 180
+      && !preflightPending,
   );
+
+  useEffect(() => {
+    mountedRef.current = true;
+    const unsubscribe = app.subscribe(() => { appRevisionRef.current += 1; });
+    return () => {
+      mountedRef.current = false;
+      attemptEpochRef.current.invalidate();
+      unsubscribe();
+    };
+  }, [app]);
 
   useEffect(() => {
     if (!angularDimensionActive || activeCommand === 'dimension.angular') return;
     reset();
   }, [activeCommand, angularDimensionActive]);
 
+  function invalidatePendingAttempt(): void {
+    attemptEpochRef.current.invalidate();
+    if (mountedRef.current) setPreflightPending(false);
+  }
+
   function beginAngularDimension(): boolean {
     if (!activeSketchId || lineCount < 2) {
       setNotice('Для углового размера нужны два отрезка эскиза');
       return false;
     }
+    invalidatePendingAttempt();
+    targetSketchIdRef.current = activeSketchId;
+    aEntityIdRef.current = null;
+    bEntityIdRef.current = null;
+    draftValueRef.current = 0;
     setTargetSketchId(activeSketchId);
     setAEntityId(null);
     setBEntityId(null);
@@ -61,7 +107,8 @@ export function useSketchAngularDimensionController(options: SketchAngularDimens
     nextAEntityId: CadSketchEntityId,
     nextBEntityId: CadSketchEntityId,
   ): Promise<boolean> {
-    if (!targetSketchId || !sketch || sketch.id !== targetSketchId) {
+    const target = targetSketchIdRef.current;
+    if (!target || !sketch || sketch.id !== target) {
       setNotice('Сначала запустите угловой размер в активном эскизе');
       return false;
     }
@@ -76,7 +123,11 @@ export function useSketchAngularDimensionController(options: SketchAngularDimens
       return false;
     }
 
+    invalidatePendingAttempt();
     const initialValue = lineAngleDegrees(a, b);
+    aEntityIdRef.current = nextAEntityId;
+    bEntityIdRef.current = nextBEntityId;
+    draftValueRef.current = initialValue;
     setAEntityId(nextAEntityId);
     setBEntityId(nextBEntityId);
     setDraftValue(initialValue);
@@ -85,39 +136,112 @@ export function useSketchAngularDimensionController(options: SketchAngularDimens
     return true;
   }
 
+  function updateAngularDimensionValue(value: number): void {
+    if (!Object.is(value, draftValueRef.current)) invalidatePendingAttempt();
+    draftValueRef.current = value;
+    setDraftValue(value);
+  }
+
+  function attemptIsCurrent(attempt: AngularDimensionAttemptSnapshot): boolean {
+    return isAngularDimensionAttemptCurrent(attempt, {
+      mounted: mountedRef.current,
+      requestCurrent: attemptEpochRef.current.owns(attempt.requestId),
+      appRevision: appRevisionRef.current,
+      document: app.getDocument(),
+      activeCommand: activeCommandRef.current,
+      activeSketchId: activeSketchIdRef.current,
+      targetSketchId: targetSketchIdRef.current,
+      aEntityId: aEntityIdRef.current,
+      bEntityId: bEntityIdRef.current,
+      value: draftValueRef.current,
+    });
+  }
+
   async function commitAngularDimension(): Promise<boolean> {
+    const sketchId = targetSketchIdRef.current;
+    const firstEntityId = aEntityIdRef.current;
+    const secondEntityId = bEntityIdRef.current;
+    const value = draftValueRef.current;
     if (
-      !targetSketchId
-      || !aEntityId
-      || !bEntityId
-      || !Number.isFinite(draftValue)
-      || draftValue <= 0
-      || draftValue >= 180
+      !sketchId
+      || !firstEntityId
+      || !secondEntityId
+      || !Number.isFinite(value)
+      || value <= 0
+      || value >= 180
     ) {
       setNotice('Введите угол больше 0 и меньше 180 градусов');
       return false;
     }
-    const result = await app.execute({
-      id: 'dimension.angular',
-      payload: {
-        sketchId: targetSketchId,
-        aEntityId,
-        bEntityId,
-        value: draftValue,
-      },
+
+    const requestId = attemptEpochRef.current.begin();
+    if (requestId === null) return false;
+    setPreflightPending(true);
+    const attempt: AngularDimensionAttemptSnapshot = {
+      requestId,
+      appRevision: appRevisionRef.current,
+      document: app.getDocument(),
+      sketchId,
+      aEntityId: firstEntityId,
+      bEntityId: secondEntityId,
+      value,
+    };
+
+    const outcome = await runAngularDimensionAttempt({
+      preflight: () => preflightAngularDimension(
+        attempt.document, attempt.sketchId, attempt.aEntityId, attempt.bEntityId, attempt.value,
+      ),
+      isCurrent: () => attemptIsCurrent(attempt),
+      execute: () => app.execute({
+        id: 'dimension.angular',
+        payload: {
+          sketchId: attempt.sketchId,
+          aEntityId: attempt.aEntityId,
+          bEntityId: attempt.bEntityId,
+          value: attempt.value,
+        },
+      }),
     });
-    if (!result.ok) {
-      setNotice(result.error?.message ?? 'Не удалось создать угловой размер');
+
+    if (outcome.status === 'stale') {
+      const stillOwned = attemptEpochRef.current.finish(requestId);
+      if (stillOwned && mountedRef.current) {
+        setPreflightPending(false);
+        if (activeCommandRef.current === 'dimension.angular') {
+          setNotice('Документ или команда изменились; повторите проверку углового размера');
+        }
+      }
       return false;
     }
+
+    if (!attemptEpochRef.current.owns(requestId) || !mountedRef.current) {
+      return outcome.status === 'applied';
+    }
+    attemptEpochRef.current.finish(requestId);
+    setPreflightPending(false);
+
+    if (outcome.status === 'preflight-rejected') {
+      setNotice(formatAngularDimensionPreflightMessage(outcome.preflight));
+      return false;
+    }
+    if (outcome.status === 'command-failed') {
+      setNotice(outcome.result.error?.message ?? 'Не удалось создать угловой размер');
+      return false;
+    }
+
     reset();
     setActiveCommand(null);
     setPanel('tree');
-    setNotice(`Угловой размер создан: ${draftValue}°`);
+    setNotice(`Угловой размер создан: ${attempt.value}°`);
     return true;
   }
 
   function reset(): void {
+    invalidatePendingAttempt();
+    targetSketchIdRef.current = null;
+    aEntityIdRef.current = null;
+    bEntityIdRef.current = null;
+    draftValueRef.current = 0;
     setTargetSketchId(null);
     setAEntityId(null);
     setBEntityId(null);
@@ -136,7 +260,7 @@ export function useSketchAngularDimensionController(options: SketchAngularDimens
     angularDimensionAEntityId: aEntityId,
     angularDimensionBEntityId: bEntityId,
     angularDimensionValue: draftValue,
-    setAngularDimensionValue: setDraftValue,
+    setAngularDimensionValue: updateAngularDimensionValue,
     canApplyAngularDimension,
     canCommitAngularDimension,
     beginAngularDimension,

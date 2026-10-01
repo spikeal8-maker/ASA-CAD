@@ -1,14 +1,13 @@
 import type {
-  CadDimension,
   CadDocument,
   CadFeature,
   CadPartDocument,
+  CadPoint2,
   CadSketch,
-  CadSketchEntity,
-  CadSketchLineEntity,
   CadStableReference,
 } from '../contracts/document';
-import type { CadFeatureId, CadSketchEntityId, CadSketchId } from '../contracts/ids';
+import type { CadFeatureId, CadSketchId } from '../contracts/ids';
+import { buildClosedLinearProfile } from '../application/SketchLinearProfile';
 import type {
   CadReferenceCaptureRequest,
   CadRuntimeAdapter,
@@ -46,13 +45,6 @@ export interface OpenCascadePartAnalysis {
 interface SketchPlane {
   z: number;
   normal: readonly [number, number, number];
-}
-
-interface RectangleProfile {
-  centerX: number;
-  centerY: number;
-  width: number;
-  height: number;
 }
 
 interface CircleProfile {
@@ -213,11 +205,11 @@ export class OpenCascadePartRuntime implements CadRuntimeAdapter {
     if (Math.abs(plane.normal[2]) < 0.999) {
       throw new Error('M1 protected extrude currently supports XY-parallel sketch planes only');
     }
-    const profile = this.rectangleProfile(part, sketch);
+    const profile = buildClosedLinearProfile(sketch);
     const distance = finiteNumber(feature.parameters.distance, `${feature.name}.distance`);
     if (distance <= 0) throw new Error(`${feature.name}: distance must be positive`);
 
-    const wire = this.rectangleWire(profile, plane.z);
+    const wire = this.linearProfileWire(profile.points, plane.z);
     const faceMaker = new this.oc.BRepBuilderAPI_MakeFace_15(wire, true);
     const symmetric = Boolean(feature.parameters.symmetric);
     const reverse = Boolean(feature.parameters.reverse);
@@ -239,7 +231,7 @@ export class OpenCascadePartRuntime implements CadRuntimeAdapter {
     const sketchId = String(feature.parameters.sketchId) as CadSketchId;
     const sketch = this.requireSketch(part, sketchId);
     this.resolveSketchPlane(part, sketch); // validates persistent face support when used
-    const circle = this.circleProfile(part, sketch);
+    const circle = this.circleProfile(sketch);
     const targetBounds = this.bounds(target);
     const radius = circle.diameter / 2;
 
@@ -316,82 +308,30 @@ export class OpenCascadePartRuntime implements CadRuntimeAdapter {
     return { z: live.centroid[2], normal: live.axis };
   }
 
-  private rectangleProfile(part: CadPartDocument,sketch: CadSketch): RectangleProfile {
-    const rectangle = sketch.entities
-      .filter((entity): entity is CadSketchLineEntity => entity.type === 'line' && !entity.data.construction && String(entity.data.role ?? '').startsWith('rectangle-edge-'))
-      .sort((a,b) => String(a.data.role).localeCompare(String(b.data.role)));
-    if (rectangle.length !== 4) throw new Error(`${sketch.name}: M1 extrude requires one rectangle profile`);
-
-    const points: Array<readonly [number,number]> = [];
-    for (const entity of rectangle) {
-      points.push(tuple2(entity.data.from,`${entity.id}.from`));
-      points.push(tuple2(entity.data.to,`${entity.id}.to`));
+  private circleProfile(sketch: CadSketch): CircleProfile {
+    const geometry = sketch.entities.filter((entity) => !(entity.type === 'line' && entity.data.construction));
+    if (geometry.length !== 1 || geometry[0].type !== 'circle') {
+      throw new Error(`${sketch.name}: cut currently requires one solved circle profile`);
     }
-    const xs = points.map((point) => point[0]);
-    const ys = points.map((point) => point[1]);
-    const minX=Math.min(...xs);
-    const maxX=Math.max(...xs);
-    const minY = Math.min(...ys);
-    const maxY = Math.max(...ys);
-    const centerX = (minX + maxX) / 2;
-    const centerY = (minY + maxY) / 2;
-
-    const horizontalIds = rectangle
-      .filter((entity) => ['rectangle-edge-0','rectangle-edge-2'].includes(String(entity.data.role)))
-      .map((entity) => entity.id);
-    const verticalIds = rectangle
-      .filter((entity) => ['rectangle-edge-1','rectangle-edge-3'].includes(String(entity.data.role)))
-      .map((entity) => entity.id);
-
-    const widthDimension = this.findDrivingDimension(part,sketch,horizontalIds,'width');
-    const heightDimension = this.findDrivingDimension(part,sketch,verticalIds,'height');
-    const width = widthDimension?.value ?? maxX - minX;
-    const height = heightDimension?.value ?? maxY - minY;
-    if (width <= 0 || height <= 0) throw new Error(`${sketch.name}: rectangle dimensions must be positive`);
-
-    return { centerX,centerY,width,height };
-  }
-
-  private circleProfile(part: CadPartDocument,sketch: CadSketch): CircleProfile {
-    const circle = sketch.entities.find((entity) => entity.type === 'circle');
-    if (!circle) throw new Error(`${sketch.name}: M1 cut requires one circle`);
+    const circle = geometry[0];
     const center = tuple2(circle.data.center,`${circle.id}.center`);
-    const diameterDimension = this.findDrivingDimension(part,sketch,[circle.id],'diameter');
-    const diameter = diameterDimension?.value ?? finiteNumber(circle.data.diameter,`${circle.id}.diameter`);
+    const diameter = finiteNumber(circle.data.diameter,`${circle.id}.diameter`);
     if (diameter <= 0) throw new Error(`${sketch.name}: circle diameter must be positive`);
     return { centerX: center[0],centerY: center[1],diameter };
   }
 
-  private findDrivingDimension(
-    part: CadPartDocument,
-    sketch: CadSketch,
-    entityIds: CadSketchEntityId[],
-    preferredName: string,
-  ): CadDimension | undefined {
-    const ids = new Set(sketch.dimensionIds);
-    return part.dimensions.find((dimension) =>
-      ids.has(dimension.id)
-      && dimension.driving
-      && (dimension.name === preferredName || dimension.entityIds.some((id) => entityIds.includes(id))),
-    );
-  }
-
-  private rectangleWire(profile: RectangleProfile,z: number): any {
-    const halfW = profile.width / 2;
-    const halfH = profile.height / 2;
-    const points = [
-      [profile.centerX - halfW, profile.centerY - halfH, z],
-      [profile.centerX + halfW, profile.centerY - halfH, z],
-      [profile.centerX + halfW, profile.centerY + halfH, z],
-      [profile.centerX - halfW, profile.centerY + halfH, z],
-    ] as const;
+  private linearProfileWire(points: readonly CadPoint2[], z: number): any {
     const polygon = new this.oc.BRepBuilderAPI_MakePolygon_1();
-    for (const [x, y, pz] of points) {
-      const point = new this.oc.gp_Pnt_3(x, y, pz);
+    for (const [x, y] of points) {
+      const point = new this.oc.gp_Pnt_3(x, y, z);
       polygon.Add_1(point);
       point.delete?.();
     }
     polygon.Close();
+    if (!polygon.IsDone()) {
+      polygon.delete?.();
+      throw new Error('OpenCascade could not build the validated linear profile wire');
+    }
     const wire = polygon.Wire();
     polygon.delete?.();
     return wire;
