@@ -84,6 +84,7 @@ async function partWorkspaceScenario(){
     await page.getByRole('button',{name:/Создать эскиз/i}).first().click();
     const xz=page.locator('.parameter-panel .plane-grid button').filter({hasText:'XZ'});
     await xz.waitFor(); assert.match(await xz.getAttribute('class'),/selected/);
+    await assertFooterLayout(page,'Part Create 1600x900');
     await page.getByRole('button',{name:'Создать',exact:true}).click();
     await page.locator('[data-testid="part-model-stage"][data-sketch-context="isolated-2d"][data-sketch-support="XZ"]').waitFor();
     assert.deepEqual(errors,[],`Part workspace page errors: ${errors.join('; ')}`);
@@ -119,8 +120,14 @@ async function drawingScenario(){
 
     await selectLine(page,state);
     await assertFooterLayout(page,'1600x900');
-    const length=await lengthInput(page);
+    let length=await lengthInput(page);
     near(Number(await length.inputValue()),50,0.001,'length editor initial');
+    await length.fill('65');
+    await page.locator('.parameter-actions button').filter({hasText:'Отмена'}).click();
+    state=await lineState(page,firstId);
+    near(state.length,50,0.001,'Cancel must not mutate Line');
+    await selectLine(page,state);
+    length=await lengthInput(page);
     await length.fill('70');
     await page.locator('.parameter-actions button.primary').click();
     await page.getByText('Отрезок изменен: 70 мм',{exact:true}).waitFor();
@@ -177,6 +184,12 @@ async function drawingScenario(){
     await page.keyboard.press('ArrowRight');
     await app.focus(); await page.keyboard.press('ArrowUp');
     await app.focus(); await page.keyboard.press('Control+=');
+    await page.waitForFunction(({center,span})=>{
+      const node=document.querySelector('[data-testid="drawing-stage"]');
+      if(!(node instanceof HTMLElement)) return false;
+      return node.getAttribute('data-drawing-view-center')!==center
+        && Number(node.getAttribute('data-drawing-view-span'))<span;
+    },beforePan);
     const afterPan=await stage.evaluate((node)=>({
       center:node.getAttribute('data-drawing-view-center'),
       span:Number(node.getAttribute('data-drawing-view-span')),

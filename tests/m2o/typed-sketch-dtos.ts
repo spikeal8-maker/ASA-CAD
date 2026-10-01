@@ -242,4 +242,4 @@ const legacyParsed = parseCadDocument(JSON.stringify(legacyJson));
 assert.equal(legacyParsed.kind, 'part');
 assert.equal(legacyParsed.kind === 'part' ? legacyParsed.sketches.length : -1, 1);
 
-console.log('M2O O7 typed Sketch DTO PASS (schema-v3 round-trip + Radius/Angular + strict malformed-shape rejection)');
+console.log('M2O O7 typed Sketch DTO PASS (schema-v4 with unchanged Sketch grammar + Radius/Angular + strict malformed-shape rejection)');

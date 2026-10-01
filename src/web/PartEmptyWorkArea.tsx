@@ -34,7 +34,7 @@ export function PartEmptyWorkArea(props: PartEmptyWorkAreaProps) {
         className="part-reference-scene"
         viewBox="0 0 680 360"
         preserveAspectRatio="xMidYMid meet"
-        role="group"
+        role="radiogroup"
         aria-label="Базовые плоскости детали"
       >
         <g className="part-reference-axes" aria-hidden="true">
@@ -51,9 +51,9 @@ export function PartEmptyWorkArea(props: PartEmptyWorkAreaProps) {
             key={plane.id}
             className={'part-base-plane' + (props.selectedPlane === plane.id ? ' selected' : '')}
             data-plane-id={plane.id}
-            role="button"
+            role="radio"
             tabIndex={0}
-            aria-pressed={props.selectedPlane === plane.id}
+            aria-checked={props.selectedPlane === plane.id}
             aria-label={'Плоскость ' + plane.id}
             onClick={() => props.onSelectPlane(plane.id)}
             onKeyDown={(event) => {
