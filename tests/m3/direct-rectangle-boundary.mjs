@@ -12,6 +12,7 @@ const stage = fs.readFileSync('src/web/PartModelStage.tsx', 'utf8');
 const sketchStage = fs.readFileSync('src/web/SketchEditingStage.tsx', 'utf8');
 const directTools = fs.readFileSync('src/web/SketchDirectToolLayers.tsx', 'utf8');
 const app = fs.readFileSync('src/web/App.tsx', 'utf8');
+const workspaceContent = fs.readFileSync('src/web/CadWorkspaceContent.tsx', 'utf8');
 const routes = fs.readFileSync('src/browser/routes.ts', 'utf8');
 const fixtures = fs.readFileSync('src/web/devFixtures.ts', 'utf8');
 const protectedPart = fs.readFileSync('tests/m2/part-browser.mjs', 'utf8');
@@ -60,7 +61,8 @@ assert.equal(/constraint\.(horizontal|vertical|coincident)/.test(parametricRecta
 assert.match(stage, /SketchEditingStage/, 'Part stage must delegate direct Sketch presentation');
 assert.match(sketchStage, /<SketchDirectToolLayers/, 'Sketch editing stage must delegate direct-tool composition');
 assert.match(directTools, /SketchRectangleInteractionLayer/, 'direct-tool owner must compose Rectangle outside B-Rep Three interaction');
-assert.match(app, /rectangleDraft=\{rectangleDraft\}/, 'App must keep wiring Rectangle transient state through the stable PartModelStage contract');
+assert.match(app, /<CadWorkspaceContent\b/, 'App must delegate stage composition to CadWorkspaceContent');
+assert.match(workspaceContent, /rectangleDraft=\{p\.rectangleDraft\}/, 'CadWorkspaceContent must keep wiring Rectangle transient state through the stable PartModelStage contract');
 assert.match(routes, /'rectangle'/, 'deterministic Rectangle fixture route must exist');
 assert.match(fixtures, /Fixture rectangle:/, 'deterministic Rectangle fixture must be implemented');
 assert.match(protectedPart, /Прямоугольник[\s\S]*getByTitle\('Параметры'\)/, 'protected Part must retain explicit numeric Rectangle + driving-dimension fallback');
