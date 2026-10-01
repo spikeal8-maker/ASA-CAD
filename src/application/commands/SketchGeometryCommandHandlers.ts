@@ -1,6 +1,6 @@
 import type { CadCommandId } from '../../contracts/commands';
-import type { CadSketch, CadSketchEntity } from '../../contracts/document';
-import type { CadSketchEntityId, CadSketchId } from '../../contracts/ids';
+import type { CadConstraint, CadSketch, CadSketchEntity } from '../../contracts/document';
+import type { CadConstraintId, CadSketchEntityId, CadSketchId } from '../../contracts/ids';
 import { createCadId } from '../../contracts/ids';
 import {
   ENABLED,
@@ -75,6 +75,30 @@ export const sketchGeometryCommandHandlers = {
         sketch.entities.push(entity);
         ids.push(id);
       }
+      const constraints: CadConstraint[] = [
+        { id: createCadId<CadConstraintId>('constraint'), type: 'horizontal', entityIds: [ids[0]] },
+        { id: createCadId<CadConstraintId>('constraint'), type: 'vertical', entityIds: [ids[1]] },
+        { id: createCadId<CadConstraintId>('constraint'), type: 'horizontal', entityIds: [ids[2]] },
+        { id: createCadId<CadConstraintId>('constraint'), type: 'vertical', entityIds: [ids[3]] },
+        {
+          id: createCadId<CadConstraintId>('constraint'), type: 'coincident', entityIds: [ids[0], ids[1]],
+          data: { refs: [{ entityId: ids[0], point: 'b' }, { entityId: ids[1], point: 'a' }] },
+        },
+        {
+          id: createCadId<CadConstraintId>('constraint'), type: 'coincident', entityIds: [ids[1], ids[2]],
+          data: { refs: [{ entityId: ids[1], point: 'b' }, { entityId: ids[2], point: 'a' }] },
+        },
+        {
+          id: createCadId<CadConstraintId>('constraint'), type: 'coincident', entityIds: [ids[2], ids[3]],
+          data: { refs: [{ entityId: ids[2], point: 'b' }, { entityId: ids[3], point: 'a' }] },
+        },
+        {
+          id: createCadId<CadConstraintId>('constraint'), type: 'coincident', entityIds: [ids[3], ids[0]],
+          data: { refs: [{ entityId: ids[3], point: 'b' }, { entityId: ids[0], point: 'a' }] },
+        },
+      ];
+      part.constraints.push(...constraints);
+      sketch.constraintIds.push(...constraints.map((item) => item.id));
       return { ok: true, changed: true, createdIds: ids };
     },
   }),

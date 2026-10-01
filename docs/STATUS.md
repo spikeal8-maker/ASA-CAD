@@ -11,11 +11,12 @@
 - CAD-VIS-005 — INTEGRATION CHECKPOINT / ACCEPTED / PRODUCT_DELTA NONE.
 - V6A / CAD-VIS-006A — DONE / MERGED / REGIONAL RESULT ACCEPTED / PARITY PARTIAL.
 - V6B / CAD-VIS-006B — DONE / MERGED / REGIONAL RESULT ACCEPTED / PARITY PARTIAL.
+- V6C / CAD-VIS-006C — **DONE / MERGED / REGIONAL RESULT ACCEPTED**; PR #175; accepted HEAD `476d04c8917493adad995f8dca2a16b858927410`; merge `cda903d762b7e52e9345fe09e6dfa0be508a0d6a`; scope = **Sketch hierarchy + dimension ownership presentation**.
 - KOMPAS-SHELL-ADOPTION-001 — **DONE / MERGED / REGIONAL RESULT ACCEPTED**; accepted scope = **PART TOP SHELL ONLY**.
 - Full Repository Health Audit #166 — **YELLOW_ACCEPTED / completed**.
 - Accepted audit final main: `fa13134bf7397a20a9b02790a6644e9084e943e0`.
 - RED findings = **NONE**.
-- CADENCE = **1/3**.
+- CADENCE = **2/3**.
 - FEATURE_FREEZE = **LIFTED**.
 - FULL_TREE_PARITY = **NOT ACCEPTED**.
 - FULL_M2V = **NOT ACCEPTED**.
@@ -99,25 +100,20 @@ Honesty boundaries remain unchanged:
 - 90% learner-facing visual + functional/workflow identity remains a **TARGET / NOT CURRENT ACCEPTANCE**;
 - canonical educational parity scope remains **Деталь / Part, Сборка / Assembly, Чертеж / Drawing**.
 
-Full Audit #166 reset cadence to 0/3. PR #173 is the first accepted permanent product slice after #166; docs/governance PRs #168/#171/#172 do not count as product slices. Therefore **CADENCE = 1/3** and **FEATURE_FREEZE = LIFTED**.
+Full Audit #166 reset cadence to 0/3. PR #173 is the first accepted permanent product slice after #166; accepted V6C / PR #175 is the second. Governance/docs PRs do not count as product slices. Therefore **CADENCE = 2/3** and **FEATURE_FREEZE = LIFTED**. Acceptance of the next permanent product slice reaches 3/3 and requires Full Repository Health Audit before any later product slice.
 
-## NEXT
+## ACTIVE — PART-CORE-RECOVERY-001
 
-**V6C / CAD-VIS-006C — Sketch hierarchy + dimension ownership**.
+Priority repair of the ordinary Part workflow:
+- reconcile solved Sketch geometry with the feature profile and B-Rep;
+- preserve parametric meaning through dimension edits, Undo/Redo and Save/Open;
+- support one unambiguous closed linear contour without rectangle/bounding-box guessing;
+- restore the agreed dark product composition and make visible tree controls honest/working.
 
-Цель следующего отдельного slice:
-```text
-Деталь 1
-├─ Начало координат
-│  ├─ Плоскость XY
-│  ├─ Плоскость XZ
-│  └─ Плоскость YZ
-├─ Эскиз 1
-│  ├─ реальные элементы / структура
-│  └─ размеры принадлежат эскизу
-└─ следующие элементы модели
-```
+Working branch: `fix/part-core-recovery-001`.
 
-V6C_STARTED = **NO**.
+**V7 / Resize = PAUSED / NOT STARTED** until this recovery is accepted and the required next-step governance is resolved.
+
+Draft PR #176 is not an implementation branch and must not be merged as the state source for this recovery.
 
 GitHub remains the primary source of truth and execution/test environment.

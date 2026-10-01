@@ -1,9 +1,10 @@
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import type { CadApplication } from '../contracts/application';
+import { preflightLinearExtrudeProfile } from '../browser/PartProfilePreflight';
 import type { CadDocument, CadSketch } from '../contracts/document';
 import type { CadSketchId } from '../contracts/ids';
 import type { CadWorkspacePanel } from './PartSketchWorkspaceTypes';
-import { findSketch, hasRectangle, partDocument } from './PartSketchWorkspaceModel';
+import { findSketch, partDocument } from './PartSketchWorkspaceModel';
 
 export interface ExtrudeOperationController {
   profileId: CadSketchId | null;
@@ -45,13 +46,19 @@ function availability(
   if (part.features.length > 0 || part.bodies.length > 0) {
     return { enabled: false, reason: 'Первое выдавливание уже создано' };
   }
-  if (activeSketchId || !sketch || !hasRectangle(sketch)) {
-    return { enabled: false, reason: 'Завершите прямоугольный эскиз' };
+  if (activeSketchId || !sketch || sketch.entities.length === 0) {
+    return { enabled: false, reason: 'Завершите эскиз с замкнутым профилем' };
+  }
+  const profileEntities = sketch.entities.filter(
+    (entity) => !(entity.type === 'line' && entity.data.construction),
+  );
+  if (profileEntities.length < 3 || profileEntities.some((entity) => entity.type !== 'line')) {
+    return { enabled: false, reason: 'Поддерживается один замкнутый линейный контур' };
   }
   if (sketch.support !== 'XY') {
     return {
       enabled: false,
-      reason: 'Текущее выдавливание поддерживает прямоугольный эскиз на плоскости XY',
+      reason: 'Текущее выдавливание поддерживает линейный профиль на плоскости XY',
     };
   }
   return { enabled: true };
@@ -102,7 +109,7 @@ export function useExtrudeOperationController(
     const currentPart = partDocument(options.app.getDocument());
     const currentSketch = findSketch(currentPart, options.sketch?.id ?? null);
     const current = availability(options.app.getDocument(), currentSketch, null);
-    if (!current.enabled || !currentSketch) {
+    if (!currentPart || !current.enabled || !currentSketch) {
       const message = current.reason ?? 'Выдавливание недоступно';
       setExecutionError(message);
       options.setNotice(message);
@@ -110,6 +117,14 @@ export function useExtrudeOperationController(
     }
     if (!Number.isFinite(distance) || distance <= 0) {
       options.setNotice('Расстояние должно быть больше 0');
+      return;
+    }
+    try {
+      await preflightLinearExtrudeProfile(currentPart, currentSketch.id);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      setExecutionError(message);
+      options.setNotice(message);
       return;
     }
 
