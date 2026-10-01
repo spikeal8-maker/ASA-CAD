@@ -26,7 +26,10 @@ try {
 
   await page.getByRole('button', { name: 'ASA-CAD', exact: true }).waitFor();
   await page.getByText('Твердотельное моделирование', { exact: true }).waitFor();
-  await page.getByText('Новая деталь', { exact: true }).waitFor();
+  const emptyPart = page.locator('[data-testid="part-model-stage"][data-workarea-kind="part-empty"]');
+  await emptyPart.waitFor();
+  for (const plane of ['XY', 'XZ', 'YZ']) await page.locator(`[data-plane-id="${plane}"]`).waitFor();
+  assert.equal(await page.locator('.stage-message').count(), 0, 'fresh Part must expose the persistent working scene instead of the legacy central splash');
 
   const state = await page.evaluate(() => ({
     crossOriginIsolated: window.crossOriginIsolated,
