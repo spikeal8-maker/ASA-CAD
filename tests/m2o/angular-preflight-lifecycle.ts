@@ -174,6 +174,24 @@ async function assertStaleCase(
 }
 
 {
+  let executeCalls = 0;
+  const rejected = await runAngularDimensionAttempt({
+    preflight: async () => { throw new Error('PREFLIGHT_PROMISE_REJECTED'); },
+    isCurrent: () => true,
+    execute: async () => {
+      executeCalls += 1;
+      return { ok: true, changed: true };
+    },
+  });
+  assert.equal(rejected.status, 'preflight-rejected');
+  assert.equal(executeCalls, 0, 'rejected preflight Promise must not dispatch mutation');
+  if (rejected.status !== 'preflight-rejected') throw new Error('expected managed rejection');
+  assert.deepEqual(rejected.preflight, {
+    ok: false, kind: 'solver-error', message: 'PREFLIGHT_PROMISE_REJECTED',
+  });
+}
+
+{
   const app = new CadApplicationImpl(documentFixture(), new NoopRuntime());
   const solver = new RetrySolver();
   const before = JSON.stringify(app.getDocument());
@@ -303,6 +321,34 @@ await assertStaleCase('Unmount during pending', (live, gate) => {
   oldDeferred.resolve({ ok: true });
   assert.equal((await oldOutcome).status, 'stale');
   assert.equal(executeCalls, 1, 'late old success must not double-mutate');
+  assert.equal(gate.owns(newRequest), true, 'late old completion must not release the new request token');
+}
+
+{
+  const document = documentFixture();
+  const gate = new AngularDimensionAttemptEpoch();
+  const oldRequest = gate.begin();
+  assert.ok(oldRequest);
+  const oldAttempt = attemptSnapshot(document, oldRequest);
+  const oldDeferred = deferred<{ ok: true }>();
+  let executeCalls = 0;
+
+  const oldOutcome = runAngularDimensionAttempt({
+    preflight: () => oldDeferred.promise,
+    isCurrent: () => isAngularDimensionAttemptCurrent(oldAttempt, liveState(document, gate, oldRequest)),
+    execute: async () => {
+      executeCalls += 1;
+      return { ok: true, changed: true };
+    },
+  });
+
+  gate.invalidate();
+  const newRequest = gate.begin();
+  assert.ok(newRequest);
+  oldDeferred.reject(new Error('LATE_OLD_REJECT'));
+  assert.equal((await oldOutcome).status, 'stale');
+  assert.equal(executeCalls, 0, 'late old rejection must not mutate');
+  assert.equal(gate.owns(newRequest), true, 'late old rejection must not alter new request ownership');
 }
 
 {
