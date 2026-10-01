@@ -1,5 +1,7 @@
 # ASA-CAD — договор визуального соответствия КОМПАСу
 
+> **Current user-first acceptance path (#178):** R1 is the active reference comparison: persistent WorkArea + standalone A4 Drawing + editable/savable Line + empty Part plane selection. Historical В1/В2 evidence remains historical; it is not the current NEXT marker.
+
 Редакция 2026-09-23. Уточняет desktop-цель SYSTEM_SPEC. Очередь ROADMAP/#10; В1 регионально принята, единственный NEXT — В2 / CAD-VIS-002. Требование процесса не равно реализованному тесту.
 
 ## 1. Что принимается

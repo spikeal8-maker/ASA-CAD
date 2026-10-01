@@ -102,18 +102,18 @@ Honesty boundaries remain unchanged:
 
 Full Audit #166 reset cadence to 0/3. PR #173 is the first accepted permanent product slice after #166; accepted V6C / PR #175 is the second. Governance/docs PRs do not count as product slices. Therefore **CADENCE = 2/3** and **FEATURE_FREEZE = LIFTED**. Acceptance of the next permanent product slice reaches 3/3 and requires Full Repository Health Audit before any later product slice.
 
-## ACTIVE — PART-CORE-RECOVERY-001
+## NEXT — R1 / KOMPAS-FIRST-WORKFLOW-001
 
-Priority repair of the ordinary Part workflow:
-- reconcile solved Sketch geometry with the feature profile and B-Rep;
-- preserve parametric meaning through dimension edits, Undo/Redo and Save/Open;
-- support one unambiguous closed linear contour without rectangle/bounding-box guessing;
-- restore the agreed dark product composition and make visible tree controls honest/working.
+Owner-directed queue from #178:
+- **R1 ACTIVE:** persistent WorkArea + standalone A4 Drawing + one real editable/savable Line;
+- **R2 QUEUED:** simple 2D drafting primitives/dimensions;
+- **R3 QUEUED:** explicit Drawing geometry copy into Part Sketch;
+- **V7 / Resize = PAUSED / NOT STARTED**; required layout fixes for the R1 path are included in R1.
 
-Working branch: `fix/part-core-recovery-001`.
+Dependency PR #177 remains **OPEN / DRAFT / MERGE HOLD**. Its recovery/F1/F2/camera results are preserved as the exact base for R1; they are not owner acceptance of the current UI.
 
-**V7 / Resize = PAUSED / NOT STARTED** until this recovery is accepted and the required next-step governance is resolved.
+R1 branch: `feat/kompas-first-workflow-r1`, based on exact recovery HEAD `44d87bef78fd66aa0e85fa1fa7ba9dc58e280a65`. Draft PR #176 remains unrelated and must not merge.
 
-Draft PR #176 is not an implementation branch and must not be merged as the state source for this recovery.
+CADENCE remains **2/3** until R1 is actually accepted. Acceptance of R1 as the next permanent product slice reaches 3/3 and requires Full Repository Health Audit before later product slices.
 
 GitHub remains the primary source of truth and execution/test environment.

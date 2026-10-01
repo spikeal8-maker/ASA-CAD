@@ -1,5 +1,7 @@
 # ASA-CAD architecture
 
+> **User-first R1 invariant (#178):** every open document owns a persistent WorkArea. Drawing/Fragment 2D work must not require OpenCascade; empty Part retains a selectable spatial scene/origin/XY-XZ-YZ before B-Rep. R1 extends the existing CadDocument/CadApplication/host/history boundaries rather than introducing another store or editor authority.
+
 ## Goal
 
 Build ASA-owned browser CAD for the ~90% KOMPAS-3D Part/Assembly/Drawing user-experience target in `SYSTEM_SPEC.md`, while keeping six document kinds, client-side compute and ASA Lab integration as ASA-owned implementation boundaries.

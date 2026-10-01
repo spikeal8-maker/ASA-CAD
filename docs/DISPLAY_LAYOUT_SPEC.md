@@ -1,5 +1,7 @@
 # ASA-CAD display, scaling and layout specification
 
+> **R1 layout invariant (#178):** the work area is never replaced by a central splash merely because no B-Rep exists. Command footers remain fully visible/clickable above the status bar, with internal panel scrolling as needed, at 1600×900 and 1366×768 effective CSS viewports.
+
 This document is the binding responsive/layout contract across small laptops, Full HD, 2K, 4K, ultrawide, tablet and phone displays.
 
 Exact KOMPAS-oriented desktop placement is defined together with `docs/KOMPAS_SHELL_LAYOUT_SPEC.md`. If an older generic three-column diagram conflicts with that file, the KOMPAS shell layout contract wins.

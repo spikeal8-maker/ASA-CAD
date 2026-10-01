@@ -1,5 +1,7 @@
 # ASA-CAD document system
 
+> **User-first order 2026-10-01 (#178):** `drawing` has an early standalone R1 path: one A4 sheet, typed editable Line entities, central history and Save/Open. Full associative Drawing remains later scope. Drawing and Part remain distinct document kinds; R3 later copies supported 2D geometry explicitly into a Part Sketch.
+
 This document defines the user-visible CAD document types and their responsibilities. It is a product contract, not a description of the current imported vendor UI.
 
 ## 1. One CAD product, six primary document kinds
