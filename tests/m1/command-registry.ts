@@ -24,6 +24,8 @@ const requiredFirstSlice = new Map<string, string>([
   ['part.extrude', 'Элемент выдавливания'],
   ['part.cutExtrude', 'Вырезать выдавливанием'],
   ['part.fillet', 'Скругление'],
+  ['draft.line', 'Отрезок'],
+  ['draft.entity.delete', 'Удалить элемент'],
 ]);
 
 for (const [uiId, expectedLabel] of requiredFirstSlice) {

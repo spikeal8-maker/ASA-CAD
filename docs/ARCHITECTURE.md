@@ -130,20 +130,7 @@ Owns page-based engineering text, tables and document formatting with links to o
 
 ## Runtime maturity versus document architecture
 
-Document membership and runtime maturity are separate concepts.
-
-Current accepted maturity:
-
-```text
-Part            -> protected exact B-Rep vertical slice exists
-Assembly        -> public schema/architecture exists; product workflow is M4A
-Drawing         -> public schema/architecture exists; product workflow is M6
-Fragment        -> public schema/architecture exists; product workflow is M6
-Specification   -> public schema/architecture exists; product workflow is M6A
-Text            -> public schema/architecture exists; product workflow is M6A
-```
-
-A future implementation stage must extend the existing six-kind public model rather than redefining `CadDocument` around only the currently mature editors.
+Document membership and runtime maturity are separate. Part keeps its protected B-Rep slice. Drawing now starts with the standalone R1 typed 2D path from #178; R2/R3 extend that path, while associative Drawing remains later scope. Assembly, Fragment, Specification and Text retain their existing later milestones. All stages extend the same six-kind `CadDocument` model.
 
 ## Mandatory dependency boundaries
 
@@ -336,7 +323,7 @@ No unsupported device silently switches to server compute.
 ```text
 moduleKey: cad
 projectType: cad-document
-schemaVersion: 3
+schemaVersion: 4
 editorRoute: /cad/projects/:projectId
 viewerRoute: /cad/view/:versionId
 ```

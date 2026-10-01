@@ -1,7 +1,5 @@
 # ASA-CAD document system
 
-> **User-first order 2026-10-01 (#178):** `drawing` has an early standalone R1 path: one A4 sheet, typed editable Line entities, central history and Save/Open. Full associative Drawing remains later scope. Drawing and Part remain distinct document kinds; R3 later copies supported 2D geometry explicitly into a Part Sketch.
-
 This document defines the user-visible CAD document types and their responsibilities. It is a product contract, not a description of the current imported vendor UI.
 
 ## 1. One CAD product, six primary document kinds
@@ -549,20 +547,14 @@ The selected document kind changes the ribbon/tool groups, tree and parameter pa
 
 ## 10. Implementation order
 
-Document kinds are part of the end-state contract from M1 onward, but they are implemented in risk order:
+Document kinds share one schema/application shell. Current user-first order (#178):
 
-1. Part foundation and protected parametric workflow.
-2. Shared application shell/document tabs/create-document dialog.
-3. Part sketcher + Part Design.
-4. Assembly foundation + contextual Part/subassembly editing.
-5. Shared 2D drafting engine.
-6. Drawing with associative Part/Assembly views.
-7. Fragment using the shared 2D engine.
-8. Specification linked to Assembly/Drawing.
-9. Text document.
-10. Broader standards/templates/parity.
+1. Existing protected Part workflow remains.
+2. R1: standalone Drawing A4 + typed editable Line + central history/Save/Open.
+3. R2: broader simple 2D drafting; R3: explicit supported Drawing geometry copy into Part Sketch.
+4. Assembly, associative Drawing/Fragment, Specification/Text and broader standards continue in their later scopes.
 
-The schema union and document-kind routing must exist before all editors are complete, so later kinds do not require a destructive architecture rewrite.
+Drawing and Part stay distinct document kinds; the early direct Drawing path does not mark full M6 complete.
 
 ---
 

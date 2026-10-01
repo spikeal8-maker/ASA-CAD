@@ -1,7 +1,5 @@
 # ASA-CAD system specification
 
-> **User-first order 2026-10-01 (#178):** early standalone Drawing is now an R1 product path, before Assembly completion and before the later associative Drawing scope. R1 = persistent WorkArea + one real A4 sheet + editable/savable Line; R2 expands simple 2D drafting; R3 copies supported Drawing geometry into a Part Sketch. The six document kinds and the later associative Drawing requirements remain unchanged.
-
 This document is the primary product and system contract for ASA-CAD. If another document, issue or implementation detail conflicts with this file, this file defines the intended end state until it is deliberately revised.
 
 ## 1. What ASA-CAD is

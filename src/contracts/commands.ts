@@ -2,7 +2,9 @@ import type {
   CadBodyId,
   CadConstraintId,
   CadDimensionId,
+  CadDraftEntityId,
   CadFeatureId,
+  CadSheetId,
   CadSketchEntityId,
   CadSketchId,
   CadStableReferenceId,
@@ -17,6 +19,9 @@ export interface CadSketchCommandReference {
 
 export type CadCommandId =
   | 'document.rebuild'
+  | 'drawing.line.create'
+  | 'drawing.line.update'
+  | 'drawing.entity.delete'
   | 'sketch.create'
   | 'sketch.line'
   | 'sketch.rectangle'
@@ -52,6 +57,21 @@ export type CadPlaneName = 'XY' | 'XZ' | 'YZ';
 
 export interface CadCommandMap {
   'document.rebuild': Record<string, never>;
+  'drawing.line.create': {
+    sheetId: CadSheetId;
+    from: readonly [number, number];
+    to: readonly [number, number];
+  };
+  'drawing.line.update': {
+    sheetId: CadSheetId;
+    entityId: CadDraftEntityId;
+    from: readonly [number, number];
+    to: readonly [number, number];
+  };
+  'drawing.entity.delete': {
+    sheetId: CadSheetId;
+    entityId: CadDraftEntityId;
+  };
   'sketch.create': {
     support: CadPlaneName | CadStableReferenceId;
     name?: string;
@@ -221,6 +241,7 @@ export interface CadCommandResult {
     | CadConstraintId
     | CadDimensionId
     | CadFeatureId
+    | CadDraftEntityId
     | CadBodyId
     | CadStableReferenceId
   >;

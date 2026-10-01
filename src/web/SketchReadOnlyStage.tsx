@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { CadPartDocument, CadSketch } from '../contracts/document';
+import type { CadSketchEntityId } from '../contracts/ids';
 import { CadViewport } from './CadViewport';
 import { dimensionLabel, dimensionUnit } from './SketchDimensionPresentation';
 import { SketchSolveStatus } from './SketchSolveStatus';
+import { SketchSelectionLayer } from './viewport/SketchSelectionLayer';
 import { useActiveSketchSolveOverlay } from './useActiveSketchSolveOverlay';
 import { SketchViewportFrameProvider } from './viewport/SketchViewportFrameContext';
 import { resetSketchViewportState, sketchDisplayFrame } from './viewport/SketchViewportGeometry';
@@ -16,6 +18,7 @@ export interface SketchReadOnlyStageProps {
 
 /** Read-only presentation of one persisted Sketch outside an edit-session. */
 export function SketchReadOnlyStage({ document, sketch, revisionToken }: SketchReadOnlyStageProps) {
+  const [selectedEntityId, setSelectedEntityId] = useState<CadSketchEntityId | null>(null);
   const projection = resolveSketchWorkplaneProjection(sketch.support);
   const viewport = resetSketchViewportState();
   const frame = sketchDisplayFrame(viewport);
@@ -39,7 +42,7 @@ export function SketchReadOnlyStage({ document, sketch, revisionToken }: SketchR
         data-model-context-ready={projection?.modelContextReady ? 'true' : 'false'}
         data-sketch-view-span={viewport.span}
         data-sketch-view-center={viewport.center.join(',')}
-        data-selected-sketch-entity-id=""
+        data-selected-sketch-entity-id={selectedEntityId ?? ''}
       >
         <div className="origin-widget" aria-label="Ориентация">
           <span className="axis-z">Z</span>
@@ -48,6 +51,12 @@ export function SketchReadOnlyStage({ document, sketch, revisionToken }: SketchR
         </div>
         <div className="stage-grid" />
         <CadViewport model={null} sketchOverlay={solve.overlay} />
+        <SketchSelectionLayer
+          model={solve.overlay}
+          enabled
+          selectedEntityId={selectedEntityId}
+          onEntitySelect={setSelectedEntityId}
+        />
         <div className="sketch-solve-hud" data-testid="sketch-readonly-hud">
           <strong>{sketch.name}</strong>
           <span data-testid="sketch-readonly-support">Опора: {sketch.support}</span>

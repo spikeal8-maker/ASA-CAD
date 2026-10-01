@@ -80,6 +80,7 @@
       "order": ["draft", "views", "dimensions", "annotations", "sheets", "view"],
       "groups": [
         {"id": "geometry", "label": "Геометрия", "order": 10, "collapsePriority": 90, "mobile": "tools/draft", "commands": ["draft.line", "draft.polyline", "draft.circle", "draft.arc", "draft.rectangle", "draft.polygon", "draft.trim", "draft.extend", "draft.offset", "drawing.hatch"]},
+        {"id": "edit-r1", "label": "Редактирование", "order": 15, "collapsePriority": 85, "mobile": "tools/draft-edit", "commands": ["draft.entity.delete"]},
         {"id": "views", "label": "Виды", "order": 20, "collapsePriority": 100, "mobile": "tools/views", "commands": ["drawing.view.new", "drawing.view.base", "drawing.view.projected", "drawing.view.isometric", "drawing.view.section", "drawing.view.detail", "drawing.view.update"]},
         {"id": "dimensions", "label": "Размеры", "order": 30, "collapsePriority": 90, "mobile": "tools/dimensions", "commands": ["draft.dimension.linear", "draft.dimension.angular", "draft.dimension.radius", "draft.dimension.diameter"]},
         {"id": "annotations", "label": "Обозначения", "order": 40, "collapsePriority": 65, "mobile": "tools/annotations", "commands": ["drawing.annotation.centerline", "drawing.annotation.centerMark", "drawing.annotation.leader", "drawing.annotation.roughness", "drawing.annotation.formTolerance", "drawing.annotation.position", "drawing.annotation.base", "drawing.annotation.table"]},
