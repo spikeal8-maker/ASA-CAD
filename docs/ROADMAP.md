@@ -73,20 +73,17 @@ PR #170 remains **REFERENCE / PROTOTYPE ONLY**, OPEN / NOT MERGED.
 
 This does not accept full M2V, full KOMPAS parity, full Tree parity, Part completion, Assembly, Drawing, or the 90% target. Canonical educational parity scope remains **Деталь / Part, Сборка / Assembly, Чертеж / Drawing**.
 
-## ACTIVE — PART-CORE-RECOVERY-001
+## NEXT — R1 / KOMPAS-FIRST-WORKFLOW-001
 
-Priority recovery of the ordinary Part workflow before V7:
-- solved Sketch geometry, feature profile and B-Rep must agree;
-- dimensions, Undo/Redo and Save/Open preserve parametric meaning;
-- one unambiguous closed linear contour is supported without rectangle/bounding-box guessing;
-- the agreed dark shell is restored without replacing real product owners;
-- visible tree controls must be working or explicitly unavailable.
+R1 is the first owner-facing path after the recovery dependency:
+- ordinary `/cad/` → New → Drawing → one A4 sheet;
+- create, select, edit and delete a real Line with stable identity;
+- Undo/Redo and Save/reload/Open continue editing the same object;
+- empty Part keeps a spatial WorkArea with selectable XY/XZ/YZ planes before B-Rep.
 
-Working branch: `fix/part-core-recovery-001`.
+R2 (more 2D primitives/dimensions) and R3 (explicit Drawing → Part Sketch copy) remain queued. V7 / Resize stays paused except for layout fixes required by this R1 path.
 
-**V7 / Resize = PAUSED / NOT STARTED**. Resume only after this recovery is accepted. If this recovery is accepted as the next permanent product slice, cadence reaches **3/3** and Full Repository Health Audit is required before any later product slice.
-
-Draft PR #176 is not the implementation source for this recovery and must not be merged as its state transition.
+Dependency #177 remains OPEN / DRAFT / MERGE HOLD. R1 uses `44d87bef78fd66aa0e85fa1fa7ba9dc58e280a65` as exact base and does not change cadence until owner acceptance.
 
 ## Gates
 

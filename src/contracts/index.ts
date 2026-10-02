@@ -1,5 +1,6 @@
 export * from './ids';
 export * from './document';
+export * from './drafting';
 export * from './commands';
 export * from './commandRegistry';
 export * from './application';

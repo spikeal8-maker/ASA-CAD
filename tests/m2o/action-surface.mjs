@@ -17,6 +17,8 @@ const dimensionCreation = readFileSync('src/web/useSketchDimensionCreationContro
 const dimensionPanel = readFileSync('src/web/SketchDimensionParameterPanel.tsx', 'utf8');
 const dimensionPresentation = readFileSync('src/web/SketchDimensionPresentation.ts', 'utf8');
 const appActionCatalog = readFileSync('src/web/usePartCadUiActionCatalog.ts', 'utf8');
+const workspaceContent = readFileSync('src/web/CadWorkspaceContent.tsx', 'utf8');
+const drawingWorkspace = readFileSync('src/web/useDrawingWorkspace.ts', 'utf8');
 
 assert.match(app, /usePartCadUiActionCatalog/, 'App must delegate shared CadUiAction catalog wiring');
 assert.match(appActionCatalog, /useM2CadUiActions/, 'focused action-catalog owner must build the shared M2 CadUiAction catalog');
@@ -42,16 +44,18 @@ assert.match(app, /uiActions\.byId\.get\(sharedActionId\)/, 'shortcut dispatch m
 for (const legacyCase of ["case 'system.save':", "case 'system.undo':", "case 'system.redo':", "case 'system.rebuild':", "case 'view.fit':", "case 'view.iso':", "case 'view.front':", "case 'view.top':", "case 'view.left':"]) {
   assert.equal(app.includes(legacyCase), false, `legacy direct shortcut case must not return: ${legacyCase}`);
 }
-assert.match(app, /case 'interaction\.cancel':/, 'Esc interaction lifecycle must remain explicit');
-assert.match(app, /case 'interaction\.commit':/, 'Ctrl+Enter interaction lifecycle must remain explicit');
-assert.match(app, /case 'view\.zoomIn':/, 'camera-only zoom remains an interaction action');
-assert.match(app, /case 'view\.panLeft':/, 'camera-only pan remains an interaction action');
+assert.match(app, /action === 'interaction\.cancel'/, 'Esc interaction lifecycle must remain explicit');
+assert.match(app, /action === 'interaction\.commit'/, 'Ctrl+Enter interaction lifecycle must remain explicit');
+assert.match(app, /action === 'interaction\.delete'/, 'Delete interaction lifecycle must remain explicit');
+assert.match(app, /'view\.zoomIn': 'zoom-in'/, 'camera-only zoom remains an interaction action');
+assert.match(app, /'view\.panLeft': 'pan-left'/, 'camera-only pan remains an interaction action');
 
 for (const ribbonActionId of [
   'sketch.rectangle', 'sketch.circle',
   'constraint.horizontal', 'constraint.vertical', 'constraint.fixed', 'constraint.coincident', 'constraint.parallel', 'constraint.perpendicular',
   'dimension.linear', 'dimension.horizontal', 'dimension.vertical', 'dimension.diameter', 'dimension.radius', 'dimension.angular',
   'sketch.finish', 'part.sketch.create', 'part.extrude', 'part.cutExtrude', 'part.fillet', 'system.rebuild',
+  'draft.line', 'draft.entity.delete',
 ]) {
   assert.ok(commandGroups.includes(`action={props.getAction('${ribbonActionId}')}`), `${ribbonActionId} ribbon button must consume CadUiAction`);
 }
@@ -61,8 +65,12 @@ assert.match(commandGroups, /<ViewCommandGroups viewName=\{props\.viewName\} get
 assert.match(commandGroups, /action=\{props\.getAction\(view\.id\)\}/, 'standard view buttons must consume CadUiAction');
 assert.doesNotMatch(commandGroups, /requestView: \(value: string\) => void/, 'view ribbon must not own direct requestView handlers');
 
-assert.match(app, /<MobileToolsPanel/, 'phone Tools sheet must be a real presentation surface');
-assert.match(app, /getAction=\{uiAction\}/, 'phone Tools sheet must receive the same shared action catalog');
+assert.match(app, /getAction=\{uiAction\}/, 'App must pass the same shared action catalog to workspace composition');
+assert.match(workspaceContent, /<MobileToolsPanel/, 'phone Tools sheet must be a real presentation surface');
+assert.match(workspaceContent, /getAction=\{props\.getAction\}/, 'phone Tools sheet must receive the same shared action catalog');
+assert.match(drawingWorkspace, /id: 'drawing\.line\.create'/, 'Drawing Line must mutate through CadApplication');
+assert.match(drawingWorkspace, /id: 'drawing\.line\.update'/, 'Drawing Line edit must mutate through CadApplication');
+assert.match(drawingWorkspace, /id: 'drawing\.entity\.delete'/, 'Drawing delete must mutate through CadApplication');
 assert.match(shellBottom, /props\.activePanel === 'tools'/, 'mobile bottom bar must expose the Tools panel state');
 assert.match(shellBottom, />⌘<span>Инструменты<\/span><\/button>/, 'mobile bottom bar must expose Tools instead of desktop delegation');
 assert.match(mobileTools, /import type \{ CadUiAction \}/, 'mobile Tools presentation must consume typed CadUiAction');

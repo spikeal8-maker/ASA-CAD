@@ -9,7 +9,7 @@ import {
   parseCadDocument,
 } from '../../src';
 
-assert.equal(CAD_DOCUMENT_SCHEMA_VERSION, 3);
+assert.equal(CAD_DOCUMENT_SCHEMA_VERSION, 4);
 
 const current = createEmptyCadDocument('part');
 assert.deepEqual(migrateCadDocument(current), current);
@@ -39,8 +39,8 @@ const v1Fixture = fixture(1);
 const migratedV1 = migrateCadDocument(v1Fixture);
 assert.deepEqual(
   migratedV1,
-  { ...v1Fixture, schemaVersion: 3 },
-  'v1 -> v2 -> v3 must preserve all persisted content except schemaVersion',
+  { ...v1Fixture, schemaVersion: 4 },
+  'v1 -> v2 -> v3 -> v4 must preserve Part content except schemaVersion',
 );
 assert.deepEqual(
   migratedV1.kind === 'part' ? migratedV1.dimensions.map((dimension) => dimension.type) : [],
@@ -58,8 +58,8 @@ const v2Fixture = fixture(2);
 const migratedV2 = migrateCadDocument(v2Fixture);
 assert.deepEqual(
   migratedV2,
-  { ...v2Fixture, schemaVersion: 3 },
-  'v2 -> v3 must preserve Radius fixture content except schemaVersion',
+  { ...v2Fixture, schemaVersion: 4 },
+  'v2 -> v3 -> v4 must preserve Radius fixture content except schemaVersion',
 );
 assert.equal(migratedV2.kind, 'part');
 if (migratedV2.kind !== 'part') throw new Error('Expected migrated v2 Part fixture');
@@ -83,7 +83,11 @@ assert.throws(
 
 const v3Fixture = fixture(3);
 const migratedV3 = migrateCadDocument(v3Fixture);
-assert.deepEqual(migratedV3, v3Fixture, 'native schema-v3 fixture must open without semantic changes');
+assert.deepEqual(
+  migratedV3,
+  { ...v3Fixture, schemaVersion: 4 },
+  'v3 Part fixture must migrate to v4 without semantic changes',
+);
 assert.equal(migratedV3.kind, 'part');
 if (migratedV3.kind !== 'part') throw new Error('Expected v3 Part fixture');
 const angular = migratedV3.dimensions.find((dimension) => dimension.type === 'angular');
@@ -91,18 +95,68 @@ assert.ok(angular);
 assert.deepEqual(angular.entityIds, ['entity_line_a_v3', 'entity_line_b_v3']);
 assert.equal(angular.value, 60);
 
+const v4Fixture = fixture(4);
+const migratedV4 = migrateCadDocument(v4Fixture);
+assert.deepEqual(migratedV4, v4Fixture, 'native schema-v4 Drawing fixture must open unchanged');
+assert.equal(migratedV4.kind, 'drawing');
+if (migratedV4.kind !== 'drawing') throw new Error('Expected v4 Drawing fixture');
+assert.equal(migratedV4.sheets.length, 1);
+assert.equal(migratedV4.sheets[0].format, 'A4');
+assert.equal(migratedV4.sheets[0].entities[0].type, 'line');
+
+const legacyEmptyDrawingV3 = {
+  kind: 'drawing',
+  schemaVersion: 3,
+  engineVersion: '0.1.0-m1',
+  documentId: 'doc_legacy_drawing_v3',
+  title: 'Legacy Drawing',
+  units: 'mm',
+  metadata: { preserve: 'yes' },
+  linkedDocuments: [],
+  sheets: [],
+  modelReferences: [],
+};
+const migratedDrawing = migrateCadDocument(legacyEmptyDrawingV3);
+assert.equal(migratedDrawing.kind, 'drawing');
+if (migratedDrawing.kind !== 'drawing') throw new Error('Expected migrated Drawing');
+assert.equal(migratedDrawing.schemaVersion, 4);
+assert.equal(migratedDrawing.metadata.preserve, 'yes');
+assert.equal(migratedDrawing.sheets.length, 1);
+assert.equal(migratedDrawing.sheets[0].format, 'A4');
+assert.equal(migratedDrawing.sheets[0].width, 297);
+assert.equal(migratedDrawing.sheets[0].height, 210);
+assert.equal(migratedDrawing.sheets[0].layers.length, 1);
+assert.equal(migratedDrawing.sheets[0].entities.length, 0);
+
+const unsafeLegacyDrawing = {
+  ...legacyEmptyDrawingV3,
+  sheets: [{
+    id: 'sheet_legacy',
+    name: 'Лист 1',
+    format: 'A4',
+    orientation: 'landscape',
+    scale: 1,
+    entities: [{ arbitrary: 'unknown legacy entity' }],
+  }],
+};
 assert.throws(
-  () => parseCadDocument(v2Fixture),
-  /Unsupported CadDocument schemaVersion: 2/,
-  'raw v2 must not masquerade as native v3 outside migration ingress',
+  () => migrateCadDocument(unsafeLegacyDrawing),
+  /legacy untyped entities; safe automatic migration is unavailable/,
+  'legacy Drawing entities must fail explicitly instead of being dropped',
 );
 
 assert.throws(
-  () => migrateCadDocument({ ...current, schemaVersion: 4 }),
+  () => parseCadDocument(v3Fixture),
+  /Unsupported CadDocument schemaVersion: 3/,
+  'raw v3 must not masquerade as native v4 outside migration ingress',
+);
+
+assert.throws(
+  () => migrateCadDocument({ ...current, schemaVersion: 5 }),
   (error: unknown) => {
     assert.ok(error instanceof CadDocumentFutureVersionError);
-    assert.equal(error.documentVersion, 4);
-    assert.equal(error.supportedVersion, 3);
+    assert.equal(error.documentVersion, 5);
+    assert.equal(error.supportedVersion, 4);
     return true;
   },
 );
@@ -117,4 +171,4 @@ assert.throws(
   },
 );
 
-console.log('ASA-CAD M1 migration contract PASS (v1->v3 chain + v2->v3 guard + v3 Angular fixture)');
+console.log('ASA-CAD M1 migration contract PASS (v1->v4 chain + Drawing v4 grammar/migration guard)');

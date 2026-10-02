@@ -1,5 +1,7 @@
 # ASA-CAD — ТЗ воспроизведения оболочки КОМПАСа
 
+> **R1 override 2026-10-01 (#178):** WorkArea is persistent for empty Part, Drawing, Sketch, finished/rebuilding/error states. Empty Part must expose a selectable spatial scene/origin/base planes; Drawing must expose a real sheet. Primary Create/Apply/Cancel actions remain inside the usable content area above the status bar at 1600×900 and 1366×768.
+
 Редакция 2026-09-23. Уточняет SYSTEM_SPEC для desktop; очередь ROADMAP/#10, эталоны VISUAL_REFERENCE_SPEC. Это ТЗ, не готовый интерфейс.
 
 ## 1. Система оболочки

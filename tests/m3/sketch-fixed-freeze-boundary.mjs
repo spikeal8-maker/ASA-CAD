@@ -31,7 +31,7 @@ assert.match(actions, /'constraint\.fixed': binding/, 'shared CadUiAction model 
 assert.match(actions, /canApplyFixedConstraint/, 'desktop/mobile/search must share one Fixed enablement contract');
 assert.match(mobile, /id: 'constraint\.fixed'/, 'mobile Sketch tools must consume shared Fixed action');
 assert.match(commandGroups, /getAction\('constraint\.fixed'\)/, 'desktop Sketch ribbon command-group owner must consume shared Fixed action');
-assert.match(app, /fixedConstraint: applyFixedConstraint/, 'App may wire but not own Fixed semantics');
+assert.match(app, /fixedConstraint: workspace\.applyFixedConstraint/, 'App may wire but not own Fixed semantics');
 assert.doesNotMatch(app, /id:\s*'constraint\.fixed'/, 'App must not execute Fixed directly');
 
 for (const id of ['constraint.horizontal', 'constraint.vertical']) {

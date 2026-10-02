@@ -1,9 +1,11 @@
 import React from 'react';
+import type { CadDocumentKind } from '../contracts/document';
 import { CadIcon } from './CadIcon';
 
 export type CadShellPanel = 'tree' | 'parameters' | 'tools' | 'closed';
 
 export interface CadShellMainProps {
+  documentKind: CadDocumentKind;
   activePanel: CadShellPanel;
   setActivePanel: (panel: CadShellPanel) => void;
   requestView: (label: string) => void;
@@ -11,6 +13,7 @@ export interface CadShellMainProps {
   selectionMode: 'none' | 'face' | 'edge';
   selectedBodyName?: string;
   selectedSketchEntityId?: string | null;
+  selectedDrawingEntityId?: string | null;
   activeCommand?: string | null;
   commitActiveCommand: () => void | Promise<void>;
   cancelCommand: () => void;
@@ -63,7 +66,9 @@ export function CadShellMain(props: CadShellMainProps) {
       <section className="work-area" aria-label="Рабочая область">
         <div className="viewport-quick-access" aria-label="Быстрый доступ рабочей области">
           <button type="button" title="Показать всё (F)" onClick={() => props.requestView('Показать всё')}><CadIcon name="fit" size={16} /></button>
-          <button type="button" title="Изометрия (0)" onClick={() => props.requestView('Изометрия')}><CadIcon name="view" size={16} /></button>
+          {props.documentKind === 'part' && (
+            <button type="button" title="Изометрия (0)" onClick={() => props.requestView('Изометрия')}><CadIcon name="view" size={16} /></button>
+          )}
           <span className="quick-separator" />
           <span className="view-caption">{props.viewName}</span>
           {props.selectionMode !== 'none' && (
@@ -74,6 +79,9 @@ export function CadShellMain(props: CadShellMainProps) {
           )}
           {props.selectedSketchEntityId && !props.activeCommand && (
             <span className="selection-caption">Элемент эскиза выбран</span>
+          )}
+          {props.selectedDrawingEntityId && !props.activeCommand && (
+            <span className="selection-caption">Элемент чертежа выбран</span>
           )}
           {props.activeCommand && (
             <>

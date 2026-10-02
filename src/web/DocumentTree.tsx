@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import type { CadPlaneName } from '../contracts/commands';
 import type { CadDocument } from '../contracts/document';
 import type { CadBodyId, CadDimensionId, CadSketchId } from '../contracts/ids';
 import { CadIcon, type CadIconName } from './CadIcon';
@@ -13,6 +14,8 @@ export interface DocumentTreeProps {
   onSelectBody(id: CadBodyId | null): void;
   onEditSketch(id: CadSketchId): void;
   onEditDimension(id: CadDimensionId): void;
+  selectedPlane?: CadPlaneName;
+  onSelectPlane?(plane: CadPlaneName): void;
 }
 
 export function DocumentTree({
@@ -22,6 +25,8 @@ export function DocumentTree({
   onSelectBody,
   onEditSketch,
   onEditDimension,
+  selectedPlane,
+  onSelectPlane,
 }: DocumentTreeProps) {
   const [selectedSketchId, setSelectedSketchId] = useState<CadSketchId | null>(null);
   const [partExpanded, setPartExpanded] = useState(true);
@@ -94,9 +99,9 @@ export function DocumentTree({
                 )}
                 {originMatches && originChildrenVisible && (
                   <>
-                    {(!filtering || matches('Плоскость XY')) && <TreeRow depth={2} icon="plane" label="Плоскость XY" muted nodeId="plane-xy" />}
-                    {(!filtering || matches('Плоскость XZ')) && <TreeRow depth={2} icon="plane" label="Плоскость XZ" muted nodeId="plane-xz" />}
-                    {(!filtering || matches('Плоскость YZ')) && <TreeRow depth={2} icon="plane" label="Плоскость YZ" muted nodeId="plane-yz" />}
+                    {(!filtering || matches('Плоскость XY')) && <TreeRow depth={2} icon="plane" label="Плоскость XY" nodeId="plane-xy" selected={selectedPlane === 'XY'} onClick={onSelectPlane ? () => onSelectPlane('XY') : undefined} />}
+                    {(!filtering || matches('Плоскость XZ')) && <TreeRow depth={2} icon="plane" label="Плоскость XZ" nodeId="plane-xz" selected={selectedPlane === 'XZ'} onClick={onSelectPlane ? () => onSelectPlane('XZ') : undefined} />}
+                    {(!filtering || matches('Плоскость YZ')) && <TreeRow depth={2} icon="plane" label="Плоскость YZ" nodeId="plane-yz" selected={selectedPlane === 'YZ'} onClick={onSelectPlane ? () => onSelectPlane('YZ') : undefined} />}
                   </>
                 )}
                 {visibleSketches.map((sketch) => (

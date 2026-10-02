@@ -27,8 +27,8 @@ assert.match(actions, /'constraint\.vertical': binding/, 'shared CadUiAction map
 assert.match(actions, /canApplyOrientationConstraint/, 'desktop/mobile/search must share one H/V enablement contract');
 assert.match(mobile, /id: 'constraint\.horizontal'/, 'mobile Sketch tools must use the shared Horizontal action');
 assert.match(mobile, /id: 'constraint\.vertical'/, 'mobile Sketch tools must use the shared Vertical action');
-assert.match(app, /horizontalConstraint: applyHorizontalConstraint/, 'App may wire but not own Horizontal semantics');
-assert.match(app, /verticalConstraint: applyVerticalConstraint/, 'App may wire but not own Vertical semantics');
+assert.match(app, /horizontalConstraint: workspace\.applyHorizontalConstraint/, 'App may wire but not own Horizontal semantics');
+assert.match(app, /verticalConstraint: workspace\.applyVerticalConstraint/, 'App may wire but not own Vertical semantics');
 assert.doesNotMatch(app, /id:\s*'constraint\.(horizontal|vertical)'/, 'App must not execute constraint commands directly');
 
 for (const id of ['constraint.horizontal', 'constraint.vertical']) {

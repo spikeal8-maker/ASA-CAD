@@ -9,6 +9,7 @@ const layer = fs.readFileSync('src/web/viewport/SketchCoincidentInteractionLayer
 const bridge = fs.readFileSync('src/web/CoincidentPartModelStage.tsx', 'utf8');
 const layers = fs.readFileSync('src/web/SketchDirectToolLayers.tsx', 'utf8');
 const app = fs.readFileSync('src/web/App.tsx', 'utf8');
+const workspaceContent = fs.readFileSync('src/web/CadWorkspaceContent.tsx', 'utf8');
 const workspace = fs.readFileSync('src/web/usePartSketchWorkspace.ts', 'utf8');
 const actions = fs.readFileSync('src/web/M2CadUiActions.ts', 'utf8');
 const mobile = fs.readFileSync('src/web/MobileToolsPanel.tsx', 'utf8');
@@ -43,8 +44,9 @@ assert.match(bridge, /createContext<SketchCoincidentCommit \| null>/, 'Coinciden
 assert.match(bridge, /CommitContext\.Provider/, 'stage bridge must provide only the Coincident commit callback');
 assert.match(bridge, /useSketchCoincidentCommit/, 'interaction layer must consume the focused commit context');
 assert.match(layers, /activeCommand === 'constraint\.coincident'/, 'Coincident layer must activate from the shared command state');
-assert.match(app, /CoincidentPartStage/, 'App must provide the Coincident commit seam without growing frozen model stages');
-assert.match(app, /commit=\{workspace\.applyCoincidentConstraint\}/, 'App bridge must commit through focused workspace constraint ownership');
+assert.match(app, /<CadWorkspaceContent\b/, 'App must delegate stage composition without growing frozen model stages');
+assert.match(workspaceContent, /<CoincidentPartStage\b/, 'CadWorkspaceContent must provide the Coincident commit seam');
+assert.match(workspaceContent, /commit=\{p\.applyCoincidentConstraint\}/, 'workspace bridge must commit through focused constraint ownership');
 assert.match(workspace, /useSketchConstraintControllers/, 'workspace must compose constraints through one focused facade');
 assert.match(workspace, /\.\.\.constraints/, 'workspace facade must expose constraints without per-command growth');
 assert.match(workspace, /activeCommand === 'constraint\.coincident'/, 'cancel must keep Coincident inside Sketch workspace');

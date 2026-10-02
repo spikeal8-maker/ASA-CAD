@@ -4,6 +4,10 @@ import { readFileSync } from 'node:fs';
 const app = readFileSync('src/web/App.tsx', 'utf8');
 const shellTop = readFileSync('src/web/CadShellTop.tsx', 'utf8');
 const shellMain = readFileSync('src/web/CadShellMain.tsx', 'utf8');
+const workspaceContent = readFileSync('src/web/CadWorkspaceContent.tsx', 'utf8');
+const drawingWorkspace = readFileSync('src/web/useDrawingWorkspace.ts', 'utf8');
+const drawingStage = readFileSync('src/web/DrawingStage.tsx', 'utf8');
+const partEmptyWorkArea = readFileSync('src/web/PartEmptyWorkArea.tsx', 'utf8');
 const shellBottom = readFileSync('src/web/CadShellBottom.tsx', 'utf8');
 const newDocumentDialog = readFileSync('src/web/NewDocumentDialog.tsx', 'utf8');
 const unsavedChangesDialog = readFileSync('src/web/UnsavedChangesDialog.tsx', 'utf8');
@@ -24,13 +28,17 @@ const sketchSessionHook = readFileSync('src/web/useSketchSession.ts', 'utf8');
 
 for (const [importName, fileName] of [
   ['CadShellTop', 'CadShellTop'],
-  ['CadShellMain', 'CadShellMain'],
   ['CadShellBottom', 'CadShellBottom'],
-  ['PlannedDocumentStage', 'PlannedDocumentStage'],
+  ['CadWorkspaceContent', 'CadWorkspaceContent'],
 ]) {
   assert.match(app, new RegExp(`import \\{ ${importName} \\} from '\\.\\/${fileName}';`));
   assert.match(app, new RegExp(`<${importName}\\b`));
 }
+assert.equal(app.includes("import { CadShellMain"), false, 'App must delegate main work-area composition');
+assert.equal(app.includes("import { PlannedDocumentStage"), false, 'App must not own document stage routing');
+assert.equal(workspaceContent.includes("import { CadShellMain, type CadShellPanel } from './CadShellMain';"), true);
+assert.match(workspaceContent, /<CadShellMain\b/);
+assert.match(workspaceContent, /<PlannedDocumentStage\b/);
 assert.match(app, /import \{ documentNames \} from '\.\/CadDocumentPresentation';/);
 assert.match(app, /import \{ useDocumentReplacementGuard \} from '\.\/useDocumentReplacementGuard';/);
 assert.match(app, /useDocumentReplacementGuard\(/, 'App must delegate new/open dirty protection');
@@ -48,15 +56,17 @@ for (const legacyShellFragment of [
   assert.equal(app.includes(legacyShellFragment), false, `shell presentation must not return to App.tsx: ${legacyShellFragment}`);
 }
 
-assert.match(app, /import \{ DocumentTree \} from '\.\/DocumentTree';/);
+assert.doesNotMatch(app, /import \{ DocumentTree \}/, 'DocumentTree composition must stay outside App');
 assert.doesNotMatch(app, /function DocumentTree\(/);
 assert.doesNotMatch(app, /function TreeRow\(/);
-assert.match(app, /<DocumentTree\b/);
+assert.match(workspaceContent, /import \{ DocumentTree \} from '\.\/DocumentTree';/);
+assert.match(workspaceContent, /<DocumentTree\b/);
 
-assert.match(app, /import \{ ParameterPanel \} from '\.\/ParameterPanel';/);
+assert.doesNotMatch(app, /import \{ ParameterPanel \}/, 'ParameterPanel composition must stay outside App');
 assert.doesNotMatch(app, /function ParameterPanel\(/);
 assert.doesNotMatch(app, /function NumericField\(/);
-assert.match(app, /<ParameterPanel\b/);
+assert.match(workspaceContent, /import \{ ParameterPanel \} from '\.\/ParameterPanel';/);
+assert.match(workspaceContent, /<ParameterPanel\b/);
 
 assert.match(app, /import \{ usePartSketchWorkspace \} from '\.\/usePartSketchWorkspace';/);
 assert.match(app, /const workspace = usePartSketchWorkspace\(/);
@@ -111,6 +121,21 @@ assert.match(parameterNumeric, /export function ParameterNumericField\(/);
 assert.match(parameterNumeric, /type="number"/);
 assert.match(parameterNumeric, /props\.min \?\? 0\.01/);
 assert.match(parameterNumeric, /step="1"/);
+
+assert.match(drawingWorkspace, /export function useDrawingWorkspace\(/);
+assert.match(drawingWorkspace, /app\.execute\(\{/);
+assert.match(drawingWorkspace, /id: 'drawing\.line\.create'/);
+assert.match(drawingWorkspace, /id: 'drawing\.line\.update'/);
+assert.match(drawingWorkspace, /id: 'drawing\.entity\.delete'/);
+assert.doesNotMatch(drawingWorkspace, /localStorage|indexedDB|opencascade|TopoDS/,
+  'Drawing workspace must reuse application/persistence boundaries');
+assert.match(drawingStage, /export function DrawingStage\(/);
+assert.doesNotMatch(drawingStage, /CadApplication|app\.execute|localStorage|indexedDB|opencascade|TopoDS/,
+  'Drawing stage must remain presentation-only');
+assert.match(partEmptyWorkArea, /export function PartEmptyWorkArea\(/);
+assert.match(partEmptyWorkArea, /data-plane-id=\{plane\.id\}/);
+assert.doesNotMatch(partEmptyWorkArea, /CadApplication|app\.execute|opencascade|TopoDS/,
+  'empty Part scene must remain presentation-only');
 
 assert.match(workspace, /export function usePartSketchWorkspace\(/);
 assert.match(workspace, /useSketchSession\(part\)/);

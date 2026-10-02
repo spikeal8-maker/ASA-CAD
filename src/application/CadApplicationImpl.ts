@@ -12,6 +12,7 @@ import type {
 import type {
   CadBody,
   CadDocument,
+  CadDrawingDocument,
   CadFeature,
   CadPartDocument,
   CadStableReference,
@@ -23,6 +24,12 @@ import type {
 } from '../contracts/ids';
 import { createCadId } from '../contracts/ids';
 import type { CadReferenceCaptureRequest, CadRuntimeAdapter } from '../contracts/runtime';
+import {
+  applyDrawingCommand,
+  getDrawingCommandAvailability,
+  isDrawingCommand,
+  isDrawingCommandId,
+} from './commands/DrawingCommandHandlers';
 import {
   applySketchGrowthCommand,
   getSketchGrowthCommandAvailability,
@@ -80,6 +87,11 @@ export class CadApplicationImpl implements CadApplication {
     if (this.disposed) return { enabled: false, reason: 'Application is disposed' };
 
     if (id === 'document.rebuild') return { enabled: true };
+    if (isDrawingCommandId(id)) {
+      return this.document.kind === 'drawing'
+        ? getDrawingCommandAvailability(this.document, id)
+        : { enabled: false, reason: 'Command requires a Drawing document' };
+    }
     if (this.document.kind !== 'part') {
       return { enabled: false, reason: 'Command requires a Part document' };
     }
@@ -249,6 +261,11 @@ export class CadApplicationImpl implements CadApplication {
   }
 
   private applyDocumentCommand(command: Exclude<CadCommand, { id: 'document.rebuild' }>): CadCommandResult {
+    if (isDrawingCommand(command)) {
+      if (this.document.kind !== 'drawing') throw new Error('Command requires a Drawing document');
+      return applyDrawingCommand(this.document, command);
+    }
+
     const part = this.requirePart();
 
     if (isSketchGrowthCommand(command)) {
@@ -363,6 +380,11 @@ export class CadApplicationImpl implements CadApplication {
       this.emit();
       return errorResult(error);
     }
+  }
+
+  private requireDrawing(): CadDrawingDocument {
+    if (this.document.kind !== 'drawing') throw new Error('Command requires a Drawing document');
+    return this.document;
   }
 
   private requirePart(): CadPartDocument {

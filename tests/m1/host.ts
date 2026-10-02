@@ -66,8 +66,8 @@ const localHost = new LocalStorageCadProjectHost({
 });
 const migratedLocal = await localHost.load();
 assert.equal(migratedLocal.document.schemaVersion, CAD_DOCUMENT_SCHEMA_VERSION);
-assert.equal(CAD_DOCUMENT_SCHEMA_VERSION, 3);
+assert.equal(CAD_DOCUMENT_SCHEMA_VERSION, 4);
 assert.equal(storageWrites, 0, 'LocalStorage load must not rewrite migrated schema-v2 content');
 assert.equal(storageValues.get('schema-v2-host'), v2Raw, 'stored raw v2 document must remain byte-identical after load');
 
-console.log('ASA-CAD M1 host PASS (Memory host + LocalStorage v2->v3 ingress without rewrite)');
+console.log('ASA-CAD M1 host PASS (Memory host + LocalStorage v2->v4 ingress without rewrite)');

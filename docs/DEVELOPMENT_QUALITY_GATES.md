@@ -1,5 +1,7 @@
 # ASA-CAD — приёмка видимых изменений
 
+> **R1 gate 2026-10-01 (#178):** a visible slice must complete an ordinary `/cad/` user action, persist/reopen the same structured object, and supply permanent regression plus Docker evidence. A blank WorkArea, controls-only state, screenshot-only result or GREEN without the user workflow is not sufficient.
+
 Редакция 2026-09-23. Machine rules неизменны: repository-health.v1.json и milestone-gates.v1.json. ROADMAP — очередь, VISUAL_REFERENCE_SPEC — эталоны, STATUS/#10 — состояние.
 
 ## 1. Единица исполнения

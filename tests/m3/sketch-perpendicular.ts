@@ -104,6 +104,7 @@ const controllers = fs.readFileSync('src/web/useSketchConstraintControllers.ts',
 const layer = fs.readFileSync('src/web/viewport/SketchCoincidentInteractionLayer.tsx', 'utf8');
 const bridge = fs.readFileSync('src/web/CoincidentPartModelStage.tsx', 'utf8');
 const appSource = fs.readFileSync('src/web/App.tsx', 'utf8');
+const workspaceContentSource = fs.readFileSync('src/web/CadWorkspaceContent.tsx', 'utf8');
 const mobile = fs.readFileSync('src/web/MobileToolsPanel.tsx', 'utf8');
 const commandGroups = fs.readFileSync('src/web/CadShellCommandGroups.tsx', 'utf8');
 const registry = JSON.parse(fs.readFileSync('spec/ui/command-registry.v1.json', 'utf8'));
@@ -120,7 +121,8 @@ assert.match(layer, /SketchLinePairInteractionLayer/, 'Parallel and Perpendicula
 assert.match(layer, /pointSegmentDistance/, 'whole-Line hit testing must remain geometric');
 assert.doesNotMatch(layer, /CadApplication|app\.execute|OpenCascade|PlaneGCS/, 'interaction layer must not mutate document or own solver runtime');
 assert.match(bridge, /useSketchPerpendicularCommit/, 'stage bridge must expose focused Perpendicular commit context');
-assert.match(appSource, /perpendicularCommit=\{workspace\.applyPerpendicularConstraint\}/, 'App must wire Perpendicular through focused workspace ownership');
+assert.match(appSource, /<CadWorkspaceContent\b/, 'App must delegate stage composition');
+assert.match(workspaceContentSource, /perpendicularCommit=\{p\.applyPerpendicularConstraint\}/, 'workspace composition must wire Perpendicular through focused ownership');
 assert.match(mobile, /id: 'constraint\.perpendicular'/, 'mobile Tools must expose Perpendicular');
 assert.match(commandGroups, /getAction\('constraint\.perpendicular'\)/, 'desktop ribbon must consume the same action through focused command groups');
 const command = registry.commands.find((item: { id: string }) => item.id === 'constraint.perpendicular');

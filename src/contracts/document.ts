@@ -7,6 +7,7 @@ import type {
   CadMateId,
   CadOccurrenceId,
   CadSheetId,
+  CadDraftLayerId,
   CadSketchEntityId,
   CadSketchId,
   CadStableReferenceId,
@@ -14,7 +15,10 @@ import type {
 import { createCadId } from './ids';
 import { validateCadPartSketchCollections } from './sketch';
 import { validateCadPartSemantics } from './partSemantics';
+import { validateCadDrawingDocument, type CadDraftEntity, type CadDraftLayer } from './drafting';
 import type { CadConstraint, CadDimension, CadSketch } from './sketch';
+
+export type { CadDraftEntity, CadDraftLayer, CadDraftLineEntity } from './drafting';
 
 export type {
   CadCoincidentConstraint,
@@ -44,7 +48,7 @@ export type {
   CadVerticalDimension,
 } from './sketch';
 
-export const CAD_DOCUMENT_SCHEMA_VERSION = 3 as const;
+export const CAD_DOCUMENT_SCHEMA_VERSION = 4 as const;
 export const ASA_CAD_ENGINE_VERSION = '0.1.0-m1' as const;
 
 export type CadDocumentKind =
@@ -149,10 +153,14 @@ export interface CadAssemblyDocument extends CadBaseDocument {
 export interface CadDrawingSheet {
   id: CadSheetId;
   name: string;
-  format: string;
+  format: 'A4';
   orientation: 'portrait' | 'landscape';
   scale: number;
-  entities: Array<Record<string, unknown>>;
+  width: number;
+  height: number;
+  layers: CadDraftLayer[];
+  activeLayerId: CadDraftLayerId;
+  entities: CadDraftEntity[];
 }
 
 export interface CadDrawingDocument extends CadBaseDocument {
@@ -244,8 +252,27 @@ export function createEmptyCadDocument(
       };
     case 'assembly':
       return { ...base, kind, variables: {}, occurrences: [], mates: [], stableReferences: [] };
-    case 'drawing':
-      return { ...base, kind, sheets: [], modelReferences: [] };
+    case 'drawing': {
+      const sheetId = createCadId<CadSheetId>('sheet');
+      const layerId = createCadId<CadDraftLayerId>('layer');
+      return {
+        ...base,
+        kind,
+        sheets: [{
+          id: sheetId,
+          name: 'Лист 1',
+          format: 'A4',
+          orientation: 'landscape',
+          scale: 1,
+          width: 297,
+          height: 210,
+          layers: [{ id: layerId, name: 'Системный слой', visible: true, locked: false }],
+          activeLayerId: layerId,
+          entities: [],
+        }],
+        modelReferences: [],
+      };
+    }
     case 'fragment':
       return { ...base, kind, entities: [], layers: [] };
     case 'specification':
@@ -289,4 +316,5 @@ export function validateCadDocument(value: unknown): asserts value is CadDocumen
     validateCadPartSketchCollections(value);
     validateCadPartSemantics(value as CadPartDocument);
   }
+  if (document.kind === 'drawing') validateCadDrawingDocument(value as CadDrawingDocument);
 }
