@@ -121,7 +121,7 @@
     }
   ],
   "frozenCeilings": {
-    "src/web/App.tsx": 15167,
+    "src/web/App.tsx": 13595,
     "src/web/CadViewport.tsx": 27846,
     "src/web/ParameterPanel.tsx": 9590,
     "src/web/usePartSketchWorkspace.ts": 8454,
@@ -131,7 +131,7 @@
     "src/web/usePartFeatureController.ts": 7804,
     "src/web/PartSketchWorkspaceModel.ts": 1015,
     "src/web/PartSketchWorkspaceTypes.ts": 140,
-    "src/web/PartModelStage.tsx": 3423,
+    "src/web/PartModelStage.tsx": 2667,
     "src/web/SketchEditingStage.tsx": 5989,
     "src/runtime/OpenCascadePartRuntime.ts": 17799,
     "tests/m3/M3BrowserHarness.mjs": 7891

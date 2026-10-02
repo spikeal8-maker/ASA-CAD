@@ -12,6 +12,7 @@ const partStage = fs.readFileSync('src/web/PartModelStage.tsx', 'utf8');
 const sketchStage = fs.readFileSync('src/web/SketchEditingStage.tsx', 'utf8');
 const directTools = fs.readFileSync('src/web/SketchDirectToolLayers.tsx', 'utf8');
 const app = fs.readFileSync('src/web/App.tsx', 'utf8');
+const workspaceContent = fs.readFileSync('src/web/CadWorkspaceContent.tsx', 'utf8');
 const shellMain = fs.readFileSync('src/web/CadShellMain.tsx', 'utf8');
 const styles = fs.readFileSync('src/web/styles/management.css', 'utf8');
 const bindings = fs.readFileSync('src/web/M2CadUiActions.ts', 'utf8');
@@ -52,7 +53,9 @@ assert.match(bindings, /'sketch\.line': binding\(handlers\.line/, 'shared action
 assert.match(workspace, /useSketchEditingController/, 'Part/Sketch facade must compose the focused Sketch editing owner');
 assert.match(editing, /setPanel\('closed'\)/, 'direct Line must collapse management UI before drawing');
 assert.match(editing, /setActiveCommand\('sketch\.line'\)/, 'Line activation must stay in the Sketch editing owner');
-assert.match(app, /<CadShellMain\b/, 'App must delegate work-area shell presentation to CadShellMain');
+assert.match(app, /<CadWorkspaceContent\b/, 'App must delegate work-area composition to CadWorkspaceContent');
+assert.doesNotMatch(app, /<CadShellMain\b/, 'App must not regain direct work-area shell composition');
+assert.match(workspaceContent, /<CadShellMain\b/, 'CadWorkspaceContent must own CadShellMain composition');
 assert.match(shellMain, /props\.activePanel === 'closed' \? ' panel-closed'/, 'shell presentation must expose explicit closed management state');
 assert.match(styles, /\.content-area\.panel-closed \.management-panel \{ display: none; \}/, 'closed panel must not cover the workplane');
 

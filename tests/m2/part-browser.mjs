@@ -305,7 +305,7 @@ async function saveAndInspectDocument() {
 async function reloadReopenAndEditHole() {
   await page.reload({ waitUntil: 'networkidle' });
   await page.getByRole('button', { name: 'ASA-CAD', exact: true }).waitFor();
-  await page.getByText('Новая деталь', { exact: true }).waitFor();
+  await page.locator('.part-empty-workarea').waitFor();
   assert.deepEqual(await loadedWasmResources(), [], 'Reloaded empty shell eagerly loaded OpenCascade WASM');
 
   await page.getByTitle('Открыть').click();

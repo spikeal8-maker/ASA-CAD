@@ -4,7 +4,7 @@ import type { CadUiAction } from './CadUiAction';
 import { CadUiActionSearchResults, CadUiGlobalActionButton } from './CadUiActionControls';
 import { documentNames } from './CadDocumentPresentation';
 import { CadIcon, type CadIconName } from './CadIcon';
-import { CadShellCommandGroups } from './CadShellCommandGroups';
+import { CadShellCommandGroups, DrawingCommandGroups } from './CadShellCommandGroups';
 import { CadFileMenu } from './CadFileMenu';
 
 export type CadWorkspaceId = 'solid' | 'sketch' | 'surfaces' | 'diagnostics' | 'view';
@@ -76,7 +76,9 @@ export function CadShellTop(props: CadShellTopProps) {
               <WorkspaceTab active={props.activeWorkspace === 'diagnostics'} onClick={() => props.setActiveWorkspace('diagnostics')}>Проверка / Измерения</WorkspaceTab>
               <WorkspaceTab active={props.activeWorkspace === 'view'} onClick={() => props.setActiveWorkspace('view')}>Вид</WorkspaceTab>
             </>
-          ) : <WorkspaceTab active>{documentNames[props.documentKind]}</WorkspaceTab>}
+          ) : props.documentKind === 'drawing'
+            ? <WorkspaceTab active>Черчение</WorkspaceTab>
+            : <WorkspaceTab active>{documentNames[props.documentKind]}</WorkspaceTab>}
         </div>
 
         <div className="command-ribbon">
@@ -86,6 +88,8 @@ export function CadShellTop(props: CadShellTopProps) {
               rectangleReady={props.rectangleReady} rectangleWidth={props.rectangleWidth} rectangleHeight={props.rectangleHeight}
               circleReady={props.circleReady} circleDiameter={props.circleDiameter} viewName={props.viewName}
             />
+          ) : props.documentKind === 'drawing' ? (
+            <DrawingCommandGroups getAction={props.getAction} />
           ) : (
             <div className="planned-workspace-note">
               <strong>{documentNames[props.documentKind]}</strong>

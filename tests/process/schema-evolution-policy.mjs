@@ -6,12 +6,14 @@ const milestonePolicyPath = 'spec/process/milestone-gates.v1.json';
 const documentPath = 'src/contracts/document.ts';
 const sketchPath = 'src/contracts/sketch.ts';
 const dimensionsPath = 'src/contracts/sketchDimensions.ts';
+const draftingPath = 'src/contracts/drafting.ts';
 
 const schemaPolicy = JSON.parse(fs.readFileSync(schemaPolicyPath, 'utf8'));
 const milestonePolicy = JSON.parse(fs.readFileSync(milestonePolicyPath, 'utf8'));
 const documentSource = fs.readFileSync(documentPath, 'utf8');
 const sketchSource = fs.readFileSync(sketchPath, 'utf8');
 const dimensionSource = fs.readFileSync(dimensionsPath, 'utf8');
+const draftingSource = fs.readFileSync(draftingPath, 'utf8');
 
 assert.equal(schemaPolicy.policyVersion, 1);
 assert.equal(schemaPolicy.schemaVersionSemantics, 'exact-persisted-grammar');
@@ -36,7 +38,7 @@ assert.deepEqual(
 );
 assert.equal(versions.at(-1), sourceVersion);
 
-const grammarKeys = ['documentKinds', 'sketchEntityTypes', 'constraintTypes', 'dimensionTypes'];
+const grammarKeys = ['documentKinds', 'sketchEntityTypes', 'drawingEntityTypes', 'constraintTypes', 'dimensionTypes'];
 for (const schema of schemaPolicy.schemas) {
   assert.equal(Number.isInteger(schema.version), true, 'Schema version must be an integer');
   assert.equal(typeof schema.fixture, 'string');
@@ -72,8 +74,13 @@ const sourceDimensionTypes = [
   ...dimensionSource.matchAll(/export interface Cad[A-Za-z0-9]+Dimension extends CadDimensionBase<'([^']+)'>/g),
 ].map((match) => match[1]);
 
+const sourceDrawingEntityTypes = [
+  ...draftingSource.matchAll(/export interface CadDraft[A-Za-z0-9]+Entity\s*\{[\s\S]*?\btype:\s*'([^']+)'[\s\S]*?\n\}/g),
+].map((match) => match[1]);
+
 assertUnique(sourceDocumentKinds, 'CadDocument kind');
 assertUnique(sourceSketchEntityTypes, 'Sketch entity');
+assertUnique(sourceDrawingEntityTypes, 'Drawing entity');
 assertUnique(sourceConstraintTypes, 'Constraint');
 assertUnique(sourceDimensionTypes, 'Dimension');
 
@@ -86,6 +93,11 @@ assert.deepEqual(
   sourceSketchEntityTypes,
   currentSchema.sketchEntityTypes,
   'Current persisted Sketch entity grammar must exactly match current schema policy',
+);
+assert.deepEqual(
+  sourceDrawingEntityTypes,
+  currentSchema.drawingEntityTypes,
+  'Current persisted Drawing entity grammar must exactly match current schema policy',
 );
 assert.deepEqual(
   sourceConstraintTypes,
@@ -118,9 +130,11 @@ const protectedV1DimensionTypes = ['linear', 'horizontal', 'vertical', 'diameter
 const v1 = schemaPolicy.schemas.find((schema) => schema.version === 1);
 const v2 = schemaPolicy.schemas.find((schema) => schema.version === 2);
 const v3 = schemaPolicy.schemas.find((schema) => schema.version === 3);
+const v4 = schemaPolicy.schemas.find((schema) => schema.version === 4);
 assert.ok(v1, 'Schema-v1 policy entry is required');
 assert.ok(v2, 'Schema-v2 policy entry is required');
 assert.ok(v3, 'Schema-v3 policy entry is required');
+assert.ok(v4, 'Schema-v4 policy entry is required');
 
 assert.deepEqual(v1.documentKinds, protectedDocumentKinds, 'Schema-v1 document-kind grammar is frozen');
 assert.deepEqual(v1.sketchEntityTypes, protectedSketchEntityTypes, 'Schema-v1 Sketch entity grammar is frozen');
@@ -143,6 +157,14 @@ assert.deepEqual(
   [...v2.dimensionTypes, 'angular'],
   'v2->v3 persisted-union delta must be Angular Dimension only',
 );
+assert.deepEqual(v1.drawingEntityTypes, [], 'Schema-v1 Drawing entity grammar is frozen empty');
+assert.deepEqual(v2.drawingEntityTypes, [], 'Schema-v2 Drawing entity grammar is frozen empty');
+assert.deepEqual(v3.drawingEntityTypes, [], 'Schema-v3 Drawing entity grammar is frozen empty');
+assert.deepEqual(v4.documentKinds, v3.documentKinds, 'v3->v4 must not change document-kind grammar');
+assert.deepEqual(v4.sketchEntityTypes, v3.sketchEntityTypes, 'v3->v4 must not change Sketch entity grammar');
+assert.deepEqual(v4.constraintTypes, v3.constraintTypes, 'v3->v4 must not change Constraint grammar');
+assert.deepEqual(v4.dimensionTypes, v3.dimensionTypes, 'v3->v4 must not change Dimension grammar');
+assert.deepEqual(v4.drawingEntityTypes, ['line'], 'v3->v4 persisted-union delta must be Drawing Line only');
 
 const compatibility = milestonePolicy.compatibility ?? {};
 for (const flag of [

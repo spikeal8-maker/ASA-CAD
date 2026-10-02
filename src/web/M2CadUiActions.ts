@@ -44,6 +44,8 @@ export interface M2CadUiActionHandlers {
   left(): void | Promise<void>;
   right(): void | Promise<void>;
   isometric(): void | Promise<void>;
+  drawingLine(): void | Promise<void>;
+  deleteDrawingEntity(): void | Promise<void>;
 }
 
 export interface M2CadUiActionState {
@@ -70,6 +72,8 @@ export interface M2CadUiActionState {
   extrudeDisabledReason?: string;
   canCutExtrude: boolean;
   canFillet: boolean;
+  canDrawLine: boolean;
+  hasDrawingEntitySelection: boolean;
 }
 
 function binding(
@@ -129,6 +133,9 @@ export function createM2CadUiActionBindings(
     'part.extrude': binding(handlers.extrude, state.canExtrude, state.extrudeDisabledReason ?? 'Завершите прямоугольный эскиз'),
     'part.cutExtrude': binding(handlers.cutExtrude, state.canCutExtrude, 'Создайте окружность на грани и завершите эскиз'),
     'part.fillet': binding(handlers.fillet, state.canFillet, 'Сначала постройте сквозной вырез'),
+
+    'draft.line': binding(handlers.drawingLine, state.canDrawLine, 'Откройте Чертеж'),
+    'draft.entity.delete': binding(handlers.deleteDrawingEntity, state.hasDrawingEntitySelection, 'Выберите элемент чертежа'),
 
     'view.fit': binding(handlers.fit),
     'view.front': binding(handlers.front),

@@ -11,6 +11,8 @@ export type CadStableReferenceId = Brand<string, 'CadStableReferenceId'>;
 export type CadOccurrenceId = Brand<string, 'CadOccurrenceId'>;
 export type CadMateId = Brand<string, 'CadMateId'>;
 export type CadSheetId = Brand<string, 'CadSheetId'>;
+export type CadDraftLayerId = Brand<string, 'CadDraftLayerId'>;
+export type CadDraftEntityId = Brand<string, 'CadDraftEntityId'>;
 
 export type CadObjectId =
   | CadDocumentId
@@ -23,7 +25,9 @@ export type CadObjectId =
   | CadStableReferenceId
   | CadOccurrenceId
   | CadMateId
-  | CadSheetId;
+  | CadSheetId
+  | CadDraftLayerId
+  | CadDraftEntityId;
 
 /**
  * Generates an ASA-owned opaque ID. IDs are product/document identity and must

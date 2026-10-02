@@ -128,6 +128,22 @@ function PartCommandGroups(props: { getAction(id: string): CadUiAction; viewName
   );
 }
 
+export function DrawingCommandGroups(props: { getAction(id: string): CadUiAction }) {
+  return (
+    <div className="drawing-command-groups">
+      <CommandGroup label="Геометрия">
+        <ActionButton action={props.getAction('draft.line')} icon="line" text />
+      </CommandGroup>
+      <CommandGroup label="Редактирование">
+        <ActionButton action={props.getAction('draft.entity.delete')} icon="close" text />
+      </CommandGroup>
+      <CommandGroup label="Вид">
+        <ActionButton action={props.getAction('view.fit')} icon="fit" text />
+      </CommandGroup>
+    </div>
+  );
+}
+
 function ViewCommandGroups(props: { viewName: string; getAction(id: string): CadUiAction }) {
   return (
     <CommandGroup label="Ориентация">

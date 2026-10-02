@@ -123,6 +123,11 @@ jobs:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m2/part-core-profile-browser.mjs
 
+      - name: Exercise R1 persistent WorkArea and first Drawing workflow
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
+        run: node tests/m2/r1-first-workflow-browser.mjs
+
       - name: Exercise live Sketch finish/select/re-edit/persistence
         env:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/

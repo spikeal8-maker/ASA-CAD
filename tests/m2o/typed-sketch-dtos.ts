@@ -21,7 +21,7 @@ import {
 } from '../../src';
 import type { CadConstraintId, CadDimensionId } from '../../src/contracts/ids';
 
-assert.equal(CAD_DOCUMENT_SCHEMA_VERSION, 3, 'current typed Sketch DTO test must track schema v3');
+assert.equal(CAD_DOCUMENT_SCHEMA_VERSION, 4, 'current typed Sketch DTO test must track schema v4 while preserving Sketch grammar');
 
 const part = createEmptyCadDocument('part', { title: 'O7 typed sketch' });
 const sketchId = createCadId<CadSketchId>('sketch');
@@ -242,4 +242,4 @@ const legacyParsed = parseCadDocument(JSON.stringify(legacyJson));
 assert.equal(legacyParsed.kind, 'part');
 assert.equal(legacyParsed.kind === 'part' ? legacyParsed.sketches.length : -1, 1);
 
-console.log('M2O O7 typed Sketch DTO PASS (schema-v3 round-trip + Radius/Angular + strict malformed-shape rejection)');
+console.log('M2O O7 typed Sketch DTO PASS (schema-v4 with unchanged Sketch grammar + Radius/Angular + strict malformed-shape rejection)');

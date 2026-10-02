@@ -1,0 +1,40 @@
+{
+  "kind": "drawing",
+  "schemaVersion": 4,
+  "engineVersion": "0.1.0-m1",
+  "documentId": "doc_v4_drawing",
+  "title": "Чертеж R1",
+  "units": "mm",
+  "metadata": {},
+  "linkedDocuments": [],
+  "sheets": [
+    {
+      "id": "sheet_v4_a4",
+      "name": "Лист 1",
+      "format": "A4",
+      "orientation": "landscape",
+      "scale": 1,
+      "width": 297,
+      "height": 210,
+      "layers": [
+        {
+          "id": "layer_v4_system",
+          "name": "Системный слой",
+          "visible": true,
+          "locked": false
+        }
+      ],
+      "activeLayerId": "layer_v4_system",
+      "entities": [
+        {
+          "id": "draft_line_v4",
+          "type": "line",
+          "layerId": "layer_v4_system",
+          "from": [20, 20],
+          "to": [70, 20]
+        }
+      ]
+    }
+  ],
+  "modelReferences": []
+}

@@ -147,11 +147,12 @@ try {
     assert.equal(state.featureCount, 2);
     assert.equal(state.stableReferenceCount, 0);
     await fx.page.getByText('Ошибка перестроения', { exact: true }).waitFor();
-    await fx.page.getByText('B-Rep не построен', { exact: true }).waitFor();
-    const bodyText = await fx.page.locator('.model-stage').innerText();
-    assert.match(bodyText, /cut|circle|profile|окруж|профил/i, `rebuild-error fixture has no useful diagnostic: ${bodyText}`);
+    const workArea = fx.page.locator('[data-testid="part-model-stage"][data-workarea-kind="part-empty"][data-model-context-ready="true"]');
+    await workArea.waitFor();
+    const diagnostic = await workArea.locator('.part-workarea-hud small').innerText();
+    assert.match(diagnostic, /cut|circle|profile|окруж|профил/i, `rebuild-error fixture has no useful diagnostic: ${diagnostic}`);
     assert.equal(await fx.page.locator('[data-testid="cad-viewport"] canvas').count(), 0, 'invalid fixture rendered stale B-Rep canvas');
-    assert.ok(fx.wasmRequests.length >= 1, 'rebuild-error fixture never exercised OpenCascade');
+    assert.ok(fx.wasmRequests.some((url) => /opencascade/i.test(url)), 'rebuild-error fixture never exercised OpenCascade');
     console.log('  ✓ /dev/part/rebuild-error — real recompute failure surfaced, no stale canvas');
     await fx.finish();
   }

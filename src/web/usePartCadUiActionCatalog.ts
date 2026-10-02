@@ -27,6 +27,12 @@ export interface PartCadUiActionCatalogOptions {
   symmetricConstraint: ResultExecutor;
   pointOnCurveConstraint: ResultExecutor;
   requestView(label: string): void;
+  drawing?: {
+    line: ResultExecutor;
+    deleteEntity: ResultExecutor;
+    canLine: boolean;
+    hasSelection: boolean;
+  };
 }
 
 /** App-level wiring for the one shared desktop/mobile/search CadUiAction catalog. */
@@ -75,6 +81,8 @@ export function usePartCadUiActionCatalog(options: PartCadUiActionCatalogOptions
     left: () => requestView('Слева'),
     right: () => requestView('Справа'),
     isometric: () => requestView('Изометрия'),
+    drawingLine: ignoreResult(options.drawing?.line ?? (() => undefined)),
+    deleteDrawingEntity: ignoreResult(options.drawing?.deleteEntity ?? (() => undefined)),
   }, {
     canUndo,
     canRedo,
@@ -103,5 +111,7 @@ export function usePartCadUiActionCatalog(options: PartCadUiActionCatalogOptions
     extrudeDisabledReason: workspace.extrude.disabledReason,
     canCutExtrude: workspace.canCut,
     canFillet: workspace.canFillet,
+    canDrawLine: options.drawing?.canLine ?? false,
+    hasDrawingEntitySelection: options.drawing?.hasSelection ?? false,
   });
 }
