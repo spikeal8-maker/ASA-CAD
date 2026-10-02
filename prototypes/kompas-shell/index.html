@@ -23,6 +23,7 @@
   --toast-bg:#1b1b1b; --toast-text:#f2f2f2; --menu-pop:#3d3d3d; --shadow:rgba(0,0,0,.45); --scroll:#6a6a6a;
   --menu-bg:#666666; --menu-border:#d2d2d2; --menu-sep:#e6e6e6; --menu-hover:#7d7d7d; --menu-text:#ffffff; --menu-dim:#a3a3a3; --menu-icon-on:#000000;
   --tip-bg:#fdf6c8; --tip-text:#1e1e1e; --tip-border:#8a8156; --dlg-bg:#484848; --dlg-head:#333333; --btn-bg:#5e5e5e; --btn-border:#2a2a2a;
+  --sf-front:#cdcdcd; --sf-top:#f4f4f4; --sf-side:#9d9d9d; --sf-dark:#3a3a3a; --sf-line:#1c1c1c; --sf-acc:#5cb8ff;
 }
 @media (prefers-color-scheme: light){
   :root:not([data-theme="dark"]){
@@ -42,6 +43,7 @@
     --toast-bg:#2b2b2b; --toast-text:#f5f5f5; --menu-pop:#ffffff; --shadow:rgba(0,0,0,.18); --scroll:#b9b9b9;
     --menu-bg:#ffffff; --menu-border:#a6a6a6; --menu-sep:#d4d4d4; --menu-hover:#cde1f3; --menu-text:#1c1c1c; --menu-dim:#a2a2a2; --menu-icon-on:#cde1f3;
     --tip-bg:#ffffe1; --tip-text:#1e1e1e; --tip-border:#9a9a9a; --dlg-bg:#f5f5f5; --dlg-head:#e3e3e3; --btn-bg:#ffffff; --btn-border:#b5b5b5;
+    --sf-front:#d3d9e1; --sf-top:#ffffff; --sf-side:#98a3b1; --sf-dark:#55606c; --sf-line:#2b3137; --sf-acc:#1f6fd1;
   }
 }
 :root[data-theme="light"]{
@@ -61,6 +63,7 @@
   --toast-bg:#2b2b2b; --toast-text:#f5f5f5; --menu-pop:#ffffff; --shadow:rgba(0,0,0,.18); --scroll:#b9b9b9;
     --menu-bg:#ffffff; --menu-border:#a6a6a6; --menu-sep:#d4d4d4; --menu-hover:#cde1f3; --menu-text:#1c1c1c; --menu-dim:#a2a2a2; --menu-icon-on:#cde1f3;
     --tip-bg:#ffffe1; --tip-text:#1e1e1e; --tip-border:#9a9a9a; --dlg-bg:#f5f5f5; --dlg-head:#e3e3e3; --btn-bg:#ffffff; --btn-border:#b5b5b5;
+    --sf-front:#d3d9e1; --sf-top:#ffffff; --sf-side:#98a3b1; --sf-dark:#55606c; --sf-line:#2b3137; --sf-acc:#1f6fd1;
 }
 :root[data-theme="dark"]{ color-scheme: dark; }
 
@@ -203,6 +206,11 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--select-line);ou
 .btn-t.on,.btn-i.on,.btn-t:active,.btn-i:active{background:var(--btn-press)}
 .btn-t.on span{color:var(--tab-active-text)}
 .btn-t.dim,.btn-i.dim{opacity:.45}
+/* ◢ в углу значка — у команды есть варианты (как в КОМПАСе); щелчок по нему или правая кнопка открывают список */
+.btn-t .var,.btn-i .var{position:absolute;width:10px;height:10px;top:13px;cursor:pointer}
+.btn-t .var{left:12px}.btn-i .var{left:15px}
+.btn-t .var::after,.btn-i .var::after{content:"";position:absolute;right:1px;bottom:1px;border-left:5px solid transparent;border-bottom:5px solid var(--icon)}
+.btn-t .var:hover::after,.btn-i .var:hover::after{border-bottom-color:var(--select-line)}
 
 /* статусы команд ASA-CAD (реестр spec/ui/command-registry.v1.json) */
 .show-status [data-st]::after{content:"";position:absolute;top:2px;left:2px;width:7px;height:7px;border-radius:50%;background:var(--dot,transparent);box-shadow:0 0 0 1px var(--instr)}
@@ -611,14 +619,69 @@ const IC={
  v_left:['M5 8l7-4 7 4v8l-7 4-7-4z',D('M19 8l-7 4v8')],
  v_right:['M5 8l7-4 7 4v8l-7 4-7-4z',F('M19 8l-7 4v8l7-4z')]
 };
+/* объёмные значки твердотельного моделирования: фронтальная диметрия как в КОМПАСе —
+   передняя грань, светлый верх и тёмный бок, разделённые тёмными рёбрами */
+const PL=pts=>'M'+pts.map(p=>p.join(' ')).join('L')+'Z';
+const BOX=(x,y,w,h,d=6)=>['f:'+PL([[x,y],[x+w,y],[x+w,y+h],[x,y+h]]),'t:'+PL([[x,y],[x+d,y-d],[x+w+d,y-d],[x+w,y]]),'s:'+PL([[x+w,y],[x+w+d,y-d],[x+w+d,y+h-d],[x+w,y+h]])];
+/* скругление R7: видимая часть скруглённой поверхности — серп над передней гранью */
+const FILLET3D=['a:M3 13A7 7 0 0 1 10 6L15 1A7 7 0 0 0 8 8Z','f:M3 20V13A7 7 0 0 1 10 6H16V20Z','t:M10 6L15 1H21L16 6Z','s:M16 6L21 1V15L16 20Z'];
+Object.assign(IC,{
+ ts_solid:[...BOX(4,10,11,10,6)],
+ extrude:[...BOX(2,11,11,9,6),'A:M21.5 9.5V2.5','A:m19.5 4.5 2-2 2 2'],
+ cut:[...BOX(2,10,13,10,6),'k:M5 13.5h7v4.5H5z','A:M5 13.5h7v4.5H5z'],
+ fillet:FILLET3D,
+ chamfer3d:['a:M3 11L6 8L11 3L8 6Z','f:M3 20V11L6 8H16V20Z','t:M6 8L11 3H21L16 8Z','s:M16 8L21 3V15L16 20Z'],
+ thicken:[...BOX(2,14,13,4,6),'A:M11.5 11V2.5','A:m9.5 4.5 2-2 2 2'],
+ hole:[...BOX(2,11,13,9,6),'k:M8.1 8a3.4 1.6 0 1 0 6.8 0a3.4 1.6 0 1 0-6.8 0z','B:M8.1 8.4v8M14.9 8.4v8'],
+ fullfillet:['a:M4 13A6 6 0 0 1 16 13L21 8A6 6 0 0 0 9 8Z','f:M4 20V13A6 6 0 0 1 16 13V20Z','s:M16 13L21 8V15L16 20Z'],
+ rib:[...BOX(2,16,15,4,5),...BOX(2,5,4,11,5),'a:M6 15.5V9L12.5 15.5Z'],
+ section:[...BOX(3,10,12,10,6),'p:M1 17L9 9H22L14 17Z'],
+ draft:['f:M3 20L6 8H13L16 20Z','t:M6 8L11 3H18L13 8Z','s:M13 8L18 3L21 15L16 20Z'],
+ addpart:[...BOX(2,12,11,8,5),'A:M20.5 1v6M17.5 4h6'],
+ shell:[...BOX(2,10,13,10,6),'k:M5.2 9L8.7 5.5H18L14.5 9Z'],
+ boolean:[...BOX(2,11,11,9,5),'a:'+c(16,9,5)],
+ slice:[...BOX(1,11,7,9,4),...BOX(12,11,7,9,4),'B:M10.5 2v20'],
+ delbody:[...BOX(2,12,11,8,5),'A:M16.5 2l5.5 5.5M22 2l-5.5 5.5'],
+ pbox:[...BOX(3,12,12,8,5),'a:'+c(3,20,1.7),'a:'+c(15,12,1.7),'a:'+c(20,7,1.7)],
+ delface:['f:M3 11H15V20H3Z','s:M15 11L21 5V14L15 20Z','B:M3 11L9 5H21L15 11Z','A:M1.5 1.5l4.5 4.5M6 1.5l-4.5 4.5'],
+ moveface:['f:M2 12H14V20H2Z','s:M14 12L20 6V14L14 20Z','a:M2 9L8 3H20L14 9Z','A:M22.5 14V4','A:m20.8 5.7 1.7-1.7 1.7 1.7'],
+ replaceface:['f:M2 11H14V20H2Z','s:M14 11L20 5V14L14 20Z','a:M2 11Q7 7.5 8 5H20Q15 8 14 11Z'],
+ resizefillet:[...FILLET3D,'A:M1.5 1.5l3.5 3.5','A:M1.5 5V1.5H5'],
+ resizeface:[...BOX(2,11,11,9,6),'A:M21.8 3v11','A:m20.1 4.7 1.7-1.7 1.7 1.7','A:m20.1 12.3 1.7 1.7 1.7-1.7'],
+ scale3d:[...BOX(2,14,7,6,4),'B:M2 20V8H14V20ZM2 8l6-6h12v12l-6 6','A:M10.5 12.5 17 6','A:M13.5 6H17v3.5'],
+ move3d:[...BOX(2,12,10,8,5),'A:M19 2.5v10M14.5 7.5h9','A:m17.3 4.2 1.7-1.7 1.7 1.7','A:m21.8 5.8 1.7 1.7-1.7 1.7'],
+ gridpat:[...BOX(1,7,6,5,3),...BOX(12,7,6,5,3),...BOX(1,18,6,5,3),...BOX(12,18,6,5,3)],
+ copyobj:['B:M8 8H18V16H8ZM8 8l5-5h10v8l-5 5',...BOX(2,13,10,8,4)],
+ collection:[...BOX(2,13,8,7,4),'f:M14 8.5v9a3.5 1.5 0 0 0 7 0v-9z','t:M14 8.5a3.5 1.5 0 1 0 7 0a3.5 1.5 0 1 0-7 0z'],
+ plane:['t:M3 17L9 7H21L15 17Z'],
+ planeTree:[F('M4 16l5-8h11l-5 8z')]
+});
+/* префиксы частей значка: F — заливка цветом значка, D — пунктир; объёмные значки:
+   f — передняя грань, t — верхняя (светлая), s — боковая (тёмная), k — отверстие/полость,
+   a — элемент операции (акцент), p — полупрозрачная плоскость, A — линия-акцент, B — пунктир-акцент */
+const PART={
+  F:d=>`<path d="${d}" fill="currentColor" stroke="none"/>`,
+  D:d=>`<path d="${d}" stroke-dasharray="2.2 2"/>`,
+  f:d=>`<path d="${d}" fill="var(--sf-front)"/>`,
+  t:d=>`<path d="${d}" fill="var(--sf-top)"/>`,
+  s:d=>`<path d="${d}" fill="var(--sf-side)"/>`,
+  k:d=>`<path d="${d}" fill="var(--sf-dark)"/>`,
+  a:d=>`<path d="${d}" fill="var(--sf-acc)"/>`,
+  p:d=>`<path d="${d}" fill="var(--sf-acc)" fill-opacity=".28" stroke="var(--sf-acc)"/>`,
+  A:d=>`<path d="${d}" fill="none" stroke="var(--sf-acc)" stroke-width="1.9"/>`,
+  B:d=>`<path d="${d}" fill="none" stroke="var(--sf-acc)" stroke-dasharray="2 1.6" stroke-width="1.3"/>`
+};
 function svg(name,size=16,cls=''){
   const parts=IC[name]||IC.ts_generic;
+  let solid=false;
   const inner=parts.map(p=>{
-    if(p.startsWith('F:'))return `<path d="${p.slice(2)}" fill="currentColor" stroke="none"/>`;
-    if(p.startsWith('D:'))return `<path d="${p.slice(2)}" stroke-dasharray="2.2 2"/>`;
-    return `<path d="${p}"/>`;
+    const m=/^([FDftskapAB]):/.exec(p);
+    if(!m)return `<path d="${p}"/>`;
+    if('ftskapAB'.includes(m[1]))solid=true;
+    return PART[m[1]](p.slice(2));
   }).join('');
-  return `<svg class="ic ${cls}" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${inner}</svg>`;
+  const stroke=solid?'stroke="var(--sf-line)" stroke-width="1.15"':'stroke="currentColor" stroke-width="1.7"';
+  return `<svg class="ic ${cls}${solid?' ic-solid':''}" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" ${stroke} stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${inner}</svg>`;
 }
 const esc=s=>String(s).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
 
@@ -629,23 +692,23 @@ const I=(label,icon,id=null,o={})=>({kind:'i',label,icon,id,...o});
 const SYS={label:'Системная',cols:[[I('Создать','new','system.new'),I('Печать','print'),I('Отменить','undo','system.undo')],[I('Открыть','open','system.open'),I('Предварительный просмотр','preview'),I('Повторить','redo','system.redo')],[I('Сохранить','save','system.save'),I('Сохранить как','saveas','system.saveAs')]]};
 const SKETCH_P={label:'Эскиз',cols:[[T('Автолиния','autoline','sketch.polyline'),T('Окружность','circle','sketch.circle'),T('Прямоугольник','rectangle','sketch.rectangle')]],
   x:[[T('Автоосевая','autoaxis'),T('Вспомогательная прямая','auxline','sketch.construction'),T('Спроецировать объект','project','sketch.project')]]};
-const AUX_P={label:'Вспомогательная геометрия',cols:[[I('Плоскость','plane','part.datum.plane'),I('Ось','axis','part.datum.axis'),I('Точка','point3','part.datum.point')],[I('Контрольная точка','ctrlpoint','part.controlPoint'),I('Присоединительная точка','connpoint','part.connectionPoint'),I('Локальная система координат','lcs')]]};
+const AUX_P={label:'Вспомогательная геометрия',cols:[[I('Плоскость','plane','part.datum.plane',{v:'planes'}),I('Ось','axis','part.datum.axis',{v:'axes'}),I('Точка','point3','part.datum.point')],[I('Контрольная точка','ctrlpoint','part.controlPoint'),I('Присоединительная точка','connpoint','part.connectionPoint'),I('Локальная система координат','lcs')]]};
 const DIAG_P={label:'Диагностика',cols:[[I('Расстояние и угол','measure','part.measureDistanceAngle'),I('Взаимное отклонение','interf'),I('Анализ отклонений','checkgeo','part.checkGeometry')],[I('Длина ребра','medge','part.measureEdge'),I('МЦХ модели','mass'),I('Проверка коллизий','boolean')]],
   x:[[I('Проверка гладкости','offsetsurf')],[I('Проверка непрерывности','intcurve')]]};
 const TOOLSETS={
  solid:{label:'Твердотельное моделирование',icon:'ts_solid',panels:[
   SYS,SKETCH_P,
   {label:'Элементы тела',cols:[
-   [T('Элемент выдавливания','extrude','part.extrude'),T('Вырезать выдавливанием','cut','part.cutExtrude'),T('Скругление','fillet','part.fillet')],
-   [T('Придать толщину','thicken'),T('Отверстие простое','hole','part.hole.simple'),T('Полное скругление','fullfillet')],
-   [T('Ребро жесткости','rib','part.rib'),T('Сечение','section'),T('Уклон','draft','part.draft')],
+   [T('Элемент выдавливания','extrude','part.extrude',{v:'add'}),T('Вырезать выдавливанием','cut','part.cutExtrude',{v:'cut'}),T('Скругление','fillet','part.fillet',{v:'fillet'})],
+   [T('Придать толщину','thicken'),T('Отверстие простое','hole','part.hole.simple',{v:'hole'}),T('Полное скругление','fullfillet')],
+   [T('Ребро жесткости','rib','part.rib'),T('Сечение','section'),T('Уклон','draft','part.draft',{v:'draft'})],
    [T('Добавить деталь-заготовку','addpart'),T('Оболочка','shell','part.shell'),T('Булева операция','boolean')]],
-   x:[[T('Масштабировать','scale'),T('Параллелепипед по точке и трем точкам','addpart')],[T('Изменить положение','move')],[T('Разрезать','section')],[T('Удалить тело/поверхность','delface')]]},
+   x:[[T('Масштабировать','scale3d'),T('Параллелепипед по точке и трем точкам','pbox')],[T('Изменить положение','move3d')],[T('Разрезать','slice')],[T('Удалить тело/поверхность','delbody')]]},
   {label:'Прямое моделирование',cols:[[T('Удалить грани','delface'),T('Переместить грани','moveface'),T('Заменить грани','replaceface')]],
-   x:[[T('Изменить размер скругления','fillet'),T('Изменить размер грани','moveface')]]},
+   x:[[T('Изменить размер скругления','resizefillet'),T('Изменить размер грани','resizeface')]]},
   {label:'Элементы каркаса',cols:[[T('Точка по координатам','pointxyz'),T('Контур','contour'),T('Спираль цилиндрическая','helix')]],
    x:[[T('Сплайн по точкам','spline')]]},
-  {label:'Массив, копирование',cols:[[T('Массив по сетке','gridpat','part.pattern.grid'),T('Копировать объекты','copyobj'),T('Коллекция геометрии','collection','part.collection')]]},
+  {label:'Массив, копирование',cols:[[T('Массив по сетке','gridpat','part.pattern.grid',{v:'arrays'}),T('Копировать объекты','copyobj'),T('Коллекция геометрии','collection','part.collection')]]},
   AUX_P,
   {label:'Размеры',cols:[[I('Линейный размер','dimlin'),I('Угловой размер','dimang'),I('Производные размеры','dimauto')],[I('Диаметральный размер','dimdia'),I('Радиальный размер','dimrad'),I('Разместить производные размеры','dimh')]],
    x:[[I('Размер дуги окружности','arc')]]},
@@ -671,13 +734,13 @@ const TOOLSETS={
    [T('Усечение поверхности','trimsurf'),T('Разбиение поверхности','splitsurf'),T('Поверхность соединения','blendsurf')],
    [T('Поверхность по сети кривых','network'),T('Поверхность конического сечения','conic'),T('Скругление','fillet')]],
    x:[[T('Придать толщину','thicken'),T('Продление поверхности','extendc')],[T('Удалить грани','delface'),T('Восстановление поверхности','patch')],[T('Поверхность по сети точек','gridpat'),T('Импортированная поверхность','open')],[T('Поверхность по пласту точек','network')]]},
-  {label:'Массив, копирование',cols:[[I('Массив по сетке','gridpat','part.pattern.grid'),I('Копировать объекты','copyobj'),I('Коллекция геометрии','collection','part.collection')]]},
+  {label:'Массив, копирование',cols:[[I('Массив по сетке','gridpat','part.pattern.grid',{v:'arrays'}),I('Копировать объекты','copyobj'),I('Коллекция геометрии','collection','part.collection')]]},
   AUX_P,DIAG_P
  ]},
  sketch:{label:'Инструменты эскиза',icon:'ts_sketch',panels:[
   SYS,
-  {label:'Элементы',cols:[[T('Элемент выдавливания','extrude','part.extrude'),T('Вырезать выдавливанием','cut','part.cutExtrude'),T('Ребро жесткости','rib','part.rib')]],
-   x:[[T('Сечение','section'),T('Разрезать','section'),T('Удалить тело/поверхность','delface')]]},
+  {label:'Элементы',cols:[[T('Элемент выдавливания','extrude','part.extrude',{v:'add'}),T('Вырезать выдавливанием','cut','part.cutExtrude',{v:'cut'}),T('Ребро жесткости','rib','part.rib')]],
+   x:[[T('Сечение','section'),T('Разрезать','slice'),T('Удалить тело/поверхность','delbody')]]},
   {label:'Геометрия',cols:[
    [T('Автолиния','autoline','sketch.polyline'),T('Прямоугольник','rectangle','sketch.rectangle'),T('Отрезок','line','sketch.line')],
    [T('Окружность','circle','sketch.circle'),T('Дуга','arc','sketch.arc'),T('Вспомогательная прямая','auxline','sketch.construction')],
@@ -745,18 +808,18 @@ const MENUS={
  'Моделирование':()=>[M('Добавить деталь-заготовку...',{i:'addpart'}),M('Добавить компоновочную геометрию из файла...',{i:'collection'}),S,
    M('Добавить элемент',{s:()=>[M('Элемент выдавливания',{i:'extrude',id:'part.extrude'}),M('Элемент вращения',{i:'rotate',id:'part.revolve'}),M('Элемент по траектории',{i:'helix',id:'part.sweep'}),M('Элемент по сечениям',{i:'ruled',id:'part.loft'})]}),
    M('Вырезать элемент',{s:()=>[M('Вырезать выдавливанием',{i:'cut',id:'part.cutExtrude'}),M('Вырезать вращением',{i:'rotate',id:'part.cutRevolve'}),M('Вырезать по траектории',{i:'helix'}),M('Вырезать по сечениям',{i:'ruled'})]}),
-   M('Дополнительные элементы',{s:()=>[M('Фаска',{i:'schamfer',id:'part.chamfer'}),M('Скругление',{i:'fillet',id:'part.fillet'}),M('Полное скругление',{i:'fullfillet'}),M('Ребро жесткости',{i:'rib',id:'part.rib'}),M('Уклон',{i:'draft',id:'part.draft'}),M('Уклон от базовой линии',{i:'draft'})]}),
+   M('Дополнительные элементы',{s:()=>[M('Фаска',{i:'chamfer3d',id:'part.chamfer'}),M('Скругление',{i:'fillet',id:'part.fillet'}),M('Полное скругление',{i:'fullfillet'}),M('Ребро жесткости',{i:'rib',id:'part.rib'}),M('Уклон',{i:'draft',id:'part.draft'}),M('Уклон от базовой линии',{i:'draft'})]}),
    M('Отверстия',{s:()=>[M('Отверстие простое',{i:'hole',id:'part.hole.simple'}),M('Отверстие с зенковкой',{i:'hole',id:'part.hole.countersink'}),M('Отверстие с цековкой',{i:'hole',id:'part.hole.counterbore'}),M('Отверстие с зенковкой и цековкой',{i:'hole',id:'part.hole.combo'}),M('Отверстие коническое',{i:'hole',id:'part.hole.conical'}),M('Отверстие из библиотеки',{i:'hole',id:'part.hole.library'})]}),
-   M('Элементарные тела',{s:()=>[M('Параллелепипед по точке и трем точкам',{i:'addpart'})]}),
-   M('Сечение',{i:'section'}),M('Разрезать',{i:'section'}),M('Удалить тело/поверхность',{i:'delface'}),S,M('Листовое моделирование',{s:()=>NOT_CAPTURED}),S,
+   M('Элементарные тела',{s:()=>[M('Параллелепипед по точке и трем точкам',{i:'pbox'})]}),
+   M('Сечение',{i:'section'}),M('Разрезать',{i:'slice'}),M('Удалить тело/поверхность',{i:'delbody'}),S,M('Листовое моделирование',{s:()=>NOT_CAPTURED}),S,
    M('Оболочка',{i:'shell',id:'part.shell'}),M('Булева операция',{i:'boolean'}),M('Придать толщину',{i:'thicken'}),M('Вычесть компоненты',{i:'boolean',d:true}),M('Объединить компоненты',{i:'boolean',d:true}),S,
-   M('Грани',{s:()=>[M('Удалить грани',{i:'delface'}),M('Переместить грани',{i:'moveface'}),M('Заменить грани',{i:'replaceface'}),M('Изменить размер скругления',{i:'fillet'}),M('Изменить размер грани',{i:'moveface'})]}),
+   M('Грани',{s:()=>[M('Удалить грани',{i:'delface'}),M('Переместить грани',{i:'moveface'}),M('Заменить грани',{i:'replaceface'}),M('Изменить размер скругления',{i:'resizefillet'}),M('Изменить размер грани',{i:'resizeface'})]}),
    M('Элементы каркаса',{s:()=>leaf(['Точка по координатам','Контур','Спираль цилиндрическая','Сплайн по точкам','Ломаная','Дуга по трем точкам'])}),
    M('Поверхности',{s:()=>leaf(['Поверхность выдавливания','Заплатка','Поверхность скругления','Линейчатая поверхность','Эквидистанта поверхности','Сшивка поверхностей'])}),
    M('Оси',{s:()=>[M('Ось через две точки',{i:'axis',id:'part.datum.axis'}),M('Ось на пересечении двух плоскостей',{i:'axis'}),M('Ось через ребро',{i:'axis'}),M('Ось конической поверхности',{i:'axis'}),M('Ось через точку по направлению',{i:'axis'})]}),
    M('Плоскости',{s:()=>['Смещенная плоскость','Плоскость через три точки','Плоскость через ребро и точку','Плоскость через плоскую кривую','Плоскость под углом','Плоскость через точку параллельно другой плоскости','Плоскость через точку перпендикулярно ребру','Нормальная плоскость','Касательная плоскость','Плоскость, касательная к грани в точке','Плоскость через ребро параллельно/перпендикулярно другому ребру','Плоскость через ребро параллельно/перпендикулярно грани'].map((l,i)=>M(l,{i:'plane',id:i===0?'part.datum.plane':null}))}),
    M('Локальная система координат',{i:'lcs'}),S,M('Преобразовать в полигональный объект',{i:'network'}),M('Подгонка поверхности',{i:'patch'}),S,
-   M('Контрольная точка',{i:'ctrlpoint',id:'part.controlPoint'}),M('Присоединительная точка',{i:'connpoint',id:'part.connectionPoint'}),S,M('Масштабировать',{i:'scale'}),M('Изменить положение',{i:'move'}),S,
+   M('Контрольная точка',{i:'ctrlpoint',id:'part.controlPoint'}),M('Присоединительная точка',{i:'connpoint',id:'part.connectionPoint'}),S,M('Масштабировать',{i:'scale3d'}),M('Изменить положение',{i:'move3d'}),S,
    M('Копировать объекты',{i:'copyobj'}),M('Массивы',{s:()=>[M('Массив по образцу',{i:'gridpat'}),S,M('Массив по сетке',{i:'gridpat',id:'part.pattern.grid'}),M('Массив по концентрической сетке',{i:'gridpat',id:'part.pattern.circular'}),M('Массив вдоль кривой',{i:'spline',id:'part.pattern.path'}),M('Массив по точкам',{i:'point3'}),M('Массив по таблице',{i:'grid'}),S,M('Зеркальный массив',{i:'mirror',id:'part.pattern.mirror'})]})],
  'Оформление':()=>[M('Условное изображение резьбы',{i:'helix'}),M('Осевая линия',{i:'centerline'}),S,M('Линейный размер',{i:'dimlin'}),M('Угловой размер',{i:'dimang'}),M('Радиальный размер',{i:'dimrad'}),M('Диаметральный размер',{i:'dimdia'}),M('Размер дуги окружности',{i:'arc'}),S,
    M('Производные размеры',{i:'dimauto'}),M('Разместить производные размеры',{i:'dimh'}),S,M('Шероховатость',{i:'rough'}),M('База',{i:'datum'}),M('Линия-выноска',{i:'leader'}),M('Обозначение позиции',{i:'posnum'}),M('Допуск формы',{i:'tolframe'}),
@@ -843,7 +906,7 @@ function renderToolsets(){
 function isOn(id){return (id==='part.extrude'&&state.mode==='extrude');}
 function btnHTML(it){
   const st=status(it.id);
-  return `<button type="button" class="btn-${it.kind}${isOn(it.id)?' on':''}${it.dis?' dim':''}" data-cmd="${it.id||''}" data-label="${esc(it.label)}" data-st="${st}" data-tip="${esc(it.label)}"${it.dis?` data-dis="${esc(it.dis)}"`:''} aria-label="${esc(it.label)}">${svg(it.icon,16)}${it.kind==='t'?`<span>${esc(it.label)}</span>`:''}</button>`;
+  return `<button type="button" class="btn-${it.kind}${isOn(it.id)?' on':''}${it.dis?' dim':''}" data-cmd="${it.id||''}" data-label="${esc(it.label)}" data-st="${st}" data-tip="${esc(it.label)}"${it.dis?` data-dis="${esc(it.dis)}"`:''}${it.v?` data-v="${it.v}"`:''} aria-label="${esc(it.label)}${it.v?' (есть варианты: правая кнопка или ◢)':''}">${svg(it.icon,16)}${it.kind==='t'?`<span>${esc(it.label)}</span>`:''}${it.v?`<span class="var" data-var="${it.v}" data-tip="Варианты команды"></span>`:''}</button>`;
 }
 function panelLabelHTML(p,pi,expanded){
   const caret=p.x?`<button type="button" class="caret-btn" data-expand="${pi}" aria-expanded="${expanded}" aria-label="${expanded?'Свернуть':'Показать все команды'} панели «${esc(p.label)}»" data-tip="${expanded?'Свернуть панель':'Показать все команды панели'}">${svg('caret',9,'caret')}</button>`:'';
@@ -869,7 +932,7 @@ function treeRows(){
   if(!state.exp.root)return rows;
   rows.push({key:'origin',depth:1,label:'Начало координат',icon:'origin',tri:state.exp.origin,eye:true,dot:true,selected:isSel('origin')});
   if(state.exp.origin){
-    [['xy','Плоскость XY'],['zx','Плоскость ZX'],['zy','Плоскость ZY']].forEach(([k,l])=>rows.push({key:'plane:'+k,depth:2,label:l,icon:'plane',iconCls:'ic-'+k,eye:state.vis[k],selected:isSel('plane',k)}));
+    [['xy','Плоскость XY'],['zx','Плоскость ZX'],['zy','Плоскость ZY']].forEach(([k,l])=>rows.push({key:'plane:'+k,depth:2,label:l,icon:'planeTree',iconCls:'ic-'+k,eye:state.vis[k],selected:isSel('plane',k)}));
     [['ax','Ось X','ic-zy'],['ay','Ось Y','ic-zx'],['az','Ось Z','ic-xy']].forEach(([k,l,cl])=>rows.push({key:'axis:'+k,depth:2,label:l,icon:'axis',iconCls:cl,eye:state.vis[k],selected:isSel('axis',k)}));
   }
   const skRow=(s,depth)=>({key:'sketch:'+s.id,depth,label:(s.geom?'(-)':'')+s.name,icon:'ts_sketch',aux:'∈',eye:s.visible,selected:isSel('sketch',s.id)||state.editSketch===s.id});
@@ -1138,7 +1201,7 @@ function activate(level,btn,it){
     const p=pops[level];if(p){const i=+btn.dataset.idx;p.el.innerHTML=p.items.map(itemHTML).join('');const nb=p.el.querySelector(`[data-idx="${i}"]`);if(nb)nb.focus();}
     renderQA();renderPanel();scene3d.sync();return;
   }
-  closeAllPops();
+  closeAllPops();closePanelDrop();
   if(it.a)it.a();else if(it.id)runCommand(it.id,it.l);else toast(`«${it.l}» в прототипе не работает`);
 }
 function removePops(from){
@@ -1236,11 +1299,25 @@ function openPanelDrop(pi){
   el.addEventListener('click',ev=>{
     ev.stopPropagation();
     if(ev.target.closest('[data-expand]')){closePanelDrop();return;}
+    const v=ev.target.closest('[data-var]');if(v){openVariants(v.closest('button'));return;}
     const b=ev.target.closest('[data-cmd]');if(b){closePanelDrop();cmdClick(b);}
   });
   const f=el.querySelector('button');if(f)f.focus({preventScroll:true});
 }
 function closePanelDrop(){if(state.openPanel){state.openPanel.el.remove();state.openPanel=null;}}
+/* варианты команды по ◢ — те же пункты, что в меню «Моделирование» */
+const subOf=label=>()=>{const it=MENUS['Моделирование']().find(x=>x!==S&&x.l===label);return it&&it.s?it.s():[];};
+const VARIANTS={
+  add:subOf('Добавить элемент'),cut:subOf('Вырезать элемент'),hole:subOf('Отверстия'),arrays:subOf('Массивы'),planes:subOf('Плоскости'),axes:subOf('Оси'),
+  fillet:()=>subOf('Дополнительные элементы')().filter(x=>/^(Скругление|Фаска)$/.test(x.l)),
+  draft:()=>subOf('Дополнительные элементы')().filter(x=>/Уклон/.test(x.l))
+};
+function openVariants(btn){
+  const key=btn.dataset.v;if(!VARIANTS[key])return;
+  closeAllPops();
+  const el=openPop(VARIANTS[key](),btn.getBoundingClientRect(),0,{below:true});
+  const f=el.querySelector('.mi:not([aria-disabled="true"])');if(f)f.focus({preventScroll:true});
+}
 function cmdClick(b){if(b.dataset.dis){toast(`«${b.dataset.label}»: ${b.dataset.dis}`);return;}runCommand(b.dataset.cmd||null,b.dataset.label);}
 
 /* окна: «Параметры», «Информация о документе», «О программе», «Допуск» */
@@ -1379,8 +1456,12 @@ window.addEventListener('resize',()=>{closeAllPops();closePanelDrop();hideTip();
 ribbonEl.addEventListener('click',e=>{
   const c=e.target.closest('[data-expand]');
   if(c){e.stopPropagation();openPanelDrop(+c.dataset.expand);return;}
+  const v=e.target.closest('[data-var]');
+  if(v){e.stopPropagation();openVariants(v.closest('button'));return;}
   const b=e.target.closest('[data-cmd]');if(b)cmdClick(b);
 });
+ribbonEl.addEventListener('contextmenu',e=>{const b=e.target.closest('[data-v]');if(b){e.preventDefault();openVariants(b);}});
+popLayer.addEventListener('contextmenu',e=>{const b=e.target.closest('.panel-drop [data-v]');if(b){e.preventDefault();e.stopPropagation();openVariants(b);}});
 ribbonEl.addEventListener('wheel',e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)&&ribbonEl.scrollWidth>ribbonEl.clientWidth){ribbonEl.scrollLeft+=e.deltaY;e.preventDefault();}},{passive:false});
 ribbonEl.addEventListener('scroll',()=>closePanelDrop(),{passive:true});
 toolsetsEl.addEventListener('click',e=>{
