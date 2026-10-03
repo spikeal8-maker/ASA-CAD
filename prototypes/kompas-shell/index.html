@@ -1017,7 +1017,7 @@ function renderPanel(){
   const scroller=panelEl.querySelector('.pp-body,.tree-rows');const sc=scroller?scroller.scrollTop:0;
   panelEl.innerHTML=panelHTML();
   const sc2=panelEl.querySelector('.pp-body,.tree-rows');if(sc2)sc2.scrollTop=sc;
-  if(focusId){const el=$(focusId);if(el){el.focus();try{if(caret!==null)el.setSelectionRange(caret,caret);}catch(err){}}}
+  if(focusId){const el=$(focusId);if(el){refocusing=true;el.focus();refocusing=false;try{if(caret!==null)el.setSelectionRange(caret,caret);}catch(err){}}}
   updateSketchFields();
 }
 /* панель быстрого доступа — 16 кнопок, ширины 26/47 по layout.json v25 */
@@ -1510,8 +1510,8 @@ railEl.addEventListener('click',e=>{
 });
 panelEl.addEventListener('click',e=>{
   if(e.target.closest('[data-skcancel]')){sketcher.stop();return;}
-  if(e.target.closest('[data-skok]')){sketcher.enter();return;}
-  const ul=e.target.closest('[data-unlock]');if(ul){delete state.sk.lock[ul.dataset.unlock];renderPanel();scene3d.overlay();return;}
+  if(e.target.closest('[data-skok]')){sketcher.commitCurrent();return;}
+  const ul=e.target.closest('[data-unlock]');if(ul){delete state.sk.lock[ul.dataset.unlock];const inp=$('skf-'+ul.dataset.unlock);if(inp)inp.value='';updateSketchFields();scene3d.overlay();return;}
   const rm=e.target.closest('[data-rmode]');if(rm){state.sk.opts.rect=rm.dataset.rmode;renderPanel();scene3d.overlay();return;}
   const pd=e.target.closest('[data-pdrop]');
   if(pd){
@@ -1551,11 +1551,11 @@ function skInput(inp){
   if(k==='sides'){if(ok)s.opts.sides=Math.max(3,Math.min(64,Math.round(v)));scene3d.overlay();return;}
   if(k==='filletR'||k==='chamferD'){if(ok&&v>0)s.opts[k]=v;return;}
   if(['len','w','h','r'].includes(k)&&ok&&v<=0)return;
-  const had=s.lock[k]!=null;
   if(ok)s.lock[k]=v;else delete s.lock[k];
-  if(had!==(s.lock[k]!=null))renderPanel();
-  scene3d.overlay();
+  updateSketchFields();scene3d.overlay();
 }
+let refocusing=false;
+panelEl.addEventListener('focusin',e=>{if(!refocusing&&e.target.matches&&e.target.matches('[data-skf]')&&!e.target.readOnly)setTimeout(()=>{try{e.target.select();}catch(err){}},0);});
 panelEl.addEventListener('keydown',e=>{
   const inp=e.target.closest&&e.target.closest('[data-skf]');if(!inp)return;
   if(e.key==='Enter'){e.preventDefault();e.stopPropagation();sketcher.applyEnter(inp.dataset.skf);}
@@ -1627,6 +1627,10 @@ document.addEventListener('keydown',e=>{
   if((e.altKey&&(e.key==='/'||e.code==='Slash'))){e.preventDefault();searchEl.focus();return;}
   if(e.key==='F10'){e.preventDefault();openMainMenu('Файл');focusFirst(0);return;}
   if(state.mode==='sketch'&&!/INPUT|TEXTAREA/.test(e.target.tagName)){
+    if(state.sk.tool&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&/^[0-9.,-]$/.test(e.key)){
+      const k=sketcher.firstField(),inp=k&&$('skf-'+k);
+      if(inp&&!inp.readOnly){e.preventDefault();refocusing=true;inp.focus();refocusing=false;inp.value=e.key;inp.setSelectionRange(1,1);inp.dispatchEvent(new Event('input',{bubbles:true}));return;}
+    }
     if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();sketcher.del();return;}
     if(e.key==='Enter'&&sketcher.enter()){e.preventDefault();return;}
     if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='a'){e.preventDefault();sketcher.selectAll();return;}
@@ -2047,6 +2051,7 @@ const sketcher=(function(){
     const s=S();
     if(tool==='move'&&!s.sel.size){toast('Сначала выделите объекты эскиза, затем запустите «Сдвиг»');return;}
     reset();s.tool=tool;s.hoverEnt=null;s.hoverVertex=null;
+    if(document.activeElement&&document.activeElement!==document.body)document.activeElement.blur();
     if(state.panelTab!=='params')state.prevSkTab=state.panelTab;
     state.panelTab='params';state.panelOpen=true;
     scene3d.setCursor('crosshair');refresh();
@@ -2108,6 +2113,43 @@ const sketcher=(function(){
     const a=Math.atan2(sp[1]-c[1],sp[0]-c[0]),b=a+sweep;
     return sweep>0?{type:'arc',c,r:r3(r),a0:a,a1:b}:{type:'arc',c,r:r3(r),a0:b,a1:a};
   }
+  /* размер задан до первой точки: объект едет за курсором и ставится одним щелчком */
+  function placementReady(){
+    const s=S(),L=s.lock;if(s.step!==0)return false;
+    switch(s.tool){case 'rect':return L.w!=null&&L.h!=null;case 'circle':case 'polygon':return L.r!=null;case 'line':case 'cline':return L.len!=null&&L.ang!=null;default:return false;}
+  }
+  function placed(p){
+    const s=S();
+    switch(s.tool){
+      case 'rect':{const r=rectCorners(p,[p[0]+1,p[1]+1]);return r?r.map((a,i)=>({type:'line',a,b:r[(i+1)%4]})):[];}
+      case 'circle':return [{type:'circle',c:p,r:r3(s.lock.r)}];
+      case 'polygon':{const v=polyVerts(p,[p[0],p[1]+1]);return v?v.map((a,i)=>({type:'line',a,b:v[(i+1)%v.length]})):[];}
+      case 'line':case 'cline':return [{type:s.tool,a:p,b:lineEnd(p,[p[0]+1,p[1]])}];
+    }
+    return [];
+  }
+  function canCommit(){
+    const s=S();if(!s.tool)return false;
+    if(s.tool==='polyline')return s.step>0;
+    if(placementReady())return true;
+    if(['line','cline','rect','circle','polygon'].includes(s.tool))return s.step>0;
+    if(s.tool==='arc')return s.step===2;
+    return false;
+  }
+  /* ✓ / Enter: построить объект по текущим значениям (курсор задаёт только то, что не введено) */
+  function commitCurrent(){
+    const s=S();
+    if(s.tool==='polyline'){if(s.step>0){reset(true);renderPanel();scene3d.overlay();}return;}
+    if(!canCommit()){toast(s.step===0?'Укажите точку в окне или введите размеры':'Укажите следующую точку или введите значения');return;}
+    let p=s.cursor;
+    if(!p){const last=s.pts[s.pts.length-1]||[0,0];p=s.step>0?[last[0]+1,last[1]+1]:[0,0];}
+    click(p);
+  }
+  /* первая цифра с клавиатуры попадает в главное поле размера */
+  function firstField(){
+    const s=S();
+    return {rect:'w',line:'len',polyline:'len',cline:'len',circle:'r',polygon:'r',arc:s.step===1?'r':null,fillet:'filletR',chamfer:'chamferD',point:'x'}[s.tool]||null;
+  }
   /* фантом текущего инструмента */
   function preview(){
     const s=S(),c=s.cursor;if(!s.tool||!c)return [];
@@ -2116,7 +2158,7 @@ const sketcher=(function(){
       const dx=c[0]-s.pts[0][0],dy=c[1]-s.pts[0][1];
       (sk().entities||[]).filter(e=>s.sel.has(e.id)).forEach(e=>out.push(shifted(e,dx,dy)));return out;
     }
-    if(!s.step)return out;
+    if(!s.step){if(placementReady())return placed(c);return out;}
     const p0=s.pts[0],last=s.pts[s.pts.length-1];
     switch(s.tool){
       case 'line':case 'polyline':out.push({type:'line',a:last,b:lineEnd(last,c)});break;
@@ -2139,13 +2181,16 @@ const sketcher=(function(){
     const g=sk();if(!g)return;
     snapshot();
     list.forEach(e=>{doc.seq.ent=(doc.seq.ent||0)+1;e.id='e'+doc.seq.ent;if(e.aux===undefined)e.aux=e.type==='cline';g.entities.push(e);});
-    S().lock={};refreshSketch(true);
+    S().lock={};
+    if(document.activeElement&&panelEl.contains(document.activeElement))document.activeElement.blur();   // следующие цифры снова пойдут в главное поле
+    refreshSketch(true);
   }
   function refreshSketch(full){if(full){renderPanel();renderQA();scene3d.sync();renderTreeOnly();}else scene3d.overlay();}
   function renderTreeOnly(){if(state.panelTab==='tree')renderPanel();}
   /* щелчок инструментом */
   function click(p,ev){
     const s=S(),g=sk();if(!g)return;
+    if(placementReady()){const list=placed(p);if(list.length){commit(list);reset(true);}renderPanel();scene3d.overlay();return;}
     switch(s.tool){
       case 'point':commit([{type:'point',p}]);break;
       case 'line':case 'cline':
@@ -2352,7 +2397,7 @@ const sketcher=(function(){
     if(s.sel.size){s.sel.clear();afterSel();return true;}
     return false;
   }
-  function enter(){const s=S();if(s.tool==='polyline'&&s.step>0){reset(true);renderPanel();scene3d.overlay();return true;}return false;}
+  function enter(){const s=S();if(!s.tool)return false;if(s.tool==='polyline'&&s.step===0)return false;commitCurrent();return true;}
   /* поля панели параметров */
   function live(){
     const s=S(),c=s.cursor,v={};
@@ -2371,9 +2416,9 @@ const sketcher=(function(){
     const s=S(),t=s.tool,st=s.step,f=[];
     const pointLabel={line:['т1','т2'],cline:['т1','т2'],polyline:['т1','т'],rect:['Вершина 1','Вершина 2'],circle:['Центр','Точка'],arc:['Центр','Начало','Конец'],polygon:['Центр','Вершина'],point:['Точка'],move:['База','Новое положение'],fillet:[],chamfer:[]}[t]||[];
     if(pointLabel.length)f.push({k:'xy',label:pointLabel[Math.min(st,pointLabel.length-1)]});
-    if(st>0&&['line','polyline','cline'].includes(t)){f.push({k:'len',label:'Длина',lock:true});f.push({k:'ang',label:'Угол',lock:true,unit:'°'});}
-    if(st>0&&t==='rect'){f.push({k:'w',label:'Ширина',lock:true});f.push({k:'h',label:'Высота',lock:true});}
-    if(st>0&&(t==='circle'||t==='polygon'||(t==='arc'&&st===1)))f.push({k:'r',label:t==='polygon'?'Радиус':'Радиус',lock:true});
+    if(['line','cline'].includes(t)||(t==='polyline'&&st>0)){f.push({k:'len',label:'Длина',lock:true});f.push({k:'ang',label:'Угол',lock:true,unit:'°'});}
+    if(t==='rect'){f.push({k:'w',label:'Ширина',lock:true});f.push({k:'h',label:'Высота',lock:true});}
+    if(t==='circle'||t==='polygon'||(t==='arc'&&st===1))f.push({k:'r',label:'Радиус',lock:true});
     if(t==='arc'&&st===2)f.push({k:'sw',label:'Угол дуги',unit:'°',ro:true});
     if(t==='polygon')f.push({k:'sides',label:'Количество вершин',opt:true});
     if(t==='fillet')f.push({k:'filletR',label:'Радиус',opt:true});
@@ -2381,19 +2426,22 @@ const sketcher=(function(){
     if(t==='move'&&st>0){f.push({k:'dx',label:'Сдвиг по X',ro:true});f.push({k:'dy',label:'Сдвиг по Y',ro:true});}
     return f;
   }
-  return {start,stop,escape,enter,del,preview,live,fields,click,reset,
+  return {start,stop,escape,enter,del,preview,live,fields,click,reset,canCommit,commitCurrent,firstField,placementReady,
     down:onDown,move:onMove,up:onUp,right:onRight,leave(){scene3d.snapLabel(null);},cancelPointer(){down=null;},
     selectAll(){const g=sk();if(!g)return;(g.entities||[]).forEach(e=>S().sel.add(e.id));afterSel();},
     applyEnter(k){
       const s=S();if(!s.tool)return;
       if(k==='x'||k==='y'){const c=s.cursor||[0,0];const p=[s.typed.x!=null?s.typed.x:c[0],s.typed.y!=null?s.typed.y:c[1]];s.typed={};s.cursor=p;click(p);return;}
-      if(s.step>0&&s.cursor)click(s.cursor);else if(s.step>0){const last=s.pts[s.pts.length-1];click(last);}
+      commitCurrent();
     }
   };
 })();
 function updateSketchFields(){
   if(state.mode!=='sketch'||!state.sk.tool)return;
   const v=sketcher.live(),s=state.sk;
+  const ok=panelEl.querySelector('[data-skok]');if(ok)ok.disabled=!sketcher.canCommit();
+  panelEl.querySelectorAll('[data-lockrow]').forEach(row=>{const k=row.dataset.lockrow,on=s.lock[k]!=null;row.classList.toggle('hl',on);const ub=row.querySelector('[data-unlock]');if(ub)ub.hidden=!on;});
+  const msgEl=panelEl.querySelector('.pp-msg span');if(msgEl)msgEl.textContent=sketchMsg();
   panelEl.querySelectorAll('[data-skf]').forEach(inp=>{
     const k=inp.dataset.skf;if(document.activeElement===inp)return;
     if(s.lock[k]!=null){inp.value=fmt(s.lock[k]);return;}
@@ -2402,20 +2450,26 @@ function updateSketchFields(){
   });
 }
 const fmt=x=>(Math.round(x*1000)/1000).toString().replace('.',',');
+function sketchMsg(){
+  const s=state.sk,t=s.tool;if(!t)return '';
+  if(t==='move'&&!s.sel.size)return 'Выделите объекты эскиза перед сдвигом';
+  if(sketcher.placementReady())return `Щёлкните, куда поставить: ${TOOL_TITLE[t].toLowerCase()} заданного размера`;
+  const msgs=TOOL_MSG[t]||[''];return msgs[Math.min(s.step,msgs.length-1)];
+}
 function sketchToolHTML(){
-  const s=state.sk,t=s.tool,title=TOOL_TITLE[t],msgs=TOOL_MSG[t]||[''];
-  const msg=t==='move'&&!s.sel.size?'Выделите объекты эскиза перед сдвигом':msgs[Math.min(s.step,msgs.length-1)];
+  const s=state.sk,t=s.tool,title=TOOL_TITLE[t];
+  const msg=sketchMsg();
   const rows=sketcher.fields().map(f=>{
     if(f.k==='xy')return `<div class="pp-row"><div class="pp-label">${esc(f.label)}</div><div class="xy-pair"><label>x<input class="pp-field" id="skf-x" data-skf="x" inputmode="decimal" aria-label="${esc(f.label)}: x"></label><label>y<input class="pp-field" id="skf-y" data-skf="y" inputmode="decimal" aria-label="${esc(f.label)}: y"></label></div><span></span></div>`;
     const locked=s.lock[f.k]!=null;
-    return `<div class="pp-row${locked?' hl':''}"><label class="pp-label" for="skf-${f.k}">${esc(f.label)}</label><input class="pp-field" id="skf-${f.k}" data-skf="${f.k}" inputmode="decimal" ${f.ro?'readonly':''} aria-label="${esc(f.label)}${f.unit?', '+f.unit:', мм'}">${locked?`<button type="button" class="pp-side" data-unlock="${f.k}" data-tip="Снять фиксацию значения" aria-label="Снять фиксацию">${svg('cross',12)}</button>`:'<span></span>'}</div>`;
+    return `<div class="pp-row${locked?' hl':''}"${f.lock?` data-lockrow="${f.k}"`:''}><label class="pp-label" for="skf-${f.k}">${esc(f.label)}</label><input class="pp-field" id="skf-${f.k}" data-skf="${f.k}" inputmode="decimal" autocomplete="off" ${f.ro?'readonly tabindex="-1"':''} aria-label="${esc(f.label)}${f.unit?', '+f.unit:', мм'}">${f.lock?`<button type="button" class="pp-side" data-unlock="${f.k}" tabindex="-1" ${locked?'':'hidden'} data-tip="Снять фиксацию значения" aria-label="Снять фиксацию">${svg('cross',12)}</button>`:'<span></span>'}</div>`;
   }).join('');
   const rectMode=t==='rect'?`<div class="pp-row"><div class="pp-label">Способ:<small>${s.opts.rect==='center'?'По центру и вершине':'По двум вершинам'}</small></div><div class="pp-iconset"><button type="button" data-rmode="corners" aria-pressed="${s.opts.rect!=='center'}" title="По двум вершинам" aria-label="По двум вершинам">${svg('rectangle',17)}</button><button type="button" data-rmode="center" aria-pressed="${s.opts.rect==='center'}" title="По центру и вершине" aria-label="По центру и вершине">${svg('concentric',17)}</button></div><span></span></div>`:'';
   return `<div class="panel-head"><span>Параметры</span><button type="button" data-toast="Настройки панели в прототип не входят" aria-label="Настройки панели">${svg('gear',14)}</button></div>
   <div class="pp-cmd"><strong>${esc(title)}</strong><button type="button" data-toast="Справка в прототип не входит" aria-label="Справка">${svg('helpq',16)}</button><button type="button" data-tab-go="tree" aria-label="Показать дерево">${svg('tree',16)}</button></div>
   <div class="pp-tabs"><button type="button" class="tab" aria-selected="true">${svg(({line:'line',polyline:'autoline',rect:'rectangle',circle:'circle',arc:'arc',cline:'auxline',point:'point3',polygon:'contour',fillet:'sfillet',chamfer:'schamfer',move:'move'})[t],17)}</button><span class="spacer"></span>
-   ${t==='polyline'?`<button type="button" class="pp-ok" data-skok ${s.step>0?'':'disabled'} data-tip="Закончить автолинию (Enter)" aria-label="Закончить автолинию">${svg('check',20)}</button>`:''}<button type="button" class="pp-cancel" data-skcancel data-tip="Прервать команду (Esc)" aria-label="Прервать команду">${svg('cross',18)}</button></div>
-  <div class="pp-body">${rectMode}${rows}<p class="sk-hint">Введённое значение фиксируется (строка подсвечивается); Enter в поле координат ставит точку. Shift — только горизонталь/вертикаль, Alt — без привязок.</p></div>
+   <button type="button" class="pp-ok" data-skok ${sketcher.canCommit()?'':'disabled'} data-tip="${t==='polyline'?'Закончить автолинию (Enter)':'Создать объект (Enter)'}" aria-label="${t==='polyline'?'Закончить автолинию':'Создать объект'}">${svg('check',20)}</button><button type="button" class="pp-cancel" data-skcancel data-tip="Прервать команду (Esc)" aria-label="Прервать команду">${svg('cross',18)}</button></div>
+  <div class="pp-body">${rectMode}${rows}<p class="sk-hint">Печатайте размеры сразу, без выбора поля: первая цифра попадает в «${esc(({rect:'Ширина',line:'Длина',polyline:'Длина',cline:'Длина',circle:'Радиус',polygon:'Радиус',arc:'Радиус',fillet:'Радиус',chamfer:'Длина',point:'x'})[t]||'поле')}», Tab — следующее поле, Enter — создать. Размер можно задать до первой точки — объект поедет за курсором. Shift — только горизонталь/вертикаль, Alt — без привязок.</p></div>
   ${msgHTML(msg)}`;
 }
 
