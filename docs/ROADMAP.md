@@ -15,6 +15,7 @@
 - CAD-VIS-005 — accepted integration checkpoint / PRODUCT_DELTA NONE.
 - V6A / CAD-VIS-006A — DONE / MERGED / regional accepted / PARITY PARTIAL.
 - V6B / CAD-VIS-006B — DONE / MERGED / regional accepted / PARITY PARTIAL.
+- V6C / CAD-VIS-006C — **DONE / MERGED / REGIONAL RESULT ACCEPTED**; PR #175; accepted HEAD `476d04c8917493adad995f8dca2a16b858927410`; merge `cda903d762b7e52e9345fe09e6dfa0be508a0d6a`; historical scope = **Sketch hierarchy + dimension ownership presentation**.
 - KOMPAS-SHELL-ADOPTION-001 — **DONE / MERGED / REGIONAL RESULT ACCEPTED**; PR #173; accepted HEAD `5719a8a8b3f357d1448ea68f7d30b41ef586bb35`; merge `027d4ea6a5b2549609b0b3a9cfdefd397fe8559b`; accepted scope = **PART TOP SHELL ONLY**.
 
 FULL_TREE_PARITY = **NOT ACCEPTED**.
@@ -44,15 +45,15 @@ Audit #158 is now historical. #166 is the latest accepted Full Repository Health
 
 Accepted Full Audit #166 reset cadence to **0/3**.
 
-After accepted permanent product slice #173:
+After accepted permanent product slices #173 and #175:
 
-**CADENCE = 1/3**
+**CADENCE = 2/3**
 
 **FEATURE_FREEZE = LIFTED**
 
-Governance/docs PRs #168/#171/#172 do not count as permanent product slices.
+Governance/docs changes do not count as permanent product slices.
 
-Every permanent slice still receives a Slice Quality Gate. The next Full Repository Health Audit is required again at 3 accepted permanent slices or another machine-policy trigger.
+**FULL_AUDIT_REQUIRED_NOW = NO.** Acceptance of the next permanent product slice reaches **3/3** and requires a Full Repository Health Audit before any later product slice. Every permanent slice still receives a Slice Quality Gate.
 
 ## Accepted — KOMPAS-SHELL-ADOPTION-001
 
@@ -74,15 +75,65 @@ PR #170 remains **REFERENCE / PROTOTYPE ONLY**, OPEN / NOT MERGED.
 
 This does not accept full M2V, full KOMPAS parity, full Tree parity, Part completion, Assembly, Drawing, or the 90% target. Canonical educational parity scope remains **Деталь / Part, Сборка / Assembly, Чертеж / Drawing**.
 
-## NEXT — V6C / CAD-VIS-006C
+## NEXT — KOMPAS-CORE-INTERACTION
 
-**Sketch hierarchy + dimension ownership**.
+Priority is user interaction continuity before further decorative or Tree polish. C1/C2/C3 are roadmap definitions only; implementation has not started.
 
-V6C is the next separate product slice after accepted initial KOMPAS shell adoption. It owns Sketch hierarchy and dimension ownership; implementation has not started.
+### C1 / KOMPAS-CORE-INTERACTION-001 — Unified Part Viewport
 
-**V6C_STARTED = NO**.
+Acceptance target:
+- empty Part has one persistent spatial CAD scene;
+- origin plus XY/XZ/YZ are real selectable scene objects;
+- RMB drag = rotate, MMB drag = pan, wheel = zoom;
+- tree ↔ scene plane selection uses one state;
+- standard views operate through the same viewport/camera contract;
+- creating a Sketch from a selected plane uses that same scene selection.
 
-Cadence after accepted #173 = **1/3**. FEATURE_FREEZE = **LIFTED**.
+Current main:
+- EMPTY_PART_VIEWPORT = **NOT ACCEPTED**;
+- 3D_NAVIGATION_CONTINUITY = **NOT ACCEPTED**.
+
+### C2 / KOMPAS-CORE-INTERACTION-002 — Sketch-in-Viewport
+
+Acceptance target:
+- Sketch is a mode of the same CAD work area, not an isolated replacement editor;
+- camera orients normal to the chosen workplane through the shared camera system;
+- model context remains visible when applicable;
+- pan/zoom/fit remain available;
+- Finish returns to Part without an unrelated camera reset.
+
+Current main:
+- PartModelStage replaces the Part stage with SketchEditingStage;
+- SketchEditingStage uses CadViewport model=null;
+- SKETCH_VIEWPORT_CONTINUITY = **NOT ACCEPTED**.
+
+### C3 / KOMPAS-CORE-INTERACTION-003 — Geometry Command Lifecycle
+
+First command contract: Line.
+- P1→P2 commits segment 1 and Line stays active;
+- P2→P3 commits segment 2 and Line stays active;
+- explicit Finish/Esc/switch-command closes the tool cleanly;
+- parameter workflow is not hidden by command start;
+- active ribbon state, live ghost and per-segment Undo are required.
+
+Current main:
+- LINE_COMMAND_LIFECYCLE = **NOT ACCEPTED**;
+- LINE_PARAMETER_WORKFLOW = **NOT ACCEPTED**.
+
+### Existing Draft candidates
+
+- #177 / PART-CORE-RECOVERY-001 — **TECHNICAL RECOVERY CANDIDATE / MERGE HOLD**. Keep its useful geometry/runtime recovery as a dependency or reuse source; it does not itself satisfy C1/C2/C3.
+- #179 / R1 first editable Drawing — **DEPENDENT CANDIDATE / HOLD**. Drawing/schema work remains separate. The PR contains C1-overlap candidate code; before C1 implementation perform an independent code/browser review and choose **REUSE / EXTRACT / SUPERSEDE**. Do not build a second independent C1 in parallel.
+
+### Queue after Core Interaction Foundation
+
+1. Drawing R1.
+2. Drawing R2.
+3. Drawing → Sketch flow.
+4. Later Tree polish: search, context menu, feature/body hierarchy refinement, exact spacing.
+5. Remaining KOMPAS shell / parameters, Resize, then final Part/Sketch parity review.
+
+Historical V6C / #175 remains accepted and is not moved back to backlog.
 
 ## Gates
 
@@ -95,6 +146,6 @@ Gate B before broad M4 remains OPEN on:
 - M3M-009;
 - pre-M4 performance baselines.
 
-The Full Repository Health Audit requirement for this cadence cycle is satisfied by accepted #166.
+The Full Repository Health Audit requirement is currently satisfied by accepted #166; a new Full Audit becomes mandatory after the next accepted permanent product slice reaches cadence 3/3.
 
 GitHub repository/PR/Issues/Actions/artifacts remain the execution environment.
