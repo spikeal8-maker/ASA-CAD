@@ -253,3 +253,29 @@
   border-left: 1px solid #d5d9de;
   line-height: 20px;
 }
+
+.part-stage-status {
+  position: absolute;
+  z-index: 4;
+  left: 16px;
+  bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: min(460px, calc(100% - 120px));
+  padding: 8px 12px;
+  border: 1px solid #c9cdd3;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, .92);
+  color: #4c555e;
+  font-size: 12px;
+  pointer-events: none;
+}
+
+.part-stage-status.error {
+  border-color: #c55;
+  background: rgba(255, 245, 245, .96);
+  color: #922;
+}
+
+.part-stage-status strong { font-size: 13px; }

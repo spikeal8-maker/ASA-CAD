@@ -320,7 +320,8 @@
   .management-rail { width: var(--rail-w); padding: 0; gap: 0; border-right: 0; }
   .management-rail button { width: var(--rail-w); height: 25px; min-height: 25px; gap: 0; border-radius: 0; font-size: 13px; }
   .management-rail button.active { box-shadow: inset 2px 0 0 var(--accent); }
-  .management-panel { width: var(--panel-w); border-right: 1px solid var(--border-strong); }
+  /* The status bar overlays the bottom 28px; panel footers (Создать/Отмена) end above it. */
+  .management-panel { width: var(--panel-w); border-right: 1px solid var(--border-strong); margin-bottom: 28px; }
   .work-area { margin-left: 1px; }
   .content-area.panel-closed { grid-template-columns: var(--rail-w) minmax(0, 1fr); }
 

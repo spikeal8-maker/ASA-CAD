@@ -1,7 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import type { CadPlaneName } from '../contracts/commands';
 import type { CadRenderModel, CadViewportPick } from '../contracts/render';
 import type { CadBodyId } from '../contracts/ids';
 import { VIEWPORT_VISUAL_TOKENS } from './viewportTokens';
+import { partReferenceScene } from './viewport/PartReferenceGeometry';
+import { createViewportMeshLayer } from './viewport/ViewportMeshLayer';
+import { createViewportReferenceLayer } from './viewport/ViewportReferenceLayer';
 import {
   resolveViewportPickCandidates,
   type ViewportBodyCandidate,
@@ -39,12 +43,17 @@ export interface CadViewportProps {
   viewCommand?: CadViewportViewCommand;
   selectedBodyId?: CadBodyId | null;
   onBodySelect?: (bodyId: CadBodyId | null) => void;
+  /** Document origin planes; when given, the scene exists without any B-Rep. */
+  referencePlanes?: readonly CadPlaneName[] | null;
+  selectedPlane?: CadPlaneName | null;
+  onPlaneSelect?: (plane: CadPlaneName) => void;
 }
 
 interface ViewportInteractionBridge {
   setSelectionMode(mode: ViewportSelectionMode): void;
   setView(view: CadViewportViewName): void;
   setSelectedBodyId(bodyId: CadBodyId | null): void;
+  setSelectedPlane(plane: CadPlaneName | null): void;
 }
 
 interface StoredCameraState {
@@ -62,6 +71,9 @@ export function CadViewport({
   viewCommand,
   selectedBodyId = null,
   onBodySelect,
+  referencePlanes = null,
+  selectedPlane = null,
+  onPlaneSelect,
 }: CadViewportProps) {
   const hostRef = useRef<HTMLDivElement | null>(null);
   const selectionModeRef = useRef(selectionMode);
@@ -69,6 +81,11 @@ export function CadViewport({
   const onPickCandidatesRef = useRef(onPickCandidates);
   const selectedBodyIdRef = useRef<CadBodyId | null>(selectedBodyId);
   const onBodySelectRef = useRef(onBodySelect);
+  const selectedPlaneRef = useRef<CadPlaneName | null>(selectedPlane);
+  const onPlaneSelectRef = useRef(onPlaneSelect);
+  const cameraTouchedRef = useRef(false);
+  const sceneHadMeshesRef = useRef(false);
+  const referenceKey = referencePlanes?.join(',') ?? '';
   const viewCommandRef = useRef(viewCommand);
   const appliedViewSequenceRef = useRef<number | null>(null);
   const interactionRef = useRef<ViewportInteractionBridge | null>(null);
@@ -85,7 +102,13 @@ export function CadViewport({
 
   useEffect(() => {
     onBodySelectRef.current = onBodySelect;
-  }, [onBodySelect]);
+    onPlaneSelectRef.current = onPlaneSelect;
+  }, [onBodySelect, onPlaneSelect]);
+
+  useEffect(() => {
+    selectedPlaneRef.current = selectedPlane;
+    interactionRef.current?.setSelectedPlane(selectedPlane);
+  }, [selectedPlane]);
 
   useEffect(() => {
     selectionModeRef.current = selectionMode;
@@ -99,15 +122,20 @@ export function CadViewport({
 
   useEffect(() => {
     viewCommandRef.current = viewCommand;
+    if (viewCommand && viewCommand.sequence > 0) cameraTouchedRef.current = true;
     if (!viewCommand || !interactionRef.current) return;
     if (appliedViewSequenceRef.current === viewCommand.sequence) return;
     interactionRef.current.setView(viewCommand.view);
     appliedViewSequenceRef.current = viewCommand.sequence;
   }, [viewCommand?.sequence, viewCommand?.view]);
 
-  useEffect(() => {
+  // Layout effect: a replaced scene leaves the DOM in the same commit that
+  // delivers the new model, so a visible canvas always matches current props.
+  useLayoutEffect(() => {
     const host = hostRef.current;
-    if (!host || !model || model.meshes.length === 0) return;
+    const meshes = model?.meshes ?? [];
+    const planeIds = referenceKey ? referenceKey.split(',') as CadPlaneName[] : [];
+    if (!host || (meshes.length === 0 && planeIds.length === 0)) return;
 
     let disposed = false;
     let cleanup = () => {};
@@ -142,70 +170,14 @@ export function CadViewport({
         fill.position.set(-3, 2, 1);
         scene.add(fill);
 
-        const group = new THREE.Group();
-        const meshRecords: Array<{
-          mesh: InstanceType<typeof THREE.Mesh>;
-          source: CadRenderModel['meshes'][number];
-          materials: Array<InstanceType<typeof THREE.MeshStandardMaterial>>;
-          edges: InstanceType<typeof THREE.LineSegments>;
-          edgeMaterial: InstanceType<typeof THREE.LineBasicMaterial>;
-        }> = [];
+        const meshLayer = createViewportMeshLayer(THREE, meshes);
+        const meshRecords = meshLayer.records;
+        scene.add(meshLayer.group);
+        const reference = planeIds.length ? partReferenceScene(planeIds, model && meshes.length ? model.bounds : null) : null;
+        const referenceLayer = reference ? createViewportReferenceLayer(THREE, reference) : null;
+        if (referenceLayer) scene.add(referenceLayer.group);
 
-        for (const source of model.meshes) {
-          const geometry = new THREE.BufferGeometry();
-          geometry.setAttribute('position', new THREE.BufferAttribute(source.positions, 3));
-          geometry.setAttribute('normal', new THREE.BufferAttribute(source.normals, 3));
-          geometry.setIndex(new THREE.BufferAttribute(source.indices, 1));
-          for (const face of source.faceGroups) geometry.addGroup(face.start, face.count, 0);
-          geometry.computeBoundingSphere();
-
-          const materials = [
-            new THREE.MeshStandardMaterial({
-              color: VIEWPORT_VISUAL_TOKENS.solid,
-              roughness: 0.55,
-              metalness: 0.08,
-              side: THREE.DoubleSide,
-            }),
-            new THREE.MeshStandardMaterial({
-              color: VIEWPORT_VISUAL_TOKENS.facePreselection,
-              roughness: 0.48,
-              metalness: 0.05,
-              side: THREE.DoubleSide,
-            }),
-            new THREE.MeshStandardMaterial({
-              color: VIEWPORT_VISUAL_TOKENS.faceSelection,
-              roughness: 0.42,
-              metalness: 0.05,
-              side: THREE.DoubleSide,
-            }),
-          ];
-          const mesh = new THREE.Mesh(geometry, materials);
-          mesh.userData = {
-            cadMeshId: source.meshId,
-            bodyId: source.bodyId,
-            sourceFeatureId: source.sourceFeatureId,
-            faceGroups: source.faceGroups,
-          };
-          group.add(mesh);
-
-          const edgeGeometry = new THREE.EdgesGeometry(geometry, 25);
-          const edgeMaterial = new THREE.LineBasicMaterial({
-            color: VIEWPORT_VISUAL_TOKENS.edge,
-            transparent: true,
-            opacity: 0.62,
-          });
-          const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
-          edges.userData = {
-            cadMeshId: source.meshId,
-            bodyId: source.bodyId,
-            sourceFeatureId: source.sourceFeatureId,
-          };
-          group.add(edges);
-          meshRecords.push({ mesh, source, materials, edges, edgeMaterial });
-        }
-        scene.add(group);
-
-        const { minX, minY, minZ, maxX, maxY, maxZ } = model.bounds;
+        const { minX, minY, minZ, maxX, maxY, maxZ } = model && meshes.length ? model.bounds : reference!.bounds;
         const center = new THREE.Vector3(
           (minX + maxX) / 2,
           (minY + maxY) / 2,
@@ -233,7 +205,12 @@ export function CadViewport({
         controls.touches.ONE = THREE.TOUCH.ROTATE;
         controls.touches.TWO = THREE.TOUCH.DOLLY_PAN;
 
-        if (cameraStateRef.current) {
+        // The first body after an untouched empty scene is framed exactly as a
+        // fresh B-Rep scene; otherwise the user's camera continues unchanged.
+        const fitFirstModel = meshes.length > 0 && !sceneHadMeshesRef.current && !cameraTouchedRef.current;
+        sceneHadMeshesRef.current = meshes.length > 0;
+        if (fitFirstModel) appliedViewSequenceRef.current = null;
+        if (cameraStateRef.current && !fitFirstModel) {
           camera.position.set(...cameraStateRef.current.position);
           controls.target.set(...cameraStateRef.current.target);
           camera.up.set(...cameraStateRef.current.up);
@@ -278,6 +255,7 @@ export function CadViewport({
         const selection = new ViewportSelectionController(
           selectionModeRef.current,
           selectedBodyIdRef.current,
+          selectedPlaneRef.current,
         );
         let viewChangeCount = 0;
 
@@ -300,7 +278,10 @@ export function CadViewport({
           writeCameraState();
           render();
         };
+        const onNavigationStart = () => { cameraTouchedRef.current = true; };
         controls.addEventListener('change', onCameraChange);
+        controls.addEventListener('start', onNavigationStart);
+        host.dataset.sceneRevision = model && meshes.length ? model.runtimeRevision : 'reference';
         writeCameraState();
 
         const finishViewMutation = (view: CadViewportViewName, pose: ViewportCameraPose) => {
@@ -344,29 +325,8 @@ export function CadViewport({
 
         const refreshMaterials = () => {
           const snapshot = selection.getSnapshot();
-          const ordinaryMode = snapshot.mode === 'none';
-          const selectedCandidate = snapshot.selectedCommandCandidate;
-          const hoverCandidate = snapshot.hoverCandidate;
-          for (const record of meshRecords) {
-            const bodySelected = ordinaryMode
-              && Boolean(record.source.bodyId)
-              && snapshot.selectedBodyId === record.source.bodyId;
-            const bodyHovered = ordinaryMode
-              && hoverCandidate?.kind === 'body'
-              && hoverCandidate.bodyId === record.source.bodyId;
-            for (let index = 0; index < record.source.faceGroups.length; index++) {
-              const face = record.source.faceGroups[index];
-              const faceSelected = selectedCandidate?.kind === 'face'
-                && selectedCandidate.meshId === record.source.meshId
-                && selectedCandidate.faceIndex === face.faceIndex;
-              const faceHovered = hoverCandidate?.kind === 'face'
-                && hoverCandidate.meshId === record.source.meshId
-                && hoverCandidate.faceIndex === face.faceIndex;
-              record.mesh.geometry.groups[index].materialIndex = bodySelected || faceSelected
-                ? 2
-                : bodyHovered || faceHovered ? 1 : 0;
-            }
-          }
+          meshLayer.refresh(snapshot);
+          referenceLayer?.refresh(snapshot);
         };
 
         const resetCommandSelectionVisuals = () => {
@@ -390,7 +350,12 @@ export function CadViewport({
           refreshMaterials();
           render();
         };
-        interactionRef.current = { setSelectionMode, setView, setSelectedBodyId };
+        const setSelectedPlane = (plane: CadPlaneName | null) => {
+          selection.setExternalPlaneSelection(plane);
+          refreshMaterials();
+          render();
+        };
+        interactionRef.current = { setSelectionMode, setView, setSelectedBodyId, setSelectedPlane };
         refreshMaterials();
         const pendingViewCommand = viewCommandRef.current;
         if (pendingViewCommand && appliedViewSequenceRef.current !== pendingViewCommand.sequence) {
@@ -422,6 +387,8 @@ export function CadViewport({
             return record ? [{ hit, record }] : [];
           });
         };
+
+        const planeEntries = () => (referenceLayer?.hits(raycaster) ?? []).map((candidate) => ({ candidate }));
 
         const publishCandidateDebug = (resolution: ViewportPickResolution) => {
           const currentHost = hostRef.current;
@@ -455,9 +422,9 @@ export function CadViewport({
               distance: hit.distance,
               point: [hit.point.x, hit.point.y, hit.point.z],
             };
-            return [{ hit, record, candidate }];
+            return [{ candidate }];
           });
-          return resolveEntries(entries, 'none');
+          return resolveEntries([...entries, ...planeEntries()], 'none');
         };
 
         const faceHit = (event: PointerEvent) => {
@@ -474,9 +441,9 @@ export function CadViewport({
               distance: hit.distance,
               point: [hit.point.x, hit.point.y, hit.point.z],
             };
-            return [{ hit, record, face, candidate }];
+            return [{ candidate }];
           });
-          return resolveEntries(entries, 'face');
+          return resolveEntries([...entries, ...planeEntries()], 'face');
         };
 
         const edgeHit = (event: PointerEvent) => {
@@ -566,18 +533,22 @@ export function CadViewport({
           if (mode === 'face') {
             const { entry: found, resolution } = faceHit(event);
             if (!found || offerAmbiguousCandidates(resolution)) return;
-            selection.select(found.candidate);
+            const candidate = found.candidate;
+            selection.select(candidate);
             hoverMarker.visible = false;
             refreshMaterials();
             render();
-            onPickRef.current?.({
-              kind: 'face',
-              meshId: found.candidate.meshId,
-              bodyId: found.candidate.bodyId,
-              sourceFeatureId: found.candidate.sourceFeatureId,
-              faceIndex: found.candidate.faceIndex,
-              point: found.candidate.point,
-            });
+            if (candidate.kind === 'base-plane') onPlaneSelectRef.current?.(candidate.planeId);
+            else if (candidate.kind === 'face') {
+              onPickRef.current?.({
+                kind: 'face',
+                meshId: candidate.meshId,
+                bodyId: candidate.bodyId,
+                sourceFeatureId: candidate.sourceFeatureId,
+                faceIndex: candidate.faceIndex,
+                point: candidate.point,
+              });
+            }
             return;
           }
 
@@ -604,16 +575,18 @@ export function CadViewport({
 
           const { entry: found, resolution } = bodyHit(event);
           if (offerAmbiguousCandidates(resolution)) return;
-          selection.select(found?.candidate ?? null);
-          const bodyId = found?.candidate.bodyId ?? null;
-          selectedBodyIdRef.current = bodyId;
+          const candidate = found?.candidate ?? null;
+          selection.select(candidate);
           refreshMaterials();
           render();
+          if (candidate?.kind === 'base-plane') {
+            onPlaneSelectRef.current?.(candidate.planeId);
+            return;
+          }
+          const bodyId = candidate?.kind === 'body' ? candidate.bodyId : null;
+          selectedBodyIdRef.current = bodyId;
           onBodySelectRef.current?.(bodyId);
         };
-
-        const onPointerLeaveLegacyGuard = false;
-        void onPointerLeaveLegacyGuard;
 
         const onPointerDown = (event: PointerEvent) => {
           if (event.button === 1 || event.button === 2) {
@@ -652,6 +625,7 @@ export function CadViewport({
           interactionRef.current = null;
           observer.disconnect();
           controls.removeEventListener('change', onCameraChange);
+          controls.removeEventListener('start', onNavigationStart);
           controls.dispose();
           renderer.domElement.removeEventListener('pointermove', onPointerMove);
           renderer.domElement.removeEventListener('pointerleave', onPointerLeave);
@@ -663,12 +637,8 @@ export function CadViewport({
           (hoverMarker.material as InstanceType<typeof THREE.MeshBasicMaterial>).dispose();
           selectedMarker.geometry.dispose();
           (selectedMarker.material as InstanceType<typeof THREE.MeshBasicMaterial>).dispose();
-          for (const record of meshRecords) {
-            record.mesh.geometry.dispose();
-            record.materials.forEach((material) => material.dispose());
-            record.edges.geometry.dispose();
-            record.edgeMaterial.dispose();
-          }
+          meshLayer.dispose();
+          referenceLayer?.dispose();
           renderer.dispose();
           renderer.domElement.remove();
         };
@@ -681,7 +651,7 @@ export function CadViewport({
       disposed = true;
       cleanup();
     };
-  }, [model]);
+  }, [model, referenceKey]);
 
   const bounds = model
     ? [model.bounds.minX, model.bounds.minY, model.bounds.minZ, model.bounds.maxX, model.bounds.maxY, model.bounds.maxZ].join(',')
@@ -696,6 +666,8 @@ export function CadViewport({
       data-selection-mode={selectionMode}
       data-selected-body-id={selectedBodyId ?? ''}
       data-bounds={bounds}
+      data-reference-planes={referenceKey}
+      data-selected-plane={selectedPlane ?? ''}
     >
       <SketchOverlayLayer model={sketchOverlay} />
       {error && <div className="cad-viewport-error">{error}</div>}
