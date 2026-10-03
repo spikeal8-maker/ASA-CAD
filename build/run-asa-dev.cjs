@@ -1,6 +1,12 @@
 const path = require('node:path');
-const rspackCore = require(path.resolve(__dirname, '../vendor/toubkal/node_modules/@rspack/core'));
-const devServerModule = require(path.resolve(__dirname, '../vendor/toubkal/node_modules/@rspack/dev-server'));
+const { createRequire } = require('node:module');
+
+// Resolve the pinned toolchain by package name, as run-asa-build.cjs does:
+// @rspack/core and @rspack/dev-server 2.x expose only `exports`, so a
+// directory require by path fails with MODULE_NOT_FOUND.
+const vendorRequire = createRequire(path.resolve(__dirname, '../vendor/toubkal/package.json'));
+const rspackCore = vendorRequire('@rspack/core');
+const devServerModule = vendorRequire('@rspack/dev-server');
 const config = require('./rspack.asa.config.cjs');
 
 const RspackDevServer = devServerModule.RspackDevServer ?? devServerModule.default ?? devServerModule;
