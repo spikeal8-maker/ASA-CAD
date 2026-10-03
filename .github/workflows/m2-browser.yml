@@ -114,6 +114,11 @@ jobs:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m2/cut-extrude-parameters-browser.mjs
 
+      - name: Exercise C1 unified Part viewport
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
+        run: node tests/m2/part-viewport-browser.mjs
+
       - name: Exercise V6B Part and Origin tree disclosure
         env:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/

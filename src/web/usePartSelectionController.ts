@@ -1,8 +1,10 @@
 import { useCallback, useState } from 'react';
+import type { CadPlaneName } from '../contracts/commands';
 import type { CadPartDocument } from '../contracts/document';
 import type { CadBodyId, CadSketchEntityId, CadSketchId } from '../contracts/ids';
 import type { CadViewportPick } from '../contracts/render';
 import type { PartSketchSelectionMode } from './PartSketchWorkspaceTypes';
+import { usePartSelectionTargets } from './usePartSelectionTargets';
 
 export interface PartSelectionControllerOptions {
   part: Readonly<CadPartDocument> | null;
@@ -13,79 +15,55 @@ export interface PartSelectionControllerOptions {
 }
 
 export function usePartSelectionController(options: PartSelectionControllerOptions) {
-  const {
-    part,
-    activeSketchId,
-    clearSketchEntitySelection,
-    selectSketchEntity,
-    setNotice,
-  } = options;
+  const { part, activeSketchId, clearSketchEntitySelection, selectSketchEntity, setNotice } = options;
   const [selectionMode, setSelectionMode] = useState<PartSketchSelectionMode>('none');
-  const [selectedPick, setSelectedPick] = useState<CadViewportPick | null>(null);
-  const [selectedBodyId, setSelectedBodyId] = useState<CadBodyId | null>(null);
+  const { selectedPick, setSelectedPick, selectedBodyId, setSelectedBodyId, selectedPlane, select } =
+    usePartSelectionTargets(clearSketchEntitySelection);
 
-  const selectedPointText = selectedPick
-    ? selectedPick.point.map((value) => Number(value).toFixed(2)).join(', ')
-    : '';
-  const selectedBody = selectedBodyId && part
-    ? part.bodies.find((body) => body.id === selectedBodyId) ?? null
-    : null;
+  const selectedPointText = selectedPick ? selectedPick.point.map((value) => Number(value).toFixed(2)).join(', ') : '';
+  const selectedBody = selectedBodyId && part ? part.bodies.find((body) => body.id === selectedBodyId) ?? null : null;
 
   const clearTransientSelection = useCallback(() => {
     setSelectionMode('none');
-    setSelectedPick(null);
-    setSelectedBodyId(null);
-    clearSketchEntitySelection();
-  }, [clearSketchEntitySelection]);
+    select({});
+  }, [select]);
 
-  const clearSelectedPick = useCallback(() => {
-    setSelectedPick(null);
-  }, []);
+  const clearSelectedPick = useCallback(() => setSelectedPick(null), []);
 
+  // Keeps a selected origin plane: it is the Sketch support (select, then command).
   const beginPartSelection = useCallback((mode: PartSketchSelectionMode) => {
     setSelectionMode(mode);
     setSelectedPick(null);
     setSelectedBodyId(null);
     clearSketchEntitySelection();
-  }, [clearSketchEntitySelection]);
+  }, [clearSketchEntitySelection]); // state setters are stable
 
   const handleViewportPick = useCallback((pick: CadViewportPick) => {
-    clearSketchEntitySelection();
-    setSelectedPick(pick);
-    if (pick.kind === 'face') {
-      setNotice(`Грань выбрана: ${pick.point.map((value) => value.toFixed(1)).join(', ')}`);
-    } else {
-      setNotice(`Ребро выбрано: ${pick.point.map((value) => value.toFixed(1)).join(', ')}`);
-    }
-  }, [clearSketchEntitySelection, setNotice]);
+    select({ pick });
+    setNotice(`${pick.kind === 'face' ? 'Грань выбрана' : 'Ребро выбрано'}: ${pick.point.map((v) => v.toFixed(1)).join(', ')}`);
+  }, [select, setNotice]);
 
   const handleBodySelect = useCallback((bodyId: CadBodyId | null) => {
-    clearSketchEntitySelection();
-    setSelectedBodyId(bodyId);
-    setSelectedPick(null);
+    select({ bodyId });
     setNotice(bodyId ? 'Тело выбрано' : 'Выбор очищен');
-  }, [clearSketchEntitySelection, setNotice]);
+  }, [select, setNotice]);
+
+  const selectBasePlane = useCallback((plane: CadPlaneName) => {
+    select({ plane });
+    setNotice(`Плоскость ${plane} выбрана`);
+  }, [select, setNotice]);
 
   const handleSketchEntitySelect = useCallback((entityId: CadSketchEntityId) => {
     if (!activeSketchId) return;
     setSelectionMode('none');
-    setSelectedPick(null);
-    setSelectedBodyId(null);
+    select({});
     selectSketchEntity(activeSketchId, entityId);
     setNotice('Элемент эскиза выбран');
-  }, [activeSketchId, selectSketchEntity, setNotice]);
+  }, [activeSketchId, select, selectSketchEntity, setNotice]);
 
   return {
-    selectionMode,
-    selectedPick,
-    selectedBodyId,
-    selectedPointText,
-    selectedBody,
-    clearTransientSelection,
-    clearSelectedPick,
-    beginPartSelection,
-    handleViewportPick,
-    handleBodySelect,
-    handleSketchEntitySelect,
+    selectionMode, selectedPick, selectedBodyId, selectedPlane, selectedPointText, selectedBody,
+    clearTransientSelection, clearSelectedPick, beginPartSelection,
+    handleViewportPick, handleBodySelect, selectBasePlane, handleSketchEntitySelect,
   };
 }

@@ -121,17 +121,17 @@
     }
   ],
   "frozenCeilings": {
-    "src/web/App.tsx": 15167,
-    "src/web/CadViewport.tsx": 27846,
+    "src/web/App.tsx": 14486,
+    "src/web/CadViewport.tsx": 27374,
     "src/web/ParameterPanel.tsx": 9590,
-    "src/web/usePartSketchWorkspace.ts": 8454,
-    "src/web/usePartSelectionController.ts": 3227,
+    "src/web/usePartSketchWorkspace.ts": 7303,
+    "src/web/usePartSelectionController.ts": 3211,
     "src/web/useSketchEditingController.ts": 7638,
     "src/web/useSketchDimensionController.ts": 3764,
-    "src/web/usePartFeatureController.ts": 7794,
+    "src/web/usePartFeatureController.ts": 7766,
     "src/web/PartSketchWorkspaceModel.ts": 1015,
     "src/web/PartSketchWorkspaceTypes.ts": 140,
-    "src/web/PartModelStage.tsx": 3423,
+    "src/web/PartModelStage.tsx": 2736,
     "src/web/SketchEditingStage.tsx": 5989,
     "src/runtime/OpenCascadePartRuntime.ts": 15119,
     "tests/m3/M3BrowserHarness.mjs": 7891

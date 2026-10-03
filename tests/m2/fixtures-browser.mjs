@@ -75,7 +75,8 @@ try {
       stableReferenceCount: 0,
     });
     await fx.page.getByText('Fixture empty готов', { exact: true }).waitFor();
-    assert.equal(await fx.page.locator('[data-testid="cad-viewport"] canvas').count(), 0);
+    // C1: the empty Part keeps its spatial scene (origin planes only) and never builds B-Rep.
+    await fx.page.locator('[data-testid="cad-viewport"][data-scene-revision="reference"][data-runtime-revision=""][data-bounds=""] canvas').waitFor();
     assert.equal(fx.wasmRequests.length, 0, 'empty fixture loaded OpenCascade WASM');
     console.log('  ✓ /dev/part/empty — clean shell, no WASM');
     await fx.finish();
@@ -94,7 +95,8 @@ try {
     await fx.page.getByText('Эскиз 1', { exact: true }).waitFor();
     await fx.page.getByRole('button', { name: /Ширина: 60 мм/ }).waitFor();
     await fx.page.getByRole('button', { name: /Высота: 40 мм/ }).waitFor();
-    assert.equal(await fx.page.locator('[data-testid="cad-viewport"] canvas').count(), 0);
+    // A Sketch without a solid keeps the origin scene; no B-Rep is built before Extrude.
+    await fx.page.locator('[data-testid="cad-viewport"][data-scene-revision="reference"][data-runtime-revision=""][data-bounds=""] canvas').waitFor();
     assert.equal(fx.wasmRequests.length, 0, 'sketch fixture loaded OpenCascade WASM');
     console.log('  ✓ /dev/part/sketch — 60×40 driving sketch, no WASM');
     await fx.finish();
@@ -150,9 +152,13 @@ try {
     await fx.page.getByText('B-Rep не построен', { exact: true }).waitFor();
     const bodyText = await fx.page.locator('.model-stage').innerText();
     assert.match(bodyText, /cut|circle|profile|окруж|профил/i, `rebuild-error fixture has no useful diagnostic: ${bodyText}`);
-    assert.equal(await fx.page.locator('[data-testid="cad-viewport"] canvas').count(), 0, 'invalid fixture rendered stale B-Rep canvas');
+    // The work area survives the failed rebuild, but only the origin scene is drawn: no stale B-Rep.
+    await fx.page.locator('[data-testid="cad-viewport"][data-scene-revision="reference"] canvas').waitFor();
+    const viewport = fx.page.locator('[data-testid="cad-viewport"]');
+    assert.equal(await viewport.getAttribute('data-runtime-revision'), '', 'invalid fixture rendered stale B-Rep');
+    assert.equal(await viewport.getAttribute('data-bounds'), '', 'invalid fixture kept stale B-Rep bounds');
     assert.ok(fx.wasmRequests.length >= 1, 'rebuild-error fixture never exercised OpenCascade');
-    console.log('  ✓ /dev/part/rebuild-error — real recompute failure surfaced, no stale canvas');
+    console.log('  ✓ /dev/part/rebuild-error — real recompute failure surfaced, work area kept, no stale B-Rep');
     await fx.finish();
   }
 
