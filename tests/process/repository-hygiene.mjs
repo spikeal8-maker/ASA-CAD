@@ -18,6 +18,10 @@ const largeReviewBytes = Number(hygiene.firstPartyLargeFileReviewBytes);
 const hardFileBytes = Number(hygiene.firstPartyHardFileBytes);
 const textExtensions = new Set(['.ts', '.tsx', '.js', '.mjs', '.cjs', '.json', '.md', '.yml', '.yaml', '.css', '.html']);
 
+assert.equal(hasHistoricalShellNewlineCorruption('`npm run check`'), false, 'normal Markdown npm code span must remain clean');
+assert.equal(hasHistoricalShellNewlineCorruption('`npm run test:m2:architecture`'), false, 'normal Markdown test code span must remain clean');
+assert.equal(hasHistoricalShellNewlineCorruption('foo`n`nbar'), true, 'historical double shell-newline corruption must remain blocked');
+
 const offenders = [];
 const warnings = [];
 let checked = 0;
@@ -54,7 +58,7 @@ walk('.', (file) => {
 
   if (textExtensions.has(path.extname(normalized).toLowerCase())) {
     const text = fs.readFileSync(file, 'utf8');
-    const statusEscapeLeak = normalized === 'docs/STATUS.md' && text.includes('`n');
+    const statusEscapeLeak = normalized === 'docs/STATUS.md' && hasHistoricalShellNewlineCorruption(text);
     if (text.startsWith('\uFEFF') || text.includes('\uFFFD') || statusEscapeLeak || hasLikelyCyrillicMojibake(text)) {
       offenders.push(`${normalized}: invalid UTF-8, leaked shell newline token or likely Cyrillic mojibake`);
     }
@@ -87,6 +91,12 @@ function isExcluded(file) {
 
 function normalize(file) {
   return file.replaceAll('\\', '/');
+}
+
+function hasHistoricalShellNewlineCorruption(text) {
+  // Focused historical signature only. Do not treat every literal `n as corruption:
+  // normal Markdown code spans such as `npm run check` legitimately contain that pair.
+  return text.includes('`n`n');
 }
 
 function hasLikelyCyrillicMojibake(text) {
