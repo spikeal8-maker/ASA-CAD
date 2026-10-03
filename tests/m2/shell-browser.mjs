@@ -155,7 +155,7 @@ async function runDesktop() {
   await waitForShell(page);
   await page.getByText('Твердотельное моделирование', { exact: true }).waitFor();
   await page.locator('.management-panel .panel-title-row strong').filter({ hasText: 'Дерево' }).waitFor();
-  await page.getByText('Новая деталь', { exact: true }).waitFor();
+  await page.locator('[data-scene-revision="reference"] canvas').waitFor();
 
   await assertDesktopGeometry(page);
   await assertPartSourceComposition(page);

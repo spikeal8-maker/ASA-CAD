@@ -26,7 +26,7 @@ try {
 
   await page.getByRole('button', { name: 'ASA-CAD', exact: true }).waitFor();
   await page.getByText('Твердотельное моделирование', { exact: true }).waitFor();
-  await page.getByText('Новая деталь', { exact: true }).waitFor();
+  await page.locator('[data-testid="cad-viewport"][data-scene-revision="reference"][data-reference-planes="XY,XZ,YZ"] canvas').waitFor();
 
   const state = await page.evaluate(() => ({
     crossOriginIsolated: window.crossOriginIsolated,
@@ -36,6 +36,8 @@ try {
     workWidth: document.querySelector('.work-area')?.getBoundingClientRect().width ?? 0,
     workHeight: document.querySelector('.work-area')?.getBoundingClientRect().height ?? 0,
     canvasCount: document.querySelectorAll('[data-testid="cad-viewport"] canvas').length,
+    runtimeRevision: document.querySelector('[data-testid="cad-viewport"]')?.getAttribute('data-runtime-revision') ?? null,
+    splashVisible: [...document.querySelectorAll('.stage-message')].some((node) => node.textContent?.includes('Новая деталь')),
     wasmResources: performance
       .getEntriesByType('resource')
       .map((entry) => entry.name)
@@ -49,7 +51,9 @@ try {
   assert.equal(state.runtimeStatus, 'idle', `fresh ASA shell runtime should be idle, got ${state.runtimeStatus}`);
   assert.ok(state.workWidth > 400, `CAD work area unexpectedly narrow: ${state.workWidth}`);
   assert.ok(state.workHeight > 300, `CAD work area unexpectedly short: ${state.workHeight}`);
-  assert.equal(state.canvasCount, 0, 'fresh empty Part should not create a B-Rep canvas before a solid exists');
+  assert.equal(state.canvasCount, 1, 'fresh empty Part must show one persistent spatial scene');
+  assert.equal(state.runtimeRevision, '', 'fresh empty Part must not build B-Rep before a solid exists');
+  assert.equal(state.splashVisible, false, 'fresh empty Part must not replace the work area with a splash');
   assert.deepEqual(state.wasmResources, [], 'release shell eagerly loaded OpenCascade WASM');
   assert.deepEqual(wasmRequests, [], 'release shell issued a WASM request during boot');
   assert.equal(state.vendorArtworkVisible, false, 'release image exposed the vendor Toubkal product shell');

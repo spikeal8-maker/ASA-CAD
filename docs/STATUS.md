@@ -26,11 +26,13 @@ Remaining accepted #166 YELLOW constraints stay non-growing:
 
 ## NEXT — KOMPAS-CORE-INTERACTION
 
-Detailed acceptance contracts are owned by `docs/ROADMAP.md` and #178. No C1/C2/C3 product implementation is started by this state update.
+Detailed acceptance contracts are owned by `docs/ROADMAP.md` and #178.
 
-1. **C1 / KOMPAS-CORE-INTERACTION-001 — Unified Part Viewport** — NEXT / NOT STARTED.
-   - EMPTY_PART_VIEWPORT = **NOT ACCEPTED**.
-   - 3D_NAVIGATION_CONTINUITY = **NOT ACCEPTED**.
+1. **C1 / KOMPAS-CORE-INTERACTION-001 — Unified Part Viewport** — **IN REVIEW** (Draft PR from `feat/c1-unified-part-viewport`) / NOT ACCEPTED.
+   - EMPTY_PART_VIEWPORT = **IMPLEMENTED IN REVIEW / NOT ACCEPTED**.
+   - 3D_NAVIGATION_CONTINUITY = **IMPLEMENTED IN REVIEW / NOT ACCEPTED**.
+   - #179 overlap decision (recorded in #178): **SUPERSEDE** its SVG empty-Part scene; **EXTRACT** tree plane selection and the empty-Part DOM test contract.
+   - Owner acceptance of C1 reaches CADENCE 3/3: a Full Repository Health Audit is required before C2.
 2. **C2 / KOMPAS-CORE-INTERACTION-002 — Sketch-in-Viewport** — THEN / NOT STARTED.
    - SKETCH_VIEWPORT_CONTINUITY = **NOT ACCEPTED**.
 3. **C3 / KOMPAS-CORE-INTERACTION-003 — Geometry Command Lifecycle** — THEN / NOT STARTED.
@@ -44,7 +46,7 @@ Historical V6C / #175 stays DONE and is not moved back to backlog.
 ## Existing Draft candidates
 
 - PR #177 / PART-CORE-RECOVERY-001 — **TECHNICAL RECOVERY CANDIDATE / MERGE HOLD / UNCHANGED**. Preserve useful geometry/runtime recovery; it may be a dependency/reuse source but does not satisfy C1/C2/C3.
-- PR #179 / R1 first editable Drawing — **DEPENDENT CANDIDATE / HOLD / UNCHANGED**. Drawing/schema scope is separate. It contains C1-overlap candidate code, but C1 is not accepted. Before C1 implementation, independently review that overlap and choose **REUSE / EXTRACT / SUPERSEDE**. Do not implement a second independent C1 in parallel.
+- PR #179 / R1 first editable Drawing — **DEPENDENT CANDIDATE / HOLD / UNCHANGED**. Drawing/schema scope is separate. Its C1 overlap was reviewed (SUPERSEDE scene / EXTRACT tree wiring); a rebase after C1 must drop `PartEmptyWorkArea`.
 
 ## Honesty boundaries
 

@@ -93,6 +93,8 @@ Current main:
 - EMPTY_PART_VIEWPORT = **NOT ACCEPTED**;
 - 3D_NAVIGATION_CONTINUITY = **NOT ACCEPTED**.
 
+Candidate in review: `feat/c1-unified-part-viewport` — origin + XY/XZ/YZ from `CadDocument` drawn in the same `CadViewport` with and without B-Rep; one Part selection state for scene/tree/parameters; Sketch support taken from the selected plane in both orders. Regression: `tests/m2/part-viewport-browser.mjs`, `tests/m2o/viewport-reference.ts`.
+
 ### C2 / KOMPAS-CORE-INTERACTION-002 — Sketch-in-Viewport
 
 Acceptance target:
