@@ -162,9 +162,10 @@
     "visualEvidenceWorkflow": ".github/workflows/ui-core-u1-visual.yml",
     "visualEvidenceScript": "tests/visual/ui-core-u1-capture.mjs",
     "referenceStates": [
-      "solid-1600x900",
-      "surfaces-1600x900",
-      "solid-1366x768"
+      "light-solid-1600x900",
+      "light-surfaces-1600x900",
+      "light-solid-1366x768",
+      "dark-solid-1600x900-reference-only"
     ],
     "preferredOwners": [
       "src/web/CadShellTop.tsx",
@@ -187,6 +188,89 @@
       "src/web/responsive.css"
     ],
     "checkpointCompleteDoesNotEqualU1Accepted": true,
-    "ownerVisualAcceptanceRequired": true
+    "ownerVisualAcceptanceRequired": true,
+    "themeContract": {
+      "referenceThemes": [
+        "light",
+        "dark"
+      ],
+      "currentProductThemes": [
+        "light"
+      ],
+      "u1aAcceptanceThemes": [
+        "light"
+      ],
+      "darkThemeParity": "DEFERRED_NOT_U1A",
+      "noFakeDarkThemeInU1A": true,
+      "mustBeResolvedBeforeOverallVisualParityClaim": true
+    },
+    "semanticRegionContract": [
+      {
+        "key": "topShell",
+        "reference": ".main-menu-bar",
+        "candidate": ".main-menu-bar"
+      },
+      {
+        "key": "menuItems",
+        "reference": "#menu",
+        "candidate": ".main-menu-items"
+      },
+      {
+        "key": "commandSearch",
+        "reference": "#searchWrap",
+        "candidate": ".command-search-wrap"
+      },
+      {
+        "key": "documentTabs",
+        "reference": ".document-tabs",
+        "candidate": ".document-tabs"
+      },
+      {
+        "key": "activeDocumentTab",
+        "reference": "#docTab",
+        "candidate": ".document-tab.active"
+      },
+      {
+        "key": "instrumentArea",
+        "reference": ".instrument-area",
+        "candidate": ".instrument-area"
+      },
+      {
+        "key": "toolsets",
+        "reference": "#toolsets",
+        "candidate": ".workspace-tabs"
+      },
+      {
+        "key": "ribbon",
+        "reference": "#ribbon",
+        "candidate": ".command-ribbon"
+      },
+      {
+        "key": "contentArea",
+        "reference": "#content",
+        "candidate": ".content-area"
+      }
+    ],
+    "ownerPressure": {
+      "src/web/CadShellCommandGroups.tsx": {
+        "currentBytesAtContract": 8350,
+        "targetBytes": 10240,
+        "pressureRatio": 0.85,
+        "pressureThresholdBytes": 8704,
+        "remainingBytesBeforePressureAtContract": 354,
+        "rule": "EXTRACT_SUBCOMPONENT_BEFORE_EXCEEDING_PRESSURE_THRESHOLD",
+        "suggestedExtractionTargets": [
+          "CadPartSolidGroups.tsx",
+          "CadSurfaceGroups.tsx",
+          "CadSketchGroups.tsx",
+          "CadViewGroups.tsx"
+        ]
+      }
+    },
+    "candidateAcceptanceStates": [
+      "light-solid-1600x900",
+      "light-surfaces-1600x900",
+      "light-solid-1366x768"
+    ]
   }
 }

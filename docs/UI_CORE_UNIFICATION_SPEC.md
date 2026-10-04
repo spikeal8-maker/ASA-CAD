@@ -180,7 +180,12 @@ Scope:
 - main menu;
 - document tab;
 - toolsets/ribbon;
-- composition/layout.
+- composition/layout;
+- **light-theme visual acceptance only**.
+
+Frozen #170 имеет light + dark, но product runtime сейчас light-only. Dark-theme parity = **DEFERRED_NOT_U1A** и не должна имитироваться отдельной CSS-перекраской. Frozen dark state сохраняется в evidence и должен быть закрыт отдельным UI-parity решением до overall visual parity claim.
+
+Geometry evidence использует только эквивалентные semantic regions из `docs/UI_CORE_U1A_MAPPING.md`; несопоставимые зоны не сравниваются как равные.
 
 Не трогать:
 - product math;
@@ -267,7 +272,8 @@ Prototype-only behavior не помечается как product-connected.
 - architecture review above 20 files;
 - target changed lines = 800;
 - architecture review above 1500 lines;
-- frozen owners may not grow.
+- frozen owners may not grow;
+- `CadShellCommandGroups.tsx` U1A pressure ceiling = **8704 bytes**. Выше — обязательный extract подкомпонента до дальнейшего роста.
 
 ## 12. Evidence
 

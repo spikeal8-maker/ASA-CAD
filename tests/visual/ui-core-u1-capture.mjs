@@ -15,6 +15,18 @@ assert.equal(referenceSha, '88c535c652dac8b04f0d68fa144cf8486afdc926');
 assert.equal(referenceTag, 'ui-reference-20261004');
 assert.ok(candidateSha, 'candidate SHA is required');
 
+const REGION_MAP = [
+  { key: 'topShell', reference: '.main-menu-bar', candidate: '.main-menu-bar' },
+  { key: 'menuItems', reference: '#menu', candidate: '.main-menu-items' },
+  { key: 'commandSearch', reference: '#searchWrap', candidate: '.command-search-wrap' },
+  { key: 'documentTabs', reference: '.document-tabs', candidate: '.document-tabs' },
+  { key: 'activeDocumentTab', reference: '#docTab', candidate: '.document-tab.active' },
+  { key: 'instrumentArea', reference: '.instrument-area', candidate: '.instrument-area' },
+  { key: 'toolsets', reference: '#toolsets', candidate: '.workspace-tabs' },
+  { key: 'ribbon', reference: '#ribbon', candidate: '.command-ribbon' },
+  { key: 'contentArea', reference: '#content', candidate: '.content-area' },
+];
+
 const hash = (value) => createHash('sha256').update(value).digest('hex');
 
 function pngDimensions(buffer) {
@@ -52,22 +64,17 @@ async function region(page, selector) {
   };
 }
 
-async function referenceMetrics(page) {
-  return Promise.all([
-    region(page, '#menu'),
-    region(page, '#toolsets'),
-    region(page, '#ribbon'),
-    region(page, '#content'),
-  ]);
+async function semanticRegions(page, side) {
+  return Object.fromEntries(await Promise.all(REGION_MAP.map(async (item) => [
+    item.key,
+    await region(page, item[side]),
+  ])));
 }
 
-async function candidateMetrics(page) {
-  return Promise.all([
-    region(page, '.main-menu-bar'),
-    region(page, '.workspace-tabs'),
-    region(page, '.command-ribbon'),
-    region(page, '.content-area'),
-  ]);
+async function setReferenceTheme(page, theme) {
+  await page.evaluate((value) => document.documentElement.setAttribute('data-theme', value), theme);
+  await page.waitForTimeout(80);
+  assert.equal(await page.evaluate(() => document.documentElement.getAttribute('data-theme')), theme);
 }
 
 async function openReference(browser, width, height) {
@@ -80,6 +87,7 @@ async function openReference(browser, width, height) {
   await page.locator('#app').waitFor();
   await page.locator('[data-toolset="solid"]').waitFor();
   assert.equal(await page.evaluate(() => typeof window.THREE), 'object', 'frozen reference Three.js did not initialize');
+  await setReferenceTheme(page, 'light');
   return { context, page, errors };
 }
 
@@ -110,7 +118,9 @@ async function openCandidate(browser, width, height) {
   assert.ok(response?.ok());
   await page.getByRole('button', { name: 'ASA-CAD', exact: true }).waitFor();
   await ensurePart(page);
-  return { context, page, errors, failed };
+  const colorScheme = await page.evaluate(() => getComputedStyle(document.documentElement).colorScheme);
+  assert.match(colorScheme, /light/i, 'U1A candidate must remain on the real light-only product theme');
+  return { context, page, errors, failed, colorScheme };
 }
 
 async function setReferenceToolset(page, id) {
@@ -128,43 +138,57 @@ const browser = await chromium.launch({ headless: true });
 const screenshots = [];
 const geometry = {};
 let browserVersion;
+let candidateColorScheme;
 
 try {
   browserVersion = browser.version();
 
   const reference = await openReference(browser, 1600, 900);
   const candidate = await openCandidate(browser, 1600, 900);
+  candidateColorScheme = candidate.colorScheme;
 
-  screenshots.push(await shot(reference.page, 'reference/solid-1600x900.png', 1600, 900, {
-    side: 'reference', state: 'solid',
+  screenshots.push(await shot(reference.page, 'reference/light-solid-1600x900.png', 1600, 900, {
+    side: 'reference', theme: 'light', state: 'solid',
   }));
-  screenshots.push(await shot(candidate.page, 'candidate/solid-1600x900.png', 1600, 900, {
-    side: 'candidate', state: 'solid',
+  screenshots.push(await shot(candidate.page, 'candidate/light-solid-1600x900.png', 1600, 900, {
+    side: 'candidate', theme: 'light', state: 'solid',
   }));
-  geometry.referenceSolid1600 = await referenceMetrics(reference.page);
-  geometry.candidateSolid1600 = await candidateMetrics(candidate.page);
+  geometry.lightSolid1600 = {
+    reference: await semanticRegions(reference.page, 'reference'),
+    candidate: await semanticRegions(candidate.page, 'candidate'),
+  };
 
   await setReferenceToolset(reference.page, 'surfaces');
   await setCandidateWorkspace(candidate.page, 'Каркас и поверхности');
-  screenshots.push(await shot(reference.page, 'reference/surfaces-1600x900.png', 1600, 900, {
-    side: 'reference', state: 'surfaces',
+  screenshots.push(await shot(reference.page, 'reference/light-surfaces-1600x900.png', 1600, 900, {
+    side: 'reference', theme: 'light', state: 'surfaces',
   }));
-  screenshots.push(await shot(candidate.page, 'candidate/surfaces-1600x900.png', 1600, 900, {
-    side: 'candidate', state: 'surfaces',
+  screenshots.push(await shot(candidate.page, 'candidate/light-surfaces-1600x900.png', 1600, 900, {
+    side: 'candidate', theme: 'light', state: 'surfaces',
   }));
 
   await setReferenceToolset(reference.page, 'solid');
   await setCandidateWorkspace(candidate.page, 'Твердотельное моделирование');
   await reference.page.setViewportSize({ width: 1366, height: 768 });
   await candidate.page.setViewportSize({ width: 1366, height: 768 });
-  screenshots.push(await shot(reference.page, 'reference/solid-1366x768.png', 1366, 768, {
-    side: 'reference', state: 'solid',
+  screenshots.push(await shot(reference.page, 'reference/light-solid-1366x768.png', 1366, 768, {
+    side: 'reference', theme: 'light', state: 'solid',
   }));
-  screenshots.push(await shot(candidate.page, 'candidate/solid-1366x768.png', 1366, 768, {
-    side: 'candidate', state: 'solid',
+  screenshots.push(await shot(candidate.page, 'candidate/light-solid-1366x768.png', 1366, 768, {
+    side: 'candidate', theme: 'light', state: 'solid',
   }));
-  geometry.referenceSolid1366 = await referenceMetrics(reference.page);
-  geometry.candidateSolid1366 = await candidateMetrics(candidate.page);
+  geometry.lightSolid1366 = {
+    reference: await semanticRegions(reference.page, 'reference'),
+    candidate: await semanticRegions(candidate.page, 'candidate'),
+  };
+
+  // Preserve frozen dark-theme evidence without pretending the current product supports it.
+  await reference.page.setViewportSize({ width: 1600, height: 900 });
+  await setReferenceTheme(reference.page, 'dark');
+  await setReferenceToolset(reference.page, 'solid');
+  screenshots.push(await shot(reference.page, 'reference/dark-solid-1600x900.png', 1600, 900, {
+    side: 'reference', theme: 'dark', state: 'solid', referenceOnly: true,
+  }));
 
   assert.deepEqual(reference.errors, []);
   assert.deepEqual(candidate.errors, []);
@@ -177,16 +201,26 @@ try {
 }
 
 const manifest = {
-  schemaVersion: 1,
+  schemaVersion: 2,
   package: 'UI-CORE-U1-VISUAL-EVIDENCE',
   purpose: 'Frozen #170 UI reference versus exact product candidate evidence',
   reference: {
     tag: referenceTag,
     sha: referenceSha,
+    themes: ['light', 'dark'],
   },
   candidate: {
     sha: candidateSha,
+    currentThemes: ['light'],
+    colorScheme: candidateColorScheme,
   },
+  themeContract: {
+    u1aAcceptanceThemes: ['light'],
+    darkThemeParity: 'DEFERRED_NOT_U1A',
+    darkReferenceCaptured: true,
+    noFakeDarkThemeInU1A: true,
+  },
+  regionContract: REGION_MAP.map(({ key, reference, candidate }) => ({ key, reference, candidate })),
   environment: {
     browser: `Chromium ${browserVersion}`,
     os: `${process.platform} ${process.arch}`,
@@ -194,9 +228,10 @@ const manifest = {
     uiScale: 100,
   },
   states: [
-    'solid 1600x900',
-    'surfaces 1600x900',
-    'solid 1366x768',
+    'light solid 1600x900',
+    'light surfaces 1600x900',
+    'light solid 1366x768',
+    'dark solid 1600x900 reference-only',
   ],
   geometry,
   screenshots,
@@ -206,4 +241,4 @@ const manifest = {
 };
 
 await writeFile(join(outputRoot, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
-console.log('UI-CORE U1 visual evidence capture PASS (owner parity acceptance still required)');
+console.log('UI-CORE U1 visual evidence capture PASS (light U1A acceptance; dark parity deferred)');
