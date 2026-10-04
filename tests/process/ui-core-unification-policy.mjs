@@ -6,6 +6,14 @@ const health = JSON.parse(readFileSync('spec/process/repository-health.v1.json',
 const status = readFileSync('docs/STATUS.md', 'utf8');
 const roadmap = readFileSync('docs/ROADMAP.md', 'utf8');
 const spec = readFileSync('docs/UI_CORE_UNIFICATION_SPEC.md', 'utf8');
+const integrationWorkflows = [
+  '.github/workflows/baseline.yml',
+  '.github/workflows/m2-shell.yml',
+  '.github/workflows/m2-browser.yml',
+  '.github/workflows/m3-browser.yml',
+  '.github/workflows/docker.yml',
+  '.github/workflows/owner-screenshot-capture.yml',
+];
 
 assert.equal(policy.schemaVersion, 1);
 assert.equal(policy.initiative, 'UI-CORE-UNIFICATION-001');
@@ -50,6 +58,15 @@ assert.match(spec, /#182.*EXTRACT|EXTRACT.*#182/i);
 
 for (const forbidden of policy.forbiddenPrototypeAuthorities) {
   assert.ok(forbidden.length > 0);
+}
+
+for (const workflowPath of integrationWorkflows) {
+  const workflow = readFileSync(workflowPath, 'utf8');
+  assert.match(
+    workflow,
+    /integration\/ui-core-unification/,
+    `${workflowPath} must keep integration branch CI coverage`,
+  );
 }
 
 console.log('UI/core unification policy PASS');
