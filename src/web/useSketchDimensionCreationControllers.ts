@@ -7,8 +7,8 @@ import { useSketchCircleDimensionController } from './useSketchCircleDimensionCo
 import { useSketchLineDimensionController } from './useSketchLineDimensionController';
 import { useSketchRadiusDimensionController } from './useSketchRadiusDimensionController';
 
-export type SketchDimensionCreationMode = 'linear' | 'horizontal' | 'vertical' | 'diameter' | 'radius' | 'angular';
-export type SketchDimensionTargetKind = 'line' | 'circle' | 'arc' | 'line-pair';
+type SketchDimensionCreationMode = 'linear' | 'horizontal' | 'vertical' | 'diameter' | 'radius' | 'angular';
+type SketchDimensionTargetKind = 'line' | 'circle' | 'arc' | 'line-pair';
 
 export interface SketchDimensionCreationState {
   mode: SketchDimensionCreationMode | null;
@@ -22,7 +22,7 @@ export interface SketchDimensionCreationState {
   cancel(): void;
 }
 
-export interface SketchDimensionCreationOptions {
+interface SketchDimensionCreationOptions {
   app: CadApplication;
   activeCommand: string | null;
   activeSketchId: CadSketchId | null;
