@@ -1,4 +1,3 @@
-import React from 'react';
 import type { CadDocumentKind } from '../contracts/document';
 import {
   documentDescriptions,

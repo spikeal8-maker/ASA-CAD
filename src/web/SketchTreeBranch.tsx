@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import type { CadDimension, CadSketch, CadSketchEntity } from '../contracts/sketch';
 import type { CadDimensionId } from '../contracts/ids';
 import { CadIcon, type CadIconName } from './CadIcon';

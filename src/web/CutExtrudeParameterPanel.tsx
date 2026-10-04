@@ -1,4 +1,3 @@
-import React from 'react';
 import type { CadSketchId } from '../contracts/ids';
 
 export interface CutExtrudeParameterPanelProps {

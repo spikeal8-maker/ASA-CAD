@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   CAD_UI_SCALE_OPTIONS,
   type CadUiScalePreference,

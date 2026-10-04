@@ -1,4 +1,3 @@
-import React from 'react';
 import type { CadSketchSolveSnapshot } from '../application/SketchSolveSession';
 
 export interface SketchSolveStatusProps {
