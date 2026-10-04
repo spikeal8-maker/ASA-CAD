@@ -136,5 +136,57 @@
     "duplicate-solver-runtime-proposed",
     "implicit-schema-migration-required",
     "ordinary-route-evidence-unavailable"
-  ]
+  ],
+  "integrationProtection": {
+    "desired": {
+      "pullRequestRequired": true,
+      "directPushForbidden": true,
+      "adminEnforcementRequired": true,
+      "requiredGeneralChecks": [
+        "shell-build",
+        "vendor-baseline",
+        "asa-m1",
+        "asa-m1b"
+      ]
+    },
+    "current": {
+      "mode": "DETECT_ONLY",
+      "adminProtectionVerified": false,
+      "detectorWorkflow": ".github/workflows/ui-core-integration-guard.yml",
+      "u1aStartAllowed": false,
+      "blocker": "ADMIN_BRANCH_PROTECTION_NOT_ENFORCED"
+    }
+  },
+  "u1a": {
+    "mappingDocument": "docs/UI_CORE_U1A_MAPPING.md",
+    "visualEvidenceWorkflow": ".github/workflows/ui-core-u1-visual.yml",
+    "visualEvidenceScript": "tests/visual/ui-core-u1-capture.mjs",
+    "referenceStates": [
+      "solid-1600x900",
+      "surfaces-1600x900",
+      "solid-1366x768"
+    ],
+    "preferredOwners": [
+      "src/web/CadShellTop.tsx",
+      "src/web/CadFileMenu.tsx",
+      "src/web/CadShellCommandGroups.tsx",
+      "src/web/CadShellReferenceGroups.tsx",
+      "src/web/styles/top-shell.css",
+      "src/web/styles/ribbon.css",
+      "src/web/styles/shell-responsive.css"
+    ],
+    "noNewResponsibilityOwners": [
+      "src/web/App.tsx"
+    ],
+    "noTouchOwners": [
+      "src/web/CadViewport.tsx",
+      "src/web/ParameterPanel.tsx"
+    ],
+    "noGrowthOwners": [
+      "src/web/App.tsx",
+      "src/web/responsive.css"
+    ],
+    "checkpointCompleteDoesNotEqualU1Accepted": true,
+    "ownerVisualAcceptanceRequired": true
+  }
 }

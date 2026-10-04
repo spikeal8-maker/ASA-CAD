@@ -6,7 +6,7 @@ Binding rules for coding agents. Keep ordinary task context small and verify rep
 
 For Part UI/Sketch/selection/constraints/features, first read `docs/UI_CORE_UNIFICATION_SPEC.md`, #184 and `spec/process/ui-core-unification.v1.json`. Frozen U1 reference = tag `ui-reference-20261004`; prototype #170 is UI/UX reference only, never a second CAD runtime.
 
-Canonical base = `integration/ui-core-unification`. U1A/U1B/U1C are checkpoints of one permanent U1 slice; after U1 the 3/3 Full Repository Health Audit is mandatory and U2 stays blocked until accepted. U1 requires the machine preflight to pass.
+Canonical base = `integration/ui-core-unification`. Before U1A run `npm run test:process:ui-core-u1a-ready`; any failure = STOP. The push detector is not branch protection. U1A/U1B/U1C are checkpoints of one permanent U1 slice; after U1 the 3/3 Full Repository Health Audit is mandatory and U2 stays blocked until accepted.
 
 Before changing code:
 1. resolve current `main` HEAD and inspect open blocking audit/maintenance PRs;

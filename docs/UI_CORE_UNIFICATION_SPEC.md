@@ -120,6 +120,27 @@ U1 запрещено начинать, пока не выполнены все 
 Если хотя бы один пункт не выполнен:
 `U1_START_ALLOWED = NO`.
 
+## 5A. Integration protection and U1A readiness
+
+Требуемое состояние GitHub:
+- pull request required for `integration/ui-core-unification`;
+- direct push forbidden;
+- required general checks enforced by branch protection/ruleset.
+
+Текущее состояние после automated hardening: **DETECT_ONLY**. Workflow `.github/workflows/ui-core-integration-guard.yml` обнаруживает прямой/unassociated push, но не может заменить server-side branch protection.
+
+До административного включения защиты:
+`U1A_CODE_START_ALLOWED = NO`.
+
+Обязательный readiness command перед U1A:
+`npm run test:process:ui-core-u1a-ready`.
+
+Он должен завершаться FAIL, пока `integrationProtection.current` в machine contract не переведён в verified `ENFORCED` после реальной проверки GitHub settings.
+
+U1A implementation mapping: `docs/UI_CORE_U1A_MAPPING.md`.
+U1 visual evidence workflow: `.github/workflows/ui-core-u1-visual.yml`.
+Этот workflow сравнивает exact candidate с frozen #170 reference и создаёт side-by-side evidence, но **не заявляет автоматическую pixel parity**; внешний вид принимает владелец.
+
 ## 6. Git topology
 
 ```text

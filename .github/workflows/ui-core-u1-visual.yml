@@ -1,0 +1,109 @@
+name: UI_CORE_U1_VISUAL_EVIDENCE
+
+on:
+  pull_request:
+    branches:
+      - integration/ui-core-unification
+    paths:
+      - src/web/**
+      - src/browser/**
+      - tests/visual/ui-core-u1-capture.mjs
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  u1-visual-evidence:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          path: candidate-source
+          fetch-depth: 1
+
+      - name: Checkout frozen UI reference
+        uses: actions/checkout@v4
+        with:
+          ref: ui-reference-20261004
+          path: reference-source
+          fetch-depth: 1
+
+      - name: Verify frozen reference identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          actual="$(git -C reference-source rev-parse HEAD)"
+          test "$actual" = "88c535c652dac8b04f0d68fa144cf8486afdc926"
+          echo "ASA_CAD_UI_REFERENCE_SHA=$actual" >> "$GITHUB_ENV"
+          echo "ASA_CAD_CANDIDATE_SHA=$(git -C candidate-source rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.19.0'
+          cache: npm
+          cache-dependency-path: candidate-source/vendor/toubkal/package-lock.json
+
+      - name: Install pinned browser dependencies
+        run: npm --prefix candidate-source/vendor/toubkal ci
+
+      - name: Install Chromium
+        working-directory: candidate-source
+        run: npx --yes playwright@1.60.0 install --with-deps chromium
+
+      - name: Build candidate product image
+        run: docker build -t asa-cad:u1-candidate candidate-source
+
+      - name: Start candidate and frozen reference
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run -d --name asa-cad-u1-candidate -p 8088:8080 asa-cad:u1-candidate
+          python3 -m http.server 8089 --bind 127.0.0.1             --directory reference-source/prototypes/kompas-shell             >reference-http.log 2>&1 &
+          echo $! > reference-http.pid
+
+      - name: Wait for both applications
+        shell: bash
+        run: |
+          set -euo pipefail
+          for url in             "http://127.0.0.1:8088/health/live"             "http://127.0.0.1:8089/"; do
+            ready=0
+            for attempt in $(seq 1 40); do
+              if curl --fail --silent "$url" >/dev/null; then
+                ready=1
+                break
+              fi
+              sleep 1
+            done
+            test "$ready" -eq 1
+          done
+
+      - name: Capture frozen-reference vs product evidence
+        working-directory: candidate-source
+        env:
+          ASA_CAD_UI_REFERENCE_URL: http://127.0.0.1:8089
+          ASA_CAD_UI_CANDIDATE_URL: http://127.0.0.1:8088
+          ASA_CAD_UI_REFERENCE_SHA: ${{ env.ASA_CAD_UI_REFERENCE_SHA }}
+          ASA_CAD_UI_REFERENCE_TAG: ui-reference-20261004
+          ASA_CAD_UI_CANDIDATE_SHA: ${{ env.ASA_CAD_CANDIDATE_SHA }}
+          ASA_CAD_UI_EVIDENCE_ROOT: ui-core-u1-evidence
+        run: node tests/visual/ui-core-u1-capture.mjs
+
+      - name: Upload U1 visual evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: asa-cad-ui-core-u1-evidence
+          path: candidate-source/ui-core-u1-evidence/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 0
+
+      - name: Show logs on failure
+        if: failure()
+        shell: bash
+        run: |
+          docker logs asa-cad-u1-candidate || true
+          cat reference-http.log || true

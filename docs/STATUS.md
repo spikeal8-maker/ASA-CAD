@@ -2,115 +2,102 @@
 
 Снимок: 2026-10-04.
 
-## Каноничные источники
+## Канон
 
-- Central issue: **#184 / UI-CORE-UNIFICATION-001**.
-- Convergence branch: **`integration/ui-core-unification`**.
-- Frozen UI/UX reference: **PR #170**, tag `ui-reference-20261004`, SHA `88c535c652dac8b04f0d68fa144cf8486afdc926`.
-- Product authority: только `src/**` — `CadDocument`, `CadApplication`, typed commands, persistence/history, product solver, OpenCascade/B-Rep и render adapters.
-- Prototype-local `doc/history/sketcher/snap/THREE.ExtrudeGeometry` не являются product authority.
+- Central issue: #184 / UI-CORE-UNIFICATION-001.
+- Convergence branch: integration/ui-core-unification.
+- Frozen UI reference: PR #170, tag ui-reference-20261004, SHA 88c535c652dac8b04f0d68fa144cf8486afdc926.
+- Product authority: CadDocument, CadApplication, typed actions, product persistence/history, solver, OpenCascade/B-Rep, render adapters.
+- Prototype doc/history/sketcher/snap/THREE.ExtrudeGeometry не являются product authority.
+- Six first-class document kinds: Part, Assembly, Drawing, Fragment, Specification, Text.
 
-Product document model remains **six first-class document kinds**: Part, Assembly, Drawing, Fragment, Specification, Text.
+Machine contract: spec/process/ui-core-unification.v1.json.
+U1A map: docs/UI_CORE_U1A_MAPPING.md.
 
-## Текущий main и cadence
+## Cadence
 
-Maintenance baseline: #181 и #183 MERGED; integration должна содержать актуальный main. `U1_START_ALLOWED` не хранится как ручной статус: перед U1 проверяется, что этот U0 contract уже находится в main, integration содержит этот main, frozen reference подтверждён и required CI/policy test зелёные.
+До U1 accepted permanent product cadence = 2/3.
 
-Accepted permanent product cadence до U1 = **2/3**.
+U1 = ровно один permanent product slice:
+- U1A — shell;
+- U1B — tree/parameters/status;
+- U1C — viewport/selection.
 
-**U1 считается ровно одним permanent product slice.**
-После принятия U1:
-- cadence = **3/3**;
-- **Full Repository Health Audit обязателен немедленно**;
-- **U2 BLOCKED** до принятия этого аудита.
+U1A/U1B/U1C отдельно cadence не увеличивают.
 
-U1A/U1B/U1C — checkpoints одного U1 и отдельно cadence не увеличивают.
+После U1 acceptance:
+3/3 -> Full Repository Health Audit REQUIRED -> U2 BLOCKED до GREEN или явно принятого YELLOW.
 
-Honesty boundaries:
+Honesty:
 - FULL_TREE_PARITY = NOT ACCEPTED;
 - FULL_M2V = NOT ACCEPTED;
 - FULL_KOMPAS_PARITY = NO;
-- ~90% learner-facing visual + functional/workflow identity = TARGET / NOT CURRENT ACCEPTANCE.
+- 90% visual + functional/workflow identity = TARGET.
 
-## Роли существующей работы
+## Источники старой работы
 
-- **#170** — CANONICAL UI/UX REFERENCE / FROZEN FOR U1 по tag `ui-reference-20261004`. Новую CAD-математику туда не добавлять.
-- **#177** — REUSE SOURCE / HOLD, exact SHA `44d87bef78fd66aa0e85fa1fa7ba9dc58e280a65`.
-- **#182** — CLOSED / ARCHIVED / EXTRACT SOURCE, exact SHA `27c55222331681d23ba101bd4992c9dc24a0ac42`.
-- **#179** — HOLD / NOT INTEGRATION BASE, exact SHA `034d0fc4d51606425794fc76508f61600a41d0cb`.
-- **#180** — SUPERSEDED / CLOSED / branch archived.
-- **#181** — MERGED, merge `47aa4836adb30432adcb09609da93fb309125aa5`.
-- **#183** — MERGED, merge `27380d161210aaf309fa3a8c76109fb7038a3533`.
+- #170 — frozen UI/UX reference only.
+- #177 / 44d87bef78fd66aa0e85fa1fa7ba9dc58e280a65 — REUSE_AFTER_EXACT_REVIEW.
+- archived #182 / 27c55222331681d23ba101bd4992c9dc24a0ac42 — EXTRACT_AFTER_EXACT_REVIEW.
+- #179 / 034d0fc4d51606425794fc76508f61600a41d0cb — HOLD_NOT_INTEGRATION_BASE.
+- #181 MERGED — 47aa4836adb30432adcb09609da93fb309125aa5.
+- #183 MERGED — 27380d161210aaf309fa3a8c76109fb7038a3533.
 
-Machine-readable convergence/reuse contract:
-`spec/process/ui-core-unification.v1.json`.
+## Preflight
 
-## U0 — preflight
+Обычный U0 preflight требует:
+1. governance contract в main;
+2. #181/#183 merged;
+3. integration содержит fresh main;
+4. PR в integration запускают required CI;
+5. frozen tag указывает на 88c535c...;
+6. policy test PASS.
 
-U1 разрешён только когда одновременно:
-1. U0 governance/contract changes находятся в `main`;
-2. #181 = MERGED;
-3. #183 = MERGED;
-4. integration branch обновлена от нового main;
-5. pull requests в `integration/ui-core-unification` запускают required CI;
-6. frozen UI reference tag указывает на `88c535c...`;
-7. npm run test:process:ui-core-unification = PASS.
+### Текущий blocker U1A
 
-До выполнения всех семи условий:
-**U1_START_ALLOWED = NO**.
+GitHub admin protection для integration/ui-core-unification пока NOT ENFORCED / NOT VERIFIED.
 
-## U1 — один permanent product slice
+UI_CORE_INTEGRATION_GUARD — detect-only: он обнаруживает прямой/unassociated push после события, но не может технически отклонить push.
 
-### U1A — shell checkpoint
-- меню;
+Поэтому:
+- npm run test:process = PASS;
+- npm run test:process:ui-core-u1a-ready = ожидаемый FAIL;
+- U1A_CODE_START_ALLOWED = NO.
+
+Для снятия blocker администратор GitHub должен включить server-side branch protection/ruleset, после чего machine contract переводится в verified ENFORCED и readiness-test должен стать PASS.
+
+## U1A contract
+
+U1A переносит только:
+- main menu;
 - document tab;
-- toolset/ribbon layout;
-- canonical composition из #170;
-- никакого prototype state.
+- toolsets/ribbon;
+- search/global actions;
+- desktop shell geometry.
 
-### U1B — tree/parameters/status checkpoint
-- дерево;
-- parameters;
-- status;
-- реальные product bindings;
-- никаких декоративных duplicate owners.
+Не входит:
+- tree/parameters/status — U1B;
+- viewport/planes/selection — U1C;
+- Sketch/math/persistence/solver/OpenCascade.
 
-### U1C — viewport/selection checkpoint
-- real empty Part WorkArea;
-- XY/XZ/YZ;
-- scene/tree/parameters = одно application selection state;
-- ordinary product route.
+Preferred owners:
+CadShellTop, CadFileMenu, CadShellCommandGroups, CadShellReferenceGroups, styles/top-shell.css, styles/ribbon.css, styles/shell-responsive.css.
 
-U1 acceptance:
-`open Part -> canonical shell -> select XY/XZ/YZ -> one real application selection`.
+Frozen/pressured:
+- App.tsx — без новой ответственности и без роста;
+- CadViewport.tsx — не трогать в U1A;
+- ParameterPanel.tsx — не трогать в U1A;
+- responsive.css — не увеличивать.
 
-После U1 acceptance:
-`FULL REPOSITORY HEALTH AUDIT -> ACCEPTED/YELLOW_ACCEPTED -> только затем U2`.
+Visual evidence:
+UI_CORE_U1_VISUAL_EVIDENCE сравнивает exact candidate с frozen #170 в solid 1600x900, surfaces 1600x900 и solid 1366x768. Capture не является автоматическим parity verdict; внешний вид принимает владелец.
 
-## После аудита
+## Next
 
-- U2 — real Sketch;
-- U3 — real constraints/dimensions;
-- U4 — real OpenCascade Extrude;
-- U5 — protected Part route.
+Сейчас разрешены только governance/branch-protection действия.
 
-## Git contract
+Первая строка product U1A-кода разрешается только после:
+npm run test:process:ui-core-u1a-ready = PASS.
 
-```text
-main  (всегда содержит актуальное governance ТЗ)
- |
- +-- integration/ui-core-unification
-        |
-        +-- ui-core/u1a-shell
-        +-- ui-core/u1b-tree-parameters
-        +-- ui-core/u1c-viewport-selection
-        |
-        +-- U1 acceptance
-        +-- Full Repository Health Audit
-        |
-        +-- U2 ...
-```
-
-U1A/U1B/U1C могут иметь отдельные review PR, но не считаются отдельными permanent slices.
-
-Финальный integration -> main допускается только после законченного принятого маршрута, required gates/audits и owner acceptance.
+После этого:
+U1A -> U1B -> U1C -> U1 owner acceptance -> Full Repository Health Audit -> U2.
