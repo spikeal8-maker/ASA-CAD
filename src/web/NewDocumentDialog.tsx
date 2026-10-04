@@ -1,4 +1,3 @@
-import React from 'react';
 import type { CadDocumentKind } from '../contracts/document';
 import {
   documentDescriptions,
@@ -6,7 +5,7 @@ import {
   documentNames,
 } from './CadDocumentPresentation';
 
-export interface NewDocumentDialogProps {
+interface NewDocumentDialogProps {
   open: boolean;
   onClose: () => void;
   onCreate: (kind: CadDocumentKind) => void | Promise<void>;

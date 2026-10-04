@@ -1,4 +1,3 @@
-import React from 'react';
 import { ParameterNumericField } from './ParameterNumericField';
 import type { ExtrudeOperationController } from './useExtrudeOperationController';
 

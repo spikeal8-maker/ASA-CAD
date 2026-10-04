@@ -24,7 +24,7 @@ export interface CadPartSemanticCollections {
  * duplicated or cross-Sketch references before they enter project history.
  */
 export function validateCadPartSemantics(part: CadPartSemanticCollections): void {
-  const sketches = uniqueById(part.sketches, 'sketch');
+  uniqueById(part.sketches, 'sketch');
   const constraints = uniqueById(part.constraints, 'constraint');
   const dimensions = uniqueById(part.dimensions, 'dimension');
   const stableReferences = uniqueById(part.stableReferences, 'stable reference');
@@ -97,9 +97,6 @@ export function validateCadPartSemantics(part: CadPartSemanticCollections): void
     }
   }
 
-  // `sketches` is intentionally read so duplicate sketch IDs are validated even
-  // though ownership checks iterate the original ordered collection.
-  void sketches;
 }
 
 function uniqueById<T extends { id: string }>(items: readonly T[], label: string): Map<T['id'], T> {

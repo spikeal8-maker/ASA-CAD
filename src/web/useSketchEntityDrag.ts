@@ -8,14 +8,14 @@ import type { CadSketchSolveSnapshot } from '../application/SketchSolveSession';
 import type { CadPartDocument, CadPoint2, CadSketch } from '../contracts/document';
 import type { CadSketchEntityId } from '../contracts/ids';
 
-export interface SketchEntityDragState {
+interface SketchEntityDragState {
   entityId: CadSketchEntityId;
   start: CadPoint2;
   current: CadPoint2;
   delta: CadSketchDelta;
 }
 
-export interface UseSketchEntityDragOptions {
+interface UseSketchEntityDragOptions {
   part: Readonly<CadPartDocument>;
   sketch: Readonly<CadSketch>;
   selectedEntityId: CadSketchEntityId | null;

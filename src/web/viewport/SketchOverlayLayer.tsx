@@ -1,4 +1,3 @@
-import React from 'react';
 import type { CadSketchEntity } from '../../contracts/document';
 import type { SketchOverlayModel } from './SketchOverlayModel';
 import { useSketchViewportFrame } from './SketchViewportFrameContext';

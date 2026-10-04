@@ -11,11 +11,3 @@ export const VIEWPORT_VISUAL_TOKENS = Object.freeze({
   hemisphereGround: 0x657080,
   light: 0xffffff,
 });
-
-export const VIEWPORT_INTERACTION = Object.freeze({
-  orbitRadiansPerPixel: 0.006,
-  wheelZoomExponent: 0.0012,
-  minDistanceFactor: 0.02,
-  maxDistanceFactor: 50,
-  rightDragThresholdPx: 4,
-});
