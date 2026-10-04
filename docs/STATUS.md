@@ -14,7 +14,7 @@ Product document model remains **six first-class document kinds**: Part, Assembl
 
 ## Текущий main и cadence
 
-Fresh main = `27380d161210aaf309fa3a8c76109fb7038a3533`. #181 и #183 MERGED. Integration содержит этот main. До старта U1 остаётся опубликовать усиленный U0 governance/preflight в main и подтвердить exact-head CI.
+Maintenance baseline: #181 и #183 MERGED; integration должна содержать актуальный main. `U1_START_ALLOWED` не хранится как ручной статус: перед U1 проверяется, что этот U0 contract уже находится в main, integration содержит этот main, frozen reference подтверждён и required CI/policy test зелёные.
 
 Accepted permanent product cadence до U1 = **2/3**.
 
