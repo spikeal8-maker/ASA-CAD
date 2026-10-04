@@ -1,0 +1,44 @@
+name: UI_CORE_INTEGRATION_GUARD
+
+on:
+  push:
+    branches:
+      - integration/ui-core-unification
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  integration-history-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout integration history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Allow main synchronization or merged PR only
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main --quiet
+
+          if git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "Integration sync commit is already contained in main."
+            exit 0
+          fi
+
+          prs="$(gh api             -H "Accept: application/vnd.github+json"             "repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls")"
+
+          ok="$(printf '%s' "$prs" | jq             '[.[] | select(.merged_at != null and .base.ref == "integration/ui-core-unification")] | length')"
+
+          if [ "$ok" -lt 1 ]; then
+            echo "::error::Direct/unassociated push detected on integration/ui-core-unification."
+            echo "::error::This detector cannot revert the push; repository admin protection is still required."
+            exit 1
+          fi
+
+          echo "Push is associated with a merged PR targeting integration/ui-core-unification."

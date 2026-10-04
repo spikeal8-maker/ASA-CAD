@@ -23,6 +23,16 @@ Frozen UI reference: **`ui-reference-20261004` -> `88c535c652dac8b04f0d68fa144cf
 - frozen reference tag подтверждён;
 - machine convergence test PASS.
 
+## U1A pre-start gate
+
+Перед первой строкой U1A-кода обязательно:
+- GitHub admin protection на `integration/ui-core-unification` = ENFORCED;
+- `npm run test:process:ui-core-u1a-ready` = PASS;
+- mapping-contract `docs/UI_CORE_U1A_MAPPING.md` прочитан исполнителем;
+- visual evidence workflow доступен для PR -> integration.
+
+Пока protection не включена, **U1A CODE = BLOCKED**. `UI_CORE_INTEGRATION_GUARD` — только detector, не server-side enforcement.
+
 ## U1 — CANONICAL SHELL ADOPTION
 
 **U1 = один permanent product slice.**
