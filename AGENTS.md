@@ -4,6 +4,10 @@ Binding rules for coding agents. Keep ordinary task context small and verify rep
 
 ## Mandatory entry protocol
 
+For any Part UI, shell, Sketch, selection, constraint/dimension, persistence or Part feature work, first read `docs/UI_CORE_UNIFICATION_SPEC.md` and issue #184. `prototype/kompas-shell` is a UI/UX reference only; do not add or port a second CAD document/history/solver/exact-geometry engine from it.
+
+Canonical convergence base: `integration/ui-core-unification`. New U1-U5 slices branch from its exact current HEAD and target it unless the owner explicitly changes the integration plan.
+
 Before changing code:
 1. resolve current `main` HEAD and inspect open blocking audit/maintenance PRs;
 2. read `docs/STATUS.md` and the active milestone issue;

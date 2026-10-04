@@ -2,6 +2,18 @@
 
 Редакция 2026-09-23. Уточняет desktop-цель SYSTEM_SPEC. Очередь ROADMAP/#10; В1 регионально принята, единственный NEXT — В2 / CAD-VIS-002. Требование процесса не равно реализованному тесту.
 
+## 0. Каноничный UI/UX reference после 04.10.2026
+
+Для текущего объединения каноничным исполняемым reference интерфейса является PR #170 / `prototype/kompas-shell-reference`, точный принятый для анализа HEAD `88c535c652dac8b04f0d68fa144cf8486afdc926`.
+
+Это **reference внешнего вида и взаимодействия**, а не доказательство продуктовой математики:
+- его layout/menu/tree/parameters/keyboard/preview UX можно использовать как целевой evidence;
+- его собственные `doc/history/sketcher/snap` и `THREE.ExtrudeGeometry` не являются product implementation;
+- команда считается подключённой в canonical product UI только когда обычный product route реально связывает её с typed product action/application/runtime;
+- registry status `implemented` сам по себе не доказывает binding в #170.
+
+Центральный convergence contract: `UI_CORE_UNIFICATION_SPEC.md` / issue #184.
+
 ## 1. Что принимается
 
 Каноническая продуктовая цель находится в `SYSTEM_SPEC.md`: обязательный учебный scope — **Деталь, Сборка, Чертеж**; target — примерно **90% learner-facing visual + functional/workflow identity**, чтобы переход к реальному КОМПАС-3D требовал минимального переобучения. Это target, а не утверждение о текущей готовности и не автоматически вычисляемый процент.

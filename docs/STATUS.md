@@ -1,123 +1,92 @@
-# ASA-CAD — состояние и следующий видимый результат
+# ASA-CAD — текущее состояние и каноничный следующий путь
 
-Снимок 2026-09-30. Координатор #10, визуальная очередь #19.
+Снимок: 2026-10-04.
 
-## Текущий статус
+## Источник истины
 
-- В1 / CAD-VIS-001 — DONE / MERGED / REGIONAL RESULT ACCEPTED.
-- В2 / CAD-VIS-002 — DONE / MERGED / REGIONAL RESULT ACCEPTED.
-- В3 / CAD-VIS-003 — DONE / MERGED / REGIONAL RESULT ACCEPTED / PARITY PARTIAL.
-- В4 / CAD-VIS-004 — DONE / MERGED / REGIONAL RESULT ACCEPTED / PARITY PARTIAL.
-- CAD-VIS-005 — INTEGRATION CHECKPOINT / ACCEPTED / PRODUCT_DELTA NONE.
-- V6A / CAD-VIS-006A — DONE / MERGED / REGIONAL RESULT ACCEPTED / PARITY PARTIAL.
-- V6B / CAD-VIS-006B — DONE / MERGED / REGIONAL RESULT ACCEPTED / PARITY PARTIAL.
-- KOMPAS-SHELL-ADOPTION-001 — **DONE / MERGED / REGIONAL RESULT ACCEPTED**; accepted scope = **PART TOP SHELL ONLY**.
-- Full Repository Health Audit #166 — **YELLOW_ACCEPTED / completed**.
-- Accepted audit final main: `fa13134bf7397a20a9b02790a6644e9084e943e0`.
-- RED findings = **NONE**.
-- CADENCE = **1/3**.
-- FEATURE_FREEZE = **LIFTED**.
-- FULL_TREE_PARITY = **NOT ACCEPTED**.
-- FULL_M2V = **NOT ACCEPTED**.
-- FULL_KOMPAS_PARITY = **NO**.
+- Центральная задача объединения: **#184 / UI-CORE-UNIFICATION-001**.
+- Каноничная integration-ветка: **`integration/ui-core-unification`**.
+- Каноничный UI/UX reference: **PR #170 / `prototype/kompas-shell-reference` / HEAD `88c535c652dac8b04f0d68fa144cf8486afdc926`**.
+- Каноничное продуктовое ядро: только обычный ASA-CAD в `src/**`: `CadDocument`, `CadApplication`, typed commands, persistence/history, PlaneGCS/solver, OpenCascade/B-Rep и runtime adapters.
+- Внутренние `doc/history/sketcher/snap/THREE.ExtrudeGeometry` из прототипа #170 **НЕ являются продуктовой архитектурой** и не переносятся как второй CAD engine.
 
-## Full Audit #166
+## Текущий продукт
 
-Audit base:
-`a03f84e21447817639f0fb9ea3f83ab86a24efb6`
+Текущий `main`:
+`cda903d762b7e52e9345fe09e6dfa0be508a0d6a`
 
-CI-maintenance repair:
-- PR #167;
-- repair HEAD `5a8402a1e19b2c1e5223fcce2e94ab41370a899e`;
-- merge `fa13134bf7397a20a9b02790a6644e9084e943e0`;
-- permanent M2 shell now includes the M2 architecture test script (`test:m2:architecture`);
-- post-repair M2 shell `36233235054` — SUCCESS;
-- post-repair baseline `36233235046` — SUCCESS;
-- M2 UI architecture — PASS;
-- `test:asa` constituent coverage — PASS;
-- `check` constituent coverage — PASS;
-- literal full-repository check command (npm run check) — NOT_RUN.
+Принятые permanent product slices включают:
+- KOMPAS-SHELL-ADOPTION-001 — Part top shell;
+- V6C / CAD-VIS-006C — Sketch hierarchy + dimension ownership.
 
-Resolved:
-- `Y-AUD-166-M2-ARCH`.
+Текущая cadence после V6C: **2/3**.
+Следующая принятая permanent product slice поднимает cadence до **3/3** и требует Full Repository Health Audit до следующего permanent product slice.
 
-Remaining accepted YELLOW:
-- `Y-AUD-166-BUDGETS` — hard/frozen gates PASS; do not grow pressured owners.
-- `Y-AUD-166-THIRD-TOUCH` — focused owner review completed in #166; next qualifying third touch requires review before the touch.
-- `Y-AUD-166-STALE-PRS` — #143/#146 remain historical/stale; do not merge as-is.
-- `Y-AUD-166-V6A-OWNERSHIP` — CutExtrude profile ownership still flows through `ExtrudeOperationController`; keep non-growing and separate ownership before multi-profile, edit-existing, or generalized feature-selection scope.
-
-Audit #158 is historical; #166 is now the latest accepted Full Repository Health Audit.
-
-M1 ASA-owned `CadDocument` preserves six first-class document kinds: Part, Assembly, Drawing, Fragment, Specification, Text.
-
-## Accepted V6B scope
-
-V6B accepted only:
-```text
-Деталь 1
-└─ Начало координат
-   ├─ Плоскость XY
-   ├─ Плоскость XZ
-   └─ Плоскость YZ
-+ real expand/collapse
-```
-
-This does not close full Tree parity.
-
-## KOMPAS-SHELL-ADOPTION-001 — accepted closeout
-
-**DONE / MERGED / REGIONAL RESULT ACCEPTED**.
-
-Accepted implementation:
-- PR #173;
-- accepted HEAD `5719a8a8b3f357d1448ea68f7d30b41ef586bb35`;
-- merge `027d4ea6a5b2549609b0b3a9cfdefd397fe8559b`;
-- accepted scope = **PART TOP SHELL ONLY**.
-
-Accepted regional result:
-- existing main-menu owner preserved;
-- real document-tab identity preserved;
-- Part workspace/toolset selector;
-- «Твердотельное моделирование»;
-- «Каркас и поверхности»;
-- «Инструменты эскиза»;
-- registry-backed command groups;
-- existing quick-access owner preserved;
-- production/dev roadmap-command visibility boundary.
-
-**PRODUCTION_VISIBILITY_CONTRACT = ACCEPTED**:
-- normal product: implemented = visible; planned/deferred = hidden;
-- explicit `/dev/part/*`: planned/deferred may be visible, remain disabled, and may carry roadmap markers.
-
-PR #170 / `0d23bf19fbfcba7fbf4789afdd18f7d632adeb50` remains **REFERENCE / PROTOTYPE ONLY**, OPEN / NOT MERGED.
-
-Honesty boundaries remain unchanged:
+Honesty boundaries:
 - FULL_TREE_PARITY = **NOT ACCEPTED**;
 - FULL_M2V = **NOT ACCEPTED**;
 - FULL_KOMPAS_PARITY = **NO**;
-- 90% learner-facing visual + functional/workflow identity remains a **TARGET / NOT CURRENT ACCEPTANCE**;
-- canonical educational parity scope remains **Деталь / Part, Сборка / Assembly, Чертеж / Drawing**.
+- ~90% learner-facing visual + functional/workflow identity = **TARGET / NOT CURRENT ACCEPTANCE**.
 
-Full Audit #166 reset cadence to 0/3. PR #173 is the first accepted permanent product slice after #166; docs/governance PRs #168/#171/#172 do not count as product slices. Therefore **CADENCE = 1/3** and **FEATURE_FREEZE = LIFTED**.
+## Почему изменён путь
+
+В проекте разошлись две линии:
+1. #170 дал существенно лучший KOMPAS-oriented UI/UX, но с самостоятельной демонстрационной моделью и упрощённой математикой.
+2. Основной ASA-CAD содержит настоящие document/application/solver/OpenCascade/persistence контракты, но пользовательский интерфейс заметно хуже.
+
+Продолжать их отдельно запрещено. Цель — **один интерфейс + одна модель документа + одна история + один solver path + один exact-geometry path**.
+
+## Роли существующих PR
+
+- **#170** — CANONICAL UI/UX REFERENCE. Продолжать визуальную сверку можно; новую CAD-математику в prototype HTML не добавлять.
+- **#182** — CLOSED / ARCHIVED / DO NOT CONTINUE. Полезные решения C1 можно извлекать точечно из архивного SHA.
+- **#177** — TECHNICAL RECOVERY SOURCE / HOLD. Использовать проверенную геометрию и регрессии; UI не считать целевым.
+- **#179** — Drawing candidate / HOLD. Не является основой текущего UI-core объединения.
+- **#180** — SUPERSEDED by #184.
+- **#181** — отдельный dev-tooling fix; не определяет продуктовую архитектуру.
+- **#183** — отдельная cleanup-maintenance; не определяет продуктовую архитектуру.
 
 ## NEXT
 
-**V6C / CAD-VIS-006C — Sketch hierarchy + dimension ownership**.
+### U0 — governance / contract synchronization
+Только документация и состояние проекта:
+- этот STATUS;
+- ROADMAP;
+- SYSTEM_SPEC;
+- ARCHITECTURE;
+- VISUAL_REFERENCE_SPEC;
+- AGENTS;
+- #184 как центральная задача.
 
-Цель следующего отдельного slice:
+После U0 продуктовый код ещё не считается объединённым.
+
+### U1 — canonical shell over real product state
+Первый implementation slice:
+- внешний вид/компоновка из #170;
+- обычный product route;
+- настоящее дерево/selection/application state;
+- реальный empty Part WorkArea;
+- без prototype document/state engine.
+
+Acceptance:
+`open Part -> select XY/XZ/YZ -> scene/tree/parameters show one real application selection`.
+
+Дальше строго по #184:
+U2 real Sketch -> U3 real constraints/dimensions -> U4 real OpenCascade Extrude -> U5 protected Part route.
+
+## Git contract
+
 ```text
-Деталь 1
-├─ Начало координат
-│  ├─ Плоскость XY
-│  ├─ Плоскость XZ
-│  └─ Плоскость YZ
-├─ Эскиз 1
-│  ├─ реальные элементы / структура
-│  └─ размеры принадлежат эскизу
-└─ следующие элементы модели
+main
+  |
+  +-- integration/ui-core-unification
+         |
+         +-- slice U1 branch -> PR back to integration
+         +-- slice U2 branch -> PR back to integration
+         +-- slice U3 branch -> PR back to integration
+         +-- ...
 ```
 
-V6C_STARTED = **NO**.
-
-GitHub remains the primary source of truth and execution/test environment.
+Не делать один гигантский copy/paste PR из prototype HTML.
+Не вливать #170 напрямую в `main`.
+Финальный integration -> main допускается только после законченного принятого маршрута, required audit/gates и owner acceptance.
