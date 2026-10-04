@@ -1,3 +1,4 @@
+// Smoke trigger for refined U1 visual contract; close without merge.
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
