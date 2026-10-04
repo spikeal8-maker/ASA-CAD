@@ -5,7 +5,7 @@ import type { CadSketchId } from '../contracts/ids';
 import { findSketch, partDocument } from './PartSketchWorkspaceModel';
 import type { CadWorkspacePanel } from './PartSketchWorkspaceTypes';
 
-export interface PartWorkspaceNavigationOptions {
+interface PartWorkspaceNavigationOptions {
   app: CadApplication;
   documentKind: CadDocumentKind;
   setActiveCommand(command: string | null): void;
@@ -20,7 +20,7 @@ export interface PartWorkspaceNavigationOptions {
 
 export function usePartWorkspaceNavigation(options: PartWorkspaceNavigationOptions) {
   const {
-    app, documentKind, setActiveCommand, setActiveWorkspace, setPanel, setNotice,
+    app, setActiveCommand, setActiveWorkspace, setPanel, setNotice,
     activateSketch, clearActiveSketch, clearTransientSelection, clearDimensionEdit,
   } = options;
 

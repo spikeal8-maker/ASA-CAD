@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { CadUiAction } from './CadUiAction';
 
 const FILE_ACTION_IDS = ['system.new', 'system.open', 'system.save'] as const;

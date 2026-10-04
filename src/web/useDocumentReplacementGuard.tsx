@@ -1,11 +1,11 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { serializeCadDocument, type CadDocument, type CadDocumentKind } from '../contracts/document';
 import { NewDocumentDialog } from './NewDocumentDialog';
 import { UnsavedChangesDialog } from './UnsavedChangesDialog';
 
 type ReplacementAction = 'new' | 'open';
 
-export interface DocumentReplacementGuardOptions {
+interface DocumentReplacementGuardOptions {
   dirty: boolean;
   document: Readonly<CadDocument>;
   save(): Promise<boolean>;

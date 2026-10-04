@@ -1,7 +1,6 @@
-import React from 'react';
 import type { CadSketchId } from '../contracts/ids';
 
-export interface CutExtrudeParameterPanelProps {
+interface CutExtrudeParameterPanelProps {
   profileId: CadSketchId | null;
   profileName: string | null;
   onApply(): void | Promise<void>;
