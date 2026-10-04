@@ -23,6 +23,8 @@ assert.equal(policy.cadence.fullRepositoryHealthAuditRequiredImmediatelyAfterU1A
 assert.equal(policy.cadence.u2BlockedUntilAuditAccepted, true);
 assert.equal(policy.cadence.u1CheckpointsDoNotIncrementCadenceSeparately, true);
 assert.equal(health.auditCadence.fullAuditEveryAcceptedSlices, 3);
+assert.equal(policy.preflight.maintenancePrerequisites.find((item) => item.pr === 181)?.mergeSha, '47aa4836adb30432adcb09609da93fb309125aa5');
+assert.equal(policy.preflight.maintenancePrerequisites.find((item) => item.pr === 183)?.mergeSha, '27380d161210aaf309fa3a8c76109fb7038a3533');
 
 assert.deepEqual(policy.u1.checkpoints.map((item) => item.id), ['U1A', 'U1B', 'U1C']);
 assert.ok(policy.u1.checkpoints.every((item) => item.permanentSlice === false));

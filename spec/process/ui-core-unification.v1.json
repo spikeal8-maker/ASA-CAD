@@ -110,11 +110,13 @@
     "maintenancePrerequisites": [
       {
         "pr": 181,
-        "required": "MERGED"
+        "required": "MERGED",
+        "mergeSha": "47aa4836adb30432adcb09609da93fb309125aa5"
       },
       {
         "pr": 183,
-        "required": "MERGED"
+        "required": "MERGED",
+        "mergeSha": "27380d161210aaf309fa3a8c76109fb7038a3533"
       }
     ],
     "requiredPullRequestChecksForIntegration": [

@@ -14,7 +14,7 @@ Product document model remains **six first-class document kinds**: Part, Assembl
 
 ## Текущий main и cadence
 
-Текущий main после maintenance preflight должен включать U0 docs + #181 + #183 до старта U1.
+Fresh main = `27380d161210aaf309fa3a8c76109fb7038a3533`. #181 и #183 MERGED. Integration содержит этот main. До старта U1 остаётся опубликовать усиленный U0 governance/preflight в main и подтвердить exact-head CI.
 
 Accepted permanent product cadence до U1 = **2/3**.
 
@@ -39,8 +39,8 @@ Honesty boundaries:
 - **#182** — CLOSED / ARCHIVED / EXTRACT SOURCE, exact SHA `27c55222331681d23ba101bd4992c9dc24a0ac42`.
 - **#179** — HOLD / NOT INTEGRATION BASE, exact SHA `034d0fc4d51606425794fc76508f61600a41d0cb`.
 - **#180** — SUPERSEDED / CLOSED / branch archived.
-- **#181** — dev-server maintenance prerequisite.
-- **#183** — cleanup maintenance prerequisite.
+- **#181** — MERGED, merge `47aa4836adb30432adcb09609da93fb309125aa5`.
+- **#183** — MERGED, merge `27380d161210aaf309fa3a8c76109fb7038a3533`.
 
 Machine-readable convergence/reuse contract:
 `spec/process/ui-core-unification.v1.json`.
