@@ -2,7 +2,7 @@ name: ASA-CAD M2 shell
 
 on:
   push:
-    branches: [main]
+    branches: [main, integration/ui-core-unification]
     paths:
       - AGENTS.md
       - .github/PULL_REQUEST_TEMPLATE.md

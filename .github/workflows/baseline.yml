@@ -2,10 +2,11 @@ name: ASA-CAD baseline
 
 on:
   push:
-    branches: [main]
+    branches: [main, integration/ui-core-unification]
   pull_request:
     branches:
       - main
+      - integration/ui-core-unification
       - visual/kompas-captured-shell-001
 
 permissions:

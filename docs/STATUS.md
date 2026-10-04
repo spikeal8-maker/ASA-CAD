@@ -1,94 +1,116 @@
-# ASA-CAD — текущее состояние и каноничный следующий путь
+# ASA-CAD — текущее состояние и каноничный путь
 
 Снимок: 2026-10-04.
 
-## Источник истины
+## Каноничные источники
 
-- Центральная задача объединения: **#184 / UI-CORE-UNIFICATION-001**.
-- Каноничная integration-ветка: **`integration/ui-core-unification`**.
-- Каноничный UI/UX reference: **PR #170 / `prototype/kompas-shell-reference` / HEAD `88c535c652dac8b04f0d68fa144cf8486afdc926`**.
-- Каноничное продуктовое ядро: только обычный ASA-CAD в `src/**`: `CadDocument`, `CadApplication`, typed commands, persistence/history, PlaneGCS/solver, OpenCascade/B-Rep и runtime adapters.
-- Внутренние `doc/history/sketcher/snap/THREE.ExtrudeGeometry` из прототипа #170 **НЕ являются продуктовой архитектурой** и не переносятся как второй CAD engine.
-
-## Текущий продукт
-
-Текущий `main`:
-`cda903d762b7e52e9345fe09e6dfa0be508a0d6a`
+- Central issue: **#184 / UI-CORE-UNIFICATION-001**.
+- Convergence branch: **`integration/ui-core-unification`**.
+- Frozen UI/UX reference: **PR #170**, tag `ui-reference-20261004`, SHA `88c535c652dac8b04f0d68fa144cf8486afdc926`.
+- Product authority: только `src/**` — `CadDocument`, `CadApplication`, typed commands, persistence/history, product solver, OpenCascade/B-Rep и render adapters.
+- Prototype-local `doc/history/sketcher/snap/THREE.ExtrudeGeometry` не являются product authority.
 
 Product document model remains **six first-class document kinds**: Part, Assembly, Drawing, Fragment, Specification, Text.
 
-Принятые permanent product slices включают:
-- KOMPAS-SHELL-ADOPTION-001 — Part top shell;
-- V6C / CAD-VIS-006C — Sketch hierarchy + dimension ownership.
+## Текущий main и cadence
 
-Текущая cadence после V6C: **2/3**.
-Следующая принятая permanent product slice поднимает cadence до **3/3** и требует Full Repository Health Audit до следующего permanent product slice.
+Текущий main после maintenance preflight должен включать U0 docs + #181 + #183 до старта U1.
+
+Accepted permanent product cadence до U1 = **2/3**.
+
+**U1 считается ровно одним permanent product slice.**
+После принятия U1:
+- cadence = **3/3**;
+- **Full Repository Health Audit обязателен немедленно**;
+- **U2 BLOCKED** до принятия этого аудита.
+
+U1A/U1B/U1C — checkpoints одного U1 и отдельно cadence не увеличивают.
 
 Honesty boundaries:
-- FULL_TREE_PARITY = **NOT ACCEPTED**;
-- FULL_M2V = **NOT ACCEPTED**;
-- FULL_KOMPAS_PARITY = **NO**;
-- ~90% learner-facing visual + functional/workflow identity = **TARGET / NOT CURRENT ACCEPTANCE**.
+- FULL_TREE_PARITY = NOT ACCEPTED;
+- FULL_M2V = NOT ACCEPTED;
+- FULL_KOMPAS_PARITY = NO;
+- ~90% learner-facing visual + functional/workflow identity = TARGET / NOT CURRENT ACCEPTANCE.
 
-## Почему изменён путь
+## Роли существующей работы
 
-В проекте разошлись две линии:
-1. #170 дал существенно лучший KOMPAS-oriented UI/UX, но с самостоятельной демонстрационной моделью и упрощённой математикой.
-2. Основной ASA-CAD содержит настоящие document/application/solver/OpenCascade/persistence контракты, но пользовательский интерфейс заметно хуже.
+- **#170** — CANONICAL UI/UX REFERENCE / FROZEN FOR U1 по tag `ui-reference-20261004`. Новую CAD-математику туда не добавлять.
+- **#177** — REUSE SOURCE / HOLD, exact SHA `44d87bef78fd66aa0e85fa1fa7ba9dc58e280a65`.
+- **#182** — CLOSED / ARCHIVED / EXTRACT SOURCE, exact SHA `27c55222331681d23ba101bd4992c9dc24a0ac42`.
+- **#179** — HOLD / NOT INTEGRATION BASE, exact SHA `034d0fc4d51606425794fc76508f61600a41d0cb`.
+- **#180** — SUPERSEDED / CLOSED / branch archived.
+- **#181** — dev-server maintenance prerequisite.
+- **#183** — cleanup maintenance prerequisite.
 
-Продолжать их отдельно запрещено. Цель — **один интерфейс + одна модель документа + одна история + один solver path + один exact-geometry path**.
+Machine-readable convergence/reuse contract:
+`spec/process/ui-core-unification.v1.json`.
 
-## Роли существующих PR
+## U0 — preflight
 
-- **#170** — CANONICAL UI/UX REFERENCE. Продолжать визуальную сверку можно; новую CAD-математику в prototype HTML не добавлять.
-- **#182** — CLOSED / ARCHIVED / DO NOT CONTINUE. Полезные решения C1 можно извлекать точечно из архивного SHA.
-- **#177** — TECHNICAL RECOVERY SOURCE / HOLD. Использовать проверенную геометрию и регрессии; UI не считать целевым.
-- **#179** — Drawing candidate / HOLD. Не является основой текущего UI-core объединения.
-- **#180** — SUPERSEDED by #184.
-- **#181** — отдельный dev-tooling fix; не определяет продуктовую архитектуру.
-- **#183** — отдельная cleanup-maintenance; не определяет продуктовую архитектуру.
+U1 разрешён только когда одновременно:
+1. U0 governance/contract changes находятся в `main`;
+2. #181 = MERGED;
+3. #183 = MERGED;
+4. integration branch обновлена от нового main;
+5. pull requests в `integration/ui-core-unification` запускают required CI;
+6. frozen UI reference tag указывает на `88c535c...`;
+7. npm run test:process:ui-core-unification = PASS.
 
-## NEXT
+До выполнения всех семи условий:
+**U1_START_ALLOWED = NO**.
 
-### U0 — governance / contract synchronization
-Только документация и состояние проекта:
-- этот STATUS;
-- ROADMAP;
-- SYSTEM_SPEC;
-- ARCHITECTURE;
-- VISUAL_REFERENCE_SPEC;
-- AGENTS;
-- #184 как центральная задача.
+## U1 — один permanent product slice
 
-После U0 продуктовый код ещё не считается объединённым.
+### U1A — shell checkpoint
+- меню;
+- document tab;
+- toolset/ribbon layout;
+- canonical composition из #170;
+- никакого prototype state.
 
-### U1 — canonical shell over real product state
-Первый implementation slice:
-- внешний вид/компоновка из #170;
-- обычный product route;
-- настоящее дерево/selection/application state;
-- реальный empty Part WorkArea;
-- без prototype document/state engine.
+### U1B — tree/parameters/status checkpoint
+- дерево;
+- parameters;
+- status;
+- реальные product bindings;
+- никаких декоративных duplicate owners.
 
-Acceptance:
-`open Part -> select XY/XZ/YZ -> scene/tree/parameters show one real application selection`.
+### U1C — viewport/selection checkpoint
+- real empty Part WorkArea;
+- XY/XZ/YZ;
+- scene/tree/parameters = одно application selection state;
+- ordinary product route.
 
-Дальше строго по #184:
-U2 real Sketch -> U3 real constraints/dimensions -> U4 real OpenCascade Extrude -> U5 protected Part route.
+U1 acceptance:
+`open Part -> canonical shell -> select XY/XZ/YZ -> one real application selection`.
+
+После U1 acceptance:
+`FULL REPOSITORY HEALTH AUDIT -> ACCEPTED/YELLOW_ACCEPTED -> только затем U2`.
+
+## После аудита
+
+- U2 — real Sketch;
+- U3 — real constraints/dimensions;
+- U4 — real OpenCascade Extrude;
+- U5 — protected Part route.
 
 ## Git contract
 
 ```text
-main
-  |
-  +-- integration/ui-core-unification
-         |
-         +-- slice U1 branch -> PR back to integration
-         +-- slice U2 branch -> PR back to integration
-         +-- slice U3 branch -> PR back to integration
-         +-- ...
+main  (всегда содержит актуальное governance ТЗ)
+ |
+ +-- integration/ui-core-unification
+        |
+        +-- ui-core/u1a-shell
+        +-- ui-core/u1b-tree-parameters
+        +-- ui-core/u1c-viewport-selection
+        |
+        +-- U1 acceptance
+        +-- Full Repository Health Audit
+        |
+        +-- U2 ...
 ```
 
-Не делать один гигантский copy/paste PR из prototype HTML.
-Не вливать #170 напрямую в `main`.
-Финальный integration -> main допускается только после законченного принятого маршрута, required audit/gates и owner acceptance.
+U1A/U1B/U1C могут иметь отдельные review PR, но не считаются отдельными permanent slices.
+
+Финальный integration -> main допускается только после законченного принятого маршрута, required gates/audits и owner acceptance.

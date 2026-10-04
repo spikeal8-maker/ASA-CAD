@@ -1,225 +1,286 @@
 # UI_CORE_UNIFICATION_SPEC
 
-Статус: **CANONICAL CONVERGENCE CONTRACT**.
-Дата принятия направления: 2026-10-04.
-Central issue: **#184 / UI-CORE-UNIFICATION-001**.
+Status: **CANONICAL CONVERGENCE CONTRACT**.
+Issue: **#184 / UI-CORE-UNIFICATION-001**.
 Integration branch: **`integration/ui-core-unification`**.
+Machine contract: **`spec/process/ui-core-unification.v1.json`**.
 
-## 1. Причина документа
+## 1. Цель
 
-ASA-CAD получил два расходящихся результата:
+ASA-CAD должен перестать существовать как два расходящихся проекта:
+- хороший интерфейс №170 со своей демонстрационной логикой;
+- продуктовый ASA-CAD с настоящими document/application/solver/OpenCascade/persistence слоями.
 
-- продуктовый ASA-CAD: настоящие document/application/solver/OpenCascade/persistence контракты, но неудовлетворительный пользовательский интерфейс;
-- PR #170: значительно лучший KOMPAS-oriented UI/UX, но самостоятельный prototype runtime с собственными `doc`, `history`, `sketcher`, snap-логикой и Three.js extrusion.
+Цель:
+**один UI + один document model + одна application history + один solver path + один exact-geometry path**.
 
-Оба результата полезны, но два независимых CAD runtime недопустимы.
+## 2. Frozen UI reference
 
-Цель инициативы — собрать **один ASA-CAD**, не переписывая уже проверенную математику и не теряя хороший UX.
+Для U1 каноничный reference неизменяем:
 
-## 2. Неподвижный архитектурный контракт
+- PR: #170;
+- branch: `prototype/kompas-shell-reference`;
+- tag: `ui-reference-20261004`;
+- SHA: `88c535c652dac8b04f0d68fa144cf8486afdc926`.
+
+Изменения ветки #170 после этого SHA **не становятся каноничными автоматически**.
+Новый reference SHA требует отдельного owner decision + обновления machine contract.
+
+## 3. Product authority
 
 ```text
-Canonical UI / UX (#170)
-        |
-        v
-typed UI actions / controllers
-        |
-        v
+Canonical UI/UX intent (#170 frozen SHA)
+        ↓
+existing/narrow product UI owners
+        ↓
+typed UI actions/controllers
+        ↓
 CadApplication
-        |
-        v
+        ↓
 CadDocument + history + persistence
-        |
-        +---- Sketch solver / PlaneGCS
-        |
-        +---- Part profile validation
-        |
-        +---- OpenCascade / B-Rep
-        |
-        v
-render adapters -> Three.js display
+        ↓
+solver / profile validation / OpenCascade
+        ↓
+render adapters
+        ↓
+Three.js display
 ```
 
-### Единственный source of truth
-- document intent: `CadDocument`;
-- command/history: `CadApplication`;
-- persistence: product host/session/storage contracts;
-- constraints/dimensions: supported solver path;
-- exact Part geometry: OpenCascade/B-Rep path.
+Source of truth:
+- document intent = `CadDocument`;
+- command/history = `CadApplication`;
+- persistence = product host/session/storage;
+- constraints/dimensions = supported product solver;
+- exact Part geometry = OpenCascade/B-Rep.
 
-### Не source of truth
-Всё самостоятельное runtime-состояние прототипа #170:
-- `doc={sketches,features,...}`;
-- `history[]/future[]`;
-- sketch entity mutation as independent product model;
-- heuristic snap as replacement for constraints;
-- `THREE.ExtrudeGeometry` as product feature geometry.
+Не source of truth:
+- prototype `doc`;
+- prototype `history/future`;
+- prototype `sketcher`;
+- heuristic prototype snap как constraint solver;
+- `THREE.ExtrudeGeometry` как product feature.
 
-Это может служить только UX/evidence reference до переноса соответствующего состояния.
+## 4. Reuse map
 
-## 3. Роль PR #170
+### #170 — REFERENCE_ONLY
+SHA `88c535c652dac8b04f0d68fa144cf8486afdc926`.
 
-#170 = **CANONICAL UI/UX REFERENCE / NOT PRODUCT RUNTIME**.
-
-Сохраняем:
-- layout;
-- visual hierarchy;
-- toolset organization;
-- tree and parameter UX;
-- menu/dropdown/dialog behavior;
-- keyboard interaction;
-- command feedback;
-- numeric-entry workflow;
+Использовать:
+- layout/hierarchy;
+- menus/toolsets;
+- tree/parameters/status UX;
+- keyboard/pointer flows;
+- numeric entry;
 - ghost/preview expectations.
 
-Не продолжаем там:
-- solver;
-- exact geometry;
-- persistence;
-- schema;
-- independent application history.
+Не использовать как runtime:
+- prototype state/math/history/persistence.
 
-После принятого U5 prototype должен стать только reference/evidence и может быть архивирован.
+### #177 — REUSE_AFTER_EXACT_REVIEW
+SHA `44d87bef78fd66aa0e85fa1fa7ba9dc58e280a65`.
 
-## 4. Роль существующей математики
-
-Не переписывать с нуля существующие:
-- Sketch geometry commands;
-- constraints/dimensions;
-- solve session / DoF / diagnostics;
-- validated profile path;
-- OpenCascade Part runtime;
-- stable-reference behavior;
+Кандидаты reuse:
+- Rectangle relations;
+- solved Sketch -> validated profile;
+- profile failure boundaries;
+- camera preservation;
 - Cut/Fillet regressions;
-- persistence, migrations, Undo/Redo.
+- save/open parametric intent.
 
-Допустимо извлекать проверенные решения из #177 и архивного #182 при независимой проверке exact SHA.
+Перед переносом каждого owner/path: exact-SHA review + REUSE/ADAPT decision.
 
-## 5. Git topology
+### Archived #182 — EXTRACT_AFTER_EXACT_REVIEW
+SHA `27c55222331681d23ba101bd4992c9dc24a0ac42`.
+
+Кандидаты extract:
+- empty Part WorkArea;
+- base-plane scene selection;
+- scene/tree plane selection sync;
+- navigation/view candidate.
+
+Не брать ветку как integration base.
+
+### #179 — HOLD_NOT_INTEGRATION_BASE
+SHA `034d0fc4d51606425794fc76508f61600a41d0cb`.
+
+Drawing/schema работа остаётся отдельным кандидатом и не определяет текущую интеграцию.
+
+## 5. U0 preflight
+
+U1 запрещено начинать, пока не выполнены все условия:
+
+1. этот governance contract находится в `main`;
+2. #181 MERGED;
+3. #183 MERGED;
+4. integration fast-forward/merge содержит новый main;
+5. required CI запускается для PR base = `integration/ui-core-unification`;
+6. tag `ui-reference-20261004` указывает на frozen SHA;
+7. `npm run test:process:ui-core-unification` PASS.
+
+Если хотя бы один пункт не выполнен:
+`U1_START_ALLOWED = NO`.
+
+## 6. Git topology
 
 ```text
 main
   |
   +-- integration/ui-core-unification
          |
-         +-- ui-core/u1-shell
+         +-- ui-core/u1a-shell
+         +-- ui-core/u1b-tree-parameters
+         +-- ui-core/u1c-viewport-selection
+         |
+         +-- U1 acceptance
+         +-- Full Repository Health Audit
+         |
          +-- ui-core/u2-sketch
          +-- ui-core/u3-constraints-dimensions
          +-- ui-core/u4-extrude
          +-- ui-core/u5-protected-part
 ```
 
-Каждый slice:
-- создаётся от текущего exact HEAD integration branch;
-- один writer на затрагиваемый owner/path;
-- отдельный Draft PR **в integration branch**, не сразу в main;
-- независимый review;
+Каждый checkpoint/срез:
+- branch from exact current integration HEAD;
+- один writer на owner/path;
+- Draft PR в integration branch;
+- independent review;
 - exact-head CI;
-- owner-visible result;
-- после acceptance merge в integration branch;
-- следующий slice только от нового integration HEAD.
+- visible owner result;
+- merge обратно только после acceptance.
 
-Integration branch не является разрешением копить хаотичный код: один slice = один законченный пользовательский шаг.
+## 7. U1 = один permanent product slice
 
-## 6. Slice contracts
+U1 нельзя превращать в один огромный PR.
+Он имеет три checkpoints, но cadence они отдельно не увеличивают.
 
-### U1 — Shell
-Canonical shell №170 поверх real product state.
-Acceptance:
-- ordinary route;
-- Part opens in canonical shell;
-- XY/XZ/YZ scene/tree selection is one application selection;
-- no prototype document/state authority.
+### U1A — Shell
+Scope:
+- main menu;
+- document tab;
+- toolsets/ribbon;
+- composition/layout.
 
-### U2 — Sketch
-Real Line/Rectangle/Circle/Arc inside canonical shell.
-UX числового ввода из #170 сохраняется, но mutations идут через typed product commands.
+Не трогать:
+- product math;
+- solver;
+- persistence model;
+- prototype state.
+
+### U1B — Tree / Parameters / Status
+Scope:
+- tree layout and interaction surface;
+- parameters;
+- status;
+- typed existing bindings.
+
+### U1C — Viewport / Selection
+Scope:
+- real empty Part WorkArea;
+- XY/XZ/YZ;
+- scene/tree/parameters share one real application selection;
+- ordinary product route.
+
+U1 acceptance:
+`open Part -> canonical shell -> select XY/XZ/YZ -> one application selection state`.
+
+## 8. Cadence gate
+
+До U1 cadence = **2/3**.
+
+Принятый U1 = один permanent product slice:
+`2/3 -> 3/3`.
+
+Следовательно сразу после U1 acceptance:
+**Full Repository Health Audit REQUIRED**.
+
+До audit outcome GREEN или explicitly accepted YELLOW:
+**U2 = BLOCKED**.
+
+U1A/U1B/U1C не считаются тремя permanent slices.
+
+## 9. U2–U5
+
+### U2 — Real Sketch
+Line/Rectangle/Circle/Arc + numeric-entry UX №170, но mutations только через real product commands/CadDocument.
 
 Acceptance:
 `XY -> Sketch -> Rectangle 60x40 -> Undo/Redo -> Save/Open -> same intent/IDs`.
 
-### U3 — Constraints / dimensions
-Real supported constraints/dimensions through solver.
-Snap may assist pointer placement but does not create fake parametric behavior.
+### U3 — Constraints / Dimensions
+Real product solver + persistent constraints/dimensions + DoF/diagnostics.
 
 Acceptance:
 governing dimension edit -> solver recompute -> reopen preserves intent.
 
 ### U4 — Extrude
-No product use of Three.ExtrudeGeometry.
+No product use of `THREE.ExtrudeGeometry`.
+
 Acceptance:
-`solved sketch -> validated profile -> OpenCascade -> B-Rep -> render`.
+`solved Sketch -> validated profile -> OpenCascade -> B-Rep -> render`.
 
 ### U5 — Protected Part
 Canonical UI throughout:
 `60x40 -> Extrude 10 -> Ø12 Cut -> Fillet R1 -> 60->80 -> rebuild -> save/reopen -> edit again`.
 
-## 7. Presentation and command honesty
+## 10. Command honesty
 
-A UI command can have three independent facts:
-1. command exists in product registry;
-2. backend/product implementation exists;
-3. current canonical UI is actually bound to it.
+Три независимых факта:
+1. command id существует;
+2. product implementation существует;
+3. canonical UI реально подключён к implementation.
 
-Do not show fact 1 or 2 as evidence of fact 3.
+Нельзя выдавать 1 или 2 за 3.
 
-Normal product:
-- bound + supported command -> usable;
-- not-yet-bound command -> hidden or explicitly unavailable according to visibility contract;
-- prototype-only interaction -> never marked as product implementation.
+Prototype-only behavior не помечается как product-connected.
 
-## 8. Decomposition rule
+## 11. Decomposition
 
-The 2500-line prototype HTML is not a component blueprint.
+2500-line prototype HTML = executable UX specification, а не component blueprint.
 
-Do not first refactor it into another standalone app.
-During U1–U5, port only the needed visual/interaction zones into existing/narrow product owners:
-- shell;
-- command groups;
-- tree;
-- parameters;
-- viewport;
-- sketch interaction surfaces.
+Не рефакторить его сначала в отдельное приложение.
+Переносить по зонам в существующие/narrow product owners.
 
-Prototype code should shrink in architectural importance, not become a dependency.
+Следить за repository policy:
+- target handwritten files = 12;
+- architecture review above 20 files;
+- target changed lines = 800;
+- architecture review above 1500 lines;
+- frozen owners may not grow.
 
-## 9. Acceptance evidence
+## 12. Evidence
 
-Every slice must include:
-- ordinary user route, no fixture-only proof;
-- visible screenshot/video evidence for affected states;
-- focused deterministic regression;
-- affected browser tests;
-- persistence/Undo/Redo proof where applicable;
-- Docker/release-like smoke when required;
-- provenance exact SHA.
+Каждый checkpoint/slice:
+- ordinary route;
+- deterministic focused regression;
+- affected browser CI;
+- visible screenshots/video;
+- exact SHA;
+- persistence/history proof where applicable.
 
-No acceptance from:
-- screenshots alone;
+Не acceptance:
+- screenshot alone;
 - GREEN CI alone;
-- DOM-only fake control;
+- fake DOM control;
 - localStorage substitution;
-- hidden `app.execute` bypass;
+- hidden app.execute bypass;
 - force-click.
 
-## 10. Stop conditions
+## 13. STOP
 
-STOP and report if:
-- expected integration HEAD changed;
-- another writer touches same owner/path;
-- implementation requires a second document/state manager;
-- proposed code duplicates existing solver/OpenCascade/application behavior;
-- migration/schema change is needed but not explicit;
-- product behavior cannot be proven on ordinary route.
+STOP if:
+- integration HEAD moved;
+- same owner/path has another writer;
+- second document/state manager required;
+- duplicate solver/OpenCascade/application logic proposed;
+- implicit schema migration required;
+- ordinary route cannot prove behavior.
 
-## 11. End condition
+## 14. End state
 
-Initiative completes only when U5 is accepted and required repository audit/gates pass.
+После U5 + required audits/gates + owner acceptance integration может быть слита в `main`.
 
-Then:
-- integration branch may be merged to `main`;
-- #170 stops being an active implementation branch and remains visual/UX evidence;
-- all future ASA-CAD development continues in one product runtime.
+После этого #170 остаётся reference/evidence и больше не является active implementation path.
 
 `ONE_UI = YES`
 `ONE_DOCUMENT_MODEL = YES`

@@ -199,6 +199,8 @@
       "docs/STATUS.md",
       "active milestone GitHub issue",
       "docs/ROADMAP.md",
+      "docs/UI_CORE_UNIFICATION_SPEC.md",
+      "spec/process/ui-core-unification.v1.json",
       "machine registries"
     ],
     "gateChangeMustSyncBeforeNextFeature": true,

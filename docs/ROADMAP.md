@@ -1,92 +1,107 @@
-# ASA-CAD — roadmap после решения UI-CORE-UNIFICATION
+# ASA-CAD — UI/core convergence roadmap
 
 Редакция: 2026-10-04.
-Центральная задача: **#184**.
-Каноничная integration-ветка: **`integration/ui-core-unification`**.
+Central issue: **#184**.
+Integration branch: **`integration/ui-core-unification`**.
+Frozen UI reference: **`ui-reference-20261004` -> `88c535c652dac8b04f0d68fa144cf8486afdc926`**.
 
 ## Цель
 
-Каноническая цель остаётся прежней: примерно 90% learner-facing visual + functional/workflow identity с КОМПАС-3D для **Деталь / Сборка / Чертёж** при ASA-owned реализации.
+Один ASA-CAD:
+`canonical UI/UX -> typed product actions -> CadApplication -> CadDocument/history/persistence -> solver -> OpenCascade/B-Rep -> render`.
 
-Изменён не end-state, а путь к нему: хороший интерфейс и существующая математика больше не развиваются как два независимых проекта.
+№170 задаёт внешний вид и interaction intent, но не становится вторым runtime.
 
-## Каноничные источники
+## PRE-U1 / U0-FIX
 
-### UI/UX
-PR #170 / `prototype/kompas-shell-reference` — исполняемый визуальный и interaction reference.
+До начала U1 обязательно:
+- U0 docs/policy в main;
+- #181 merged;
+- #183 merged;
+- integration обновлена от fresh main;
+- CI работает для PR base = `integration/ui-core-unification`;
+- frozen reference tag подтверждён;
+- machine convergence test PASS.
 
-Из него переносим:
-- shell geometry;
-- меню и toolsets;
-- дерево/панели/parameters/status;
-- keyboard and pointer flows;
-- feedback, themes, dialogs;
-- UX числового ввода и command lifecycle.
+## U1 — CANONICAL SHELL ADOPTION
 
-Не переносим как product authority:
-- prototype `doc`;
-- prototype `history/future`;
-- prototype `sketcher`;
-- prototype snap как solver substitute;
-- `THREE.ExtrudeGeometry` как exact geometry.
+**U1 = один permanent product slice.**
 
-### Product core
-Только `src/**`:
-- CadDocument;
-- CadApplication;
-- typed commands;
-- persistence/migrations/history;
-- solver / PlaneGCS;
-- OpenCascade / B-Rep;
-- stable references;
-- runtime/render adapters.
+### U1A — Shell checkpoint
+Переносим только:
+- меню;
+- document tab;
+- toolsets/ribbon;
+- базовую композицию.
 
-## Convergence queue
+### U1B — Tree/Parameters/Status checkpoint
+Подключаем:
+- настоящее дерево;
+- параметры;
+- status;
+- existing typed bindings.
 
-### U0 — CONTRACT SYNC — NOW
-- синхронизировать документы и задачи;
-- #180 закрыть как superseded;
-- #170 пометить canonical UI reference / not product runtime;
-- product code не менять.
+### U1C — Viewport/Selection checkpoint
+Подключаем:
+- empty Part WorkArea;
+- XY/XZ/YZ;
+- одну selection model между scene/tree/parameters.
 
-### U1 — SHELL ADOPTION
-Обычный product route использует композицию №170 поверх настоящего application/document state.
+Acceptance U1:
+обычный Part route показывает каноничную оболочку и один настоящий application state без prototype `doc/history`.
 
-Scope:
-- top shell;
-- tree/parameters/status layout;
-- empty Part viewport;
-- XY/XZ/YZ selection;
-- real selection owner.
+### Обязательный gate после U1
 
-Не входит:
-- перенос prototype math;
-- ограничения;
-- exact extrusion.
+U1 переводит cadence **2/3 -> 3/3**.
 
-### U2 — REAL SKETCH
-В canonical shell подключить настоящие Line/Rectangle/Circle/Arc и существующую историю/сохранение.
+Поэтому:
+```text
+U1 ACCEPTED
+   ↓
+FULL REPOSITORY HEALTH AUDIT
+   ↓
+audit accepted / yellow accepted
+   ↓
+U2 UNBLOCKED
+```
+
+Не переносить аудит на конец U5.
+
+## U2 — REAL SKETCH
+
+После аудита:
+- Line;
+- Rectangle;
+- Circle;
+- Arc;
+- UX числового ввода из #170;
+- mutations только через product commands/CadDocument;
+- Undo/Redo + Save/Open.
 
 Acceptance:
 `Part -> XY -> Sketch -> Rectangle 60x40 -> Undo/Redo -> Save/Open -> same intent/IDs`.
 
-### U3 — REAL CONSTRAINTS + DIMENSIONS
-Подключить существующие ограничения/размеры через solver:
+## U3 — REAL CONSTRAINTS + DIMENSIONS
+
+Подключить product solver:
 - Coincident/H/V/Parallel/Perpendicular/Tangent/Concentric/Equal/Symmetric/Fixed/Point-on-curve;
 - Linear/H/V/Angular/Radius/Diameter;
 - DoF/diagnostics.
 
-Prototype snap остаётся UX reference, но не заменяет constraints.
+Prototype snap = UX aid only, не solver.
 
-### U4 — REAL EXTRUDE
-`solved Sketch -> validated profile -> OpenCascade -> B-Rep -> render model`.
+## U4 — REAL EXTRUDE
+
+`solved Sketch -> validated profile -> OpenCascade -> B-Rep -> render`.
 
 Three.js только отображает.
+
 Acceptance:
 `Rectangle 60x40 -> Extrude 10 -> edit 60->80 -> recompute -> Save/Open`.
 
-### U5 — PROTECTED PART ROUTE
-Подключить/сохранить existing:
+## U5 — PROTECTED PART ROUTE
+
+Сохранить существующие:
 - Cut Ø12;
 - Fillet R1;
 - topology/stable references;
@@ -95,32 +110,23 @@ Acceptance:
 Acceptance:
 `60x40 -> Extrude 10 -> Ø12 Cut -> Fillet R1 -> 60->80 -> rebuild -> save/reopen -> edit again`.
 
-После U5:
-- full convergence review;
-- required Full Repository Health Audit по cadence/policy;
-- owner acceptance;
-- только затем integration -> main.
+## Reuse decisions
 
-## После объединения
+Полный machine-readable reuse-map:
+`spec/process/ui-core-unification.v1.json`.
 
-Только после U1–U5:
-1. расширение Part;
-2. Drawing;
-3. Assembly;
-4. дальнейшая parity tuning.
-
-#179 остаётся HOLD до отдельного решения; не использовать его как обход текущего объединения.
-
-## Правило видимого результата
-
-Каждый U-slice обязан давать законченный обычный пользовательский маршрут.
-GREEN CI, красивая оболочка или отдельная математическая функция сами по себе не считаются поставкой.
+Коротко:
+- #170 / 88c535c — REFERENCE_ONLY;
+- #177 / 44d87b — REUSE_AFTER_EXACT_REVIEW;
+- archived #182 / 27c552 — EXTRACT_AFTER_EXACT_REVIEW;
+- #179 / 034d0f — HOLD_NOT_INTEGRATION_BASE.
 
 ## Запрещено
 
 - второй document/state manager;
-- новая CAD-математика внутри prototype HTML;
+- prototype math как product authority;
 - localStorage/demo persistence вместо product persistence;
-- copy/paste 2500 строк prototype в один product owner;
-- новый независимый UI рядом с canonical shell;
-- объявлять команду подключённой только потому, что registry status = implemented.
+- `THREE.ExtrudeGeometry` как exact product geometry;
+- copy/paste 2500 строк prototype в один owner;
+- один U1 PR выше repository footprint без architecture review;
+- начинать U2 до обязательного аудита после U1.

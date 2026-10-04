@@ -2,7 +2,7 @@ name: ASA-CAD M3 browser
 
 on:
   push:
-    branches: [main]
+    branches: [main, integration/ui-core-unification]
     paths:
       - tests/visual/**
       - src/**
