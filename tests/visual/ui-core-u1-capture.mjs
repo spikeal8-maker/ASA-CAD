@@ -1,4 +1,4 @@
-import assert from 'node:assert/strict';
+// One-shot workflow validation branch; close without merge after CI proof.\nimport assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
