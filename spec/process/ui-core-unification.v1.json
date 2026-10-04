@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "initiative": "UI-CORE-UNIFICATION-001",
+  "issue": 184,
+  "integrationBranch": "integration/ui-core-unification",
+  "uiReference": {
+    "pr": 170,
+    "branch": "prototype/kompas-shell-reference",
+    "tag": "ui-reference-20261004",
+    "sha": "88c535c652dac8b04f0d68fa144cf8486afdc926",
+    "frozen": true,
+    "role": "UI_UX_REFERENCE_ONLY"
+  },
+  "productAuthority": {
+    "document": "CadDocument",
+    "applicationHistory": "CadApplication",
+    "persistence": "product-host-session-storage",
+    "solver": "supported-product-solver",
+    "exactGeometry": "OpenCascade-BRep",
+    "renderer": "Three.js-render-only"
+  },
+  "forbiddenPrototypeAuthorities": [
+    "prototype-doc",
+    "prototype-history-future",
+    "prototype-sketcher-as-product-model",
+    "prototype-snap-as-constraint-solver",
+    "THREE.ExtrudeGeometry-as-product-feature"
+  ],
+  "cadence": {
+    "acceptedPermanentSlicesBeforeU1": 2,
+    "u1CountsAsOnePermanentSlice": true,
+    "acceptedPermanentSlicesAfterU1": 3,
+    "fullRepositoryHealthAuditRequiredImmediatelyAfterU1Acceptance": true,
+    "u2BlockedUntilAuditAccepted": true,
+    "u1CheckpointsDoNotIncrementCadenceSeparately": true
+  },
+  "u1": {
+    "id": "U1",
+    "goal": "canonical-shell-over-real-product-state",
+    "checkpoints": [
+      {
+        "id": "U1A",
+        "scope": "shell-menu-document-tab-layout",
+        "permanentSlice": false
+      },
+      {
+        "id": "U1B",
+        "scope": "tree-parameters-status-layout",
+        "permanentSlice": false
+      },
+      {
+        "id": "U1C",
+        "scope": "real-viewport-plane-selection-single-application-state",
+        "permanentSlice": false
+      }
+    ],
+    "acceptance": "ordinary Part route uses canonical shell and one real application selection for XY/XZ/YZ",
+    "maxPermanentSlices": 1
+  },
+  "reuseMap": [
+    {
+      "source": "PR#170",
+      "sha": "88c535c652dac8b04f0d68fa144cf8486afdc926",
+      "decision": "REFERENCE_ONLY",
+      "items": [
+        "layout-and-visual-hierarchy",
+        "menus-toolsets-tree-parameters-status",
+        "keyboard-pointer-workflows",
+        "numeric-entry-UX",
+        "ghost-preview-expectations"
+      ]
+    },
+    {
+      "source": "PR#177",
+      "sha": "44d87bef78fd66aa0e85fa1fa7ba9dc58e280a65",
+      "decision": "REUSE_AFTER_EXACT_REVIEW",
+      "items": [
+        "rectangle-relations",
+        "solved-sketch-to-validated-profile",
+        "profile-failure-boundaries",
+        "camera-preservation",
+        "cut-fillet-regressions",
+        "save-open-parametric-intent"
+      ]
+    },
+    {
+      "source": "ARCHIVED-PR#182",
+      "sha": "27c55222331681d23ba101bd4992c9dc24a0ac42",
+      "decision": "EXTRACT_AFTER_EXACT_REVIEW",
+      "items": [
+        "empty-part-workarea",
+        "base-plane-scene-selection",
+        "tree-scene-plane-selection-sync",
+        "view-navigation-candidate"
+      ]
+    },
+    {
+      "source": "PR#179",
+      "sha": "034d0fc4d51606425794fc76508f61600a41d0cb",
+      "decision": "HOLD_NOT_INTEGRATION_BASE",
+      "items": [
+        "drawing-candidate",
+        "drawing-schema-work",
+        "overlap-evidence-only"
+      ]
+    }
+  ],
+  "preflight": {
+    "u0MustBeInMainBeforeU1": true,
+    "maintenancePrerequisites": [
+      {
+        "pr": 181,
+        "required": "MERGED",
+        "mergeSha": "47aa4836adb30432adcb09609da93fb309125aa5"
+      },
+      {
+        "pr": 183,
+        "required": "MERGED",
+        "mergeSha": "27380d161210aaf309fa3a8c76109fb7038a3533"
+      }
+    ],
+    "requiredPullRequestChecksForIntegration": [
+      "ASA-CAD baseline",
+      "ASA-CAD M2 shell",
+      "ASA-CAD M2 browser",
+      "ASA-CAD M3 browser",
+      "ASA-CAD Docker",
+      "OWNER_SCREENSHOT_CAPTURE"
+    ],
+    "expectedReferenceTag": "ui-reference-20261004"
+  },
+  "stopConditions": [
+    "integration-head-moved",
+    "same-owner-concurrent-writer",
+    "second-document-state-manager-required",
+    "duplicate-solver-runtime-proposed",
+    "implicit-schema-migration-required",
+    "ordinary-route-evidence-unavailable"
+  ]
+}

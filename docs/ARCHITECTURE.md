@@ -39,7 +39,7 @@ Current runtime maturity is intentionally uneven: the accepted exact-geometry ve
 └──────────────────────────────────────────────┘
 ```
 
-Drawing/Fragment/Specification/Text are ASA-owned product layers and are not required to inherit Toubkal UI or runtime structure.
+Drawing/Fragment/Specification/Text remain ASA-owned; convergence: `UI_CORE_UNIFICATION_SPEC.md` / #184.
 
 ## Deployment boundary
 
