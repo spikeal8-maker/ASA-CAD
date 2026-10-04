@@ -5,7 +5,7 @@ import { UnsavedChangesDialog } from './UnsavedChangesDialog';
 
 type ReplacementAction = 'new' | 'open';
 
-export interface DocumentReplacementGuardOptions {
+interface DocumentReplacementGuardOptions {
   dirty: boolean;
   document: Readonly<CadDocument>;
   save(): Promise<boolean>;

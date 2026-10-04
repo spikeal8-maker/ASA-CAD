@@ -1,6 +1,6 @@
 import type { CadSketchSolveSnapshot } from '../application/SketchSolveSession';
 
-export interface SketchSolveStatusProps {
+interface SketchSolveStatusProps {
   snapshot: Readonly<CadSketchSolveSnapshot>;
 }
 

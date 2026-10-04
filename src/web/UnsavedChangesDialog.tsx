@@ -1,5 +1,5 @@
 
-export interface UnsavedChangesDialogProps {
+interface UnsavedChangesDialogProps {
   open: boolean;
   action: 'new' | 'open' | null;
   busy: boolean;

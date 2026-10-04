@@ -4,7 +4,7 @@ import type { CadDimensionId } from '../contracts/ids';
 import { CadIcon, type CadIconName } from './CadIcon';
 import { dimensionLabel, dimensionUnit } from './SketchDimensionPresentation';
 
-export interface SketchTreeBranchProps {
+interface SketchTreeBranchProps {
   sketch: CadSketch;
   dimensions: readonly CadDimension[];
   selected: boolean;

@@ -2,7 +2,7 @@ import type { CadDocumentKind } from '../contracts/document';
 import { documentNames } from './CadDocumentPresentation';
 import type { CadShellPanel } from './CadShellMain';
 
-export interface CadShellBottomProps {
+interface CadShellBottomProps {
   recomputeStatus: string;
   notice: string;
   devFixture?: string | null;
