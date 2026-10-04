@@ -15,6 +15,8 @@
 Текущий `main`:
 `cda903d762b7e52e9345fe09e6dfa0be508a0d6a`
 
+Product document model remains **six first-class document kinds**: Part, Assembly, Drawing, Fragment, Specification, Text.
+
 Принятые permanent product slices включают:
 - KOMPAS-SHELL-ADOPTION-001 — Part top shell;
 - V6C / CAD-VIS-006C — Sketch hierarchy + dimension ownership.
