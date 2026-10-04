@@ -1,123 +1,116 @@
-# ASA-CAD — состояние и следующий видимый результат
+# ASA-CAD — текущее состояние и каноничный путь
 
-Снимок 2026-09-30. Координатор #10, визуальная очередь #19.
+Снимок: 2026-10-04.
 
-## Текущий статус
+## Каноничные источники
 
-- В1 / CAD-VIS-001 — DONE / MERGED / REGIONAL RESULT ACCEPTED.
-- В2 / CAD-VIS-002 — DONE / MERGED / REGIONAL RESULT ACCEPTED.
-- В3 / CAD-VIS-003 — DONE / MERGED / REGIONAL RESULT ACCEPTED / PARITY PARTIAL.
-- В4 / CAD-VIS-004 — DONE / MERGED / REGIONAL RESULT ACCEPTED / PARITY PARTIAL.
-- CAD-VIS-005 — INTEGRATION CHECKPOINT / ACCEPTED / PRODUCT_DELTA NONE.
-- V6A / CAD-VIS-006A — DONE / MERGED / REGIONAL RESULT ACCEPTED / PARITY PARTIAL.
-- V6B / CAD-VIS-006B — DONE / MERGED / REGIONAL RESULT ACCEPTED / PARITY PARTIAL.
-- KOMPAS-SHELL-ADOPTION-001 — **DONE / MERGED / REGIONAL RESULT ACCEPTED**; accepted scope = **PART TOP SHELL ONLY**.
-- Full Repository Health Audit #166 — **YELLOW_ACCEPTED / completed**.
-- Accepted audit final main: `fa13134bf7397a20a9b02790a6644e9084e943e0`.
-- RED findings = **NONE**.
-- CADENCE = **1/3**.
-- FEATURE_FREEZE = **LIFTED**.
-- FULL_TREE_PARITY = **NOT ACCEPTED**.
-- FULL_M2V = **NOT ACCEPTED**.
-- FULL_KOMPAS_PARITY = **NO**.
+- Central issue: **#184 / UI-CORE-UNIFICATION-001**.
+- Convergence branch: **`integration/ui-core-unification`**.
+- Frozen UI/UX reference: **PR #170**, tag `ui-reference-20261004`, SHA `88c535c652dac8b04f0d68fa144cf8486afdc926`.
+- Product authority: только `src/**` — `CadDocument`, `CadApplication`, typed commands, persistence/history, product solver, OpenCascade/B-Rep и render adapters.
+- Prototype-local `doc/history/sketcher/snap/THREE.ExtrudeGeometry` не являются product authority.
 
-## Full Audit #166
+Product document model remains **six first-class document kinds**: Part, Assembly, Drawing, Fragment, Specification, Text.
 
-Audit base:
-`a03f84e21447817639f0fb9ea3f83ab86a24efb6`
+## Текущий main и cadence
 
-CI-maintenance repair:
-- PR #167;
-- repair HEAD `5a8402a1e19b2c1e5223fcce2e94ab41370a899e`;
-- merge `fa13134bf7397a20a9b02790a6644e9084e943e0`;
-- permanent M2 shell now includes the M2 architecture test script (`test:m2:architecture`);
-- post-repair M2 shell `36233235054` — SUCCESS;
-- post-repair baseline `36233235046` — SUCCESS;
-- M2 UI architecture — PASS;
-- `test:asa` constituent coverage — PASS;
-- `check` constituent coverage — PASS;
-- literal full-repository check command (npm run check) — NOT_RUN.
+Maintenance baseline: #181 и #183 MERGED; integration должна содержать актуальный main. `U1_START_ALLOWED` не хранится как ручной статус: перед U1 проверяется, что этот U0 contract уже находится в main, integration содержит этот main, frozen reference подтверждён и required CI/policy test зелёные.
 
-Resolved:
-- `Y-AUD-166-M2-ARCH`.
+Accepted permanent product cadence до U1 = **2/3**.
 
-Remaining accepted YELLOW:
-- `Y-AUD-166-BUDGETS` — hard/frozen gates PASS; do not grow pressured owners.
-- `Y-AUD-166-THIRD-TOUCH` — focused owner review completed in #166; next qualifying third touch requires review before the touch.
-- `Y-AUD-166-STALE-PRS` — #143/#146 remain historical/stale; do not merge as-is.
-- `Y-AUD-166-V6A-OWNERSHIP` — CutExtrude profile ownership still flows through `ExtrudeOperationController`; keep non-growing and separate ownership before multi-profile, edit-existing, or generalized feature-selection scope.
+**U1 считается ровно одним permanent product slice.**
+После принятия U1:
+- cadence = **3/3**;
+- **Full Repository Health Audit обязателен немедленно**;
+- **U2 BLOCKED** до принятия этого аудита.
 
-Audit #158 is historical; #166 is now the latest accepted Full Repository Health Audit.
+U1A/U1B/U1C — checkpoints одного U1 и отдельно cadence не увеличивают.
 
-M1 ASA-owned `CadDocument` preserves six first-class document kinds: Part, Assembly, Drawing, Fragment, Specification, Text.
+Honesty boundaries:
+- FULL_TREE_PARITY = NOT ACCEPTED;
+- FULL_M2V = NOT ACCEPTED;
+- FULL_KOMPAS_PARITY = NO;
+- ~90% learner-facing visual + functional/workflow identity = TARGET / NOT CURRENT ACCEPTANCE.
 
-## Accepted V6B scope
+## Роли существующей работы
 
-V6B accepted only:
+- **#170** — CANONICAL UI/UX REFERENCE / FROZEN FOR U1 по tag `ui-reference-20261004`. Новую CAD-математику туда не добавлять.
+- **#177** — REUSE SOURCE / HOLD, exact SHA `44d87bef78fd66aa0e85fa1fa7ba9dc58e280a65`.
+- **#182** — CLOSED / ARCHIVED / EXTRACT SOURCE, exact SHA `27c55222331681d23ba101bd4992c9dc24a0ac42`.
+- **#179** — HOLD / NOT INTEGRATION BASE, exact SHA `034d0fc4d51606425794fc76508f61600a41d0cb`.
+- **#180** — SUPERSEDED / CLOSED / branch archived.
+- **#181** — MERGED, merge `47aa4836adb30432adcb09609da93fb309125aa5`.
+- **#183** — MERGED, merge `27380d161210aaf309fa3a8c76109fb7038a3533`.
+
+Machine-readable convergence/reuse contract:
+`spec/process/ui-core-unification.v1.json`.
+
+## U0 — preflight
+
+U1 разрешён только когда одновременно:
+1. U0 governance/contract changes находятся в `main`;
+2. #181 = MERGED;
+3. #183 = MERGED;
+4. integration branch обновлена от нового main;
+5. pull requests в `integration/ui-core-unification` запускают required CI;
+6. frozen UI reference tag указывает на `88c535c...`;
+7. npm run test:process:ui-core-unification = PASS.
+
+До выполнения всех семи условий:
+**U1_START_ALLOWED = NO**.
+
+## U1 — один permanent product slice
+
+### U1A — shell checkpoint
+- меню;
+- document tab;
+- toolset/ribbon layout;
+- canonical composition из #170;
+- никакого prototype state.
+
+### U1B — tree/parameters/status checkpoint
+- дерево;
+- parameters;
+- status;
+- реальные product bindings;
+- никаких декоративных duplicate owners.
+
+### U1C — viewport/selection checkpoint
+- real empty Part WorkArea;
+- XY/XZ/YZ;
+- scene/tree/parameters = одно application selection state;
+- ordinary product route.
+
+U1 acceptance:
+`open Part -> canonical shell -> select XY/XZ/YZ -> one real application selection`.
+
+После U1 acceptance:
+`FULL REPOSITORY HEALTH AUDIT -> ACCEPTED/YELLOW_ACCEPTED -> только затем U2`.
+
+## После аудита
+
+- U2 — real Sketch;
+- U3 — real constraints/dimensions;
+- U4 — real OpenCascade Extrude;
+- U5 — protected Part route.
+
+## Git contract
+
 ```text
-Деталь 1
-└─ Начало координат
-   ├─ Плоскость XY
-   ├─ Плоскость XZ
-   └─ Плоскость YZ
-+ real expand/collapse
+main  (всегда содержит актуальное governance ТЗ)
+ |
+ +-- integration/ui-core-unification
+        |
+        +-- ui-core/u1a-shell
+        +-- ui-core/u1b-tree-parameters
+        +-- ui-core/u1c-viewport-selection
+        |
+        +-- U1 acceptance
+        +-- Full Repository Health Audit
+        |
+        +-- U2 ...
 ```
 
-This does not close full Tree parity.
+U1A/U1B/U1C могут иметь отдельные review PR, но не считаются отдельными permanent slices.
 
-## KOMPAS-SHELL-ADOPTION-001 — accepted closeout
-
-**DONE / MERGED / REGIONAL RESULT ACCEPTED**.
-
-Accepted implementation:
-- PR #173;
-- accepted HEAD `5719a8a8b3f357d1448ea68f7d30b41ef586bb35`;
-- merge `027d4ea6a5b2549609b0b3a9cfdefd397fe8559b`;
-- accepted scope = **PART TOP SHELL ONLY**.
-
-Accepted regional result:
-- existing main-menu owner preserved;
-- real document-tab identity preserved;
-- Part workspace/toolset selector;
-- «Твердотельное моделирование»;
-- «Каркас и поверхности»;
-- «Инструменты эскиза»;
-- registry-backed command groups;
-- existing quick-access owner preserved;
-- production/dev roadmap-command visibility boundary.
-
-**PRODUCTION_VISIBILITY_CONTRACT = ACCEPTED**:
-- normal product: implemented = visible; planned/deferred = hidden;
-- explicit `/dev/part/*`: planned/deferred may be visible, remain disabled, and may carry roadmap markers.
-
-PR #170 / `0d23bf19fbfcba7fbf4789afdd18f7d632adeb50` remains **REFERENCE / PROTOTYPE ONLY**, OPEN / NOT MERGED.
-
-Honesty boundaries remain unchanged:
-- FULL_TREE_PARITY = **NOT ACCEPTED**;
-- FULL_M2V = **NOT ACCEPTED**;
-- FULL_KOMPAS_PARITY = **NO**;
-- 90% learner-facing visual + functional/workflow identity remains a **TARGET / NOT CURRENT ACCEPTANCE**;
-- canonical educational parity scope remains **Деталь / Part, Сборка / Assembly, Чертеж / Drawing**.
-
-Full Audit #166 reset cadence to 0/3. PR #173 is the first accepted permanent product slice after #166; docs/governance PRs #168/#171/#172 do not count as product slices. Therefore **CADENCE = 1/3** and **FEATURE_FREEZE = LIFTED**.
-
-## NEXT
-
-**V6C / CAD-VIS-006C — Sketch hierarchy + dimension ownership**.
-
-Цель следующего отдельного slice:
-```text
-Деталь 1
-├─ Начало координат
-│  ├─ Плоскость XY
-│  ├─ Плоскость XZ
-│  └─ Плоскость YZ
-├─ Эскиз 1
-│  ├─ реальные элементы / структура
-│  └─ размеры принадлежат эскизу
-└─ следующие элементы модели
-```
-
-V6C_STARTED = **NO**.
-
-GitHub remains the primary source of truth and execution/test environment.
+Финальный integration -> main допускается только после законченного принятого маршрута, required gates/audits и owner acceptance.

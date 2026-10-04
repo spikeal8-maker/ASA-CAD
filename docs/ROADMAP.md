@@ -1,100 +1,132 @@
-# ASA-CAD — воспроизведение КОМПАСа с видимыми поставками
+# ASA-CAD — UI/core convergence roadmap
 
-Редакция 2026-09-30. STATUS/#10 — текущее состояние; #19 — визуальная очередь.
+Редакция: 2026-10-04.
+Central issue: **#184**.
+Integration branch: **`integration/ui-core-unification`**.
+Frozen UI reference: **`ui-reference-20261004` -> `88c535c652dac8b04f0d68fa144cf8486afdc926`**.
 
 ## Цель
 
-Каноническая цель: ~90% визуального + функционального/workflow соответствия разделам КОМПАС-3D v25 **Деталь / Сборка / Чертеж** ради минимального переобучения; полный контракт — `SYSTEM_SPEC.md`. FULL_M2V = **NOT ACCEPTED**. FULL_KOMPAS_PARITY = **NO**.
+Один ASA-CAD:
+`canonical UI/UX -> typed product actions -> CadApplication -> CadDocument/history/persistence -> solver -> OpenCascade/B-Rep -> render`.
 
-## Принятые поставки
+№170 задаёт внешний вид и interaction intent, но не становится вторым runtime.
 
-- В1 / CAD-VIS-001 — DONE / regional accepted.
-- В2 / CAD-VIS-002 — DONE / regional accepted.
-- В3 / CAD-VIS-003 — DONE / regional accepted / PARITY PARTIAL.
-- В4 / CAD-VIS-004 — DONE / regional accepted / PARITY PARTIAL.
-- CAD-VIS-005 — accepted integration checkpoint / PRODUCT_DELTA NONE.
-- V6A / CAD-VIS-006A — DONE / MERGED / regional accepted / PARITY PARTIAL.
-- V6B / CAD-VIS-006B — DONE / MERGED / regional accepted / PARITY PARTIAL.
-- KOMPAS-SHELL-ADOPTION-001 — **DONE / MERGED / REGIONAL RESULT ACCEPTED**; PR #173; accepted HEAD `5719a8a8b3f357d1448ea68f7d30b41ef586bb35`; merge `027d4ea6a5b2549609b0b3a9cfdefd397fe8559b`; accepted scope = **PART TOP SHELL ONLY**.
+## PRE-U1 / U0-FIX
 
-FULL_TREE_PARITY = **NOT ACCEPTED**.
+До начала U1 обязательно:
+- U0 docs/policy в main;
+- #181 merged;
+- #183 merged;
+- integration обновлена от fresh main;
+- CI работает для PR base = `integration/ui-core-unification`;
+- frozen reference tag подтверждён;
+- machine convergence test PASS.
 
-## Full Repository Health Audit #166
+## U1 — CANONICAL SHELL ADOPTION
 
-#166 = **YELLOW_ACCEPTED / completed**.
+**U1 = один permanent product slice.**
 
-Accepted final main:
-`fa13134bf7397a20a9b02790a6644e9084e943e0`
+### U1A — Shell checkpoint
+Переносим только:
+- меню;
+- document tab;
+- toolsets/ribbon;
+- базовую композицию.
 
-RED findings:
-**NONE**
+### U1B — Tree/Parameters/Status checkpoint
+Подключаем:
+- настоящее дерево;
+- параметры;
+- status;
+- existing typed bindings.
 
-Resolved in audit maintenance:
-- `Y-AUD-166-M2-ARCH` — permanent M2 shell executes `npm run test:m2:architecture`; post-repair CI PASS.
+### U1C — Viewport/Selection checkpoint
+Подключаем:
+- empty Part WorkArea;
+- XY/XZ/YZ;
+- одну selection model между scene/tree/parameters.
 
-Remaining accepted YELLOW:
-- `Y-AUD-166-BUDGETS` — target pressure only; hard/frozen gates PASS; no growth.
-- `Y-AUD-166-THIRD-TOUCH` — focused owner review completed in #166; repeat before the next qualifying third touch.
-- `Y-AUD-166-STALE-PRS` — #143/#146 are stale/historical and must not merge as-is.
-- `Y-AUD-166-V6A-OWNERSHIP` — CutExtrude profile ownership coupling is non-growing; separate before broader profile/edit-existing/generalized-selection scope.
+Acceptance U1:
+обычный Part route показывает каноничную оболочку и один настоящий application state без prototype `doc/history`.
 
-Audit #158 is now historical. #166 is the latest accepted Full Repository Health Audit.
+### Обязательный gate после U1
 
-## Cadence
+U1 переводит cadence **2/3 -> 3/3**.
 
-Accepted Full Audit #166 reset cadence to **0/3**.
+Поэтому:
+```text
+U1 ACCEPTED
+   ↓
+FULL REPOSITORY HEALTH AUDIT
+   ↓
+audit accepted / yellow accepted
+   ↓
+U2 UNBLOCKED
+```
 
-After accepted permanent product slice #173:
+Не переносить аудит на конец U5.
 
-**CADENCE = 1/3**
+## U2 — REAL SKETCH
 
-**FEATURE_FREEZE = LIFTED**
+После аудита:
+- Line;
+- Rectangle;
+- Circle;
+- Arc;
+- UX числового ввода из #170;
+- mutations только через product commands/CadDocument;
+- Undo/Redo + Save/Open.
 
-Governance/docs PRs #168/#171/#172 do not count as permanent product slices.
+Acceptance:
+`Part -> XY -> Sketch -> Rectangle 60x40 -> Undo/Redo -> Save/Open -> same intent/IDs`.
 
-Every permanent slice still receives a Slice Quality Gate. The next Full Repository Health Audit is required again at 3 accepted permanent slices or another machine-policy trigger.
+## U3 — REAL CONSTRAINTS + DIMENSIONS
 
-## Accepted — KOMPAS-SHELL-ADOPTION-001
+Подключить product solver:
+- Coincident/H/V/Parallel/Perpendicular/Tangent/Concentric/Equal/Symmetric/Fixed/Point-on-curve;
+- Linear/H/V/Angular/Radius/Diameter;
+- DoF/diagnostics.
 
-KOMPAS-SHELL-ADOPTION-001 = **DONE / MERGED / REGIONAL RESULT ACCEPTED**.
+Prototype snap = UX aid only, не solver.
 
-Accepted implementation:
-- PR #173;
-- accepted HEAD `5719a8a8b3f357d1448ea68f7d30b41ef586bb35`;
-- merge `027d4ea6a5b2549609b0b3a9cfdefd397fe8559b`;
-- scope = **PART TOP SHELL ONLY**.
+## U4 — REAL EXTRUDE
 
-Accepted regional delta includes the existing main-menu/document-tab owners, Part workspace/toolset selector, three Part toolsets, registry-backed command-group composition, preserved quick-access owner, and the production/dev roadmap-command visibility boundary.
+`solved Sketch -> validated profile -> OpenCascade -> B-Rep -> render`.
 
-**PRODUCTION_VISIBILITY_CONTRACT = ACCEPTED**:
-- normal product hides planned/deferred commands;
-- explicit `/dev/part/*` may show them disabled with roadmap markers.
+Three.js только отображает.
 
-PR #170 remains **REFERENCE / PROTOTYPE ONLY**, OPEN / NOT MERGED.
+Acceptance:
+`Rectangle 60x40 -> Extrude 10 -> edit 60->80 -> recompute -> Save/Open`.
 
-This does not accept full M2V, full KOMPAS parity, full Tree parity, Part completion, Assembly, Drawing, or the 90% target. Canonical educational parity scope remains **Деталь / Part, Сборка / Assembly, Чертеж / Drawing**.
+## U5 — PROTECTED PART ROUTE
 
-## NEXT — V6C / CAD-VIS-006C
+Сохранить существующие:
+- Cut Ø12;
+- Fillet R1;
+- topology/stable references;
+- protected regression.
 
-**Sketch hierarchy + dimension ownership**.
+Acceptance:
+`60x40 -> Extrude 10 -> Ø12 Cut -> Fillet R1 -> 60->80 -> rebuild -> save/reopen -> edit again`.
 
-V6C is the next separate product slice after accepted initial KOMPAS shell adoption. It owns Sketch hierarchy and dimension ownership; implementation has not started.
+## Reuse decisions
 
-**V6C_STARTED = NO**.
+Полный machine-readable reuse-map:
+`spec/process/ui-core-unification.v1.json`.
 
-Cadence after accepted #173 = **1/3**. FEATURE_FREEZE = **LIFTED**.
+Коротко:
+- #170 / 88c535c — REFERENCE_ONLY;
+- #177 / 44d87b — REUSE_AFTER_EXACT_REVIEW;
+- archived #182 / 27c552 — EXTRACT_AFTER_EXACT_REVIEW;
+- #179 / 034d0f — HOLD_NOT_INTEGRATION_BASE.
 
-## Gates
+## Запрещено
 
-Gate A/M2O and M3 core remain in force.
-
-Gate B before broad M4 remains OPEN on:
-- M2V KOMPAS visual acceptance;
-- M3 functional exit contract;
-- M3X shared ASA-CAD/ASA-Lab golden contract;
-- M3M-009;
-- pre-M4 performance baselines.
-
-The Full Repository Health Audit requirement for this cadence cycle is satisfied by accepted #166.
-
-GitHub repository/PR/Issues/Actions/artifacts remain the execution environment.
+- второй document/state manager;
+- prototype math как product authority;
+- localStorage/demo persistence вместо product persistence;
+- `THREE.ExtrudeGeometry` как exact product geometry;
+- copy/paste 2500 строк prototype в один owner;
+- один U1 PR выше repository footprint без architecture review;
+- начинать U2 до обязательного аудита после U1.
