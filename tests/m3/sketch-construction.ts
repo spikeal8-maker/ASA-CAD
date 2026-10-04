@@ -68,8 +68,11 @@ assert.equal((await historyApp.redo()).ok, true);
 assert.equal(((historyApp.getDocument() as CadPartDocument).sketches[0].entities[0] as any).data.construction, true);
 
 const runtimeSource = readFileSync('src/runtime/OpenCascadePartRuntime.ts', 'utf8');
+const profileSource = readFileSync('src/application/SketchLinearProfile.ts', 'utf8');
 const overlaySource = readFileSync('src/web/viewport/SketchOverlayLayer.tsx', 'utf8');
-assert.match(runtimeSource, /!entity\.data\.construction[\s\S]*rectangle-edge-/, 'Part rectangle profile must exclude construction Lines');
+assert.match(runtimeSource, /buildClosedLinearProfile\(sketch\)/, 'Part runtime must delegate solved linear-profile validation');
+assert.match(profileSource, /entity\.type === 'line' && entity\.data\.construction/, 'Linear profile owner must exclude construction Lines');
+assert.doesNotMatch(runtimeSource, /rectangle-edge-/, 'Part runtime must not derive profile shape from Rectangle tool metadata');
 assert.match(overlaySource, /data-sketch-construction/);
 assert.match(overlaySource, /construction/);
 

@@ -3,6 +3,8 @@ import initOpenCascade from '../../vendor/toubkal/node_modules/opencascade.js/di
 import {
   CadApplicationImpl,
   OpenCascadePartRuntime,
+  PlaneGCSSketchSolverRuntime,
+  SolvedSketchPartRuntimeAdapter,
   createEmptyCadDocument,
   parseCadDocument,
   serializeCadDocument,
@@ -29,7 +31,8 @@ function requirePart(app: CadApplicationImpl): Readonly<CadPartDocument> {
 console.log('\nASA-CAD M1 protected Part through CadApplication + OpenCascade');
 
 const oc = await initOpenCascade();
-const runtime = new OpenCascadePartRuntime(oc);
+const coreRuntime = new OpenCascadePartRuntime(oc);
+const runtime = new SolvedSketchPartRuntimeAdapter(coreRuntime, new PlaneGCSSketchSolverRuntime());
 const app = new CadApplicationImpl(
   createEmptyCadDocument('part', { title: 'M1 protected Part' }),
   runtime,
@@ -124,7 +127,7 @@ assert.equal(filletResult.ok, true);
 
 const initialRebuild = await app.execute({ id: 'document.rebuild', payload: {} });
 assert.equal(initialRebuild.ok, true, initialRebuild.error?.message);
-const initial = runtime.getLastAnalysis();
+const initial = coreRuntime.getLastAnalysis();
 assert.ok(initial);
 near(initial.bounds.minX, -30, EPS, 'initial minX');
 near(initial.bounds.maxX, 30, EPS, 'initial maxX');
@@ -144,7 +147,7 @@ assert.equal(editWidth.ok, true);
 
 const editedRebuild = await app.execute({ id: 'document.rebuild', payload: {} });
 assert.equal(editedRebuild.ok, true, editedRebuild.error?.message);
-const edited = runtime.getLastAnalysis();
+const edited = coreRuntime.getLastAnalysis();
 assert.ok(edited);
 near(edited.bounds.minX, -40, EPS, 'edited minX');
 near(edited.bounds.maxX, 40, EPS, 'edited maxX');
@@ -165,11 +168,12 @@ assert.equal(JSON.stringify(savedSnapshot).includes('window.oc'), false, 'serial
 
 app.dispose();
 
-const runtime2 = new OpenCascadePartRuntime(oc);
+const coreRuntime2 = new OpenCascadePartRuntime(oc);
+const runtime2 = new SolvedSketchPartRuntimeAdapter(coreRuntime2, new PlaneGCSSketchSolverRuntime());
 const reopenedApp = new CadApplicationImpl(parseCadDocument(saved), runtime2);
 const reopenRebuild = await reopenedApp.execute({ id: 'document.rebuild', payload: {} });
 assert.equal(reopenRebuild.ok, true, reopenRebuild.error?.message);
-const reopened = runtime2.getLastAnalysis();
+const reopened = coreRuntime2.getLastAnalysis();
 assert.ok(reopened);
 near(reopened.volume, edited.volume, 1e-5, 'reopened volume');
 near(reopened.bounds.minX, -40, EPS, 'reopened minX');

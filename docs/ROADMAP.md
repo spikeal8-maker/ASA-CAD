@@ -15,6 +15,7 @@
 - CAD-VIS-005 — accepted integration checkpoint / PRODUCT_DELTA NONE.
 - V6A / CAD-VIS-006A — DONE / MERGED / regional accepted / PARITY PARTIAL.
 - V6B / CAD-VIS-006B — DONE / MERGED / regional accepted / PARITY PARTIAL.
+- V6C / CAD-VIS-006C — **DONE / MERGED / REGIONAL RESULT ACCEPTED**; PR #175; accepted HEAD `476d04c8917493adad995f8dca2a16b858927410`; merge `cda903d762b7e52e9345fe09e6dfa0be508a0d6a`; scope = **Sketch hierarchy + dimension ownership presentation**.
 - KOMPAS-SHELL-ADOPTION-001 — **DONE / MERGED / REGIONAL RESULT ACCEPTED**; PR #173; accepted HEAD `5719a8a8b3f357d1448ea68f7d30b41ef586bb35`; merge `027d4ea6a5b2549609b0b3a9cfdefd397fe8559b`; accepted scope = **PART TOP SHELL ONLY**.
 
 FULL_TREE_PARITY = **NOT ACCEPTED**.
@@ -44,15 +45,13 @@ Audit #158 is now historical. #166 is the latest accepted Full Repository Health
 
 Accepted Full Audit #166 reset cadence to **0/3**.
 
-After accepted permanent product slice #173:
+After accepted permanent product slices #173 and #175:
 
-**CADENCE = 1/3**
+**CADENCE = 2/3**
 
 **FEATURE_FREEZE = LIFTED**
 
-Governance/docs PRs #168/#171/#172 do not count as permanent product slices.
-
-Every permanent slice still receives a Slice Quality Gate. The next Full Repository Health Audit is required again at 3 accepted permanent slices or another machine-policy trigger.
+Governance/docs PRs do not count as permanent product slices. Acceptance of the next permanent product slice reaches 3/3 and requires Full Repository Health Audit before any later product slice.
 
 ## Accepted — KOMPAS-SHELL-ADOPTION-001
 
@@ -74,15 +73,20 @@ PR #170 remains **REFERENCE / PROTOTYPE ONLY**, OPEN / NOT MERGED.
 
 This does not accept full M2V, full KOMPAS parity, full Tree parity, Part completion, Assembly, Drawing, or the 90% target. Canonical educational parity scope remains **Деталь / Part, Сборка / Assembly, Чертеж / Drawing**.
 
-## NEXT — V6C / CAD-VIS-006C
+## ACTIVE — PART-CORE-RECOVERY-001
 
-**Sketch hierarchy + dimension ownership**.
+Priority recovery of the ordinary Part workflow before V7:
+- solved Sketch geometry, feature profile and B-Rep must agree;
+- dimensions, Undo/Redo and Save/Open preserve parametric meaning;
+- one unambiguous closed linear contour is supported without rectangle/bounding-box guessing;
+- the agreed dark shell is restored without replacing real product owners;
+- visible tree controls must be working or explicitly unavailable.
 
-V6C is the next separate product slice after accepted initial KOMPAS shell adoption. It owns Sketch hierarchy and dimension ownership; implementation has not started.
+Working branch: `fix/part-core-recovery-001`.
 
-**V6C_STARTED = NO**.
+**V7 / Resize = PAUSED / NOT STARTED**. Resume only after this recovery is accepted. If this recovery is accepted as the next permanent product slice, cadence reaches **3/3** and Full Repository Health Audit is required before any later product slice.
 
-Cadence after accepted #173 = **1/3**. FEATURE_FREEZE = **LIFTED**.
+Draft PR #176 is not the implementation source for this recovery and must not be merged as its state transition.
 
 ## Gates
 
