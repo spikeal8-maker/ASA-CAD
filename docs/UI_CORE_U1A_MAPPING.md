@@ -24,7 +24,14 @@ U1A **не включает**:
 - persistence model;
 - solver;
 - OpenCascade feature work;
-- prototype `doc/history/sketcher`.
+- prototype `doc/history/sketcher`;
+- dark-theme implementation.
+
+### Theme contract
+
+Frozen #170 имеет light + dark. Product runtime сейчас честно light-only (`color-scheme: light`). Поэтому U1A visual acceptance выполняется **только в light theme**.
+
+Dark-theme parity = **DEFERRED_NOT_U1A**. В U1A запрещено имитировать её отдельной CSS-перекраской без настоящей product theme model. Frozen dark state сохраняется в visual evidence и должен быть реализован до заявления overall visual parity, отдельным последующим UI-parity решением.
 
 ## 2. Mapping: reference -> product owner
 
@@ -59,11 +66,19 @@ U1A **не включает**:
 Предпочтительные owners U1A:
 - `CadShellTop.tsx`;
 - `CadFileMenu.tsx`;
-- `CadShellCommandGroups.tsx`;
+- `CadShellCommandGroups.tsx` — только пока не превышен pressure ceiling;
 - `CadShellReferenceGroups.tsx`;
 - `styles/top-shell.css`;
 - `styles/ribbon.css`;
 - `styles/shell-responsive.css`.
+
+### CadShellCommandGroups pressure gate
+
+На момент контракта файл = **8350 bytes**. UI target = 10240 bytes. Policy pressure = 85%, то есть **8704 bytes**.
+
+Если U1A требует роста `CadShellCommandGroups.tsx` выше 8704 bytes, запрещено продолжать добавлять группы в этот owner. Сначала обязательный extraction в узкий компонент. Возможные направления: `CadPartSolidGroups.tsx`, `CadSurfaceGroups.tsx`, `CadSketchGroups.tsx`, `CadViewGroups.tsx` — выбирать только реально необходимое, не создавать все заранее.
+
+Machine-test контролирует ceiling 8704 bytes.
 
 ## 4. Visual evidence contract
 
@@ -81,9 +96,26 @@ Workflow:
 `.github/workflows/ui-core-u1-visual.yml`
 
 Capture states:
-- 1600x900 / solid toolset;
-- 1600x900 / surfaces toolset;
-- 1366x768 / solid toolset.
+- light / 1600x900 / solid toolset;
+- light / 1600x900 / surfaces toolset;
+- light / 1366x768 / solid toolset;
+- dark / 1600x900 / solid toolset — **reference-only**, для сохранения deferred parity target.
+
+Geometry сравнивается только по эквивалентным semantic regions:
+
+| Semantic region | Frozen #170 | Product candidate |
+|---|---|---|
+| topShell | `.main-menu-bar` | `.main-menu-bar` |
+| menuItems | `#menu` | `.main-menu-items` |
+| commandSearch | `#searchWrap` | `.command-search-wrap` |
+| documentTabs | `.document-tabs` | `.document-tabs` |
+| activeDocumentTab | `#docTab` | `.document-tab.active` |
+| instrumentArea | `.instrument-area` | `.instrument-area` |
+| toolsets | `#toolsets` | `.workspace-tabs` |
+| ribbon | `#ribbon` | `.command-ribbon` |
+| contentArea | `#content` | `.content-area` |
+
+`#menu` больше не сравнивается с полной `.main-menu-bar`. Prototype `.title-tools` также не считается эквивалентом product `.global-actions`, потому что наборы действий различаются.
 
 Artifact должен содержать:
 - reference screenshots;

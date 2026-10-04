@@ -2,6 +2,10 @@
 
 Редакция 2026-10-04. Активная очередь: #184 / `UI_CORE_UNIFICATION_SPEC.md`; frozen UI reference: tag `ui-reference-20261004`, SHA `88c535c652dac8b04f0d68fa144cf8486afdc926`. Старые очереди ниже — evidence/context.
 
+## 0A. U1A visual contract
+
+Для U1A: **LIGHT ONLY**; frozen dark theme = **DEFERRED_NOT_U1A** и не фейкается без product theme model. Semantic-region pairs и полный evidence contract: `UI_CORE_U1A_MAPPING.md` + `spec/process/ui-core-unification.v1.json`.
+
 ## 1. Что принимается
 
 Каноническая продуктовая цель находится в `SYSTEM_SPEC.md`: обязательный учебный scope — **Деталь, Сборка, Чертеж**; target — примерно **90% learner-facing visual + functional/workflow identity**, чтобы переход к реальному КОМПАС-3D требовал минимального переобучения. Это target, а не утверждение о текущей готовности и не автоматически вычисляемый процент.

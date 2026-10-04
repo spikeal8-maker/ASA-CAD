@@ -6,7 +6,9 @@ const health = JSON.parse(readFileSync('spec/process/repository-health.v1.json',
 const status = readFileSync('docs/STATUS.md', 'utf8');
 const roadmap = readFileSync('docs/ROADMAP.md', 'utf8');
 const spec = readFileSync('docs/UI_CORE_UNIFICATION_SPEC.md', 'utf8');
+const visualSpec = readFileSync('docs/VISUAL_REFERENCE_SPEC.md', 'utf8');
 const u1aMap = readFileSync('docs/UI_CORE_U1A_MAPPING.md', 'utf8');
+const canonicalUtf8Bytes = (path) => Buffer.byteLength(readFileSync(path, 'utf8').replace(/\r\n/g, '\n'), 'utf8');
 
 const integrationWorkflows = [
   '.github/workflows/baseline.yml',
@@ -64,9 +66,15 @@ assert.equal(policy.u1a.mappingDocument, 'docs/UI_CORE_U1A_MAPPING.md');
 assert.equal(policy.u1a.visualEvidenceWorkflow, '.github/workflows/ui-core-u1-visual.yml');
 assert.equal(policy.u1a.visualEvidenceScript, 'tests/visual/ui-core-u1-capture.mjs');
 assert.deepEqual(policy.u1a.referenceStates, [
-  'solid-1600x900',
-  'surfaces-1600x900',
-  'solid-1366x768',
+  'light-solid-1600x900',
+  'light-surfaces-1600x900',
+  'light-solid-1366x768',
+  'dark-solid-1600x900-reference-only',
+]);
+assert.deepEqual(policy.u1a.candidateAcceptanceStates, [
+  'light-solid-1600x900',
+  'light-surfaces-1600x900',
+  'light-solid-1366x768',
 ]);
 assert.ok(policy.u1a.noTouchOwners.includes('src/web/CadViewport.tsx'));
 assert.ok(policy.u1a.noTouchOwners.includes('src/web/ParameterPanel.tsx'));
@@ -74,6 +82,32 @@ assert.ok(policy.u1a.noGrowthOwners.includes('src/web/App.tsx'));
 assert.ok(policy.u1a.noGrowthOwners.includes('src/web/responsive.css'));
 assert.equal(policy.u1a.checkpointCompleteDoesNotEqualU1Accepted, true);
 assert.equal(policy.u1a.ownerVisualAcceptanceRequired, true);
+
+assert.deepEqual(policy.u1a.themeContract.referenceThemes, ['light', 'dark']);
+assert.deepEqual(policy.u1a.themeContract.currentProductThemes, ['light']);
+assert.deepEqual(policy.u1a.themeContract.u1aAcceptanceThemes, ['light']);
+assert.equal(policy.u1a.themeContract.darkThemeParity, 'DEFERRED_NOT_U1A');
+assert.equal(policy.u1a.themeContract.noFakeDarkThemeInU1A, true);
+assert.equal(policy.u1a.themeContract.mustBeResolvedBeforeOverallVisualParityClaim, true);
+
+assert.deepEqual(
+  policy.u1a.semanticRegionContract.map((item) => item.key),
+  ['topShell', 'menuItems', 'commandSearch', 'documentTabs', 'activeDocumentTab', 'instrumentArea', 'toolsets', 'ribbon', 'contentArea'],
+);
+assert.equal(policy.u1a.semanticRegionContract.find((item) => item.key === 'menuItems')?.reference, '#menu');
+assert.equal(policy.u1a.semanticRegionContract.find((item) => item.key === 'menuItems')?.candidate, '.main-menu-items');
+assert.equal(policy.u1a.semanticRegionContract.find((item) => item.key === 'topShell')?.reference, '.main-menu-bar');
+assert.equal(policy.u1a.semanticRegionContract.find((item) => item.key === 'topShell')?.candidate, '.main-menu-bar');
+
+const commandGroupsPressure = policy.u1a.ownerPressure['src/web/CadShellCommandGroups.tsx'];
+assert.equal(commandGroupsPressure.targetBytes, 10240);
+assert.equal(commandGroupsPressure.pressureRatio, 0.85);
+assert.equal(commandGroupsPressure.pressureThresholdBytes, 8704);
+assert.equal(commandGroupsPressure.rule, 'EXTRACT_SUBCOMPONENT_BEFORE_EXCEEDING_PRESSURE_THRESHOLD');
+assert.ok(
+  canonicalUtf8Bytes('src/web/CadShellCommandGroups.tsx') <= commandGroupsPressure.pressureThresholdBytes,
+  'U1A BLOCKED: CadShellCommandGroups.tsx exceeded 8704 canonical UTF-8 bytes; extract a focused subcomponent before more growth',
+);
 
 assert.match(status, /U1A|U1B|U1C/);
 assert.match(status, /Full Repository Health Audit/i);
@@ -86,12 +120,20 @@ assert.match(spec, /U1C/);
 assert.match(spec, /U2.*BLOCKED|U2.*audit/i);
 assert.match(spec, /REUSE.*#177|#177.*REUSE/i);
 assert.match(spec, /#182.*EXTRACT|EXTRACT.*#182/i);
+assert.match(spec, /DEFERRED_NOT_U1A/);
+assert.match(visualSpec, /DEFERRED_NOT_U1A/);
+assert.match(visualSpec, /LIGHT ONLY/);
 
 assert.match(u1aMap, /CadShellTop\.tsx/);
 assert.match(u1aMap, /CadShellCommandGroups\.tsx/);
 assert.match(u1aMap, /App\.tsx/);
 assert.match(u1aMap, /CadViewport\.tsx/);
 assert.match(u1aMap, /OWNER_REQUIRED|owner.*acceptance/i);
+assert.match(u1aMap, /DEFERRED_NOT_U1A/);
+assert.match(u1aMap, /8704 bytes/);
+assert.match(u1aMap, /menuItems/);
+assert.match(u1aMap, /#menu/);
+assert.match(u1aMap, /\.main-menu-items/);
 
 for (const forbidden of policy.forbiddenPrototypeAuthorities) {
   assert.ok(forbidden.length > 0);
@@ -126,5 +168,11 @@ assert.match(visualWorkflow, /ui-reference-20261004/);
 assert.match(visualWorkflow, /88c535c652dac8b04f0d68fa144cf8486afdc926/);
 assert.match(visualWorkflow, /integration\/ui-core-unification/);
 assert.match(visualWorkflow, /ui-core-u1-capture\.mjs/);
+
+const visualCapture = readFileSync('tests/visual/ui-core-u1-capture.mjs', 'utf8');
+assert.match(visualCapture, /DEFERRED_NOT_U1A/);
+assert.match(visualCapture, /reference\/dark-solid-1600x900\.png/);
+assert.match(visualCapture, /menuItems/);
+assert.match(visualCapture, /candidate: '\.main-menu-items'/);
 
 console.log('UI/core unification policy PASS');

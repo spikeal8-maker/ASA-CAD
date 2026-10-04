@@ -42,7 +42,12 @@ Frozen UI reference: **`ui-reference-20261004` -> `88c535c652dac8b04f0d68fa144cf
 - меню;
 - document tab;
 - toolsets/ribbon;
-- базовую композицию.
+- базовую композицию;
+- light-theme visual parity.
+
+Dark theme frozen №170 = **DEFERRED_NOT_U1A**. Не фейкать её в U1A; сохранить reference evidence и реализовать отдельным UI-parity решением до общего заявления visual parity.
+
+Geometry compare = semantic-region contract из `UI_CORE_U1A_MAPPING.md`, а не произвольные selector pairs.
 
 ### U1B — Tree/Parameters/Status checkpoint
 Подключаем:
