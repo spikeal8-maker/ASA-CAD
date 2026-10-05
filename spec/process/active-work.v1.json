@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "initiative": "UI-CORE-UNIFICATION-001",
+  "issue": 184,
+  "currentCheckpoint": "U1A",
+  "baseBranch": "integration/ui-core-unification",
+  "baseHeadPolicy": "RESOLVE_LIVE_AND_GUARD",
+  "uiReference": {
+    "pr": 170,
+    "tag": "ui-reference-20261004",
+    "sha": "88c535c652dac8b04f0d68fa144cf8486afdc926",
+    "frozen": true
+  },
+  "productCodeStartAllowed": false,
+  "blocker": "ADMIN_BRANCH_PROTECTION_NOT_ENFORCED",
+  "canonicalDocuments": [
+    "docs/UI_CORE_UNIFICATION_SPEC.md",
+    "docs/UI_CORE_U1A_MAPPING.md"
+  ],
+  "scope": [
+    "main menu",
+    "document tab",
+    "toolsets/ribbon",
+    "search/global actions",
+    "desktop shell composition",
+    "light-theme acceptance"
+  ],
+  "outOfScope": [
+    "tree",
+    "parameters",
+    "status",
+    "viewport",
+    "XY/XZ/YZ",
+    "selection",
+    "Sketch",
+    "solver",
+    "OpenCascade",
+    "persistence",
+    "CadDocument schema"
+  ],
+  "nextCheckpoint": "U1B"
+}
