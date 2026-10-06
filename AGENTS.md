@@ -4,6 +4,8 @@ Binding rules for coding agents. Keep ordinary task context small and verify rep
 
 ## Mandatory entry protocol
 
+First read `spec/process/active-work.v1.json`: it is the current execution pointer. Use its `currentCheckpoint`, resolve the live GitHub HEAD of its `baseBranch` instead of trusting an old chat SHA, then read every file in `canonicalDocuments`. If `productCodeStartAllowed` is `false`, product code changes are forbidden. Do not infer NEXT from old Issues, chats, or historical blocks.
+
 For Part UI/Sketch/selection/constraints/features, first read `docs/UI_CORE_UNIFICATION_SPEC.md`, #184 and `spec/process/ui-core-unification.v1.json`. Frozen U1 reference = tag `ui-reference-20261004`; prototype #170 is UI/UX reference only, never a second CAD runtime.
 
 Canonical base = `integration/ui-core-unification`. Before U1A run `npm run test:process:ui-core-u1a-ready`; any failure = STOP. The push detector is not branch protection. U1A = light-theme shell only; dark parity is deferred and must not be faked. `CadShellCommandGroups.tsx` may not exceed 8704 bytes in U1A; extract before growth. U1A/U1B/U1C are checkpoints of one permanent U1 slice; after U1 the 3/3 Full Repository Health Audit is mandatory and U2 stays blocked until accepted.
