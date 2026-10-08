@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState, type PropsWithChildren } from 'react';
 import {
   CAD_UI_SCALE_OPTIONS,
   type CadUiScalePreference,
@@ -17,7 +17,15 @@ function optionLabel(value: CadUiScalePreference): string {
   return value === 'auto' ? 'Авто' : `${value}%`;
 }
 
-export function UiScaleSettings() {
+const UiScaleSettingsOpenContext = createContext<(() => void) | null>(null);
+
+export function useUiScaleSettingsOpen(): () => void {
+  const openSettings = useContext(UiScaleSettingsOpenContext);
+  if (!openSettings) throw new Error('UiScaleSettings provider is missing');
+  return openSettings;
+}
+
+export function UiScaleSettings({ children }: PropsWithChildren) {
   const initial = readControllerState();
   const [open, setOpen] = useState(false);
   const [preference, setPreferenceState] = useState<CadUiScalePreference>(initial.preference);
@@ -29,19 +37,6 @@ export function UiScaleSettings() {
     setResolved(next.resolved);
     setOpen(true);
   };
-
-  useEffect(() => {
-    const settingsButton = document.querySelector<HTMLButtonElement>('.global-actions button[title="Настройки"]');
-    if (!settingsButton) return;
-    const onOpen = (event: Event) => {
-      event.preventDefault();
-      openSettings();
-    };
-    settingsButton.addEventListener('click', onOpen);
-    settingsButton.setAttribute('aria-haspopup', 'dialog');
-    settingsButton.setAttribute('aria-controls', 'asa-cad-interface-settings');
-    return () => settingsButton.removeEventListener('click', onOpen);
-  }, []);
 
   useEffect(() => {
     const sync = () => {
@@ -78,7 +73,8 @@ export function UiScaleSettings() {
   };
 
   return (
-    <>
+    <UiScaleSettingsOpenContext.Provider value={openSettings}>
+      {children}
       <div className="ui-scale-status" data-testid="ui-scale-status" aria-label={`Масштаб интерфейса ${resolved}%`}>
         UI {resolved}%
       </div>
@@ -159,6 +155,6 @@ export function UiScaleSettings() {
           </section>
         </div>
       )}
-    </>
+    </UiScaleSettingsOpenContext.Provider>
   );
 }

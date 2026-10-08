@@ -131,3 +131,27 @@
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
 }
+
+/* U1A: responsive menu and ribbon density */
+@media (max-width: 1100px) {
+  .brand-button { min-width: 30px; padding-inline: 3px; }
+  .brand-label { display: none; }
+  .main-menu-items .file-menu-trigger { padding-inline: 6px; }
+  .document-kind-caption { display: none; }
+}
+@media (max-width: 599px) {
+  .main-menu-bar { border-top-width: 2px; padding-inline: 5px; }
+  .brand-mark { width: 30px; height: 30px; }
+  .global-actions-divider { display: none; }
+  .document-tab { min-width: 0; max-width: none; }
+}
+@media (max-height: 899px) and (min-width: 900px) {
+  .command-group { grid-template-rows: 1fr 14px; }
+  .command-group-label { font-size: 9px; }
+  .ribbon-command { font-size: 10px; }
+}
+@media (max-height: 767px) and (min-width: 900px) {
+  .command-group { grid-template-rows: 1fr; }
+  .command-group-label { display: none; }
+  .ribbon-command { min-width: 50px; }
+}

@@ -6,6 +6,7 @@ import { UiScaleSettings } from './UiScaleSettings';
 import './styles/base.css';
 import './styles/top-shell.css';
 import './styles/ribbon.css';
+import './styles/u1a-top-shell.css';
 import './styles/management.css';
 import './styles/work-area.css';
 import './styles/dialogs.css';
@@ -14,6 +15,7 @@ import './responsive.css';
 import './ui-scale.css';
 import './mobile-settings.css';
 import './mobile-tools.css';
+import './styles/u1a-desktop.css';
 
 const root = document.getElementById('root');
 if (!root) throw new Error('ASA-CAD root element not found');
@@ -28,8 +30,7 @@ window.__ASA_CAD_UI_SCALE__ = installUiScaleController();
 // React.StrictMode: its development-only mount/effect replay duplicates
 // OpenCascade/fixture initialization and is not representative of production.
 createRoot(root).render(
-  <>
+  <UiScaleSettings>
     <App />
-    <UiScaleSettings />
-  </>,
+  </UiScaleSettings>,
 );

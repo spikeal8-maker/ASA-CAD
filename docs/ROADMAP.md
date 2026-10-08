@@ -1,6 +1,6 @@
 # ASA-CAD — UI/core convergence roadmap
 
-Редакция: 2026-10-04.
+Редакция: 2026-10-08.
 Central issue: **#184**.
 Integration branch: **`integration/ui-core-unification`**.
 Frozen UI reference: **`ui-reference-20261004` -> `88c535c652dac8b04f0d68fa144cf8486afdc926`**.
@@ -23,15 +23,13 @@ Frozen UI reference: **`ui-reference-20261004` -> `88c535c652dac8b04f0d68fa144cf
 - frozen reference tag подтверждён;
 - machine convergence test PASS.
 
-## U1A pre-start gate
+## Постоянное разрешение разработки U1A–U5
 
-Перед первой строкой U1A-кода обязательно:
-- GitHub admin protection на `integration/ui-core-unification` = ENFORCED;
-- `npm run test:process:ui-core-u1a-ready` = PASS;
-- mapping-contract `docs/UI_CORE_U1A_MAPPING.md` прочитан исполнителем;
-- visual evidence workflow доступен для PR -> integration.
+Владелец разрешил техническую разработку checkpoint и предусмотренный аудит без новых индивидуальных разрешений. Source of truth: `spec/process/active-work.v1.json` + `spec/process/ui-core-unification.v1.json` (developmentFlow). Checkpoint стартует после проверки зависимостей, актуального HEAD, отсутствия конфликтующего writer, process/CI и отсутствия критических дефектов.
 
-Пока protection не включена, **U1A CODE = BLOCKED**. `UI_CORE_INTEGRATION_GUARD` — только detector, не server-side enforcement.
+`npm run test:process:ui-core-u1a-ready` — legacy-имя readiness-теста действующего checkpoint; не требует `ENFORCED`. GitHub `DETECT_ONLY` фиксируется как риск, не как защищённая ветка; прямые и force push в integration/main запрещены регламентом.
+
+Каждый checkpoint: отдельная ветка -> Draft PR -> exact-head CI -> независимый read-only review (отдельный документированный агент допускается вместо GitHub APPROVED) -> реальные пользовательские сценарии -> технический merge в integration -> автоматический переход к следующему пункту. Обычный documentation drift исправляется в текущем PR. Owner product acceptance отдельно от технического merge. Слияние в main, production и утверждение полной визуальной parity только по решению владельца.
 
 ## U1 — CANONICAL SHELL ADOPTION
 
@@ -71,7 +69,7 @@ U1 переводит cadence **2/3 -> 3/3**.
 
 Поэтому:
 ```text
-U1 ACCEPTED
+U1 TECHNICALLY INTEGRATED (U1A + U1B + U1C)
    ↓
 FULL REPOSITORY HEALTH AUDIT
    ↓

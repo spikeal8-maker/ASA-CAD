@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 
 const policy = JSON.parse(readFileSync('spec/process/ui-core-unification.v1.json', 'utf8'));
+const active = JSON.parse(readFileSync('spec/process/active-work.v1.json', 'utf8'));
 const health = JSON.parse(readFileSync('spec/process/repository-health.v1.json', 'utf8'));
 const status = readFileSync('docs/STATUS.md', 'utf8');
 const roadmap = readFileSync('docs/ROADMAP.md', 'utf8');
@@ -57,10 +58,54 @@ assert.equal(reuse.get('PR#179')?.decision, 'HOLD_NOT_INTEGRATION_BASE');
 
 assert.equal(policy.integrationProtection.current.mode, 'DETECT_ONLY');
 assert.equal(policy.integrationProtection.current.adminProtectionVerified, false);
-assert.equal(policy.integrationProtection.current.u1aStartAllowed, false);
-assert.equal(policy.integrationProtection.current.blocker, 'ADMIN_BRANCH_PROTECTION_NOT_ENFORCED');
+assert.equal(policy.integrationProtection.current.u1aStartAllowed, true);
+assert.equal(policy.integrationProtection.current.risk, 'ADMIN_BRANCH_PROTECTION_NOT_ENFORCED');
+const flow = policy.developmentFlow;
+assert.equal(flow.policyVersion, 1);
+assert.equal(flow.ownerAuthorization, 'OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008');
+assert.deepEqual(flow.authorizedCheckpoints, [
+  'U1A', 'U1B', 'U1C', 'FULL_REPOSITORY_HEALTH_AUDIT', 'U2', 'U3', 'U4', 'U5',
+]);
+assert.equal(flow.technicalCheckpointIntegrationAllowed, true);
+assert.equal(flow.checkpointOwnerApprovalRequired, false);
+assert.equal(flow.implementationBaseBranch, policy.integrationBranch);
+assert.equal(flow.headMovedPolicy, 'REFRESH_BASE_RECHECK_CI_RECONCILE');
+assert.equal(flow.documentationDriftPolicy, 'REPAIR_IN_ACTIVE_PR');
+assert.equal(flow.allowParallelNonOverlappingWriters, true);
+assert.equal(flow.serverProtectionIsRiskNotProductReadinessGate, true);
+assert.equal(flow.mandatoryAuditAfterU1, true);
+assert.equal(flow.auditGreenProceed, true);
+assert.equal(flow.auditYellowProceedOnlyWhenAccepted, true);
+assert.equal(flow.auditRedRequiresRepair, true);
+assert.deepEqual(flow.ownerProductDecisionsRequiredFor, [
+  'integration-to-main', 'production-deployment', 'final-visual-parity', 'material-product-goal-change',
+]);
+for (const flag of [
+  'pullRequestRequired', 'noDirectPush', 'noForcePush', 'exactHeadCIRequired',
+  'independentReadOnlyReviewRequired', 'documentedAgentReviewWhenGithubApprovedUnavailable',
+  'realOrdinaryUserFlowRequired', 'criticalFindingsMustBeZero', 'separateOwnerProductAcceptance',
+]) {
+  assert.equal(flow.technicalGates[flag], true, 'developmentFlow.' + flag + ' must remain true');
+}
+for (const [index, current] of flow.authorizedCheckpoints.entries()) {
+  assert.equal(flow.nextCheckpointById[current], flow.authorizedCheckpoints[index + 1] ?? null);
+}
+assert.equal(active.developmentAuthorization, flow.ownerAuthorization);
+assert.equal(active.baseBranch, flow.implementationBaseBranch);
+assert.ok(flow.authorizedCheckpoints.includes(active.currentCheckpoint));
+assert.equal(active.nextCheckpoint, flow.nextCheckpointById[active.currentCheckpoint]);
+assert.equal(active.blocker, null);
+assert.equal(active.productCodeStartAllowed, active.currentCheckpoint !== 'FULL_REPOSITORY_HEALTH_AUDIT');
+assert.ok(['PENDING', 'ACCEPTED', 'REJECTED'].includes(active.ownerProductAcceptance), 'Owner product decision is separate from technical acceptance');
+assert.equal(policy.u1aDevelopmentException, undefined, 'U1A-only exception must be superseded');
+assert.equal(active.u1aDevelopmentException, undefined, 'U1A-only active-work exception must be superseded');
+assert.ok(!policy.stopConditions.includes('integration-head-moved'), 'HEAD moves must be reconciled, not fatal');
+
+assert.equal(policy.integrationProtection.current.blocker, null);
 assert.equal(policy.integrationProtection.desired.pullRequestRequired, true);
 assert.equal(policy.integrationProtection.desired.directPushForbidden, true);
+assert.equal(policy.integrationProtection.desired.adminEnforcementRequired, true);
+assert.deepEqual(policy.integrationProtection.desired.requiredGeneralChecks, ['shell-build', 'vendor-baseline', 'asa-m1', 'asa-m1b']);
 
 assert.equal(policy.u1a.mappingDocument, 'docs/UI_CORE_U1A_MAPPING.md');
 assert.equal(policy.u1a.visualEvidenceWorkflow, '.github/workflows/ui-core-u1-visual.yml');
@@ -82,6 +127,7 @@ assert.ok(policy.u1a.noGrowthOwners.includes('src/web/App.tsx'));
 assert.ok(policy.u1a.noGrowthOwners.includes('src/web/responsive.css'));
 assert.equal(policy.u1a.checkpointCompleteDoesNotEqualU1Accepted, true);
 assert.equal(policy.u1a.ownerVisualAcceptanceRequired, true);
+assert.equal(policy.u1a.ownerVisualAcceptanceBeforeTechnicalMerge, false);
 
 assert.deepEqual(policy.u1a.themeContract.referenceThemes, ['light', 'dark']);
 assert.deepEqual(policy.u1a.themeContract.currentProductThemes, ['light']);
@@ -110,12 +156,15 @@ assert.ok(
 );
 
 assert.match(status, /U1A|U1B|U1C/);
+assert.match(status, /KNOWN_RISK/);
+assert.match(status, /OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008/);
 assert.match(status, /Full Repository Health Audit/i);
 assert.match(roadmap, /U1A|U1B|U1C/);
 assert.match(roadmap, /U2.*BLOCKED|U2.*audit/i);
 assert.match(spec, /ui-reference-20261004/);
 assert.match(spec, /U1A/);
 assert.match(spec, /U1B/);
+assert.match(spec, /OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008/);
 assert.match(spec, /U1C/);
 assert.match(spec, /U2.*BLOCKED|U2.*audit/i);
 assert.match(spec, /REUSE.*#177|#177.*REUSE/i);

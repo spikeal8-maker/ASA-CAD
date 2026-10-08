@@ -1,4 +1,12 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+
+const settingsSource = readFileSync('src/web/UiScaleSettings.tsx', 'utf8');
+const shellSource = readFileSync('src/web/CadShellTop.tsx', 'utf8');
+assert.doesNotMatch(settingsSource, /document\.querySelector|settingsButton\.addEventListener\('click'/, 'UI Scale settings must not use a DOM-selector click bridge');
+assert.match(shellSource, /useUiScaleSettingsOpen\(\)/, 'Shell must consume the shared typed Settings callback');
+assert.match(shellSource, /onClick=\{openUiSettings\}/, 'Settings action must call React handler directly');
+
 import { chromium } from '../../vendor/toubkal/node_modules/playwright-core/index.mjs';
 
 const url = process.env.ASA_CAD_SHELL_URL ?? 'http://127.0.0.1:8090/';
