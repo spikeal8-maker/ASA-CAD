@@ -57,10 +57,23 @@ assert.equal(reuse.get('PR#179')?.decision, 'HOLD_NOT_INTEGRATION_BASE');
 
 assert.equal(policy.integrationProtection.current.mode, 'DETECT_ONLY');
 assert.equal(policy.integrationProtection.current.adminProtectionVerified, false);
-assert.equal(policy.integrationProtection.current.u1aStartAllowed, false);
-assert.equal(policy.integrationProtection.current.blocker, 'ADMIN_BRANCH_PROTECTION_NOT_ENFORCED');
+assert.equal(policy.integrationProtection.current.u1aStartAllowed, true);
+assert.equal(policy.integrationProtection.current.risk, 'ADMIN_BRANCH_PROTECTION_NOT_ENFORCED');
+assert.equal(policy.u1aDevelopmentException.id, 'OWNER_APPROVED_U1A_DETECT_ONLY_PR_FLOW');
+assert.equal(policy.u1aDevelopmentException.checkpoint, 'U1A');
+assert.equal(policy.u1aDevelopmentException.authorizedBy, 'OWNER');
+assert.equal(policy.u1aDevelopmentException.targetBranch, 'integration/ui-core-unification');
+assert.equal(policy.u1aDevelopmentException.draftPullRequestRequired, true);
+assert.equal(policy.u1aDevelopmentException.exactHeadCIRequired, true);
+assert.equal(policy.u1aDevelopmentException.independentTechnicalReviewRequired, true);
+assert.equal(policy.u1aDevelopmentException.ownerVisualAcceptanceBeforeMerge, true);
+assert.equal(policy.u1aDevelopmentException.appliesToOtherCheckpoints, false);
+assert.equal(policy.u1aDevelopmentException.serverProtectionNotClaimed, true);
+assert.equal(policy.integrationProtection.current.blocker, null);
 assert.equal(policy.integrationProtection.desired.pullRequestRequired, true);
 assert.equal(policy.integrationProtection.desired.directPushForbidden, true);
+assert.equal(policy.integrationProtection.desired.adminEnforcementRequired, true);
+assert.deepEqual(policy.integrationProtection.desired.requiredGeneralChecks, ['shell-build', 'vendor-baseline', 'asa-m1', 'asa-m1b']);
 
 assert.equal(policy.u1a.mappingDocument, 'docs/UI_CORE_U1A_MAPPING.md');
 assert.equal(policy.u1a.visualEvidenceWorkflow, '.github/workflows/ui-core-u1-visual.yml');
@@ -110,6 +123,8 @@ assert.ok(
 );
 
 assert.match(status, /U1A|U1B|U1C/);
+assert.match(status, /KNOWN_RISK/);
+assert.match(status, /OWNER_APPROVED_U1A_DETECT_ONLY_PR_FLOW/);
 assert.match(status, /Full Repository Health Audit/i);
 assert.match(roadmap, /U1A|U1B|U1C/);
 assert.match(roadmap, /U2.*BLOCKED|U2.*audit/i);

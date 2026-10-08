@@ -11,8 +11,8 @@
     "sha": "88c535c652dac8b04f0d68fa144cf8486afdc926",
     "frozen": true
   },
-  "productCodeStartAllowed": false,
-  "blocker": "ADMIN_BRANCH_PROTECTION_NOT_ENFORCED",
+  "productCodeStartAllowed": true,
+  "blocker": null,
   "canonicalDocuments": [
     "docs/UI_CORE_UNIFICATION_SPEC.md",
     "docs/UI_CORE_U1A_MAPPING.md"
@@ -38,5 +38,6 @@
     "persistence",
     "CadDocument schema"
   ],
-  "nextCheckpoint": "U1B"
+  "nextCheckpoint": "U1B",
+  "u1aDevelopmentException": "OWNER_APPROVED_U1A_DETECT_ONLY_PR_FLOW"
 }

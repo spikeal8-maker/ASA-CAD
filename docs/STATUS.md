@@ -1,6 +1,6 @@
 # ASA-CAD — текущее состояние и каноничный путь
 
-Снимок: 2026-10-04.
+Снимок: 2026-10-08.
 
 ## Канон
 
@@ -53,18 +53,21 @@ Honesty:
 5. frozen tag указывает на 88c535c...;
 6. policy test PASS.
 
-### Текущий blocker U1A
+### U1A: ограниченное разрешение владельца (2026-10-08)
 
-GitHub admin protection для integration/ui-core-unification пока NOT ENFORCED / NOT VERIFIED.
+OWNER_APPROVED_U1A_DETECT_ONLY_PR_FLOW = ACTIVE, строго только checkpoint U1A.
+Integration protection = DETECT_ONLY / NOT ENFORCED / NOT VERIFIED.
+ADMIN_BRANCH_PROTECTION_NOT_ENFORCED = KNOWN_RISK (не выдавать за ENFORCED).
+UI_CORE_INTEGRATION_GUARD остаётся post-push detector, а не реальной серверной блокировкой push.
 
-UI_CORE_INTEGRATION_GUARD — detect-only: он обнаруживает прямой/unassociated push после события, но не может технически отклонить push.
+Разрешена разработка только U1A на `ui-core/u1a-shell` от exact integration HEAD.
+Обязательны один Draft PR в integration, проверка точного HEAD, независимое техническое ревью,
+рабочий Docker-preview и визуальная приёмка владельца перед merge.
+Перенос исключения на U1B/U1C/U2 запрещён. U1A ещё НЕ принят и НЕ merged.
 
-Поэтому:
-- npm run test:process = PASS;
-- npm run test:process:ui-core-u1a-ready = ожидаемый FAIL;
-- U1A_CODE_START_ALLOWED = NO.
-
-Для снятия blocker администратор GitHub должен включить server-side branch protection/ruleset, после чего machine contract переводится в verified ENFORCED и readiness-test должен стать PASS.
+- productCodeStartAllowed = true (исключительно U1A);
+- U1A_CODE_START_ALLOWED = YES при PASS npm run test:process:ui-core-u1a-ready;
+- merge до owner acceptance = NO.
 
 ## U1A contract
 
@@ -94,10 +97,10 @@ UI_CORE_U1_VISUAL_EVIDENCE сравнивает exact candidate с frozen #170 �
 
 ## Next
 
-Сейчас разрешены только governance/branch-protection действия.
-
-Первая строка product U1A-кода разрешается только после:
-npm run test:process:ui-core-u1a-ready = PASS.
+Сейчас разрешены только U1A shell implementation и связанное узкое governance-исключение.
+Перед U1A: npm run test:process:ui-core-u1a-ready = PASS.
+Next: U1A Draft PR -> exact-head CI + independent review -> Docker owner-preview -> визуальная приёмка владельца.
+U1B и merge без принятия владельцем не разрешены.
 
 После этого:
 U1A -> U1B -> U1C -> U1 owner acceptance -> Full Repository Health Audit -> U2.

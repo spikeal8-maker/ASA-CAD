@@ -96,3 +96,83 @@
   color: var(--text-muted);
 }
 .planned-workspace-note strong { color: var(--text); }
+
+
+/* U1A: reference density, toolset state and legible command grouping. */
+.instrument-area { border-bottom-color: #a9b4bf; background: #f4f5f6; }
+.workspace-tabs {
+  background: #e3e7eb;
+  border-bottom: 1px solid #bfc7d0;
+  gap: 2px;
+  padding: 0 8px;
+}
+.workspace-tabs button {
+  align-self: stretch;
+  position: relative;
+  min-width: 0;
+  padding: 0 13px;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 2px 2px 0 0;
+  color: #465361;
+  font-size: 11.5px;
+  font-weight: 500;
+}
+.workspace-tabs button:hover:not(:disabled) { background: #fff; color: #175f9c; }
+.workspace-tabs button.active {
+  background: #fff;
+  border-color: #b5bfc9;
+  border-top: 2px solid #2a80c4;
+  color: #214664;
+  font-weight: 700;
+}
+.workspace-tabs button:disabled:not(.active) { color: #929da9; cursor: not-allowed; }
+.command-ribbon {
+  background: #f8f9fa;
+  border-top: 1px solid #fff;
+  padding: 3px 6px 2px;
+  gap: 3px;
+}
+.command-group {
+  min-width: 82px;
+  border-right: 1px solid #c4ccd4;
+  padding: 0 7px 0 5px;
+  grid-template-rows: 1fr 16px;
+}
+.command-group-content { gap: 2px; }
+.command-group-label {
+  color: #586777;
+  background: #e9edf1;
+  border-radius: 2px;
+  font-size: 10px;
+  letter-spacing: .015em;
+  padding: 0 7px;
+}
+.ribbon-command {
+  min-width: 54px;
+  max-width: 89px;
+  padding: 3px 5px 2px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  color: #334453;
+  font-size: 10.5px;
+  line-height: 1.12;
+  transition: border-color .1s ease, background-color .1s ease;
+}
+.ribbon-command.large { min-width: 71px; }
+.ribbon-command:hover:not(:disabled) {
+  background: #e1eefa;
+  border-color: #8ebce4;
+}
+.ribbon-command.accent:not(:disabled) {
+  color: #174e7d;
+  background: #e7f2fb;
+  border-color: #aecbe3;
+}
+.ribbon-command.accent:hover:not(:disabled) { background: #d2e7f9; }
+.ribbon-command:disabled { opacity: .44; filter: grayscale(.55); }
+.ribbon-command-icon { color: #34719f; min-height: 24px; }
+.ribbon-command-icon .cad-icon { width: 20px; height: 20px; }
+.ribbon-command.view-command.selected { background: #d8ebfa; border-color: #8dbde1; }
+.planned-workspace-note { font-size: 12px; color: #647383; }
+.planned-workspace-note strong { font-weight: 650; color: #334a5e; }

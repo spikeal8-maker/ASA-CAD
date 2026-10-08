@@ -153,8 +153,9 @@
       "mode": "DETECT_ONLY",
       "adminProtectionVerified": false,
       "detectorWorkflow": ".github/workflows/ui-core-integration-guard.yml",
-      "u1aStartAllowed": false,
-      "blocker": "ADMIN_BRANCH_PROTECTION_NOT_ENFORCED"
+      "u1aStartAllowed": true,
+      "blocker": null,
+      "risk": "ADMIN_BRANCH_PROTECTION_NOT_ENFORCED"
     }
   },
   "u1a": {
@@ -272,5 +273,18 @@
       "light-surfaces-1600x900",
       "light-solid-1366x768"
     ]
+  },
+  "u1aDevelopmentException": {
+    "id": "OWNER_APPROVED_U1A_DETECT_ONLY_PR_FLOW",
+    "authorizedBy": "OWNER",
+    "checkpoint": "U1A",
+    "sourceBranch": "ui-core/u1a-shell",
+    "targetBranch": "integration/ui-core-unification",
+    "draftPullRequestRequired": true,
+    "exactHeadCIRequired": true,
+    "independentTechnicalReviewRequired": true,
+    "ownerVisualAcceptanceBeforeMerge": true,
+    "appliesToOtherCheckpoints": false,
+    "serverProtectionNotClaimed": true
   }
 }

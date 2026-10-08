@@ -79,6 +79,11 @@ jobs:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m2/shell-browser.mjs
 
+      - name: Exercise U1A real-command owner flow at both acceptance resolutions
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
+        run: node tests/m2/u1a-owner-flow-browser.mjs
+
       - name: Exercise shared mobile action tools
         env:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/

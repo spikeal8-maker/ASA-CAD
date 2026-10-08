@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { chromium } from '../../vendor/toubkal/node_modules/playwright-core/index.mjs';
+import { assertDesktopGeometry, assertPartSourceComposition } from './u1a-shell-geometry.mjs';
 
 const url = process.env.ASA_CAD_SHELL_URL ?? 'http://127.0.0.1:8090/';
 const browser = await chromium.launch({ headless: true });
@@ -8,105 +9,6 @@ async function waitForShell(page) {
   await page.getByRole('button', { name: 'ASA-CAD', exact: true }).waitFor();
 }
 
-
-function near(actual, expected, tolerance = 4, label = 'value') {
-  assert.ok(Number.isFinite(actual), `${label} is not finite: ${actual}`);
-  assert.ok(Math.abs(actual - expected) <= tolerance, `${label}: expected ${expected}±${tolerance}, got ${actual}`);
-}
-
-async function assertDesktopGeometry(page) {
-  const metrics = await page.evaluate(() => {
-    const rect = (selector) => {
-      const node = document.querySelector(selector);
-      if (!(node instanceof HTMLElement)) return null;
-      const box = node.getBoundingClientRect();
-      return { x: box.x, y: box.y, width: box.width, height: box.height };
-    };
-    return {
-      mainBar: rect('.main-menu-bar'),
-      menu: rect('.main-menu-items'),
-      tabs: rect('.document-tabs'),
-      instrument: rect('.instrument-area'),
-      search: rect('.command-search-wrap'),
-      rail: rect('.management-rail'),
-      panel: rect('.management-panel'),
-      work: rect('.work-area'),
-      quick: rect('.viewport-quick-access'),
-    };
-  });
-
-  for (const [name, value] of Object.entries(metrics)) {
-    assert.ok(value, `missing desktop geometry node: ${name}`);
-  }
-
-  near(metrics.mainBar.y, 0, 1, 'main top');
-  near(metrics.mainBar.height, 28, 1, 'main height');
-  near(metrics.tabs.y, 28, 1, 'document row y');
-  near(metrics.tabs.height, 27, 1, 'document row height');
-  near(metrics.instrument.y, 55, 1, 'instrument y');
-  near(metrics.instrument.height, 93, 1, 'instrument height');
-  near(metrics.menu.x, 29, 1, 'main menu x');
-  near(metrics.menu.width, 835, 1, 'main menu width');
-  near(metrics.search.x, 1651, 1, 'search x');
-  near(metrics.search.y, 5, 1, 'search y');
-  near(metrics.search.width, 166, 1, 'search width');
-  near(metrics.search.height, 22, 1, 'search height');
-  near(metrics.rail.x, 3, 1, 'rail x');
-  near(metrics.rail.width, 26, 1, 'rail width');
-  near(metrics.panel.x, 29, 1, 'panel x');
-  near(metrics.panel.width, 310, 1, 'panel width');
-  near(metrics.work.x, 340, 1, 'graphics x');
-  near(metrics.work.y, 148, 1, 'graphics y');
-  near(metrics.work.width, 1577, 1, 'graphics width');
-  near(metrics.work.height, 929, 1, 'graphics height');
-  near(metrics.quick.x, 356, 1, 'quick access x');
-  near(metrics.quick.y, 148, 1, 'quick access y');
-  near(metrics.quick.width, 591, 1, 'quick access width');
-  near(metrics.quick.height, 25, 1, 'quick access height');
-}
-
-async function assertPartSourceComposition(page) {
-  const metrics = await page.evaluate(() => {
-    const rect = (selector) => {
-      const node = document.querySelector(selector);
-      if (!(node instanceof HTMLElement)) return null;
-      const box = node.getBoundingClientRect();
-      return { x: box.x, y: box.y, width: box.width, height: box.height, text: node.textContent?.trim() ?? '' };
-    };
-    return {
-      system: rect('.part-system-group'),
-      systemLabel: rect('.part-system-group .command-group-label'),
-      rebuild: rect('.part-system-group [data-command-id="system.rebuild"]'),
-      sketch: rect('.part-sketch-group'),
-      sketchLabel: rect('.part-sketch-group .command-group-label'),
-      solid: rect('.part-solid-group'),
-      order: [...document.querySelectorAll('.part-command-groups [data-command-id]')].map((node) => node.getAttribute('data-command-id')),
-    };
-  });
-
-  assert.ok(metrics.system && metrics.systemLabel && metrics.rebuild && metrics.sketch && metrics.sketchLabel && metrics.solid);
-  near(metrics.system.x, 124, 1, 'Part SYSTEM x');
-  near(metrics.system.width, 78, 1, 'Part SYSTEM command span');
-  near(metrics.systemLabel.x, 124, 1, 'Part SYSTEM label x');
-  near(metrics.systemLabel.y, 130, 1, 'Part SYSTEM label y');
-  near(metrics.systemLabel.width, 66, 1, 'Part SYSTEM label width');
-  near(metrics.rebuild.x, 124, 1, 'Part system.rebuild x');
-  near(metrics.rebuild.y, 55, 1, 'Part system.rebuild y');
-  near(metrics.rebuild.width, 26, 1, 'Part system.rebuild width');
-  near(metrics.rebuild.height, 25, 1, 'Part system.rebuild height');
-  near(metrics.sketch.x, 203, 1, 'Part Sketch group x');
-  near(metrics.sketchLabel.width, 108, 1, 'Part Sketch label width');
-  near(metrics.solid.x, 324, 1, 'Part Solid_elements group x');
-  assert.equal(metrics.systemLabel.text, 'Система');
-  assert.equal(metrics.sketchLabel.text, 'Эскиз');
-  assert.deepEqual(metrics.order.slice(0, 5), [
-    'system.rebuild',
-    'part.sketch.create',
-    'part.extrude',
-    'part.cutExtrude',
-    'part.fillet',
-  ]);
-}
 
 async function assertRibbonIntegrity(page, label) {
   const rects = await page.locator('.command-ribbon .ribbon-command').evaluateAll((nodes) => nodes
@@ -288,8 +190,8 @@ try {
   await runPartRibbonBoundaryMatrix();
   await runPhone();
   console.log('ASA-CAD M2 shell real-browser smoke PASS');
-  console.log('  ✓ captured 1920×1080 geometry within ±4 CSS px');
-  console.log('  ✓ Part source groups start at SYSTEM x124, Sketch x203, Solid_elements x324');
+  console.log('  ✓ U1A 1920×1080 header, menu/search, horizontal toolsets and ribbon geometry verified');
+  console.log('  ✓ Part command groups preserve order without overlap');
   console.log('  ✓ Create Sketch opens plane parameters; Cancel leaves the Part unchanged');
   console.log('  ✓ Part/Sketch ribbon bounding boxes do not overlap and use ASA SVG icons');
 } finally {
