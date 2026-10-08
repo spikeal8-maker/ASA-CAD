@@ -8,12 +8,12 @@ First read `spec/process/active-work.v1.json`: it is the current execution point
 
 For Part UI/Sketch/selection/constraints/features, first read `docs/UI_CORE_UNIFICATION_SPEC.md`, #184 and `spec/process/ui-core-unification.v1.json`. Frozen U1 reference = tag `ui-reference-20261004`; prototype #170 is UI/UX reference only, never a second CAD runtime.
 
-Canonical base = `integration/ui-core-unification`. Before U1A run `npm run test:process:ui-core-u1a-ready`; any failure = STOP. Owner has authorized only U1A development under explicit `OWNER_APPROVED_U1A_DETECT_ONLY_PR_FLOW`: one Draft PR into integration, exact-head CI, independent technical review, owner visual acceptance before merge. Current GitHub protection remains `DETECT_ONLY` (not `ENFORCED`), with `ADMIN_BRANCH_PROTECTION_NOT_ENFORCED` tracked as an acknowledged risk; workflow guard detects but cannot prevent direct push. The exception never applies to U1B or later checkpoints. U1A = light-theme shell only; dark parity is deferred and must not be faked. `CadShellCommandGroups.tsx` may not exceed 8704 bytes in U1A; extract before growth. U1A/U1B/U1C are checkpoints of one permanent U1 slice; after U1 the 3/3 Full Repository Health Audit is mandatory and U2 stays blocked until accepted.
+Canonical base = `integration/ui-core-unification`. Permanent owner authorization `OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008` covers U1A/U1B/U1C, mandatory audit and U2-U5. Read `developmentFlow` and the active checkpoint from machine contracts. Each checkpoint requires a PR targeting integration, exact-head CI, real user-flow proof and independent read-only review; documented independent-agent APPROVE may replace unavailable formal GitHub APPROVED but must not be mislabeled as GitHub approval. Bots may technically merge a fully verified checkpoint into integration and advance the machine pointer without a new owner permit. Owner acceptance remains mandatory for integration -> main, production, final visual parity or material product-goal change. Current integration protection is `DETECT_ONLY` (not `ENFORCED`); risk `ADMIN_BRANCH_PROTECTION_NOT_ENFORCED` is acknowledged and does not block product development. Never direct-push or force-push integration/main. Run `npm run test:process:ui-core-u1a-ready` for the current checkpoint (backward-compatible process command). U1A = light-theme shell only; dark parity is deferred and must not be faked. `CadShellCommandGroups.tsx` may not exceed 8704 bytes in U1A; extract before growth. U1A/U1B/U1C are checkpoints of one permanent U1 slice; after U1 the 3/3 Full Repository Health Audit is mandatory and U2 stays blocked until accepted.
 
 Before changing code:
 1. resolve current `main` HEAD and inspect open blocking audit/maintenance PRs;
 2. read `docs/STATUS.md` and the active milestone issue;
-3. if STATUS, issue, ROADMAP or an open blocking gate disagree, **stop feature work and repair state drift first**;
+3. machine active-work + verified live GitHub govern current state. Repair ordinary document/issue drift within the active PR; only a critical technical contradiction requires scoped STOP;
 4. identify the narrowest owner, command ID/registry entry and focused regression for the requested change;
 5. check that owner's target/frozen budget in `spec/process/repository-health.v1.json`.
 
@@ -75,8 +75,8 @@ A permanent command is not complete until applicable command/API, selection/para
 
 - One PR = one vertical slice or one focused maintenance concern.
 - Update command registry whenever implementation status/command mapping changes.
-- When phase/gate/next action changes, update active issue and `docs/STATUS.md` before another feature starts.
-- If merge SHA/evidence can only be known after merge, the immediate next change is status-only closeout; no feature branch starts first.
+- At checkpoint acceptance, synchronize `active-work.v1.json`, `docs/STATUS.md` and #184 in the current checkpoint PR or next implementation PR; do not create repetitive governance-only PRs.
+- When exact merge SHA is only available after merge, record the verified SHA in #184 and next active PR. The controller continues automatically when technical gates pass.
 - Do not create another summary/status document.
 - Review branch target <=6 commits; remove one-shot tools, build output and temporary workflows before review.
 

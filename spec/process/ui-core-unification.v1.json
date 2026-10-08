@@ -130,12 +130,12 @@
     "expectedReferenceTag": "ui-reference-20261004"
   },
   "stopConditions": [
-    "integration-head-moved",
-    "same-owner-concurrent-writer",
-    "second-document-state-manager-required",
-    "duplicate-solver-runtime-proposed",
-    "implicit-schema-migration-required",
-    "ordinary-route-evidence-unavailable"
+    "irreparable-concurrent-file-writers",
+    "unsafe-user-data-loss-risk",
+    "schema-migration-without-safe-compatibility",
+    "critical-cad-kernel-regression",
+    "essential-source-or-write-permissions-unavailable",
+    "material-product-goal-owner-decision-required"
   ],
   "integrationProtection": {
     "desired": {
@@ -272,19 +272,59 @@
       "light-solid-1600x900",
       "light-surfaces-1600x900",
       "light-solid-1366x768"
-    ]
+    ],
+    "ownerVisualAcceptanceBeforeTechnicalMerge": false
   },
-  "u1aDevelopmentException": {
-    "id": "OWNER_APPROVED_U1A_DETECT_ONLY_PR_FLOW",
-    "authorizedBy": "OWNER",
-    "checkpoint": "U1A",
-    "sourceBranch": "ui-core/u1a-shell",
-    "targetBranch": "integration/ui-core-unification",
-    "draftPullRequestRequired": true,
-    "exactHeadCIRequired": true,
-    "independentTechnicalReviewRequired": true,
-    "ownerVisualAcceptanceBeforeMerge": true,
-    "appliesToOtherCheckpoints": false,
-    "serverProtectionNotClaimed": true
+  "developmentFlow": {
+    "policyVersion": 1,
+    "ownerAuthorization": "OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008",
+    "authorizedCheckpoints": [
+      "U1A",
+      "U1B",
+      "U1C",
+      "FULL_REPOSITORY_HEALTH_AUDIT",
+      "U2",
+      "U3",
+      "U4",
+      "U5"
+    ],
+    "technicalCheckpointIntegrationAllowed": true,
+    "checkpointOwnerApprovalRequired": false,
+    "implementationBaseBranch": "integration/ui-core-unification",
+    "nextCheckpointById": {
+      "U1A": "U1B",
+      "U1B": "U1C",
+      "U1C": "FULL_REPOSITORY_HEALTH_AUDIT",
+      "FULL_REPOSITORY_HEALTH_AUDIT": "U2",
+      "U2": "U3",
+      "U3": "U4",
+      "U4": "U5",
+      "U5": null
+    },
+    "technicalGates": {
+      "pullRequestRequired": true,
+      "noDirectPush": true,
+      "noForcePush": true,
+      "exactHeadCIRequired": true,
+      "independentReadOnlyReviewRequired": true,
+      "documentedAgentReviewWhenGithubApprovedUnavailable": true,
+      "realOrdinaryUserFlowRequired": true,
+      "criticalFindingsMustBeZero": true,
+      "separateOwnerProductAcceptance": true
+    },
+    "ownerProductDecisionsRequiredFor": [
+      "integration-to-main",
+      "production-deployment",
+      "final-visual-parity",
+      "material-product-goal-change"
+    ],
+    "headMovedPolicy": "REFRESH_BASE_RECHECK_CI_RECONCILE",
+    "documentationDriftPolicy": "REPAIR_IN_ACTIVE_PR",
+    "allowParallelNonOverlappingWriters": true,
+    "mandatoryAuditAfterU1": true,
+    "auditGreenProceed": true,
+    "auditYellowProceedOnlyWhenAccepted": true,
+    "auditRedRequiresRepair": true,
+    "serverProtectionIsRiskNotProductReadinessGate": true
   }
 }

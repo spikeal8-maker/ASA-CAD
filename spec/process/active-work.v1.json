@@ -39,5 +39,7 @@
     "CadDocument schema"
   ],
   "nextCheckpoint": "U1B",
-  "u1aDevelopmentException": "OWNER_APPROVED_U1A_DETECT_ONLY_PR_FLOW"
+  "developmentAuthorization": "OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008",
+  "checkpointTechnicalStatus": "IN_PROGRESS",
+  "ownerProductAcceptance": "PENDING"
 }

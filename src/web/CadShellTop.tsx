@@ -7,6 +7,7 @@ import { CadIcon, type CadIconName } from './CadIcon';
 import { CadShellCommandGroups } from './CadShellCommandGroups';
 import { CadFileMenu } from './CadFileMenu';
 import { CadShellMenu } from './CadShellMenu';
+import { useUiScaleSettingsOpen } from './UiScaleSettings';
 
 export type CadWorkspaceId = 'solid' | 'sketch' | 'surfaces' | 'diagnostics' | 'view';
 
@@ -26,6 +27,7 @@ const SKETCH_ACTIONS = ['part.sketch.create', 'sketch.line', 'sketch.rectangle',
 const SOLID_ACTIONS = ['system.rebuild', 'part.sketch.create', 'part.extrude', 'part.cutExtrude', 'part.fillet'] as const;
 
 export function CadShellTop(props: CadShellTopProps) {
+  const openUiSettings = useUiScaleSettingsOpen();
   const newAction = props.getAction('system.new');
   const hasSearch = props.search.trim().length > 0;
   return (
@@ -94,7 +96,7 @@ export function CadShellTop(props: CadShellTopProps) {
           <span className="global-actions-divider" aria-hidden="true" />
           <CadUiGlobalActionButton action={props.getAction('system.undo')} titleSuffix="(Ctrl+Z)"><CadIcon name="undo" /></CadUiGlobalActionButton>
           <CadUiGlobalActionButton action={props.getAction('system.redo')} titleSuffix="(Ctrl+Y)"><CadIcon name="redo" /></CadUiGlobalActionButton>
-          <button type="button" title="Настройки" aria-label="Настройки"><CadIcon name="settings" /></button>
+          <button type="button" title="Настройки" aria-label="Настройки" aria-haspopup="dialog" aria-controls="asa-cad-interface-settings" onClick={openUiSettings}><CadIcon name="settings" /></button>
         </div>
       </header>
 

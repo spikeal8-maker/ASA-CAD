@@ -30,8 +30,7 @@ window.__ASA_CAD_UI_SCALE__ = installUiScaleController();
 // React.StrictMode: its development-only mount/effect replay duplicates
 // OpenCascade/fixture initialization and is not representative of production.
 createRoot(root).render(
-  <>
+  <UiScaleSettings>
     <App />
-    <UiScaleSettings />
-  </>,
+  </UiScaleSettings>,
 );

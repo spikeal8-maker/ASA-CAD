@@ -141,8 +141,9 @@ U1A считается checkpoint-complete только если:
 7. App/CadViewport/ParameterPanel не получают новую ответственность;
 8. visual evidence artifact создан для exact HEAD;
 9. focused shell/browser regression PASS;
-10. owner принимает внешний вид.
+10. получен независимый технический review exact-head, findings=0, и merge идёт только через PR.
 
-`U1A_MERGED_TO_INTEGRATION` не означает `U1_ACCEPTED`.
+Визуальная оценка владельца проводится на интегрированном U1, не требуется для технического принятия отдельного U1A checkpoint.
+`U1A_MERGED_TO_INTEGRATION` не означает `U1_OWNER_ACCEPTED`.
 
 U1 принимает владелец только после U1A + U1B + U1C и общего ordinary-route review.
