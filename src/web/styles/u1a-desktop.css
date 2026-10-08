@@ -105,7 +105,8 @@
   .cad-app .main-menu-bar .global-actions > :nth-child(2),
   .cad-app .main-menu-bar .global-actions > :nth-child(3),
   .cad-app .main-menu-bar .global-actions > :nth-child(4),
-  .cad-app .main-menu-bar .global-actions > :nth-child(5) {
+  .cad-app .main-menu-bar .global-actions > :nth-child(5),
+  .cad-app .main-menu-bar .global-actions > :nth-child(6) {
     position: static;
     top: auto;
     right: auto;

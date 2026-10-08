@@ -94,6 +94,7 @@ export function CadShellTop(props: CadShellTopProps) {
           <span className="global-actions-divider" aria-hidden="true" />
           <CadUiGlobalActionButton action={props.getAction('system.undo')} titleSuffix="(Ctrl+Z)"><CadIcon name="undo" /></CadUiGlobalActionButton>
           <CadUiGlobalActionButton action={props.getAction('system.redo')} titleSuffix="(Ctrl+Y)"><CadIcon name="redo" /></CadUiGlobalActionButton>
+          <button type="button" title="Настройки" aria-label="Настройки"><CadIcon name="settings" /></button>
         </div>
       </header>
 
