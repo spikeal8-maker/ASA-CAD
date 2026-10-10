@@ -9,6 +9,8 @@ import { CadShellCommandGroups } from './CadShellCommandGroups';
 import { CadFileMenu } from './CadFileMenu';
 import { CadShellMenu } from './CadShellMenu';
 import { useUiScaleSettingsOpen } from './UiScaleSettings';
+import { KompasTop } from './kompas/KompasTop';
+import { useKompasDesktop } from './kompas/useKompasDesktop';
 
 export type CadWorkspaceId = 'solid' | 'sketch' | 'surfaces' | 'diagnostics' | 'view';
 
@@ -27,7 +29,7 @@ const VIEW_ACTIONS = ['view.fit', 'view.iso', 'view.front', 'view.top', 'view.le
 const SKETCH_ACTIONS = ['part.sketch.create', 'sketch.line', 'sketch.rectangle', 'sketch.circle', 'sketch.finish'] as const;
 const SOLID_ACTIONS = ['system.rebuild', 'part.sketch.create', 'part.extrude', 'part.cutExtrude', 'part.fillet'] as const;
 
-export function CadShellTop(props: CadShellTopProps) {
+function LegacyCadShellTop(props: CadShellTopProps) {
   const openUiSettings = useUiScaleSettingsOpen();
   const newAction = props.getAction('system.new');
   const hasSearch = props.search.trim().length > 0;
@@ -176,4 +178,9 @@ function documentIcon(kind: CadDocumentKind): CadIconName {
     case 'specification': return 'tree';
     case 'text': return 'text';
   }
+}
+
+/** Desktop: KOMPAS shell of the frozen reference #170; phones: the compact shell. */
+export function CadShellTop(props: CadShellTopProps) {
+  return useKompasDesktop() ? <KompasTop {...props} /> : <LegacyCadShellTop {...props} />;
 }

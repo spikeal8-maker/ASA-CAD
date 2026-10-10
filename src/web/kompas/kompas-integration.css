@@ -1,0 +1,35 @@
+/* KOMPAS shell inside the product root: rows and frame of the reference
+   (menu 28, documents 27, instrument area 93, 3 px frame) and the product
+   pieces hosted by the shell (scene, parameter panel, triad, toast). */
+.cad-app:has(> .k-main-menu-bar) {
+  grid-template-rows: 28px 27px 93px minmax(0, 1fr) 3px;
+  padding: 0 3px;
+  background: var(--k-frame);
+}
+.k-main-menu-bar, .k-document-tabs, .k-instrument-area, .k-content { min-width: 0; }
+.k-command-search .k-ic { color: var(--k-text-dim); }
+.k-doc-title { overflow: hidden; text-overflow: ellipsis; }
+
+.k-tree-panel, .k-params-panel { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+.k-params-body { flex: 1; min-height: 0; overflow: auto; }
+.k-row-edit { flex: none; margin-left: auto; width: 24px; height: 22px; display: grid; place-items: center; }
+.k-row-edit:hover { background: var(--k-btn-hover); }
+.k-tree-row .k-c-main { cursor: default; }
+
+.k-content > .k-splitter { grid-column: 3; }
+.k-content > .k-work-area { grid-column: 4; }
+.k-model-stage { position: absolute; inset: 0; overflow: hidden; }
+.k-model-stage .origin-widget { display: none; }
+.k-model-stage .part-model-stage { background: none; }
+.k-work-area .viewport-triad { bottom: 4px; }
+.k-work-area .k-qa .k-on .k-ic { color: var(--k-qa-active-icon); }
+
+.k-toast-fixed {
+  position: fixed;
+  left: calc(50% + 170px);
+  bottom: 21px;
+  z-index: 40;
+}
+.k-dlg-layer { z-index: 90; }
+.k-pop-layer { position: relative; z-index: 80; }
+body:has(.k-main-menu-bar) .ui-scale-status { display: none; }

@@ -1,0 +1,42 @@
+/* Перенесено из прототипа #170 (prototypes/kompas-shell, тег ui-reference-20261004): классы с префиксом k-, токены --k-. */
+/* ── графическая область ── */
+.k-work-area{position:relative;min-width:0;min-height:0;overflow:hidden;background:linear-gradient(var(--k-vp-top),var(--k-vp-bottom))}
+.k-gl{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.k-qa{position:absolute;top:0;left:16px;display:flex;height:25px;background:var(--k-qa);border:1px solid var(--k-frame);border-top:0;z-index:5;max-width:calc(100% - 32px);overflow-x:auto;scrollbar-width:none}
+.k-qa::-webkit-scrollbar{display:none}
+.k-qa .k-qgrip{width:10px;flex:none;background-image:radial-gradient(circle,var(--k-text-dim) 1px,transparent 1.3px);background-size:4px 4px;background-position:3px 5px;background-repeat:repeat;margin:4px 0}
+.k-qa-b{height:24px;width:26px;flex:none;display:flex;align-items:center;justify-content:center;gap:2px}
+.k-qa-split{display:flex;flex:none;width:47px;height:24px}.k-qa-split.k-w46{width:46px}
+.k-qa-split .k-qa-b{width:29px}
+.k-qa-split .k-qa-caret{width:18px;height:24px;display:grid;place-items:center;flex:none}
+.k-qa-split.k-w46 .k-qa-caret{width:17px}
+.k-qa-split .k-qa-caret .k-ic{width:8px;height:8px}
+.k-qa-split .k-qa-caret:hover,.k-qa-split .k-qa-caret[aria-expanded="true"]{background:var(--k-btn-hover)}
+.k-qa-b:hover{background:var(--k-btn-hover)}
+.k-qa-b.k-on{background:var(--k-qa-active)} .k-qa-b.k-on .k-ic{color:var(--k-qa-active-icon)}
+.k-qa-b.k-sk-on .k-ic{color:var(--k-sketch-accent)}
+.k-qa-sep{width:1px;flex:none;background:var(--k-frame)}
+.k-qa-ok .k-ic{color:var(--k-ok)} .k-qa-cancel .k-ic{color:var(--k-cancel)}
+.k-sketch-exit{position:absolute;top:32px;right:16px;width:46px;height:46px;display:grid;place-items:center;background:var(--k-rail-active);border:1px solid var(--k-frame);z-index:5}
+.k-sketch-exit .k-ic{color:var(--k-sketch-accent)}
+.k-sketch-exit:hover{outline:2px solid var(--k-sketch-accent);outline-offset:-2px}
+.k-triad{position:absolute;left:4px;bottom:4px;width:96px;height:96px;pointer-events:none}
+.k-legend{position:absolute;right:16px;bottom:16px;width:270px;max-width:calc(100% - 32px);background:var(--k-panel);border:1px solid var(--k-frame);box-shadow:0 8px 24px var(--k-shadow);padding:10px 12px 11px;z-index:6;font-size:12px}
+.k-legend h3{margin:0 0 6px;font-size:12.5px;font-weight:600}
+.k-legend .k-lrow{display:flex;align-items:center;gap:8px;height:21px}
+.k-legend .k-lrow b{margin-left:auto;font-weight:600;font-variant-numeric:tabular-nums}
+.k-legend .k-sw{width:9px;height:9px;border-radius:50%;flex:none}
+.k-legend .k-sw.k-none{border:1.5px solid var(--k-st-none)}
+.k-legend p{margin:8px 0 0;color:var(--k-text-dim);font-size:11.5px;line-height:1.4}
+.k-toast{position:absolute;left:50%;bottom:18px;transform:translate(-50%,8px);background:var(--k-toast-bg);color:var(--k-toast-text);padding:8px 14px;border-radius:3px;font-size:12.5px;max-width:min(560px,calc(100% - 32px));opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;z-index:8;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.k-toast.k-show{opacity:1;transform:translate(-50%,0)}
+.k-snap-lbl{position:absolute;z-index:7;background:var(--k-tip-bg);color:var(--k-tip-text);border:1px solid var(--k-tip-border);padding:1px 6px;font-size:11.5px;pointer-events:none;white-space:nowrap}
+.k-xy-pair{display:grid;grid-template-columns:1fr 1fr;gap:6px;min-width:0}
+.k-xy-pair label{display:flex;align-items:center;gap:4px;color:var(--k-text-muted);font-size:11.5px;min-width:0}
+.k-xy-pair .k-pp-field{min-width:0}
+.k-sk-hint{margin:12px 10px 0;color:var(--k-text-dim);font-size:11.5px;line-height:1.4}
+.k-gl-fallback{position:absolute;inset:0;display:grid;place-items:center;color:var(--k-text-muted);padding:24px;text-align:center}
+.k-pp-lbl-drop{cursor:pointer}
+.k-pp-lbl-drop:hover{text-decoration:underline}
+.k-pp-fieldwrap button[aria-expanded="true"]{background:var(--k-btn-hover)}
+

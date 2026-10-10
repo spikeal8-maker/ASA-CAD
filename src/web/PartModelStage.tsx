@@ -5,6 +5,7 @@ import type { CadBodyId } from '../contracts/ids';
 import type { CadRenderModel, CadViewportPick } from '../contracts/render';
 import { CadViewport, type CadViewportViewCommand } from './CadViewport';
 import { PartStageStatus } from './PartStageStatus';
+import { ViewportTriad } from './ViewportTriad';
 import { SketchEditingStage, type SketchEditingStageProps } from './SketchEditingStage';
 
 export interface PartModelStageProps extends Omit<SketchEditingStageProps, 'activeSketch'> {
@@ -48,12 +49,6 @@ export function PartModelStage(props: PartModelStageProps) {
       data-sketch-view-center=""
       data-selected-sketch-entity-id=""
     >
-      <div className="origin-widget" aria-label="Ориентация">
-        <span className="axis-z">Z</span>
-        <span className="axis-x">X</span>
-        <span className="axis-y">Y</span>
-      </div>
-      <div className="stage-grid" />
       <CadViewport
         model={props.renderModel}
         selectionMode={props.selectionMode}
@@ -65,6 +60,7 @@ export function PartModelStage(props: PartModelStageProps) {
         selectedPlane={props.selectedPlane}
         onPlaneSelect={props.onPlaneSelect}
       />
+      <ViewportTriad />
       <PartStageStatus runtimeStatus={props.runtimeStatus} fixtureError={props.fixtureError} />
     </div>
   );

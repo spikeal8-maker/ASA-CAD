@@ -87,7 +87,7 @@ try {
   const bottom = await assertView('view.bottom', 'Снизу', 'bottom', [0, 0, -1]);
   const left = await assertView('view.left', 'Слева', 'left', [-1, 0, 0]);
   const right = await assertView('view.right', 'Справа', 'right', [1, 0, 0]);
-  const iso = await assertView('view.iso', 'Изометрия', 'isometric', [1, -1, 1]);
+  const iso = await assertView('view.iso', 'Изометрия', 'isometric', [1, 1, 1]);
 
   for (const state of [front, back, top, bottom, left, right, iso]) {
     assert.equal(state.revision, initial.revision, `${state.view} triggered CAD recompute`);

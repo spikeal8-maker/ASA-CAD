@@ -16,6 +16,10 @@ import './ui-scale.css';
 import './mobile-settings.css';
 import './mobile-tools.css';
 import './styles/u1a-desktop.css';
+import './kompas/kompas-top.css';
+import './kompas/kompas-panels.css';
+import './kompas/kompas-work.css';
+import './kompas/kompas-integration.css';
 
 const root = document.getElementById('root');
 if (!root) throw new Error('ASA-CAD root element not found');

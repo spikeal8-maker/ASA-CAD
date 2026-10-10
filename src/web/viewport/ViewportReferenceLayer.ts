@@ -9,7 +9,7 @@ import type { ViewportSelectionSnapshot } from './ViewportSelectionController';
 
 type Three = typeof import('three');
 
-const FILL_OPACITY = { idle: 0.05, hover: 0.14, selected: 0.24 } as const;
+const FILL_OPACITY = { idle: 0, hover: 0.1, selected: 0.16 } as const;
 
 /**
  * Three adapter for the Part origin: axis lines and translucent base planes.

@@ -70,7 +70,7 @@ assert.ok(state.position[0] > state.target[0], 'right view must look from positi
 
 controller.setView('isometric');
 const isoOffset = subtract(state.position, state.target);
-assert.ok(isoOffset[0] > 0 && isoOffset[1] < 0 && isoOffset[2] > 0);
+assert.ok(isoOffset[0] > 0 && isoOffset[1] > 0 && isoOffset[2] > 0, 'KOMPAS isometry looks from the +X+Y+Z octant');
 assert.ok(Math.abs(Math.abs(isoOffset[0]) - Math.abs(isoOffset[1])) < 1e-9);
 assert.ok(Math.abs(Math.abs(isoOffset[1]) - Math.abs(isoOffset[2])) < 1e-9);
 

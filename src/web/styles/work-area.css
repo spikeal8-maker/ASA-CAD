@@ -92,3 +92,4 @@
 .status-indicator.dirty { background: var(--warning); }
 .status-indicator.running { background: var(--accent); }
 .status-indicator.error { background: var(--danger); }
+.viewport-triad { position: absolute; left: 4px; bottom: 30px; z-index: 4; width: 96px; height: 96px; pointer-events: none; font-family: "Segoe UI", system-ui, sans-serif; }

@@ -1,0 +1,189 @@
+/* Перенесено из прототипа #170 (prototypes/kompas-shell, тег ui-reference-20261004): классы с префиксом k-, токены --k-. */
+/* Тема и токены: светлая — по умолчанию (как у продукта), тёмная — :root[data-k-theme="dark"]. */
+:root{
+  --k-frame:#a8a8a8; --k-menubar:#f0f0f0; --k-menubar-hover:#dadada; --k-tabs:#d6d6d6; --k-tab-active:#ffffff; --k-tab-active-text:#1c1c1c;
+  --k-instr:#f5f5f5; --k-instr-label:#e3e3e3; --k-instr-sep:#c6c6c6; --k-btn-hover:#dce9f5; --k-btn-press:#c3daf0; --k-toolset-active:#cde1f3;
+  --k-text:#1e1e1e; --k-text-muted:#505050; --k-text-dim:#8a8a8a; --k-icon:#2b2b2b;
+  --k-rail:#e6e6e6; --k-rail-active:#ffffff; --k-panel:#f5f5f5; --k-panel-head:#e3e3e3; --k-field:#ffffff; --k-field-border:#b5b5b5; --k-field-text:#1c1c1c;
+  --k-tree-gutter:#ebebeb; --k-tree-line:#e2e2e2; --k-tree-sel:#cde1f3;
+  --k-row-hl:#3a9eb4; --k-select-line:#15a6c7; --k-link:#0b6fd1; --k-msg:#ebebeb; --k-section:#e3e3e3;
+  --k-toggle-knob:#ffffff; --k-toggle-track:#b5b5b5;
+  --k-vp-top:#fbfbfc; --k-vp-bottom:#c8cdd5; --k-qa:#f0f0f0; --k-qa-active:#9fc5e8; --k-qa-active-icon:#0f2a44;
+  --k-ok:#1f9e3c; --k-cancel:#e02e2e; --k-sketch-accent:#2fae62;
+  --k-plane-xy:#2a77c9; --k-plane-zx:#5fa61f; --k-plane-zy:#d05a5a; --k-sketch-geom:#b01aa6; --k-body:#b7c0ca; --k-body-edge:#2a2a2a;
+  --k-phantom:#b3825f; --k-phantom-edge:#555555; --k-profile:#d4a100; --k-hover3d:#3a9ee6; --k-sel3d:#00a3d6; --k-manip:#1f6fe0;
+  --k-st-impl:#23a046; --k-st-plan:#c98a00; --k-st-def:#8d8d8d; --k-st-none:#d93b3b;
+  --k-toast-bg:#2b2b2b; --k-toast-text:#f5f5f5; --k-menu-pop:#ffffff; --k-shadow:rgba(0,0,0,.18); --k-scroll:#b9b9b9;
+    --k-menu-bg:#ffffff; --k-menu-border:#a6a6a6; --k-menu-sep:#d4d4d4; --k-menu-hover:#cde1f3; --k-menu-text:#1c1c1c; --k-menu-dim:#a2a2a2; --k-menu-icon-on:#cde1f3;
+    --k-tip-bg:#ffffe1; --k-tip-text:#1e1e1e; --k-tip-border:#9a9a9a; --k-dlg-bg:#f5f5f5; --k-dlg-head:#e3e3e3; --k-btn-bg:#ffffff; --k-btn-border:#b5b5b5;
+    --k-sf-front:#d3d9e1; --k-sf-top:#ffffff; --k-sf-side:#98a3b1; --k-sf-dark:#55606c; --k-sf-line:#2b3137; --k-sf-acc:#1f6fd1;
+}
+:root[data-k-theme="dark"]{
+  color-scheme: dark;
+  --k-frame:#000000; --k-menubar:#333333; --k-menubar-hover:#4c4c4c; --k-tabs:#4c4c4c; --k-tab-active:#000000; --k-tab-active-text:#f2f2f2;
+  --k-instr:#484848; --k-instr-label:#333333; --k-instr-sep:#000000; --k-btn-hover:#5f5f5f; --k-btn-press:#000000; --k-toolset-active:#000000;
+  --k-text:#f0f0f0; --k-text-muted:#bdbdbd; --k-text-dim:#8e8e8e; --k-icon:#f0f0f0;
+  --k-rail:#333333; --k-rail-active:#000000; --k-panel:#484848; --k-panel-head:#333333; --k-field:#666666; --k-field-border:#2b2b2b; --k-field-text:#f6f6f6;
+  --k-tree-gutter:#333333; --k-tree-line:#3b3b3b; --k-tree-sel:#666666;
+  --k-row-hl:#3a9eb4; --k-select-line:#33cce5; --k-link:#57b8ff; --k-msg:#3a3a3a; --k-section:#333333;
+  --k-toggle-knob:#dedede; --k-toggle-track:#666666;
+  --k-vp-top:#4b4b4c; --k-vp-bottom:#3a3a3a; --k-qa:#484848; --k-qa-active:#b2b2b2; --k-qa-active-icon:#111111;
+  --k-ok:#3fcf5c; --k-cancel:#ff4b4b; --k-sketch-accent:#5ed08b;
+  --k-plane-xy:#3d8fdc; --k-plane-zx:#8fd13f; --k-plane-zy:#e58c8c; --k-sketch-geom:#d650d6; --k-body:#a3adb8; --k-body-edge:#1c1c1c;
+  --k-phantom:#caa58c; --k-phantom-edge:#e6e6e6; --k-profile:#ffd400; --k-hover3d:#8ad9ff; --k-sel3d:#33e5ff; --k-manip:#2f8cff;
+  --k-st-impl:#4cc36a; --k-st-plan:#e3a21a; --k-st-def:#9a9a9a; --k-st-none:#ef6464;
+  --k-toast-bg:#1b1b1b; --k-toast-text:#f2f2f2; --k-menu-pop:#3d3d3d; --k-shadow:rgba(0,0,0,.45); --k-scroll:#6a6a6a;
+  --k-menu-bg:#666666; --k-menu-border:#d2d2d2; --k-menu-sep:#e6e6e6; --k-menu-hover:#7d7d7d; --k-menu-text:#ffffff; --k-menu-dim:#a3a3a3; --k-menu-icon-on:#000000;
+  --k-tip-bg:#fdf6c8; --k-tip-text:#1e1e1e; --k-tip-border:#8a8156; --k-dlg-bg:#484848; --k-dlg-head:#333333; --k-btn-bg:#5e5e5e; --k-btn-border:#2a2a2a;
+  --k-sf-front:#cdcdcd; --k-sf-top:#f4f4f4; --k-sf-side:#9d9d9d; --k-sf-dark:#3a3a3a; --k-sf-line:#1c1c1c; --k-sf-acc:#5cb8ff;
+}
+/* Сбросы только внутри областей оболочки (.k-ui), чтобы не задевать остальной продукт. */
+.k-ui{color:var(--k-text);font:12px/1.25 "Segoe UI",system-ui,-apple-system,"Noto Sans",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.k-ui[hidden],.k-ui [hidden]{display:none!important}
+:where(.k-ui) :where(button,input){font:inherit;color:inherit}
+:where(.k-ui) :where(button){background:none;border:0;padding:0;cursor:pointer;line-height:inherit;min-height:0;border-radius:0;box-shadow:none}
+:where(.k-ui) :where(button,input):focus-visible{outline:2px solid var(--k-select-line);outline-offset:-2px}
+@media (prefers-reduced-motion: reduce){ .k-ui *{transition:none!important} }
+.k-ic{display:block;flex:none;color:var(--k-icon)}
+.k-ic-xy{color:var(--k-plane-xy)} .k-ic-zx{color:var(--k-plane-zx)} .k-ic-zy{color:var(--k-plane-zy)}
+.k-ui ::-webkit-scrollbar{width:8px;height:8px} .k-ui ::-webkit-scrollbar-thumb{background:var(--k-scroll);border-radius:4px} .k-ui ::-webkit-scrollbar-track{background:transparent}
+
+
+/* ── строка меню ── */
+.k-main-menu-bar{display:flex;align-items:center;gap:6px;background:var(--k-menubar);border-top:5px solid var(--k-frame);min-width:0;padding-right:6px}
+.k-app-mark{width:20px;height:19px;margin-left:3px;display:grid;place-items:center;flex:none}
+.k-app-mark svg{width:19px;height:19px}
+.k-main-menu-items{display:flex;align-items:stretch;height:22px;min-width:0;overflow-x:auto;scrollbar-width:none;position:relative}
+.k-main-menu-items::-webkit-scrollbar{display:none}
+.k-menu-item{padding:0 6px;height:22px;white-space:nowrap;font-size:12px;border-radius:0}
+.k-menu-item:hover,.k-menu-item[aria-expanded="true"]{background:var(--k-menubar-hover)}
+.k-title-tools{display:flex;margin-left:auto;gap:0}
+.k-title-tools button{width:26px;height:22px;display:grid;place-items:center}
+.k-title-tools button:hover{background:var(--k-menubar-hover)}
+.k-command-search{position:relative;width:166px;height:22px;flex:none;display:flex;align-items:center;gap:4px;padding:0 6px;background:var(--k-field);border:1px solid var(--k-field-border)}
+.k-command-search input{flex:1;min-width:0;border:0;background:transparent;outline:0;font-size:12px;color:var(--k-field-text)}
+.k-command-search input::placeholder{color:var(--k-text-dim)}
+.k-search-results{position:absolute;right:-1px;top:23px;width:300px;max-width:calc(100vw - 16px);background:var(--k-menu-pop);border:1px solid var(--k-frame);box-shadow:0 8px 20px var(--k-shadow);z-index:60;padding:3px}
+.k-search-results button{display:flex;align-items:center;gap:8px;width:100%;padding:5px 8px;text-align:left}
+.k-search-results button:hover,.k-search-results button:focus-visible{background:var(--k-btn-hover)}
+.k-search-results small{margin-left:auto;color:var(--k-text-dim);white-space:nowrap}
+.k-search-empty{padding:8px;color:var(--k-text-dim)}
+/* выпадающие меню в стиле КОМПАСа: серый фон, белые разделители, колонка значков, ▶ для подменю */
+.k-pop{position:fixed;z-index:80;min-width:180px;max-width:calc(100vw - 16px);background:var(--k-menu-bg);color:var(--k-menu-text);border:1px solid var(--k-menu-border);box-shadow:2px 4px 12px var(--k-shadow);padding:1px 0;overflow-y:auto;overscroll-behavior:contain}
+.k-pop .k-mi{position:relative;display:grid;grid-template-columns:30px minmax(0,1fr) auto 18px;align-items:center;width:100%;height:25px;padding:0 4px 0 0;text-align:left;white-space:nowrap;color:var(--k-menu-text);font-size:12.5px;column-gap:2px}
+.k-pop .k-mi .k-ic{color:var(--k-menu-text);justify-self:center}
+.k-pop .k-mi .k-mi-k{padding-left:28px;font-size:12px}
+.k-pop .k-mi .k-mi-ar{font-size:9px;justify-self:end;padding-right:4px}
+.k-pop .k-mi .k-mi-ck{justify-self:center;font-size:13px}
+.k-pop .k-mi .k-mi-on{width:24px;height:22px;display:grid;place-items:center;background:var(--k-menu-icon-on);justify-self:center}
+.k-pop .k-mi .k-mi-on .k-ic{color:#fff}
+:root:not([data-k-theme="dark"]) .k-pop .k-mi .k-mi-on .k-ic{color:var(--k-menu-text)}
+.k-pop .k-mi:hover:not([aria-disabled="true"]),.k-pop .k-mi:focus-visible,.k-pop .k-mi.k-open{background:var(--k-menu-hover);outline:0}
+.k-pop .k-mi[aria-disabled="true"]{color:var(--k-menu-dim);cursor:default}
+.k-pop .k-mi[aria-disabled="true"] .k-ic{color:var(--k-menu-dim)}
+.k-pop hr{border:0;border-top:1px solid var(--k-menu-sep);margin:2px 0 2px 30px}
+.k-pop .k-pop-scroll{display:block;text-align:center;font-size:9px;color:var(--k-menu-dim);height:14px}
+.k-pop.k-views{min-width:0;padding:6px}
+.k-view-grid{display:grid;grid-template-columns:repeat(4,30px);grid-template-rows:repeat(3,28px);gap:2px;justify-content:center;margin:2px 0 4px}
+.k-view-grid button{display:grid;place-items:center;border-radius:1px}
+.k-view-grid button:hover{background:var(--k-menu-hover)}
+.k-pop.k-views .k-mi{grid-template-columns:30px minmax(0,1fr)}
+.k-pop.k-views .k-mi.k-cur{background:var(--k-menu-icon-on)}
+:root[data-k-theme="dark"] .k-pop.k-views .k-mi.k-cur{color:#fff}
+/* всплывающая подсказка как в КОМПАСе */
+.k-tip{position:fixed;z-index:95;background:var(--k-tip-bg);color:var(--k-tip-text);border:1px solid var(--k-tip-border);padding:3px 7px 4px;font-size:12px;line-height:1.35;pointer-events:none;max-width:320px;box-shadow:1px 2px 6px rgba(0,0,0,.25)}
+.k-tip small{display:block;color:#5a5a5a;font-size:11.5px}
+/* раскрытая панель инструментов */
+.k-panel-drop{position:fixed;z-index:75;background:var(--k-instr);border:1px solid var(--k-frame);box-shadow:0 8px 18px var(--k-shadow);display:flex;flex-direction:column}
+.k-panel-drop .k-cmd-panel-body{display:flex;gap:1px;padding:0 1px}
+.k-panel-drop .k-cmd-panel-label{width:auto;min-width:0;height:18px}
+.k-panel-drop .k-cmd-panel-label .k-caret{transform:rotate(180deg)}
+.k-cmd-panel-label .k-caret-btn{display:grid;place-items:center;width:14px;height:16px;flex:none}
+.k-cmd-panel-label .k-caret-btn:hover{background:var(--k-btn-hover)}
+/* окна (диалоги) */
+.k-dlg-layer{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.28)}
+.k-dlg{position:fixed;z-index:91;background:var(--k-dlg-bg);color:var(--k-text);border:1px solid var(--k-menu-border);box-shadow:0 14px 40px rgba(0,0,0,.45);display:flex;flex-direction:column;max-width:calc(100vw - 16px);max-height:calc(100vh - 16px)}
+.k-dlg-title{height:30px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 4px 0 10px;background:var(--k-dlg-head);cursor:move;user-select:none;font-size:12.5px}
+.k-dlg-title button{width:28px;height:24px;display:grid;place-items:center}
+.k-dlg-title button:hover{background:var(--k-cancel)}
+.k-dlg-body{flex:1;min-height:0;overflow:auto}
+.k-dlg-actions{flex:none;display:flex;justify-content:flex-end;gap:8px;padding:10px 12px;border-top:1px solid var(--k-frame)}
+.k-dlg-btn{min-width:84px;height:26px;padding:0 12px;background:var(--k-btn-bg);border:1px solid var(--k-btn-border);color:var(--k-text)}
+.k-dlg-btn:hover{border-color:var(--k-select-line)}
+.k-dlg-btn.k-primary{border-color:var(--k-select-line)}
+.k-set-wrap{display:grid;grid-template-columns:220px minmax(0,1fr);min-height:340px}
+.k-set-tree{border-right:1px solid var(--k-frame);overflow:auto;padding:4px 0;background:var(--k-panel)}
+.k-set-tree button{display:block;width:100%;text-align:left;padding:4px 8px;white-space:nowrap;font-size:12.5px}
+.k-set-tree button.k-grp{font-weight:600}
+.k-set-tree button.k-sub{padding-left:24px}
+.k-set-tree button[aria-selected="true"]{background:var(--k-tree-sel)}
+.k-set-pane{padding:14px 16px;font-size:12.5px}
+.k-set-pane h4{margin:0 0 10px;font-size:13px;font-weight:600}
+.k-set-pane fieldset{border:1px solid var(--k-field-border);padding:8px 12px 10px;margin:0 0 12px}
+.k-set-pane legend{padding:0 4px;color:var(--k-text-muted)}
+.k-set-pane label{display:flex;align-items:center;gap:8px;height:24px}
+.k-set-pane .k-muted-note{padding:0}
+.k-tol-win{position:fixed;z-index:85;width:300px;background:var(--k-panel);border:1px solid var(--k-frame);box-shadow:0 10px 28px var(--k-shadow)}
+.k-tol-win .k-tol-head{height:30px;display:flex;align-items:center;justify-content:center;background:var(--k-panel-head);font-size:12.5px;letter-spacing:.06em;position:relative;cursor:move;user-select:none}
+.k-tol-win .k-tol-head button{position:absolute;right:2px;top:3px;width:24px;height:24px;display:grid;place-items:center}
+.k-tol-win .k-pp-row{grid-template-columns:108px minmax(0,1fr) 8px}
+.k-tol-win .k-tol-foot{display:flex;justify-content:flex-end;padding:8px 10px 10px}
+.k-tol-win .k-chk{display:flex;align-items:center;gap:6px;padding:4px 10px 0 18px}
+
+/* ── вкладки документов ── */
+.k-document-tabs{display:flex;align-items:end;gap:2px;background:var(--k-tabs);border-top:1px solid var(--k-frame);border-bottom:1px solid var(--k-frame);padding:0 0 0 1px;min-width:0}
+.k-home-btn,.k-home-caret{height:24px;display:grid;place-items:center}
+.k-home-btn{width:26px}.k-home-caret{width:16px;margin-right:6px}
+.k-home-btn:hover,.k-home-caret:hover{background:var(--k-btn-hover)}
+.k-doc-tab{height:24px;min-width:0;max-width:260px;display:flex;align-items:center;gap:6px;padding:0 6px 0 7px;background:var(--k-tab-active);color:var(--k-tab-active-text);font-size:12.5px;white-space:nowrap}
+.k-doc-tab .k-ic{color:var(--k-tab-active-text)}
+.k-doc-tab span{overflow:hidden;text-overflow:ellipsis}
+.k-doc-tab .k-tab-x{width:18px;height:18px;display:grid;place-items:center;margin-left:6px}
+.k-document-tabs[data-mode="sketch"]{border-bottom:3px solid var(--k-sketch-accent)}
+.k-document-tabs[data-mode="sketch"] .k-doc-tab{box-shadow:inset 0 -2px 0 var(--k-sketch-accent)}
+.k-proto-tools{margin-left:auto;display:flex;align-items:center;gap:4px;height:26px;padding:0 4px}
+.k-chip{height:20px;display:flex;align-items:center;gap:6px;padding:0 8px;border:1px solid var(--k-text-dim);border-radius:10px;font-size:11.5px;color:var(--k-text-muted);white-space:nowrap}
+.k-chip:hover{color:var(--k-text);border-color:var(--k-text-muted)}
+.k-chip[aria-pressed="true"]{color:var(--k-text);border-color:var(--k-st-impl)}
+.k-chip .k-dots{display:flex;gap:2px}.k-chip .k-dots i{width:6px;height:6px;border-radius:50%;display:block}
+.k-icon-btn{width:24px;height:22px;display:grid;place-items:center;border-radius:2px}
+.k-icon-btn:hover{background:var(--k-btn-hover)}
+
+/* ── инструментальная область ── */
+.k-instrument-area{display:flex;background:var(--k-instr);min-width:0;overflow:hidden}
+.k-toolsets{width:120px;flex:none;display:grid;grid-template-rows:25px 25px 25px 18px;border-right:1px solid var(--k-instr-sep)}
+.k-toolset{display:flex;align-items:center;gap:5px;padding:0 3px;text-align:left;font-size:11.5px;line-height:11px;height:25px}
+.k-toolset span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.k-toolset:hover{background:var(--k-btn-hover)}
+.k-toolset[aria-pressed="true"]{background:var(--k-toolset-active)}
+.k-toolset-more{display:grid;place-items:center;background:var(--k-instr-label);color:var(--k-text-muted)}
+.k-toolset-more:hover{color:var(--k-text)}
+.k-command-ribbon{flex:1;display:flex;min-width:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin}
+.k-cmd-panel{flex:none;display:grid;grid-template-rows:75px 18px;border-right:1px solid var(--k-instr-sep);min-width:0}
+.k-cmd-panel-body{display:flex;gap:1px;padding:0 1px}
+.k-cmd-col{display:flex;flex-direction:column}
+.k-cmd-panel-label{display:flex;align-items:center;gap:3px;background:var(--k-instr-label);color:var(--k-text-muted);font-size:11px;padding:0 3px 0 6px;min-width:0;width:0;min-width:100%}
+.k-cmd-panel-label span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center}
+.k-cmd-panel-label .k-caret{width:9px;height:9px;flex:none}
+.k-grip{width:4px;height:11px;flex:none;background-image:radial-gradient(circle,var(--k-text-dim) 1px,transparent 1.3px);background-size:4px 4px;opacity:.85}
+.k-btn-t,.k-btn-i{position:relative;height:25px;display:flex;align-items:center;border-radius:1px}
+.k-btn-t{width:120px;gap:4px;padding:0 3px;text-align:left;font-size:11.5px;line-height:11px}
+.k-btn-t span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.k-btn-i{width:26px;justify-content:center}
+.k-btn-t:hover,.k-btn-i:hover{background:var(--k-btn-hover)}
+.k-btn-t.k-on,.k-btn-i.k-on,.k-btn-t:active,.k-btn-i:active{background:var(--k-btn-press)}
+.k-btn-t.k-on span{color:var(--k-tab-active-text)}
+.k-btn-t.k-dim,.k-btn-i.k-dim{opacity:.45}
+/* ◢ в углу значка — у команды есть варианты (как в КОМПАСе); щелчок по нему или правая кнопка открывают список */
+.k-btn-t .k-var,.k-btn-i .k-var{position:absolute;width:10px;height:10px;top:13px;cursor:pointer}
+.k-btn-t .k-var{left:12px}.k-btn-i .k-var{left:15px}
+.k-btn-t .k-var::after,.k-btn-i .k-var::after{content:"";position:absolute;right:1px;bottom:1px;border-left:5px solid transparent;border-bottom:5px solid var(--k-icon)}
+.k-btn-t .k-var:hover::after,.k-btn-i .k-var:hover::after{border-bottom-color:var(--k-select-line)}
+
+/* статусы команд ASA-CAD (реестр spec/ui/command-registry.k-v1.json) */
+:root[data-k-status="on"] [data-st]::after{content:"";position:absolute;top:2px;left:2px;width:7px;height:7px;border-radius:50%;background:var(--k-dot,transparent);box-shadow:0 0 0 1px var(--k-instr)}
+:root[data-k-status="on"] [data-st="implemented"]{--k-dot:var(--k-st-impl)}
+:root[data-k-status="on"] [data-st="planned"]{--k-dot:var(--k-st-plan)}
+:root[data-k-status="on"] [data-st="deferred"]{--k-dot:var(--k-st-def)}
+:root[data-k-status="on"] [data-st="none"]::after{background:transparent;border:1.5px solid var(--k-st-none);width:6px;height:6px}
+
