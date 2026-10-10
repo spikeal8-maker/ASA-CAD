@@ -216,6 +216,8 @@ U1 acceptance:
 До audit outcome GREEN или explicitly accepted YELLOW:
 **U2 = BLOCKED**.
 
+Машинная проверка: `currentCheckpoint` U2–U5 в `spec/process/active-work.v1.json` допустим только вместе с `fullRepositoryHealthAudit` = `{ outcome: GREEN | YELLOW_ACCEPTED, auditedSha, report, acceptedBy (для YELLOW) }`; файл `report` должен быть в репозитории (`npm run test:process:ui-core-u1a-ready`).
+
 U1A/U1B/U1C не считаются тремя permanent slices.
 
 ## 9. U2–U5

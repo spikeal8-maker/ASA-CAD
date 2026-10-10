@@ -1,6 +1,7 @@
 import React from 'react';
 import type { CadDocumentKind } from '../contracts/document';
-import type { CadUiAction } from './CadUiAction';
+import { isCadUiActionVisible, type CadUiAction } from './CadUiAction';
+import { keepShellKey, moveListFocus } from './CadShellKeys';
 import { CadUiActionSearchResults, CadUiGlobalActionButton } from './CadUiActionControls';
 import { documentNames } from './CadDocumentPresentation';
 import { CadIcon, type CadIconName } from './CadIcon';
@@ -30,6 +31,9 @@ export function CadShellTop(props: CadShellTopProps) {
   const openUiSettings = useUiScaleSettingsOpen();
   const newAction = props.getAction('system.new');
   const hasSearch = props.search.trim().length > 0;
+  const results = React.useRef<HTMLDivElement>(null);
+  const searchInput = React.useRef<HTMLInputElement>(null);
+  const found = props.searchableActions.filter((action) => isCadUiActionVisible(action, props.showRoadmapCommands));
   return (
     <>
       <header className="main-menu-bar">
@@ -65,27 +69,26 @@ export function CadShellTop(props: CadShellTopProps) {
             aria-expanded={hasSearch}
             aria-controls="cad-action-search-results"
             autoComplete="off"
+            ref={searchInput}
             onKeyDown={(event) => {
               if (event.key === 'Escape') {
+                keepShellKey(event);
                 props.setSearch('');
                 event.currentTarget.blur();
-              } else if (event.key === 'Enter' && hasSearch) {
-                const first = props.searchableActions.find((action) => action.enabled);
-                if (first) {
-                  event.preventDefault();
-                  props.setSearch('');
-                  void first.execute();
-                }
+              } else if (event.key === 'Enter' && hasSearch && !event.ctrlKey && !event.metaKey) {
+                keepShellKey(event);
+                const first = found.find((action) => action.enabled);
+                if (first) { props.setSearch(''); void first.execute(); }
               } else if (event.key === 'ArrowDown' && hasSearch) {
-                const first = event.currentTarget.parentElement?.querySelector<HTMLButtonElement>('.command-search-results button:not(:disabled)');
-                if (first) { event.preventDefault(); first.focus(); }
+                keepShellKey(event);
+                moveListFocus(results.current, null, 'ArrowDown');
               }
             }}
           />
           {hasSearch && (
-            <div id="cad-action-search-results" className="cad-search-popup">
-              {props.searchableActions.length > 0
-                ? <CadUiActionSearchResults actions={props.searchableActions} showRoadmapCommands={props.showRoadmapCommands} onPicked={() => props.setSearch('')} />
+            <div id="cad-action-search-results" className="cad-search-popup" ref={results}>
+              {found.length > 0
+                ? <CadUiActionSearchResults actions={found} showRoadmapCommands={props.showRoadmapCommands} onPicked={() => props.setSearch('')} onEscape={() => searchInput.current?.focus()} />
                 : <div className="cad-search-empty">Команды не найдены</div>}
             </div>
           )}

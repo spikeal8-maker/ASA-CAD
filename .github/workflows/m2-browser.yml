@@ -84,6 +84,11 @@ jobs:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m2/u1a-owner-flow-browser.mjs
 
+      - name: Keep U1A shell keys out of CAD shortcuts
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
+        run: node tests/m2/u1a-keyboard-browser.mjs
+
       - name: Exercise shared mobile action tools
         env:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/

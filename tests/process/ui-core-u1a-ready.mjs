@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 
 const policy = JSON.parse(readFileSync('spec/process/ui-core-unification.v1.json', 'utf8'));
 const active = JSON.parse(readFileSync('spec/process/active-work.v1.json', 'utf8'));
@@ -35,6 +35,34 @@ for (const flag of [
   'independentReadOnlyReviewRequired', 'documentedAgentReviewWhenGithubApprovedUnavailable',
   'realOrdinaryUserFlowRequired', 'criticalFindingsMustBeZero', 'separateOwnerProductAcceptance',
 ]) assert.equal(flow.technicalGates[flag], true, 'Checkpoint cannot weaken technical gate ' + flag);
+
+// Checkpoints after the mandatory audit need its machine-readable result in
+// active-work: GREEN, or YELLOW explicitly accepted, with a committed report.
+function checkpointsAfterAudit() {
+  const after = [];
+  let seenAudit = false;
+  for (let id = 'U1A'; id; id = flow.nextCheckpointById[id]) {
+    if (seenAudit) after.push(id);
+    if (id === 'FULL_REPOSITORY_HEALTH_AUDIT') seenAudit = true;
+  }
+  return after;
+}
+function assertAuditGate(work) {
+  if (!checkpointsAfterAudit().includes(work.currentCheckpoint)) return;
+  const audit = work.fullRepositoryHealthAudit;
+  assert.ok(audit, work.currentCheckpoint + ' requires fullRepositoryHealthAudit result in active-work');
+  assert.ok(['GREEN', 'YELLOW_ACCEPTED'].includes(audit.outcome), 'Audit outcome must be GREEN or YELLOW_ACCEPTED, got ' + audit.outcome);
+  if (audit.outcome === 'YELLOW_ACCEPTED') assert.ok(audit.acceptedBy, 'Accepted YELLOW audit must name who accepted it');
+  assert.match(String(audit.auditedSha), /^[0-9a-f]{40}$/, 'Audit must name the exact audited SHA');
+  assert.ok(typeof audit.report === 'string' && existsSync(audit.report), 'Audit report must be committed: ' + audit.report);
+}
+assert.deepEqual(checkpointsAfterAudit(), ['U2', 'U3', 'U4', 'U5']);
+assertAuditGate(active);
+assert.throws(() => assertAuditGate({ ...active, currentCheckpoint: 'U2', fullRepositoryHealthAudit: undefined }),
+  /requires fullRepositoryHealthAudit/, 'U2 without an audit result must be rejected');
+assert.throws(() => assertAuditGate({ ...active, currentCheckpoint: 'U3',
+  fullRepositoryHealthAudit: { outcome: 'RED', auditedSha: '0'.repeat(40), report: 'docs/STATUS.md' } }),
+  /GREEN or YELLOW_ACCEPTED/, 'RED audit must block U2+');
 
 assert.equal(flow.mandatoryAuditAfterU1, true);
 assert.equal(flow.auditYellowProceedOnlyWhenAccepted, true);

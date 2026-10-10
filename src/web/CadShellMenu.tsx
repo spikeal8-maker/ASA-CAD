@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { CadUiAction } from './CadUiAction';
+import { keepShellKey } from './CadShellKeys';
 
 export interface CadShellMenuProps {
   menuKey: string;
@@ -61,10 +62,10 @@ export function CadShellMenu({ menuKey, label, actionIds, getAction }: CadShellM
         onClick={() => open ? close() : setOpen(true)}
         onKeyDown={(event) => {
           if (event.key === 'ArrowDown') {
-            event.preventDefault();
+            keepShellKey(event);
             focusFirst();
           } else if (event.key === 'Escape' && open) {
-            event.preventDefault();
+            keepShellKey(event);
             close(true);
           }
         }}
@@ -78,7 +79,11 @@ export function CadShellMenu({ menuKey, label, actionIds, getAction }: CadShellM
           role="menu"
           aria-label={label}
           onKeyDown={(event) => {
+            // An open menu owns plain keys: they must not reach CAD shortcuts
+            // (Esc cancelling the active command, arrows panning the camera).
+            if (!event.ctrlKey && !event.metaKey) event.stopPropagation();
             if (event.key === 'Escape') { event.preventDefault(); close(true); }
+            else if (event.key === 'Tab') close();
           }}
         >
           {actions.map((action, index) => (
