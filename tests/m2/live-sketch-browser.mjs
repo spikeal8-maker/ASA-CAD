@@ -117,7 +117,7 @@ async function selectSketch(id) {
 async function editSelectedSketch(id) {
   await page.locator(`[data-sketch-edit-id="${id}"]`).click();
   await page.locator(`.cad-app[data-active-sketch-id="${id}"]`).waitFor();
-  assert.equal(await page.getByRole('tab', { name: 'Эскиз' }).getAttribute('aria-selected'), 'true');
+  await page.locator('[role="tab"][aria-selected="true"]', { hasText: /эскиз/i }).waitFor();
   await page.locator('[data-testid="part-model-stage"][data-sketch-context="isolated-2d"]').waitFor();
 }
 
@@ -176,7 +176,7 @@ try {
 
   await setWidth80();
   assert.equal(await page.locator('.cad-app').getAttribute('data-active-sketch-id'), sketchId);
-  assert.equal(await page.getByRole('tab', { name: 'Эскиз' }).getAttribute('aria-selected'), 'true');
+  await page.locator('[role="tab"][aria-selected="true"]', { hasText: /эскиз/i }).waitFor();
   await finishSketch();
 
   const secondFinished = await waitReadOnly(sketchId);

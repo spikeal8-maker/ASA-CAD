@@ -34,7 +34,7 @@ export function KompasTop(props: CadShellTopProps) {
 
   React.useEffect(() => { kompasShell.set({ toolset }); }, [toolset]);
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     setToolset((current) => {
       if (sketchMode) { if (current !== 'sketch') previous.current = current; return 'sketch'; }
       return current === 'sketch' ? previous.current : current;

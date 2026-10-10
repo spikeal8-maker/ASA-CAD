@@ -49,7 +49,7 @@ export function KompasMain(props: CadShellMainProps) {
   React.useEffect(() => {
     if (props.activeCommand && props.activePanel === 'closed') props.setActivePanel('parameters');
   }, [props.activeCommand, props.activePanel]);
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     kompasShell.set({ panelOpen: open, activeCommand: props.activeCommand ?? null, sketchMode });
   }, [open, props.activeCommand, sketchMode]);
 

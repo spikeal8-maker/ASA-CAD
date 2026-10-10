@@ -152,6 +152,11 @@ async function ribbonAndTools() {
   assert.equal(await page.evaluate(() => document.documentElement.dataset.kTheme), 'dark');
   const dark = await page.locator('.k-main-menu-bar').evaluate((node) => getComputedStyle(node).backgroundColor);
   assert.equal(dark, 'rgb(51, 51, 51)');
+  // Product surfaces follow the same theme model, not only the shell.
+  await page.locator('.k-command-ribbon [data-command-id="system.new"]').click();
+  const newDialog = page.locator('.new-document-dialog');
+  assert.equal(await newDialog.evaluate((node) => getComputedStyle(node).backgroundColor), 'rgb(72, 72, 72)');
+  await newDialog.getByRole('button', { name: 'Закрыть', exact: true }).click();
   await page.getByRole('button', { name: 'Переключить тему' }).click();
   assert.equal(await page.evaluate(() => document.documentElement.dataset.kTheme), 'light');
   // Rail: the active tab collapses the panel and gives the graphics area the width.

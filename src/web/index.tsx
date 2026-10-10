@@ -20,6 +20,7 @@ import './kompas/kompas-top.css';
 import './kompas/kompas-panels.css';
 import './kompas/kompas-work.css';
 import './kompas/kompas-integration.css';
+import './kompas/kompas-theme-dark.css';
 
 const root = document.getElementById('root');
 if (!root) throw new Error('ASA-CAD root element not found');

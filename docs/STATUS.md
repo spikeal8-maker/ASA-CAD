@@ -1,6 +1,6 @@
 # ASA-CAD — текущее состояние и каноничный путь
 
-Снимок: 2026-10-08.
+Снимок: 2026-10-10.
 
 ## Канон
 
@@ -16,80 +16,46 @@ U1A map: docs/UI_CORE_U1A_MAPPING.md.
 
 ## Cadence
 
-До U1 accepted permanent product cadence = 2/3.
+До U1 accepted permanent product cadence = 2/3. U1 = ровно один permanent product slice (U1A — shell; U1B — tree/parameters/status; U1C — viewport/selection); U1A/U1B/U1C отдельно cadence не увеличивают.
 
-U1 = ровно один permanent product slice:
-- U1A — shell;
-- U1B — tree/parameters/status;
-- U1C — viewport/selection.
+После U1 acceptance: 3/3 -> Full Repository Health Audit REQUIRED -> U2 BLOCKED до GREEN или явно принятого YELLOW.
 
-U1A/U1B/U1C отдельно cadence не увеличивают.
-
-После U1 acceptance:
-3/3 -> Full Repository Health Audit REQUIRED -> U2 BLOCKED до GREEN или явно принятого YELLOW.
-
-Honesty:
-- FULL_TREE_PARITY = NOT ACCEPTED;
-- FULL_M2V = NOT ACCEPTED;
-- FULL_KOMPAS_PARITY = NO;
-- 90% visual + functional/workflow identity = TARGET.
+Honesty: FULL_TREE_PARITY = NOT ACCEPTED; FULL_M2V = NOT ACCEPTED; FULL_KOMPAS_PARITY = NO; 90% visual + functional/workflow identity = TARGET.
 
 ## Источники старой работы
 
 - #170 — frozen UI/UX reference only.
-- #177 / 44d87bef78fd66aa0e85fa1fa7ba9dc58e280a65 — REUSE_AFTER_EXACT_REVIEW.
-- archived #182 / 27c55222331681d23ba101bd4992c9dc24a0ac42 — EXTRACT_AFTER_EXACT_REVIEW.
+- #177 / 44d87bef78fd66aa0e85fa1fa7ba9dc58e280a65 — REUSE_AFTER_EXACT_REVIEW (ядро взято в K1).
+- archived #182 / 27c55222331681d23ba101bd4992c9dc24a0ac42 — EXTRACT_AFTER_EXACT_REVIEW (сцена взята в пакет U1).
 - #179 / 034d0fc4d51606425794fc76508f61600a41d0cb — HOLD_NOT_INTEGRATION_BASE.
-- #181 MERGED — 47aa4836adb30432adcb09609da93fb309125aa5.
-- #183 MERGED — 27380d161210aaf309fa3a8c76109fb7038a3533.
+- #181, #183 MERGED.
 
-## Preflight
+## Разрешение и процесс
 
-Обычный U0 preflight требует:
-1. governance contract в main;
-2. #181/#183 merged;
-3. integration содержит fresh main;
-4. PR в integration запускают required CI;
-5. frozen tag указывает на 88c535c...;
-6. policy test PASS.
+OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008 = ACTIVE: U1A/U1B/U1C, аудит после U1 и U2–U5 без новых owner-permit PR.
 
-### Постоянное разрешение владельца на ROADMAP (2026-10-08)
+Integration protection = DETECT_ONLY / NOT ENFORCED. ADMIN_BRANCH_PROTECTION_NOT_ENFORCED = KNOWN_RISK, не product STOP. Direct/force push в integration и main запрещены регламентом.
 
-OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008 = ACTIVE. Техническая разработка U1A/U1B/U1C, аудит после U1 и U2–U5 разрешены на основании machine `developmentFlow` без дополнительных owner-permit PR.
+Technical acceptance: Draft PR -> exact HEAD CI + реальный CAD user-flow -> независимый documented read-only review -> technical merge в integration -> next checkpoint. Owner product acceptance, merge в main, production и visual parity — только решением владельца.
 
-Integration protection = DETECT_ONLY / NOT ENFORCED / NOT VERIFIED.
-ADMIN_BRANCH_PROTECTION_NOT_ENFORCED = KNOWN_RISK, а не автоматический product STOP; UI_CORE_INTEGRATION_GUARD является post-push detector. Direct/force push в integration и main запрещены внутренним регламентом.
+## Состояние U1 (live GitHub — источник правды)
 
-Technical acceptance: отдельный Draft PR -> exact HEAD CI + реальный CAD user-flow -> независимый documented read-only review (formal GitHub APPROVED не обязателен) -> technical merge в integration -> next checkpoint. Owner product acceptance = PENDING до оценки интегрированного U1; merge в main, production и объявление визуальной parity требуют отдельного owner decision.
+Machine pointer = U1A (без изменений до технического merge).
 
-PR #194 / U1A: implementation и local browser/Docker proof существуют; техническая приёмка и merge проверяются по live GitHub. Текущая machine pointer = U1A, затем U1B -> U1C -> FULL REPOSITORY HEALTH AUDIT -> U2.
+- PR #194 — U1A владельца; исправления 4 замечаний ревью — ветка ui-core/u1a-keyboard-focus, PR в ветку #194.
+- K1 — ветка kernel/k1-general-profiles, PR в integration: решённый эскиз PlaneGCS -> общий профиль -> OpenCascade на XY/XZ/YZ и гранях.
+- **Пакет U1 — ветка ui-core/u1-visible, Draft PR в integration (ПРЕДЛОЖЕНИЕ, ждёт решения владельца в #184):**
+  - основная вёрстка рабочего стола (>= 900 px) = оболочка КОМПАС эталона #170, перенесённая в src/web/kompas: меню, вкладка документа, наборы и лента, дерево, параметры, панель быстрого доступа, сцена с XY/XZ/YZ из CadDocument;
+  - каждая кнопка — typed action того же id реестра; команды без реализации показывают статус реестра;
+  - математика #170 не используется; телефон (< 900 px) — компактная оболочка;
+  - покрывает U1A + U1B + U1C одним PR, что расходится с п. 7 спецификации («U1 не один огромный PR») и выше repository footprint: нужны решение владельца и architecture review до технического merge.
 
-## U1A contract
+Темы: светлая по умолчанию и тёмная — общая модель темы продукта (токены #170 для оболочки и те же значения для общих токенов, окон, панелей и плашек эскиза), переключатель и «Настройка → Параметры → Экран». Это отход от DEFERRED_NOT_U1A — предложение, ждёт решения владельца.
 
-U1A переносит только:
-- main menu;
-- document tab;
-- toolsets/ribbon;
-- search/global actions;
-- desktop shell geometry.
-
-Не входит:
-- tree/parameters/status — U1B;
-- viewport/planes/selection — U1C;
-- Sketch/math/persistence/solver/OpenCascade.
-
-Preferred owners:
-CadShellTop, CadFileMenu, CadShellCommandGroups, CadShellReferenceGroups, styles/top-shell.css, styles/ribbon.css, styles/shell-responsive.css.
-
-Frozen/pressured:
-- App.tsx — без новой ответственности и без роста;
-- CadViewport.tsx — не трогать в U1A;
-- ParameterPanel.tsx — не трогать в U1A;
-- responsive.css — не увеличивать.
-
-Visual evidence:
-UI_CORE_U1_VISUAL_EVIDENCE сравнивает exact candidate с frozen #170 в solid 1600x900, surfaces 1600x900 и solid 1366x768. Capture не является автоматическим parity verdict; внешний вид принимает владелец.
+Не сделано в U1: эскиз в 3D-сцене (U2); панели КОМПАС для выреза, скругления, отрезка, дуги, размеров (сейчас прежняя панель в рамке КОМПАС).
 
 ## Next
 
-Текущий checkpoint = U1A: технически проверить/принять PR #194 в integration после exact-head CI, независимого ревью и user-flow. Следом без нового разрешения: U1B -> U1C -> полный технический сценарий U1 -> автоматический Full Repository Health Audit -> U2 при допустимом исходе. Owner product acceptance после интеграции U1 и значимых этапов, отдельно от checkpoint merge.
+1. Владелец: решение по пакету U1 (один PR или разбиение на U1A/U1B/U1C) и по #194.
+2. Exact-head CI и независимое ревью PR K1, исправлений U1A и пакета U1.
+3. Технический merge U1 -> Full Repository Health Audit -> U2 при допустимом исходе.

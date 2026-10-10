@@ -1,6 +1,6 @@
 # ASA-CAD — UI/core convergence roadmap
 
-Редакция: 2026-10-08.
+Редакция: 2026-10-10.
 Central issue: **#184**.
 Integration branch: **`integration/ui-core-unification`**.
 Frozen UI reference: **`ui-reference-20261004` -> `88c535c652dac8b04f0d68fa144cf8486afdc926`**.
@@ -62,6 +62,10 @@ Geometry compare = semantic-region contract из `UI_CORE_U1A_MAPPING.md`, а н
 
 Acceptance U1:
 обычный Part route показывает каноничную оболочку и один настоящий application state без prototype `doc/history`.
+
+### Предложение 2026-10-10: U1 одним пакетом (ждёт решения владельца в #184)
+
+Ветка `ui-core/u1-visible` (Draft PR в integration) переносит оболочку КОМПАС эталона #170 целиком как основную вёрстку рабочего стола (>= 900 px): `src/web/kompas` — разметка, стили с префиксом `k-`, значки, меню и наборы #170, поверх тех же typed actions, CadDocument, решателя и OpenCascade. Одним PR закрываются U1A + U1B + U1C; сцена — код C1 из archived #182, ядро — K1. Это расходится с правилом «U1 не один огромный PR» и выше repository footprint, поэтому до технического merge нужны решение владельца (оставить пакетом или разбить на U1A/U1B/U1C) и architecture review. Machine pointer не меняется.
 
 ### Обязательный gate после U1
 
