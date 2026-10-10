@@ -92,6 +92,18 @@ npm run docker:up
 
 Open `http://localhost:8088`; stop with `npm run docker:down`.
 
+### Shared integration preview
+
+Every push to `integration/ui-core-unification` that passes the Docker workflow (build, smoke, protected Part route) publishes the same image for everyone who reviews it:
+
+```bash
+docker pull ghcr.io/spikeal8-maker/asa-cad:integration
+docker rm -f asa-cad-integration 2>/dev/null
+docker run -d --name asa-cad-integration --restart unless-stopped -p 8088:8080 ghcr.io/spikeal8-maker/asa-cad:integration
+```
+
+Open `http://localhost:8088/cad/`. The moving tag `integration` is the latest verified integration HEAD; `integration-<sha7>` pins an exact source revision (the workflow run summary prints it). If the package is not public yet, run `docker login ghcr.io` with a token that has `read:packages`, or ask the repository owner to make the package public once in its GitHub package settings.
+
 ## Test/check
 
 Fast repository-health/process gate:

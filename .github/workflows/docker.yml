@@ -27,6 +27,7 @@ on:
       - vendor/toubkal/package.json
       - vendor/toubkal/package-lock.json
       - vendor/toubkal/src/**
+  workflow_dispatch:
   pull_request:
     paths:
       - tests/visual/**
@@ -59,6 +60,13 @@ permissions:
 jobs:
   build-and-smoke:
     runs-on: ubuntu-latest
+    # The verified integration image is published as the shared owner/team preview.
+    permissions:
+      contents: read
+      packages: write
+    env:
+      PREVIEW_IMAGE: ghcr.io/spikeal8-maker/asa-cad
+      PUBLISH_PREVIEW: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/integration/ui-core-unification' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -76,7 +84,12 @@ jobs:
         run: npx --yes playwright@1.60.0 install --with-deps chromium
 
       - name: Build standalone image
-        run: docker build -t asa-cad:ci .
+        run: >-
+          docker build -t asa-cad:ci
+          --label org.opencontainers.image.source=https://github.com/${{ github.repository }}
+          --label org.opencontainers.image.revision=${{ github.sha }}
+          --label org.opencontainers.image.ref.name=${{ github.ref_name }}
+          .
 
       - name: Start standalone image
         run: docker run -d --name asa-cad-ci -p 8088:8080 asa-cad:ci
@@ -129,6 +142,30 @@ jobs:
         env:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8088/cad/projects/m0d-protected
         run: node tests/m2/part-browser.mjs
+
+      - name: Publish shared integration preview
+        if: env.PUBLISH_PREVIEW == 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          short_sha="${GITHUB_SHA::7}"
+          echo "$GH_TOKEN" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          for tag in integration "integration-${short_sha}"; do
+            docker tag asa-cad:ci "$PREVIEW_IMAGE:$tag"
+            docker push "$PREVIEW_IMAGE:$tag"
+          done
+          {
+            echo "### Shared integration preview"
+            echo
+            echo "Source: \`${GITHUB_SHA}\` (all Docker smoke and protected Part checks passed)"
+            echo
+            echo '```bash'
+            echo "docker pull $PREVIEW_IMAGE:integration-${short_sha}"
+            echo "docker run -d --name asa-cad-integration -p 8088:8080 $PREVIEW_IMAGE:integration-${short_sha}"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Show container logs on failure
         if: failure()
