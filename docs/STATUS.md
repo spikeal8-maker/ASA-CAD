@@ -1,6 +1,6 @@
 # ASA-CAD — текущее состояние и каноничный путь
 
-Снимок: 2026-10-04.
+Снимок: 2026-10-08.
 
 ## Канон
 
@@ -53,18 +53,16 @@ Honesty:
 5. frozen tag указывает на 88c535c...;
 6. policy test PASS.
 
-### Текущий blocker U1A
+### Постоянное разрешение владельца на ROADMAP (2026-10-08)
 
-GitHub admin protection для integration/ui-core-unification пока NOT ENFORCED / NOT VERIFIED.
+OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008 = ACTIVE. Техническая разработка U1A/U1B/U1C, аудит после U1 и U2–U5 разрешены на основании machine `developmentFlow` без дополнительных owner-permit PR.
 
-UI_CORE_INTEGRATION_GUARD — detect-only: он обнаруживает прямой/unassociated push после события, но не может технически отклонить push.
+Integration protection = DETECT_ONLY / NOT ENFORCED / NOT VERIFIED.
+ADMIN_BRANCH_PROTECTION_NOT_ENFORCED = KNOWN_RISK, а не автоматический product STOP; UI_CORE_INTEGRATION_GUARD является post-push detector. Direct/force push в integration и main запрещены внутренним регламентом.
 
-Поэтому:
-- npm run test:process = PASS;
-- npm run test:process:ui-core-u1a-ready = ожидаемый FAIL;
-- U1A_CODE_START_ALLOWED = NO.
+Technical acceptance: отдельный Draft PR -> exact HEAD CI + реальный CAD user-flow -> независимый documented read-only review (formal GitHub APPROVED не обязателен) -> technical merge в integration -> next checkpoint. Owner product acceptance = PENDING до оценки интегрированного U1; merge в main, production и объявление визуальной parity требуют отдельного owner decision.
 
-Для снятия blocker администратор GitHub должен включить server-side branch protection/ruleset, после чего machine contract переводится в verified ENFORCED и readiness-test должен стать PASS.
+PR #194 / U1A: implementation и local browser/Docker proof существуют; техническая приёмка и merge проверяются по live GitHub. Текущая machine pointer = U1A, затем U1B -> U1C -> FULL REPOSITORY HEALTH AUDIT -> U2.
 
 ## U1A contract
 
@@ -94,10 +92,4 @@ UI_CORE_U1_VISUAL_EVIDENCE сравнивает exact candidate с frozen #170 �
 
 ## Next
 
-Сейчас разрешены только governance/branch-protection действия.
-
-Первая строка product U1A-кода разрешается только после:
-npm run test:process:ui-core-u1a-ready = PASS.
-
-После этого:
-U1A -> U1B -> U1C -> U1 owner acceptance -> Full Repository Health Audit -> U2.
+Текущий checkpoint = U1A: технически проверить/принять PR #194 в integration после exact-head CI, независимого ревью и user-flow. Следом без нового разрешения: U1B -> U1C -> полный технический сценарий U1 -> автоматический Full Repository Health Audit -> U2 при допустимом исходе. Owner product acceptance после интеграции U1 и значимых этапов, отдельно от checkpoint merge.
