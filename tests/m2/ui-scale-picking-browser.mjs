@@ -3,7 +3,8 @@ import { chromium } from '../../vendor/toubkal/node_modules/playwright-core/inde
 import * as THREE from '../../vendor/toubkal/node_modules/three/build/three.module.js';
 
 const baseUrl = (process.env.ASA_CAD_SHELL_URL ?? 'http://127.0.0.1:8090/').replace(/\/$/, '');
-const browser = await chromium.launch({ headless: true });
+const executablePath = process.env.ASA_CAD_BROWSER_EXECUTABLE;
+const browser = await chromium.launch(executablePath ? { headless: true, executablePath } : { headless: true });
 const page = await browser.newPage({ viewport: { width: 2560, height: 1440 } });
 const pageErrors = [];
 const failedRequests = [];
@@ -14,6 +15,16 @@ page.on('requestfailed', (request) => failedRequests.push(`${request.method()} $
 page.on('request', (request) => {
   if (/\.wasm(?:\?|$)/i.test(request.url())) wasmRequests.push(request.url());
 });
+
+function wasmCount(pattern) {
+  return wasmRequests.filter((url) => pattern.test(url)).length;
+}
+
+function assertKernelLoadsOnce(label) {
+  assert.equal(wasmCount(/opencascade/i), 1, `${label}: OpenCascade WASM must load exactly once`);
+  assert.equal(wasmCount(/planegcs/i), 1, `${label}: PlaneGCS WASM must load exactly once`);
+  assert.equal(wasmRequests.length, 2, `${label}: unexpected additional WASM request`);
+}
 
 function parseVector(value, label) {
   assert.ok(value, `missing ${label}`);
@@ -118,7 +129,7 @@ try {
   const initial = await viewportState();
   assert.equal(initial.shell.scale, 100);
   assert.match(initial.revision ?? '', /^occ-\d+$/);
-  assert.equal(wasmRequests.length, 1, 'reference fixture should load OpenCascade once');
+  assertKernelLoadsOnce('reference fixture');
   const bodyId = await assertSameBodyPick(null, initial.revision);
   console.log(`  ✓ UI 100% picks body ${bodyId}`);
   await clearSelection();
@@ -143,7 +154,7 @@ try {
   await assertSameBodyPick(bodyId, initial.revision);
   console.log('  ✓ Auto => 110% on 2560×1440 and picking remains correct');
 
-  assert.equal(wasmRequests.length, 1, 'UI Scale change reloaded OpenCascade WASM');
+  assertKernelLoadsOnce('after UI Scale changes');
   assert.deepEqual(pageErrors, [], `page errors: ${pageErrors.join('; ')}`);
   assert.deepEqual(failedRequests, [], `failed requests: ${failedRequests.join('; ')}`);
   console.log('ASA-CAD M2R UI Scale + B-Rep picking PASS\n');

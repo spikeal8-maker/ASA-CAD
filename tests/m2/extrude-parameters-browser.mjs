@@ -143,20 +143,28 @@ try{
   assert.equal(symmetric.feature.parameters.distance,20);
   assert.equal(symmetric.feature.parameters.symmetric,true);
 
-  for(const support of ['XZ','YZ']){
-    await newPart(); await profile(support);
-    const button=extrudeButton();
-    assert.equal(await button.isDisabled(),true,`${support}: Extrude must fail closed`);
-    assert.match(await button.getAttribute('title')??'',/прямоугольный эскиз.*XY/i);
-    await assertCounts(0,0);
-    const saved=await save();
-    assert.equal(saved.doc.features.length,0,`${support}: disabled Extrude mutated features`);
-    assert.equal(saved.doc.bodies.length,0,`${support}: disabled Extrude mutated bodies`);
+  // K1: XZ/YZ extrude along the shared Sketch frame normal (XZ: n=-Y, YZ: n=+X).
+  for(const [support,expected] of [['XZ',[-30,-10,-20,30,0,20]],['YZ',[0,-30,-20,10,30,20]]]){
+    await newPart(); const sketchId=await profile(support); await openExtrude();
+    await apply(); near(await bounds(),expected,`${support} bounds`);
+    const built=await inspectExtrude();
+    assert.equal(built.feature.parameters.sketchId,sketchId);
+    assert.equal(built.sketch.support,support);
   }
+
+  // The UI refuses exactly what the kernel refuses, with the kernel's reason.
+  await newPart();
+  await page.getByRole('button',{name:/Создать эскиз/i}).click();
+  await page.getByRole('button',{name:'Создать',exact:true}).click();
+  await page.getByRole('button',{name:/Завершить эскиз/i}).click();
+  await page.getByText('Эскиз завершен',{exact:true}).waitFor();
+  assert.equal(await extrudeButton().isDisabled(),true,'empty Sketch: Extrude must fail closed');
+  assert.match(await extrudeButton().getAttribute('title')??'',/эскиз пуст/i);
+  await assertCounts(0,0);
 
   assert.deepEqual(errors,[],`page errors: ${errors.join(' | ')}`);
   console.log('✓ V4 Extrude profile/method/distance panel PASS');
   console.log('✓ invalid + Cancel no-mutation PASS');
   console.log('✓ direct/reverse/symmetric bounds + persistence PASS');
-  console.log('✓ XZ/YZ fail-closed PASS');
+  console.log('✓ XZ/YZ extrude + empty-profile fail-closed PASS');
 }finally{await browser.close();}

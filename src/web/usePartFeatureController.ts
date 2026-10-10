@@ -6,6 +6,7 @@ import type { CadSketchId, CadStableReferenceId } from '../contracts/ids';
 import type { CadViewportPick } from '../contracts/render';
 import type { CadWorkspacePanel, PartSketchSelectionMode } from './PartSketchWorkspaceTypes';
 import { findSketch, hasCircle, hasRectangle, partDocument } from './PartSketchWorkspaceModel';
+import { cutAvailability } from './PartFeatureAvailability';
 import { useExtrudeOperationController } from './useExtrudeOperationController';
 
 export interface PartFeatureControllerOptions {
@@ -26,19 +27,8 @@ export interface PartFeatureControllerOptions {
 
 export function usePartFeatureController(options: PartFeatureControllerOptions) {
   const {
-    app,
-    document,
-    renderModelAvailable,
-    activeSketchId,
-    sketch,
-    selectedPick,
-    setActiveCommand,
-    setActiveWorkspace,
-    setPanel,
-    setNotice,
-    activateSketch,
-    beginPartSelection,
-    clearTransientSelection,
+    app, document, renderModelAvailable, activeSketchId, sketch, selectedPick, setActiveCommand,
+    setActiveWorkspace, setPanel, setNotice, activateSketch, beginPartSelection, clearTransientSelection,
   } = options;
 
   const [sketchPlane, setSketchPlane] = useState<CadPlaneName>('XY');
@@ -49,7 +39,7 @@ export function usePartFeatureController(options: PartFeatureControllerOptions) 
   const circleReady = hasCircle(sketch);
   const hasSolid = Boolean(part?.bodies.length);
   const lastFeature = part?.features.at(-1);
-  const canCut = Boolean(sketch && circleReady && hasSolid && lastFeature?.type === 'extrude');
+  const canCut = cutAvailability(part, sketch).enabled;
   const canFillet = Boolean(hasSolid && lastFeature?.type === 'cut-extrude');
   const extrude = useExtrudeOperationController({
     app, document, activeSketchId, sketch, setActiveCommand, setActiveWorkspace,
@@ -117,9 +107,11 @@ export function usePartFeatureController(options: PartFeatureControllerOptions) 
   }
 
   async function commitCut() {
-    const currentSketch = findSketch(partDocument(app.getDocument()), sketch?.id ?? null);
-    if (!currentSketch || !hasCircle(currentSketch)) {
-      setNotice('Для выреза нужен эскиз с окружностью');
+    const currentPart = partDocument(app.getDocument());
+    const currentSketch = findSketch(currentPart, sketch?.id ?? null);
+    const check = cutAvailability(currentPart, currentSketch);
+    if (!currentSketch || !check.enabled) {
+      setNotice(check.reason ?? 'Вырез недоступен');
       return;
     }
     const feature = await app.execute({
@@ -196,22 +188,8 @@ export function usePartFeatureController(options: PartFeatureControllerOptions) 
   }
 
   return {
-    part,
-    sketchPlane,
-    setSketchPlane,
-    filletRadius,
-    setFilletRadius,
-    rectangleReady,
-    circleReady,
-    hasSolid,
-    canCut,
-    canFillet,
-    extrude,
-    beginCreateSketch,
-    commitCreateSketch,
-    beginCut,
-    commitCut,
-    beginFillet,
-    commitFillet,
+    part, sketchPlane, setSketchPlane, filletRadius, setFilletRadius, rectangleReady, circleReady,
+    hasSolid, canCut, canFillet, extrude, beginCreateSketch, commitCreateSketch,
+    beginCut, commitCut, beginFillet, commitFillet,
   };
 }

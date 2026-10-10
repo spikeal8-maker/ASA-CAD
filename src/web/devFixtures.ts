@@ -7,6 +7,7 @@ import type {
   CadSketchId,
 } from '../contracts/ids';
 import type { CadPartDevFixtureName } from '../browser/routes';
+import { commitParametricRectangle } from './SketchParametricRectangleOwner';
 
 export interface CadPartDevFixtureResult {
   name: CadPartDevFixtureName;
@@ -101,33 +102,10 @@ async function buildRectangleSketch(app: CadApplication): Promise<CadSketchId> {
   );
   const sketchId = createdId<CadSketchId>(sketchResult, 0, 'Create base sketch');
 
-  const rectangleResult = await execute(
-    app,
-    {
-      id: 'sketch.rectangle',
-      payload: { sketchId, origin: [-30, -20], width: 60, height: 40 },
-    },
-    'Create 60x40 rectangle',
-  );
-  const edges = rectangleResult.createdIds as CadSketchEntityId[] | undefined;
-  if (!edges || edges.length !== 4) throw new Error('Rectangle fixture must create four edges');
-
-  await execute(
-    app,
-    {
-      id: 'dimension.linear',
-      payload: { sketchId, entityIds: [edges[0]], value: 60, name: 'width' },
-    },
-    'Create width dimension',
-  );
-  await execute(
-    app,
-    {
-      id: 'dimension.linear',
-      payload: { sketchId, entityIds: [edges[1]], value: 40, name: 'height' },
-    },
-    'Create height dimension',
-  );
+  // Same numeric Rectangle owner as the product UI: Lines + H/V/coincident
+  // relations + driving width/height, so dimension edits re-solve one contour.
+  const rectangle = await commitParametricRectangle(app, sketchId, 60, 40);
+  if (!rectangle.ok) throw new Error(`Fixture step failed: Create 60x40 rectangle: ${rectangle.error}`);
   return sketchId;
 }
 
