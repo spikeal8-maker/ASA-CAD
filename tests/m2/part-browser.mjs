@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { chromium } from '../../vendor/toubkal/node_modules/playwright-core/index.mjs';
+import { COMMIT, DIRTY, FIELD, PANEL, PANEL_TITLE, PARAMS_READY, QUICK, RIBBON, openParams } from './shell-selectors.mjs';
 import * as THREE from '../../vendor/toubkal/node_modules/three/build/three.module.js';
 
 const url = process.env.ASA_CAD_SHELL_URL ?? 'http://127.0.0.1:8090/';
@@ -99,13 +100,13 @@ async function clickProjectedWorldPoint(worldPoint) {
 }
 
 async function applyPrimary() {
-  const button = page.locator('.parameter-actions button.primary');
+  const button = page.locator(COMMIT);
   await button.waitFor();
   await button.click();
 }
 
 async function finishSketch() {
-  const button = page.getByRole('button', { name: /Завершить эскиз/ });
+  const button = page.locator('[data-command-id="sketch.finish"]').first();
   await button.waitFor();
   await button.click();
   await page.getByText('Эскиз завершен', { exact: true }).waitFor();
@@ -113,12 +114,12 @@ async function finishSketch() {
 
 async function createProtectedExtrude() {
   await page.goto(url, { waitUntil: 'networkidle' });
-  await page.getByRole('button', { name: 'ASA-CAD', exact: true }).waitFor();
+  await page.locator('.k-main-menu-bar, .brand-button').first().waitFor();
   assert.equal(await page.evaluate(() => crossOriginIsolated), true, 'CAD route must be cross-origin isolated');
   assert.deepEqual(await loadedWasmResources(), [], 'OpenCascade WASM loaded on initial shell boot');
 
   await page.getByRole('button', { name: /Создать эскиз/i }).click();
-  await page.getByText('Плоскость построения', { exact: true }).waitFor();
+  await page.getByText('Опорный объект', { exact: true }).waitFor();
   await page.getByRole('button', { name: /XY/ }).click();
   await applyPrimary();
   await page.getByText('Эскиз 1', { exact: true }).waitFor();
@@ -130,11 +131,11 @@ async function createProtectedExtrude() {
   assert.equal(await emptyOverlay.getAttribute('data-entity-count'), '0');
 
   await page.getByRole('button', { name: /Прямоугольник/i }).click();
-  await page.locator('.content-area.panel-closed').waitFor();
-  await page.getByTitle('Параметры').click();
-  await page.locator('.parameter-panel').waitFor();
-  const width = page.locator('.numeric-field').filter({ hasText: 'Ширина' }).locator('input');
-  const height = page.locator('.numeric-field').filter({ hasText: 'Высота' }).locator('input');
+  await page.locator(PARAMS_READY).waitFor();
+  await openParams(page);
+  await page.locator(PANEL).waitFor();
+  const width = page.locator(FIELD).filter({ hasText: 'Ширина' }).locator('input');
+  const height = page.locator(FIELD).filter({ hasText: 'Высота' }).locator('input');
   assert.equal(await width.inputValue(), '60');
   assert.equal(await height.inputValue(), '40');
   await applyPrimary();
@@ -179,7 +180,7 @@ async function createProtectedExtrude() {
   assert.equal(await extrudeButton.isEnabled(), true, 'Extrude should be enabled after the rectangle sketch is finished');
   await extrudeButton.click();
 
-  const distance = page.locator('.numeric-field').filter({ hasText: 'Расстояние' }).locator('input');
+  const distance = page.locator(FIELD).filter({ hasText: 'Расстояние' }).locator('input');
   assert.equal(await distance.inputValue(), '10');
   assert.deepEqual(nonPlaneGcsWasm(await loadedWasmResources()), [], 'OpenCascade WASM loaded before the solid command was committed');
 
@@ -215,7 +216,7 @@ async function createProtectedExtrude() {
 async function createHoleAndFillet() {
   // New sketch must be attached through a persisted StableRef, not a transient face ordinal.
   await page.getByRole('button', { name: /Создать эскиз/i }).click();
-  await page.getByText('Грань построения', { exact: true }).waitFor();
+  await page.getByText(/^(Грань построения|Опорный объект)$/).waitFor();
   await page.locator('[data-testid="cad-viewport"][data-selection-mode="face"]').waitFor();
   await clickProjectedWorldPoint([0, 0, 10]);
   await page.locator('.cad-app[data-selected-kind="face"]').waitFor();
@@ -225,10 +226,10 @@ async function createHoleAndFillet() {
   await page.getByText('Создан эскиз на выбранной грани', { exact: true }).waitFor();
 
   await page.getByRole('button', { name: /Окружность/i }).click();
-  await page.locator('.content-area.panel-closed').waitFor();
-  await page.getByTitle('Параметры').click();
-  await page.locator('.parameter-panel').waitFor();
-  const diameter = page.locator('.numeric-field').filter({ hasText: 'Диаметр' }).locator('input');
+  await page.locator(PARAMS_READY).waitFor();
+  await openParams(page);
+  await page.locator(PANEL).waitFor();
+  const diameter = page.locator(FIELD).filter({ hasText: 'Диаметр' }).locator('input');
   assert.equal(await diameter.inputValue(), '12');
   await applyPrimary();
   await page.getByText('Окружность Ø12 мм создана', { exact: true }).waitFor();
@@ -243,7 +244,7 @@ async function createHoleAndFillet() {
   await page.getByText('Вырезать выдавливанием 1', { exact: true }).waitFor();
   await assertBounds([-30, -20, 0, 30, 20, 10]);
 
-  const filletButton = page.getByRole('button', { name: /Скругление/i });
+  const filletButton = page.locator('[data-command-id="part.fillet"]').first();
   assert.equal(await filletButton.isEnabled(), true, 'Fillet should be enabled after through cut');
   await filletButton.click();
   await page.locator('[data-testid="cad-viewport"][data-selection-mode="edge"]').waitFor();
@@ -251,7 +252,7 @@ async function createHoleAndFillet() {
   await clickProjectedWorldPoint([0, -20, 0]);
   await page.locator('.cad-app[data-selected-kind="edge"]').waitFor();
   await page.getByText('Ребро выбрано', { exact: true }).waitFor();
-  const radius = page.locator('.numeric-field').filter({ hasText: 'Радиус' }).locator('input');
+  const radius = page.locator(FIELD).filter({ hasText: 'Радиус' }).locator('input');
   assert.equal(await radius.inputValue(), '1');
   await applyPrimary();
   await page.getByText('Скругление R1 построено локально', { exact: true }).waitFor({ timeout: 60_000 });
@@ -263,16 +264,16 @@ async function createHoleAndFillet() {
 }
 
 async function editWidthAndVerifyHistory() {
-  const widthRow = page.getByRole('button', { name: /Ширина: 60 мм/ });
+  const widthRow = page.locator('[data-dimension-id]',{hasText:/Ширина: 60 мм/});
   await widthRow.waitFor();
   await widthRow.click();
   await page.getByText('Изменить размер', { exact: true }).waitFor();
-  const value = page.locator('.numeric-field').filter({ hasText: 'Размер' }).locator('input');
+  const value = page.locator(FIELD).filter({ hasText: 'Размер' }).locator('input');
   assert.equal(await value.inputValue(), '60');
   await value.fill('80');
   await page.getByRole('button', { name: 'Применить', exact: true }).click();
   await page.getByText('Ширина изменен на 80 мм; модель перестроена', { exact: true }).waitFor({ timeout: 60_000 });
-  await page.getByRole('button', { name: /Ширина: 80 мм/ }).waitFor();
+  await page.locator('[data-dimension-id]',{hasText:/Ширина: 80 мм/}).waitFor();
   await page.getByText('Вырезать выдавливанием 1', { exact: true }).waitFor();
   await page.getByText('Скругление 1', { exact: true }).waitFor();
   await assertBounds([-40, -20, 0, 40, 20, 10]);
@@ -281,7 +282,7 @@ async function editWidthAndVerifyHistory() {
 }
 
 async function saveAndInspectDocument() {
-  await page.getByTitle('Сохранить').click();
+  await page.locator(`${QUICK} [data-command-id="system.save"]`).click();
   await page.getByText('Сохранено локально', { exact: true }).waitFor();
 
   const saved = await page.evaluate(() => localStorage.getItem('asa-cad-m2-shell-document'));
@@ -304,11 +305,11 @@ async function saveAndInspectDocument() {
 
 async function reloadReopenAndEditHole() {
   await page.reload({ waitUntil: 'networkidle' });
-  await page.getByRole('button', { name: 'ASA-CAD', exact: true }).waitFor();
+  await page.locator('.k-main-menu-bar, .brand-button').first().waitFor();
   await page.locator('[data-testid="cad-viewport"][data-scene-revision="reference"][data-runtime-revision=""] canvas').waitFor();
   assert.deepEqual(await loadedWasmResources(), [], 'Reloaded empty shell eagerly loaded OpenCascade WASM');
 
-  await page.getByTitle('Открыть').click();
+  await page.locator(`${QUICK} [data-command-id="system.open"]`).click();
   await page.locator('.cad-app[data-runtime-status="ready"]').waitFor({ timeout: 120_000 });
   await page.locator('[data-testid="cad-viewport"] canvas').waitFor({ timeout: 60_000 });
   await page.getByText('Элемент выдавливания 1', { exact: true }).waitFor();
@@ -324,13 +325,13 @@ async function reloadReopenAndEditHole() {
   assert.deepEqual(state, { kind: 'part', runtime: 'ready' });
 
   // Reopened history is still editable, not a dumb mesh.
-  await page.getByRole('button', { name: /Диаметр: 12 мм/ }).click();
-  const value = page.locator('.numeric-field').filter({ hasText: 'Размер' }).locator('input');
+  await page.locator('[data-dimension-id]',{hasText:/Диаметр: 12 мм/}).click();
+  const value = page.locator(FIELD).filter({ hasText: 'Размер' }).locator('input');
   assert.equal(await value.inputValue(), '12');
   await value.fill('14');
   await page.getByRole('button', { name: 'Применить', exact: true }).click();
   await page.getByText('Диаметр изменен на 14 мм; модель перестроена', { exact: true }).waitFor({ timeout: 60_000 });
-  await page.getByRole('button', { name: /Диаметр: 14 мм/ }).waitFor();
+  await page.locator('[data-dimension-id]',{hasText:/Диаметр: 14 мм/}).waitFor();
   await page.getByText('Скругление 1', { exact: true }).waitFor();
   await assertBounds([-40, -20, 0, 40, 20, 10]);
 

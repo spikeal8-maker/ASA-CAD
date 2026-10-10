@@ -134,7 +134,7 @@
     "src/web/PartModelStage.tsx": 2561,
     "src/web/SketchEditingStage.tsx": 5989,
     "src/runtime/OpenCascadePartRuntime.ts": 15119,
-    "tests/m3/M3BrowserHarness.mjs": 7891
+    "tests/m3/M3BrowserHarness.mjs": 7873
   },
   "grandfatheredHardCeilings": {
     "docs/UI_COMMAND_SPEC.md": 31166,

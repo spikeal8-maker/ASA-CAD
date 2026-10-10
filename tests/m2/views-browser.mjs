@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { chromium } from '../../vendor/toubkal/node_modules/playwright-core/index.mjs';
+import { runView } from './shell-selectors.mjs';
 
 const url = process.env.ASA_CAD_SHELL_URL ?? 'http://127.0.0.1:8090/';
 const browser = await chromium.launch({ headless: true });
@@ -38,18 +39,18 @@ function dot(a, b) {
 
 async function createExtrudedPart() {
   await page.goto(url, { waitUntil: 'networkidle' });
-  await page.getByRole('button', { name: 'ASA-CAD', exact: true }).waitFor();
+  await page.locator('.k-main-menu-bar, .brand-button').first().waitFor();
   await page.getByRole('button', { name: /Создать эскиз/i }).click();
   await page.getByRole('button', { name: /XY/ }).click();
-  await page.locator('.parameter-actions button.primary').click();
+  await page.locator('.parameter-actions button.primary, .k-pp-ok').click();
   await page.getByRole('button', { name: /Прямоугольник/i }).click();
-  await page.locator('.content-area.panel-closed').waitFor();
-  await page.getByTitle('Параметры').click();
-  await page.locator('.parameter-panel').waitFor();
-  await page.locator('.parameter-actions button.primary').click();
-  await page.getByRole('button', { name: /Завершить эскиз/ }).click();
+  await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
+  if (await page.locator('.k-content').count() === 0) await page.getByTitle('Параметры').click(); else if (await page.locator('.k-content[data-panel-tab="params"]').count() === 0) await page.getByRole('tab', { name: 'Параметры' }).click();
+  await page.locator(':is(.parameter-panel, .k-pp)').waitFor();
+  await page.locator('.parameter-actions button.primary, .k-pp-ok').click();
+  await page.locator('[data-command-id="sketch.finish"]').first().click();
   await page.getByRole('button', { name: /Элемент выдавливания/i }).click();
-  await page.locator('.parameter-actions button.primary').click();
+  await page.locator('.parameter-actions button.primary, .k-pp-ok').click();
   await page.getByText('Выдавливание 10 мм построено локально', { exact: true }).waitFor({ timeout: 120_000 });
   await page.locator('[data-testid="cad-viewport"] canvas').waitFor({ timeout: 60_000 });
 }
@@ -65,9 +66,7 @@ async function cameraState() {
 }
 
 async function assertView(commandId, label, view, expectedDirection) {
-  const command = page.locator(`[data-command-id="${commandId}"]`).first();
-  await command.waitFor();
-  await command.click();
+  await runView(page, commandId);
   await page.locator(`[data-testid="cad-viewport"][data-view-name="${view}"]`).waitFor();
   const state = await cameraState();
   const direction = normalize(subtract(parseVector(state.position), parseVector(state.target)));
@@ -121,7 +120,7 @@ try {
   assert.ok(dot(zoomedDirection, fittedDirection) > 0.999, 'Fit changed the current viewing direction');
   assert.ok(Math.abs(fittedDistance - zoomedDistance) > 0.5, 'Fit did not change camera distance after zoom');
   assert.equal(fitted.revision, initial.revision, 'Fit triggered CAD recompute');
-  await page.locator('.view-caption').filter({ hasText: 'Показать всё' }).waitFor();
+  await page.locator('[data-testid="cad-viewport"][data-view-name="fit"]').waitFor();
 
   assert.deepEqual(pageErrors, [], `page errors: ${pageErrors.join('; ')}`);
   assert.deepEqual(failedRequests, [], `failed requests: ${failedRequests.join('; ')}`);

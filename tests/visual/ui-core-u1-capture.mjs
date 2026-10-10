@@ -16,15 +16,15 @@ assert.equal(referenceTag, 'ui-reference-20261004');
 assert.ok(candidateSha, 'candidate SHA is required');
 
 const REGION_MAP = [
-  { key: 'topShell', reference: '.main-menu-bar', candidate: '.main-menu-bar' },
-  { key: 'menuItems', reference: '#menu', candidate: '.main-menu-items' },
-  { key: 'commandSearch', reference: '#searchWrap', candidate: '.command-search-wrap' },
-  { key: 'documentTabs', reference: '.document-tabs', candidate: '.document-tabs' },
-  { key: 'activeDocumentTab', reference: '#docTab', candidate: '.document-tab.active' },
-  { key: 'instrumentArea', reference: '.instrument-area', candidate: '.instrument-area' },
-  { key: 'toolsets', reference: '#toolsets', candidate: '.workspace-tabs' },
-  { key: 'ribbon', reference: '#ribbon', candidate: '.command-ribbon' },
-  { key: 'contentArea', reference: '#content', candidate: '.content-area' },
+  { key: 'topShell', reference: '.main-menu-bar', candidate: '.k-main-menu-bar' },
+  { key: 'menuItems', reference: '#menu', candidate: '.k-main-menu-items' },
+  { key: 'commandSearch', reference: '#searchWrap', candidate: '.k-command-search' },
+  { key: 'documentTabs', reference: '.document-tabs', candidate: '.k-document-tabs' },
+  { key: 'activeDocumentTab', reference: '#docTab', candidate: '.k-doc-tab' },
+  { key: 'instrumentArea', reference: '.instrument-area', candidate: '.k-instrument-area' },
+  { key: 'toolsets', reference: '#toolsets', candidate: '.k-toolsets' },
+  { key: 'ribbon', reference: '#ribbon', candidate: '.k-command-ribbon' },
+  { key: 'contentArea', reference: '#content', candidate: '.k-content' },
 ];
 
 const hash = (value) => createHash('sha256').update(value).digest('hex');
@@ -116,7 +116,7 @@ async function openCandidate(browser, width, height) {
   page.on('requestfailed', (request) => failed.push(`${request.method()} ${request.url()}: ${request.failure()?.errorText ?? 'failed'}`));
   const response = await page.goto(`${candidateUrl}/cad/?uiScale=100`, { waitUntil: 'networkidle', timeout: 30000 });
   assert.ok(response?.ok());
-  await page.getByRole('button', { name: 'ASA-CAD', exact: true }).waitFor();
+  await page.locator('.k-main-menu-bar').waitFor();
   await ensurePart(page);
   const colorScheme = await page.evaluate(() => getComputedStyle(document.documentElement).colorScheme);
   assert.match(colorScheme, /light/i, 'U1A candidate must remain on the real light-only product theme');
@@ -129,7 +129,7 @@ async function setReferenceToolset(page, id) {
 }
 
 async function setCandidateWorkspace(page, label) {
-  await page.getByRole('tab', { name: label, exact: true }).click();
+  await page.locator('.k-toolset', { hasText: label }).click();
   await page.waitForTimeout(100);
 }
 

@@ -21,7 +21,7 @@ type Options = Partial<Pick<KompasCommand, 'v' | 'dis'>>;
 const T = (label: string, icon: string, id: string | null = null, o: Options = {}): KompasCommand => ({ kind: 't', label, icon, id, ...o });
 const I = (label: string, icon: string, id: string | null = null, o: Options = {}): KompasCommand => ({ kind: 'i', label, icon, id, ...o });
 
-const SYS: KompasPanel = {label:'Системная',cols:[[I('Создать','new','system.new'),I('Печать','print'),I('Отменить','undo','system.undo')],[I('Открыть','open','system.open'),I('Предварительный просмотр','preview'),I('Повторить','redo','system.redo')],[I('Сохранить','save','system.save'),I('Сохранить как','saveas','system.saveAs')]]};
+const SYS: KompasPanel = {label:'Системная',cols:[[I('Создать','new','system.new'),I('Печать','print'),I('Отменить','undo','system.undo')],[I('Открыть','open','system.open'),I('Предварительный просмотр','preview'),I('Повторить','redo','system.redo')],[I('Сохранить','save','system.save'),I('Сохранить как','saveas','system.saveAs'),I('Перестроить (F5)','refresh','system.rebuild')]]};
 const SKETCH_P: KompasPanel = {label:'Эскиз',cols:[[T('Автолиния','autoline','sketch.polyline'),T('Окружность','circle','sketch.circle'),T('Прямоугольник','rectangle','sketch.rectangle')]],
   x:[[T('Автоосевая','autoaxis'),T('Вспомогательная прямая','auxline','sketch.construction'),T('Спроецировать объект','project','sketch.project')]]};
 const AUX_P: KompasPanel = {label:'Вспомогательная геометрия',cols:[[I('Плоскость','plane','part.datum.plane',{v:'planes'}),I('Ось','axis','part.datum.axis',{v:'axes'}),I('Точка','point3','part.datum.point')],[I('Контрольная точка','ctrlpoint','part.controlPoint'),I('Присоединительная точка','connpoint','part.connectionPoint'),I('Локальная система координат','lcs')]]};

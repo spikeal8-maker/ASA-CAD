@@ -15,7 +15,7 @@ async function desktopCircle() {
   try {
     await loadFixture(page, 'circle', 1);
     const id = await selectEntity(page, 'circle');
-    const action = page.locator('.command-ribbon [data-command-id="dimension.radius"]');
+    const action = page.locator(':is(.command-ribbon, .k-command-ribbon) [data-command-id="dimension.radius"]');
     assert.equal(await action.isEnabled(), true);
     await action.click();
     await title(page).filter({ hasText: 'Радиальный размер' }).waitFor();
@@ -92,9 +92,9 @@ async function searchRadius() {
   try {
     await loadFixture(page, 'line', 1);
     await selectEntity(page, 'line');
-    const search = page.getByRole('textbox', { name: 'Поиск команд' });
+    const search = page.getByRole('textbox', { name: /^Поиск (команд|по командам)$/ });
     await search.fill('Радиальный размер');
-    let result = page.locator('.command-search-results [data-command-id="dimension.radius"]');
+    let result = page.locator(':is(.command-search-results, .k-search-results) [data-command-id="dimension.radius"]');
     await result.waitFor();
     assert.equal(await result.isEnabled(), false);
     assert.equal(await result.getAttribute('title'), 'Выберите окружность или дугу эскиза');
@@ -102,7 +102,7 @@ async function searchRadius() {
     await loadFixture(page, 'circle', 1);
     const id = await selectEntity(page, 'circle');
     await search.fill('Радиальный размер');
-    result = page.locator('.command-search-results [data-command-id="dimension.radius"]');
+    result = page.locator(':is(.command-search-results, .k-search-results) [data-command-id="dimension.radius"]');
     assert.equal(await result.isEnabled(), true);
     await result.click();
     await title(page).filter({ hasText: 'Радиальный размер' }).waitFor();
@@ -121,10 +121,10 @@ async function cancelNoMutation() {
     await loadFixture(page, 'circle', 1);
     await selectEntity(page, 'circle');
     const before = JSON.stringify(await saveLocalDocument(page));
-    await page.locator('.command-ribbon [data-command-id="dimension.radius"]').click();
+    await page.locator(':is(.command-ribbon, .k-command-ribbon) [data-command-id="dimension.radius"]').click();
     await title(page).filter({ hasText: 'Радиальный размер' }).waitFor();
     await field(page).fill('77');
-    await page.locator('.parameter-actions button:not(.primary)').click();
+    await page.locator('.parameter-actions button:not(.primary), .k-pp-cancel').click();
     const after = JSON.stringify(await saveLocalDocument(page));
     assert.equal(after, before);
     assert.equal(JSON.parse(after).dimensions.length, 0);

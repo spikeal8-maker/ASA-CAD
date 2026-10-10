@@ -49,7 +49,7 @@ async function desktopDirectRectangle() {
     const rectangleButton = page.locator('[data-command-id="sketch.rectangle"]').first();
     assert.equal(await rectangleButton.isEnabled(), true, 'Rectangle action must be enabled in active Sketch');
     await rectangleButton.click();
-    await page.locator('.content-area.panel-closed').waitFor();
+    await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
 
     const { layer, box } = await interactionBox(page, 'rectangle', 'Rectangle');
     assert.equal(await layer.getAttribute('data-rectangle-phase'), 'awaiting-first');

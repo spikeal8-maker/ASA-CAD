@@ -10,7 +10,7 @@ const browser = await launchM3Browser();
 
 async function createCircle(page, touch, centerAt, edgeAt, count) {
   if (touch) await activateMobileTool(page, 'sketch.circle', 'Circle');
-  else await page.locator('.command-ribbon [data-command-id="sketch.circle"]').click();
+  else await page.locator(':is(.command-ribbon, .k-command-ribbon) [data-command-id="sketch.circle"]').click();
   const { box } = await interactionBox(page, 'circle', 'Circle');
   const center = squarePoint(box, ...centerAt), edge = squarePoint(box, ...edgeAt);
   if (touch) { await page.touchscreen.tap(center.x, center.y); await page.touchscreen.tap(edge.x, edge.y); }
@@ -71,9 +71,9 @@ async function desktopConcentric() {
     assert.equal(await centersCoincident(page, first, second), false, 'Circles must start non-concentric');
     const beforeA = await circleGeometry(page, first), beforeB = await circleGeometry(page, second);
 
-    const search = page.getByRole('textbox', { name: 'Поиск команд' });
+    const search = page.getByRole('textbox', { name: /^Поиск (команд|по командам)$/ });
     await search.fill('Концентр');
-    const action = page.locator('.command-search-results [data-command-id="constraint.concentric"]');
+    const action = page.locator(':is(.command-search-results, .k-search-results) [data-command-id="constraint.concentric"]');
     await action.waitFor();
     assert.equal(await action.isEnabled(), true, 'search Concentric must enable');
     await action.click();
@@ -90,10 +90,10 @@ async function desktopConcentric() {
     assert.deepEqual(constraint.entityIds, canonicalPair, 'Concentric refs must persist canonically');
     const constraintId = constraint.id;
 
-    await page.locator('.global-actions [data-command-id="system.undo"]').click();
+    await page.locator(':is(.global-actions, .k-command-ribbon) [data-command-id="system.undo"]').click();
     await waitSolvedOverlay(page, 2, 'Concentric undo');
     assert.equal(await centersCoincident(page, first, second), false, 'Undo failed');
-    await page.locator('.global-actions [data-command-id="system.redo"]').click();
+    await page.locator(':is(.global-actions, .k-command-ribbon) [data-command-id="system.redo"]').click();
     await waitSolvedOverlay(page, 2, 'Concentric redo');
     assert.equal(await centersCoincident(page, first, second), true, 'Redo failed');
 
@@ -117,7 +117,7 @@ async function touchConcentric() {
     await createMobileXYSketch(page);
     const { first, second } = await createPair(page, true);
     await activateMobileTool(page, 'constraint.concentric', 'Concentric');
-    await page.locator('.content-area.panel-closed').waitFor();
+    await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
     assert.equal(await page.locator('.management-panel').isVisible(), false, 'Tools panel still covers Sketch');
     await chooseCircles(page, first, second, true);
     const saved = await saveLocalDocument(page);

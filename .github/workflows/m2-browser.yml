@@ -79,15 +79,10 @@ jobs:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m2/shell-browser.mjs
 
-      - name: Exercise U1A real-command owner flow at both acceptance resolutions
+      - name: Exercise the KOMPAS shell of reference #170 over real product actions
         env:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
-        run: node tests/m2/u1a-owner-flow-browser.mjs
-
-      - name: Keep U1A shell keys out of CAD shortcuts
-        env:
-          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
-        run: node tests/m2/u1a-keyboard-browser.mjs
+        run: node tests/m2/kompas-shell-browser.mjs
 
       - name: Exercise shared mobile action tools
         env:

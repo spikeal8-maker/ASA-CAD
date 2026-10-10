@@ -105,15 +105,15 @@ Geometry сравнивается только по эквивалентным s
 
 | Semantic region | Frozen #170 | Product candidate |
 |---|---|---|
-| topShell | `.main-menu-bar` | `.main-menu-bar` |
-| menuItems | `#menu` | `.main-menu-items` |
-| commandSearch | `#searchWrap` | `.command-search-wrap` |
-| documentTabs | `.document-tabs` | `.document-tabs` |
-| activeDocumentTab | `#docTab` | `.document-tab.active` |
-| instrumentArea | `.instrument-area` | `.instrument-area` |
-| toolsets | `#toolsets` | `.workspace-tabs` |
-| ribbon | `#ribbon` | `.command-ribbon` |
-| contentArea | `#content` | `.content-area` |
+| topShell | `.main-menu-bar` | `.k-main-menu-bar` |
+| menuItems | `#menu` | `.k-main-menu-items` |
+| commandSearch | `#searchWrap` | `.k-command-search` |
+| documentTabs | `.document-tabs` | `.k-document-tabs` |
+| activeDocumentTab | `#docTab` | `.k-doc-tab` |
+| instrumentArea | `.instrument-area` | `.k-instrument-area` |
+| toolsets | `#toolsets` | `.k-toolsets` |
+| ribbon | `#ribbon` | `.k-command-ribbon` |
+| contentArea | `#content` | `.k-content` |
 
 `#menu` больше не сравнивается с полной `.main-menu-bar`. Prototype `.title-tools` также не считается эквивалентом product `.global-actions`, потому что наборы действий различаются.
 

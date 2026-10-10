@@ -1,4 +1,5 @@
 import React from 'react';
+import { flushSync } from 'react-dom';
 import { KIcon } from './KompasIcon';
 import type { KompasMenuLists } from './kompasMenus';
 import { KOMPAS_TOOLSETS, type KompasCommand } from './kompasToolsets';
@@ -42,7 +43,7 @@ export function KompasMenuBar(props: { names: readonly string[]; lists: KompasMe
     const factory = lists.menus[name];
     if (!button || !factory) return;
     kompasShell.set({ panelDrop: null });
-    kompasShell.openPop(0, { items: factory(), anchor: anchorOf(button), below: true }, { menu: name, drop: null });
+    kompasShell.openPop(0, { items: factory(), anchor: anchorOf(button), below: true, label: name }, { menu: name, drop: null });
   }, [lists]);
 
   React.useEffect(() => {
@@ -78,8 +79,8 @@ export function KompasMenuBar(props: { names: readonly string[]; lists: KompasMe
               if (event.key !== 'ArrowDown' && event.key !== 'Enter' && event.key !== ' ') return;
               event.preventDefault();
               event.stopPropagation();
-              open(name);
-              focusKompasPop(0);
+              flushSync(() => open(name));
+              document.querySelector<HTMLElement>('.k-pop[data-level="0"] .k-mi:not([aria-disabled="true"])')?.focus();
             }}
           >{name}</button>
         ))}
@@ -97,10 +98,18 @@ function KompasCommandSearch() {
   const [query, setQuery] = React.useState('');
   const results = React.useRef<HTMLDivElement>(null);
   const q = query.trim().toLowerCase();
-  const hits = q ? ALL_COMMANDS.filter((command) => command.label.toLowerCase().includes(q)).slice(0, 9) : [];
+  /* ASA-CAD commands first, then the rest of the reference toolsets. */
+  const hits = q
+    ? ALL_COMMANDS.filter((command) => command.label.toLowerCase().includes(q))
+      .map((command, index) => ({ command, rank: (kompasShell.commands.status(command.id) === 'implemented' ? 0 : 1000) + index }))
+      .sort((a, b) => a.rank - b.rank).slice(0, 9).map((item) => item.command)
+    : [];
+  const blocked = (hit: SearchHit) => hit.dis ?? kompasShell.commands.unavailable(hit.id);
+  const runnable = hits.find((hit) => kompasShell.commands.status(hit.id) === 'implemented' && !blocked(hit));
   const pick = (hit: SearchHit) => {
     setQuery('');
-    if (hit.dis) kompasShell.toast(`«${hit.label}»: ${hit.dis}`);
+    const reason = blocked(hit);
+    if (reason) kompasShell.toast(`«${hit.label}»: ${reason}`);
     else kompasShell.run(hit.id, hit.label);
   };
 
@@ -117,7 +126,7 @@ function KompasCommandSearch() {
         onChange={(event) => setQuery(event.target.value)}
         onKeyDown={(event) => {
           if (event.key === 'Escape') { event.stopPropagation(); setQuery(''); event.currentTarget.blur(); }
-          else if (event.key === 'Enter' && hits[0]) { event.preventDefault(); event.stopPropagation(); pick(hits[0]); }
+          else if (event.key === 'Enter' && hits.length) { event.preventDefault(); event.stopPropagation(); pick(runnable ?? hits[0]!); }
           else if (event.key === 'ArrowDown' && hits.length) { event.preventDefault(); event.stopPropagation(); results.current?.querySelector('button')?.focus(); }
         }}
       />
@@ -130,6 +139,9 @@ function KompasCommandSearch() {
               role="option"
               aria-selected={false}
               data-command-id={hit.id ?? undefined}
+              data-st={kompasShell.commands.status(hit.id)}
+              aria-disabled={blocked(hit) ? true : undefined}
+              title={blocked(hit)}
               onClick={(event) => { event.preventDefault(); pick(hit); }}
               onKeyDown={(event) => {
                 if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); setQuery(''); }

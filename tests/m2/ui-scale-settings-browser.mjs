@@ -8,6 +8,7 @@ assert.match(shellSource, /useUiScaleSettingsOpen\(\)/, 'Shell must consume the 
 assert.match(shellSource, /onClick=\{openUiSettings\}/, 'Settings action must call React handler directly');
 
 import { chromium } from '../../vendor/toubkal/node_modules/playwright-core/index.mjs';
+import { openUiScaleSettings } from './shell-selectors.mjs';
 
 const url = process.env.ASA_CAD_SHELL_URL ?? 'http://127.0.0.1:8090/';
 const browser = await chromium.launch({ headless: true });
@@ -33,13 +34,13 @@ async function desktopSettingsFlow() {
   }));
 
   await page.goto(url, { waitUntil: 'networkidle' });
-  await page.getByRole('button', { name: 'ASA-CAD', exact: true }).waitFor();
+  await page.locator('.k-main-menu-bar, .brand-button').first().waitFor();
   let state = await scaleState();
   assert.equal(state.mode, 'auto');
   assert.equal(state.resolved, 100);
-  await page.getByTestId('ui-scale-status').getByText('UI 100%', { exact: true }).waitFor();
+  await page.getByTestId('ui-scale-status').getByText('UI 100%', { exact: true }).waitFor({ state: 'attached' });
 
-  await page.getByTitle('Настройки').click();
+  await openUiScaleSettings(page);
   const dialog = page.getByRole('dialog', { name: 'Настройки интерфейса' });
   await dialog.waitFor();
   await dialog.getByRole('radio', { name: /125%/ }).click();
@@ -47,7 +48,7 @@ async function desktopSettingsFlow() {
   state = await scaleState();
   assert.equal(state.stored, '125');
   assert.ok(state.rootFont >= 17, `125% root font did not enlarge: ${state.rootFont}`);
-  await page.getByTestId('ui-scale-status').getByText('UI 125%', { exact: true }).waitFor();
+  await page.getByTestId('ui-scale-status').getByText('UI 125%', { exact: true }).waitFor({ state: 'attached' });
   console.log('  ✓ desktop Settings applies and persists UI 125%');
 
   await dialog.getByRole('button', { name: 'Закрыть настройки' }).click();
@@ -56,17 +57,17 @@ async function desktopSettingsFlow() {
   await page.locator('html[data-ui-scale-mode="125"][data-ui-scale="125"]').waitFor();
   state = await scaleState();
   assert.equal(state.stored, '125');
-  await page.getByTestId('ui-scale-status').getByText('UI 125%', { exact: true }).waitFor();
+  await page.getByTestId('ui-scale-status').getByText('UI 125%', { exact: true }).waitFor({ state: 'attached' });
   console.log('  ✓ UI Scale survives desktop reload without query override');
 
-  await page.getByTitle('Настройки').click();
+  await openUiScaleSettings(page);
   const dialogAfterReload = page.getByRole('dialog', { name: 'Настройки интерфейса' });
   await dialogAfterReload.getByRole('radio', { name: /^Авто/ }).click();
   await page.locator('html[data-ui-scale-mode="auto"][data-ui-scale="100"]').waitFor();
   state = await scaleState();
   assert.equal(state.stored, 'auto');
   assert.equal(state.resolved, 100);
-  await page.getByTestId('ui-scale-status').getByText('UI 100%', { exact: true }).waitFor();
+  await page.getByTestId('ui-scale-status').getByText('UI 100%', { exact: true }).waitFor({ state: 'attached' });
   console.log('  ✓ Auto on FHD resolves back to 100% and persists');
 
   assert.equal(wasmRequests.length, 0, 'desktop UI settings unexpectedly loaded OpenCascade WASM');
@@ -93,7 +94,7 @@ async function phoneSettingsFlow() {
   });
 
   await page.goto(url, { waitUntil: 'networkidle' });
-  await page.getByRole('button', { name: 'ASA-CAD', exact: true }).waitFor();
+  await page.locator('.k-main-menu-bar, .brand-button').first().waitFor();
   const launcher = page.getByRole('button', { name: 'Настройки интерфейса', exact: true });
   await launcher.waitFor();
   const launcherBox = await launcher.boundingBox();

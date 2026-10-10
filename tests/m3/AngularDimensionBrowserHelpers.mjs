@@ -27,7 +27,7 @@ export async function chooseAngularLines(page, first, second, touch = false) {
     await assertVisibleTouchTarget(page, secondPoint.x, secondPoint.y);
     await page.touchscreen.tap(secondPoint.x, secondPoint.y);
   } else await page.mouse.click(secondPoint.x, secondPoint.y);
-  await page.locator('.parameter-panel .panel-title-row strong').filter({ hasText: 'Угловой размер' }).waitFor();
+  await page.locator(':is(.parameter-panel .panel-title-row strong, .k-pp-cmd strong)').filter({ hasText: 'Угловой размер' }).waitFor();
   await surface.waitFor({ state: 'detached' });
   assert.equal(await page.locator('[data-angular-dimension-a]').getAttribute('data-angular-dimension-a'), first);
   assert.equal(await page.locator('[data-angular-dimension-b]').getAttribute('data-angular-dimension-b'), second);

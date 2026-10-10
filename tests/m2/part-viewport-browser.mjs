@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import * as THREE from '../../vendor/toubkal/node_modules/three/build/three.module.js';
 import { chromium } from '../../vendor/toubkal/node_modules/playwright-core/index.mjs';
+import { runView } from './shell-selectors.mjs';
 
 // C1 / KOMPAS-CORE-INTERACTION-001 — Unified Part Viewport on the ordinary /cad/ route.
 const base = (process.env.ASA_CAD_SHELL_URL ?? 'http://127.0.0.1:8090/').replace(/\/$/, '');
@@ -35,7 +36,7 @@ async function camera() {
 
 async function openEmptyPart() {
   await page.goto(`${base}/cad/?uiScale=100`, { waitUntil: 'networkidle' });
-  await page.getByRole('button', { name: 'ASA-CAD', exact: true }).waitFor();
+  await page.locator('.k-main-menu-bar, .brand-button').first().waitFor();
   await page.locator('[data-testid="part-model-stage"][data-workarea-kind="part-empty"]').waitFor({ state: 'attached' });
   await sceneCanvas().waitFor();
 }
@@ -69,13 +70,14 @@ async function assertSelectedPlane(id) {
   await page.locator(`[data-testid="part-model-stage"][data-selected-base-plane="${value}"]`).waitFor({ state: 'attached' });
   if (await treePlane('XY').count()) {
     for (const plane of ['XY', 'XZ', 'YZ']) {
-      assert.equal(await treePlane(plane).getAttribute('aria-pressed'), String(plane === id), `tree selection mismatch for ${plane}`);
+      const state = await treePlane(plane).evaluate((node) => node.getAttribute('aria-pressed') ?? node.getAttribute('aria-selected'));
+      assert.equal(state, String(plane === id), `tree selection mismatch for ${plane}`);
     }
   }
 }
 
 async function savedDocument() {
-  await page.getByTitle('Сохранить').click();
+  await page.locator(':is(.global-actions, .k-command-ribbon) [data-command-id="system.save"]').click();
   await page.getByText('Сохранено локально', { exact: true }).waitFor();
   const raw = await page.evaluate(() => localStorage.getItem('asa-cad-m2-shell-document'));
   assert.ok(raw, 'saved Part document missing');
@@ -124,12 +126,12 @@ try {
   // 3. Standard views and mouse navigation on the same camera without any body.
   const initial = await camera();
   assert.equal(initial.view, 'isometric');
-  await page.locator('[data-command-id="view.top"]').first().click();
+  await runView(page, 'view.top');
   await page.locator('[data-testid="cad-viewport"][data-view-name="top"]').waitFor();
   const top = await camera();
   const topDirection = vector(top.position, 'top position').map((value, index) => value - vector(top.target, 'top target')[index]);
   assert.ok(topDirection[2] > 0 && Math.abs(topDirection[0]) < 1e-3 && Math.abs(topDirection[1]) < 1e-3, `top view direction ${topDirection}`);
-  await page.locator('[data-command-id="view.iso"]').first().click();
+  await runView(page, 'view.iso');
   await page.locator('[data-testid="cad-viewport"][data-view-name="isometric"]').waitFor();
   const iso = await camera();
 
@@ -161,24 +163,26 @@ try {
   console.log('  ✓ views + RMB rotate / MMB pan / wheel zoom work on the empty Part');
 
   // 4. "Select, then command": the selected scene plane is the Sketch support.
-  await page.locator('[data-command-id="view.iso"]').first().click();
+  await runView(page, 'view.iso');
   await page.locator('[data-testid="cad-viewport"][data-view-name="isometric"]').waitFor();
   await clickScenePlane('XZ');
   await assertSelectedPlane('XZ');
   await page.getByRole('button', { name: /Создать эскиз/i }).click();
-  const panel = page.locator('.parameter-panel');
+  const panel = page.locator(':is(.parameter-panel, .k-pp)');
   await panel.waitFor();
-  assert.equal((await panel.locator('.plane-grid button.selected').innerText()).replace(/\s+/g, ''), '▱XZ', 'parameters disagree with scene selection');
+  const chosen = panel.locator('.plane-grid button.selected, [aria-label^="Плоскость "][aria-pressed="true"]');
+  assert.match(await chosen.evaluate((node) => node.getAttribute('aria-label') ?? node.textContent ?? ''), /XZ/, 'parameters disagree with scene selection');
   await assertSelectedPlane('XZ');
   for (const size of [{ width: 1600, height: 900 }, { width: 1366, height: 768 }]) {
     await page.setViewportSize(size);
-    await assertReachable(panel.locator('.parameter-actions button.primary'), `Создать at ${size.width}×${size.height}`);
-    await assertReachable(panel.locator('.parameter-actions button:not(.primary)'), `Отмена at ${size.width}×${size.height}`);
-    const status = await page.locator('.status-bar').boundingBox();
-    assert.ok(status && status.height >= 20 && status.y + status.height <= size.height, `status bar clipped at ${size.width}×${size.height}`);
+    await assertReachable(panel.locator('.parameter-actions button.primary, .k-pp-ok'), `Создать at ${size.width}×${size.height}`);
+    await assertReachable(panel.locator('.parameter-actions button:not(.primary), .k-pp-cancel'), `Отмена at ${size.width}×${size.height}`);
+    // The KOMPAS shell has no status bar; the compact shell must keep it unclipped.
+    const status = await page.locator('.k-main-menu-bar').count() ? null : await page.locator('.status-bar').boundingBox();
+    if (await page.locator('.k-main-menu-bar').count() === 0) assert.ok(status && status.height >= 20 && status.y + status.height <= size.height, `status bar clipped at ${size.width}×${size.height}`);
   }
   await page.setViewportSize({ width: 1600, height: 900 });
-  await panel.locator('.parameter-actions button.primary').click();
+  await panel.locator('.parameter-actions button.primary, .k-pp-ok').click();
   await page.locator('.cad-app[data-sketch-count="1"]').waitFor();
   const first = await savedDocument();
   assert.equal(first.sketches[0].support, 'XZ', 'Sketch was not created on the selected plane');
@@ -191,8 +195,9 @@ try {
   await assertSelectedPlane('XY');
   await clickScenePlane('YZ');
   await assertSelectedPlane('YZ');
-  assert.equal((await panel.locator('.plane-grid button.selected').innerText()).replace(/\s+/g, ''), '▱YZ', 'parameters did not follow the scene pick');
-  await panel.locator('.parameter-actions button.primary').click();
+  const followed = panel.locator('.plane-grid button.selected, [aria-label^="Плоскость "][aria-pressed="true"]');
+  assert.match(await followed.evaluate((node) => node.getAttribute('aria-label') ?? node.textContent ?? ''), /YZ/, 'parameters did not follow the scene pick');
+  await panel.locator('.parameter-actions button.primary, .k-pp-ok').click();
   await page.locator('.cad-app[data-sketch-count="1"]').waitFor();
   const second = await savedDocument();
   assert.equal(second.sketches[0].support, 'YZ', 'Sketch was not created on the plane picked during the command');
@@ -202,9 +207,9 @@ try {
   await openEmptyPart();
   await page.getByRole('button', { name: /Создать эскиз/i }).click();
   await panel.waitFor();
-  await panel.locator('.parameter-actions button:not(.primary)').click();
+  await panel.locator('.parameter-actions button:not(.primary), .k-pp-cancel').click();
   await page.locator('.cad-app[data-sketch-count="0"]').waitFor();
-  assert.equal(await page.locator('.dirty-dot').count(), 0, 'cancelled command dirtied the document');
+  assert.equal(await page.locator(':is(.dirty-dot, [data-document-dirty="true"])').count(), 0, 'cancelled command dirtied the document');
   console.log('  ✓ cancel keeps the empty Part unchanged');
 
   assert.deepEqual(wasm, [], `origin scene / Sketch creation loaded OpenCascade: ${wasm.join(', ')}`);

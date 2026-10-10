@@ -209,47 +209,47 @@
       {
         "key": "topShell",
         "reference": ".main-menu-bar",
-        "candidate": ".main-menu-bar"
+        "candidate": ".k-main-menu-bar"
       },
       {
         "key": "menuItems",
         "reference": "#menu",
-        "candidate": ".main-menu-items"
+        "candidate": ".k-main-menu-items"
       },
       {
         "key": "commandSearch",
         "reference": "#searchWrap",
-        "candidate": ".command-search-wrap"
+        "candidate": ".k-command-search"
       },
       {
         "key": "documentTabs",
         "reference": ".document-tabs",
-        "candidate": ".document-tabs"
+        "candidate": ".k-document-tabs"
       },
       {
         "key": "activeDocumentTab",
         "reference": "#docTab",
-        "candidate": ".document-tab.active"
+        "candidate": ".k-doc-tab"
       },
       {
         "key": "instrumentArea",
         "reference": ".instrument-area",
-        "candidate": ".instrument-area"
+        "candidate": ".k-instrument-area"
       },
       {
         "key": "toolsets",
         "reference": "#toolsets",
-        "candidate": ".workspace-tabs"
+        "candidate": ".k-toolsets"
       },
       {
         "key": "ribbon",
         "reference": "#ribbon",
-        "candidate": ".command-ribbon"
+        "candidate": ".k-command-ribbon"
       },
       {
         "key": "contentArea",
         "reference": "#content",
-        "candidate": ".content-area"
+        "candidate": ".k-content"
       }
     ],
     "ownerPressure": {

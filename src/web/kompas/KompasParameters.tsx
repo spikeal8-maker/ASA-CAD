@@ -46,11 +46,11 @@ function PanelHead() {
 }
 
 function Frame(props: React.PropsWithChildren<{
-  title: string; icon: string; tabs?: readonly string[];
-  canCommit: boolean; commitLabel?: string; onCommit(): void; onCancel(): void; message: string;
+  title: string; icon: string; tabs?: readonly string[]; data?: Record<string, string>;
+  canCommit: boolean; commitLabel?: string; onCommit(): void; onCancel(): void; message: string; error?: boolean;
 }>) {
   return (
-    <div className="k-params-panel k-pp" data-command-title={props.title}>
+    <div className="k-params-panel k-pp" data-command-title={props.title} {...props.data}>
       <PanelHead />
       <div className="k-pp-cmd">
         <strong>{props.title}</strong>
@@ -67,7 +67,7 @@ function Frame(props: React.PropsWithChildren<{
         <button type="button" className="k-pp-cancel" data-param-cancel="" data-tip="Прервать команду (Esc)" aria-label="Прервать команду" onClick={props.onCancel}><KIcon name="cross" size={18} /></button>
       </div>
       <div className="k-pp-body">{props.children}</div>
-      <div className="k-pp-msg" role="status">
+      <div className="k-pp-msg" role={props.error ? 'alert' : 'status'}>
         <KIcon name="bubble" size={16} /><span>{props.message}</span>
         <button type="button" aria-label="Скрыть сообщение" onClick={NOT_YET('Скрытия сообщения')}><KIcon name="cross" size={11} /></button>
       </div>
@@ -81,7 +81,7 @@ function NumberField(props: { label: string; value: number; onChange(value: numb
   const parsed = Number(text.trim().replace(',', '.'));
   const valid = text.trim() !== '' && Number.isFinite(parsed) && parsed > 0;
   React.useEffect(() => {
-    if (Number(text.replace(',', '.')) !== props.value) setText(String(props.value));
+    if (!Number.isNaN(props.value) && Number(text.trim().replace(',', '.')) !== props.value) setText(String(props.value));
   }, [props.value]);
   return (
     <input
@@ -96,8 +96,9 @@ function NumberField(props: { label: string; value: number; onChange(value: numb
       onFocus={(event) => event.currentTarget.select()}
       onChange={(event) => {
         setText(event.target.value);
-        const next = Number(event.target.value.trim().replace(',', '.'));
-        if (event.target.value.trim() !== '' && Number.isFinite(next) && next > 0) props.onChange(next);
+        /* Invalid values reach the product too: its validation owns the message and ✓. */
+        const raw = event.target.value.trim();
+        props.onChange(raw === '' ? Number.NaN : Number(raw.replace(',', '.')));
       }}
       onKeyDown={(event) => {
         if (event.key === 'Enter') { event.preventDefault(); event.stopPropagation(); if (valid) props.onEnter(); }
@@ -125,6 +126,7 @@ function ExtrudePanel({ p }: { p: ParameterPanelProps }) {
   const commit = () => { if (canCommit) void e.commit(); };
   return (
     <Frame title="Элемент выдавливания" icon="extrude" tabs={['doc', 'stamp', 'user']} canCommit={canCommit} onCommit={commit} onCancel={p.onCancel}
+      data={{ 'data-extrude-profile-id': e.profileId ?? '' }} error={Boolean(e.validationError)}
       message={e.validationError ?? (e.profileId ? 'Создайте операцию или отредактируйте параметры' : e.disabledReason ?? 'Выберите эскиз с замкнутым контуром')}>
       <div className="k-pp-row">
         <div className="k-pp-label">Результат:<small>Объединение</small></div>
@@ -145,7 +147,7 @@ function ExtrudePanel({ p }: { p: ParameterPanelProps }) {
       </div>
       <div className="k-pp-row">
         <div className="k-pp-label"><span className="k-pp-link">Направляющий объект</span></div>
-        <div className="k-pp-fieldwrap"><span className="k-v">{e.profileName ? `Нормаль к ${e.profileName}` : ''}</span></div>
+        <div className="k-pp-fieldwrap"><span className="k-v">{e.profileName ? 'Нормаль к плоскости эскиза' : ''}</span></div>
         <button type="button" className="k-pp-side" aria-label="Указать направление" onClick={NOT_YET('Направления по объекту')}><KIcon name="arrowUR" size={16} /></button>
       </div>
       <div className="k-pp-row">
@@ -158,7 +160,7 @@ function ExtrudePanel({ p }: { p: ParameterPanelProps }) {
         </div><span />
       </div>
       <div className="k-pp-row k-hl">
-        <div className="k-pp-label"><span className="k-pp-lbl-drop">Расстояние <KIcon name="caret" size={9} /></span></div>
+        <div className="k-pp-label"><span className="k-pp-lbl-drop">Расстояние <KIcon name="caret" size={9} /></span><small>{e.reverse ? 'Обратное' : 'Прямое'}</small></div>
         <NumberField label="Расстояние" value={e.distance} onChange={e.setDistance} onEnter={commit} />
         <button type="button" className="k-pp-side" data-tip="Обратное направление" aria-label="Обратное направление" aria-pressed={e.reverse}
           disabled={e.symmetric} style={{ transform: e.reverse ? 'scaleX(-1)' : 'none' }} onClick={e.toggleReverse}><KIcon name="arrowR" size={16} /></button>
@@ -195,7 +197,7 @@ function Section(props: React.PropsWithChildren<{ title: string; open: boolean; 
 function PlaceSketchPanel({ p }: { p: ParameterPanelProps }) {
   const face = p.requiresFaceSelection;
   const picked = face && p.selectedPick?.kind === 'face';
-  const value = face ? (picked ? 'Грань тела' : '') : `Плоскость ${p.sketchPlane}`;
+  const value = face ? (picked ? 'Грань выбрана' : '') : `Плоскость ${p.sketchPlane}`;
   return (
     <Frame title="Создать эскиз" icon="ts_sketch" canCommit={!face || picked} onCommit={p.onCreateSketch} onCancel={p.onCancel}
       message="Укажите плоскость или плоскую грань для размещения эскиза">

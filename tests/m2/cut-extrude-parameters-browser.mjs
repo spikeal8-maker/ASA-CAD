@@ -16,7 +16,7 @@ async function fileCommand(label){
   await menu.getByRole('menuitem',{name:label,exact:true}).click();
 }
 async function save(){
-  await page.getByTitle('Сохранить').click();
+  await page.locator(':is(.global-actions, .k-command-ribbon) [data-command-id="system.save"]').click();
   await page.getByText('Сохранено локально',{exact:true}).waitFor();
   const raw=await page.evaluate(()=>localStorage.getItem('asa-cad-m2-shell-document'));
   assert.ok(raw); return {raw,doc:JSON.parse(raw)};
@@ -53,20 +53,20 @@ async function clickWorld(point){
   await canvas.click({position:{x:(projected.x+1)*box.width/2,y:(1-projected.y)*box.height/2}});
 }
 async function createBaseBody(){
-  await fileCommand('Новый');
+  await fileCommand('Создать...');
   const dialog=page.getByRole('dialog',{name:'Новый документ',exact:true}); await dialog.waitFor();
   await dialog.getByRole('button',{name:/Деталь/}).click();
   await page.getByRole('button',{name:/Создать эскиз/i}).click();
   await page.getByRole('button',{name:/XY/}).click();
-  await page.getByRole('button',{name:'Создать',exact:true}).click();
+  await page.locator('.parameter-actions button.primary, .k-pp-ok').click();
   await page.getByRole('button',{name:/Прямоугольник/i}).click();
-  await page.getByTitle('Параметры').click();
-  await page.locator('.parameter-actions button.primary').click();
+  if (await page.locator('.k-content').count() === 0) await page.getByTitle('Параметры').click(); else if (await page.locator('.k-content[data-panel-tab="params"]').count() === 0) await page.getByRole('tab', { name: 'Параметры' }).click();
+  await page.locator('.parameter-actions button.primary, .k-pp-ok').click();
   await page.getByText('Прямоугольник 60×40 мм создан',{exact:true}).waitFor();
-  await page.getByRole('button',{name:/Завершить эскиз/i}).click();
+  await page.locator('[data-command-id="sketch.finish"]').first().click();
   await page.getByText('Эскиз завершен',{exact:true}).waitFor();
   await page.locator('[data-command-id="part.extrude"]').first().click();
-  const extrude=page.locator('.extrude-parameter-panel'); await extrude.waitFor();
+  const extrude=page.locator(':is(.extrude-parameter-panel, .k-pp[data-command-title="Элемент выдавливания"])'); await extrude.waitFor();
   await extrude.getByRole('button',{name:'Создать объект',exact:true}).click();
   await app().filter({has:page.locator('[data-runtime-status="ready"]')}).count().catch(()=>0);
   await page.locator('.cad-app[data-runtime-status="ready"][data-feature-count="1"]').waitFor({timeout:120000});
@@ -74,20 +74,20 @@ async function createBaseBody(){
 }
 async function createCutSketch(){
   await page.getByRole('button',{name:/Создать эскиз/i}).click();
-  await page.getByText('Грань построения',{exact:true}).waitFor();
+  await page.getByText(/^(Грань построения|Опорный объект)$/).waitFor();
   await page.locator('[data-testid="cad-viewport"][data-selection-mode="face"]').waitFor();
   await clickWorld([0,0,10]);
   await page.getByText('Грань выбрана',{exact:true}).waitFor();
-  await page.getByRole('button',{name:'Создать',exact:true}).click();
+  await page.locator('.parameter-actions button.primary, .k-pp-ok').click();
   const id=await app().getAttribute('data-active-sketch-id'); assert.ok(id);
   await page.getByText('Эскиз 2',{exact:true}).waitFor();
   await page.getByRole('button',{name:/Окружность/i}).click();
-  await page.getByTitle('Параметры').click();
-  const panel=page.locator('.parameter-panel'); await panel.waitFor();
-  assert.equal(await panel.locator('.numeric-field').filter({hasText:'Диаметр'}).locator('input').inputValue(),'12');
-  await panel.locator('.parameter-actions button.primary').click();
+  if (await page.locator('.k-content').count() === 0) await page.getByTitle('Параметры').click(); else if (await page.locator('.k-content[data-panel-tab="params"]').count() === 0) await page.getByRole('tab', { name: 'Параметры' }).click();
+  const panel=page.locator(':is(.parameter-panel, .k-pp)'); await panel.waitFor();
+  assert.equal(await panel.locator(':is(.numeric-field, .k-pp-row)').filter({hasText:'Диаметр'}).locator('input').inputValue(),'12');
+  await panel.locator('.parameter-actions button.primary, .k-pp-ok').click();
   await page.getByText('Окружность Ø12 мм создана',{exact:true}).waitFor();
-  await page.getByRole('button',{name:/Завершить эскиз/i}).click();
+  await page.locator('[data-command-id="sketch.finish"]').first().click();
   await page.getByText('Эскиз завершен',{exact:true}).waitFor();
   return id;
 }
@@ -99,7 +99,7 @@ async function openCut(){
 
 try{
   await page.goto(`${base}/cad/?uiScale=100`,{waitUntil:'networkidle'});
-  await page.getByRole('button',{name:'ASA-CAD',exact:true}).waitFor();
+  await page.locator('.k-main-menu-bar, .brand-button').first().waitFor();
   await createBaseBody();
   const cutSketchId=await createCutSketch();
   const clean=await save();
@@ -116,7 +116,7 @@ try{
   await panel.getByText('Сквозь всё',{exact:true}).waitFor();
   assert.equal(await panel.getByText(/OpenCascade|WASM|runtime|feature payload/i).count(),0);
   assert.equal(await app().getAttribute('data-feature-count'),'1');
-  assert.equal(await page.locator('.dirty-dot').count(),0);
+  assert.equal(await page.locator(':is(.dirty-dot, [data-document-dirty="true"])').count(),0);
   const begun=await save();
   assert.equal(begun.raw,clean.raw,'begin Cut-Extrude mutated CadDocument');
 
@@ -145,8 +145,8 @@ try{
   const cutFeatureId=cut.id;
 
   await page.reload({waitUntil:'networkidle'});
-  await page.getByRole('button',{name:'ASA-CAD',exact:true}).waitFor();
-  await fileCommand('Открыть');
+  await page.locator('.k-main-menu-bar, .brand-button').first().waitFor();
+  await fileCommand('Открыть...');
   await page.getByText('Локальный документ открыт',{exact:true}).waitFor({timeout:120000});
   await page.locator('.cad-app[data-runtime-status="ready"][data-feature-count="2"]').waitFor({timeout:120000});
   const reopened=await save();

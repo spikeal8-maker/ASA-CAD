@@ -58,9 +58,9 @@ export function KompasRibbon(props: KompasRibbonProps) {
 
   return (
     <section className="k-ui k-instrument-area" aria-label="Инструментальная область">
-      <div className="k-toolsets" role="toolbar" aria-label="Наборы инструментов">
+      <div className="k-toolsets" role="tablist" aria-label="Наборы инструментов">
         {TOOLSET_ORDER.map((id) => (
-          <button key={id} type="button" className="k-toolset" data-toolset={id} aria-pressed={props.toolset === id} onClick={() => { kompasShell.set({ panelDrop: null }); props.setToolset(id); }}>
+          <button key={id} type="button" className="k-toolset" role="tab" data-toolset={id} aria-selected={props.toolset === id} onClick={() => { kompasShell.set({ panelDrop: null }); props.setToolset(id); }}>
             <KIcon name={KOMPAS_TOOLSETS[id].icon} size={16} /><span>{KOMPAS_TOOLSETS[id].label}</span>
           </button>
         ))}

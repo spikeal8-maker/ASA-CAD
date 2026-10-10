@@ -9,8 +9,8 @@ import {
 } from './AngularDimensionBrowserHelpers.mjs';
 
 const browser = await launchM3Browser();
-const field = (page) => page.locator('.parameter-panel .numeric-field input');
-const apply = (page) => page.locator('.parameter-actions button.primary');
+const field = (page) => page.locator(':is(.parameter-panel, .k-pp) :is(.numeric-field, .k-pp-row) input');
+const apply = (page) => page.locator('.parameter-actions button.primary, .k-pp-ok');
 
 async function desktopLifecycle() {
   const { page, errors } = await newDesktopPage(browser);
@@ -19,7 +19,7 @@ async function desktopLifecycle() {
     const { first, second } = await rectangleLineIds(page);
     const before = JSON.stringify(await saveLocalDocument(page));
 
-    const action = page.locator('.command-ribbon [data-command-id="dimension.angular"]');
+    const action = page.locator(':is(.command-ribbon, .k-command-ribbon) [data-command-id="dimension.angular"]');
     assert.equal(await action.isEnabled(), true, 'desktop Angular action must enable for >=2 Lines');
     await action.click();
     await chooseAngularLines(page, first, second);
@@ -71,24 +71,24 @@ async function searchCancelNoMutation() {
   const { page, errors } = await newDesktopPage(browser);
   try {
     await loadFixture(page, 'line', 1);
-    let search = page.getByRole('textbox', { name: 'Поиск команд' });
+    let search = page.getByRole('textbox', { name: /^Поиск (команд|по командам)$/ });
     await search.fill('Угловой размер');
-    let action = page.locator('.command-search-results [data-command-id="dimension.angular"]');
+    let action = page.locator(':is(.command-search-results, .k-search-results) [data-command-id="dimension.angular"]');
     await action.waitFor();
     assert.equal(await action.isEnabled(), false);
     assert.equal(await action.getAttribute('title'), 'Создайте два отрезка эскиза');
     await loadFixture(page, 'rectangle', 4);
     const { first, second } = await rectangleLineIds(page);
     const before = JSON.stringify(await saveLocalDocument(page));
-    search = page.getByRole('textbox', { name: 'Поиск команд' });
+    search = page.getByRole('textbox', { name: /^Поиск (команд|по командам)$/ });
     await search.fill('Угловой размер');
-    action = page.locator('.command-search-results [data-command-id="dimension.angular"]');
+    action = page.locator(':is(.command-search-results, .k-search-results) [data-command-id="dimension.angular"]');
     assert.equal(await action.isEnabled(), true, 'search Angular must enable for >=2 Lines');
     await action.click();
     await chooseAngularLines(page, first, second);
     assert.equal(JSON.stringify(await saveLocalDocument(page)), before, 'search selection must not mutate before Apply');
     await field(page).fill('70');
-    await page.locator('.parameter-actions button:not(.primary)').click();
+    await page.locator('.parameter-actions button:not(.primary), .k-pp-cancel').click();
     const after = JSON.stringify(await saveLocalDocument(page));
     assert.equal(after, before, 'Cancel must leave CadDocument unchanged');
     assert.equal(JSON.parse(after).dimensions.length, 0);
@@ -102,7 +102,7 @@ async function mobileCreate() {
     await loadFixture(page, 'rectangle', 4);
     const { first, second } = await rectangleLineIds(page);
     await activateMobileTool(page, 'dimension.angular', 'Angular');
-    await page.locator('.content-area.panel-closed').waitFor();
+    await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
     await chooseAngularLines(page, first, second, true);
     near(Number(await field(page).inputValue()), 90, 1e-6, 'mobile initial Angular');
     await field(page).fill('75');

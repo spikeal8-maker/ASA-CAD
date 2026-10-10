@@ -155,7 +155,7 @@
 .k-toolset{display:flex;align-items:center;gap:5px;padding:0 3px;text-align:left;font-size:11.5px;line-height:11px;height:25px}
 .k-toolset span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .k-toolset:hover{background:var(--k-btn-hover)}
-.k-toolset[aria-pressed="true"]{background:var(--k-toolset-active)}
+.k-toolset[aria-selected="true"]{background:var(--k-toolset-active)}
 .k-toolset-more{display:grid;place-items:center;background:var(--k-instr-label);color:var(--k-text-muted)}
 .k-toolset-more:hover{color:var(--k-text)}
 .k-command-ribbon{flex:1;display:flex;min-width:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin}

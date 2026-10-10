@@ -12,6 +12,8 @@ export interface KompasPopLevel {
   /** Orientation grid of the «Ориентация» list. */
   onView?: (view: KompasViewName) => void;
   minWidth?: number;
+  /** Accessible name: the main menu that opened this list. */
+  label?: string;
   /** Index of the item in the previous level that opened this submenu. */
   parent?: number;
 }

@@ -9,7 +9,7 @@ const browser = await launchM3Browser();
 
 async function createLine(page, from, to, touch, count) {
   if (touch) await activateMobileTool(page, 'sketch.line', 'Line');
-  else await page.locator('.command-ribbon [data-command-id="sketch.line"]').click();
+  else await page.locator(':is(.command-ribbon, .k-command-ribbon) [data-command-id="sketch.line"]').click();
   const { box } = await interactionBox(page, 'line', 'Line');
   const a = squarePoint(box, ...from), b = squarePoint(box, ...to);
   if (touch) { await page.touchscreen.tap(a.x, a.y); await page.touchscreen.tap(b.x, b.y); }
@@ -76,9 +76,9 @@ async function desktopCoincident() {
     const { first, second } = await createTwoLines(page, false);
     assert.equal(coincident(await solvedEndpoint(page, first, 'b'), await solvedEndpoint(page, second, 'a')), false, 'Lines must start separated');
 
-    const search = page.getByRole('textbox', { name: 'Поиск команд' });
+    const search = page.getByRole('textbox', { name: /^Поиск (команд|по командам)$/ });
     await search.fill('Совпадение');
-    const action = page.locator('.command-search-results [data-command-id="constraint.coincident"]');
+    const action = page.locator(':is(.command-search-results, .k-search-results) [data-command-id="constraint.coincident"]');
     await action.waitFor();
     assert.equal(await action.isEnabled(), true, 'search Coincident must enable');
     await action.click();
@@ -91,10 +91,10 @@ async function desktopCoincident() {
     assert.deepEqual(constraint.data.refs, [{ entityId: first, point: 'b' }, { entityId: second, point: 'a' }]);
     const constraintId = constraint.id;
 
-    await page.locator('.global-actions [data-command-id="system.undo"]').click();
+    await page.locator(':is(.global-actions, .k-command-ribbon) [data-command-id="system.undo"]').click();
     await waitSolvedOverlay(page, 2, 'Coincident undo');
     assert.equal(coincident(await solvedEndpoint(page, first, 'b'), await solvedEndpoint(page, second, 'a')), false, 'Undo failed');
-    await page.locator('.global-actions [data-command-id="system.redo"]').click();
+    await page.locator(':is(.global-actions, .k-command-ribbon) [data-command-id="system.redo"]').click();
     await waitSolvedOverlay(page, 2, 'Coincident redo');
     assert.equal(coincident(await solvedEndpoint(page, first, 'b'), await solvedEndpoint(page, second, 'a')), true, 'Redo failed');
 
@@ -118,7 +118,7 @@ async function touchCoincident() {
     await createMobileXYSketch(page);
     const { first, second } = await createTwoLines(page, true);
     await activateMobileTool(page, 'constraint.coincident', 'Coincident');
-    await page.locator('.content-area.panel-closed').waitFor();
+    await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
     assert.equal(await page.locator('.management-panel').isVisible(), false, 'Tools panel still covers Sketch');
     await chooseEndpoints(page, first, second, true);
     const saved = await saveLocalDocument(page);

@@ -93,8 +93,8 @@ try {
     assert.equal(state.featureCount, 0);
     assert.equal(state.stableReferenceCount, 0);
     await fx.page.getByText('Эскиз 1', { exact: true }).waitFor();
-    await fx.page.getByRole('button', { name: /Ширина: 60 мм/ }).waitFor();
-    await fx.page.getByRole('button', { name: /Высота: 40 мм/ }).waitFor();
+    await fx.page.locator('[data-dimension-id]',{hasText:/Ширина: 60 мм/}).waitFor();
+    await fx.page.locator('[data-dimension-id]',{hasText:/Высота: 40 мм/}).waitFor();
     // A Sketch without a solid keeps the origin scene; no B-Rep is built before Extrude.
     await fx.page.locator('[data-testid="cad-viewport"][data-scene-revision="reference"][data-runtime-revision=""][data-bounds=""] canvas').waitFor();
     assert.equal(fx.wasmRequests.length, 0, 'sketch fixture loaded OpenCascade WASM');
@@ -131,7 +131,7 @@ try {
     await fx.page.getByText('Элемент выдавливания 1', { exact: true }).waitFor();
     await fx.page.getByText('Вырезать выдавливанием 1', { exact: true }).waitFor();
     await fx.page.getByText('Скругление 1', { exact: true }).waitFor();
-    await fx.page.getByRole('button', { name: /Диаметр: 12 мм/ }).waitFor();
+    await fx.page.locator('[data-dimension-id]',{hasText:/Диаметр: 12 мм/}).waitFor();
     await assertBounds(fx.page, [-30, -20, 0, 30, 20, 10]);
     assert.ok(fx.wasmRequests.length >= 1, 'reference fixture did not load OpenCascade WASM');
     console.log('  ✓ /dev/part/reference — cut + fillet rebuilt from 2 real StableRefs');
@@ -150,7 +150,7 @@ try {
     assert.equal(state.stableReferenceCount, 0);
     await fx.page.getByText('Ошибка перестроения', { exact: true }).waitFor();
     await fx.page.getByText('B-Rep не построен', { exact: true }).waitFor();
-    const bodyText = await fx.page.locator('.model-stage').innerText();
+    const bodyText = await fx.page.locator(':is(.model-stage, .k-model-stage)').innerText();
     assert.match(bodyText, /cut|circle|profile|окруж|профил/i, `rebuild-error fixture has no useful diagnostic: ${bodyText}`);
     // The work area survives the failed rebuild, but only the origin scene is drawn: no stale B-Rep.
     await fx.page.locator('[data-testid="cad-viewport"][data-scene-revision="reference"] canvas').waitFor();

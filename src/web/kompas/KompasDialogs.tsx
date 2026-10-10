@@ -2,6 +2,7 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import type { CadDocument } from '../../contracts/document';
 import { documentNames } from '../CadDocumentPresentation';
+import { useUiScaleSettingsOpen } from '../UiScaleSettings';
 import { KIcon } from './KompasIcon';
 import { kompasShell, useKompasShell } from './kompasShellStore';
 
@@ -46,6 +47,7 @@ export function KompasDialogs(props: { document: CadDocument }) {
 
 function SettingsDialog(props: { onClose(): void }) {
   const shell = useKompasShell();
+  const openUiScale = useUiScaleSettingsOpen();
   const [section, setSection] = React.useState('screen');
   const [theme, setTheme] = React.useState(shell.theme);
   const label = SETTINGS_TREE.flatMap(([, items]) => items).find(([key]) => key === section)?.[1] ?? '';
@@ -79,7 +81,11 @@ function SettingsDialog(props: { onClose(): void }) {
                 <label><input type="radio" name="k-theme" checked={theme === 'dark'} onChange={() => setTheme('dark')} /> Тёмная</label>
                 <label><input type="radio" name="k-theme" checked={theme === 'light'} onChange={() => setTheme('light')} /> Светлая</label>
               </fieldset>
-              <fieldset><legend>Размер интерфейса</legend><label><input type="radio" checked readOnly disabled /> Стандартный (100 %, как эталон 1920×1080)</label></fieldset>
+              <fieldset>
+                <legend>Размер интерфейса</legend>
+                <label>Сейчас: {document.documentElement.dataset.uiScale ?? '100'} % (эталон — 100 %, 1920×1080)</label>
+                <button type="button" className="k-dlg-btn" onClick={() => { props.onClose(); openUiScale(); }}>Размер интерфейса…</button>
+              </fieldset>
             </>
           ) : section === 'units' ? (
             <><h4>Единицы измерения</h4><label>Длина: миллиметры</label><label>Угол: градусы</label></>

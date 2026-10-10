@@ -141,9 +141,9 @@ assert.deepEqual(
   ['topShell', 'menuItems', 'commandSearch', 'documentTabs', 'activeDocumentTab', 'instrumentArea', 'toolsets', 'ribbon', 'contentArea'],
 );
 assert.equal(policy.u1a.semanticRegionContract.find((item) => item.key === 'menuItems')?.reference, '#menu');
-assert.equal(policy.u1a.semanticRegionContract.find((item) => item.key === 'menuItems')?.candidate, '.main-menu-items');
+assert.equal(policy.u1a.semanticRegionContract.find((item) => item.key === 'menuItems')?.candidate, '.k-main-menu-items');
 assert.equal(policy.u1a.semanticRegionContract.find((item) => item.key === 'topShell')?.reference, '.main-menu-bar');
-assert.equal(policy.u1a.semanticRegionContract.find((item) => item.key === 'topShell')?.candidate, '.main-menu-bar');
+assert.equal(policy.u1a.semanticRegionContract.find((item) => item.key === 'topShell')?.candidate, '.k-main-menu-bar');
 
 const commandGroupsPressure = policy.u1a.ownerPressure['src/web/CadShellCommandGroups.tsx'];
 assert.equal(commandGroupsPressure.targetBytes, 10240);
@@ -182,7 +182,7 @@ assert.match(u1aMap, /DEFERRED_NOT_U1A/);
 assert.match(u1aMap, /8704 bytes/);
 assert.match(u1aMap, /menuItems/);
 assert.match(u1aMap, /#menu/);
-assert.match(u1aMap, /\.main-menu-items/);
+assert.match(u1aMap, /\.k-main-menu-items/);
 
 for (const forbidden of policy.forbiddenPrototypeAuthorities) {
   assert.ok(forbidden.length > 0);
@@ -222,6 +222,6 @@ const visualCapture = readFileSync('tests/visual/ui-core-u1-capture.mjs', 'utf8'
 assert.match(visualCapture, /DEFERRED_NOT_U1A/);
 assert.match(visualCapture, /reference\/dark-solid-1600x900\.png/);
 assert.match(visualCapture, /menuItems/);
-assert.match(visualCapture, /candidate: '\.main-menu-items'/);
+assert.match(visualCapture, /candidate: '\.k-main-menu-items'/);
 
 console.log('UI/core unification policy PASS');

@@ -8,8 +8,8 @@ const errors = [];
 page.on('pageerror', (error) => errors.push(error.message));
 
 async function createNewPart() {
-  const wasDirty = await page.locator('.dirty-dot').count() > 0;
-  await page.locator('.new-tab-button').click();
+  const wasDirty = await page.locator(':is(.dirty-dot, [data-document-dirty="true"])').count() > 0;
+  await page.locator(':is(.new-tab-button, .k-command-ribbon [data-command-id="system.new"])').click();
   if (wasDirty) {
     await page.getByRole('dialog', { name: 'Есть несохранённые изменения' })
       .getByRole('button', { name: 'Не сохранять' }).click();
@@ -22,9 +22,9 @@ async function createNewPart() {
 
 async function createSketch(support = 'XY') {
   await page.getByRole('button', { name: /Создать эскиз/i }).click();
-  await page.getByText('Плоскость построения', { exact: true }).waitFor();
+  await page.getByText('Опорный объект', { exact: true }).waitFor();
   await page.getByRole('button', { name: new RegExp(support) }).click();
-  await page.getByRole('button', { name: 'Создать', exact: true }).click();
+  await page.locator('.parameter-actions button.primary, .k-pp-ok').click();
   const app = page.locator('.cad-app');
   await app.locator('xpath=..').waitFor();
   const id = await app.getAttribute('data-active-sketch-id');
@@ -34,20 +34,20 @@ async function createSketch(support = 'XY') {
 
 async function createRectangle() {
   await page.getByRole('button', { name: /Прямоугольник/i }).click();
-  await page.locator('.content-area.panel-closed').waitFor();
-  await page.getByTitle('Параметры').click();
-  const panel = page.locator('.parameter-panel');
+  await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
+  if (await page.locator('.k-content').count() === 0) await page.getByTitle('Параметры').click(); else if (await page.locator('.k-content[data-panel-tab="params"]').count() === 0) await page.getByRole('tab', { name: 'Параметры' }).click();
+  const panel = page.locator(':is(.parameter-panel, .k-pp)');
   await panel.waitFor();
-  const width = panel.locator('.numeric-field').filter({ hasText: 'Ширина' }).locator('input');
-  const height = panel.locator('.numeric-field').filter({ hasText: 'Высота' }).locator('input');
+  const width = panel.locator(':is(.numeric-field, .k-pp-row)').filter({ hasText: 'Ширина' }).locator('input');
+  const height = panel.locator(':is(.numeric-field, .k-pp-row)').filter({ hasText: 'Высота' }).locator('input');
   assert.equal(await width.inputValue(), '60');
   assert.equal(await height.inputValue(), '40');
-  await panel.locator('.parameter-actions button.primary').click();
+  await panel.locator('.parameter-actions button.primary, .k-pp-ok').click();
   await page.getByText('Прямоугольник 60×40 мм создан', { exact: true }).waitFor();
 }
 
 async function finishSketch() {
-  await page.getByRole('button', { name: /Завершить эскиз/i }).click();
+  await page.locator('[data-command-id="sketch.finish"]').first().click();
   await page.getByText('Эскиз завершен', { exact: true }).waitFor();
   await page.locator('.cad-app[data-active-sketch-id=""]').waitFor();
   await page.getByRole('tab', { name: 'Твердотельное моделирование' }).waitFor();
@@ -67,7 +67,7 @@ async function waitReadOnly(id) {
 }
 
 async function saveAndRead() {
-  await page.getByTitle('Сохранить').click();
+  await page.locator(':is(.global-actions, .k-command-ribbon) [data-command-id="system.save"]').click();
   await page.getByText('Сохранено локально', { exact: true }).waitFor();
   const raw = await page.evaluate(() => localStorage.getItem('asa-cad-m2-shell-document'));
   assert.ok(raw, 'saved Part document missing');
@@ -108,9 +108,9 @@ async function assertRectangleOverlay(overlay, width, height, label) {
 }
 
 async function selectSketch(id) {
-  const tree = page.locator('.tree-panel');
+  const tree = page.locator(':is(.tree-panel, .k-tree-panel)');
   await tree.locator(`[data-sketch-id="${id}"]`).click();
-  await page.locator(`.tree-panel[data-selected-sketch-id="${id}"]`).waitFor();
+  await page.locator(`:is(.tree-panel, .k-tree-panel)[data-selected-sketch-id="${id}"]`).waitFor();
   assert.equal(await page.locator('.cad-app').getAttribute('data-active-sketch-id'), '');
 }
 
@@ -122,8 +122,8 @@ async function editSelectedSketch(id) {
 }
 
 async function setWidth80() {
-  await page.getByRole('button', { name: /Ширина: 60 мм/ }).click();
-  const value = page.locator('.numeric-field').filter({ hasText: 'Размер' }).locator('input');
+  await page.locator('[data-dimension-id]',{hasText:/Ширина: 60 мм/}).click();
+  const value = page.locator(':is(.numeric-field, .k-pp-row)').filter({ hasText: 'Размер' }).locator('input');
   await value.waitFor();
   assert.equal(await value.inputValue(), '60');
   await value.fill('80');
@@ -144,7 +144,7 @@ async function supportRegression(support) {
 
 try {
   await page.goto(`${base}/cad/?uiScale=100`, { waitUntil: 'networkidle' });
-  await page.getByRole('button', { name: 'ASA-CAD', exact: true }).waitFor();
+  await page.locator('.k-main-menu-bar, .brand-button').first().waitFor();
   await createNewPart();
 
   const sketchId = await createSketch('XY');
@@ -194,7 +194,7 @@ try {
   assert.equal(finalSaved.document.dimensions.find((item) => item.name === 'width')?.value, 80);
   assert.equal(finalSaved.document.dimensions.find((item) => item.name === 'height')?.value, 40);
 
-  await page.getByTitle('Открыть').click();
+  await page.locator(':is(.global-actions, .k-command-ribbon) [data-command-id="system.open"]').click();
   await page.getByText('Локальный документ открыт', { exact: true }).waitFor({ timeout: 60_000 });
   await page.locator('.cad-app[data-active-sketch-id=""][data-sketch-count="1"]').waitFor();
   const reopened = await waitReadOnly(sketchId);

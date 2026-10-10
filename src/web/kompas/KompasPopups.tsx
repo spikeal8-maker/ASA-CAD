@@ -168,6 +168,7 @@ function PopLevel(props: { pop: KompasPopLevel; level: number; openChild?: numbe
       ref={ref}
       className={`k-pop${pop.onView ? ' k-views' : ''}`}
       role="menu"
+      aria-label={pop.label}
       data-level={level}
       style={{ left: place.left, top: place.top, maxHeight: place.maxHeight, minWidth: pop.minWidth }}
       onMouseOver={onHover}
@@ -181,7 +182,7 @@ function PopLevel(props: { pop: KompasPopLevel; level: number; openChild?: numbe
       {pop.onView && (
         <div className="k-view-grid">
           {VIEW_CELLS.map((cell, index) => cell ? (
-            <button key={cell[0]} type="button" aria-label={cell[1]} data-tip={cell[1]} onClick={(event) => {
+            <button key={cell[0]} type="button" aria-label={cell[1]} data-tip={cell[1]} data-command-id={`view.${cell[0]}`} onClick={(event) => {
               event.stopPropagation();
               kompasShell.closeAll();
               pop.onView?.(cell[0]);
@@ -217,6 +218,8 @@ function MenuItem(props: { item: KompasMenuItem; index: number; open: boolean })
       data-idx={props.index}
       data-st={status}
       data-command-id={item.id ?? undefined}
+      aria-label={item.l}
+      aria-keyshortcuts={item.k}
     >
       {icon}
       <span className="k-mi-l">{item.l}</span>

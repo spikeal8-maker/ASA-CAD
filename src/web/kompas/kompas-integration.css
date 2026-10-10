@@ -1,8 +1,20 @@
 /* KOMPAS shell inside the product root: rows and frame of the reference
    (menu 28, documents 27, instrument area 93, 3 px frame) and the product
    pieces hosted by the shell (scene, parameter panel, triad, toast). */
+/* ASA UI Scale enlarges the shell chrome with CSS zoom; the graphics area is
+   never zoomed, so viewport picking keeps plain CSS coordinates. */
+:root { --k-zoom: 1; }
+html[data-ui-scale="90"] { --k-zoom: .9; }
+html[data-ui-scale="110"] { --k-zoom: 1.1; }
+html[data-ui-scale="125"] { --k-zoom: 1.25; }
+html[data-ui-scale="150"] { --k-zoom: 1.5; }
+.k-main-menu-bar, .k-document-tabs, .k-instrument-area, .k-management-rail, .k-management-panel, .k-qa, .k-sketch-exit { zoom: var(--k-zoom); }
+.k-content { grid-template-columns: calc(26px * var(--k-zoom)) calc(310px * var(--k-zoom)) 1px minmax(0, 1fr); }
+.k-content.k-collapsed { grid-template-columns: calc(26px * var(--k-zoom)) 0 0 minmax(0, 1fr); }
+/* Readability floor of the product (12 px) over the 11.5 px of the reference. */
+.k-toolset, .k-btn-t { font-size: 12px; line-height: 11.5px; }
 .cad-app:has(> .k-main-menu-bar) {
-  grid-template-rows: 28px 27px 93px minmax(0, 1fr) 3px;
+  grid-template-rows: calc(28px * var(--k-zoom)) calc(27px * var(--k-zoom)) calc(93px * var(--k-zoom)) minmax(0, 1fr) 3px;
   padding: 0 3px;
   background: var(--k-frame);
 }

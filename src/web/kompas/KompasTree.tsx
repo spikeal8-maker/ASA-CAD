@@ -17,6 +17,8 @@ interface RowProps {
   label: string;
   expanded?: boolean;
   onToggle?(): void;
+  /** Test/automation hook of the disclosure button, e.g. data-tree-disclosure. */
+  disclosure?: Record<string, string>;
   selected?: boolean;
   eye?: boolean;
   dot?: boolean;
@@ -52,7 +54,7 @@ function Row(props: RowProps) {
       <span className="k-c-aux">{props.aux ?? ''}</span>
       <span className="k-c-main" style={{ paddingLeft: 6 + props.depth * 14 }}>
         {hasToggle ? (
-          <button type="button" className="k-tri" aria-expanded={props.expanded} aria-label={`${props.expanded ? 'Свернуть' : 'Развернуть'} ${props.label}`}
+          <button type="button" className="k-tri" {...props.disclosure} aria-expanded={props.expanded} aria-label={`${props.expanded ? 'Свернуть' : 'Развернуть'} ${props.label}`}
             onClick={(event) => { event.stopPropagation(); props.onToggle?.(); }}>
             <KIcon name="caret" size={9} />
           </button>
@@ -87,10 +89,10 @@ export function KompasTree(props: DocumentTreeProps) {
   const rows: React.ReactNode[] = [];
   const title = part ? `${document.title} (Тел-${part.bodies.length})` : document.title;
   rows.push(
-    <Row key="root" depth={0} icon="part" label={title} expanded={isOpen('root')} onToggle={() => toggle('root')} data={{ 'data-tree-branch': 'part-root' }} />,
+    <Row key="root" depth={0} icon="part" label={title} expanded={isOpen('root')} onToggle={() => toggle('root')} disclosure={{ 'data-tree-disclosure': 'part-root' }} data={{ 'data-tree-branch': 'part-root' }} />,
   );
   if (part && isOpen('root')) {
-    rows.push(<Row key="origin" depth={1} icon="origin" label="Начало координат" expanded={isOpen('origin')} onToggle={() => toggle('origin')} eye dot data={{ 'data-tree-branch': 'origin' }} />);
+    rows.push(<Row key="origin" depth={1} icon="origin" label="Начало координат" expanded={isOpen('origin')} onToggle={() => toggle('origin')} eye dot disclosure={{ 'data-tree-disclosure': 'origin' }} data={{ 'data-tree-branch': 'origin' }} />);
     if (isOpen('origin')) {
       for (const plane of part.origin.planes) {
         const label = `Плоскость ${plane}`;
@@ -102,7 +104,7 @@ export function KompasTree(props: DocumentTreeProps) {
         );
       }
     }
-    for (const sketch of part.sketches) rows.push(...sketchRows(sketch));
+    for (const sketch of part.sketches) { const branch = sketchBranch(sketch); if (branch) rows.push(branch); }
     for (const feature of part.features) {
       if (visible(feature.name)) rows.push(<Row key={feature.id} depth={1} icon={FEATURE_ICON[feature.type] ?? 'extrude'} label={feature.name} eye data={{ 'data-feature-id': feature.id }} />);
     }
@@ -115,15 +117,26 @@ export function KompasTree(props: DocumentTreeProps) {
     }
   }
 
-  function sketchRows(sketch: CadSketch): React.ReactNode[] {
-    if (!part) return [];
+  function sketchBranch(sketch: CadSketch): React.ReactNode {
+    if (!part) return null;
     const key = `sketch:${sketch.id}`;
     const selected = sketch.id === props.activeSketchId || sketch.id === selectedSketch;
-    const out: React.ReactNode[] = [];
-    if (visible(sketch.name)) {
-      out.push(
-        <Row key={key} depth={1} icon="ts_sketch" label={sketch.name} aux="∈" eye selected={selected}
-          expanded={isOpen(key)} onToggle={() => toggle(key)}
+    const children: React.ReactNode[] = [];
+    sketch.entities.forEach((entity, index) => {
+      const label = entityName(sketch.entities, index);
+      if (visible(label)) children.push(<Row key={entity.id} depth={2} icon={entity.type} label={label} data={{ 'data-tree-sketch-entity-id': entity.id, 'data-sketch-entity-type': entity.type }} />);
+    });
+    for (const dimension of part.dimensions.filter((item) => sketch.dimensionIds.includes(item.id))) {
+      const label = `${dimensionLabel(dimension.name, dimension.type)}: ${dimension.value} ${dimensionUnit(dimension.type)}`;
+      if (visible(label)) {
+        children.push(<Row key={dimension.id} depth={2} icon="dimlin" label={label} onClick={() => props.onEditDimension(dimension.id as CadDimensionId)} data={{ 'data-dimension-id': dimension.id }} />);
+      }
+    }
+    if (!visible(sketch.name) && !children.length) return null;
+    return (
+      <div key={key} role="group" aria-label={sketch.name} data-sketch-branch-id={sketch.id}>
+        <Row depth={1} icon="ts_sketch" label={sketch.name} aux="∈" eye selected={selected}
+          expanded={isOpen(key)} onToggle={() => toggle(key)} disclosure={{ 'data-sketch-disclosure': sketch.id }}
           onClick={() => setSelectedSketch(sketch.id)}
           onDoubleClick={() => props.onEditSketch(sketch.id)}
           data={{ 'data-tree-branch': key, 'data-sketch-id': sketch.id }}>
@@ -133,23 +146,10 @@ export function KompasTree(props: DocumentTreeProps) {
               <KIcon name="pipette" size={14} />
             </button>
           )}
-        </Row>,
-      );
-    }
-    if (!isOpen(key)) return out;
-    sketch.entities.forEach((entity, index) => {
-      const label = entityName(sketch.entities, index);
-      if (visible(label)) {
-        out.push(<Row key={entity.id} depth={2} icon={entity.type} label={label} data={{ 'data-tree-sketch-entity-id': entity.id, 'data-sketch-entity-type': entity.type }} />);
-      }
-    });
-    for (const dimension of part.dimensions.filter((item) => sketch.dimensionIds.includes(item.id))) {
-      const label = `${dimensionLabel(dimension.name, dimension.type)}: ${dimension.value} ${dimensionUnit(dimension.type)}`;
-      if (visible(label)) {
-        out.push(<Row key={dimension.id} depth={2} icon="dimlin" label={label} onClick={() => props.onEditDimension(dimension.id as CadDimensionId)} data={{ 'data-dimension-id': dimension.id }} />);
-      }
-    }
-    return out;
+        </Row>
+        {isOpen(key) && <div data-sketch-children={sketch.id}>{children}</div>}
+      </div>
+    );
   }
 
   return (

@@ -8,8 +8,8 @@ const errors=[]; page.on('pageerror',(error)=>errors.push(error.message));
 
 const app=()=>page.locator('.cad-app');
 const extrudeButton=()=>page.locator('[data-command-id="part.extrude"]').first();
-const panel=()=>page.locator('.extrude-parameter-panel');
-const distance=()=>panel().locator('.numeric-field').filter({hasText:'Расстояние'}).locator('input');
+const panel=()=>page.locator(':is(.extrude-parameter-panel, .k-pp[data-command-title="Элемент выдавливания"])');
+const distance=()=>panel().locator(':is(.numeric-field, .k-pp-row)').filter({hasText:'Расстояние'}).locator('input');
 
 async function bounds(){
   const raw=await page.locator('[data-testid="cad-viewport"]').getAttribute('data-bounds');
@@ -20,13 +20,13 @@ function near(actual,expected,label){
   actual.forEach((value,index)=>assert.ok(Math.abs(value-expected[index])<0.25,`${label}[${index}] ${value} != ${expected[index]}`));
 }
 async function save(){
-  await page.getByTitle('Сохранить').click();
+  await page.locator(':is(.global-actions, .k-command-ribbon) [data-command-id="system.save"]').click();
   await page.getByText('Сохранено локально',{exact:true}).waitFor();
   const raw=await page.evaluate(()=>localStorage.getItem('asa-cad-m2-shell-document'));
   assert.ok(raw,'saved document missing'); return {raw,doc:JSON.parse(raw)};
 }
 async function newPart(){
-  await page.locator('.new-tab-button').click();
+  await page.locator(':is(.new-tab-button, .k-command-ribbon [data-command-id="system.new"])').click();
   const guard=page.getByRole('dialog',{name:'Есть несохранённые изменения'});
   if(await guard.count()) await guard.getByRole('button',{name:'Не сохранять'}).click();
   const dialog=page.getByRole('dialog',{name:'Новый документ'}); await dialog.waitFor();
@@ -35,16 +35,16 @@ async function newPart(){
 }
 async function profile(support='XY'){
   await page.getByRole('button',{name:/Создать эскиз/i}).click();
-  await page.getByText('Плоскость построения',{exact:true}).waitFor();
+  await page.getByText('Опорный объект',{exact:true}).waitFor();
   await page.getByRole('button',{name:new RegExp(support)}).click();
-  await page.getByRole('button',{name:'Создать',exact:true}).click();
+  await page.locator('.parameter-actions button.primary, .k-pp-ok').click();
   const sketchId=await app().getAttribute('data-active-sketch-id'); assert.ok(sketchId);
   await page.getByRole('button',{name:/Прямоугольник/i}).click();
-  await page.getByTitle('Параметры').click();
-  await page.locator('.parameter-panel').waitFor();
-  await page.locator('.parameter-actions button.primary').click();
+  if (await page.locator('.k-content').count() === 0) await page.getByTitle('Параметры').click(); else if (await page.locator('.k-content[data-panel-tab="params"]').count() === 0) await page.getByRole('tab', { name: 'Параметры' }).click();
+  await page.locator(':is(.parameter-panel, .k-pp)').waitFor();
+  await page.locator('.parameter-actions button.primary, .k-pp-ok').click();
   await page.getByText('Прямоугольник 60×40 мм создан',{exact:true}).waitFor();
-  await page.getByRole('button',{name:/Завершить эскиз/i}).click();
+  await page.locator('[data-command-id="sketch.finish"]').first().click();
   await page.getByText('Эскиз завершен',{exact:true}).waitFor();
   await app().locator('xpath=..').waitFor();
   return sketchId;
@@ -84,18 +84,18 @@ async function inspectExtrude(){
 
 try{
   await page.goto(`${base}/cad/?uiScale=100`,{waitUntil:'networkidle'});
-  await page.getByRole('button',{name:'ASA-CAD',exact:true}).waitFor();
+  await page.locator('.k-main-menu-bar, .brand-button').first().waitFor();
   await newPart();
 
   const sketchId=await profile('XY');
   const clean=await save();
   await openExtrude(); await assertPanel(sketchId);
   await distance().fill('25');
-  await panel().getByRole('button',{name:'Сменить направление'}).click();
+  await panel().getByRole('button',{name:'Обратное направление'}).click();
   await panel().getByRole('switch',{name:'Симметрично'}).click();
-  assert.equal(await panel().getByRole('button',{name:'Сменить направление'}).isDisabled(),true);
-  assert.equal(await app().locator('.dirty-dot').count(),0,'transient Extrude UI made document dirty');
-  await panel().getByRole('button',{name:'Отмена',exact:true}).click();
+  assert.equal(await panel().getByRole('button',{name:'Обратное направление'}).isDisabled(),true);
+  assert.equal(await app().locator(':is(.dirty-dot, [data-document-dirty="true"])').count(),0,'transient Extrude UI made document dirty');
+  await panel().locator('.parameter-actions button:not(.primary), .k-pp-cancel').click();
   assert.equal(await panel().count(),0); await assertCounts(0,0);
   assert.equal((await save()).raw,clean.raw,'Cancel mutated CadDocument');
 
@@ -105,8 +105,8 @@ try{
   assert.equal(await panel().getByRole('button',{name:'Создать объект'}).isDisabled(),true);
   await app().focus(); await page.keyboard.press('Control+Enter');
   await assertCounts(0,0);
-  assert.equal(await app().locator('.dirty-dot').count(),0,'invalid Extrude made document dirty');
-  await panel().getByRole('button',{name:'Отмена',exact:true}).click();
+  assert.equal(await app().locator(':is(.dirty-dot, [data-document-dirty="true"])').count(),0,'invalid Extrude made document dirty');
+  await panel().locator('.parameter-actions button:not(.primary), .k-pp-cancel').click();
   assert.equal((await save()).raw,clean.raw,'invalid Extrude mutated CadDocument');
 
   await openExtrude(); await apply(); await assertCounts(1,1);
@@ -118,7 +118,7 @@ try{
   assert.equal(Boolean(direct.feature.parameters.symmetric),false);
   const directFeatureId=direct.feature.id;
   await page.reload({waitUntil:'networkidle'});
-  await page.getByTitle('Открыть').click();
+  await page.locator(':is(.global-actions, .k-command-ribbon) [data-command-id="system.open"]').click();
   await page.getByText('Локальный документ открыт',{exact:true}).waitFor({timeout:60000});
   near(await bounds(),[-30,-20,0,30,20,10],'reopened direct bounds');
   const reopened=await save();
@@ -127,7 +127,7 @@ try{
   assert.equal(reopened.doc.features[0].parameters.distance,10);
 
   await newPart(); const reverseSketch=await profile('XY'); await openExtrude();
-  await panel().getByRole('button',{name:'Сменить направление'}).click();
+  await panel().getByRole('button',{name:'Обратное направление'}).click();
   await panel().getByText('Обратное',{exact:true}).waitFor(); await apply();
   near(await bounds(),[-30,-20,-10,30,20,0],'reverse bounds');
   const reverse=await inspectExtrude();
@@ -136,7 +136,7 @@ try{
 
   await newPart(); const symmetricSketch=await profile('XY'); await openExtrude();
   await distance().fill('20'); await panel().getByRole('switch',{name:'Симметрично'}).click();
-  assert.equal(await panel().getByRole('button',{name:'Сменить направление'}).isDisabled(),true);
+  assert.equal(await panel().getByRole('button',{name:'Обратное направление'}).isDisabled(),true);
   await apply(); near(await bounds(),[-30,-20,-10,30,20,10],'symmetric bounds');
   const symmetric=await inspectExtrude();
   assert.equal(symmetric.feature.parameters.sketchId,symmetricSketch);
@@ -155,11 +155,11 @@ try{
   // The UI refuses exactly what the kernel refuses, with the kernel's reason.
   await newPart();
   await page.getByRole('button',{name:/Создать эскиз/i}).click();
-  await page.getByRole('button',{name:'Создать',exact:true}).click();
-  await page.getByRole('button',{name:/Завершить эскиз/i}).click();
+  await page.locator('.parameter-actions button.primary, .k-pp-ok').click();
+  await page.locator('[data-command-id="sketch.finish"]').first().click();
   await page.getByText('Эскиз завершен',{exact:true}).waitFor();
   assert.equal(await extrudeButton().isDisabled(),true,'empty Sketch: Extrude must fail closed');
-  assert.match(await extrudeButton().getAttribute('title')??'',/эскиз пуст/i);
+  assert.match(await extrudeButton().evaluate((n)=>n.getAttribute('data-dis')??n.getAttribute('title')??''),/эскиз пуст/i);
   await assertCounts(0,0);
 
   assert.deepEqual(errors,[],`page errors: ${errors.join(' | ')}`);

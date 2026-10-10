@@ -24,9 +24,9 @@ async function shellCase(testCase) {
   const page = await context.newPage();
   const response = await page.goto(`${baseUrl}/?uiScale=100`, { waitUntil: 'networkidle', timeout: 30_000 });
   assert.ok(response?.ok(), `zoom ${testCase.zoom}% navigation failed`);
-  await page.getByRole('button', { name: 'ASA-CAD', exact: true }).waitFor();
+  await page.locator('.k-main-menu-bar, .brand-button').first().waitFor();
   const metrics = await page.evaluate(() => {
-    const work = document.querySelector('.work-area')?.getBoundingClientRect();
+    const work = document.querySelector('.k-work-area, .work-area')?.getBoundingClientRect();
     return {
       width: window.innerWidth,
       height: window.innerHeight,
@@ -94,7 +94,7 @@ async function provePickingAtZoom150() {
   const selectedBodyId = await page.locator('.cad-app').getAttribute('data-selected-body-id');
   assert.ok(selectedBodyId, '150% browser-equivalent viewport failed body picking');
   assert.equal(await viewport.getAttribute('data-runtime-revision'), before.revision, 'browser-equivalent zoom/pick triggered recompute');
-  assert.equal(await page.locator(`.tree-row[data-body-id="${selectedBodyId}"]`).getAttribute('aria-pressed'), 'true');
+  assert.equal(await page.locator(`:is(.tree-row, .k-tree-row)[data-body-id="${selectedBodyId}"]`).evaluate((node) => node.getAttribute('aria-pressed') ?? node.getAttribute('aria-selected')), 'true');
   await context.close();
   return selectedBodyId;
 }

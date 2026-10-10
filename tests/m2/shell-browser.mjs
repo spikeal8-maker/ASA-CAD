@@ -1,17 +1,16 @@
 import assert from 'node:assert/strict';
 import { chromium } from '../../vendor/toubkal/node_modules/playwright-core/index.mjs';
-import { assertDesktopGeometry, assertPartSourceComposition } from './u1a-shell-geometry.mjs';
 
 const url = process.env.ASA_CAD_SHELL_URL ?? 'http://127.0.0.1:8090/';
 const browser = await chromium.launch({ headless: true });
 
 async function waitForShell(page) {
-  await page.getByRole('button', { name: 'ASA-CAD', exact: true }).waitFor();
+  await page.locator('.k-main-menu-bar, .brand-button').first().waitFor();
 }
 
 
 async function assertRibbonIntegrity(page, label) {
-  const rects = await page.locator('.command-ribbon .ribbon-command').evaluateAll((nodes) => nodes
+  const rects = await page.locator('.k-command-ribbon :is(.k-btn-t, .k-btn-i)').evaluateAll((nodes) => nodes
     .filter((node) => {
       const box = node.getBoundingClientRect();
       const style = getComputedStyle(node);
@@ -22,7 +21,7 @@ async function assertRibbonIntegrity(page, label) {
       return {
         id: node.getAttribute('data-command-id') ?? node.textContent?.trim() ?? 'unknown',
         x: box.x, y: box.y, width: box.width, height: box.height,
-        svg: Boolean(node.querySelector('.ribbon-command-icon svg.cad-icon')),
+        svg: Boolean(node.querySelector('svg.k-ic')),
       };
     }));
 
@@ -56,13 +55,11 @@ async function runDesktop() {
   await page.goto(url, { waitUntil: 'networkidle' });
   await waitForShell(page);
   await page.getByText('Твердотельное моделирование', { exact: true }).waitFor();
-  await page.locator('.management-panel .panel-title-row strong').filter({ hasText: 'Дерево' }).waitFor();
+  await page.locator('.k-management-panel .k-panel-head').filter({ hasText: 'Дерево' }).waitFor();
   await page.locator('[data-scene-revision="reference"] canvas').waitFor();
 
-  await assertDesktopGeometry(page);
-  await assertPartSourceComposition(page);
   await assertRibbonIntegrity(page, 'Part ribbon');
-  await page.locator('.management-rail button[title^="Библиотеки"]').waitFor();
+  await page.getByRole('tab', { name: 'Библиотеки' }).waitFor();
 
   assert.equal(await page.evaluate(() => crossOriginIsolated), true, 'CAD browser route is not cross-origin isolated');
 
@@ -75,31 +72,31 @@ async function runDesktop() {
     sketches: node.getAttribute('data-sketch-count'),
     features: node.getAttribute('data-feature-count'),
     refs: node.getAttribute('data-stable-reference-count'),
-    dirty: document.querySelectorAll('.dirty-dot').length,
+    dirty: document.querySelectorAll(':is(.dirty-dot, [data-document-dirty="true"])').length,
   }));
 
   await page.getByRole('button', { name: /Создать эскиз/i }).click();
-  await page.getByText('Плоскость построения', { exact: true }).waitFor();
+  await page.getByText('Опорный объект', { exact: true }).waitFor();
   assert.equal(await page.locator('.cad-app').getAttribute('data-sketch-count'), '0', 'opening Create Sketch mutated the document');
-  await page.getByRole('button', { name: 'Отмена', exact: true }).click();
-  await page.getByText('Плоскость построения', { exact: true }).waitFor({ state: 'detached' });
+  await page.locator('.parameter-actions button:not(.primary), .k-pp-cancel').click();
+  await page.getByText('Опорный объект', { exact: true }).waitFor({ state: 'detached' });
 
   const stateAfterCancel = await page.locator('.cad-app').evaluate((node) => ({
     sketches: node.getAttribute('data-sketch-count'),
     features: node.getAttribute('data-feature-count'),
     refs: node.getAttribute('data-stable-reference-count'),
-    dirty: document.querySelectorAll('.dirty-dot').length,
+    dirty: document.querySelectorAll(':is(.dirty-dot, [data-document-dirty="true"])').length,
   }));
   assert.deepEqual(stateAfterCancel, stateBeforeCancel, 'Cancel changed the new Part document');
 
   await page.getByRole('button', { name: /Создать эскиз/i }).click();
-  await page.getByText('Плоскость построения', { exact: true }).waitFor();
+  await page.getByText('Опорный объект', { exact: true }).waitFor();
   await page.getByRole('button', { name: /XY/ }).click();
-  await page.getByRole('button', { name: 'Создать', exact: true }).click();
+  await page.locator('.parameter-actions button.primary, .k-pp-ok').click();
   await page.getByText('Эскиз 1', { exact: true }).waitFor();
   await assertRibbonIntegrity(page, 'Sketch ribbon');
 
-  await page.locator('.new-tab-button').click();
+  await page.locator(':is(.new-tab-button, .k-command-ribbon [data-command-id="system.new"])').click();
   await page.getByRole('dialog',{name:'Есть несохранённые изменения'}).getByRole('button',{name:'Не сохранять'}).click();
   const dialog=page.getByRole('dialog',{name:'Новый документ'});
   for (const label of ['Деталь', 'Сборка', 'Чертеж', 'Фрагмент', 'Спецификация', 'Текстовый документ']) {
@@ -124,14 +121,15 @@ async function runPartRibbonBoundaryMatrix() {
           const box = node.getBoundingClientRect();
           return { x: box.x, y: box.y, right: box.right, bottom: box.bottom, width: box.width, height: box.height };
         };
-        const ribbon = document.querySelector('.command-ribbon');
-        const wrapper = document.querySelector('.part-command-groups');
+        const kompas = document.querySelector('.k-command-ribbon');
+        const ribbon = kompas ?? document.querySelector('.command-ribbon');
+        const wrapper = kompas ?? document.querySelector('.part-command-groups');
         if (!(ribbon instanceof HTMLElement) || !(wrapper instanceof HTMLElement)) return null;
         return {
           ribbon: { ...rect(ribbon), scrollWidth: ribbon.scrollWidth, clientWidth: ribbon.clientWidth },
           display: getComputedStyle(wrapper).display,
-          groups: [...wrapper.querySelectorAll('.command-group')].map((node) => ({
-            label: node.querySelector('.command-group-label')?.textContent?.trim() ?? '',
+          groups: [...wrapper.querySelectorAll('.command-group, .k-cmd-panel')].map((node) => ({
+            label: node.querySelector('.command-group-label, .k-cmd-panel-label')?.textContent?.trim() ?? '',
             ...rect(node),
           })),
         };
@@ -190,7 +188,7 @@ try {
   await runPartRibbonBoundaryMatrix();
   await runPhone();
   console.log('ASA-CAD M2 shell real-browser smoke PASS');
-  console.log('  ✓ U1A 1920×1080 header, menu/search, horizontal toolsets and ribbon geometry verified');
+  console.log('  ✓ KOMPAS shell at 1920×1080: tree, rail and reference ribbon of #170');
   console.log('  ✓ Part command groups preserve order without overlap');
   console.log('  ✓ Create Sketch opens plane parameters; Cancel leaves the Part unchanged');
   console.log('  ✓ Part/Sketch ribbon bounding boxes do not overlap and use ASA SVG icons');
