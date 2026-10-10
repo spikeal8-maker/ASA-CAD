@@ -3,6 +3,8 @@ import type { CadPlaneName } from '../../contracts/commands';
 import type { CadShellMainProps } from '../CadShellMain';
 import { CoincidentPartStage } from '../CoincidentPartModelStage';
 import { DocumentTree, type DocumentTreeProps } from '../DocumentTree';
+import { ParameterPanel, type ParameterPanelProps } from '../ParameterPanel';
+import { KompasParameters } from './KompasParameters';
 import { KompasDialogs } from './KompasDialogs';
 import { KIcon } from './KompasIcon';
 import { KompasLegend } from './KompasLegend';
@@ -110,12 +112,7 @@ export function KompasMain(props: CadShellMainProps) {
       </nav>
       <aside className="k-management-panel">
         {tab === 'tree' && (tree ? <KompasTree {...tree} /> : props.treeContent)}
-        {tab === 'params' && (
-          <div className="k-params-panel">
-            <div className="k-panel-head"><span>Параметры</span><span /></div>
-            <div className="k-params-body">{props.parametersContent}</div>
-          </div>
-        )}
+        {tab === 'params' && <KompasParameters panel={slotProps<ParameterPanelProps>(props.parametersContent, ParameterPanel)} legacy={props.parametersContent} />}
         {tab === 'vars' && (
           <>
             <div className="k-panel-head"><span>Переменные</span><span /></div>
