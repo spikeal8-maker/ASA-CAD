@@ -1,8 +1,10 @@
 import type { CadPoint2, CadSketchSupport } from '../../contracts/document';
 import type { CadPlaneName } from '../../contracts/commands';
 import type { CadStableReferenceId } from '../../contracts/ids';
+import { originPlaneFrame } from '../../contracts/sketchWorkplane';
 
-export type CadPoint3 = readonly [number, number, number];
+export type { CadPoint3 } from '../../contracts/sketchWorkplane';
+import type { CadPoint3 } from '../../contracts/sketchWorkplane';
 
 export interface ResolvedOriginWorkplaneProjection {
   kind: 'origin-plane';
@@ -34,44 +36,16 @@ export type SketchWorkplaneProjection =
 export function resolveSketchWorkplaneProjection(
   support: CadSketchSupport,
 ): SketchWorkplaneProjection {
-  switch (support) {
-    case 'XY':
-      return {
-        kind: 'origin-plane',
-        support: 'XY',
-        origin: [0, 0, 0],
-        u: [1, 0, 0],
-        v: [0, 1, 0],
-        normal: [0, 0, 1],
-        modelContextReady: true,
-      };
-    case 'XZ':
-      return {
-        kind: 'origin-plane',
-        support: 'XZ',
-        origin: [0, 0, 0],
-        u: [1, 0, 0],
-        v: [0, 0, 1],
-        normal: [0, -1, 0],
-        modelContextReady: true,
-      };
-    case 'YZ':
-      return {
-        kind: 'origin-plane',
-        support: 'YZ',
-        origin: [0, 0, 0],
-        u: [0, 1, 0],
-        v: [0, 0, 1],
-        normal: [1, 0, 0],
-        modelContextReady: true,
-      };
-    default:
-      return {
-        kind: 'stable-reference',
-        support: support as CadStableReferenceId,
-        modelContextReady: false,
-      };
+  if (support === 'XY' || support === 'XZ' || support === 'YZ') {
+    // One frame definition shared with the B-Rep runtime (contracts/sketchWorkplane).
+    const plane = support as CadPlaneName;
+    return { kind: 'origin-plane', support: plane, ...originPlaneFrame(plane), modelContextReady: true };
   }
+  return {
+    kind: 'stable-reference',
+    support: support as CadStableReferenceId,
+    modelContextReady: false,
+  };
 }
 
 export function sketchPointToModelPoint(
