@@ -55,7 +55,8 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
   const featureSketch=sketch??part?.sketches.at(-1)??null;
   const features=usePartFeatureController({
     app,document,renderModelAvailable,activeSketchId,sketch: featureSketch,
-    selectedPick: selection.selectedPick,setActiveCommand,setActiveWorkspace,
+    selectedPick: selection.selectedPick,selectedPlane: selection.selectedPlane,
+    selectBasePlane: selection.selectBasePlane,setActiveCommand,setActiveWorkspace,
     setPanel,setNotice,activateSketch,beginPartSelection: selection.beginPartSelection,
     clearTransientSelection: selection.clearTransientSelection,
   });
@@ -92,16 +93,15 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     if (activeCommand === 'dimension.edit') return dimensions.commitDimensionEdit();
   }
   return {
+    ...editing,
     activeWorkspace,setActiveWorkspace,activeCommand,activeSketchId,
     selectedSketchEntityId: selectedEntityId,
     ...constraints,
     ...creation,
     selectionMode: selection.selectionMode,selectedPick: selection.selectedPick,
     selectedBodyId: selection.selectedBodyId,
+    selectedPlane: selection.selectedPlane,selectBasePlane: selection.selectBasePlane,
     sketchPlane: features.sketchPlane,setSketchPlane: features.setSketchPlane,
-    rectangleWidth: editing.rectangleWidth,setRectangleWidth: editing.setRectangleWidth,
-    rectangleHeight: editing.rectangleHeight,setRectangleHeight: editing.setRectangleHeight,
-    circleDiameter: editing.circleDiameter,setCircleDiameter: editing.setCircleDiameter,
     extrude: features.extrude,
     filletRadius: features.filletRadius,setFilletRadius: features.setFilletRadius,
     dimensionEditValue: dimensions.dimensionEditValue,setDimensionEditValue: dimensions.setDimensionEditValue,
@@ -115,18 +115,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     deleteSelectedSketchEntity: entityMutations.deleteSelectedSketchEntity,
     toggleSelectedConstruction: entityMutations.toggleSelectedConstruction,
     translateSketchEntity: entityMutations.translateSketchEntity,
-    beginLine: editing.beginLine,
-    lineDraft: editing.lineDraft,lineCommitting: editing.lineCommitting,
-    handleSketchLinePointMove: editing.handleSketchLinePointMove,handleSketchLinePoint: editing.handleSketchLinePoint,
-    rectangleDraft: editing.rectangleDraft,rectangleCommitting: editing.rectangleCommitting,
-    handleSketchRectanglePointMove: editing.handleSketchRectanglePointMove,handleSketchRectanglePoint: editing.handleSketchRectanglePoint,
-    circleDraft: editing.circleDraft,circleCommitting: editing.circleCommitting,
-    handleSketchCirclePointMove: editing.handleSketchCirclePointMove,handleSketchCirclePoint: editing.handleSketchCirclePoint,
-    beginArc: editing.beginArc,arcDraft: editing.arcDraft,arcCommitting: editing.arcCommitting,
-    handleSketchArcPointMove: editing.handleSketchArcPointMove,handleSketchArcPoint: editing.handleSketchArcPoint,
     beginCreateSketch: features.beginCreateSketch,commitCreateSketch: features.commitCreateSketch,
-    beginRectangle: editing.beginRectangle,commitRectangle: editing.commitRectangle,
-    beginCircle: editing.beginCircle,commitCircle: editing.commitCircle,finishSketch: editing.finishSketch,
     beginCut: features.beginCut,commitCut: features.commitCut,
     beginFillet: features.beginFillet,commitFillet: features.commitFillet,
     beginDimensionEdit: dimensions.beginDimensionEdit,commitDimensionEdit: dimensions.commitDimensionEdit,

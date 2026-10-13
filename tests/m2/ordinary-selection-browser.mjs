@@ -64,15 +64,15 @@ async function createSimpleExtrude() {
   await page.goto(url, { waitUntil: 'networkidle' });
   await page.getByRole('button', { name: /Создать эскиз/i }).click();
   await page.getByRole('button', { name: /XY/ }).click();
-  await page.locator('.parameter-actions button.primary').click();
+  await page.locator('.parameter-actions button.primary, .k-pp-ok').click();
   await page.getByRole('button', { name: /Прямоугольник/i }).click();
-  await page.locator('.content-area.panel-closed').waitFor();
-  await page.getByTitle('Параметры').click();
-  await page.locator('.parameter-panel').waitFor();
-  await page.locator('.parameter-actions button.primary').click();
-  await page.getByRole('button', { name: /Завершить эскиз/ }).click();
+  await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
+  if (await page.locator('.k-content').count() === 0) await page.getByTitle('Параметры').click(); else if (await page.locator('.k-content[data-panel-tab="params"]').count() === 0) await page.getByRole('tab', { name: 'Параметры' }).click();
+  await page.locator(':is(.parameter-panel, .k-pp)').waitFor();
+  await page.locator('.parameter-actions button.primary, .k-pp-ok').click();
+  await page.locator('[data-command-id="sketch.finish"]').first().click();
   await page.getByRole('button', { name: /Элемент выдавливания/i }).click();
-  await page.locator('.parameter-actions button.primary').click();
+  await page.locator('.parameter-actions button.primary, .k-pp-ok').click();
   await page.getByText('Выдавливание 10 мм построено локально', { exact: true }).waitFor({ timeout: 120_000 });
   await page.locator('[data-testid="cad-viewport"] canvas').waitFor({ timeout: 60_000 });
 }
@@ -90,10 +90,10 @@ try {
   await page.getByText('Тело выбрано', { exact: true }).waitFor();
   const appBodyId = await page.locator('.cad-app').getAttribute('data-selected-body-id');
   assert.ok(appBodyId, 'viewport click did not produce an ASA body id');
-  const selectedTreeRow = page.locator(`.tree-row[data-body-id="${appBodyId}"]`);
+  const selectedTreeRow = page.locator(`:is(.tree-row, .k-tree-row)[data-body-id="${appBodyId}"]`);
   await selectedTreeRow.waitFor();
-  assert.equal(await selectedTreeRow.getAttribute('aria-pressed'), 'true');
-  assert.equal(await selectedTreeRow.evaluate((node) => node.classList.contains('selected')), true);
+  assert.equal(await selectedTreeRow.evaluate((node) => node.getAttribute('aria-pressed') ?? node.getAttribute('aria-selected')), 'true');
+  assert.equal(await selectedTreeRow.evaluate((node) => node.classList.contains('selected') || node.classList.contains('k-sel')), true);
   assert.equal((await viewportState()).selectedBodyId, appBodyId);
   assert.equal((await viewportState()).revision, before.revision, 'ordinary viewport selection triggered CAD recompute');
   console.log(`  ✓ viewport -> tree selection synchronized by bodyId ${appBodyId}`);
@@ -103,7 +103,7 @@ try {
   await page.keyboard.press('Escape');
   await page.locator('.cad-app[data-selected-body-id=""]').waitFor();
   await page.getByText('Выбор очищен', { exact: true }).waitFor();
-  assert.equal(await selectedTreeRow.getAttribute('aria-pressed'), 'false');
+  assert.equal(await selectedTreeRow.evaluate((node) => node.getAttribute('aria-pressed') ?? node.getAttribute('aria-selected')), 'false');
   assert.equal((await viewportState()).selectedBodyId, '');
   assert.equal((await viewportState()).revision, before.revision, 'Esc selection clear triggered CAD recompute');
   console.log('  ✓ Esc clears synchronized ordinary selection without recompute');
@@ -111,7 +111,7 @@ try {
   // Tree -> application -> viewport uses the exact same bodyId and visual state.
   await selectedTreeRow.click();
   await page.locator(`.cad-app[data-selected-body-id="${appBodyId}"]`).waitFor();
-  assert.equal(await selectedTreeRow.getAttribute('aria-pressed'), 'true');
+  assert.equal(await selectedTreeRow.evaluate((node) => node.getAttribute('aria-pressed') ?? node.getAttribute('aria-selected')), 'true');
   assert.equal((await viewportState()).selectedBodyId, appBodyId);
   assert.equal((await viewportState()).revision, before.revision, 'tree selection triggered CAD recompute');
   console.log('  ✓ tree -> viewport selection synchronized through ASA state');
@@ -128,9 +128,9 @@ try {
   await page.locator('.cad-app').focus();
   await page.keyboard.press('Escape');
   await page.getByText('Команда отменена', { exact: true }).waitFor();
-  const restoredTreeRow = page.locator(`.tree-row[data-body-id="${appBodyId}"]`);
+  const restoredTreeRow = page.locator(`:is(.tree-row, .k-tree-row)[data-body-id="${appBodyId}"]`);
   await restoredTreeRow.waitFor();
-  assert.equal(await restoredTreeRow.getAttribute('aria-pressed'), 'false');
+  assert.equal(await restoredTreeRow.evaluate((node) => node.getAttribute('aria-pressed') ?? node.getAttribute('aria-selected')), 'false');
   assert.equal((await viewportState()).revision, before.revision, 'leaving face-pick mode triggered CAD recompute');
   console.log('  ✓ command-specific face picking remains separate from ordinary body selection');
 

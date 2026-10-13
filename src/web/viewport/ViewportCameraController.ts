@@ -16,6 +16,12 @@ export type CadViewportViewName =
 
 export type ViewportVec3 = readonly [number, number, number];
 
+/**
+ * KOMPAS isometry (frozen reference #170): Z up, X to the lower left and Y to
+ * the lower right, i.e. a true isometric view from the +X+Y+Z octant.
+ */
+export const KOMPAS_ISOMETRIC: ViewportVec3 = [1 / Math.sqrt(3), 1 / Math.sqrt(3), 1 / Math.sqrt(3)];
+
 export interface ViewportCameraState {
   position: ViewportVec3;
   target: ViewportVec3;
@@ -94,7 +100,7 @@ export class ViewportCameraController {
     if (view === 'bottom') { direction = [0, 0, -1]; up = [0, -1, 0]; }
     if (view === 'left') { direction = [-1, 0, 0]; up = [0, 0, 1]; }
     if (view === 'right') { direction = [1, 0, 0]; up = [0, 0, 1]; }
-    if (view === 'isometric') { direction = normalize([1, -1, 1]); up = [0, 0, 1]; }
+    if (view === 'isometric') { direction = KOMPAS_ISOMETRIC; up = [0, 0, 1]; }
 
     const distance = fitDistance(state, this.options.diagonal);
     this.options.applyPose(view, {

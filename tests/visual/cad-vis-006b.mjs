@@ -36,20 +36,21 @@ async function open(browser,baseUrl,width=1920,height=1080){
   page.on('pageerror',(error)=>errors.push(error.message));
   page.on('requestfailed',(request)=>failed.push(`${request.method()} ${request.url()}: ${request.failure()?.errorText??'failed'}`));
   const response=await page.goto(`${baseUrl}/cad/?uiScale=100`,{waitUntil:'networkidle',timeout:30000});
-  assert.ok(response?.ok()); await page.getByRole('button',{name:'ASA-CAD',exact:true}).waitFor();
+  assert.ok(response?.ok()); await page.locator('.cad-app :is(.k-main-menu-bar, .brand-button)').first().waitFor();
   return {context,page,errors,failed};
 }
 async function fileCommand(page,label){
   await page.getByRole('button',{name:'Файл',exact:true}).click();
   const menu=page.getByRole('menu',{name:'Файл',exact:true}); await menu.waitFor();
-  await menu.getByRole('menuitem',{name:label,exact:true}).click();
+  const item = label === 'Новый' ? menu.locator('[data-command-id="system.new"]').first() : menu.getByRole('menuitem',{name:label,exact:true});
+  await item.click();
 }
 async function newPart(page){
   await fileCommand(page,'Новый');
   const dialog=page.getByRole('dialog',{name:'Новый документ',exact:true}); await dialog.waitFor();
   await dialog.getByRole('button',{name:/Деталь/}).click();
   await page.locator('.cad-app[data-document-kind="part"][data-sketch-count="0"][data-feature-count="0"]').waitFor();
-  await page.locator('.tree-root .tree-label').filter({hasText:'Деталь 1'}).first().waitFor();
+  await page.locator(':is(.tree-root .tree-label, .k-tree-row[data-tree-branch="part-root"] .k-lbl)').filter({hasText:'Деталь 1'}).first().waitFor();
 }
 
 await mkdir(outputRoot,{recursive:true});

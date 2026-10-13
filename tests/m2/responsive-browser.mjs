@@ -26,24 +26,16 @@ async function measureCase(testCase, scalePreference = testCase.uiScale, expecte
 
   const response = await page.goto(`${baseUrl}/?uiScale=${encodeURIComponent(scalePreference)}`, { waitUntil: 'networkidle', timeout: 30_000 });
   assert.ok(response?.ok(), `${testCase.id}: navigation failed with ${response?.status()}`);
-  await page.getByRole('button', { name: 'ASA-CAD', exact: true }).waitFor();
+  await page.locator('.k-main-menu-bar, .brand-button').first().waitFor();
 
   const metrics = await page.evaluate(() => {
+    const K = { '.content-area': '.k-content', '.workspace-tabs button': '.k-toolset', '.document-tab': '.k-doc-tab', '.ribbon-command': '.k-btn-t', '.viewport-quick-access': '.k-qa' };
     const rect = (selector) => {
-      const element = document.querySelector(selector);
+      const element = document.querySelector(K[selector] ?? `.k-${selector.slice(1)}`) ?? document.querySelector(selector);
       if (!(element instanceof HTMLElement)) return null;
       const box = element.getBoundingClientRect();
       const style = getComputedStyle(element);
-      return {
-        x: box.x,
-        y: box.y,
-        width: box.width,
-        height: box.height,
-        display: style.display,
-        visibility: style.visibility,
-        fontSize: Number.parseFloat(style.fontSize),
-        overflowX: style.overflowX,
-      };
+      return { x: box.x, y: box.y, width: box.width, height: box.height, display: style.display, visibility: style.visibility, fontSize: Number.parseFloat(style.fontSize), overflowX: style.overflowX };
     };
     const mobileButtons = [...document.querySelectorAll('.mobile-bottom-bar button')].map((node) => {
       const box = node.getBoundingClientRect();
@@ -109,7 +101,7 @@ async function measureCase(testCase, scalePreference = testCase.uiScale, expecte
   if (desktop) {
     assert.ok(metrics.panel && metrics.panel.display !== 'none', `${testCase.id}: desktop management panel missing`);
     assert.ok(metrics.panel.width >= 220 && metrics.panel.width <= 440, `${testCase.id}: desktop panel width ${metrics.panel.width}px outside 220..440`);
-    assert.ok(metrics.mobileBar?.display === 'none', `${testCase.id}: desktop shows mobile bottom bar`);
+    assert.ok((metrics.mobileBar?.display ?? 'none') === 'none', `${testCase.id}: desktop mobile bar`);
   }
 
   if (portraitPhone) {
@@ -183,9 +175,7 @@ try {
   }
 
   console.log('ASA-CAD M2R required viewport + UI Scale matrix PASS');
-  console.log('  ✓ HD/FHD/2K/ultrawide/4K/tablet/phone shell remains bounded and readable');
-  console.log('  ✓ 110/125% enlarge tokenized chrome without scaling model coordinates');
-  console.log('  ✓ Auto follows effective CSS viewport; DPR does not double-scale physical 4K');
+  console.log('  ✓ bounded readable shell; 110/125% enlarge chrome only; Auto follows CSS viewport');
 } finally {
   await browser.close();
 }

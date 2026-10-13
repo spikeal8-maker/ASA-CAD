@@ -1,5 +1,7 @@
 import React from 'react';
 import { CadIcon } from './CadIcon';
+import { KompasMain } from './kompas/KompasMain';
+import { useKompasDesktop } from './kompas/useKompasDesktop';
 
 export type CadShellPanel = 'tree' | 'parameters' | 'tools' | 'closed';
 
@@ -20,7 +22,7 @@ export interface CadShellMainProps {
   modelContent: React.ReactNode;
 }
 
-export function CadShellMain(props: CadShellMainProps) {
+function LegacyCadShellMain(props: CadShellMainProps) {
   return (
     <main className={`content-area${props.activePanel === 'closed' ? ' panel-closed' : ''}`}>
       <aside className="management-rail" aria-label="Панели">
@@ -88,4 +90,9 @@ export function CadShellMain(props: CadShellMainProps) {
       </section>
     </main>
   );
+}
+
+/** Desktop: KOMPAS shell of the frozen reference #170; phones: the compact shell. */
+export function CadShellMain(props: CadShellMainProps) {
+  return useKompasDesktop() ? <KompasMain {...props} /> : <LegacyCadShellMain {...props} />;
 }

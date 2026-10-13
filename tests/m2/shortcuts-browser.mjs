@@ -33,19 +33,19 @@ async function cameraState() {
 
 async function createPartWithKeyboardCommit() {
   await page.goto(url, { waitUntil: 'networkidle' });
-  await page.getByRole('button', { name: 'ASA-CAD', exact: true }).waitFor();
+  await page.locator('.k-main-menu-bar, .brand-button').first().waitFor();
   await page.getByRole('button', { name: /Создать эскиз/i }).click();
   await page.getByRole('button', { name: /XY/ }).click();
-  await page.locator('.parameter-actions button.primary').click();
+  await page.locator('.parameter-actions button.primary, .k-pp-ok').click();
   await page.getByRole('button', { name: /Прямоугольник/i }).click();
-  await page.locator('.content-area.panel-closed').waitFor();
-  await page.getByTitle('Параметры').click();
-  await page.locator('.parameter-panel').waitFor();
-  await page.locator('.parameter-actions button.primary').click();
-  await page.getByRole('button', { name: /Завершить эскиз/ }).click();
+  await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
+  if (await page.locator('.k-content').count() === 0) await page.getByTitle('Параметры').click(); else if (await page.locator('.k-content[data-panel-tab="params"]').count() === 0) await page.getByRole('tab', { name: 'Параметры' }).click();
+  await page.locator(':is(.parameter-panel, .k-pp)').waitFor();
+  await page.locator('.parameter-actions button.primary, .k-pp-ok').click();
+  await page.locator('[data-command-id="sketch.finish"]').first().click();
   await page.getByRole('button', { name: /Элемент выдавливания/i }).click();
 
-  const distanceInput = page.locator('.numeric-field').filter({ hasText: 'Расстояние' }).locator('input');
+  const distanceInput = page.locator(':is(.numeric-field, .k-pp-row)').filter({ hasText: 'Расстояние' }).locator('input');
   await distanceInput.focus();
   assert.equal(await distanceInput.inputValue(), '10');
   await page.keyboard.press('Control+Enter');
@@ -63,8 +63,8 @@ try {
 
   // Focus-safe parameter editing: navigation/undo shortcuts stay with the input,
   // while Ctrl+S and command lifecycle keys are still allowed by policy.
-  await page.getByRole('button', { name: /Ширина: 60 мм/ }).click();
-  const dimensionInput = page.locator('.numeric-field').filter({ hasText: 'Размер' }).locator('input');
+  await page.locator('[data-dimension-id]',{hasText:/Ширина: 60 мм/}).click();
+  const dimensionInput = page.locator(':is(.numeric-field, .k-pp-row)').filter({ hasText: 'Размер' }).locator('input');
   await dimensionInput.focus();
   const beforeInputKeys = await cameraState();
   await page.keyboard.press('ArrowRight');

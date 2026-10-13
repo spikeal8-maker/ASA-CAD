@@ -40,7 +40,7 @@ assert.match(editing, /id:\s*'dimension\.diameter'/, 'numeric/driving diameter f
 assert.match(stage, /SketchEditingStage/, 'Part stage must delegate direct Sketch presentation');
 assert.match(sketchStage, /<SketchDirectToolLayers/, 'Sketch editing stage must delegate direct-tool composition');
 assert.match(directTools, /SketchCircleInteractionLayer/, 'direct-tool owner must compose Circle outside B-Rep Three interaction');
-assert.match(protectedPart, /getByTitle\('Параметры'\)/, 'protected Part must retain explicit numeric Circle + driving diameter fallback');
+assert.match(protectedPart, /getByTitle\('Параметры'\)|openParams\(page\)/, 'protected Part must retain explicit numeric Circle + driving diameter fallback');
 
 const circle = registry.commands.find((command) => command.id === 'sketch.circle');
 assert.ok(circle, 'command registry must contain sketch.circle');

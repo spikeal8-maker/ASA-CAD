@@ -1,6 +1,6 @@
 # ASA-CAD — UI/core convergence roadmap
 
-Редакция: 2026-10-04.
+Редакция: 2026-10-10.
 Central issue: **#184**.
 Integration branch: **`integration/ui-core-unification`**.
 Frozen UI reference: **`ui-reference-20261004` -> `88c535c652dac8b04f0d68fa144cf8486afdc926`**.
@@ -23,15 +23,13 @@ Frozen UI reference: **`ui-reference-20261004` -> `88c535c652dac8b04f0d68fa144cf
 - frozen reference tag подтверждён;
 - machine convergence test PASS.
 
-## U1A pre-start gate
+## Постоянное разрешение разработки U1A–U5
 
-Перед первой строкой U1A-кода обязательно:
-- GitHub admin protection на `integration/ui-core-unification` = ENFORCED;
-- `npm run test:process:ui-core-u1a-ready` = PASS;
-- mapping-contract `docs/UI_CORE_U1A_MAPPING.md` прочитан исполнителем;
-- visual evidence workflow доступен для PR -> integration.
+Владелец разрешил техническую разработку checkpoint и предусмотренный аудит без новых индивидуальных разрешений. Source of truth: `spec/process/active-work.v1.json` + `spec/process/ui-core-unification.v1.json` (developmentFlow). Checkpoint стартует после проверки зависимостей, актуального HEAD, отсутствия конфликтующего writer, process/CI и отсутствия критических дефектов.
 
-Пока protection не включена, **U1A CODE = BLOCKED**. `UI_CORE_INTEGRATION_GUARD` — только detector, не server-side enforcement.
+`npm run test:process:ui-core-u1a-ready` — legacy-имя readiness-теста действующего checkpoint; не требует `ENFORCED`. GitHub `DETECT_ONLY` фиксируется как риск, не как защищённая ветка; прямые и force push в integration/main запрещены регламентом.
+
+Каждый checkpoint: отдельная ветка -> Draft PR -> exact-head CI -> независимый read-only review (отдельный документированный агент допускается вместо GitHub APPROVED) -> реальные пользовательские сценарии -> технический merge в integration -> автоматический переход к следующему пункту. Обычный documentation drift исправляется в текущем PR. Owner product acceptance отдельно от технического merge. Слияние в main, production и утверждение полной визуальной parity только по решению владельца.
 
 ## U1 — CANONICAL SHELL ADOPTION
 
@@ -65,13 +63,17 @@ Geometry compare = semantic-region contract из `UI_CORE_U1A_MAPPING.md`, а н
 Acceptance U1:
 обычный Part route показывает каноничную оболочку и один настоящий application state без prototype `doc/history`.
 
+### Предложение 2026-10-10: U1 одним пакетом (ждёт решения владельца в #184)
+
+Ветка `ui-core/u1-visible` (Draft PR в integration) переносит оболочку КОМПАС эталона #170 целиком как основную вёрстку рабочего стола (>= 900 px): `src/web/kompas` — разметка, стили с префиксом `k-`, значки, меню и наборы #170, поверх тех же typed actions, CadDocument, решателя и OpenCascade. Одним PR закрываются U1A + U1B + U1C; сцена — код C1 из archived #182, ядро — K1. Это расходится с правилом «U1 не один огромный PR» и выше repository footprint, поэтому до технического merge нужны решение владельца (оставить пакетом или разбить на U1A/U1B/U1C) и architecture review. Machine pointer не меняется.
+
 ### Обязательный gate после U1
 
 U1 переводит cadence **2/3 -> 3/3**.
 
 Поэтому:
 ```text
-U1 ACCEPTED
+U1 TECHNICALLY INTEGRATED (U1A + U1B + U1C)
    ↓
 FULL REPOSITORY HEALTH AUDIT
    ↓

@@ -1,3 +1,4 @@
+import type { CadPlaneName } from '../../contracts/commands';
 import type { CadBodyId, CadFeatureId, CadSketchEntityId, CadSketchId } from '../../contracts/ids';
 
 export type ViewportSelectionMode = 'none' | 'face' | 'edge' | 'sketch';
@@ -39,11 +40,18 @@ export interface ViewportSketchEntityCandidate extends ViewportPickCandidateBase
   entityId: CadSketchEntityId;
 }
 
+/** Part origin plane (datum). Identity is the document plane name, never a mesh index. */
+export interface ViewportBasePlaneCandidate extends ViewportPickCandidateBase {
+  kind: 'base-plane';
+  planeId: CadPlaneName;
+}
+
 export type ViewportPickCandidate =
   | ViewportBodyCandidate
   | ViewportFaceCandidate
   | ViewportEdgeCandidate
-  | ViewportSketchEntityCandidate;
+  | ViewportSketchEntityCandidate
+  | ViewportBasePlaneCandidate;
 
 export interface ViewportPickResolution {
   primary: ViewportPickCandidate | null;
@@ -70,20 +78,28 @@ export function resolveViewportPickCandidates(
     if (!current || candidate.distance < current.distance) nearestByKey.set(key, candidate);
   }
 
-  const ordered = [...nearestByKey.values()].sort((a, b) => {
+  const byDistance = [...nearestByKey.values()].sort((a, b) => {
     const distance = a.distance - b.distance;
     return Math.abs(distance) > Number.EPSILON
       ? distance
       : viewportCandidateKey(a).localeCompare(viewportCandidateKey(b));
   });
+  // Origin planes are translucent datums: model geometry under the cursor wins
+  // even when a plane is nearer, so planes are picked only over empty space.
+  const ordered = [
+    ...byDistance.filter((candidate) => candidate.kind !== 'base-plane'),
+    ...byDistance.filter((candidate) => candidate.kind === 'base-plane'),
+  ];
   const primary = ordered[0] ?? null;
   if (!primary) return { primary: null, ordered, ambiguous: false };
 
   // A farther object behind the front target is not an ambiguity. Treat nearby
-  // candidates as competing only within a small relative ray-depth band.
+  // candidates of the same category as competing only within a small relative
+  // ray-depth band.
   const depthTolerance = Math.max(1e-6, Math.abs(primary.distance) * 0.015);
   const ambiguous = ordered.slice(1).some(
-    (candidate) => Math.abs(candidate.distance - primary.distance) <= depthTolerance,
+    (candidate) => (candidate.kind === 'base-plane') === (primary.kind === 'base-plane')
+      && Math.abs(candidate.distance - primary.distance) <= depthTolerance,
   );
   return { primary, ordered, ambiguous };
 }
@@ -98,10 +114,14 @@ export function viewportCandidateKey(candidate: ViewportPickCandidate): string {
       return `edge:${candidate.meshId}:${candidate.segmentIndex ?? 'unknown'}`;
     case 'sketch-entity':
       return `sketch:${candidate.sketchId}:${candidate.entityId}`;
+    case 'base-plane':
+      return `plane:${candidate.planeId}`;
   }
 }
 
 function isCompatible(candidate: ViewportPickCandidate, mode: ViewportSelectionMode): boolean {
+  // Origin planes are ordinary selectable objects and valid Sketch supports.
+  if (candidate.kind === 'base-plane') return mode === 'none' || mode === 'face';
   if (mode === 'none') return candidate.kind === 'body';
   if (mode === 'face') return candidate.kind === 'face';
   if (mode === 'edge') return candidate.kind === 'edge';

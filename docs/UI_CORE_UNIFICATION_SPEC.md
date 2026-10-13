@@ -120,22 +120,15 @@ U1 запрещено начинать, пока не выполнены все 
 Если хотя бы один пункт не выполнен:
 `U1_START_ALLOWED = NO`.
 
-## 5A. Integration protection and U1A readiness
+## 5A. Постоянный технический процесс без административного барьера
 
-Требуемое состояние GitHub:
-- pull request required for `integration/ui-core-unification`;
-- direct push forbidden;
-- required general checks enforced by branch protection/ruleset.
+Решение владельца от 2026-10-08: `OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008`. Контракт `developmentFlow` даёт разрешение на U1A–U5 и обязательный аудит, только при выполнении technical gates. Каждое изменение идёт через отдельный Draft PR с exact-head CI, независимым read-only review и реальным пользовательским сценарием; один writer на путь. После технической приёмки разрешён merge в integration без отдельной owner visual acceptance после каждой мелкой правки.
 
-Текущее состояние после automated hardening: **DETECT_ONLY**. Workflow `.github/workflows/ui-core-integration-guard.yml` обнаруживает прямой/unassociated push, но не может заменить server-side branch protection.
+Серверная защита GitHub — отдельный факт. Сейчас `integrationProtection.current.mode=DETECT_ONLY`, `adminProtectionVerified=false`, риск `ADMIN_BRANCH_PROTECTION_NOT_ENFORCED`. Detector `.github/workflows/ui-core-integration-guard.yml` не равен branch protection. Этот административный риск не маскируется состоянием `ENFORCED` и не блокирует product development. Прямой или force push в main/integration регламентом запрещён.
 
-До административного включения защиты:
-`U1A_CODE_START_ALLOWED = NO`.
+`npm run test:process:ui-core-u1a-ready` проверяет действующий машинный checkpoint/постоянное разрешение, не административный ruleset. При переносе HEAD проверять live branch и повторять нужные тесты, а не автоматически останавливать все работы. Некритичный documentation drift исправлять в том же рабочем PR. Отсутствие формального GitHub APPROVED допускает только независимый документированный review отдельного агента, не самопроверку автора.
 
-Обязательный readiness command перед U1A:
-`npm run test:process:ui-core-u1a-ready`.
-
-Он должен завершаться FAIL, пока `integrationProtection.current` в machine contract не переведён в verified `ENFORCED` после реальной проверки GitHub settings.
+Owner product acceptance требуется при интегрированном U1 и значимых этапах, отдельно от технической приёмки; merge в main, production и final visual parity только после решения владельца.
 
 U1A implementation mapping: `docs/UI_CORE_U1A_MAPPING.md`.
 U1 visual evidence workflow: `.github/workflows/ui-core-u1-visual.yml`.
@@ -168,7 +161,7 @@ main
 - independent review;
 - exact-head CI;
 - visible owner result;
-- merge обратно только после acceptance.
+- merge обратно после технической приёмки (exact-head CI, независимый read-only review, real ordinary-route proof; critical findings = 0); owner-level product acceptance — отдельно.
 
 ## 7. U1 = один permanent product slice
 
@@ -210,6 +203,15 @@ Scope:
 U1 acceptance:
 `open Part -> canonical shell -> select XY/XZ/YZ -> one application selection state`.
 
+### 7A. Предложение 2026-10-10 — U1 одним пакетом (ПРЕДЛОЖЕНИЕ, ждёт решения владельца в #184)
+
+Не меняет действующий контракт до решения владельца; machine pointer остаётся U1A.
+
+- Основная вёрстка рабочего стола (>= 900 px) — оболочка КОМПАС эталона #170, перенесённая в `src/web/kompas` по зонам (меню, вкладки, наборы и лента, дерево, параметры, панель быстрого доступа, окна), без второго runtime: каждая кнопка — typed action того же id реестра, данные — CadDocument/CadApplication, сцена — CadViewport с кодом C1 (archived #182), ядро — K1 (#177 REUSE). Телефон (< 900 px) — компактная оболочка.
+- U1A + U1B + U1C закрываются одним Draft PR (`ui-core/u1-visible`). Это отход от п. 7 «U1 нельзя превращать в один огромный PR» и выше repository footprint: нужны решение владельца (принять пакетом или разбить) и architecture review.
+- Темы: вместо DEFERRED_NOT_U1A — общая модель темы продукта (светлая по умолчанию, тёмная — токены #170 и те же значения для общих токенов, окон и панелей продукта), не перекраска одной оболочки. Требует решения владельца.
+- Command honesty (п. 10): лента показывает и команды без реализации, как эталон; нажатие сообщает статус реестра и ничего не исполняет.
+
 ## 8. Cadence gate
 
 До U1 cadence = **2/3**.
@@ -217,11 +219,13 @@ U1 acceptance:
 Принятый U1 = один permanent product slice:
 `2/3 -> 3/3`.
 
-Следовательно сразу после U1 acceptance:
-**Full Repository Health Audit REQUIRED**.
+Следовательно сразу после технического принятия полного U1 (U1A+U1B+U1C):
+**Full Repository Health Audit REQUIRED**. Этот технический merge не равен финальному owner product acceptance.
 
 До audit outcome GREEN или explicitly accepted YELLOW:
 **U2 = BLOCKED**.
+
+Машинная проверка: `currentCheckpoint` U2–U5 в `spec/process/active-work.v1.json` допустим только вместе с `fullRepositoryHealthAudit` = `{ outcome: GREEN | YELLOW_ACCEPTED, auditedSha, report, acceptedBy (для YELLOW) }`; файл `report` должен быть в репозитории (`npm run test:process:ui-core-u1a-ready`).
 
 U1A/U1B/U1C не считаются тремя permanent slices.
 
@@ -295,13 +299,14 @@ Prototype-only behavior не помечается как product-connected.
 
 ## 13. STOP
 
-STOP if:
-- integration HEAD moved;
-- same owner/path has another writer;
-- second document/state manager required;
-- duplicate solver/OpenCascade/application logic proposed;
-- implicit schema migration required;
-- ordinary route cannot prove behavior.
+STOP только затронутого направления, если:
+- конфликт writer по тем же файлам неразрешим безопасно;
+- риск потери данных либо миграция схемы без проверенной совместимости;
+- критический дефект CAD-ядра не исправим в рамках задачи;
+- обязательные исходники/полномочия недоступны;
+- требуется существенное изменение продуктовой цели владельцем.
+
+При смещении integration HEAD: обновить baseline, перепроверить diff/CI и разрешить конфликты. При обычном drift документации: исправить в активном PR. Независимые направления вправе продолжаться.
 
 ## 14. End state
 

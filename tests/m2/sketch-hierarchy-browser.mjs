@@ -14,7 +14,7 @@ const disclosure=(name)=>branch(name).locator('[data-sketch-disclosure]');
 const children=(name)=>branch(name).locator('[data-sketch-children]');
 
 async function saveAndRead(){
-  await page.locator('.global-actions [data-command-id="system.save"]').click();
+  await page.locator(':is(.global-actions, .k-command-ribbon) [data-command-id="system.save"]').click();
   await page.getByText('Сохранено локально',{exact:true}).waitFor();
   const raw=await page.evaluate(()=>localStorage.getItem('asa-cad-m2-shell-document'));
   assert.ok(raw,'saved CadDocument missing');
@@ -23,7 +23,7 @@ async function saveAndRead(){
 async function observable(){
   return {
     raw:await page.evaluate(()=>localStorage.getItem('asa-cad-m2-shell-document')),
-    dirty:await page.locator('.dirty-dot').count(),
+    dirty:await page.locator(':is(.dirty-dot, [data-document-dirty="true"])').count(),
     undoEnabled:await page.locator('[data-command-id="system.undo"]').first().isEnabled(),
   };
 }
@@ -98,10 +98,10 @@ try{
   assert.ok(width && sketch1.dimensionIds.includes(width.id),'width dimension ownership missing');
   await page.locator(`[data-dimension-id="${width.id}"]`).click();
   await page.getByText('Изменить размер',{exact:true}).waitFor();
-  const field=page.locator('.parameter-panel .numeric-field input');
+  const field=page.locator(':is(.parameter-panel, .k-pp) :is(.numeric-field, .k-pp-row) input');
   assert.equal(Number(await field.inputValue()),60);
   await field.fill('62');
-  await page.locator('.parameter-actions button.primary').click();
+  await page.locator('.parameter-actions button.primary, .k-pp-ok').click();
   await page.getByText('Ширина: 62 мм',{exact:true}).waitFor();
   const edited=await saveAndRead();
   const editedWidth=edited.dimensions.find((dimension)=>dimension.id===width.id);

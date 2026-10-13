@@ -23,6 +23,8 @@ export interface SketchSelectionLayerProps {
 export function SketchSelectionLayer(props: SketchSelectionLayerProps) {
   const frame = useSketchViewportFrame();
   const dragPointerRef = useRef<number | null>(null);
+  /** Entity the pointer went down on: a release that finishes a drawing tool must not select. */
+  const pressedRef = useRef<CadSketchEntityId | null>(null);
   if (!props.model) return null;
 
   const pointFromEvent = (event: React.PointerEvent<SVGElement>): CadPoint2 | null => {
@@ -38,8 +40,9 @@ export function SketchSelectionLayer(props: SketchSelectionLayerProps) {
   };
 
   const pointerDown = (entityId: CadSketchEntityId) => (event: React.PointerEvent<SVGElement>) => {
-    if (!props.enabled || props.selectedEntityId !== entityId || !props.onEntityDragStart) return;
-    if (event.button !== 0 && event.pointerType !== 'touch') return;
+    if (!props.enabled || (event.button !== 0 && event.pointerType !== 'touch')) return;
+    pressedRef.current = entityId;
+    if (props.selectedEntityId !== entityId || !props.onEntityDragStart) return;
     const point = pointFromEvent(event);
     if (!point || !props.onEntityDragStart(entityId, point)) return;
     event.preventDefault();
@@ -108,6 +111,8 @@ export function SketchSelectionLayer(props: SketchSelectionLayerProps) {
                 if (finishDrag(event)) return;
                 if (!props.enabled) return;
                 if (event.button !== 0 && event.pointerType !== 'touch') return;
+                if (pressedRef.current !== entity.id) return;
+                pressedRef.current = null;
                 event.stopPropagation();
                 props.onEntitySelect(entity.id);
               },

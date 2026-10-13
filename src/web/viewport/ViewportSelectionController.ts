@@ -1,3 +1,4 @@
+import type { CadPlaneName } from '../../contracts/commands';
 import type { CadBodyId } from '../../contracts/ids';
 import type {
   ViewportPickCandidate,
@@ -7,6 +8,8 @@ import type {
 export interface ViewportSelectionSnapshot {
   mode: ViewportSelectionMode;
   selectedBodyId: CadBodyId | null;
+  /** Ordinary origin-plane selection; mutually exclusive with body selection. */
+  selectedPlaneId: CadPlaneName | null;
   hoverCandidate: ViewportPickCandidate | null;
   selectedCommandCandidate: ViewportPickCandidate | null;
 }
@@ -21,10 +24,12 @@ export class ViewportSelectionController {
   constructor(
     mode: ViewportSelectionMode = 'none',
     selectedBodyId: CadBodyId | null = null,
+    selectedPlaneId: CadPlaneName | null = null,
   ) {
     this.snapshot = {
       mode,
       selectedBodyId,
+      selectedPlaneId,
       hoverCandidate: null,
       selectedCommandCandidate: null,
     };
@@ -51,6 +56,14 @@ export class ViewportSelectionController {
     };
   }
 
+  setExternalPlaneSelection(planeId: CadPlaneName | null): void {
+    this.snapshot = {
+      ...this.snapshot,
+      selectedPlaneId: planeId,
+      hoverCandidate: null,
+    };
+  }
+
   setHover(candidate: ViewportPickCandidate | null): void {
     this.snapshot = { ...this.snapshot, hoverCandidate: candidate };
   }
@@ -65,6 +78,7 @@ export class ViewportSelectionController {
       this.snapshot = {
         ...this.snapshot,
         selectedBodyId: candidate?.kind === 'body' ? candidate.bodyId : null,
+        selectedPlaneId: candidate?.kind === 'base-plane' ? candidate.planeId : null,
         hoverCandidate: null,
         selectedCommandCandidate: null,
       };

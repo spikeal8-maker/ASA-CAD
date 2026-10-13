@@ -6,8 +6,8 @@ import {
 } from './M3BrowserHarness.mjs';
 
 const browser = await launchM3Browser();
-const field = (page) => page.locator('.parameter-panel .numeric-field input');
-const apply = (page) => page.locator('.parameter-actions button.primary');
+const field = (page) => page.locator(':is(.parameter-panel, .k-pp) :is(.numeric-field, .k-pp-row) input');
+const apply = (page) => page.locator('.parameter-actions button.primary, .k-pp-ok');
 
 async function selectCircle(page, touch = false) {
   const visual = page.locator('[data-testid="cad-sketch-overlay"] circle[data-sketch-entity-id]').first();
@@ -43,10 +43,10 @@ async function desktopDiameter() {
   try {
     await loadFixture(page, 'circle', 1);
     const id = await selectCircle(page);
-    const action = page.locator('.command-ribbon [data-command-id="dimension.diameter"]');
+    const action = page.locator(':is(.command-ribbon, .k-command-ribbon) [data-command-id="dimension.diameter"]');
     assert.equal(await action.isEnabled(), true);
     await action.click();
-    await page.locator('.parameter-panel .panel-title-row strong').filter({ hasText: 'Диаметральный размер' }).waitFor();
+    await page.locator(':is(.parameter-panel .panel-title-row strong, .k-pp-cmd strong)').filter({ hasText: 'Диаметральный размер' }).waitFor();
     assert.equal(await page.locator('[data-directional-dimension-target]').getAttribute('data-directional-dimension-target'), id);
     near(Number(await field(page).inputValue()), 24, 1e-6, 'initial Diameter');
     assert.equal((await saveLocalDocument(page)).dimensions.length, 0);
@@ -100,7 +100,7 @@ async function mobileDiameter() {
     const action = page.locator('[data-mobile-tools="true"] [data-command-id="dimension.diameter"]');
     assert.equal(await action.isEnabled(), true);
     await action.click();
-    await page.locator('.parameter-panel .panel-title-row strong').filter({ hasText: 'Диаметральный размер' }).waitFor();
+    await page.locator(':is(.parameter-panel .panel-title-row strong, .k-pp-cmd strong)').filter({ hasText: 'Диаметральный размер' }).waitFor();
     await field(page).fill('32');
     await apply(page).click();
     await waitSolvedOverlay(page, 1, 'mobile Diameter');
@@ -115,18 +115,18 @@ async function searchDiameter() {
   const { page, errors } = await newDesktopPage(browser);
   try {
     await loadFixture(page, 'circle', 1);
-    const search = page.getByRole('textbox', { name: 'Поиск команд' });
+    const search = page.getByRole('textbox', { name: /^Поиск (команд|по командам)$/ });
     await search.fill('Диаметральный размер');
-    let result = page.locator('.command-search-results [data-command-id="dimension.diameter"]');
+    let result = page.locator(':is(.command-search-results, .k-search-results) [data-command-id="dimension.diameter"]');
     await result.waitFor();
     assert.equal(await result.isEnabled(), false);
     assert.equal(await result.getAttribute('title'), 'Выберите окружность эскиза');
 
     const id = await selectCircle(page);
-    result = page.locator('.command-search-results [data-command-id="dimension.diameter"]');
+    result = page.locator(':is(.command-search-results, .k-search-results) [data-command-id="dimension.diameter"]');
     assert.equal(await result.isEnabled(), true);
     await result.click();
-    await page.locator('.parameter-panel .panel-title-row strong').filter({ hasText: 'Диаметральный размер' }).waitFor();
+    await page.locator(':is(.parameter-panel .panel-title-row strong, .k-pp-cmd strong)').filter({ hasText: 'Диаметральный размер' }).waitFor();
     await field(page).fill('28');
     await apply(page).click();
     await waitSolvedOverlay(page, 1, 'search Diameter');
@@ -142,10 +142,10 @@ async function cancelNoMutation() {
     await loadFixture(page, 'circle', 1);
     await selectCircle(page);
     const before = JSON.stringify(await saveLocalDocument(page));
-    await page.locator('.command-ribbon [data-command-id="dimension.diameter"]').click();
-    await page.locator('.parameter-panel .panel-title-row strong').filter({ hasText: 'Диаметральный размер' }).waitFor();
+    await page.locator(':is(.command-ribbon, .k-command-ribbon) [data-command-id="dimension.diameter"]').click();
+    await page.locator(':is(.parameter-panel .panel-title-row strong, .k-pp-cmd strong)').filter({ hasText: 'Диаметральный размер' }).waitFor();
     await field(page).fill('77');
-    await page.locator('.parameter-actions button:not(.primary)').click();
+    await page.locator('.parameter-actions button:not(.primary), .k-pp-cancel').click();
     const after = JSON.stringify(await saveLocalDocument(page));
     assert.equal(after, before);
     assert.equal(JSON.parse(after).dimensions.length, 0);

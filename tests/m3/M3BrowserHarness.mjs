@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { chromium } from '../../vendor/toubkal/node_modules/playwright-core/index.mjs';
 import { reloadAndOpenSavedDocument } from './M3DocumentReplacement.mjs';
+import { COMMIT, QUICK } from '../m2/shell-selectors.mjs';
 
 export const baseUrl = (process.env.ASA_CAD_SHELL_URL ?? 'http://127.0.0.1:8090/').replace(/\/$/,'');
 export const shellUrl = `${baseUrl}/`;
@@ -22,9 +23,9 @@ export async function assertSketchOnlyWasm(page,label) {
 
 export async function createXYSketch(page) {
   await page.getByRole('button',{ name: /Создать эскиз/i }).click();
-  await page.getByText('Плоскость построения',{ exact: true }).waitFor();
+  await page.getByText('Опорный объект',{ exact: true }).waitFor();
   await page.getByRole('button',{ name: /XY/ }).click();
-  await page.locator('.parameter-actions button.primary').click();
+  await page.locator(COMMIT).click();
   await page.getByText('Эскиз 1',{ exact: true }).waitFor();
   await page.locator('[data-testid="cad-sketch-overlay"][data-entity-count="0"]').waitFor();
 }
@@ -33,7 +34,7 @@ export async function createMobileXYSketch(page) {
   await page.getByRole('button',{ name: /Инструменты/ }).click();
   await tools.locator('[data-command-id="part.sketch.create"]').click();
   await page.getByRole('button',{ name: /XY/ }).click();
-  await page.locator('.parameter-actions button.primary').click();
+  await page.locator(COMMIT).click();
   await page.getByText('Эскиз 1',{ exact: true }).waitFor();
 }
 export async function activateMobileTool(page,commandId,label) {
@@ -108,7 +109,7 @@ export async function openFixture(browser,fixture,entityCount) {
 }
 
 export async function saveLocalDocument(page) {
-  await page.locator('.global-actions [data-command-id="system.save"]').click();
+  await page.locator(`${QUICK} [data-command-id="system.save"]`).click();
   await page.getByText('Сохранено локально',{ exact: true }).waitFor();
   const saved = await page.evaluate(() => localStorage.getItem('asa-cad-m2-shell-document'));
   assert.ok(saved,'document was not saved to local host');
