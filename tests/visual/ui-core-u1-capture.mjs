@@ -80,6 +80,14 @@ async function setReferenceTheme(page, theme) {
 async function openReference(browser, width, height) {
   const context = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: 1 });
   const page = await context.newPage();
+  const pinnedThree = process.env.ASA_CAD_REFERENCE_THREE_JS;
+  if (pinnedThree) {
+    const source = await readFile(pinnedThree);
+    // The frozen #170 HTML references a CDN URL. Intercept only that exact request
+    // with the pinned r128 distribution; avoid CI's external CDN dependency.
+    await page.route('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/javascript', body: source }));
+  }
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
   const response = await page.goto(`${referenceUrl}/`, { waitUntil: 'networkidle', timeout: 30000 });

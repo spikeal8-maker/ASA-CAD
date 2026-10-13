@@ -24,7 +24,7 @@ try {
   assert.ok(response, 'browser navigation returned no response');
   assert.ok(response.ok(), `browser navigation failed: HTTP ${response.status()}`);
 
-  await page.getByRole('button', { name: 'ASA-CAD', exact: true }).waitFor();
+  await page.locator('.cad-app :is(.k-main-menu-bar, .brand-button)').first().waitFor();
   await page.getByText('Твердотельное моделирование', { exact: true }).waitFor();
   await page.locator('[data-testid="cad-viewport"][data-scene-revision="reference"][data-reference-planes="XY,XZ,YZ"] canvas').waitFor();
 
@@ -33,8 +33,8 @@ try {
     sharedArrayBuffer: typeof SharedArrayBuffer !== 'undefined',
     rootChildren: document.getElementById('root')?.children.length ?? 0,
     runtimeStatus: document.querySelector('.cad-app')?.getAttribute('data-runtime-status') ?? null,
-    workWidth: document.querySelector('.work-area')?.getBoundingClientRect().width ?? 0,
-    workHeight: document.querySelector('.work-area')?.getBoundingClientRect().height ?? 0,
+    workWidth: document.querySelector('.k-work-area, .work-area')?.getBoundingClientRect().width ?? 0,
+    workHeight: document.querySelector('.k-work-area, .work-area')?.getBoundingClientRect().height ?? 0,
     canvasCount: document.querySelectorAll('[data-testid="cad-viewport"] canvas').length,
     runtimeRevision: document.querySelector('[data-testid="cad-viewport"]')?.getAttribute('data-runtime-revision') ?? null,
     splashVisible: [...document.querySelectorAll('.stage-message')].some((node) => node.textContent?.includes('Новая деталь')),

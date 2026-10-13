@@ -50,6 +50,14 @@ jobs:
       - name: Install pinned browser dependencies
         run: npm --prefix candidate-source/vendor/toubkal ci
 
+      - name: Install pinned reference Three.js r128
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p reference-three
+          npm --prefix reference-three install --no-save --ignore-scripts --no-audit --no-fund three@0.128.0
+          test -s reference-three/node_modules/three/build/three.min.js
+
       - name: Install Chromium
         working-directory: candidate-source
         run: npx --yes playwright@1.60.0 install --with-deps chromium
@@ -85,6 +93,7 @@ jobs:
         working-directory: candidate-source
         env:
           ASA_CAD_UI_REFERENCE_URL: http://127.0.0.1:8089
+          ASA_CAD_REFERENCE_THREE_JS: ${{ github.workspace }}/reference-three/node_modules/three/build/three.min.js
           ASA_CAD_UI_CANDIDATE_URL: http://127.0.0.1:8088
           ASA_CAD_UI_REFERENCE_SHA: ${{ env.ASA_CAD_UI_REFERENCE_SHA }}
           ASA_CAD_UI_REFERENCE_TAG: ui-reference-20261004
