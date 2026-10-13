@@ -1,6 +1,6 @@
 # UI_CORE_U1A_MAPPING
 
-Статус: **CANONICAL U1A IMPLEMENTATION MAP**.
+Статус: **HISTORICAL U1A IMPLEMENTATION MAP** после принятия общего U1 через #195/#196. Актуальный продуктовый UI — `src/web/kompas` (#170); обязательный P0-ремонт <900 px описан в #184/#200.
 Источник UI: tag `ui-reference-20261004` -> `88c535c652dac8b04f0d68fa144cf8486afdc926`.
 Target branch after preflight: `integration/ui-core-unification`.
 
@@ -35,7 +35,7 @@ Dark-theme parity = **DEFERRED_NOT_U1A**. В U1A запрещено имитир
 
 **Предложение 2026-10-10 (ждёт решения владельца, см. UI_CORE_UNIFICATION_SPEC п. 7A):** оболочка КОМПАС в `src/web/kompas` включает общую модель темы продукта: светлая по умолчанию, тёмная — токены #170 (`kompas-top.css`) и те же значения для общих токенов, окон и панелей продукта (`kompas-theme-dark.css`). Visual capture по-прежнему снимает кандидата в светлой теме.
 
-Владельцы зон в пакете U1: `kompas/KompasTop` (меню, документы, лента — `KompasMenuBar`, `KompasDocumentTabs`, `KompasRibbon`, `KompasPopups`, `KompasTooltip`), `kompas/KompasMain` (рейка, панель, графическая область — `KompasTree`, `KompasParameters`, `KompasQuickAccess`, `KompasDialogs`), `kompas/KompasToast`. `CadShellTop/Main/Bottom` переключают оболочку по `useKompasDesktop()` (>= 900 px); прежние владельцы ниже обслуживают компактную оболочку. Данные эталона: `kompasToolsets.ts`, `kompasMenus.ts`, `kompasModelingMenus.ts`, значки `kompasLineIcons.ts`, `kompasSolidIcons.ts`.
+Владельцы зон в пакете U1: `kompas/KompasTop` (меню, документы, лента — `KompasMenuBar`, `KompasDocumentTabs`, `KompasRibbon`, `KompasPopups`, `KompasTooltip`), `kompas/KompasMain` (рейка, панель, графическая область — `KompasTree`, `KompasParameters`, `KompasQuickAccess`, `KompasDialogs`), `kompas/KompasToast`. В принятом U1 `CadShellTop/Main/Bottom` ещё переключали старую оболочку по `useKompasDesktop()` (<900 px): это **исторический дефект P0, не разрешённый постоянный продуктовый вариант**. Дальнейшие изменения должны оставлять единый `src/web/kompas` с адаптивной компоновкой; проверка PR #200 обязательна. Данные эталона: `kompasToolsets.ts`, `kompasMenus.ts`, `kompasModelingMenus.ts`, значки `kompasLineIcons.ts`, `kompasSolidIcons.ts`.
 
 ## 2. Mapping: reference -> product owner
 

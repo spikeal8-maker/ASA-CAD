@@ -21,7 +21,7 @@
 
 **Текущий machine checkpoint = `FULL_REPOSITORY_HEALTH_AUDIT`.** U1A/U1B/U1C уже включены как единый продуктовый пакет, исторический scope U1A не является следующим заданием.
 
-Следующий обязательный шаг: провести независимый полный аудит исходного дерева и связей UI / geometry / topology / persistence / schema / CI / docs на текущем main+integration; **исправления подтверждённых P0/RED разрешены во время аудита** (`auditRepairAllowed=true`), но новые U2–U5 функции запрещены до закрытия gate. P0: убрать Legacy shell в компактном режиме, закрепить #170 в обязательных CI, проверить review-before-merge. Полный аудит после U1 требуется по cadence 2/3→3/3.
+Следующий обязательный шаг: провести независимый полный аудит исходного дерева и связей UI / geometry / topology / persistence / schema / CI / docs на текущем main+integration; **исправления подтверждённых P0/RED разрешены во время аудита** (`auditRepairAllowed=true`), но новые U2–U5 функции запрещены до закрытия gate. P0 кандидат PR #200: Legacy shell заменён единым `src/web/kompas`, проверка #170 добавлена в обязательный shell-build и M2 browser CI; merge и независимое ревью ещё впереди. Полный аудит после U1 требуется по cadence 2/3→3/3.
 
 `U2 = BLOCKED` до аудита GREEN или явно принятого YELLOW. Это обязательный технический gate, а не административная GitHub Ruleset-блокировка. `DETECT_ONLY` integration — известный риск `KNOWN_RISK` (`ADMIN_BRANCH_PROTECTION_NOT_ENFORCED`); не выдавать его за ENFORCED.
 
