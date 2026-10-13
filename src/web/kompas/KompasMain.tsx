@@ -42,13 +42,12 @@ export function KompasMain(props: CadShellMainProps) {
   const sketchPlane: CadPlaneName | null = support === 'XY' || support === 'XZ' || support === 'YZ' ? support as CadPlaneName : null;
   const [extraTab, setExtraTab] = React.useState<'vars' | 'libs' | null>(null);
   const open = props.activePanel !== 'closed';
-  const tab: KompasPanelTab = extraTab ?? (props.activePanel === 'parameters' ? 'params' : 'tree');
+  const tab: KompasPanelTab | 'tools' = props.activePanel === 'tools' ? 'tools' : extraTab ?? (props.activePanel === 'parameters' ? 'params' : 'tree');
 
   React.useEffect(() => { setExtraTab(null); }, [props.activePanel]);
-  /* КОМПАС держит панель параметров открытой, пока работает команда: значения вводятся в ней. */
-  React.useEffect(() => {
-    if (props.activeCommand && props.activePanel === 'closed') props.setActivePanel('parameters');
-  }, [props.activeCommand, props.activePanel]);
+  // The owning CAD command controller chooses when parameters must open.
+  // Direct Sketch tools intentionally close the panel to expose the workplane;
+  // do not reopen it merely because a command is active.
   React.useLayoutEffect(() => {
     kompasShell.set({ panelOpen: open, activeCommand: props.activeCommand ?? null, sketchMode });
   }, [open, props.activeCommand, sketchMode]);
@@ -113,6 +112,7 @@ export function KompasMain(props: CadShellMainProps) {
       <aside className="k-management-panel">
         {tab === 'tree' && (tree ? <KompasTree {...tree} /> : props.treeContent)}
         {tab === 'params' && <KompasParameters panel={slotProps<ParameterPanelProps>(props.parametersContent, ParameterPanel)} legacy={props.parametersContent} />}
+        {tab === 'tools' && <div className="k-mobile-tools-panel">{props.toolsContent}</div>}
         {tab === 'vars' && (
           <>
             <div className="k-panel-head"><span>Переменные</span><span /></div>

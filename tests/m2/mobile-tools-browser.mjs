@@ -21,10 +21,12 @@ async function wasmResources() {
 
 try {
   await page.goto(url, { waitUntil: 'networkidle' });
-  await page.getByRole('button', { name: 'ASA-CAD', exact: true }).waitFor();
+  await page.locator('.k-main-menu-bar').waitFor();
+  assert.equal(await page.locator('.main-menu-bar, .content-area, .mobile-bottom-bar').count(), 0, 'legacy ASA shell mounted on phone');
   assert.deepEqual(await wasmResources(), [], 'mobile empty shell eagerly loaded OpenCascade');
 
-  const toolsTab = page.getByRole('button', { name: /Инструменты/ });
+  const navigation = page.locator('.k-mobile-navigation');
+  const toolsTab = navigation.getByRole('button', { name: 'Инструменты' });
   const tabBox = await toolsTab.boundingBox();
   assert.ok(tabBox && tabBox.width >= 44 && tabBox.height >= 44, 'mobile Tools tab must remain touch-sized');
   await toolsTab.click();
@@ -39,14 +41,14 @@ try {
   assert.equal(await tools.locator('[data-command-id="system.open"]').count(), 1, 'mobile tools must expose shared Open action');
 
   await createSketch.click();
-  await page.getByText('Плоскость построения', { exact: true }).waitFor();
-  const parametersTab = page.getByRole('button', { name: /Параметры/ });
+  await page.locator('.k-pp-cmd strong').getByText('Создать эскиз', { exact: true }).waitFor();
+  const parametersTab = navigation.getByRole('button', { name: 'Параметры' });
   assert.equal(await parametersTab.getAttribute('aria-pressed'), 'true', 'command action must switch mobile panel to Parameters');
   assert.deepEqual(await wasmResources(), [], 'starting Create Sketch from mobile tools eagerly loaded OpenCascade');
 
-  await page.getByRole('button', { name: /XY/ }).click();
-  await page.locator('.parameter-actions button.primary').click();
-  await page.getByText('Эскиз 1', { exact: true }).waitFor();
+  await page.locator('.k-pp button[aria-label="Плоскость XY"]').click();
+  await page.locator('.k-pp-ok').click();
+  await page.locator('.cad-app[data-sketch-count="1"]').waitFor();
 
   await toolsTab.click();
   await tools.waitFor();
@@ -58,7 +60,7 @@ try {
   assert.equal(await finish.isEnabled(), true, 'Finish Sketch must be enabled in mobile Sketch tools');
 
   await rectangle.click();
-  await page.locator('.content-area.panel-closed').waitFor();
+  await page.locator('.k-content.k-collapsed').waitFor();
   const interaction = page.locator('[data-testid="cad-sketch-interaction"][data-tool="rectangle"][data-rectangle-phase="awaiting-first"]');
   await interaction.waitFor();
   assert.deepEqual(await wasmResources(), [], 'starting direct mobile Rectangle eagerly loaded a CAD kernel');

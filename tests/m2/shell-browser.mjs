@@ -5,7 +5,7 @@ const url = process.env.ASA_CAD_SHELL_URL ?? 'http://127.0.0.1:8090/';
 const browser = await chromium.launch({ headless: true });
 
 async function waitForShell(page) {
-  await page.locator('.k-main-menu-bar, .brand-button').first().waitFor();
+  await page.locator('.k-main-menu-bar').waitFor();
 }
 
 
@@ -163,9 +163,9 @@ async function runPhone() {
   await waitForShell(page);
 
   const layout = await page.evaluate(() => {
-    const ribbon = document.querySelector('.command-ribbon');
-    const bottom = document.querySelector('.mobile-bottom-bar');
-    const work = document.querySelector('.work-area');
+    const ribbon = document.querySelector('.k-command-ribbon');
+    const bottom = document.querySelector('.k-mobile-navigation');
+    const work = document.querySelector('.k-work-area');
     return {
       ribbonDisplay: ribbon ? getComputedStyle(ribbon).display : 'missing',
       bottomDisplay: bottom ? getComputedStyle(bottom).display : 'missing',
@@ -174,7 +174,8 @@ async function runPhone() {
       isolated: crossOriginIsolated,
     };
   });
-  assert.equal(layout.ribbonDisplay, 'none', 'desktop ribbon must not be squeezed into phone layout');
+  assert.equal(layout.ribbonDisplay, 'flex', 'phone must keep the canonical KOMPAS command ribbon');
+  assert.equal(await page.locator('.main-menu-bar, .content-area, .mobile-bottom-bar').count(), 0, 'phone rendered a retired ASA shell');
   assert.notEqual(layout.bottomDisplay, 'none', 'phone bottom navigation must be visible');
   assert.ok(layout.workWidth >= 360, `phone work area unexpectedly narrow: ${layout.workWidth}`);
   assert.ok(layout.workHeight >= 300, `phone work area unexpectedly short: ${layout.workHeight}`);
