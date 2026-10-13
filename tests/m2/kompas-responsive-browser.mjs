@@ -56,5 +56,33 @@ try {
     await page.setViewportSize({width:901,height:768});
     assert.equal(await page.locator('[data-toolset="surfaces"]').getAttribute('aria-selected'),'true');
   } finally { await page.close(); }
-  console.log('ASA-CAD canonical KOMPAS #170 across 360–1366px and 900px transition PASS');
+  // Compact chrome receives CSS zoom; its grid rows must grow with the same UI Scale.
+  // This catches clipping/overlap for saved 125–150% preferences after a resize.
+  for (const [width, height, uiScale] of [[390,844,125],[390,844,150],[768,1024,125],[899,768,150],[844,390,150]]) {
+    const scaled = await browser.newPage({ viewport: { width, height } });
+    const errors = [];
+    scaled.on('pageerror', error => errors.push(error.message));
+    try {
+      await scaled.goto(root + '/cad/?uiScale=' + uiScale, { waitUntil: 'networkidle', timeout: 30000 });
+      await scaled.locator('.k-main-menu-bar').waitFor();
+      await scaled.locator('html[data-ui-scale="' + uiScale + '"]').waitFor();
+      const positions = await scaled.evaluate(() => {
+        const rect = selector => {
+          const node = document.querySelector(selector);
+          if (!node) return null;
+          const box = node.getBoundingClientRect();
+          return { top: box.top, bottom: box.bottom, height: box.height };
+        };
+        return { menu: rect('.k-main-menu-bar'), tabs: rect('.k-document-tabs'),
+          tools: rect('.k-instrument-area'), content: rect('.k-content') };
+      });
+      const { menu, tabs, tools, content } = positions;
+      assert.ok(menu && tabs && tools && content, width + ': KOMPAS scaled chrome missing');
+      assert.ok(menu.bottom <= tabs.top + 2, width + ' UI' + uiScale + ': menu overlaps document tabs');
+      assert.ok(tabs.bottom <= tools.top + 2, width + ' UI' + uiScale + ': tabs overlap toolsets');
+      assert.ok(tools.bottom <= content.top + 2, width + ' UI' + uiScale + ': ribbon overlaps the CAD work area');
+      assert.deepEqual(errors, [], width + ' UI' + uiScale + ': browser errors');
+    } finally { await scaled.close(); }
+  }
+  console.log('ASA-CAD canonical KOMPAS #170 across 360–1366px, 900px transition and 125–150% UI Scale PASS');
 } finally { await browser.close(); }
