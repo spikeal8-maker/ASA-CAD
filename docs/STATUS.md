@@ -23,7 +23,7 @@
 
 Следующий обязательный шаг: провести независимый полный аудит исходного дерева и связей UI / geometry / topology / persistence / schema / CI / docs на текущем main+integration; отдельно устранить подтверждённые RED. Полный аудит после U1 требуется по cadence 2/3→3/3.
 
-`U2 = BLOCKED` до аудита GREEN или явно принятого YELLOW. Это обязательный технический gate, а не административная GitHub Ruleset-блокировка. `DETECT_ONLY` integration — известный риск; не выдавать его за ENFORCED.
+`U2 = BLOCKED` до аудита GREEN или явно принятого YELLOW. Это обязательный технический gate, а не административная GitHub Ruleset-блокировка. `DETECT_ONLY` integration — известный риск `KNOWN_RISK` (`ADMIN_BRANCH_PROTECTION_NOT_ENFORCED`); не выдавать его за ENFORCED.
 
 После принятия аудита: реальный Sketch-in-Viewport и UX #170 (U2), затем ограничения/размеры (U3), выдавливание/геометрия (U4), Protected Part (U5). Переиспользовать уже работающий код, не переписывать заново.
 
@@ -35,5 +35,7 @@
 - Governance branch `governance/align-main-20261008` не является новым продуктовым путём, правила из неё пересекаются с уже принятыми PR.
 
 ## Контроль исполнения
+
+Действующее разрешение владельца: `OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008`; оно не отменяет независимого технического ревью и обязательного Full Repository Health Audit после U1.
 
 Уполномоченный контролёр читает `spec/process/active-work.v1.json`, этот STATUS и Issue #184, проверяет live branches/PR и управляет независимыми исполнителями. Коммит, Draft PR, зелёный CI, independent review и продуктовый owner verdict — разные состояния. Секреты/production не трогать без отдельного решения.

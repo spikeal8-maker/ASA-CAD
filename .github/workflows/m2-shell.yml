@@ -88,6 +88,9 @@ jobs:
       - name: Verify release schema identity
         run: npm run test:process:release-schema
 
+      - name: Verify canonical UI/core policy and active checkpoint
+        run: npm run test:process:ui-core-unification && npm run test:process:ui-core-u1a-ready
+
       - name: Install pinned frontend toolchain
         run: npm --prefix vendor/toubkal ci
 
