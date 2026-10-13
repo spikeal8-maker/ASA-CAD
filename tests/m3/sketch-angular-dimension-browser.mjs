@@ -102,7 +102,7 @@ async function mobileCreate() {
     await loadFixture(page, 'rectangle', 4);
     const { first, second } = await rectangleLineIds(page);
     await activateMobileTool(page, 'dimension.angular', 'Angular');
-    await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
+    await page.locator('.k-content.k-collapsed, .k-content[data-panel-tab="params"]').waitFor();
     await chooseAngularLines(page, first, second, true);
     near(Number(await field(page).inputValue()), 90, 1e-6, 'mobile initial Angular');
     await field(page).fill('75');

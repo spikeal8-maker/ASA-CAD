@@ -116,8 +116,8 @@ async function touchTangent() {
     await createMobileXYSketch(page);
     const lineId = await createLine(page, true), circleId = await createCircle(page, true);
     await activateMobileTool(page, 'constraint.tangent', 'Tangent');
-    await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
-    assert.equal(await page.locator('.management-panel').isVisible(), false, 'Tools panel still covers Sketch');
+    await page.locator('.k-content.k-collapsed, .k-content[data-panel-tab="params"]').waitFor();
+    assert.equal(await page.locator('.k-management-panel').isVisible(), false, 'Tools panel still covers Sketch');
     await chooseLineCircle(page, lineId, circleId, true);
     const saved = await saveLocalDocument(page);
     assert.ok(saved.constraints.some((item) => item.type === 'tangent'), 'touch Tangent not persisted');
