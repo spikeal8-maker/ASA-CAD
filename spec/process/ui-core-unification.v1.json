@@ -325,6 +325,8 @@
     "auditGreenProceed": true,
     "auditYellowProceedOnlyWhenAccepted": true,
     "auditRedRequiresRepair": true,
-    "serverProtectionIsRiskNotProductReadinessGate": true
+    "serverProtectionIsRiskNotProductReadinessGate": true,
+    "auditRepairAllowedDuringFullAudit": true,
+    "auditRepairNotFeatureStart": true
   }
 }

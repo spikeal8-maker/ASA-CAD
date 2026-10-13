@@ -45,5 +45,7 @@
   "fullRepositoryHealthAudit": {
     "outcome": "PENDING",
     "auditBaseSha": "e37650f08d9e2fa6cf13ceb6a09ecd8e8a568c15"
-  }
+  },
+  "auditRepairAllowed": true,
+  "auditRepairScope": "CONFIRMED_P0_RED_DEFECTS_AND_ESSENTIAL_REGRESSION_FIXES_ONLY"
 }
