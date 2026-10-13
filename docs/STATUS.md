@@ -7,7 +7,7 @@
 - Новый внешний интерфейс/взаимодействия: frozen #170, tag `ui-reference-20261004`, SHA `88c535c652dac8b04f0d68fa144cf8486afdc926`.
 - Единственный продуктовый runtime: `CadDocument` / `CadApplication` / typed UI actions / PlaneGCS / OpenCascade B-Rep / persistence. Демо-математика прототипа #170 не является ядром.
 - Desktop >=900 px: продуктовый `src/web/kompas` поверх настоящего приложения. Узкий экран: компактная прежняя оболочка.
-- Система документов по контрактам: Part, Assembly, Drawing, Fragment, Specification, Text. Не все редакторы/команды готовы.
+- Система документов по контрактам — шесть видов (six document kinds): Part, Assembly, Drawing, Fragment, Specification, Text. Не все редакторы/команды готовы.
 
 ## Факт объединения U1
 
