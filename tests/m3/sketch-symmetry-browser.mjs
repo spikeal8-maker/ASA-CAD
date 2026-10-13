@@ -133,8 +133,8 @@ async function touchSymmetry() {
     await createMobileXYSketch(page);
     const { first, second, axis } = await createThreeLines(page, true);
     await activateMobileTool(page, 'constraint.symmetric', 'Symmetry');
-    await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
-    assert.equal(await page.locator('.management-panel').isVisible(), false);
+    await page.locator('.k-content.k-collapsed').waitFor();
+    assert.equal(await page.locator('.k-management-panel').isVisible(), false);
     await chooseSymmetry(page, first, second, axis, true);
     const saved = await saveLocalDocument(page);
     const constraint = saved.constraints.find((item) => item.type === 'symmetric');
