@@ -118,8 +118,8 @@ async function touchCoincident() {
     await createMobileXYSketch(page);
     const { first, second } = await createTwoLines(page, true);
     await activateMobileTool(page, 'constraint.coincident', 'Coincident');
-    await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
-    assert.equal(await page.locator('.management-panel').isVisible(), false, 'Tools panel still covers Sketch');
+    await page.locator('.k-content.k-collapsed, .k-content[data-panel-tab="params"]').waitFor();
+    assert.equal(await page.locator('.k-management-panel').isVisible(), false, 'Tools panel still covers Sketch');
     await chooseEndpoints(page, first, second, true);
     const saved = await saveLocalDocument(page);
     assert.ok(saved.constraints.some((item) => item.type === 'coincident'), 'touch Coincident not persisted');

@@ -43,8 +43,8 @@ async function desktopDirectLine() {
     const lineButton = page.locator('[data-command-id="sketch.line"]').first();
     assert.equal(await lineButton.isEnabled(), true, 'Line action must be enabled in active Sketch');
     await lineButton.click();
-    await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
-    assert.equal(await page.locator('.management-panel').isVisible(), false, 'direct drawing must collapse panel');
+    await page.locator('.k-content.k-collapsed').waitFor();
+    assert.equal(await page.locator('.k-management-panel').isVisible(), false, 'direct drawing must collapse panel');
 
     const { layer, box } = await interactionBox(page, 'line', 'Line');
     assert.equal(await layer.getAttribute('data-line-phase'), 'awaiting-start');
@@ -95,8 +95,8 @@ async function touchDirectLine() {
     await page.goto(shellUrl, { waitUntil: 'networkidle' });
     await createMobileXYSketch(page);
     await activateMobileTool(page, 'sketch.line', 'Line');
-    await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
-    assert.equal(await page.locator('.management-panel').isVisible(), false, 'mobile drawing must collapse bottom sheet');
+    await page.locator('.k-content.k-collapsed').waitFor();
+    assert.equal(await page.locator('.k-management-panel').isVisible(), false, 'mobile drawing must collapse bottom sheet');
 
     const { box } = await interactionBox(page, 'line', 'Line');
     const lowerWorkplane = squarePoint(box, 0.50, 0.78);

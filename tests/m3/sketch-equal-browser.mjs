@@ -105,8 +105,8 @@ async function touchEqual() {
     await createMobileXYSketch(page);
     const { first, second } = await createTwoLines(page, true);
     await activateMobileTool(page, 'constraint.equal', 'Equal');
-    await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
-    assert.equal(await page.locator('.management-panel').isVisible(), false, 'Tools panel still covers Sketch');
+    await page.locator('.k-content.k-collapsed').waitFor();
+    assert.equal(await page.locator('.k-management-panel').isVisible(), false, 'Tools panel still covers Sketch');
     await chooseLines(page, first, second, true);
     const saved = await saveLocalDocument(page);
     assert.ok(saved.constraints.some((item) => item.type === 'equal'), 'touch Equal not persisted');

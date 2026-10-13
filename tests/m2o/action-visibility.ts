@@ -33,12 +33,15 @@ assert.equal(deferred.enabled, false, 'deferred command must remain disabled in 
 const app = readFileSync('src/web/App.tsx', 'utf8');
 const controls = readFileSync('src/web/CadUiActionControls.tsx', 'utf8');
 const shellTop = readFileSync('src/web/CadShellTop.tsx', 'utf8');
+const kTop = readFileSync('src/web/kompas/KompasTop.tsx', 'utf8');
 const referenceGroups = readFileSync('src/web/CadShellReferenceGroups.tsx', 'utf8');
 assert.match(app, /showRoadmapCommands=\{devFixture !== null\}/);
 assert.doesNotMatch(app, /location\.hostname|hostname\.includes|localhost/);
 assert.match(controls, /if \(!isCadUiActionVisible\(action, props\.showRoadmapCommands\)\) return null/);
 assert.match(controls, /actions\.filter\(\(action\) => isCadUiActionVisible\(action, props\.showRoadmapCommands\)\)/);
-assert.match(shellTop, /showRoadmapCommands=\{props\.showRoadmapCommands\}/);
+assert.match(shellTop, /<KompasTop/, 'every UI surface uses the canonical KOMPAS shell');
+assert.match(kTop, /lookup\(getAction, target\)/, 'new KOMPAS commands read the shared action catalog');
+assert.match(kTop, /if \(!action\.enabled\)/, 'disabled/planned actions must never execute');
 assert.match(referenceGroups, /showRoadmapCommands=\{props\.showRoadmapCommands\}/);
 
 const commandIds = new Set(definitions.map((command) => command.id));
