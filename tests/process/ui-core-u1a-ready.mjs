@@ -29,6 +29,13 @@ assert.equal(active.baseBranch, flow.implementationBaseBranch);
 assert.equal(active.nextCheckpoint, flow.nextCheckpointById[current], 'Invalid automatic transition');
 assert.equal(active.blocker, null);
 assert.equal(active.productCodeStartAllowed, current !== 'FULL_REPOSITORY_HEALTH_AUDIT');
+assert.equal(flow.auditRepairAllowedDuringFullAudit, true, 'Confirmed RED/P0 defects must be repairable during the full audit');
+assert.equal(flow.auditRepairNotFeatureStart, true, 'Audit repair permission must not permit the U2 roadmap');
+if (current === 'FULL_REPOSITORY_HEALTH_AUDIT') {
+  assert.equal(active.auditRepairAllowed, true, 'Audit must permit focused fixes of its own findings');
+  assert.equal(active.auditRepairScope, 'CONFIRMED_P0_RED_DEFECTS_AND_ESSENTIAL_REGRESSION_FIXES_ONLY');
+  assert.equal(active.productCodeStartAllowed, false, 'New feature work remains blocked until the audit is accepted');
+}
 
 for (const flag of [
   'pullRequestRequired', 'noDirectPush', 'noForcePush', 'exactHeadCIRequired',
