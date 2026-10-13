@@ -97,6 +97,9 @@ jobs:
       - name: Typecheck ASA M2 presentation boundary
         run: npm run typecheck:asa
 
+      - name: Enforce canonical KOMPAS #170 product shell (no Legacy fallback)
+        run: node tests/process/canonical-kompas-shell.mjs
+
       - name: Verify M2 UI architecture
         run: npm run test:m2:architecture
 

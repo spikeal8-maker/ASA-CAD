@@ -26,10 +26,11 @@ async function measureCase(testCase, scalePreference = testCase.uiScale, expecte
 
   const response = await page.goto(`${baseUrl}/?uiScale=${encodeURIComponent(scalePreference)}`, { waitUntil: 'networkidle', timeout: 30_000 });
   assert.ok(response?.ok(), `${testCase.id}: navigation failed with ${response?.status()}`);
-  await page.locator('.k-main-menu-bar, .brand-button').first().waitFor();
+  await page.locator('.k-main-menu-bar').waitFor();
+  assert.equal(await page.locator('.main-menu-bar, .content-area, .mobile-bottom-bar').count(), 0, `${testCase.id}: legacy shell must not mount`);
 
   const metrics = await page.evaluate(() => {
-    const K = { '.content-area': '.k-content', '.workspace-tabs button': '.k-toolset', '.document-tab': '.k-doc-tab', '.ribbon-command': '.k-btn-t', '.viewport-quick-access': '.k-qa' };
+    const K = { '.content-area': '.k-content', '.workspace-tabs button': '.k-toolset', '.document-tab': '.k-doc-tab', '.ribbon-command': '.k-btn-t', '.viewport-quick-access': '.k-qa', '.mobile-bottom-bar': '.k-mobile-navigation' };
     const rect = (selector) => {
       const element = document.querySelector(K[selector] ?? `.k-${selector.slice(1)}`) ?? document.querySelector(selector);
       if (!(element instanceof HTMLElement)) return null;
@@ -37,7 +38,7 @@ async function measureCase(testCase, scalePreference = testCase.uiScale, expecte
       const style = getComputedStyle(element);
       return { x: box.x, y: box.y, width: box.width, height: box.height, display: style.display, visibility: style.visibility, fontSize: Number.parseFloat(style.fontSize), overflowX: style.overflowX };
     };
-    const mobileButtons = [...document.querySelectorAll('.mobile-bottom-bar button')].map((node) => {
+    const mobileButtons = [...document.querySelectorAll('.k-mobile-navigation button')].map((node) => {
       const box = node.getBoundingClientRect();
       return { width: box.width, height: box.height };
     });
@@ -105,7 +106,7 @@ async function measureCase(testCase, scalePreference = testCase.uiScale, expecte
   }
 
   if (portraitPhone) {
-    assert.ok(metrics.ribbon?.display === 'none', `${testCase.id}: phone exposes desktop command ribbon`);
+    assert.ok(metrics.ribbon?.display === 'flex', `${testCase.id}: phone must use KOMPAS ribbon`);
     assert.ok(metrics.mobileBar && metrics.mobileBar.display !== 'none', `${testCase.id}: phone mobile bottom bar missing`);
     assert.ok(metrics.mobileBar.height >= 48, `${testCase.id}: mobile bottom bar below touch height floor`);
     assert.ok(metrics.mobileButtons.length >= 3, `${testCase.id}: mobile command discovery controls missing`);

@@ -47,7 +47,10 @@ export function KompasMain(props: CadShellMainProps) {
   React.useEffect(() => { setExtraTab(null); }, [props.activePanel]);
   /* КОМПАС держит панель параметров открытой, пока работает команда: значения вводятся в ней. */
   React.useEffect(() => {
-    if (props.activeCommand && props.activePanel === 'closed') props.setActivePanel('parameters');
+    if (props.activeCommand && props.activePanel === 'closed' &&
+      !(window.matchMedia('(max-width: 899px)').matches && /^(sketch\.line|sketch\.rectangle|sketch\.circle|sketch\.arc)$/.test(props.activeCommand))) {
+      props.setActivePanel('parameters');
+    }
   }, [props.activeCommand, props.activePanel]);
   React.useLayoutEffect(() => {
     kompasShell.set({ panelOpen: open, activeCommand: props.activeCommand ?? null, sketchMode });
