@@ -20,9 +20,9 @@ async function shellGeometry() {
       return { x: box.x, y: box.y, width: box.width, height: box.height };
     };
     return {
-      tabs: rect('.document-tabs'),
-      instrument: rect('.instrument-area'),
-      work: rect('.work-area'),
+      tabs: rect('.k-document-tabs, .document-tabs'),
+      instrument: rect('.k-instrument-area, .instrument-area'),
+      work: rect('.k-work-area, .work-area'),
     };
   });
 }
@@ -46,8 +46,8 @@ async function assertFileMenuContract() {
   const menu = fileMenu();
   await menu.waitFor();
   const expected = [
-    ['Новый', 'system.new'],
-    ['Открыть', 'system.open'],
+    ['Создать...', 'system.new'],
+    ['Открыть...', 'system.open'],
     ['Сохранить', 'system.save'],
   ];
   for (const [label, id] of expected) {
@@ -63,7 +63,7 @@ async function assertFileMenuContract() {
 
   await trigger.click();
   await fileMenu().waitFor();
-  await page.locator('.work-area').click();
+  await page.locator('.k-work-area, .work-area').first().click();
   assert.equal(await fileMenu().count(), 0, 'outside click did not close popup');
 
   await trigger.focus();
@@ -76,8 +76,8 @@ async function assertFileMenuContract() {
   await trigger.press('ArrowDown');
   const menu2 = fileMenu();
   await menu2.waitFor();
-  const newItem = menu2.getByRole('menuitem', { name: 'Новый', exact: true });
-  const openItem = menu2.getByRole('menuitem', { name: 'Открыть', exact: true });
+  const newItem = menu2.getByRole('menuitem', { name: 'Создать...', exact: true });
+  const openItem = menu2.getByRole('menuitem', { name: 'Открыть...', exact: true });
   assert.equal(await newItem.evaluate((node) => document.activeElement === node), true, 'ArrowDown did not focus first item');
   await newItem.press('ArrowDown');
   assert.equal(await openItem.evaluate((node) => document.activeElement === node), true, 'ArrowDown did not move to next item');
@@ -96,13 +96,13 @@ async function openMenuCommand(label) {
 }
 
 async function createCleanPartFromFile() {
-  await openMenuCommand('Новый');
+  await openMenuCommand('Создать...');
   const dialog = page.getByRole('dialog', { name: 'Новый документ', exact: true });
   await dialog.waitFor();
   await dialog.getByRole('button', { name: 'Закрыть', exact: true }).click();
   assert.equal(await dialog.count(), 0, 'New dialog did not close');
 
-  await openMenuCommand('Новый');
+  await openMenuCommand('Создать...');
   const dialog2 = page.getByRole('dialog', { name: 'Новый документ', exact: true });
   await dialog2.waitFor();
   await dialog2.getByRole('button', { name: /Деталь/ }).click();
@@ -111,34 +111,34 @@ async function createCleanPartFromFile() {
 
 async function createRectangleSketch() {
   await page.getByRole('button', { name: /Создать эскиз/i }).click();
-  await page.getByText('Плоскость построения', { exact: true }).waitFor();
+  await page.getByText('Опорный объект', { exact: true }).waitFor();
   await page.getByRole('button', { name: /XY/ }).click();
-  await page.getByRole('button', { name: 'Создать', exact: true }).click();
+  await page.locator('.parameter-actions button.primary, .k-pp-ok').click();
   const app = page.locator('.cad-app');
   await page.waitForFunction(() => Boolean(document.querySelector('.cad-app')?.getAttribute('data-active-sketch-id')));
   const sketchId = await app.getAttribute('data-active-sketch-id');
   assert.ok(sketchId, 'active Sketch id missing');
 
   await page.getByRole('button', { name: /Прямоугольник/i }).click();
-  await page.locator('.content-area.panel-closed').waitFor();
-  await page.getByTitle('Параметры').click();
-  const panel = page.locator('.parameter-panel');
+  await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
+  if (await page.locator('.k-content').count() === 0) await page.getByTitle('Параметры').click(); else if (await page.locator('.k-content[data-panel-tab="params"]').count() === 0) await page.getByRole('tab', { name: 'Параметры' }).click();
+  const panel = page.locator(':is(.parameter-panel, .k-pp)');
   await panel.waitFor();
-  assert.equal(await panel.locator('.numeric-field').filter({ hasText: 'Ширина' }).locator('input').inputValue(), '60');
-  assert.equal(await panel.locator('.numeric-field').filter({ hasText: 'Высота' }).locator('input').inputValue(), '40');
-  await panel.locator('.parameter-actions button.primary').click();
+  assert.equal(await panel.locator(':is(.numeric-field, .k-pp-row)').filter({ hasText: 'Ширина' }).locator('input').inputValue(), '60');
+  assert.equal(await panel.locator(':is(.numeric-field, .k-pp-row)').filter({ hasText: 'Высота' }).locator('input').inputValue(), '40');
+  await panel.locator('.parameter-actions button.primary, .k-pp-ok').click();
   await page.getByText('Прямоугольник 60×40 мм создан', { exact: true }).waitFor();
   return sketchId;
 }
 
 async function addCircle() {
   await page.getByRole('button', { name: /Окружность/i }).click();
-  await page.locator('.content-area.panel-closed').waitFor();
-  await page.getByTitle('Параметры').click();
-  const panel = page.locator('.parameter-panel');
+  await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
+  if (await page.locator('.k-content').count() === 0) await page.getByTitle('Параметры').click(); else if (await page.locator('.k-content[data-panel-tab="params"]').count() === 0) await page.getByRole('tab', { name: 'Параметры' }).click();
+  const panel = page.locator(':is(.parameter-panel, .k-pp)');
   await panel.waitFor();
-  assert.equal(await panel.locator('.numeric-field').filter({ hasText: 'Диаметр' }).locator('input').inputValue(), '12');
-  await panel.locator('.parameter-actions button.primary').click();
+  assert.equal(await panel.locator(':is(.numeric-field, .k-pp-row)').filter({ hasText: 'Диаметр' }).locator('input').inputValue(), '12');
+  await panel.locator('.parameter-actions button.primary, .k-pp-ok').click();
   await page.getByText('Окружность Ø12 мм создана', { exact: true }).waitFor();
 }
 
@@ -156,12 +156,12 @@ async function cancelGuardAndAssertUnchanged(expectedSketchId, expectedEntityIds
   assert.equal(await guard.count(), 0, 'guard did not close on Cancel');
   assert.equal(await page.locator('.cad-app').getAttribute('data-active-sketch-id'), expectedSketchId);
   assert.deepEqual(await sketchEntityIds(), expectedEntityIds, 'Cancel changed current Sketch entities');
-  assert.equal(await page.locator('.dirty-dot').count(), 1, 'Cancel cleared dirty state');
+  assert.equal(await page.locator(':is(.dirty-dot, [data-document-dirty="true"])').count(), 1, 'Cancel cleared dirty state');
 }
 
 try {
   await page.goto(`${base}/cad/?uiScale=100`, { waitUntil: 'networkidle' });
-  await page.getByRole('button', { name: 'ASA-CAD', exact: true }).waitFor();
+  await page.locator('.k-main-menu-bar, .brand-button').first().waitFor();
 
   await assertFileMenuContract();
   await createCleanPartFromFile();
@@ -169,7 +169,7 @@ try {
   const sketchId = await createRectangleSketch();
   await openMenuCommand('Сохранить');
   await page.getByText('Сохранено локально', { exact: true }).waitFor();
-  assert.equal(await page.locator('.dirty-dot').count(), 0, 'File Save did not clear dirty state');
+  assert.equal(await page.locator(':is(.dirty-dot, [data-document-dirty="true"])').count(), 0, 'File Save did not clear dirty state');
 
   const savedRaw = await page.evaluate(() => localStorage.getItem('asa-cad-m2-shell-document'));
   assert.ok(savedRaw, 'File Save did not persist document');
@@ -177,33 +177,33 @@ try {
   assert.equal(saved.sketches?.[0]?.id, sketchId, 'saved Sketch identity mismatch');
 
   await addCircle();
-  assert.equal(await page.locator('.dirty-dot').count(), 1, 'UI edit did not mark document dirty');
+  assert.equal(await page.locator(':is(.dirty-dot, [data-document-dirty="true"])').count(), 1, 'UI edit did not mark document dirty');
   const dirtyEntityIds = await sketchEntityIds();
   assert.equal(dirtyEntityIds.length, 5, 'dirty Sketch should contain rectangle plus circle');
 
-  await openMenuCommand('Новый');
+  await openMenuCommand('Создать...');
   await cancelGuardAndAssertUnchanged(sketchId, dirtyEntityIds);
 
-  await openMenuCommand('Открыть');
+  await openMenuCommand('Открыть...');
   await cancelGuardAndAssertUnchanged(sketchId, dirtyEntityIds);
 
-  const search = page.getByRole('textbox', { name: 'Поиск команд', exact: true });
+  const search = page.getByRole('textbox', { name: /^Поиск (команд|по командам)$/ });
   await search.fill('Открыть');
-  const searchOpen = page.locator('.command-search-results button[data-command-id="system.open"]');
+  const searchOpen = page.locator(':is(.command-search-results, .k-search-results) button[data-command-id="system.open"]');
   await searchOpen.waitFor();
   assert.equal(await searchOpen.isEnabled(), true, 'search Open should use enabled shared action');
   await searchOpen.click();
   await cancelGuardAndAssertUnchanged(sketchId, dirtyEntityIds);
 
-  await page.getByTitle('Открыть').click();
+  await page.locator(':is(.global-actions, .k-command-ribbon) [data-command-id="system.open"]').click();
   await cancelGuardAndAssertUnchanged(sketchId, dirtyEntityIds);
 
-  await openMenuCommand('Открыть');
+  await openMenuCommand('Открыть...');
   const guard = dirtyGuard();
   await guard.waitFor();
   await guard.getByRole('button', { name: 'Сохранить и продолжить', exact: true }).click();
   await page.getByText('Локальный документ открыт', { exact: true }).waitFor({ timeout: 30_000 });
-  assert.equal(await page.locator('.dirty-dot').count(), 0, 'save-and-continue left document dirty');
+  assert.equal(await page.locator(':is(.dirty-dot, [data-document-dirty="true"])').count(), 0, 'save-and-continue left document dirty');
 
   const continuedRaw = await page.evaluate(() => localStorage.getItem('asa-cad-m2-shell-document'));
   assert.ok(continuedRaw, 'save-and-continue lost persisted document');
@@ -216,8 +216,8 @@ try {
     'save-and-continue did not persist dirty entities before Open',
   );
 
-  await search.fill('Новый');
-  const searchNew = page.locator('.command-search-results button[data-command-id="system.new"]');
+  await search.fill('Создать');
+  const searchNew = page.locator(':is(.command-search-results, .k-search-results) button[data-command-id="system.new"]');
   await searchNew.waitFor();
   assert.equal(await searchNew.isEnabled(), true, 'system.new is not bound into shared CadUiAction catalog');
 

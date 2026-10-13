@@ -38,18 +38,18 @@ async function desktopFixedAfterHorizontal() {
     await loadFixture(page, 'line', 1);
     const entityId = await selectLine(page);
 
-    const horizontal = page.locator('.command-ribbon [data-command-id="constraint.horizontal"]');
+    const horizontal = page.locator(':is(.command-ribbon, .k-command-ribbon) [data-command-id="constraint.horizontal"]');
     assert.equal(await horizontal.isEnabled(), true, 'Horizontal must be enabled for selected Line');
     await horizontal.click();
     await page.getByText('Горизонтальность применена', { exact: true }).waitFor();
     await waitSolvedOverlay(page, 1, 'pre-Fixed Horizontal solve');
 
-    const fixedRibbon = page.locator('.command-ribbon [data-command-id="constraint.fixed"]');
+    const fixedRibbon = page.locator(':is(.command-ribbon, .k-command-ribbon) [data-command-id="constraint.fixed"]');
     assert.equal(await fixedRibbon.isEnabled(), true, 'Fixed ribbon action must enable for selected unfixed Line');
 
-    const search = page.getByRole('textbox', { name: 'Поиск команд' });
+    const search = page.getByRole('textbox', { name: /^Поиск (команд|по командам)$/ });
     await search.fill('Фиксация');
-    const fixedSearch = page.locator('.command-search-results [data-command-id="constraint.fixed"]');
+    const fixedSearch = page.locator(':is(.command-search-results, .k-search-results) [data-command-id="constraint.fixed"]');
     await fixedSearch.waitFor();
     assert.equal(await fixedSearch.isEnabled(), true, 'search must expose the same enabled Fixed CadUiAction');
     await fixedSearch.click();
@@ -90,17 +90,17 @@ async function desktopFixedAfterHorizontal() {
     await page.locator('[data-command-id="system.undo"]').click();
     await waitSolvedOverlay(page, 1, 'Fixed undo');
     await selectLine(page);
-    assert.equal(await page.locator('.command-ribbon [data-command-id="constraint.fixed"]').isEnabled(), true, 'one Undo must remove the atomic Fixed mutation');
+    assert.equal(await page.locator(':is(.command-ribbon, .k-command-ribbon) [data-command-id="constraint.fixed"]').isEnabled(), true, 'one Undo must remove the atomic Fixed mutation');
 
     await page.locator('[data-command-id="system.redo"]').click();
     await waitSolvedOverlay(page, 1, 'Fixed redo');
     await selectLine(page);
-    assert.equal(await page.locator('.command-ribbon [data-command-id="constraint.fixed"]').isEnabled(), false, 'Redo must restore Fixed state');
+    assert.equal(await page.locator(':is(.command-ribbon, .k-command-ribbon) [data-command-id="constraint.fixed"]').isEnabled(), false, 'Redo must restore Fixed state');
 
     await reopenFirstSketch(page, 1);
     await waitSolvedOverlay(page, 1, 'Fixed reopen');
     await selectLine(page);
-    assert.equal(await page.locator('.command-ribbon [data-command-id="constraint.fixed"]').isEnabled(), false, 'Save/Open must restore Fixed enablement state');
+    assert.equal(await page.locator(':is(.command-ribbon, .k-command-ribbon) [data-command-id="constraint.fixed"]').isEnabled(), false, 'Save/Open must restore Fixed enablement state');
     const reopened = await page.evaluate(() => JSON.parse(localStorage.getItem('asa-cad-m2-shell-document') ?? 'null'));
     const reopenedFixed = reopened?.constraints?.find((constraint) => constraint.type === 'fixed' && constraint.entityIds[0] === entityId);
     assert.equal(reopenedFixed?.id, fixedId, 'Save/Open must preserve the same Fixed constraint ID');

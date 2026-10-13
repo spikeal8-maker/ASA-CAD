@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import { entityScreenPoint } from './M3BrowserHarness.mjs';
 
-export const field = (page) => page.locator('.parameter-panel .numeric-field input');
-export const apply = (page) => page.locator('.parameter-actions button.primary');
-export const title = (page) => page.locator('.parameter-panel .panel-title-row strong');
+export const field = (page) => page.locator(':is(.parameter-panel, .k-pp) :is(.numeric-field, .k-pp-row) input');
+export const apply = (page) => page.locator('.parameter-actions button.primary, .k-pp-ok');
+export const title = (page) => page.locator(':is(.parameter-panel .panel-title-row strong, .k-pp-cmd strong)');
 
 export async function selectEntity(page, selector, touch = false) {
   const visual = page.locator(`[data-testid="cad-sketch-overlay"] ${selector}[data-sketch-entity-id]`).first();

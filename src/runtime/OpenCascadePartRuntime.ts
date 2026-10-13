@@ -1,14 +1,15 @@
 import type {
-  CadDimension,
   CadDocument,
   CadFeature,
   CadPartDocument,
   CadSketch,
-  CadSketchEntity,
-  CadSketchLineEntity,
   CadStableReference,
 } from '../contracts/document';
-import type { CadFeatureId, CadSketchEntityId, CadSketchId } from '../contracts/ids';
+import type { CadFeatureId, CadSketchId } from '../contracts/ids';
+import { buildSketchProfile, CadSketchProfileError, type CadSketchProfile } from '../application/SketchProfile';
+import type { CadPlaneName } from '../contracts/commands';
+import { originPlaneFrame, sketchPlaneFrame, type CadSketchPlaneFrame } from '../contracts/sketchWorkplane';
+import { profilePrism } from './OpenCascadeProfileSolid';
 import type {
   CadReferenceCaptureRequest,
   CadRuntimeAdapter,
@@ -43,32 +44,10 @@ export interface OpenCascadePartAnalysis {
   runtimeRevision: number;
 }
 
-interface SketchPlane {
-  z: number;
-  normal: readonly [number, number, number];
-}
-
-interface RectangleProfile {
-  centerX: number;
-  centerY: number;
-  width: number;
-  height: number;
-}
-
-interface CircleProfile {
-  centerX: number;
-  centerY: number;
-  diameter: number;
-}
 
 function finiteNumber(value: unknown, label: string): number {
   if (typeof value !== 'number' || !Number.isFinite(value)) throw new Error(`${label} must be a finite number`);
   return value;
-}
-
-function tuple2(value: unknown, label: string): readonly [number, number] {
-  if (!Array.isArray(value) || value.length < 2) throw new Error(`${label} must be a 2D tuple`);
-  return [finiteNumber(value[0], `${label}[0]`), finiteNumber(value[1], `${label}[1]`)];
 }
 
 function distance3(a: readonly number[], b: readonly number[]): number {
@@ -207,61 +186,38 @@ export class OpenCascadePartRuntime implements CadRuntimeAdapter {
   }
 
   private evaluateExtrude(part: CadPartDocument, feature: CadFeature): any {
-    const sketchId = String(feature.parameters.sketchId) as CadSketchId;
-    const sketch = this.requireSketch(part, sketchId);
-    const plane = this.resolveSketchPlane(part, sketch);
-    if (Math.abs(plane.normal[2]) < 0.999) {
-      throw new Error('M1 protected extrude currently supports XY-parallel sketch planes only');
-    }
-    const profile = this.rectangleProfile(part, sketch);
+    const sketch = this.requireSketch(part, String(feature.parameters.sketchId) as CadSketchId);
+    const frame = this.resolveSketchPlane(part, sketch);
+    const profile = this.sketchProfile(sketch);
     const distance = finiteNumber(feature.parameters.distance, `${feature.name}.distance`);
     if (distance <= 0) throw new Error(`${feature.name}: distance must be positive`);
-
-    const wire = this.rectangleWire(profile, plane.z);
-    const faceMaker = new this.oc.BRepBuilderAPI_MakeFace_15(wire, true);
     const symmetric = Boolean(feature.parameters.symmetric);
     const reverse = Boolean(feature.parameters.reverse);
-    const startZ = symmetric ? plane.z - distance / 2 : reverse ? plane.z - distance : plane.z;
-    const baseFace = faceMaker.Shape();
-    const translatedFace = Math.abs(startZ - plane.z) > 1e-9
-      ? this.translate(baseFace, 0, 0, startZ - plane.z)
-      : baseFace;
-    const vector = new this.oc.gp_Vec_4(0, 0, distance);
-    const prism = new this.oc.BRepPrimAPI_MakePrism_1(translatedFace, vector, false, true);
-    const result = prism.Shape();
-    vector.delete?.();
-    faceMaker.delete?.();
-    wire.delete?.();
-    return result;
+    const start = symmetric ? -distance / 2 : reverse ? -distance : 0;
+    return profilePrism(this.oc, profile, frame, start, distance);
   }
 
   private evaluateCutExtrude(part: CadPartDocument, feature: CadFeature, target: any): any {
-    const sketchId = String(feature.parameters.sketchId) as CadSketchId;
-    const sketch = this.requireSketch(part, sketchId);
-    this.resolveSketchPlane(part, sketch); // validates persistent face support when used
-    const circle = this.circleProfile(part, sketch);
-    const targetBounds = this.bounds(target);
-    const radius = circle.diameter / 2;
-
-    let z0: number;
-    let depth: number;
+    const sketch = this.requireSketch(part, String(feature.parameters.sketchId) as CadSketchId);
+    const frame = this.resolveSketchPlane(part, sketch);
+    const profile = this.sketchProfile(sketch);
+    let tool: any;
     if (feature.parameters.end === 'through-all') {
-      z0 = targetBounds.minZ - 1;
-      depth = targetBounds.maxZ - targetBounds.minZ + 2;
+      const b = this.bounds(target);
+      const span = Math.hypot(b.maxX - b.minX, b.maxY - b.minY, b.maxZ - b.minZ)
+        + Math.hypot(...frame.origin) + Math.hypot((b.minX + b.maxX) / 2, (b.minY + b.maxY) / 2, (b.minZ + b.maxZ) / 2) + 2;
+      tool = profilePrism(this.oc, profile, frame, -span, 2 * span);
     } else {
-      depth = finiteNumber(feature.parameters.distance, `${feature.name}.distance`);
+      // Blind cut removes material from the Sketch plane against its normal.
+      const depth = finiteNumber(feature.parameters.distance, `${feature.name}.distance`);
       if (depth <= 0) throw new Error(`${feature.name}: blind distance must be positive`);
-      z0 = targetBounds.maxZ - depth;
+      tool = profilePrism(this.oc, profile, frame, -depth, depth);
     }
-
-    const cylinderMaker = new this.oc.BRepPrimAPI_MakeCylinder_1(radius, depth);
-    const tool = this.translate(cylinderMaker.Shape(), circle.centerX, circle.centerY, z0);
     const operation = new this.oc.BRepAlgoAPI_Cut_3(target, tool, new this.oc.Message_ProgressRange_1());
     operation.Build(new this.oc.Message_ProgressRange_1());
     if (!operation.IsDone()) throw new Error(`${feature.name}: OpenCascade cut failed`);
     const result = operation.Shape();
-    cylinderMaker.delete?.();
-    tool.delete?.();
+    operation.delete?.();
     return result;
   }
 
@@ -292,10 +248,9 @@ export class OpenCascadePartRuntime implements CadRuntimeAdapter {
     return operation.Shape();
   }
 
-  private resolveSketchPlane(part: CadPartDocument, sketch: CadSketch): SketchPlane {
-    if (sketch.support === 'XY') return { z: 0, normal: [0, 0, 1] };
-    if (sketch.support === 'XZ' || sketch.support === 'YZ') {
-      throw new Error(`M1 protected runtime does not yet evaluate ${sketch.support} sketches`);
+  private resolveSketchPlane(part: CadPartDocument, sketch: CadSketch): CadSketchPlaneFrame {
+    if (sketch.support === 'XY' || sketch.support === 'XZ' || sketch.support === 'YZ') {
+      return originPlaneFrame(sketch.support as CadPlaneName);
     }
 
     const reference = part.stableReferences.find((item) => item.id === sketch.support);
@@ -313,129 +268,30 @@ export class OpenCascadePartRuntime implements CadRuntimeAdapter {
     const live = captureFace(this.oc, ownerShape, resolved.index);
     if (!live || live.kind !== 'face' || !live.axis) throw new Error(`${sketch.name}: support face is not measurable`);
     if (live.surf !== 'plane') throw new Error(`${sketch.name}: only planar support is allowed`);
-    return { z: live.centroid[2], normal: live.axis };
+    // Same frame rule as the origin planes; the face axis is the outward normal.
+    return sketchPlaneFrame(live.axis, live.centroid);
   }
 
-  private rectangleProfile(part: CadPartDocument,sketch: CadSketch): RectangleProfile {
-    const rectangle = sketch.entities
-      .filter((entity): entity is CadSketchLineEntity => entity.type === 'line' && !entity.data.construction && String(entity.data.role ?? '').startsWith('rectangle-edge-'))
-      .sort((a,b) => String(a.data.role).localeCompare(String(b.data.role)));
-    if (rectangle.length !== 4) throw new Error(`${sketch.name}: M1 extrude requires one rectangle profile`);
-
-    const points: Array<readonly [number,number]> = [];
-    for (const entity of rectangle) {
-      points.push(tuple2(entity.data.from,`${entity.id}.from`));
-      points.push(tuple2(entity.data.to,`${entity.id}.to`));
+  /** Profile from solved Sketch geometry (SolvedSketchPartRuntimeAdapter runs the solver first). */
+  private sketchProfile(sketch: CadSketch): CadSketchProfile {
+    try {
+      return buildSketchProfile(sketch);
+    } catch (error) {
+      if (error instanceof CadSketchProfileError) throw new Error(`${sketch.name}: ${error.message}`);
+      throw error;
     }
-    const xs = points.map((point) => point[0]);
-    const ys = points.map((point) => point[1]);
-    const minX=Math.min(...xs);
-    const maxX=Math.max(...xs);
-    const minY = Math.min(...ys);
-    const maxY = Math.max(...ys);
-    const centerX = (minX + maxX) / 2;
-    const centerY = (minY + maxY) / 2;
-
-    const horizontalIds = rectangle
-      .filter((entity) => ['rectangle-edge-0','rectangle-edge-2'].includes(String(entity.data.role)))
-      .map((entity) => entity.id);
-    const verticalIds = rectangle
-      .filter((entity) => ['rectangle-edge-1','rectangle-edge-3'].includes(String(entity.data.role)))
-      .map((entity) => entity.id);
-
-    const widthDimension = this.findDrivingDimension(part,sketch,horizontalIds,'width');
-    const heightDimension = this.findDrivingDimension(part,sketch,verticalIds,'height');
-    const width = widthDimension?.value ?? maxX - minX;
-    const height = heightDimension?.value ?? maxY - minY;
-    if (width <= 0 || height <= 0) throw new Error(`${sketch.name}: rectangle dimensions must be positive`);
-
-    return { centerX,centerY,width,height };
   }
 
-  private circleProfile(part: CadPartDocument,sketch: CadSketch): CircleProfile {
-    const circle = sketch.entities.find((entity) => entity.type === 'circle');
-    if (!circle) throw new Error(`${sketch.name}: M1 cut requires one circle`);
-    const center = tuple2(circle.data.center,`${circle.id}.center`);
-    const diameterDimension = this.findDrivingDimension(part,sketch,[circle.id],'diameter');
-    const diameter = diameterDimension?.value ?? finiteNumber(circle.data.diameter,`${circle.id}.diameter`);
-    if (diameter <= 0) throw new Error(`${sketch.name}: circle diameter must be positive`);
-    return { centerX: center[0],centerY: center[1],diameter };
-  }
-
-  private findDrivingDimension(
-    part: CadPartDocument,
-    sketch: CadSketch,
-    entityIds: CadSketchEntityId[],
-    preferredName: string,
-  ): CadDimension | undefined {
-    const ids = new Set(sketch.dimensionIds);
-    return part.dimensions.find((dimension) =>
-      ids.has(dimension.id)
-      && dimension.driving
-      && (dimension.name === preferredName || dimension.entityIds.some((id) => entityIds.includes(id))),
-    );
-  }
-
-  private rectangleWire(profile: RectangleProfile,z: number): any {
-    const halfW = profile.width / 2;
-    const halfH = profile.height / 2;
-    const points = [
-      [profile.centerX - halfW, profile.centerY - halfH, z],
-      [profile.centerX + halfW, profile.centerY - halfH, z],
-      [profile.centerX + halfW, profile.centerY + halfH, z],
-      [profile.centerX - halfW, profile.centerY + halfH, z],
-    ] as const;
-    const polygon = new this.oc.BRepBuilderAPI_MakePolygon_1();
-    for (const [x, y, pz] of points) {
-      const point = new this.oc.gp_Pnt_3(x, y, pz);
-      polygon.Add_1(point);
-      point.delete?.();
-    }
-    polygon.Close();
-    const wire = polygon.Wire();
-    polygon.delete?.();
-    return wire;
-  }
-
-  private translate(shape: any, x: number, y: number, z: number): any {
-    const transform = new this.oc.gp_Trsf_1();
-    const vector = new this.oc.gp_Vec_4(x, y, z);
-    transform.SetTranslation_1(vector);
-    const operation = new this.oc.BRepBuilderAPI_Transform_2(shape, transform, true);
-    const result = operation.Shape();
-    vector.delete?.();
-    transform.delete?.();
-    return result;
-  }
-
+  /** Exact analytic bounds (arcs/cylinders included), not just vertex positions. */
   private bounds(shape: any): RuntimeBounds {
-    const result: RuntimeBounds = {
-      minX: Infinity,
-      minY: Infinity,
-      minZ: Infinity,
-      maxX: -Infinity,
-      maxY: -Infinity,
-      maxZ: -Infinity,
-    };
-    const explorer = new this.oc.TopExp_Explorer_2(
-      shape,
-      this.oc.TopAbs_ShapeEnum.TopAbs_VERTEX,
-      this.oc.TopAbs_ShapeEnum.TopAbs_SHAPE,
-    );
-    while (explorer.More()) {
-      const vertex = this.oc.TopoDS.Vertex_1(explorer.Current());
-      const point = this.oc.BRep_Tool.Pnt(vertex);
-      result.minX = Math.min(result.minX, point.X());
-      result.minY = Math.min(result.minY, point.Y());
-      result.minZ = Math.min(result.minZ, point.Z());
-      result.maxX = Math.max(result.maxX, point.X());
-      result.maxY = Math.max(result.maxY, point.Y());
-      result.maxZ = Math.max(result.maxZ, point.Z());
-      point.delete?.();
-      vertex.delete?.();
-      explorer.Next();
-    }
-    explorer.delete?.();
+    const box = new this.oc.Bnd_Box_1();
+    this.oc.BRepBndLib.AddOptimal(shape, box, false, false);
+    const min = box.CornerMin();
+    const max = box.CornerMax();
+    const result = { minX: min.X(), minY: min.Y(), minZ: min.Z(), maxX: max.X(), maxY: max.Y(), maxZ: max.Z() };
+    min.delete?.();
+    max.delete?.();
+    box.delete?.();
     return result;
   }
 

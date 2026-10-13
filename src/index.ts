@@ -2,6 +2,7 @@ export * from './contracts';
 export * from './application/CadApplicationImpl';
 export * from './application/SketchSolveSession';
 export * from './runtime/OpenCascadePartRuntime';
+export * from './runtime/SolvedSketchPartRuntimeAdapter';
 export * from './runtime/OpenCascadeMeasurementAdapter';
 export * from './runtime/PlaneGCSSketchSolverRuntime';
 export * from './browser/capabilities';

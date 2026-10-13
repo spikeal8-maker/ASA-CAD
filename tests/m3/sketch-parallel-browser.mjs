@@ -10,7 +10,7 @@ const browser = await launchM3Browser();
 
 async function createLine(page, from, to, touch, count) {
   if (touch) await activateMobileTool(page, 'sketch.line', 'Line');
-  else await page.locator('.command-ribbon [data-command-id="sketch.line"]').click();
+  else await page.locator(':is(.command-ribbon, .k-command-ribbon) [data-command-id="sketch.line"]').click();
   const { box } = await interactionBox(page, 'line', 'Line');
   const a = squarePoint(box, ...from), b = squarePoint(box, ...to);
   if (touch) { await page.touchscreen.tap(a.x, a.y); await page.touchscreen.tap(b.x, b.y); }
@@ -64,9 +64,9 @@ async function desktopParallel() {
     const { first, second } = await createTwoLines(page, false);
     assert.equal(parallel(await lineVector(page, first), await lineVector(page, second)), false, 'Lines must start non-parallel');
 
-    const search = page.getByRole('textbox', { name: 'Поиск команд' });
+    const search = page.getByRole('textbox', { name: /^Поиск (команд|по командам)$/ });
     await search.fill('Паралл');
-    const action = page.locator('.command-search-results [data-command-id="constraint.parallel"]');
+    const action = page.locator(':is(.command-search-results, .k-search-results) [data-command-id="constraint.parallel"]');
     await action.waitFor();
     assert.equal(await action.isEnabled(), true, 'search Parallel must enable');
     await action.click();
@@ -79,10 +79,10 @@ async function desktopParallel() {
     assert.deepEqual(constraint.entityIds, [first, second]);
     const constraintId = constraint.id;
 
-    await page.locator('.global-actions [data-command-id="system.undo"]').click();
+    await page.locator(':is(.global-actions, .k-command-ribbon) [data-command-id="system.undo"]').click();
     await waitSolvedOverlay(page, 2, 'Parallel undo');
     assert.equal(parallel(await lineVector(page, first), await lineVector(page, second)), false, 'Undo failed');
-    await page.locator('.global-actions [data-command-id="system.redo"]').click();
+    await page.locator(':is(.global-actions, .k-command-ribbon) [data-command-id="system.redo"]').click();
     await waitSolvedOverlay(page, 2, 'Parallel redo');
     assert.equal(parallel(await lineVector(page, first), await lineVector(page, second)), true, 'Redo failed');
 
@@ -106,7 +106,7 @@ async function touchParallel() {
     await createMobileXYSketch(page);
     const { first, second } = await createTwoLines(page, true);
     await activateMobileTool(page, 'constraint.parallel', 'Parallel');
-    await page.locator('.content-area.panel-closed').waitFor();
+    await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
     assert.equal(await page.locator('.management-panel').isVisible(), false, 'Tools panel still covers Sketch');
     await chooseLines(page, first, second, true);
     const saved = await saveLocalDocument(page);

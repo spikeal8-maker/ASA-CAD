@@ -3,7 +3,8 @@ import type { CadApplication } from '../contracts/application';
 import type { CadDocument, CadSketch } from '../contracts/document';
 import type { CadSketchId } from '../contracts/ids';
 import type { CadWorkspacePanel } from './PartSketchWorkspaceTypes';
-import { findSketch, hasRectangle, partDocument } from './PartSketchWorkspaceModel';
+import { findSketch, partDocument } from './PartSketchWorkspaceModel';
+import { extrudeAvailability } from './PartFeatureAvailability';
 
 export interface ExtrudeOperationController {
   profileId: CadSketchId | null;
@@ -35,27 +36,7 @@ export interface ExtrudeOperationControllerOptions {
   clearTransientSelection(): void;
 }
 
-function availability(
-  document: Readonly<CadDocument>,
-  sketch: Readonly<CadSketch> | null,
-  activeSketchId: CadSketchId | null,
-): { enabled: boolean; reason?: string } {
-  const part = partDocument(document);
-  if (!part) return { enabled: false, reason: 'Выдавливание доступно только для детали' };
-  if (part.features.length > 0 || part.bodies.length > 0) {
-    return { enabled: false, reason: 'Первое выдавливание уже создано' };
-  }
-  if (activeSketchId || !sketch || !hasRectangle(sketch)) {
-    return { enabled: false, reason: 'Завершите прямоугольный эскиз' };
-  }
-  if (sketch.support !== 'XY') {
-    return {
-      enabled: false,
-      reason: 'Текущее выдавливание поддерживает прямоугольный эскиз на плоскости XY',
-    };
-  }
-  return { enabled: true };
-}
+const availability = extrudeAvailability;
 
 export function useExtrudeOperationController(
   options: ExtrudeOperationControllerOptions,

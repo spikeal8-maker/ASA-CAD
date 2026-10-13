@@ -69,6 +69,7 @@ export interface M2CadUiActionState {
   canExtrude: boolean;
   extrudeDisabledReason?: string;
   canCutExtrude: boolean;
+  cutExtrudeDisabledReason?: string;
   canFillet: boolean;
 }
 
@@ -126,8 +127,8 @@ export function createM2CadUiActionBindings(
     'dimension.radius': binding(handlers.radiusDimension, state.canApplyRadiusDimension, radiusDimensionReason),
     'dimension.angular': binding(handlers.angularDimension, state.canApplyAngularDimension, angularDimensionReason),
     'sketch.finish': binding(handlers.finishSketch, state.hasSketch, 'Сначала создайте эскиз'),
-    'part.extrude': binding(handlers.extrude, state.canExtrude, state.extrudeDisabledReason ?? 'Завершите прямоугольный эскиз'),
-    'part.cutExtrude': binding(handlers.cutExtrude, state.canCutExtrude, 'Создайте окружность на грани и завершите эскиз'),
+    'part.extrude': binding(handlers.extrude, state.canExtrude, state.extrudeDisabledReason ?? 'Завершите эскиз с замкнутым контуром'),
+    'part.cutExtrude': binding(handlers.cutExtrude, state.canCutExtrude, state.cutExtrudeDisabledReason ?? 'Создайте и завершите эскиз выреза'),
     'part.fillet': binding(handlers.fillet, state.canFillet, 'Сначала постройте сквозной вырез'),
 
     'view.fit': binding(handlers.fit),

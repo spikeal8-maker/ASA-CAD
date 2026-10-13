@@ -52,7 +52,7 @@ async function desktopDirectArc() {
     const arcButton = page.locator('[data-command-id="sketch.arc"]').first();
     assert.equal(await arcButton.isEnabled(), true, 'Arc action must be enabled in active Sketch');
     await arcButton.click();
-    await page.locator('.content-area.panel-closed').waitFor();
+    await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
 
     const { layer, box } = await interactionBox(page, 'arc', 'Arc');
     assert.equal(await layer.getAttribute('data-arc-phase'), 'awaiting-center');

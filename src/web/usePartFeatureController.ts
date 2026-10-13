@@ -6,6 +6,7 @@ import type { CadSketchId, CadStableReferenceId } from '../contracts/ids';
 import type { CadViewportPick } from '../contracts/render';
 import type { CadWorkspacePanel, PartSketchSelectionMode } from './PartSketchWorkspaceTypes';
 import { findSketch, hasCircle, hasRectangle, partDocument } from './PartSketchWorkspaceModel';
+import { cutAvailability } from './PartFeatureAvailability';
 import { useExtrudeOperationController } from './useExtrudeOperationController';
 
 export interface PartFeatureControllerOptions {
@@ -15,6 +16,9 @@ export interface PartFeatureControllerOptions {
   activeSketchId: CadSketchId | null;
   sketch: Readonly<CadSketch> | null;
   selectedPick: CadViewportPick | null;
+  /** Selected origin plane = Sketch support. */
+  selectedPlane: CadPlaneName | null;
+  selectBasePlane(plane: CadPlaneName): void;
   setActiveCommand: Dispatch<SetStateAction<string | null>>;
   setActiveWorkspace: Dispatch<SetStateAction<string>>;
   setPanel(panel: CadWorkspacePanel): void;
@@ -26,22 +30,11 @@ export interface PartFeatureControllerOptions {
 
 export function usePartFeatureController(options: PartFeatureControllerOptions) {
   const {
-    app,
-    document,
-    renderModelAvailable,
-    activeSketchId,
-    sketch,
-    selectedPick,
-    setActiveCommand,
-    setActiveWorkspace,
-    setPanel,
-    setNotice,
-    activateSketch,
-    beginPartSelection,
-    clearTransientSelection,
+    app, document, renderModelAvailable, activeSketchId, sketch, selectedPick, selectedPlane, selectBasePlane,
+    setActiveCommand, setActiveWorkspace, setPanel, setNotice, activateSketch, beginPartSelection, clearTransientSelection,
   } = options;
 
-  const [sketchPlane, setSketchPlane] = useState<CadPlaneName>('XY');
+  const sketchPlane = selectedPlane ?? 'XY';
   const [filletRadius, setFilletRadius] = useState(1);
 
   const part = partDocument(document);
@@ -49,7 +42,7 @@ export function usePartFeatureController(options: PartFeatureControllerOptions) 
   const circleReady = hasCircle(sketch);
   const hasSolid = Boolean(part?.bodies.length);
   const lastFeature = part?.features.at(-1);
-  const canCut = Boolean(sketch && circleReady && hasSolid && lastFeature?.type === 'extrude');
+  const canCut = cutAvailability(part, sketch).enabled;
   const canFillet = Boolean(hasSolid && lastFeature?.type === 'cut-extrude');
   const extrude = useExtrudeOperationController({
     app, document, activeSketchId, sketch, setActiveCommand, setActiveWorkspace,
@@ -63,10 +56,11 @@ export function usePartFeatureController(options: PartFeatureControllerOptions) 
     if (hasSolid && renderModelAvailable) {
       beginPartSelection('face');
       setActiveWorkspace('solid');
-      setNotice('Выберите плоскую грань в рабочей области');
+      setNotice('Выберите грань или плоскость');
     } else {
       beginPartSelection('none');
       setActiveWorkspace('sketch');
+      if (!selectedPlane) selectBasePlane('XY');
       setNotice('Выберите плоскость и создайте эскиз');
     }
   }
@@ -74,23 +68,16 @@ export function usePartFeatureController(options: PartFeatureControllerOptions) 
   async function commitCreateSketch() {
     let support: CadPlaneName | CadStableReferenceId = sketchPlane;
     const currentPart = partDocument(app.getDocument());
+    const onFace = Boolean(currentPart?.bodies.length) && !selectedPlane;
 
-    if (currentPart?.bodies.length) {
+    if (onFace) {
       if (selectedPick?.kind !== 'face' || !selectedPick.sourceFeatureId) {
         setNotice('Выберите грань модели для нового эскиза');
         return;
       }
-      try {
-        support = await app.captureReference({
-          kind: 'face',
-          sourceFeatureId: selectedPick.sourceFeatureId,
-          point: [...selectedPick.point] as [number, number, number],
-          semanticRole: 'sketch-support-face',
-        });
-      } catch (error) {
-        setNotice(error instanceof Error ? error.message : String(error));
-        return;
-      }
+      const captured = await capturePick('face', 'sketch-support-face');
+      if (!captured) return;
+      support = captured;
     }
 
     const result = await app.execute({ id: 'sketch.create', payload: { support } });
@@ -100,7 +87,7 @@ export function usePartFeatureController(options: PartFeatureControllerOptions) 
       return;
     }
     activateSketch(createdSketchId);
-    const supportText = currentPart?.bodies.length ? 'выбранной грани' : `плоскости ${sketchPlane}`;
+    const supportText = onFace ? 'выбранной грани' : `плоскости ${sketchPlane}`;
     setActiveCommand(null);
     setPanel('tree');
     setActiveWorkspace('sketch');
@@ -117,9 +104,11 @@ export function usePartFeatureController(options: PartFeatureControllerOptions) 
   }
 
   async function commitCut() {
-    const currentSketch = findSketch(partDocument(app.getDocument()), sketch?.id ?? null);
-    if (!currentSketch || !hasCircle(currentSketch)) {
-      setNotice('Для выреза нужен эскиз с окружностью');
+    const currentPart = partDocument(app.getDocument());
+    const currentSketch = findSketch(currentPart, sketch?.id ?? null);
+    const check = cutAvailability(currentPart, currentSketch);
+    if (!currentSketch || !check.enabled) {
+      setNotice(check.reason ?? 'Вырез недоступен');
       return;
     }
     const feature = await app.execute({
@@ -130,17 +119,7 @@ export function usePartFeatureController(options: PartFeatureControllerOptions) 
       setNotice(feature.error?.message ?? 'Не удалось создать вырез');
       return;
     }
-    setNotice('Перестроение сквозного выреза…');
-    const rebuildResult = await app.execute({ id: 'document.rebuild', payload: {} });
-    if (!rebuildResult.ok) {
-      setNotice(rebuildResult.error?.message ?? 'Ошибка перестроения выреза');
-      return;
-    }
-    setActiveCommand(null);
-    setPanel('tree');
-    setActiveWorkspace('solid');
-    clearTransientSelection();
-    setNotice('Сквозной вырез построен локально');
+    await rebuildFeature('Перестроение сквозного выреза…', 'Ошибка перестроения выреза', 'Сквозной вырез построен локально');
   }
 
   function beginFillet() {
@@ -161,18 +140,8 @@ export function usePartFeatureController(options: PartFeatureControllerOptions) 
       return;
     }
 
-    let referenceId: CadStableReferenceId;
-    try {
-      referenceId = await app.captureReference({
-        kind: 'edge',
-        sourceFeatureId: selectedPick.sourceFeatureId,
-        point: [...selectedPick.point] as [number, number, number],
-        semanticRole: 'fillet-edge',
-      });
-    } catch (error) {
-      setNotice(error instanceof Error ? error.message : String(error));
-      return;
-    }
+    const referenceId = await capturePick('edge', 'fillet-edge');
+    if (!referenceId) return;
 
     const feature = await app.execute({
       id: 'feature.fillet',
@@ -182,36 +151,37 @@ export function usePartFeatureController(options: PartFeatureControllerOptions) 
       setNotice(feature.error?.message ?? 'Не удалось создать скругление');
       return;
     }
-    setNotice('Перестроение скругления…');
+    await rebuildFeature('Перестроение скругления…', 'Ошибка перестроения скругления', `Скругление R${filletRadius} построено локально`);
+  }
+
+  async function capturePick(kind: 'face' | 'edge', semanticRole: string): Promise<CadStableReferenceId | null> {
+    if (!selectedPick?.sourceFeatureId) return null;
+    try {
+      const point = [...selectedPick.point] as [number, number, number];
+      return await app.captureReference({ kind, sourceFeatureId: selectedPick.sourceFeatureId, point, semanticRole });
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : String(error));
+      return null;
+    }
+  }
+
+  async function rebuildFeature(progress: string, failure: string, done: string) {
+    setNotice(progress);
     const rebuildResult = await app.execute({ id: 'document.rebuild', payload: {} });
     if (!rebuildResult.ok) {
-      setNotice(rebuildResult.error?.message ?? 'Ошибка перестроения скругления');
+      setNotice(rebuildResult.error?.message ?? failure);
       return;
     }
     setActiveCommand(null);
     setPanel('tree');
     setActiveWorkspace('solid');
     clearTransientSelection();
-    setNotice(`Скругление R${filletRadius} построено локально`);
+    setNotice(done);
   }
 
   return {
-    part,
-    sketchPlane,
-    setSketchPlane,
-    filletRadius,
-    setFilletRadius,
-    rectangleReady,
-    circleReady,
-    hasSolid,
-    canCut,
-    canFillet,
-    extrude,
-    beginCreateSketch,
-    commitCreateSketch,
-    beginCut,
-    commitCut,
-    beginFillet,
-    commitFillet,
+    part, sketchPlane, setSketchPlane: selectBasePlane, filletRadius, setFilletRadius,
+    rectangleReady, circleReady, hasSolid, canCut, canFillet, extrude,
+    beginCreateSketch, commitCreateSketch, beginCut, commitCut, beginFillet, commitFillet,
   };
 }

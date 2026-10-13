@@ -9,7 +9,7 @@ const browser = await launchM3Browser();
 
 async function createLine(page, touch) {
   if (touch) await activateMobileTool(page, 'sketch.line', 'Line');
-  else await page.locator('.command-ribbon [data-command-id="sketch.line"]').click();
+  else await page.locator(':is(.command-ribbon, .k-command-ribbon) [data-command-id="sketch.line"]').click();
   const { box } = await interactionBox(page, 'line', 'Line');
   const a = squarePoint(box, 0.28, 0.38), b = squarePoint(box, 0.72, 0.62);
   if (touch) { await page.touchscreen.tap(a.x, a.y); await page.touchscreen.tap(b.x, b.y); }
@@ -41,18 +41,18 @@ async function desktopConstruction() {
     await createXYSketch(page);
     const id = await createLine(page, false);
     await selectLine(page, id, false);
-    const search = page.getByRole('textbox', { name: 'Поиск команд' });
+    const search = page.getByRole('textbox', { name: /^Поиск (команд|по командам)$/ });
     await search.fill('Вспом');
-    const action = page.locator('.command-search-results [data-command-id="sketch.construction"]');
+    const action = page.locator(':is(.command-search-results, .k-search-results) [data-command-id="sketch.construction"]');
     await action.waitFor(); assert.equal(await action.isEnabled(), true); await action.click();
     await assertConstruction(page, id, true);
 
     const saved = await saveLocalDocument(page);
     const line = saved.sketches[0].entities.find((item) => item.id === id);
     assert.equal(line?.data?.construction, true);
-    await page.locator('.global-actions [data-command-id="system.undo"]').click();
+    await page.locator(':is(.global-actions, .k-command-ribbon) [data-command-id="system.undo"]').click();
     await assertConstruction(page, id, false);
-    await page.locator('.global-actions [data-command-id="system.redo"]').click();
+    await page.locator(':is(.global-actions, .k-command-ribbon) [data-command-id="system.redo"]').click();
     await assertConstruction(page, id, true);
     await reopenFirstSketch(page, 1);
     await waitSolvedOverlay(page, 1, 'Construction reopen');

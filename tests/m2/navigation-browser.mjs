@@ -38,25 +38,25 @@ async function viewportState() {
 
 async function createExtrudedPart() {
   await page.goto(url, { waitUntil: 'networkidle' });
-  await page.getByRole('button', { name: 'ASA-CAD', exact: true }).waitFor();
+  await page.locator('.k-main-menu-bar, .brand-button').first().waitFor();
 
   await page.getByRole('button', { name: /Создать эскиз/i }).click();
   await page.getByRole('button', { name: /XY/ }).click();
-  await page.locator('.parameter-actions button.primary').click();
+  await page.locator('.parameter-actions button.primary, .k-pp-ok').click();
   await page.getByText('Эскиз 1', { exact: true }).waitFor();
 
   await page.getByRole('button', { name: /Прямоугольник/i }).click();
-  await page.locator('.content-area.panel-closed').waitFor();
-  await page.getByTitle('Параметры').click();
-  await page.locator('.parameter-panel').waitFor();
-  await page.locator('.parameter-actions button.primary').click();
+  await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
+  if (await page.locator('.k-content').count() === 0) await page.getByTitle('Параметры').click(); else if (await page.locator('.k-content[data-panel-tab="params"]').count() === 0) await page.getByRole('tab', { name: 'Параметры' }).click();
+  await page.locator(':is(.parameter-panel, .k-pp)').waitFor();
+  await page.locator('.parameter-actions button.primary, .k-pp-ok').click();
   await page.getByText('Прямоугольник 60×40 мм создан', { exact: true }).waitFor();
 
-  await page.getByRole('button', { name: /Завершить эскиз/ }).click();
+  await page.locator('[data-command-id="sketch.finish"]').first().click();
   await page.getByText('Эскиз завершен', { exact: true }).waitFor();
 
   await page.getByRole('button', { name: /Элемент выдавливания/i }).click();
-  await page.locator('.parameter-actions button.primary').click();
+  await page.locator('.parameter-actions button.primary, .k-pp-ok').click();
   await page.getByText('Выдавливание 10 мм построено локально', { exact: true }).waitFor({ timeout: 120_000 });
   await page.locator('[data-testid="cad-viewport"] canvas').waitFor({ timeout: 60_000 });
 }

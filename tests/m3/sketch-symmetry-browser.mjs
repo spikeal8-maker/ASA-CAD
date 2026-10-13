@@ -10,7 +10,7 @@ const browser = await launchM3Browser();
 
 async function createLine(page, from, to, touch, count) {
   if (touch) await activateMobileTool(page, 'sketch.line', 'Line');
-  else await page.locator('.command-ribbon [data-command-id="sketch.line"]').click();
+  else await page.locator(':is(.command-ribbon, .k-command-ribbon) [data-command-id="sketch.line"]').click();
   const { box } = await interactionBox(page, 'line', 'Line');
   const a = squarePoint(box, ...from), b = squarePoint(box, ...to);
   if (touch) { await page.touchscreen.tap(a.x, a.y); await page.touchscreen.tap(b.x, b.y); }
@@ -89,9 +89,9 @@ async function desktopSymmetry() {
     const { first, second, axis } = await createThreeLines(page, false);
     assert.equal(await symmetric(page, first, second, axis), false);
 
-    const search = page.getByRole('textbox', { name: 'Поиск команд' });
+    const search = page.getByRole('textbox', { name: /^Поиск (команд|по командам)$/ });
     await search.fill('Симмет');
-    const action = page.locator('.command-search-results [data-command-id="constraint.symmetric"]');
+    const action = page.locator(':is(.command-search-results, .k-search-results) [data-command-id="constraint.symmetric"]');
     await action.waitFor();
     assert.equal(await action.isEnabled(), true);
     await action.click();
@@ -105,10 +105,10 @@ async function desktopSymmetry() {
     assert.equal(constraint.entityIds[2], axis);
     const constraintId = constraint.id;
 
-    await page.locator('.global-actions [data-command-id="system.undo"]').click();
+    await page.locator(':is(.global-actions, .k-command-ribbon) [data-command-id="system.undo"]').click();
     await waitSolvedOverlay(page, 3, 'Symmetry undo');
     assert.equal(await symmetric(page, first, second, axis), false);
-    await page.locator('.global-actions [data-command-id="system.redo"]').click();
+    await page.locator(':is(.global-actions, .k-command-ribbon) [data-command-id="system.redo"]').click();
     await waitSolvedOverlay(page, 3, 'Symmetry redo');
     assert.equal(await symmetric(page, first, second, axis), true);
 
@@ -133,7 +133,7 @@ async function touchSymmetry() {
     await createMobileXYSketch(page);
     const { first, second, axis } = await createThreeLines(page, true);
     await activateMobileTool(page, 'constraint.symmetric', 'Symmetry');
-    await page.locator('.content-area.panel-closed').waitFor();
+    await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
     assert.equal(await page.locator('.management-panel').isVisible(), false);
     await chooseSymmetry(page, first, second, axis, true);
     const saved = await saveLocalDocument(page);

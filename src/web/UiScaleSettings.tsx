@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, type PropsWithChildren } from 'react';
 import {
   CAD_UI_SCALE_OPTIONS,
   type CadUiScalePreference,
@@ -17,31 +17,36 @@ function optionLabel(value: CadUiScalePreference): string {
   return value === 'auto' ? 'Авто' : `${value}%`;
 }
 
-export function UiScaleSettings() {
+const UiScaleSettingsOpenContext = createContext<(() => void) | null>(null);
+
+export function useUiScaleSettingsOpen(): () => void {
+  const openSettings = useContext(UiScaleSettingsOpenContext);
+  if (!openSettings) throw new Error('UiScaleSettings provider is missing');
+  return openSettings;
+}
+
+export function UiScaleSettings({ children }: PropsWithChildren) {
   const initial = readControllerState();
   const [open, setOpen] = useState(false);
   const [preference, setPreferenceState] = useState<CadUiScalePreference>(initial.preference);
   const [resolved, setResolved] = useState<CadUiScaleResolved>(initial.resolved);
 
+  const dialogRef = useRef<HTMLElement>(null);
+  const returnFocus = useRef<HTMLElement | null>(null);
+
   const openSettings = () => {
     const next = readControllerState();
     setPreferenceState(next.preference);
     setResolved(next.resolved);
+    returnFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     setOpen(true);
   };
-
-  useEffect(() => {
-    const settingsButton = document.querySelector<HTMLButtonElement>('.global-actions button[title="Настройки"]');
-    if (!settingsButton) return;
-    const onOpen = (event: Event) => {
-      event.preventDefault();
-      openSettings();
-    };
-    settingsButton.addEventListener('click', onOpen);
-    settingsButton.setAttribute('aria-haspopup', 'dialog');
-    settingsButton.setAttribute('aria-controls', 'asa-cad-interface-settings');
-    return () => settingsButton.removeEventListener('click', onOpen);
-  }, []);
+  const closeSettings = () => {
+    setOpen(false);
+    const target = returnFocus.current;
+    returnFocus.current = null;
+    requestAnimationFrame(() => target?.isConnected && target.focus());
+  };
 
   useEffect(() => {
     const sync = () => {
@@ -59,10 +64,13 @@ export function UiScaleSettings() {
 
   useEffect(() => {
     if (!open) return;
+    dialogRef.current?.querySelector<HTMLElement>('[role="radio"][aria-checked="true"]')?.focus();
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         event.stopPropagation();
-        setOpen(false);
+        closeSettings();
+      } else if (event.key === 'Tab') {
+        trapTab(dialogRef.current, event);
       }
     };
     window.addEventListener('keydown', onKeyDown, true);
@@ -78,7 +86,8 @@ export function UiScaleSettings() {
   };
 
   return (
-    <>
+    <UiScaleSettingsOpenContext.Provider value={openSettings}>
+      {children}
       <div className="ui-scale-status" data-testid="ui-scale-status" aria-label={`Масштаб интерфейса ${resolved}%`}>
         UI {resolved}%
       </div>
@@ -99,10 +108,11 @@ export function UiScaleSettings() {
           className="interface-settings-backdrop"
           role="presentation"
           onMouseDown={(event) => {
-            if (event.target === event.currentTarget) setOpen(false);
+            if (event.target === event.currentTarget) closeSettings();
           }}
         >
           <section
+            ref={dialogRef}
             id="asa-cad-interface-settings"
             className="interface-settings-dialog"
             role="dialog"
@@ -114,7 +124,7 @@ export function UiScaleSettings() {
                 <h2 id="asa-cad-interface-settings-title">Настройки интерфейса</h2>
                 <p>Масштабирует панели, текст и команды. Геометрия CAD и координаты модели не меняются.</p>
               </div>
-              <button type="button" onClick={() => setOpen(false)} aria-label="Закрыть настройки">×</button>
+              <button type="button" onClick={closeSettings} aria-label="Закрыть настройки">×</button>
             </header>
 
             <div className="interface-settings-body">
@@ -125,7 +135,21 @@ export function UiScaleSettings() {
                 </div>
               </div>
 
-              <div className="ui-scale-options" role="radiogroup" aria-label="Масштаб интерфейса">
+              <div
+                className="ui-scale-options"
+                role="radiogroup"
+                aria-label="Масштаб интерфейса"
+                onKeyDown={(event) => {
+                  const step = event.key === 'ArrowDown' || event.key === 'ArrowRight' ? 1
+                    : event.key === 'ArrowUp' || event.key === 'ArrowLeft' ? -1 : 0;
+                  if (!step) return;
+                  event.preventDefault();
+                  const count = CAD_UI_SCALE_OPTIONS.length;
+                  const index = (CAD_UI_SCALE_OPTIONS.indexOf(preference) + step + count) % count;
+                  event.currentTarget.querySelectorAll<HTMLElement>('[role="radio"]')[index]?.focus();
+                  applyPreference(CAD_UI_SCALE_OPTIONS[index]!);
+                }}
+              >
                 {CAD_UI_SCALE_OPTIONS.map((value) => {
                   const selected = preference === value;
                   return (
@@ -134,6 +158,7 @@ export function UiScaleSettings() {
                       type="button"
                       role="radio"
                       aria-checked={selected}
+                      tabIndex={selected ? 0 : -1}
                       className={selected ? 'selected' : ''}
                       onClick={() => applyPreference(value)}
                     >
@@ -159,6 +184,21 @@ export function UiScaleSettings() {
           </section>
         </div>
       )}
-    </>
+    </UiScaleSettingsOpenContext.Provider>
   );
+}
+
+/** Keeps Tab/Shift+Tab inside the modal dialog. */
+function trapTab(dialog: HTMLElement | null, event: KeyboardEvent): void {
+  if (!dialog) return;
+  const items = Array.from(dialog.querySelectorAll<HTMLElement>('button:not(:disabled), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'))
+    .filter((node) => node.tabIndex >= 0);
+  if (!items.length) return;
+  const first = items[0]!;
+  const last = items[items.length - 1]!;
+  const active = document.activeElement;
+  const index = items.indexOf(active as HTMLElement);
+  if (index < 0) { event.preventDefault(); (event.shiftKey ? last : first).focus(); }
+  else if (event.shiftKey && active === first) { event.preventDefault(); last.focus(); }
+  else if (!event.shiftKey && active === last) { event.preventDefault(); first.focus(); }
 }
