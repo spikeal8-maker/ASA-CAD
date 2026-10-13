@@ -1,6 +1,6 @@
 # ASA-CAD — UI/core convergence roadmap
 
-Редакция: 2026-10-10.
+Редакция: 2026-10-13.
 Central issue: **#184**.
 Integration branch: **`integration/ui-core-unification`**.
 Frozen UI reference: **`ui-reference-20261004` -> `88c535c652dac8b04f0d68fa144cf8486afdc926`**.
@@ -63,9 +63,13 @@ Geometry compare = semantic-region contract из `UI_CORE_U1A_MAPPING.md`, а н
 Acceptance U1:
 обычный Part route показывает каноничную оболочку и один настоящий application state без prototype `doc/history`.
 
-### Предложение 2026-10-10: U1 одним пакетом (ждёт решения владельца в #184)
+### Фактический U1 merge — 13.10.2026 (код интегрирован, visual acceptance отдельно)
 
-Ветка `ui-core/u1-visible` (Draft PR в integration) переносит оболочку КОМПАС эталона #170 целиком как основную вёрстку рабочего стола (>= 900 px): `src/web/kompas` — разметка, стили с префиксом `k-`, значки, меню и наборы #170, поверх тех же typed actions, CadDocument, решателя и OpenCascade. Одним PR закрываются U1A + U1B + U1C; сцена — код C1 из archived #182, ядро — K1. Это расходится с правилом «U1 не один огромный PR» и выше repository footprint, поэтому до технического merge нужны решение владельца (оставить пакетом или разбить на U1A/U1B/U1C) и architecture review. Machine pointer не меняется.
+По прямому решению владельца U1A+U1B+U1C были сведены в один проверяемый кандидат (`ui-core/u1-visible`) и объединены как PR #195 в integration, затем PR #196 в main. Из нового #170 взяты React-оболочка, меню, лента, дерево, параметры, viewport; из product CAD — единые typed actions, CadDocument, PlaneGCS, K1/OpenCascade. Прототипный runtime не принят.
+
+PR CI #195 = 9/9 SUCCESS; PR #196 проверен GitHub Actions до merge. Это **code integration**, не независимая финальная архитектурная/визуальная приёмка. Отдельные уникальные части PR #177 и Drawing #179 остаются на рассмотрении. `U1A` больше не активный продуктовый checkpoint.
+
+**Текущий NEXT = Full Repository Health Audit после U1.** После принятия допустимого результата запускается U2. Исторические ограничения отдельных U1A/U1B/U1C не должны запускать повторную работу.
 
 ### Обязательный gate после U1
 
