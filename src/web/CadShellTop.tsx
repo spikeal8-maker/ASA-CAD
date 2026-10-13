@@ -1,11 +1,16 @@
 import React from 'react';
 import type { CadDocumentKind } from '../contracts/document';
-import type { CadUiAction } from './CadUiAction';
+import { isCadUiActionVisible, type CadUiAction } from './CadUiAction';
+import { keepShellKey, moveListFocus } from './CadShellKeys';
 import { CadUiActionSearchResults, CadUiGlobalActionButton } from './CadUiActionControls';
 import { documentNames } from './CadDocumentPresentation';
 import { CadIcon, type CadIconName } from './CadIcon';
 import { CadShellCommandGroups } from './CadShellCommandGroups';
 import { CadFileMenu } from './CadFileMenu';
+import { CadShellMenu } from './CadShellMenu';
+import { useUiScaleSettingsOpen } from './UiScaleSettings';
+import { KompasTop } from './kompas/KompasTop';
+import { useKompasDesktop } from './kompas/useKompasDesktop';
 
 export type CadWorkspaceId = 'solid' | 'sketch' | 'surfaces' | 'diagnostics' | 'view';
 
@@ -19,67 +24,119 @@ export interface CadShellTopProps {
   circleReady: boolean; circleDiameter: number; viewName: string;
 }
 
-export function CadShellTop(props: CadShellTopProps) {
+const EDIT_ACTIONS = ['system.undo', 'system.redo'] as const;
+const VIEW_ACTIONS = ['view.fit', 'view.iso', 'view.front', 'view.top', 'view.left', 'view.right'] as const;
+const SKETCH_ACTIONS = ['part.sketch.create', 'sketch.line', 'sketch.rectangle', 'sketch.circle', 'sketch.finish'] as const;
+const SOLID_ACTIONS = ['system.rebuild', 'part.sketch.create', 'part.extrude', 'part.cutExtrude', 'part.fillet'] as const;
+
+function LegacyCadShellTop(props: CadShellTopProps) {
+  const openUiSettings = useUiScaleSettingsOpen();
   const newAction = props.getAction('system.new');
+  const hasSearch = props.search.trim().length > 0;
+  const results = React.useRef<HTMLDivElement>(null);
+  const searchInput = React.useRef<HTMLInputElement>(null);
+  const found = props.searchableActions.filter((action) => isCadUiActionVisible(action, props.showRoadmapCommands));
   return (
     <>
       <header className="main-menu-bar">
-        <button className="brand-button" type="button" disabled={!newAction.enabled} onClick={() => { void newAction.execute(); }} data-command-id={newAction.id} aria-label="ASA-CAD">
+        <button
+          className="brand-button"
+          type="button"
+          disabled={!newAction.enabled}
+          onClick={() => { void newAction.execute(); }}
+          data-command-id={newAction.id}
+          aria-label="ASA-CAD"
+          title="ASA-CAD · новый документ"
+        >
           <span className="brand-mark">A</span><span className="brand-label">ASA-CAD</span>
         </button>
         <nav className="main-menu-items" aria-label="Главное меню">
           <CadFileMenu getAction={props.getAction} />
-          <button type="button">Правка</button>
-          <button type="button">Выделить</button>
-          <button type="button">Вид</button>
-          <button type="button">Эскиз</button>
-          <button type="button">Моделирование</button>
-          <button type="button">Оформление</button>
-          <button type="button">Диагностика</button>
-          <button type="button">Управление</button>
-          <button type="button">Настройка</button>
-          <button type="button">Приложения</button>
-          <button type="button">Окно</button>
-          <button type="button">Справка</button>
+          <CadShellMenu menuKey="edit" label="Правка" actionIds={EDIT_ACTIONS} getAction={props.getAction} />
+          <CadShellMenu menuKey="view" label="Вид" actionIds={VIEW_ACTIONS} getAction={props.getAction} />
+          {props.documentKind === 'part' && (
+            <>
+              <CadShellMenu menuKey="sketch" label="Эскиз" actionIds={SKETCH_ACTIONS} getAction={props.getAction} />
+              <CadShellMenu menuKey="solid" label="Моделирование" actionIds={SOLID_ACTIONS} getAction={props.getAction} />
+            </>
+          )}
         </nav>
-        <div className="command-search-wrap">
+        <div className="command-search-wrap" role="search">
           <CadIcon name="search" size={15} />
-          <input value={props.search} onChange={(event) => props.setSearch(event.target.value)} placeholder="Поиск команд" aria-label="Поиск команд" />
-          <CadUiActionSearchResults actions={props.searchableActions} showRoadmapCommands={props.showRoadmapCommands} onPicked={() => props.setSearch('')} />
+          <input
+            value={props.search}
+            onChange={(event) => props.setSearch(event.target.value)}
+            placeholder="Найти команду"
+            aria-label="Поиск команд"
+            aria-expanded={hasSearch}
+            aria-controls="cad-action-search-results"
+            autoComplete="off"
+            ref={searchInput}
+            onKeyDown={(event) => {
+              if (event.key === 'Escape') {
+                keepShellKey(event);
+                props.setSearch('');
+                event.currentTarget.blur();
+              } else if (event.key === 'Enter' && hasSearch && !event.ctrlKey && !event.metaKey) {
+                keepShellKey(event);
+                const first = found.find((action) => action.enabled);
+                if (first) { props.setSearch(''); void first.execute(); }
+              } else if (event.key === 'ArrowDown' && hasSearch) {
+                keepShellKey(event);
+                moveListFocus(results.current, null, 'ArrowDown');
+              }
+            }}
+          />
+          {hasSearch && (
+            <div id="cad-action-search-results" className="cad-search-popup" ref={results}>
+              {found.length > 0
+                ? <CadUiActionSearchResults actions={found} showRoadmapCommands={props.showRoadmapCommands} onPicked={() => props.setSearch('')} onEscape={() => searchInput.current?.focus()} />
+                : <div className="cad-search-empty">Команды не найдены</div>}
+            </div>
+          )}
         </div>
-        <div className="global-actions">
+        <div className="global-actions" aria-label="Быстрые действия">
           <CadUiGlobalActionButton action={props.getAction('system.open')}><CadIcon name="open" /></CadUiGlobalActionButton>
           <CadUiGlobalActionButton action={props.getAction('system.save')} titleSuffix="(Ctrl+S)"><CadIcon name="save" /></CadUiGlobalActionButton>
+          <span className="global-actions-divider" aria-hidden="true" />
           <CadUiGlobalActionButton action={props.getAction('system.undo')} titleSuffix="(Ctrl+Z)"><CadIcon name="undo" /></CadUiGlobalActionButton>
-          <CadUiGlobalActionButton action={props.getAction('system.redo')} titleSuffix="(Ctrl+Y / Ctrl+Shift+Z)"><CadIcon name="redo" /></CadUiGlobalActionButton>
-          <button type="button" title="Настройки"><CadIcon name="settings" /></button>
+          <CadUiGlobalActionButton action={props.getAction('system.redo')} titleSuffix="(Ctrl+Y)"><CadIcon name="redo" /></CadUiGlobalActionButton>
+          <button type="button" title="Настройки" aria-label="Настройки" aria-haspopup="dialog" aria-controls="asa-cad-interface-settings" onClick={openUiSettings}><CadIcon name="settings" /></button>
         </div>
       </header>
 
       <div className="document-tabs" role="tablist" aria-label="Документы">
-        <button type="button" className="new-tab-button" disabled={!newAction.enabled} onClick={() => { void newAction.execute(); }} data-command-id={newAction.id} title="Новый документ" aria-label="Новый документ"><CadIcon name="new" size={15} /></button>
-        <button className="document-tab active" type="button" role="tab" aria-selected="true">
+        <button
+          type="button"
+          className="new-tab-button"
+          disabled={!newAction.enabled}
+          onClick={() => { void newAction.execute(); }}
+          data-command-id={newAction.id}
+          title="Новый документ"
+          aria-label="Новый документ"
+        ><CadIcon name="new" size={15} /></button>
+        <div className="document-tab active" role="tab" aria-selected="true" tabIndex={0} title={props.documentTitle}>
           <span className="document-kind-icon"><CadIcon name={documentIcon(props.documentKind)} size={15} /></span>
-          <span>{props.documentTitle}</span>
+          <span className="document-title">{props.documentTitle}</span>
           {props.dirty && <span className="dirty-dot" title="Изменено" />}
-          <span className="tab-close" aria-hidden="true"><CadIcon name="close" size={12} /></span>
-        </button>
+          {props.dirty && <span className="dirty-indicator" title="Есть несохранённые изменения">Изменено</span>}
+        </div>
+        <span className="document-kind-caption">{documentNames[props.documentKind]}</span>
       </div>
 
-      <section className="instrument-area">
+      <section className="instrument-area" aria-label="Инструментальная область">
         <div className="workspace-tabs" role="tablist" aria-label="Инструментальные области">
           {props.documentKind === 'part' ? (
             <>
               <WorkspaceTab active={props.activeWorkspace === 'solid'} onClick={() => props.setActiveWorkspace('solid')}>Твердотельное моделирование</WorkspaceTab>
               <WorkspaceTab active={props.activeWorkspace === 'surfaces'} onClick={() => props.setActiveWorkspace('surfaces')}>Каркас и поверхности</WorkspaceTab>
-              <WorkspaceTab active={props.activeWorkspace === 'sketch'} disabled={props.activeWorkspace !== 'sketch'}>Инструменты эскиза</WorkspaceTab>
+              <WorkspaceTab active={props.activeWorkspace === 'sketch'} disabled={props.activeWorkspace !== 'sketch'} title="Войти через команду «Создать эскиз»">Инструменты эскиза</WorkspaceTab>
               <WorkspaceTab active={props.activeWorkspace === 'diagnostics'} onClick={() => props.setActiveWorkspace('diagnostics')}>Проверка / Измерения</WorkspaceTab>
               <WorkspaceTab active={props.activeWorkspace === 'view'} onClick={() => props.setActiveWorkspace('view')}>Вид</WorkspaceTab>
             </>
           ) : <WorkspaceTab active>{documentNames[props.documentKind]}</WorkspaceTab>}
         </div>
-
-        <div className="command-ribbon">
+        <div className="command-ribbon" role="toolbar" aria-label="Команды активной инструментальной области">
           {props.documentKind === 'part' ? (
             <CadShellCommandGroups
               workspace={props.activeWorkspace} getAction={props.getAction} showRoadmapCommands={props.showRoadmapCommands}
@@ -89,7 +146,7 @@ export function CadShellTop(props: CadShellTopProps) {
           ) : (
             <div className="planned-workspace-note">
               <strong>{documentNames[props.documentKind]}</strong>
-              <span>Документный маршрут уже существует. Инструменты включаются по roadmap без фиктивных кнопок.</span>
+              <span>Команды документа пока недоступны; действия не имитируются.</span>
             </div>
           )}
         </div>
@@ -98,11 +155,17 @@ export function CadShellTop(props: CadShellTopProps) {
   );
 }
 
-function WorkspaceTab(props: React.PropsWithChildren<{ active?: boolean; disabled?: boolean; onClick?: () => void }>) {
+function WorkspaceTab(props: React.PropsWithChildren<{ active?: boolean; disabled?: boolean; title?: string; onClick?: () => void }>) {
   return (
-    <button className={props.active ? 'active' : ''} type="button" disabled={props.disabled} onClick={props.onClick} role="tab" aria-selected={props.active}>
-      {props.children}
-    </button>
+    <button
+      className={props.active ? 'active' : ''}
+      type="button"
+      disabled={props.disabled}
+      title={props.title}
+      onClick={props.onClick}
+      role="tab"
+      aria-selected={props.active}
+    >{props.children}</button>
   );
 }
 
@@ -115,4 +178,9 @@ function documentIcon(kind: CadDocumentKind): CadIconName {
     case 'specification': return 'tree';
     case 'text': return 'text';
   }
+}
+
+/** Desktop: KOMPAS shell of the frozen reference #170; phones: the compact shell. */
+export function CadShellTop(props: CadShellTopProps) {
+  return useKompasDesktop() ? <KompasTop {...props} /> : <LegacyCadShellTop {...props} />;
 }

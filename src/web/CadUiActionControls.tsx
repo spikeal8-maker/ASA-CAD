@@ -1,5 +1,6 @@
 import React from 'react';
 import { isCadUiActionVisible, type CadUiAction } from './CadUiAction';
+import { keepShellKey, moveListFocus } from './CadShellKeys';
 
 export interface CadUiActionButtonProps {
   action: CadUiAction;
@@ -68,12 +69,21 @@ export function CadUiGlobalActionButton(props: {
 export function CadUiActionSearchResults(props: {
   actions: readonly CadUiAction[];
   onPicked?: (action: CadUiAction) => void;
+  onEscape?: () => void;
   showRoadmapCommands?: boolean;
 }) {
   const actions = props.actions.filter((action) => isCadUiActionVisible(action, props.showRoadmapCommands));
   if (actions.length === 0) return null;
   return (
-    <div className="command-search-results">
+    <div
+      className="command-search-results"
+      role="group"
+      aria-label="Найденные команды"
+      onKeyDown={(event) => {
+        if (moveListFocus(event.currentTarget, event.target as Element, event.key)) keepShellKey(event);
+        else if (event.key === 'Escape') { keepShellKey(event); props.onEscape?.(); }
+      }}
+    >
       {actions.map((action) => (
         <button
           key={action.id}

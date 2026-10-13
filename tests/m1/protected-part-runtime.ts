@@ -3,6 +3,8 @@ import initOpenCascade from '../../vendor/toubkal/node_modules/opencascade.js/di
 import {
   CadApplicationImpl,
   OpenCascadePartRuntime,
+  PlaneGCSSketchSolverRuntime,
+  SolvedSketchPartRuntimeAdapter,
   createEmptyCadDocument,
   parseCadDocument,
   serializeCadDocument,
@@ -12,6 +14,7 @@ import {
   type CadSketchEntityId,
   type CadSketchId,
 } from '../../src';
+import { commitParametricRectangle } from '../../src/web/SketchParametricRectangleOwner';
 
 const EPS = 1e-4;
 
@@ -29,7 +32,8 @@ function requirePart(app: CadApplicationImpl): Readonly<CadPartDocument> {
 console.log('\nASA-CAD M1 protected Part through CadApplication + OpenCascade');
 
 const oc = await initOpenCascade();
-const runtime = new OpenCascadePartRuntime(oc);
+const coreRuntime = new OpenCascadePartRuntime(oc);
+const runtime = new SolvedSketchPartRuntimeAdapter(coreRuntime, new PlaneGCSSketchSolverRuntime());
 const app = new CadApplicationImpl(
   createEmptyCadDocument('part', { title: 'M1 protected Part' }),
   runtime,
@@ -39,26 +43,16 @@ const sketch1Result = await app.execute({ id: 'sketch.create', payload: { suppor
 assert.equal(sketch1Result.ok, true);
 const sketch1 = sketch1Result.createdIds?.[0] as CadSketchId;
 
-const rectangleResult = await app.execute({
-  id: 'sketch.rectangle',
-  payload: { sketchId: sketch1, origin: [-30, -20], width: 60, height: 40 },
-});
-assert.equal(rectangleResult.ok, true);
-const rectangleEdges = rectangleResult.createdIds as CadSketchEntityId[];
+// The same numeric Rectangle owner the product UI uses: four Lines, their
+// H/V/coincident relations and the two driving dimensions. The B-Rep is built
+// from the PlaneGCS solution of exactly that Sketch.
+const rectangleResult = await commitParametricRectangle(app, sketch1, 60, 40);
+assert.equal(rectangleResult.ok, true, rectangleResult.error);
+const rectangleEdges = requirePart(app).sketches[0].entities.map((entity) => entity.id as CadSketchEntityId);
 assert.equal(rectangleEdges.length, 4);
-
-const widthDimensionResult = await app.execute({
-  id: 'dimension.linear',
-  payload: { sketchId: sketch1, entityIds: [rectangleEdges[0]], value: 60, name: 'width' },
-});
-const widthDimensionId = widthDimensionResult.createdIds?.[0] as CadDimensionId;
+const widthDimensionId = requirePart(app).dimensions.find((dimension) => dimension.name === 'width')?.id as CadDimensionId;
 assert.ok(widthDimensionId);
-
-const heightDimensionResult = await app.execute({
-  id: 'dimension.linear',
-  payload: { sketchId: sketch1, entityIds: [rectangleEdges[1]], value: 40, name: 'height' },
-});
-assert.ok(heightDimensionResult.createdIds?.[0]);
+assert.equal(requirePart(app).constraints.length, 8, 'numeric Rectangle relations must be present');
 
 const extrudeResult = await app.execute({
   id: 'feature.extrude',
@@ -124,7 +118,7 @@ assert.equal(filletResult.ok, true);
 
 const initialRebuild = await app.execute({ id: 'document.rebuild', payload: {} });
 assert.equal(initialRebuild.ok, true, initialRebuild.error?.message);
-const initial = runtime.getLastAnalysis();
+const initial = coreRuntime.getLastAnalysis();
 assert.ok(initial);
 near(initial.bounds.minX, -30, EPS, 'initial minX');
 near(initial.bounds.maxX, 30, EPS, 'initial maxX');
@@ -144,7 +138,7 @@ assert.equal(editWidth.ok, true);
 
 const editedRebuild = await app.execute({ id: 'document.rebuild', payload: {} });
 assert.equal(editedRebuild.ok, true, editedRebuild.error?.message);
-const edited = runtime.getLastAnalysis();
+const edited = coreRuntime.getLastAnalysis();
 assert.ok(edited);
 near(edited.bounds.minX, -40, EPS, 'edited minX');
 near(edited.bounds.maxX, 40, EPS, 'edited maxX');
@@ -165,11 +159,12 @@ assert.equal(JSON.stringify(savedSnapshot).includes('window.oc'), false, 'serial
 
 app.dispose();
 
-const runtime2 = new OpenCascadePartRuntime(oc);
+const coreRuntime2 = new OpenCascadePartRuntime(oc);
+const runtime2 = new SolvedSketchPartRuntimeAdapter(coreRuntime2, new PlaneGCSSketchSolverRuntime());
 const reopenedApp = new CadApplicationImpl(parseCadDocument(saved), runtime2);
 const reopenRebuild = await reopenedApp.execute({ id: 'document.rebuild', payload: {} });
 assert.equal(reopenRebuild.ok, true, reopenRebuild.error?.message);
-const reopened = runtime2.getLastAnalysis();
+const reopened = coreRuntime2.getLastAnalysis();
 assert.ok(reopened);
 near(reopened.volume, edited.volume, 1e-5, 'reopened volume');
 near(reopened.bounds.minX, -40, EPS, 'reopened minX');

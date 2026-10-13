@@ -9,3 +9,4 @@ export * from './migrations';
 export * from './measurement';
 export * from './assembly';
 export * from './render';
+export * from './sketchWorkplane';

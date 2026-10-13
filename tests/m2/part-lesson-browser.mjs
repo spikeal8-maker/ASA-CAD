@@ -48,35 +48,35 @@ function identity(doc){
 
 try{
   await page.goto(`${base}/cad/?uiScale=100`,{waitUntil:'networkidle'});
-  await page.getByRole('button',{name:'ASA-CAD',exact:true}).waitFor();
+  await page.locator('.k-main-menu-bar, .brand-button').first().waitFor();
   assert.equal(new URL(page.url()).pathname,'/cad/');
 
-  await fileCommand('Новый');
+  await fileCommand('Создать...');
   const dialog=page.getByRole('dialog',{name:'Новый документ',exact:true}); await dialog.waitFor();
   await dialog.getByRole('button',{name:/Деталь/}).click();
   await page.locator('.cad-app[data-document-kind="part"][data-sketch-count="0"][data-feature-count="0"]').waitFor();
-  assert.equal(await page.locator('.dirty-dot').count(),0,'new Part must be clean');
+  assert.equal(await page.locator(':is(.dirty-dot, [data-document-dirty="true"])').count(),0,'new Part must be clean');
 
   await page.getByRole('button',{name:/Создать эскиз/i}).click();
-  await page.getByText('Плоскость построения',{exact:true}).waitFor();
+  await page.getByText('Опорный объект',{exact:true}).waitFor();
   await page.getByRole('button',{name:/XY/}).click();
-  await page.getByRole('button',{name:'Создать',exact:true}).click();
+  await page.locator('.parameter-actions button.primary, .k-pp-ok').click();
   const sketchId=await app().getAttribute('data-active-sketch-id'); assert.ok(sketchId);
 
   await page.getByRole('button',{name:/Прямоугольник/i}).click();
-  await page.locator('.content-area.panel-closed').waitFor();
-  await page.getByTitle('Параметры').click();
-  const rectPanel=page.locator('.parameter-panel'); await rectPanel.waitFor();
-  const width=rectPanel.locator('.numeric-field').filter({hasText:'Ширина'}).locator('input');
-  const height=rectPanel.locator('.numeric-field').filter({hasText:'Высота'}).locator('input');
+  await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
+  if (await page.locator('.k-content').count() === 0) await page.getByTitle('Параметры').click(); else if (await page.locator('.k-content[data-panel-tab="params"]').count() === 0) await page.getByRole('tab', { name: 'Параметры' }).click();
+  const rectPanel=page.locator(':is(.parameter-panel, .k-pp)'); await rectPanel.waitFor();
+  const width=rectPanel.locator(':is(.numeric-field, .k-pp-row)').filter({hasText:'Ширина'}).locator('input');
+  const height=rectPanel.locator(':is(.numeric-field, .k-pp-row)').filter({hasText:'Высота'}).locator('input');
   assert.equal(await width.inputValue(),'60'); assert.equal(await height.inputValue(),'40');
-  await rectPanel.locator('.parameter-actions button.primary').click();
+  await rectPanel.locator('.parameter-actions button.primary, .k-pp-ok').click();
   await page.getByText('Прямоугольник 60×40 мм создан',{exact:true}).waitFor();
   const initialEntities=await entityIds(); assert.equal(initialEntities.length,4);
-  await page.getByRole('button',{name:/Ширина: 60 мм/}).waitFor();
-  await page.getByRole('button',{name:/Высота: 40 мм/}).waitFor();
+  await page.locator('[data-dimension-id]',{hasText:/Ширина: 60 мм/}).waitFor();
+  await page.locator('[data-dimension-id]',{hasText:/Высота: 40 мм/}).waitFor();
 
-  await page.getByRole('button',{name:/Завершить эскиз/i}).click();
+  await page.locator('[data-command-id="sketch.finish"]').first().click();
   await page.getByText('Эскиз завершен',{exact:true}).waitFor();
   await page.locator('.cad-app[data-active-sketch-id=""]').waitFor();
   const readOnly=page.locator(`[data-testid="part-model-stage"][data-sketch-context="read-only"][data-sketch-id="${sketchId}"]`);
@@ -85,11 +85,11 @@ try{
 
   const extrude=page.locator('[data-command-id="part.extrude"]').first();
   assert.equal(await extrude.isEnabled(),true); await extrude.click();
-  const exPanel=page.locator('.extrude-parameter-panel'); await exPanel.waitFor();
+  const exPanel=page.locator(':is(.extrude-parameter-panel, .k-pp[data-command-title="Элемент выдавливания"])'); await exPanel.waitFor();
   assert.equal(await exPanel.getAttribute('data-extrude-profile-id'),sketchId);
   await exPanel.getByText('Эскиз 1',{exact:true}).waitFor();
   await exPanel.getByText('На расстояние',{exact:true}).waitFor();
-  assert.equal(await exPanel.locator('.numeric-field').filter({hasText:'Расстояние'}).locator('input').inputValue(),'10');
+  assert.equal(await exPanel.locator(':is(.numeric-field, .k-pp-row)').filter({hasText:'Расстояние'}).locator('input').inputValue(),'10');
   await exPanel.getByText('Прямое',{exact:true}).waitFor();
   assert.equal(await exPanel.getByRole('switch',{name:'Симметрично'}).getAttribute('aria-checked'),'false');
   await exPanel.getByRole('button',{name:'Создать объект',exact:true}).click();
@@ -97,13 +97,13 @@ try{
   await page.getByText('Тело 1',{exact:true}).waitFor();
   near(await bounds(),[-30,-20,0,30,20,10],'initial bounds');
 
-  const widthRow=page.getByRole('button',{name:/Ширина: 60 мм/}); await widthRow.click();
-  const dimPanel=page.locator('.parameter-panel'); await dimPanel.getByText('Изменить размер',{exact:true}).waitFor();
-  const value=dimPanel.locator('.numeric-field').filter({hasText:'Размер'}).locator('input');
+  const widthRow=page.locator('[data-dimension-id]',{hasText:/Ширина: 60 мм/}); await widthRow.click();
+  const dimPanel=page.locator(':is(.parameter-panel, .k-pp)'); await dimPanel.getByText('Изменить размер',{exact:true}).waitFor();
+  const value=dimPanel.locator(':is(.numeric-field, .k-pp-row)').filter({hasText:'Размер'}).locator('input');
   assert.equal(await value.inputValue(),'60'); await value.fill('80');
   await dimPanel.getByRole('button',{name:'Применить',exact:true}).click();
   await page.getByText('Ширина изменен на 80 мм; модель перестроена',{exact:true}).waitFor({timeout:60000});
-  await page.getByRole('button',{name:/Ширина: 80 мм/}).waitFor();
+  await page.locator('[data-dimension-id]',{hasText:/Ширина: 80 мм/}).waitFor();
   near(await bounds(),[-40,-20,0,40,20,10],'updated bounds');
 
   const rebuild=page.locator('[data-command-id="system.rebuild"]').first();
@@ -113,29 +113,29 @@ try{
 
   await fileCommand('Сохранить');
   await page.getByText('Сохранено локально',{exact:true}).waitFor();
-  assert.equal(await page.locator('.dirty-dot').count(),0,'Save did not clear dirty state');
+  assert.equal(await page.locator(':is(.dirty-dot, [data-document-dirty="true"])').count(),0,'Save did not clear dirty state');
   const saved=await persisted(); const beforeOpen=identity(saved);
   assert.equal(beforeOpen.sketchId,sketchId); assert.deepEqual(beforeOpen.entityIds,initialEntities);
   assert.equal(beforeOpen.support,'XY'); assert.equal(beforeOpen.width,80); assert.equal(beforeOpen.height,40);
   assert.equal(beforeOpen.distance,10); assert.equal(beforeOpen.featureSketchId,sketchId);
 
   await page.reload({waitUntil:'networkidle'});
-  await page.getByRole('button',{name:'ASA-CAD',exact:true}).waitFor();
+  await page.locator('.k-main-menu-bar, .brand-button').first().waitFor();
   await page.locator('.cad-app[data-sketch-count="0"][data-feature-count="0"]').waitFor();
-  await fileCommand('Открыть');
+  await fileCommand('Открыть...');
   await page.getByText('Локальный документ открыт',{exact:true}).waitFor({timeout:60000});
   await page.locator('.cad-app[data-runtime-status="ready"][data-sketch-count="1"][data-feature-count="1"]').waitFor({timeout:120000});
   near(await bounds(),[-40,-20,0,40,20,10],'reopen bounds');
   const afterOpen=identity(await persisted()); assert.deepEqual(afterOpen,beforeOpen,'Save/Open changed document identity');
 
-  const sketchRow=page.locator(`.tree-panel [data-sketch-id="${sketchId}"]`); await sketchRow.click();
+  const sketchRow=page.locator(`:is(.tree-panel, .k-tree-panel) [data-sketch-id="${sketchId}"]`); await sketchRow.click();
   const edit=page.locator(`[data-sketch-edit-id="${sketchId}"]`); await edit.waitFor(); await edit.click();
   await page.locator(`.cad-app[data-active-sketch-id="${sketchId}"][data-sketch-count="1"][data-feature-count="1"]`).waitFor();
   assert.deepEqual(await entityIds(),initialEntities,'re-open edit changed entity ids');
-  await page.getByRole('button',{name:/Ширина: 80 мм/}).waitFor();
-  await page.getByRole('button',{name:/Высота: 40 мм/}).waitFor();
+  await page.locator('[data-dimension-id]',{hasText:/Ширина: 80 мм/}).waitFor();
+  await page.locator('[data-dimension-id]',{hasText:/Высота: 40 мм/}).waitFor();
 
-  await page.getByRole('button',{name:/Завершить эскиз/i}).click();
+  await page.locator('[data-command-id="sketch.finish"]').first().click();
   await page.getByText('Эскиз завершен',{exact:true}).waitFor();
   await page.locator('.cad-app[data-active-sketch-id=""][data-sketch-count="1"][data-feature-count="1"]').waitFor();
   await page.getByText('Элемент выдавливания 1',{exact:true}).waitFor();

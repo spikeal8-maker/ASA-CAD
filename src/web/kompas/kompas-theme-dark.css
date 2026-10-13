@@ -1,0 +1,53 @@
+/* Тёмная тема продукта: токены КОМПАС (#170) для оболочки и те же значения для
+   общих токенов продукта и встроенных поверхностей (панели параметров, окна,
+   плашки эскиза), чтобы тема не была перекраской одной оболочки. */
+:root[data-k-theme="dark"] {
+  --bg-app: #333333;
+  --bg-panel: #484848;
+  --bg-panel-strong: #3d3d3d;
+  --bg-ribbon: #484848;
+  --bg-work: #3a3a3a;
+  --border: #2b2b2b;
+  --border-strong: #1f1f1f;
+  --text: #f0f0f0;
+  --text-muted: #bdbdbd;
+  --accent: #57b8ff;
+  --accent-soft: #2c4256;
+}
+:root[data-k-theme="dark"] body { background: #000; color: var(--k-text); }
+
+:root[data-k-theme="dark"] :is(
+  .new-document-dialog, .interface-settings-dialog, .parameter-panel, .panel-title-row,
+  .parameter-actions, .extrude-summary, .extrude-symmetric-control, .part-stage-status,
+  .sketch-solve-hud, .selection-caption, .numeric-control, .cad-viewport-error
+) {
+  background: var(--k-panel);
+  color: var(--k-text);
+  border-color: var(--k-field-border);
+}
+:root[data-k-theme="dark"] :is(
+  .document-kind-grid > button, .ui-scale-options > button, .plane-grid button,
+  .parameter-actions button, .extrude-direction-control > button, .extrude-symmetric-control button,
+  .kind-card-icon, .selection-value
+) {
+  background: var(--k-field);
+  color: var(--k-field-text);
+  border-color: var(--k-field-border);
+}
+:root[data-k-theme="dark"] :is(
+  .document-kind-grid > button:hover, .ui-scale-options > button:hover, .new-document-dialog header button:hover,
+  .interface-settings-dialog header button:hover, .panel-title-row button:hover, .parameter-actions button:hover:not(:disabled)
+) { background: var(--k-btn-hover); }
+:root[data-k-theme="dark"] :is(.selection-value.selected, .plane-grid button.selected, .ui-scale-options > button[aria-checked="true"]) {
+  background: var(--k-tree-sel);
+  border-color: var(--k-select-line);
+}
+:root[data-k-theme="dark"] .parameter-actions button.primary { background: #1f6fd1; border-color: #1f6fd1; color: #fff; }
+:root[data-k-theme="dark"] .part-stage-status.error { background: #4a2a2a; }
+:root[data-k-theme="dark"] :is(.parameter-panel, .new-document-dialog, .interface-settings-dialog) :is(input, select, textarea) {
+  background: var(--k-field);
+  color: var(--k-field-text);
+  border-color: var(--k-field-border);
+}
+:root[data-k-theme="dark"] :is(.parameter-panel, .new-document-dialog, .interface-settings-dialog) :is(p, small, .muted, .hint) { color: var(--k-text-muted); }
+:root[data-k-theme="dark"] .modal-backdrop { background: rgba(0, 0, 0, .55); }

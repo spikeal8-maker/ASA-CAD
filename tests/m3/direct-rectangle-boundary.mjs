@@ -61,7 +61,7 @@ assert.match(directTools, /SketchRectangleInteractionLayer/, 'direct-tool owner 
 assert.match(app, /rectangleDraft=\{rectangleDraft\}/, 'App must keep wiring Rectangle transient state through the stable PartModelStage contract');
 assert.match(routes, /'rectangle'/, 'deterministic Rectangle fixture route must exist');
 assert.match(fixtures, /Fixture rectangle:/, 'deterministic Rectangle fixture must be implemented');
-assert.match(protectedPart, /Прямоугольник[\s\S]*getByTitle\('Параметры'\)/, 'protected Part must retain explicit numeric Rectangle + driving-dimension fallback');
+assert.match(protectedPart, /Прямоугольник[\s\S]*(getByTitle\('Параметры'\)|openParams\(page\))/, 'protected Part must retain explicit numeric Rectangle + driving-dimension fallback');
 assert.match(workflow, /direct-rectangle-browser\.mjs/, 'M3 browser lane must protect direct Rectangle');
 
 console.log('ASA-CAD M3.5 direct Rectangle boundary PASS (focused direct-tool owner + shared input + canonical drag + one mutation + numeric fallback)');

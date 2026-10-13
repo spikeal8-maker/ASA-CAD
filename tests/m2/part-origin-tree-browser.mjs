@@ -20,15 +20,15 @@ async function fileCommand(label){
 }
 
 async function newPart(){
-  await fileCommand('Новый');
+  await fileCommand('Создать...');
   const dialog=page.getByRole('dialog',{name:'Новый документ',exact:true}); await dialog.waitFor();
   await dialog.getByRole('button',{name:/Деталь/}).click();
   await page.locator('.cad-app[data-document-kind="part"][data-sketch-count="0"][data-feature-count="0"]').waitFor();
-  await page.locator('.tree-root .tree-label').filter({hasText:'Деталь 1'}).first().waitFor();
+  await page.locator(':is(.tree-root .tree-label, .k-tree-rows .k-lbl)').filter({hasText:'Деталь 1'}).first().waitFor();
 }
 
 async function saveAndRead(){
-  await page.getByTitle('Сохранить').click();
+  await page.locator(':is(.global-actions, .k-command-ribbon) [data-command-id="system.save"]').click();
   await page.getByText('Сохранено локально',{exact:true}).waitFor();
   const raw=await page.evaluate(()=>localStorage.getItem('asa-cad-m2-shell-document'));
   assert.ok(raw,'serialized CadDocument missing');
@@ -39,7 +39,7 @@ async function observable(){
   const app=page.locator('.cad-app');
   return {
     raw:await page.evaluate(()=>localStorage.getItem('asa-cad-m2-shell-document')),
-    dirty:await page.locator('.dirty-dot').count(),
+    dirty:await page.locator(':is(.dirty-dot, [data-document-dirty="true"])').count(),
     sketchCount:await app.getAttribute('data-sketch-count'),
     featureCount:await app.getAttribute('data-feature-count'),
     bodyCount:await page.getByText(/^Тело \d+$/).count(),
@@ -60,7 +60,7 @@ async function assertPlanesVisible(expected){
 
 try{
   await page.goto(`${base}/cad/?uiScale=100`,{waitUntil:'networkidle'});
-  await page.getByRole('button',{name:'ASA-CAD',exact:true}).waitFor();
+  await page.locator('.k-main-menu-bar, .brand-button').first().waitFor();
   await newPart();
 
   const baselineRaw=await saveAndRead();
@@ -76,7 +76,7 @@ try{
 
   assert.equal(await part.getAttribute('aria-expanded'),'true','Part root must default expanded');
   assert.equal(await origin.getAttribute('aria-expanded'),'true','Origin must default expanded');
-  assert.equal(await page.locator('[data-tree-branch="part-root"]').getByText('Деталь 1',{exact:true}).count(),1);
+  assert.equal(await page.locator('[data-tree-branch="part-root"]').getByText(/^Деталь 1( \(Тел-\d+\))?$/).count(),1);
   assert.equal(await originBranch().getByText('Начало координат',{exact:true}).count(),1);
   await assertPlanesVisible(true);
 
@@ -104,7 +104,7 @@ try{
   assert.equal(await part.getAttribute('aria-expanded'),'false','Part collapse state mismatch');
   assert.equal(await originBranch().count(),0,'Part collapse must hide Origin');
   await assertPlanesVisible(false);
-  assert.equal(await page.locator('[data-tree-branch="part-root"]').getByText('Деталь 1',{exact:true}).count(),1,'Part root disappeared while collapsed');
+  assert.equal(await page.locator('[data-tree-branch="part-root"]').getByText(/^Деталь 1( \(Тел-\d+\))?$/).count(),1,'Part root disappeared while collapsed');
   assertUnchanged(await observable(),baseline,'collapse Part');
 
   await part.click();

@@ -1,6 +1,8 @@
 import type { CadDocumentKind } from '../contracts/document';
 import { documentNames } from './CadDocumentPresentation';
 import type { CadShellPanel } from './CadShellMain';
+import { KompasToast } from './kompas/KompasToast';
+import { useKompasDesktop } from './kompas/useKompasDesktop';
 
 interface CadShellBottomProps {
   recomputeStatus: string;
@@ -16,7 +18,7 @@ interface CadShellBottomProps {
   setActivePanel: (panel: CadShellPanel) => void;
 }
 
-export function CadShellBottom(props: CadShellBottomProps) {
+function LegacyCadShellBottom(props: CadShellBottomProps) {
   return (
     <>
       <footer className="status-bar">
@@ -61,4 +63,9 @@ export function CadShellBottom(props: CadShellBottomProps) {
       </div>
     </>
   );
+}
+
+/** Desktop: KOMPAS shell of the frozen reference #170; phones: the compact shell. */
+export function CadShellBottom(props: CadShellBottomProps) {
+  return useKompasDesktop() ? <KompasToast notice={props.notice} /> : <LegacyCadShellBottom {...props} />;
 }

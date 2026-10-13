@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import type { CadPlaneName } from '../contracts/commands';
 import type { CadDocument } from '../contracts/document';
 import type { CadBodyId, CadDimensionId, CadSketchId } from '../contracts/ids';
 import type { CadSketch } from '../contracts/sketch';
@@ -13,6 +14,9 @@ export interface DocumentTreeProps {
   onSelectBody(id: CadBodyId | null): void;
   onEditSketch(id: CadSketchId): void;
   onEditDimension(id: CadDimensionId): void;
+  /** Shared Part selection: the same origin plane state as scene and parameters. */
+  selectedPlane?: CadPlaneName | null;
+  onSelectPlane?(plane: CadPlaneName): void;
 }
 
 export function DocumentTree({
@@ -22,6 +26,8 @@ export function DocumentTree({
   onSelectBody,
   onEditSketch,
   onEditDimension,
+  selectedPlane = null,
+  onSelectPlane,
 }: DocumentTreeProps) {
   const [selectedSketchId, setSelectedSketchId] = useState<CadSketchId | null>(null);
   const [partExpanded, setPartExpanded] = useState(true);
@@ -74,13 +80,18 @@ export function DocumentTree({
                   expanded={originExpanded}
                   onToggle={() => setOriginExpanded((value) => !value)}
                 />
-                {originExpanded && (
-                  <>
-                    <TreeRow depth={2} icon="plane" label="Плоскость XY" muted nodeId="plane-xy" />
-                    <TreeRow depth={2} icon="plane" label="Плоскость XZ" muted nodeId="plane-xz" />
-                    <TreeRow depth={2} icon="plane" label="Плоскость YZ" muted nodeId="plane-yz" />
-                  </>
-                )}
+                {originExpanded && document.origin.planes.map((plane) => (
+                  <TreeRow
+                    key={plane}
+                    depth={2}
+                    icon="plane"
+                    label={`Плоскость ${plane}`}
+                    nodeId={`plane-${plane.toLowerCase()}`}
+                    planeId={plane}
+                    selected={plane === selectedPlane}
+                    onClick={onSelectPlane ? () => onSelectPlane(plane) : undefined}
+                  />
+                ))}
                 {document.sketches.map((sketch) => (
                   <SketchTreeBranch
                     key={sketch.id}
@@ -189,6 +200,7 @@ function TreeRow(props: {
   bold?: boolean;
   selected?: boolean;
   bodyId?: CadBodyId;
+  planeId?: CadPlaneName;
   nodeId?: string;
   onClick?: () => void;
 }) {
@@ -199,8 +211,9 @@ function TreeRow(props: {
       style={{ paddingInlineStart: 10 + props.depth * 18 }}
       onClick={props.onClick}
       data-body-id={props.bodyId}
+      data-plane-id={props.planeId}
       data-tree-node={props.nodeId}
-      aria-pressed={props.bodyId ? Boolean(props.selected) : undefined}
+      aria-pressed={props.bodyId || props.planeId ? Boolean(props.selected) : undefined}
     >
       <span className="tree-chevron" aria-hidden="true" />
       <span className="tree-icon"><CadIcon name={props.icon} size={15} /></span>

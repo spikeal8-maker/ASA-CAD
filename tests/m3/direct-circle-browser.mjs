@@ -52,7 +52,7 @@ async function desktopDirectCircle() {
     const circleButton = page.locator('[data-command-id="sketch.circle"]').first();
     assert.equal(await circleButton.isEnabled(), true, 'Circle action must be enabled in active Sketch');
     await circleButton.click();
-    await page.locator('.content-area.panel-closed').waitFor();
+    await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
     assert.equal(await page.locator('.management-panel').isVisible(), false, 'direct Circle must collapse management panel');
 
     const { layer, box } = await interactionBox(page, 'circle', 'Circle');
@@ -105,7 +105,7 @@ async function touchDirectCircle() {
     await page.goto(shellUrl, { waitUntil: 'networkidle' });
     await createMobileXYSketch(page);
     await activateMobileTool(page, 'sketch.circle', 'Circle');
-    await page.locator('.content-area.panel-closed').waitFor();
+    await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
 
     const { box } = await interactionBox(page, 'circle', 'Circle');
     const center = squarePoint(box, 0.44, 0.46);

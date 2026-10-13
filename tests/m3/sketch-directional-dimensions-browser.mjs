@@ -6,8 +6,8 @@ import {
 } from './M3BrowserHarness.mjs';
 
 const browser = await launchM3Browser();
-const field = (page) => page.locator('.parameter-panel .numeric-field input');
-const apply = (page) => page.locator('.parameter-actions button.primary');
+const field = (page) => page.locator(':is(.parameter-panel, .k-pp) :is(.numeric-field, .k-pp-row) input');
+const apply = (page) => page.locator('.parameter-actions button.primary, .k-pp-ok');
 
 async function selectLine(page, touch = false) {
   const visual = page.locator('[data-testid="cad-sketch-overlay"] [data-sketch-entity-id]').first();
@@ -44,7 +44,7 @@ async function desktopHorizontal() {
     const action = page.locator('[data-command-id="dimension.horizontal"]').first();
     assert.equal(await action.isEnabled(), true);
     await action.click();
-    await page.locator('.parameter-panel .panel-title-row strong').filter({ hasText: 'Горизонтальный размер' }).waitFor();
+    await page.locator(':is(.parameter-panel .panel-title-row strong, .k-pp-cmd strong)').filter({ hasText: 'Горизонтальный размер' }).waitFor();
     assert.equal(await page.locator('[data-directional-dimension-target]').getAttribute('data-directional-dimension-target'), id);
     near(Number(await field(page).inputValue()), 18, 1e-6, 'initial Horizontal');
     assert.equal((await saveLocalDocument(page)).dimensions.length, 0);
@@ -97,7 +97,7 @@ async function mobileVertical() {
     const action = page.locator('[data-mobile-tools="true"] [data-command-id="dimension.vertical"]');
     assert.equal(await action.isEnabled(), true);
     await action.click();
-    await page.locator('.parameter-panel .panel-title-row strong').filter({ hasText: 'Вертикальный размер' }).waitFor();
+    await page.locator(':is(.parameter-panel .panel-title-row strong, .k-pp-cmd strong)').filter({ hasText: 'Вертикальный размер' }).waitFor();
     near(Number(await field(page).inputValue()), 10, 1e-6, 'initial Vertical');
     await field(page).fill('30');
     await apply(page).click();
@@ -114,18 +114,18 @@ async function searchHorizontal() {
   const { page, errors } = await newDesktopPage(browser);
   try {
     await loadFixture(page, 'line', 1);
-    const search = page.getByRole('textbox', { name: 'Поиск команд' });
+    const search = page.getByRole('textbox', { name: /^Поиск (команд|по командам)$/ });
     await search.fill('Горизонтальный размер');
-    let result = page.locator('.command-search-results [data-command-id="dimension.horizontal"]');
+    let result = page.locator(':is(.command-search-results, .k-search-results) [data-command-id="dimension.horizontal"]');
     await result.waitFor();
     assert.equal(await result.isEnabled(), false);
     assert.equal(await result.getAttribute('title'), 'Выберите отрезок эскиза');
 
     const id = await selectLine(page);
-    result = page.locator('.command-search-results [data-command-id="dimension.horizontal"]');
+    result = page.locator(':is(.command-search-results, .k-search-results) [data-command-id="dimension.horizontal"]');
     assert.equal(await result.isEnabled(), true);
     await result.click();
-    await page.locator('.parameter-panel .panel-title-row strong').filter({ hasText: 'Горизонтальный размер' }).waitFor();
+    await page.locator(':is(.parameter-panel .panel-title-row strong, .k-pp-cmd strong)').filter({ hasText: 'Горизонтальный размер' }).waitFor();
     await field(page).fill('32');
     await apply(page).click();
     await waitSolvedOverlay(page, 1, 'search Horizontal');
@@ -142,9 +142,9 @@ async function cancelNoMutation() {
     await selectLine(page);
     const before = JSON.stringify(await saveLocalDocument(page));
     await page.locator('[data-command-id="dimension.horizontal"]').first().click();
-    await page.locator('.parameter-panel .panel-title-row strong').filter({ hasText: 'Горизонтальный размер' }).waitFor();
+    await page.locator(':is(.parameter-panel .panel-title-row strong, .k-pp-cmd strong)').filter({ hasText: 'Горизонтальный размер' }).waitFor();
     await field(page).fill('77');
-    await page.locator('.parameter-actions button:not(.primary)').click();
+    await page.locator('.parameter-actions button:not(.primary), .k-pp-cancel').click();
     const after = JSON.stringify(await saveLocalDocument(page));
     assert.equal(after, before);
     assert.equal(JSON.parse(after).dimensions.length, 0);

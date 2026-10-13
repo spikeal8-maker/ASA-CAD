@@ -5,8 +5,8 @@ export async function reloadAndOpenSavedDocument(page) {
   if (await app.getAttribute('data-dev-fixture')) {
     await page.locator('.cad-app[data-fixture-status="ready"]').waitFor();
   }
-  const wasDirty = await page.locator('.dirty-dot').count() > 0;
-  await page.locator('.global-actions [data-command-id="system.open"]').click();
+  const wasDirty = await page.locator(':is(.dirty-dot, [data-document-dirty="true"])').count() > 0;
+  await page.locator(':is(.global-actions, .k-command-ribbon) [data-command-id="system.open"]').click();
   if (wasDirty) {
     await page.getByRole('dialog', { name: 'Есть несохранённые изменения' })
       .getByRole('button', { name: 'Не сохранять' }).click();
