@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "initiative": "UI-CORE-UNIFICATION-001",
   "issue": 184,
-  "currentCheckpoint": "U1A",
+  "currentCheckpoint": "FULL_REPOSITORY_HEALTH_AUDIT",
   "baseBranch": "integration/ui-core-unification",
   "baseHeadPolicy": "RESOLVE_LIVE_AND_GUARD",
   "uiReference": {
@@ -11,35 +11,39 @@
     "sha": "88c535c652dac8b04f0d68fa144cf8486afdc926",
     "frozen": true
   },
-  "productCodeStartAllowed": true,
+  "productCodeStartAllowed": false,
   "blocker": null,
   "canonicalDocuments": [
+    "docs/DEVELOPMENT_QUALITY_GATES.md",
     "docs/UI_CORE_UNIFICATION_SPEC.md",
-    "docs/UI_CORE_U1A_MAPPING.md"
+    "docs/STATUS.md"
   ],
   "scope": [
-    "main menu",
-    "document tab",
-    "toolsets/ribbon",
-    "search/global actions",
-    "desktop shell composition",
-    "light-theme acceptance"
+    "U1 post-merge Full Repository Health Audit on live main and integration",
+    "architecture and owner budgets; KOMPAS UI vs CadApplication single state",
+    "PlaneGCS -> solved profiles -> OpenCascade B-Rep; topology and persistence",
+    "schema, migrations, CI, Docker, visual evidence, documentation and branch reconciliation",
+    "independent review of merged U1; repair confirmed RED and unsafe regressions"
   ],
   "outOfScope": [
-    "tree",
-    "parameters",
-    "status",
-    "viewport",
-    "XY/XZ/YZ",
-    "selection",
-    "Sketch",
-    "solver",
-    "OpenCascade",
-    "persistence",
-    "CadDocument schema"
+    "U2-U5 feature expansion until audit GREEN or explicitly accepted YELLOW",
+    "indiscriminate merge of old #177 / #179 or frozen #170 prototype runtime",
+    "production deployment and claim of final visual parity without owner acceptance"
   ],
-  "nextCheckpoint": "U1B",
+  "nextCheckpoint": "U2",
   "developmentAuthorization": "OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008",
   "checkpointTechnicalStatus": "IN_PROGRESS",
-  "ownerProductAcceptance": "PENDING"
+  "ownerProductAcceptance": "PENDING",
+  "u1MergedIntoIntegration": {
+    "pr": 195,
+    "mergeSha": "cc2ceaa22858f7f885a17b17a16286e0ce65c8e2"
+  },
+  "u1MergedIntoMain": {
+    "pr": 196,
+    "mergeSha": "e37650f08d9e2fa6cf13ceb6a09ecd8e8a568c15"
+  },
+  "fullRepositoryHealthAudit": {
+    "outcome": "PENDING",
+    "auditBaseSha": "e37650f08d9e2fa6cf13ceb6a09ecd8e8a568c15"
+  }
 }
