@@ -27,19 +27,12 @@ function lookup(getAction: (id: string) => CadUiAction, id: string | null): CadU
  */
 export function KompasTop(props: CadShellTopProps) {
   const { getAction } = props;
-  const [toolset, setToolset] = React.useState<KompasToolsetId>('solid');
-  const previous = React.useRef<KompasToolsetId>('solid');
   const shell = useKompasShell();
   const sketchMode = shell.sketchMode;
+  const toolset: KompasToolsetId = sketchMode || props.activeWorkspace === 'sketch'
+    ? 'sketch' : props.activeWorkspace === 'surfaces' ? 'surfaces' : 'solid';
 
   React.useEffect(() => { kompasShell.set({ toolset }); }, [toolset]);
-
-  React.useLayoutEffect(() => {
-    setToolset((current) => {
-      if (sketchMode) { if (current !== 'sketch') previous.current = current; return 'sketch'; }
-      return current === 'sketch' ? previous.current : current;
-    });
-  }, [sketchMode]);
 
   const resolver = React.useMemo<KompasCommandResolver>(() => ({
     status(id) {
@@ -60,6 +53,14 @@ export function KompasTop(props: CadShellTopProps) {
     },
   }), [getAction, sketchMode]);
   kompasShell.setResolver(resolver);
+
+  const setToolset = React.useCallback((next: KompasToolsetId) => {
+    if (next === 'sketch') {
+      if (!sketchMode) resolver.run('part.sketch.create', 'Создать эскиз');
+      return;
+    }
+    if (!sketchMode) props.setActiveWorkspace(next);
+  }, [sketchMode, resolver, props.setActiveWorkspace]);
 
   const canUndo = lookup(getAction, 'system.undo')?.enabled ?? false;
   const canRedo = lookup(getAction, 'system.redo')?.enabled ?? false;
