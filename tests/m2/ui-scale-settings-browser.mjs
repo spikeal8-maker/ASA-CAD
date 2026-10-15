@@ -2,10 +2,11 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const settingsSource = readFileSync('src/web/UiScaleSettings.tsx', 'utf8');
-const shellSource = readFileSync('src/web/CadShellTop.tsx', 'utf8');
+const shellSource = readFileSync('src/web/kompas/KompasDialogs.tsx', 'utf8');
 assert.doesNotMatch(settingsSource, /document\.querySelector|settingsButton\.addEventListener\('click'/, 'UI Scale settings must not use a DOM-selector click bridge');
 assert.match(shellSource, /useUiScaleSettingsOpen\(\)/, 'Shell must consume the shared typed Settings callback');
-assert.match(shellSource, /onClick=\{openUiSettings\}/, 'Settings action must call React handler directly');
+assert.match(shellSource, /openUiScale\(\)/, 'KOMPAS Settings must invoke shared React UI Scale handler');
+assert.match(shellSource, /onClick=\{\(\) => \{ props\.onClose\(\); openUiScale\(\); \}\}/, 'KOMPAS settings dialog must route through shared React handler');
 
 import { chromium } from '../../vendor/toubkal/node_modules/playwright-core/index.mjs';
 import { openUiScaleSettings } from './shell-selectors.mjs';
@@ -114,10 +115,11 @@ async function phoneSettingsFlow() {
   const state = await page.evaluate(() => ({
     stored: localStorage.getItem('asa-cad-ui-scale'),
     rootFont: Number.parseFloat(getComputedStyle(document.documentElement).fontSize),
-    bottomButtonHeights: [...document.querySelectorAll('.mobile-bottom-bar button')].map((node) => node.getBoundingClientRect().height),
+    bottomButtonHeights: [...document.querySelectorAll('.k-mobile-navigation button')].map((node) => node.getBoundingClientRect().height),
   }));
   assert.equal(state.stored, '90');
   assert.ok(state.rootFont >= 14, `phone UI90 shrank root text below touch/readability floor: ${state.rootFont}`);
+  assert.ok(state.bottomButtonHeights.length >= 3, 'KOMPAS mobile navigation touch controls missing');
   assert.ok(state.bottomButtonHeights.every((height) => height >= 44), `phone UI90 shrank touch targets: ${state.bottomButtonHeights.join(',')}`);
   console.log('  ✓ phone 390×844 opens bottom-sheet settings and keeps UI90 touch/readability floors');
 

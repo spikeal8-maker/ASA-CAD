@@ -130,7 +130,7 @@ assert.equal(policy.u1a.ownerVisualAcceptanceRequired, true);
 assert.equal(policy.u1a.ownerVisualAcceptanceBeforeTechnicalMerge, false);
 
 assert.deepEqual(policy.u1a.themeContract.referenceThemes, ['light', 'dark']);
-assert.deepEqual(policy.u1a.themeContract.currentProductThemes, ['light']);
+assert.deepEqual(policy.u1a.themeContract.currentProductThemes, ['light', 'dark']);
 assert.deepEqual(policy.u1a.themeContract.u1aAcceptanceThemes, ['light']);
 assert.equal(policy.u1a.themeContract.darkThemeParity, 'DEFERRED_NOT_U1A');
 assert.equal(policy.u1a.themeContract.noFakeDarkThemeInU1A, true);

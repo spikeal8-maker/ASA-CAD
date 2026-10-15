@@ -34,7 +34,7 @@ async function createSketch(support = 'XY') {
 
 async function createRectangle() {
   await page.getByRole('button', { name: /Прямоугольник/i }).click();
-  await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
+  await page.locator('.k-content.k-collapsed, .k-content[data-panel-tab="params"]').waitFor();
   if (await page.locator('.k-content').count() === 0) await page.getByTitle('Параметры').click(); else if (await page.locator('.k-content[data-panel-tab="params"]').count() === 0) await page.getByRole('tab', { name: 'Параметры' }).click();
   const panel = page.locator(':is(.parameter-panel, .k-pp)');
   await panel.waitFor();

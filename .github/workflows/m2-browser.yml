@@ -84,6 +84,11 @@ jobs:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m2/kompas-shell-browser.mjs
 
+      - name: Reject legacy shell across desktop, tablet and phone
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
+        run: node tests/m2/kompas-responsive-browser.mjs
+
       - name: Exercise shared mobile action tools
         env:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
@@ -183,6 +188,11 @@ jobs:
         env:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m2/browser-zoom-equivalence.mjs
+
+      - name: Exercise KOMPAS menu, tree, parameters and toolset usability
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
+        run: node tests/m2/kompas-usability-browser.mjs
 
       - name: Show server log on failure
         if: failure()

@@ -175,7 +175,7 @@ Scope:
 - composition/layout;
 - **light-theme visual acceptance only**.
 
-Frozen #170 имеет light + dark, но product runtime сейчас light-only. Dark-theme parity = **DEFERRED_NOT_U1A** и не должна имитироваться отдельной CSS-перекраской. Frozen dark state сохраняется в evidence и должен быть закрыт отдельным UI-parity решением до overall visual parity claim.
+Исторический U1A контракт: frozen #170 имел light + dark, а тогдашний product runtime — только light. Dark-theme parity = **DEFERRED_NOT_U1A**. После объединения U1 реализованы light/dark UI-токены и настройки (п. 7A); это не означает приёмку dark parity. Frozen dark state остаётся evidence до отдельного UI-parity решения.
 
 Geometry evidence использует только эквивалентные semantic regions из `docs/UI_CORE_U1A_MAPPING.md`; несопоставимые зоны не сравниваются как равные.
 
@@ -204,7 +204,7 @@ U1 acceptance:
 
 ### 7A. Реализованный общий U1 — 13.10.2026
 
-`src/web/kompas` — desktop-оболочка эталона #170; меню/лента/дерево/параметры/окна работают поверх product `CadUiAction`, `CadDocument`, `CadApplication`. C1 viewport и K1 solver-profile-B-Rep входят в эту же кодовую версию. На исходном принятом U1 Mobile (<900 px) ещё переключался на Legacy shell; этот fallback признан дефектом P0, а не каноничным мобильным интерфейсом. В PR #200 его заменяет адаптивная компоновка `src/web/kompas`; переход требует браузерной проверки всех ширин и принятого PR. Тёмная тема реализована как отдельные UI-токены и настройки, но **полная parity тем и всего КОМПАС не принята**.
+`src/web/kompas` — desktop-оболочка эталона #170; меню/лента/дерево/параметры/окна работают поверх product `CadUiAction`, `CadDocument`, `CadApplication`. C1 viewport и K1 solver-profile-B-Rep входят в эту же кодовую версию. На исходном принятом U1 Mobile (<900 px) ещё переключался на Legacy shell; этот fallback признан дефектом P0, а не каноничным мобильным интерфейсом. В проверочном PR #202 (исходный код сохранялся в #200/#201) он заменён адаптивной компоновкой `src/web/kompas`, использующей те же product actions и `CadDocument` на любой ширине. Приёмка фиксируется только после exact-head browser/CI, независимого ревью и merge. Тёмная тема реализована как отдельные UI-токены и настройки, но **полная parity тем и всего КОМПАС не принята**.
 
 - PR #195: MERGED integration, SHA `cc2ceaa22858f7f885a17b17a16286e0ce65c8e2`.
 - PR #196: MERGED main, SHA `e37650f08d9e2fa6cf13ceb6a09ecd8e8a568c15`.

@@ -98,6 +98,9 @@ jobs:
       - name: ASA M1 protected Part on OpenCascade runtime
         run: npm run test:m1:runtime
 
+      - name: Solved profiles and general OpenCascade profile classes
+        run: npm run test:m1:profiles
+
   asa-m1b:
     runs-on: ubuntu-latest
     steps:

@@ -114,8 +114,8 @@ async function touchPointOnCurve() {
     await createMobileXYSketch(page);
     const { source, target } = await createTwoLines(page, true);
     await activateMobileTool(page, 'constraint.pointOnCurve', 'Point-on-curve');
-    await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
-    assert.equal(await page.locator('.management-panel').isVisible(), false);
+    await page.locator('.k-content.k-collapsed').waitFor();
+    assert.equal(await page.locator('.k-management-panel').isVisible(), false);
     await choosePointOnCurve(page, source, target, true);
     const saved = await saveLocalDocument(page);
     const constraint = saved.constraints.find((item) => item.type === 'pointOnCurve');
