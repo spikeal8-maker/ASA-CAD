@@ -50,9 +50,9 @@ export function KompasMain(props: CadShellMainProps) {
   React.useEffect(() => {
     if (desktop && props.activePanel === 'tools') props.setActivePanel('tree');
   }, [desktop, props.activePanel, props.setActivePanel]);
-  // Apply the layout policy on command start/resize, leaving explicit user
-  // panel toggles alone while the same command continues.
-  React.useEffect(() => {
+  // Apply before paint: a transient closed panel must not race a user click.
+  // Explicit panel toggles remain available while the same command continues.
+  React.useLayoutEffect(() => {
     if (!props.activeCommand) return;
     if (desktop) props.setActivePanel('parameters');
     else if (/^sketch\.(line|rectangle|circle|arc)$/.test(props.activeCommand)) props.setActivePanel('closed');

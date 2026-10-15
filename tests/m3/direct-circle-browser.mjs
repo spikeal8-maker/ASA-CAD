@@ -52,8 +52,8 @@ async function desktopDirectCircle() {
     const circleButton = page.locator('[data-command-id="sketch.circle"]').first();
     assert.equal(await circleButton.isEnabled(), true, 'Circle action must be enabled in active Sketch');
     await circleButton.click();
-    await page.locator('.k-content.k-collapsed, .k-content[data-panel-tab="params"]').waitFor();
-    assert.equal(await page.locator('.k-management-panel').isVisible(), false, 'direct Circle must collapse management panel');
+    await page.locator('.k-content[data-panel-tab="params"]').waitFor();
+    assert.equal(await page.locator('.k-management-panel').isVisible(), true, 'desktop Circle retains parameters');
 
     const { layer, box } = await interactionBox(page, 'circle', 'Circle');
     assert.equal(await layer.getAttribute('data-circle-phase'), 'awaiting-center');
