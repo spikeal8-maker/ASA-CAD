@@ -175,7 +175,7 @@ Scope:
 - composition/layout;
 - **light-theme visual acceptance only**.
 
-Frozen #170 имеет light + dark, но product runtime сейчас light-only. Dark-theme parity = **DEFERRED_NOT_U1A** и не должна имитироваться отдельной CSS-перекраской. Frozen dark state сохраняется в evidence и должен быть закрыт отдельным UI-parity решением до overall visual parity claim.
+Исторический U1A контракт: frozen #170 имел light + dark, а тогдашний product runtime — только light. Dark-theme parity = **DEFERRED_NOT_U1A**. После объединения U1 реализованы light/dark UI-токены и настройки (п. 7A); это не означает приёмку dark parity. Frozen dark state остаётся evidence до отдельного UI-parity решения.
 
 Geometry evidence использует только эквивалентные semantic regions из `docs/UI_CORE_U1A_MAPPING.md`; несопоставимые зоны не сравниваются как равные.
 

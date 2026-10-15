@@ -16,7 +16,7 @@
     "typecheck:asa": "node vendor/toubkal/node_modules/typescript/bin/tsc -p tsconfig.json --noEmit",
     "test:vendor": "npm --prefix vendor/toubkal test",
     "test:process:pr-hygiene": "node tests/process/pr-hygiene.mjs",
-    "test:process:repository-hygiene": "node tests/process/repository-hygiene.mjs",
+    "test:process:repository-hygiene": "node tests/process/repository-hygiene.mjs && node tests/process/repository-hygiene-regression.mjs",
     "test:process:file-budgets": "node tests/process/file-budgets.mjs",
     "test:process:milestone-policy": "node tests/process/milestone-policy.mjs",
     "test:process:schema-evolution": "node tests/process/schema-evolution-policy.mjs",

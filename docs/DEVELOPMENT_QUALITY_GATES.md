@@ -1,6 +1,6 @@
 # ASA-CAD — приёмка видимых изменений
 
-Редакция 2026-09-23. Machine rules неизменны: repository-health.v1.json и milestone-gates.v1.json. ROADMAP — очередь, VISUAL_REFERENCE_SPEC — эталоны, STATUS/#10 — состояние.
+Machine rules: repository-health.v1.json и milestone-gates.v1.json. ROADMAP — очередь, VISUAL_REFERENCE_SPEC — эталоны, active-work + STATUS/#184 — текущее состояние; #10 — исторический контекст.
 
 ## 1. Единица исполнения
 

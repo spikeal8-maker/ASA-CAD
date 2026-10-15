@@ -8,7 +8,7 @@ function subscribe(listener: () => void) {
   return () => media.removeEventListener('change', listener);
 }
 
-/** Desktop widths use the KOMPAS shell of the frozen reference; phones keep the compact shell. */
+/** Layout breakpoint of the same KOMPAS shell; never selects a different runtime. */
 export function useKompasDesktop(): boolean {
   return useSyncExternalStore(subscribe, () => window.matchMedia(QUERY).matches, () => true);
 }

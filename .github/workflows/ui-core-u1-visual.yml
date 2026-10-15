@@ -8,6 +8,8 @@ on:
       - src/web/**
       - src/browser/**
       - tests/visual/ui-core-u1-capture.mjs
+      - tests/visual/product-before-after.mjs
+      - .github/workflows/ui-core-u1-visual.yml
   workflow_dispatch:
 
 permissions:
@@ -31,6 +33,13 @@ jobs:
           path: reference-source
           fetch-depth: 1
 
+      - name: Checkout accepted product baseline
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha || 'integration/ui-core-unification' }}
+          path: baseline-source
+          fetch-depth: 1
+
       - name: Verify frozen reference identity
         shell: bash
         run: |
@@ -39,6 +48,7 @@ jobs:
           test "$actual" = "88c535c652dac8b04f0d68fa144cf8486afdc926"
           echo "ASA_CAD_UI_REFERENCE_SHA=$actual" >> "$GITHUB_ENV"
           echo "ASA_CAD_CANDIDATE_SHA=$(git -C candidate-source rev-parse HEAD)" >> "$GITHUB_ENV"
+          echo "ASA_CAD_BEFORE_SHA=$(git -C baseline-source rev-parse HEAD)" >> "$GITHUB_ENV"
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -65,11 +75,15 @@ jobs:
       - name: Build candidate product image
         run: docker build -t asa-cad:u1-candidate candidate-source
 
+      - name: Build accepted product baseline
+        run: docker build -t asa-cad:u1-baseline baseline-source
+
       - name: Start candidate and frozen reference
         shell: bash
         run: |
           set -euo pipefail
           docker run -d --name asa-cad-u1-candidate -p 8088:8080 asa-cad:u1-candidate
+          docker run -d --name asa-cad-u1-baseline -p 8092:8080 asa-cad:u1-baseline
           python3 -m http.server 8089 --bind 127.0.0.1             --directory reference-source/prototypes/kompas-shell             >reference-http.log 2>&1 &
           echo $! > reference-http.pid
 
@@ -77,7 +91,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for url in             "http://127.0.0.1:8088/health/live"             "http://127.0.0.1:8089/"; do
+          for url in "http://127.0.0.1:8088/health/live" "http://127.0.0.1:8092/health/live" "http://127.0.0.1:8089/"; do
             ready=0
             for attempt in $(seq 1 40); do
               if curl --fail --silent "$url" >/dev/null; then
@@ -101,6 +115,16 @@ jobs:
           ASA_CAD_UI_EVIDENCE_ROOT: ui-core-u1-evidence
         run: node tests/visual/ui-core-u1-capture.mjs
 
+      - name: Capture same-state product before and after
+        working-directory: candidate-source
+        env:
+          ASA_CAD_BEFORE_URL: http://127.0.0.1:8092
+          ASA_CAD_AFTER_URL: http://127.0.0.1:8088
+          ASA_CAD_BEFORE_SHA: ${{ env.ASA_CAD_BEFORE_SHA }}
+          ASA_CAD_AFTER_SHA: ${{ env.ASA_CAD_CANDIDATE_SHA }}
+          ASA_CAD_PRODUCT_EVIDENCE_ROOT: ui-core-u1-evidence/product-before-after
+        run: node tests/visual/product-before-after.mjs
+
       - name: Upload U1 visual evidence
         uses: actions/upload-artifact@v4
         with:
@@ -115,4 +139,5 @@ jobs:
         shell: bash
         run: |
           docker logs asa-cad-u1-candidate || true
+          docker logs asa-cad-u1-baseline || true
           cat reference-http.log || true

@@ -13,6 +13,7 @@ import { KompasTree } from './KompasTree';
 import { kompasMenus } from './kompasMenus';
 import type { KompasPanelTab, KompasViewName } from './kompasMenuTypes';
 import { kompasShell, useKompasShell } from './kompasShellStore';
+import { useKompasDesktop } from './useKompasDesktop';
 
 const VIEW_LABELS: Record<KompasViewName, string> = {
   front: 'Спереди', back: 'Сзади', top: 'Сверху', bottom: 'Снизу', left: 'Слева', right: 'Справа', iso: 'Изометрия', dim: 'Диметрия',
@@ -35,6 +36,7 @@ function slotProps<P>(node: React.ReactNode, type: React.ComponentType<P>): P | 
  */
 export function KompasMain(props: CadShellMainProps) {
   const shell = useKompasShell();
+  const desktop = useKompasDesktop();
   const tree = slotProps<DocumentTreeProps>(props.treeContent, DocumentTree);
   const stage = slotProps<React.ComponentProps<typeof CoincidentPartStage>>(props.modelContent, CoincidentPartStage);
   const sketchMode = stage?.activeWorkspace === 'sketch' && Boolean(stage.activeSketch);
@@ -45,9 +47,16 @@ export function KompasMain(props: CadShellMainProps) {
   const tab: KompasPanelTab | 'tools' = props.activePanel === 'tools' ? 'tools' : extraTab ?? (props.activePanel === 'parameters' ? 'params' : 'tree');
 
   React.useEffect(() => { setExtraTab(null); }, [props.activePanel]);
-  // The owning CAD command controller chooses when parameters must open.
-  // Direct Sketch tools intentionally close the panel to expose the workplane;
-  // do not reopen it merely because a command is active.
+  React.useEffect(() => {
+    if (desktop && props.activePanel === 'tools') props.setActivePanel('tree');
+  }, [desktop, props.activePanel, props.setActivePanel]);
+  // Apply the layout policy on command start/resize, leaving explicit user
+  // panel toggles alone while the same command continues.
+  React.useEffect(() => {
+    if (!props.activeCommand) return;
+    if (desktop) props.setActivePanel('parameters');
+    else if (/^sketch\.(line|rectangle|circle|arc)$/.test(props.activeCommand)) props.setActivePanel('closed');
+  }, [desktop, props.activeCommand, props.setActivePanel]);
   React.useLayoutEffect(() => {
     kompasShell.set({ panelOpen: open, activeCommand: props.activeCommand ?? null, sketchMode });
   }, [open, props.activeCommand, sketchMode]);

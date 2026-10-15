@@ -189,6 +189,11 @@ jobs:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m2/browser-zoom-equivalence.mjs
 
+      - name: Exercise KOMPAS menu, tree, parameters and toolset usability
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
+        run: node tests/m2/kompas-usability-browser.mjs
+
       - name: Show server log on failure
         if: failure()
         run: cat /tmp/asa-m2-http.log || true

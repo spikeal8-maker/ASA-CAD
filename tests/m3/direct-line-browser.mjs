@@ -43,8 +43,8 @@ async function desktopDirectLine() {
     const lineButton = page.locator('[data-command-id="sketch.line"]').first();
     assert.equal(await lineButton.isEnabled(), true, 'Line action must be enabled in active Sketch');
     await lineButton.click();
-    await page.locator('.k-content.k-collapsed').waitFor();
-    assert.equal(await page.locator('.k-management-panel').isVisible(), false, 'direct drawing must collapse panel');
+    await page.locator('.k-content[data-panel-tab="params"]').waitFor();
+    assert.equal(await page.locator('.k-management-panel').isVisible(), true, 'desktop drawing retains parameters');
 
     const { layer, box } = await interactionBox(page, 'line', 'Line');
     assert.equal(await layer.getAttribute('data-line-phase'), 'awaiting-start');

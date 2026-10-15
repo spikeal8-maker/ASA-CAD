@@ -1,12 +1,12 @@
 # ASA-CAD — актуальное состояние репозитория
 
-Снимок: 2026-10-13. Live GitHub SHA — источник фактов, а не сохранённые даты.
+Снимок: 2026-10-15. Live GitHub SHA — источник фактов, а не сохранённые даты.
 
 ## Канон продукта
 
 - Новый внешний интерфейс/взаимодействия: frozen #170, tag `ui-reference-20261004`, SHA `88c535c652dac8b04f0d68fa144cf8486afdc926`.
 - Единственный продуктовый runtime: `CadDocument` / `CadApplication` / typed UI actions / PlaneGCS / OpenCascade B-Rep / persistence. Демо-математика прототипа #170 не является ядром.
-- Во всех размерах, включая desktop, планшет и телефон, **одна продуктовая оболочка** `src/web/kompas` поверх настоящего приложения; компактная компоновка нового UI для <900 px, без Legacy-ветки. Эталон внешнего вида desktop = #170, компактный layout сохраняет те же команды и документ.
+- Целевой контракт: **одна продуктовая оболочка** `src/web/kompas` на любых экранах. В принятом main `1f8d262` и integration `7fe83dd` пока остался Legacy fallback <900 px. Его удаление и адаптивная компоновка находятся только в непринятом PR #202.
 - Система документов по контрактам — шесть видов (six document kinds): Part, Assembly, Drawing, Fragment, Specification, Text. Не все редакторы/команды готовы.
 
 ## Факт объединения U1
@@ -21,7 +21,11 @@
 
 **Текущий machine checkpoint = `FULL_REPOSITORY_HEALTH_AUDIT`.** U1A/U1B/U1C уже включены как единый продуктовый пакет, исторический scope U1A не является следующим заданием.
 
-Следующий обязательный шаг: провести независимый полный аудит исходного дерева и связей UI / geometry / topology / persistence / schema / CI / docs на текущем main+integration; **исправления подтверждённых P0/RED разрешены во время аудита** (`auditRepairAllowed=true`), но новые U2–U5 функции запрещены до закрытия gate. P0 финальный review-кандидат [PR #202](https://github.com/spikeal8-maker/ASA-CAD/pull/202): Legacy shell заменён единым `src/web/kompas`, статическая защита #170 добавлена в обязательный shell-build и браузерный M2 CI. Исходные PR #200/#201 сохранены как evidence, но заменены чистым PR #202 по лимиту review-коммитов. Повторно их не сливать. Финальные exact-head CI и независимый review #201 обязательны до merge. Полный аудит после U1 требуется по cadence 2/3→3/3.
+Полный аудит UI / geometry / topology / persistence / schema / CI / docs после U1 остаётся PENDING (cadence 2/3→3/3). [PR #199](https://github.com/spikeal8-maker/ASA-CAD/pull/199) принят только в integration (`7fe83dd`): `auditRepairAllowed=true` разрешает подтверждённые P0/RED-исправления; новые U2–U5 функции запрещены.
+
+Активный ремонт: [PR #202](https://github.com/spikeal8-maker/ASA-CAD/pull/202). #200/#201 — сохранённые предшественники, повторно не сливать. На исходном HEAD `bb8664b` M2 browser FAIL и независимый review CHANGES_REQUESTED. Ремонт охватывает читаемость меню/дерева, доступность быстрых действий, desktop-параметры, просмотр наборов без запуска команд и resize. Новые browser assertions проверяют эти дефекты. Приёмка требует всех exact-head CI и повторного независимого review **последнего HEAD #202**; исправленный код до merge остаётся кандидатом.
+
+Остаточный долг: [LEGACY-CLEANUP-202 в #184](https://github.com/spikeal8-maker/ASA-CAD/issues/184#legacy-cleanup-202), owner — контролёр FULL_REPOSITORY_HEALTH_AUDIT, gate — до приёмки полного аудита. Удалить недостижимые pre-U1 shell-модули/CSS с переносом исторических boundary-тестов; проверить сборку, бюджеты и реальные workflows. Видимость команд теперь проверяется на действующем KOMPAS resolver. Ремонт не закрывает полный аудит, topology/schema review или итоговый визуальный паритет.
 
 `U2 = BLOCKED` до аудита GREEN или явно принятого YELLOW. Это обязательный технический gate, а не административная GitHub Ruleset-блокировка. `DETECT_ONLY` integration — известный риск `KNOWN_RISK` (`ADMIN_BRANCH_PROTECTION_NOT_ENFORCED`); не выдавать его за ENFORCED.
 

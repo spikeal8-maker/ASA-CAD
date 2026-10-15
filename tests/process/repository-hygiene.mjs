@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 
 const policyPath = 'spec/process/repository-health.v1.json';
 assert.ok(fs.existsSync(policyPath), `${policyPath} must remain present`);
@@ -22,9 +23,12 @@ const offenders = [];
 const warnings = [];
 let checked = 0;
 
-walk('.', (file) => {
+// Check committed and new source files, not ignored local build/runtime output.
+// --cached still includes an artifact force-added despite .gitignore.
+const files = new Set(execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard', '-z'], { encoding: 'utf8' }).split('\0').filter(Boolean));
+for (const file of files) {
   const normalized = normalize(file).replace(/^\.\//, '');
-  if (!normalized || isExcluded(normalized)) return;
+  if (!normalized || isExcluded(normalized) || !fs.existsSync(file) || !fs.lstatSync(file).isFile()) continue;
 
   checked += 1;
   const basename = path.basename(normalized);
@@ -70,7 +74,7 @@ walk('.', (file) => {
       `${normalized}: ${size} bytes exceeds ${largeReviewBytes}-byte first-party large-file review threshold`,
     );
   }
-});
+}
 
 assert.deepEqual(
   offenders,
@@ -98,17 +102,4 @@ function hasLikelyCyrillicMojibake(text) {
     if ((a === 0x420 || a === 0x421) && b > 0x7f && (c === 0x420 || c === 0x421) && d > 0x7f) return true;
   }
   return false;
-}
-
-function walk(root, visit) {
-  for (const entry of fs.readdirSync(root, { withFileTypes: true })) {
-    const full = path.join(root, entry.name);
-    const normalized = normalize(full).replace(/^\.\//, '');
-    if (entry.isDirectory()) {
-      if (isExcluded(`${normalized}/`)) continue;
-      walk(full, visit);
-    } else if (entry.isFile()) {
-      visit(full);
-    }
-  }
 }

@@ -29,11 +29,11 @@ U1A **не включает**:
 
 ### Theme contract
 
-Frozen #170 имеет light + dark. Product runtime сейчас честно light-only (`color-scheme: light`). Поэтому U1A visual acceptance выполняется **только в light theme**.
+Исторический U1A baseline: frozen #170 имел light + dark, тогдашний product runtime — light-only. U1A visual evidence остаётся **только в light theme**; текущий U1 runtime уже поддерживает light/dark токены и настройки, без принятого полного parity.
 
 Dark-theme parity = **DEFERRED_NOT_U1A**. В U1A запрещено имитировать её отдельной CSS-перекраской без настоящей product theme model. Frozen dark state сохраняется в visual evidence и должен быть реализован до заявления overall visual parity, отдельным последующим UI-parity решением.
 
-**Предложение 2026-10-10 (ждёт решения владельца, см. UI_CORE_UNIFICATION_SPEC п. 7A):** оболочка КОМПАС в `src/web/kompas` включает общую модель темы продукта: светлая по умолчанию, тёмная — токены #170 (`kompas-top.css`) и те же значения для общих токенов, окон и панелей продукта (`kompas-theme-dark.css`). Visual capture по-прежнему снимает кандидата в светлой теме.
+**Реализовано в общем U1 (#195/#196; см. UI_CORE_UNIFICATION_SPEC п. 7A):** `src/web/kompas` включает общую модель темы продукта: светлая по умолчанию, тёмная — токены #170 (`kompas-top.css`) и общих окон/панелей (`kompas-theme-dark.css`). Visual capture снимает кандидата в светлой теме; финальная визуальная приёмка остаётся открытой.
 
 Владельцы зон в пакете U1: `kompas/KompasTop` (меню, документы, лента — `KompasMenuBar`, `KompasDocumentTabs`, `KompasRibbon`, `KompasPopups`, `KompasTooltip`), `kompas/KompasMain` (рейка, панель, графическая область — `KompasTree`, `KompasParameters`, `KompasQuickAccess`, `KompasDialogs`), `kompas/KompasToast`. В принятом U1 `CadShellTop/Main/Bottom` ещё переключали старую оболочку по `useKompasDesktop()` (<900 px): это **исторический дефект P0, не разрешённый постоянный продуктовый вариант**. Дальнейшие изменения должны оставлять единый `src/web/kompas` с адаптивной компоновкой; проверка точного HEAD PR #202 обязательна. Данные эталона: `kompasToolsets.ts`, `kompasMenus.ts`, `kompasModelingMenus.ts`, значки `kompasLineIcons.ts`, `kompasSolidIcons.ts`.
 

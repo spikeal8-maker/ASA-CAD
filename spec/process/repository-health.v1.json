@@ -164,6 +164,7 @@
       ".log"
     ],
     "forbiddenDirectoryNames": [
+      "dist",
       "coverage",
       "playwright-report",
       "test-results",
