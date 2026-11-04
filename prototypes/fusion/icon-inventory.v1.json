@@ -1,0 +1,650 @@
+{
+  "schemaVersion": 1,
+  "sourceSha256": "49db02a584e99462e3b9ea72b723009158f5e625035577019e8235e6f75d65c8",
+  "role": "visual-reference-icon-inventory",
+  "iconParity": "NOT_VERIFIED",
+  "totalCommandsAcrossWorkspaces": 68,
+  "uniqueIconKeys": 25,
+  "reusedIconKeys": [
+    "automation",
+    "chamfer",
+    "combine",
+    "config",
+    "cube",
+    "extrude",
+    "fillet",
+    "hole",
+    "picture",
+    "plane",
+    "rect",
+    "ruler",
+    "scissors",
+    "shell",
+    "sketch",
+    "sphere",
+    "utility"
+  ],
+  "workspaces": [
+    "ТВЁРДОЕ ТЕЛО",
+    "ПОВЕРХНОСТИ",
+    "СЕТКА",
+    "ЛИСТОВОЙ МЕТАЛЛ",
+    "ПЛАСТИК",
+    "УТИЛИТЫ",
+    "АВТОМАТИЗАЦИЯ"
+  ],
+  "tools": [
+    {
+      "workspace": "ТВЁРДОЕ ТЕЛО",
+      "group": "СОЗДАТЬ",
+      "label": "Создать эскиз",
+      "iconKey": "sketch",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ТВЁРДОЕ ТЕЛО",
+      "group": "СОЗДАТЬ",
+      "label": "Выдавливание",
+      "iconKey": "cube",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ТВЁРДОЕ ТЕЛО",
+      "group": "СОЗДАТЬ",
+      "label": "Вращение",
+      "iconKey": "sphere",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ТВЁРДОЕ ТЕЛО",
+      "group": "СОЗДАТЬ",
+      "label": "Отверстие",
+      "iconKey": "hole",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ТВЁРДОЕ ТЕЛО",
+      "group": "СОЗДАТЬ",
+      "label": "Прямоугольный массив",
+      "iconKey": "rect",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ТВЁРДОЕ ТЕЛО",
+      "group": "СОЗДАТЬ",
+      "label": "Форма",
+      "iconKey": "form",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ТВЁРДОЕ ТЕЛО",
+      "group": "СОЗДАТЬ",
+      "label": "Обрезать",
+      "iconKey": "scissors",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ТВЁРДОЕ ТЕЛО",
+      "group": "ИЗМЕНИТЬ",
+      "label": "Нажать/Вытянуть",
+      "iconKey": "extrude",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ТВЁРДОЕ ТЕЛО",
+      "group": "ИЗМЕНИТЬ",
+      "label": "Скругление",
+      "iconKey": "fillet",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ТВЁРДОЕ ТЕЛО",
+      "group": "ИЗМЕНИТЬ",
+      "label": "Оболочка",
+      "iconKey": "shell",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ТВЁРДОЕ ТЕЛО",
+      "group": "ИЗМЕНИТЬ",
+      "label": "Объединить",
+      "iconKey": "combine",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ТВЁРДОЕ ТЕЛО",
+      "group": "ИЗМЕНИТЬ",
+      "label": "Фаска",
+      "iconKey": "chamfer",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ТВЁРДОЕ ТЕЛО",
+      "group": "ИЗМЕНИТЬ",
+      "label": "Переместить",
+      "iconKey": "move",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ТВЁРДОЕ ТЕЛО",
+      "group": "НАСТРОЙКА",
+      "label": "Параметры",
+      "iconKey": "config",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": true
+    },
+    {
+      "workspace": "ТВЁРДОЕ ТЕЛО",
+      "group": "НАСТРОЙКА",
+      "label": "Конфигурации",
+      "iconKey": "config",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": true
+    },
+    {
+      "workspace": "ТВЁРДОЕ ТЕЛО",
+      "group": "НАСТРОЙКА",
+      "label": "Свойства",
+      "iconKey": "config",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": true
+    },
+    {
+      "workspace": "ТВЁРДОЕ ТЕЛО",
+      "group": "КОНСТРУКЦИЯ",
+      "label": "Смещённая плоскость",
+      "iconKey": "plane",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ТВЁРДОЕ ТЕЛО",
+      "group": "ПРОВЕРИТЬ",
+      "label": "Измерить",
+      "iconKey": "ruler",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ТВЁРДОЕ ТЕЛО",
+      "group": "ПРОВЕРИТЬ",
+      "label": "Анализ сечения",
+      "iconKey": "section",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ТВЁРДОЕ ТЕЛО",
+      "group": "ВСТАВИТЬ",
+      "label": "Холст",
+      "iconKey": "picture",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ТВЁРДОЕ ТЕЛО",
+      "group": "ВСТАВИТЬ",
+      "label": "Наклейка",
+      "iconKey": "decal",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ТВЁРДОЕ ТЕЛО",
+      "group": "СБОРКА",
+      "label": "Соединение",
+      "iconKey": "assembly",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ТВЁРДОЕ ТЕЛО",
+      "group": "ВЫБОР",
+      "label": "Выбрать",
+      "iconKey": "select",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ПОВЕРХНОСТИ",
+      "group": "СОЗДАТЬ",
+      "label": "Создать эскиз",
+      "iconKey": "sketch",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ПОВЕРХНОСТИ",
+      "group": "СОЗДАТЬ",
+      "label": "Поверхность вращения",
+      "iconKey": "sphere",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ПОВЕРХНОСТИ",
+      "group": "СОЗДАТЬ",
+      "label": "Поверхность по сечениям",
+      "iconKey": "plane",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ПОВЕРХНОСТИ",
+      "group": "СОЗДАТЬ",
+      "label": "Лоскут",
+      "iconKey": "rect",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ПОВЕРХНОСТИ",
+      "group": "ИЗМЕНИТЬ",
+      "label": "Сшить",
+      "iconKey": "fillet",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ПОВЕРХНОСТИ",
+      "group": "ИЗМЕНИТЬ",
+      "label": "Удлинить",
+      "iconKey": "shell",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ПОВЕРХНОСТИ",
+      "group": "ИЗМЕНИТЬ",
+      "label": "Обрезать",
+      "iconKey": "combine",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ПОВЕРХНОСТИ",
+      "group": "ИЗМЕНИТЬ",
+      "label": "Разделить",
+      "iconKey": "scissors",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ПОВЕРХНОСТИ",
+      "group": "КОНСТРУКЦИЯ",
+      "label": "Плоскость",
+      "iconKey": "plane",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ПОВЕРХНОСТИ",
+      "group": "ПРОВЕРИТЬ",
+      "label": "Измерить",
+      "iconKey": "ruler",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ПОВЕРХНОСТИ",
+      "group": "ВЫБОР",
+      "label": "Выбрать",
+      "iconKey": "select",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "СЕТКА",
+      "group": "ПОДГОТОВКА",
+      "label": "Создать сетку",
+      "iconKey": "mesh",
+      "variant": "base-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "СЕТКА",
+      "group": "ПОДГОТОВКА",
+      "label": "Преобразовать",
+      "iconKey": "cube",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "СЕТКА",
+      "group": "ПОДГОТОВКА",
+      "label": "Разрезать",
+      "iconKey": "scissors",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "СЕТКА",
+      "group": "ИЗМЕНИТЬ",
+      "label": "Упростить",
+      "iconKey": "pattern",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "СЕТКА",
+      "group": "ИЗМЕНИТЬ",
+      "label": "Исправить",
+      "iconKey": "hole",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "СЕТКА",
+      "group": "ИЗМЕНИТЬ",
+      "label": "Сгладить",
+      "iconKey": "shell",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "СЕТКА",
+      "group": "ПРОВЕРИТЬ",
+      "label": "Измерить",
+      "iconKey": "ruler",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "СЕТКА",
+      "group": "ВЫБОР",
+      "label": "Выбрать",
+      "iconKey": "select",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ЛИСТОВОЙ МЕТАЛЛ",
+      "group": "СОЗДАТЬ",
+      "label": "Эскиз",
+      "iconKey": "sketch",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ЛИСТОВОЙ МЕТАЛЛ",
+      "group": "СОЗДАТЬ",
+      "label": "Полка",
+      "iconKey": "extrude",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ЛИСТОВОЙ МЕТАЛЛ",
+      "group": "СОЗДАТЬ",
+      "label": "Отгиб",
+      "iconKey": "rect",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ЛИСТОВОЙ МЕТАЛЛ",
+      "group": "ИЗМЕНИТЬ",
+      "label": "Сгиб",
+      "iconKey": "fillet",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ЛИСТОВОЙ МЕТАЛЛ",
+      "group": "ИЗМЕНИТЬ",
+      "label": "Развернуть",
+      "iconKey": "chamfer",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ЛИСТОВОЙ МЕТАЛЛ",
+      "group": "ИЗМЕНИТЬ",
+      "label": "Отверстие",
+      "iconKey": "scissors",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ЛИСТОВОЙ МЕТАЛЛ",
+      "group": "КОНСТРУКЦИЯ",
+      "label": "Плоскость",
+      "iconKey": "plane",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ЛИСТОВОЙ МЕТАЛЛ",
+      "group": "ПРОВЕРИТЬ",
+      "label": "Измерить",
+      "iconKey": "ruler",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ЛИСТОВОЙ МЕТАЛЛ",
+      "group": "ВЫБОР",
+      "label": "Выбрать",
+      "iconKey": "select",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ПЛАСТИК",
+      "group": "СОЗДАТЬ",
+      "label": "Корпус",
+      "iconKey": "shell",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ПЛАСТИК",
+      "group": "СОЗДАТЬ",
+      "label": "Бобышка",
+      "iconKey": "cube",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ПЛАСТИК",
+      "group": "СОЗДАТЬ",
+      "label": "Отверстие",
+      "iconKey": "hole",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ПЛАСТИК",
+      "group": "ИЗМЕНИТЬ",
+      "label": "Скругление",
+      "iconKey": "fillet",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ПЛАСТИК",
+      "group": "ИЗМЕНИТЬ",
+      "label": "Уклон",
+      "iconKey": "chamfer",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ПЛАСТИК",
+      "group": "ИЗМЕНИТЬ",
+      "label": "Объединить",
+      "iconKey": "combine",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ПЛАСТИК",
+      "group": "ПРОВЕРИТЬ",
+      "label": "Измерить",
+      "iconKey": "ruler",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "ПЛАСТИК",
+      "group": "ВЫБОР",
+      "label": "Выбрать",
+      "iconKey": "select",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "УТИЛИТЫ",
+      "group": "ИНСТРУМЕНТЫ",
+      "label": "Проверка геометрии",
+      "iconKey": "utility",
+      "variant": "base-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "УТИЛИТЫ",
+      "group": "ИНСТРУМЕНТЫ",
+      "label": "Измерение",
+      "iconKey": "ruler",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "УТИЛИТЫ",
+      "group": "ИНСТРУМЕНТЫ",
+      "label": "Вставка",
+      "iconKey": "picture",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "УТИЛИТЫ",
+      "group": "АВТОМАТИЗАЦИЯ",
+      "label": "Сценарии",
+      "iconKey": "automation",
+      "variant": "base-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "УТИЛИТЫ",
+      "group": "ВЫБОР",
+      "label": "Выбрать",
+      "iconKey": "select",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "АВТОМАТИЗАЦИЯ",
+      "group": "СЦЕНАРИИ",
+      "label": "Мои сценарии",
+      "iconKey": "automation",
+      "variant": "base-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "АВТОМАТИЗАЦИЯ",
+      "group": "СЦЕНАРИИ",
+      "label": "Настройки API",
+      "iconKey": "config",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "АВТОМАТИЗАЦИЯ",
+      "group": "ИНСТРУМЕНТЫ",
+      "label": "Автоматизация",
+      "iconKey": "utility",
+      "variant": "base-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    },
+    {
+      "workspace": "АВТОМАТИЗАЦИЯ",
+      "group": "ВЫБОР",
+      "label": "Выбрать",
+      "iconKey": "select",
+      "variant": "refined-svg",
+      "iconParity": "NOT_VERIFIED",
+      "disabledInReference": false
+    }
+  ]
+}
