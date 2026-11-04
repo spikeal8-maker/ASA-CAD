@@ -234,19 +234,19 @@ const rCfg={
 'ТВЁРДОЕ ТЕЛО':[
  ['СОЗДАТЬ',['sketch','cube','sphere','hole','rect','form','scissors'],['Создать эскиз','Выдавливание','Вращение','Отверстие','Прямоугольный массив','Форма','Обрезать']],
  ['ИЗМЕНИТЬ',['extrude','fillet','shell','combine','chamfer','move'],['Нажать/Вытянуть','Скругление','Оболочка','Объединить','Фаска','Переместить']],
- ['НАСТРОЙКА',['config','config','config'],['Параметры','Конфигурации','Свойства'],true],
- ['КОНСТРУКЦИЯ',['plane'],['Смещённая плоскость']],
+ ['\u041d\u0410\u0421\u0422\u0420\u041e\u0419\u041a\u0410',['config','config','config'],['Параметры','Конфигурации','Свойства'],true],
+ ['\u041a\u041e\u041d\u0421\u0422\u0420\u0423\u041a\u0426\u0418\u042f',['plane'],['Смещённая плоскость']],
  ['ПРОВЕРИТЬ',['ruler','section'],['Измерить','Анализ сечения']],
  ['ВСТАВИТЬ',['picture','decal'],['Холст','Наклейка']],
  ['СБОРКА',['assembly'],['Соединение']],
  ['ВЫБОР',['select'],['Выбрать']]
 ],
-'ПОВЕРХНОСТИ':[['СОЗДАТЬ',['sketch','sphere','plane','rect'],['Создать эскиз','Поверхность вращения','Поверхность по сечениям','Лоскут']],['ИЗМЕНИТЬ',['fillet','shell','combine','scissors'],['Сшить','Удлинить','Обрезать','Разделить']],['КОНСТРУКЦИЯ',['plane'],['Плоскость']],['ПРОВЕРИТЬ',['ruler'],['Измерить']],['ВЫБОР',['select'],['Выбрать']]],
+'ПОВЕРХНОСТИ':[['СОЗДАТЬ',['sketch','sphere','plane','rect'],['Создать эскиз','Поверхность вращения','Поверхность по сечениям','Лоскут']],['ИЗМЕНИТЬ',['fillet','shell','combine','scissors'],['Сшить','Удлинить','Обрезать','Разделить']],['\u041a\u041e\u041d\u0421\u0422\u0420\u0423\u041a\u0426\u0418\u042f',['plane'],['Плоскость']],['ПРОВЕРИТЬ',['ruler'],['Измерить']],['ВЫБОР',['select'],['Выбрать']]],
 'СЕТКА':[['ПОДГОТОВКА',['mesh','cube','scissors'],['Создать сетку','Преобразовать','Разрезать']],['ИЗМЕНИТЬ',['pattern','hole','shell'],['Упростить','Исправить','Сгладить']],['ПРОВЕРИТЬ',['ruler'],['Измерить']],['ВЫБОР',['select'],['Выбрать']]],
-'ЛИСТОВОЙ МЕТАЛЛ':[['СОЗДАТЬ',['sketch','extrude','rect'],['Эскиз','Полка','Отгиб']],['ИЗМЕНИТЬ',['fillet','chamfer','scissors'],['Сгиб','Развернуть','Отверстие']],['КОНСТРУКЦИЯ',['plane'],['Плоскость']],['ПРОВЕРИТЬ',['ruler'],['Измерить']],['ВЫБОР',['select'],['Выбрать']]],
+'ЛИСТОВОЙ МЕТАЛЛ':[['СОЗДАТЬ',['sketch','extrude','rect'],['Эскиз','Полка','Отгиб']],['ИЗМЕНИТЬ',['fillet','chamfer','scissors'],['Сгиб','Развернуть','Отверстие']],['\u041a\u041e\u041d\u0421\u0422\u0420\u0423\u041a\u0426\u0418\u042f',['plane'],['Плоскость']],['ПРОВЕРИТЬ',['ruler'],['Измерить']],['ВЫБОР',['select'],['Выбрать']]],
 'ПЛАСТИК':[['СОЗДАТЬ',['shell','cube','hole'],['Корпус','Бобышка','Отверстие']],['ИЗМЕНИТЬ',['fillet','chamfer','combine'],['Скругление','Уклон','Объединить']],['ПРОВЕРИТЬ',['ruler'],['Измерить']],['ВЫБОР',['select'],['Выбрать']]],
-'УТИЛИТЫ':[['ИНСТРУМЕНТЫ',['utility','ruler','picture'],['Проверка геометрии','Измерение','Вставка']],['АВТОМАТИЗАЦИЯ',['automation'],['Сценарии']],['ВЫБОР',['select'],['Выбрать']]],
-'АВТОМАТИЗАЦИЯ':[['СЦЕНАРИИ',['automation','config'],['Мои сценарии','Настройки API']],['ИНСТРУМЕНТЫ',['utility'],['Автоматизация']],['ВЫБОР',['select'],['Выбрать']]]
+'УТИЛИТЫ':[['\u0418\u041d\u0421\u0422\u0420\u0423\u041c\u0415\u041d\u0422\u042b',['utility','ruler','picture'],['Проверка геометрии','Измерение','Вставка']],['АВТОМАТИЗАЦИЯ',['automation'],['Сценарии']],['ВЫБОР',['select'],['Выбрать']]],
+'АВТОМАТИЗАЦИЯ':[['СЦЕНАРИИ',['automation','config'],['Мои сценарии','Настройки API']],['\u0418\u041d\u0421\u0422\u0420\u0423\u041c\u0415\u041d\u0422\u042b',['utility'],['Автоматизация']],['ВЫБОР',['select'],['Выбрать']]]
 };
 function renderRibbon(){const tabs=$('#tabs'),groups=$('#groups');tabs.innerHTML=Object.keys(rCfg).map(t=>`<button class="tab ${t===activeTab?'active':''}" data-tab="${t}">${t}</button>`).join('');groups.innerHTML=rCfg[activeTab].map(([name,icons,names,disabled],n)=>`<div class="rgroup ${disabled?'disabled':''} ${icons.length<3?'compact':''}" data-group="${name}"><div class="toolrow">${icons.map((icoName,i)=>`<button class="toolbtn" data-tool="${names[i]}" data-icon="${icoName}" title="${names[i]}" aria-label="${names[i]}">${icon(icoName)}</button>`).join('')}</div><div class="groupLabel" role="button" tabindex="0" data-menu="${name}">${name}<span class="arr">⌄</span></div></div>`).join('');}
 const tree=[{id:'root',name:'(Не сохранено)',level:0,kind:'root',open:true,visibility:true},{id:'settings',name:'Настройки документа',level:1,kind:'gear',open:true},{id:'units',name:'Единицы: мм, г',level:2,kind:'units'},{id:'design',name:'Проектирование детали',level:1,kind:'cube'},{id:'views',name:'Именованные виды',level:1,kind:'folder',open:false},{id:'origin',name:'Начало координат',level:1,kind:'folder',open:false,visibility:false},{id:'xy',name:'Плоскость XY',level:2,kind:'plane',parent:'origin'},{id:'xz',name:'Плоскость XZ',level:2,kind:'plane',parent:'origin'},{id:'yz',name:'Плоскость YZ',level:2,kind:'plane',parent:'origin'}];

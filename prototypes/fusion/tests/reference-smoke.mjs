@@ -73,7 +73,7 @@ if (process.argv.includes('--update-inventory')) {
   process.stdout.write('Inventory updated: ' + entries.length + ' tool entries, ' + unique.length + ' SVG keys\n');
 } else {
   const committed = readFileSync(inventoryPath, 'utf8');
-  assert.equal(committed, encoded, 'Icon inventory is stale: run node prototypes/fusion/tests/reference-smoke.mjs --update-inventory');
+  assert.deepEqual(JSON.parse(committed), manifest, 'Icon inventory is stale: run node prototypes/fusion/tests/reference-smoke.mjs --update-inventory');
   process.stdout.write('PASS: offline Fusion prototype v3, ' + Object.keys(ribbon).length + ' tabs, ' + entries.length +
     ' tools, ' + unique.length + ' icon keys, ' + manifest.reusedIconKeys.length + ' reused icon keys\n');
   process.stdout.write('PARITY: NOT_VERIFIED; this is not a CAD runtime or a production skin\n');
