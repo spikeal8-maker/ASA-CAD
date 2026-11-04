@@ -1,0 +1,12 @@
+{
+  "autodeskProduct": "Fusion360",
+  "type": "script",
+  "id": "a8deac75-1726-4d5d-b0dd-a0bdeceab115",
+  "author": "ASA CAD",
+  "description": {
+    "": "Read-only inventory of Fusion workspaces, tabs, panels, commands, dropdowns and split buttons. Does not edit the current design."
+  },
+  "version": "1.0",
+  "supportedOS": "windows",
+  "editEnabled": true
+}
