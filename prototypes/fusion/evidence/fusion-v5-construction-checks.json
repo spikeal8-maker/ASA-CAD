@@ -1,0 +1,26 @@
+{
+  "scope": "Observed native empty-document Construction Geometry",
+  "kernelConnected": false,
+  "pixelParityAccepted": false,
+  "status": "PASS",
+  "constructionMethods": 19,
+  "ucs": true,
+  "methodCounts": {
+    "planes": 8,
+    "axes": 5,
+    "points": 6
+  },
+  "nativeEscape": "cancels-command-from-dropdown",
+  "typeAndMethodTransitions": true,
+  "checkboxRetainedOnCollapse": true,
+  "drag": true,
+  "resize": true,
+  "responsiveWidths": [
+    1600,
+    1366,
+    1024,
+    768
+  ],
+  "pageErrors": [],
+  "externalRequests": []
+}

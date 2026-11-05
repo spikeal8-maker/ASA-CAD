@@ -8,7 +8,7 @@
     "baseMainSha": "1f8d2627da7ddfa63b31876d46347d0b8080c154",
     "prototype": "prototypes/fusion/index.html",
     "sourceSha256": "03387923a761b722c1561e7c95890ccd82858e44183c65cac733f17db755fc99",
-    "latestVisualPreview": "prototypes/fusion/fusion-v4.html",
+    "latestVisualPreview": "prototypes/fusion/fusion-v5.html",
     "v3InitialSha256": "49db02a584e99462e3b9ea72b723009158f5e625035577019e8235e6f75d65c8"
   },
   "choices": [
@@ -56,12 +56,15 @@
     "mainMergeRequiresOwnerAcceptance": true
   },
   "acceptance": {
-    "iconParity": "NOT_VERIFIED",
+    "iconParity": "NOT_ACCEPTED",
     "popups": "PARTIAL_IN_DEMO",
     "gridAndCamera": "2D_DEMO_ONLY",
     "realCAD": "NOT_CONNECTED",
     "startupSelector": "NOT_IMPLEMENTED",
     "distinctPerCommandOriginalSVGs": 51,
-    "v4BrowserSmoke": "PASS_2048_1366_NO_NETWORK"
+    "v4BrowserSmoke": "PASS_2048_1366_NO_NETWORK",
+    "nativeUIObservation": "PARTIAL_SEE_OBSERVED_CASES",
+    "nativeDesignCommandCatalog": 180,
+    "defaultDialogSchemasTranscribed": 30
   }
 }

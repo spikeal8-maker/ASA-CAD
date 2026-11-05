@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "title": "Fusion-reference coverage and acceptance matrix",
-  "status": "CAPTURE_NOT_YET_EXECUTED",
+  "status": "NATIVE_DESIGN_CATALOG_CAPTURED_INTERACTION_PARTIAL",
   "source": "ASACAD_UI_Exporter v1",
   "workModes": [
     "Part/Solid",
@@ -75,5 +75,64 @@
     "implementation": "One CadUiAction / CadApplication / CadDocument / CadViewport",
     "noProprietaryAssetCopy": true,
     "productChangeBlocked": true
+  },
+  "observedCases": "observed-cases.v1.json",
+  "coverage": {
+    "hoveredUniqueCommands": 78,
+    "clickedUniqueCommands": 77,
+    "disabledClickAttempts": 3,
+    "disabledCommandIds": [
+      "FusionConfigurationRulesCmd",
+      "FusionShowDesignConfigPanelCmd",
+      "FusionStartDesignConfigModeCmd"
+    ],
+    "modeChangingCreateForm": "HOVER_ONLY_NO_DOCUMENT_CHANGE",
+    "defaultDialogSchemasTranscribed": 30,
+    "solidMenuRows": {
+      "SolidCreatePanel": 26,
+      "SolidModifyPanel": 23,
+      "ConstructionPanel": 20,
+      "InspectPanel": 15,
+      "InsertPanel": 12,
+      "PartAssemblePanel": 1,
+      "SelectPanel": 7
+    },
+    "allWorkspacesExhaustivelyTested": false,
+    "allCommandInputsTested": false,
+    "kernelConnected": false,
+    "iconParityAccepted": false,
+    "constructionMethodsTranscribed": 19,
+    "constructionTypeOptionCounts": {
+      "plane": 8,
+      "axis": 5,
+      "point": 6
+    },
+    "nativeConstructionEscapeObserved": "Esc cancels the full command even when its method dropdown is open",
+    "analysisInitialStatesObserved": 10,
+    "analysisDialogsTranscribed": 0
+  },
+  "scope": {
+    "workspace": "FusionSolidEnvironment",
+    "documentState": "empty Part / Untitled",
+    "visibleDesignCommandIds": 180,
+    "visibleTabs": 7,
+    "promotedPlacements": 142,
+    "uniqueNativeCommandIdsAllRegisteredUI": 1384
+  },
+  "environment": {
+    "windowDpi": 110,
+    "referenceWindowPhysical": [
+      991,
+      105,
+      2092,
+      1161
+    ],
+    "referenceClientPhysical": [
+      1000,
+      139,
+      2073,
+      1117
+    ],
+    "dipFactor": 0.8727272727272727
   }
 }

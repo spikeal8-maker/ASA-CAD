@@ -104,7 +104,8 @@ def scan_panel(panel, index):
         "promotedControlIds": [
             read(ctrl, "id") for ctrl in elements(promoted)
         ],
-        "controls": scan_controls(read_object(panel, "controls"))
+        "controls": scan_controls(read_object(panel, "controls")),
+        "promotedControls": scan_controls(promoted)
     }
 
 def scan_toolbar(toolbar):
