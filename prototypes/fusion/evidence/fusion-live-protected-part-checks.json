@@ -3,6 +3,12 @@
   "scope": "Ordinary UI protected Part, no injected document or kernel calls",
   "kernelConnected": true,
   "visualParityAccepted": false,
+  "faceSketch": {
+    "support": "ref_198d0174-e32a-449d-b389-117b6ab63993",
+    "projection": "stable-reference",
+    "modelContextReady": "false",
+    "viewCubeMode": "plane-locked"
+  },
   "base": "60x40x10 mm",
   "cutDiameter": 12,
   "filletRadius": 1,

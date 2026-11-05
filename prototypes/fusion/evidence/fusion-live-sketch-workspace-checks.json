@@ -1,0 +1,253 @@
+{
+  "status": "PASS",
+  "input": "Playwright pointer/keyboard actions on the public UI; persisted document is read only for assertions",
+  "screenshots": [
+    {
+      "width": 2048,
+      "height": 1137,
+      "dpr": 1,
+      "panels": [
+        {
+          "name": "live-tool live-sketch-tool",
+          "x": 1966.5,
+          "y": 54,
+          "right": 2036.5,
+          "bottom": 95,
+          "width": 70,
+          "height": 41
+        },
+        {
+          "name": "live-sketch-palette",
+          "x": 1782,
+          "y": 278,
+          "right": 2040,
+          "bottom": 611,
+          "width": 258,
+          "height": 333
+        },
+        {
+          "name": "live-navigation",
+          "x": 918,
+          "y": 1032,
+          "right": 1130,
+          "bottom": 1061,
+          "width": 212,
+          "height": 29
+        }
+      ]
+    },
+    {
+      "width": 1600,
+      "height": 900,
+      "dpr": 1,
+      "panels": [
+        {
+          "name": "live-tool live-sketch-tool",
+          "x": 1518.5,
+          "y": 54,
+          "right": 1588.5,
+          "bottom": 95,
+          "width": 70,
+          "height": 41
+        },
+        {
+          "name": "live-sketch-palette",
+          "x": 1334,
+          "y": 278,
+          "right": 1592,
+          "bottom": 611,
+          "width": 258,
+          "height": 333
+        },
+        {
+          "name": "live-navigation",
+          "x": 694,
+          "y": 795,
+          "right": 906,
+          "bottom": 824,
+          "width": 212,
+          "height": 29
+        }
+      ]
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "dpr": 1,
+      "panels": [
+        {
+          "name": "live-tool live-sketch-tool",
+          "x": 1284.5,
+          "y": 54,
+          "right": 1354.5,
+          "bottom": 95,
+          "width": 70,
+          "height": 41
+        },
+        {
+          "name": "live-sketch-palette",
+          "x": 1100,
+          "y": 264,
+          "right": 1358,
+          "bottom": 569,
+          "width": 258,
+          "height": 305
+        },
+        {
+          "name": "live-navigation",
+          "x": 577,
+          "y": 663,
+          "right": 789,
+          "bottom": 692,
+          "width": 212,
+          "height": 29
+        }
+      ]
+    }
+  ],
+  "visualParityAccepted": false,
+  "emptySketchUndoRedo": true,
+  "removedDimensionTargetCancels": true,
+  "verticalConstraint": true,
+  "removedEditedDimensionCancels": true,
+  "dimensionShortcutD": true,
+  "snapping": {
+    "endpointChangesCommittedCoordinate": true,
+    "disabledUsesPointerCoordinate": true
+  },
+  "arc": {
+    "threeRealClicks": true,
+    "radius": 5
+  },
+  "keyboardHistory": {
+    "undo": true,
+    "redo": true
+  },
+  "entityDrag": {
+    "realPointerGesture": true,
+    "sharedSolver": true,
+    "undoRestores": true
+  },
+  "menus": [
+    "SketchCreatePanel",
+    "SketchModifyPanel",
+    "SketchConstraintsPanel",
+    "ConfigurePanel",
+    "InspectPanel",
+    "InsertPanel",
+    "PartAssemblePanel",
+    "SelectPanel",
+    "StopSketchPanel"
+  ],
+  "nativeSubmenus": [
+    {
+      "panel": "SketchCreatePanel",
+      "path": [
+        "RectangleDropDown"
+      ]
+    },
+    {
+      "panel": "SketchCreatePanel",
+      "path": [
+        "CircleDropDown"
+      ]
+    },
+    {
+      "panel": "SketchCreatePanel",
+      "path": [
+        "ArcDropDown"
+      ]
+    },
+    {
+      "panel": "SketchCreatePanel",
+      "path": [
+        "PolygonDropDown"
+      ]
+    },
+    {
+      "panel": "SketchCreatePanel",
+      "path": [
+        "SlotDropDown"
+      ]
+    },
+    {
+      "panel": "SketchCreatePanel",
+      "path": [
+        "SplineDropDown"
+      ]
+    },
+    {
+      "panel": "SketchCreatePanel",
+      "path": [
+        "ProjectIncludeDropDown"
+      ]
+    },
+    {
+      "panel": "SketchModifyPanel",
+      "path": [
+        "SketchChamferDropDown"
+      ]
+    },
+    {
+      "panel": "SelectPanel",
+      "path": [
+        "SelectionToolsDropDown"
+      ]
+    },
+    {
+      "panel": "SelectPanel",
+      "path": [
+        "SelectionPriorityCommandsDropDown"
+      ]
+    }
+  ],
+  "authoredDimensionMenu": true,
+  "mouseBuiltProfileExtrusion": {
+    "status": "PASS",
+    "distance": 10,
+    "bounds": [
+      -30,
+      -20,
+      0,
+      30,
+      20,
+      10
+    ],
+    "oneRenderer": true
+  },
+  "originPlanes": [
+    "XY",
+    "XZ",
+    "YZ"
+  ],
+  "scenarioA": {
+    "rectangle": "two pointer clicks, 60×40 mm driving line dimensions",
+    "circle": "two pointer clicks, Ø12 driving dimension, edited to Ø14 by annotation double click",
+    "constructionLine": true,
+    "horizontalConstraint": true,
+    "entities": 6
+  },
+  "palette": {
+    "grid": true,
+    "points": true,
+    "profiles": true,
+    "dimensions": true,
+    "constraints": true,
+    "collapse": true,
+    "noDocumentMutation": true
+  },
+  "navigation": {
+    "idleWheel": true,
+    "middlePanIdle": true,
+    "middlePanActiveTool": true,
+    "planeNormal": true,
+    "reset": true,
+    "orbit": "BLOCKED: no shared 3D sketch camera / face-frame bridge"
+  },
+  "annotationEdit": {
+    "cancelRetainsSketch": true,
+    "enterCommits": true
+  },
+  "saveReopen": true,
+  "pageErrors": []
+}

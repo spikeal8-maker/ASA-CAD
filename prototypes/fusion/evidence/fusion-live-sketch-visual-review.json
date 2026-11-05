@@ -1,0 +1,199 @@
+{
+  "status": "NOT_ACCEPTED",
+  "nativeSource": {
+    "captureSource": "Autodesk Fusion API (read-only)",
+    "capturedUTC": "2026-11-04T23:21:11.800744+00:00",
+    "applicationVersion": "2706.1.17",
+    "sourceSchemaVersion": 1,
+    "fileName": "fusion-ui-latest.json",
+    "sha256": "651c01dc6fa0594aead189407c3fe29fb87b75aafefea3ad176b61a6c1617c40"
+  },
+  "activeNativeSketchScreenshotAvailable": false,
+  "candidateViewports": [
+    {
+      "width": 2048,
+      "height": 1137,
+      "dpr": 1,
+      "panels": [
+        {
+          "name": "live-tool live-sketch-tool",
+          "x": 1966.5,
+          "y": 54,
+          "right": 2036.5,
+          "bottom": 95,
+          "width": 70,
+          "height": 41
+        },
+        {
+          "name": "live-sketch-palette",
+          "x": 1782,
+          "y": 278,
+          "right": 2040,
+          "bottom": 611,
+          "width": 258,
+          "height": 333
+        },
+        {
+          "name": "live-navigation",
+          "x": 918,
+          "y": 1032,
+          "right": 1130,
+          "bottom": 1061,
+          "width": 212,
+          "height": 29
+        }
+      ]
+    },
+    {
+      "width": 1600,
+      "height": 900,
+      "dpr": 1,
+      "panels": [
+        {
+          "name": "live-tool live-sketch-tool",
+          "x": 1518.5,
+          "y": 54,
+          "right": 1588.5,
+          "bottom": 95,
+          "width": 70,
+          "height": 41
+        },
+        {
+          "name": "live-sketch-palette",
+          "x": 1334,
+          "y": 278,
+          "right": 1592,
+          "bottom": 611,
+          "width": 258,
+          "height": 333
+        },
+        {
+          "name": "live-navigation",
+          "x": 694,
+          "y": 795,
+          "right": 906,
+          "bottom": 824,
+          "width": 212,
+          "height": 29
+        }
+      ]
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "dpr": 1,
+      "panels": [
+        {
+          "name": "live-tool live-sketch-tool",
+          "x": 1284.5,
+          "y": 54,
+          "right": 1354.5,
+          "bottom": 95,
+          "width": 70,
+          "height": 41
+        },
+        {
+          "name": "live-sketch-palette",
+          "x": 1100,
+          "y": 264,
+          "right": 1358,
+          "bottom": 569,
+          "width": 258,
+          "height": 305
+        },
+        {
+          "name": "live-navigation",
+          "x": 577,
+          "y": 663,
+          "right": 789,
+          "bottom": 692,
+          "width": 212,
+          "height": 29
+        }
+      ]
+    }
+  ],
+  "toleranceCssPx": 2,
+  "comparisons": [
+    {
+      "state": "new",
+      "candidate": "fusion-live-sketch-workspace-new-2048.png",
+      "native": null,
+      "panelDeltaCssPx": null,
+      "svgVisualParity": null,
+      "status": "BLOCKED_MISSING_NATIVE_ACTIVE_SKETCH_SCREENSHOT"
+    },
+    {
+      "state": "create-menu",
+      "candidate": "fusion-live-sketch-workspace-create-menu-2048.png",
+      "native": null,
+      "panelDeltaCssPx": null,
+      "svgVisualParity": null,
+      "status": "BLOCKED_MISSING_NATIVE_ACTIVE_SKETCH_SCREENSHOT"
+    },
+    {
+      "state": "line",
+      "candidate": "fusion-live-sketch-workspace-line-2048.png",
+      "native": null,
+      "panelDeltaCssPx": null,
+      "svgVisualParity": null,
+      "status": "BLOCKED_MISSING_NATIVE_ACTIVE_SKETCH_SCREENSHOT"
+    },
+    {
+      "state": "rectangle",
+      "candidate": "fusion-live-sketch-workspace-rectangle-2048.png",
+      "native": null,
+      "panelDeltaCssPx": null,
+      "svgVisualParity": null,
+      "status": "BLOCKED_MISSING_NATIVE_ACTIVE_SKETCH_SCREENSHOT"
+    },
+    {
+      "state": "circle-selected",
+      "candidate": "fusion-live-sketch-workspace-circle-selected-2048.png",
+      "native": null,
+      "panelDeltaCssPx": null,
+      "svgVisualParity": null,
+      "status": "BLOCKED_MISSING_NATIVE_ACTIVE_SKETCH_SCREENSHOT"
+    },
+    {
+      "state": "palette",
+      "candidate": "fusion-live-sketch-workspace-palette-2048.png",
+      "native": null,
+      "panelDeltaCssPx": null,
+      "svgVisualParity": null,
+      "status": "BLOCKED_MISSING_NATIVE_ACTIVE_SKETCH_SCREENSHOT"
+    },
+    {
+      "state": "constraint",
+      "candidate": "fusion-live-sketch-workspace-constraint-2048.png",
+      "native": null,
+      "panelDeltaCssPx": null,
+      "svgVisualParity": null,
+      "status": "BLOCKED_MISSING_NATIVE_ACTIVE_SKETCH_SCREENSHOT"
+    },
+    {
+      "state": "finished",
+      "candidate": "fusion-live-sketch-workspace-finished-2048.png",
+      "native": null,
+      "panelDeltaCssPx": null,
+      "svgVisualParity": null,
+      "status": "BLOCKED_MISSING_NATIVE_ACTIVE_SKETCH_SCREENSHOT"
+    },
+    {
+      "state": "context",
+      "candidate": "fusion-live-sketch-workspace-context-2048.png",
+      "native": null,
+      "panelDeltaCssPx": null,
+      "svgVisualParity": null,
+      "status": "BLOCKED_MISSING_NATIVE_ACTIVE_SKETCH_SCREENSHOT"
+    },
+    {
+      "state": "cube-normal",
+      "candidate": "fusion-live-sketch-workspace-cube-normal-2048.png",
+      "native": null,
+      "panelDeltaCssPx": null,
+      "svgVisualParity": null,
+      "status": "BLOCKED_MISSING_NATIVE_ACTIVE_SKETCH_SCREENSHOT"
+    }
+  ]
+}
