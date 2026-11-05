@@ -34,3 +34,61 @@
 .live-hole-wizard .hole-primary:hover:not(:disabled){background:#cee7f5}.live-hole-wizard .hole-primary:disabled{opacity:.4;cursor:default}
 .live-hole-wizard footer{padding:7px 10px;background:#f1f3f4;border-top:1px solid #d9e1e5;color:#88969d;font-size:10px;line-height:1.45}
 @media(max-width:900px){.live-hole-wizard{left:4px;top:46px;max-width:calc(100vw - 10px);width:270px}}
+
+/* Contextual Sketch workspace. Palettes share the existing command controllers. */
+.live-workarea[data-workspace=sketch]{background:#fcfcfc}
+.live-sketch-palette{position:absolute;z-index:26;right:8px;top:160px;width:258px;max-width:calc(100% - 16px);max-height:calc(100% - 214px);display:flex;flex-direction:column;background:#f4f4f4;border:1px solid #c7cbce;color:#49545b;font-size:12px;box-shadow:0 2px 4px #0000000d}
+.live-sketch-palette>header{display:flex;align-items:center;gap:4px;min-height:27px;padding:0 6px 0 2px;border-bottom:1px solid #d2d5d7;user-select:none}
+.live-sketch-palette>header button{width:23px;height:25px;padding:0;border:0;background:none;color:#737e85;font-size:13px}
+.live-sketch-palette>header strong{font-size:11px;font-weight:500;flex:1;letter-spacing:.15px}
+.live-sketch-palette>header>span{color:#7d878d;font-size:10px;max-width:75px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sketch-palette-content{display:flex;flex-direction:column;min-height:0}.sketch-palette-content[hidden]{display:none}
+.sketch-palette-scroll{overflow-y:auto;min-height:0;overscroll-behavior:contain;scrollbar-width:thin}
+.sketch-palette-options{padding:7px 13px 8px}
+.sketch-palette-toggle{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:28px;margin:0;font-size:12px;line-height:1.25}
+.sketch-palette-toggle input{margin:0;width:14px;height:14px;accent-color:#4194bd;flex-shrink:0}
+.sketch-palette-toggle:has(input:disabled){color:#969ea3}
+.sketch-palette-view{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:32px;margin-bottom:3px}
+.sketch-palette-view button{display:flex;gap:5px;align-items:center;padding:2px 7px;height:27px;background:#fff;border:1px solid #c8ced2;font-size:11px;border-radius:2px}
+.sketch-palette-options hr{border:0;border-top:1px solid #d7dcdf;margin:5px 0}
+.sketch-palette-content>footer{border-top:1px solid #d2d5d7;padding:7px 11px;display:flex;justify-content:flex-end;flex-shrink:0}
+.sketch-palette-content>footer button{display:flex;align-items:center;gap:7px;padding:4px 10px;background:#fdfdfd;border:1px solid #c3cacf;border-radius:2px;font-size:12px;min-height:31px}
+.sketch-palette-content>footer button:hover:not(:disabled),.sketch-palette-view button:hover{border-color:#8bbbd3;background:#e2eff6}
+.live-sketch-palette.is-collapsed{max-height:28px}
+.live-parameters.live-parameters-embedded{position:static;min-width:0;width:auto;max-width:none;max-height:none;border:0;border-bottom:1px solid #d2d5d7;background:#f7f7f7;overflow:visible}
+.live-parameters-embedded>header{cursor:default;min-height:25px;background:#eceff0;border-bottom:0}
+.live-parameters-embedded .live-param-body{max-height:none;overflow:visible;padding:5px 11px}
+.live-parameters-embedded .live-param-row{grid-template-columns:84px minmax(0,1fr);min-height:32px}
+.live-parameters-embedded .live-param-note{font-size:11px;line-height:1.4;margin:5px 0}
+.live-parameters-embedded>footer{padding:5px 10px;background:#f4f5f5}
+.live-tool[aria-pressed=true]{border-color:#80acc3;background:#cce3f0;box-shadow:inset 0 0 0 1px #e5f1f7}
+.live-navigation button:disabled{color:#b7bfc4;opacity:.65}
+.live-sketch-view-note{position:absolute;top:143px;right:5px;width:142px;text-align:center;color:#76858d;font-size:10px;pointer-events:none;line-height:1.3}
+.live-sketch-cube-caption{position:absolute;bottom:1px;left:8px;right:25px;text-align:center;color:#87939a;font-size:10px;pointer-events:none}
+.live-sketch-plane-face:hover rect,.live-sketch-plane-face:focus-visible rect{fill:#dcecf8;stroke:#8ab9d7;stroke-width:.6}
+.live-sketch-plane-face:focus-visible{outline:0}
+.live-sketch-cube .cube-roll button:disabled{opacity:.4}
+@media(max-height:800px){.live-sketch-palette{top:146px;max-height:calc(100% - 196px)}.sketch-palette-toggle{min-height:25px}.sketch-palette-options{padding-top:4px;padding-bottom:4px}}
+@media(max-width:1100px){.live-sketch-palette{width:240px}.live-tree{max-width:24vw}}
+
+/* Native Sketch panel order; finish stays visible while the tools can scroll. */
+.live-sketch-ribbon{display:flex;width:100%;min-width:0;position:relative;align-items:stretch}
+.live-sketch-scroll{display:flex;flex:1;min-width:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin}
+.live-sketch-group{padding:0 7px;min-width:max-content}
+.live-sketch-tools{display:flex;align-items:center;justify-content:center;gap:1px;height:43px}
+.live-sketch-tool{width:37px;height:41px}
+.live-sketch-split{display:flex;align-items:stretch;flex-shrink:0}
+.live-sketch-split-arrow{width:12px;height:41px;padding:0;border:1px solid transparent;background:transparent;font-size:9px;color:#6d7c86}
+.live-sketch-split-arrow:hover,.live-sketch-split-arrow[aria-expanded=true]{background:#e0edf5;border-color:#a1c5d8}
+.live-sketch-constraints .live-sketch-tools{display:grid;grid-template-rows:repeat(2,21px);grid-auto-flow:column;grid-auto-columns:27px;gap:0 1px}
+.live-sketch-constraints .live-sketch-tool{width:27px;height:21px;padding:1px}
+.live-sketch-constraints .live-sketch-split-arrow{height:21px;width:10px}
+.live-sketch-constraints .live-sketch-split{height:21px}
+.live-sketch-finish{flex-shrink:0;min-width:94px;padding:0 7px;border-right:0;border-left:1px solid #d4d9dc;background:#f1f5f1}
+.live-sketch-finish .live-tool{width:100%;min-width:70px}
+.live-sketch-finish .live-group-title{color:#3c6551}
+.live-sketch-menu{z-index:1000;width:286px;max-width:calc(100vw - 10px);scrollbar-width:thin}
+.live-sketch-menu-caption{padding:5px 10px;font-size:10px;color:#788995;background:#f4f6f7;border-bottom:1px solid #dfe5e8}
+.live-sketch-keycap{font-size:10px;color:#81919b}
+.live-sketch-menu-item[aria-expanded=true]{background:#dfeef6}
+.live-sketch-menu-item[aria-pressed=true]{background:#e9f3f9}

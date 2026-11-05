@@ -6,8 +6,10 @@
   "circleCenterRadius": true,
   "entities": 6,
   "singleSketchSurface": true,
-  "sketchContext": "existing-isolated-2d",
-  "viewCubeInSketch": false,
+  "sketchContext": "shared-document-2d-presentation",
+  "viewCubeInSketch": true,
+  "viewCubeMode": "plane-locked",
+  "full3DViewCubeInSketch": false,
   "persistedSerializableEntities": true,
   "pageErrors": []
 }

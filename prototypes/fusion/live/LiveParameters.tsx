@@ -1,11 +1,21 @@
 import React,{useRef,useState} from 'react';
 import type {ParameterPanelProps} from '../../../src/web/ParameterPanel';
 import {action,run} from './liveActions';
-type Props={panel:ParameterPanelProps;fallback:React.ReactNode};
+type Props={panel:ParameterPanelProps;fallback:React.ReactNode;embedded?:boolean;dimensionEditUnit?:string};
 const names:Record<string,string>={'part.sketch.create':'Создать эскиз','sketch.line':'Отрезок','sketch.arc':'Дуга','sketch.rectangle':'Прямоугольник','sketch.circle':'Окружность','part.extrude':'Выдавливание','part.cutExtrude':'Выдавливание — вырез','part.fillet':'Скругление','dimension.edit':'Изменить размер'};
 function Field({name,children}:{name:string;children:React.ReactNode}){return <label className="live-param-row"><span>{name}</span><div>{children}</div></label>;}
-function Numeric({name,value,onChange}:{name:string;value:number;onChange:(n:number)=>void}){return <Field name={name}><input type="number" step="any" aria-label={name} value={Number.isFinite(value)?value:''} onChange={e=>onChange(e.target.value===''?NaN:Number(e.target.value))}/><small>мм</small></Field>;}
-export function LiveParameters({panel:p,fallback}:Props){
+function Numeric({name,value,onChange,unit='мм'}:{name:string;value:number;onChange:(n:number)=>void;unit?:string}){return <Field name={name}><input type="number" step="any" aria-label={name} value={Number.isFinite(value)?value:''} onChange={e=>onChange(e.target.value===''?NaN:Number(e.target.value))}/><small>{unit}</small></Field>;}
+const constraintHints:Record<string,string>={
+ 'constraint.coincident':'Укажите две конечные точки, которые должны совпадать.',
+ 'constraint.parallel':'Последовательно выберите два отрезка.',
+ 'constraint.perpendicular':'Последовательно выберите два отрезка.',
+ 'constraint.tangent':'Выберите отрезок и окружность.',
+ 'constraint.concentric':'Выберите две окружности с общим центром.',
+ 'constraint.equal':'Выберите два отрезка одинаковой длины.',
+ 'constraint.symmetric':'Укажите две точки, затем отрезок — ось симметрии.',
+ 'constraint.pointOnCurve':'Укажите конец одного отрезка, затем другой отрезок.',
+};
+export function LiveParameters({panel:p,fallback,embedded=false,dimensionEditUnit=''}:Props){
  const [collapsed,setCollapsed]=useState(false),[position,setPosition]=useState<{x:number;y:number}|null>(null),[busy,setBusy]=useState(false);
  const box=useRef<HTMLElement>(null),drag=useRef<{dx:number;dy:number}|null>(null);
  const id=p.activeCommand||'',x=p.extrude;
@@ -29,14 +39,22 @@ export function LiveParameters({panel:p,fallback}:Props){
  }else if(id==='part.fillet'){
   content=<><Field name="Рёбра"><span>{p.selectedPick?.kind==='edge'?'Ребро выбрано':'Выберите ребро в модели'}</span></Field><Numeric name="Радиус" value={p.filletRadius} onChange={p.setFilletRadius}/></>;
   submit=p.onFillet;valid=p.selectedPick?.kind==='edge'&&Number.isFinite(p.filletRadius)&&p.filletRadius>0;
+ }else if(p.dimensionCreation.mode){
+  const d=p.dimensionCreation,angular=d.mode==='angular';
+  content=<><Field name="Объект"><span>{d.targetKind==='line-pair'?(d.secondaryEntityId?'Выбраны два отрезка':'Выберите два отрезка'):d.targetKind==='circle'?'Окружность':d.targetKind==='arc'?'Дуга':'Отрезок'}</span></Field><Numeric name={angular?'Угол':'Размер'} value={d.value} onChange={d.setValue} unit={angular?'°':'мм'}/><p className="live-param-note">Изменение размера перестраивает геометрию эскиза.</p></>;
+  submit=async()=>{await d.commit();};valid=d.canCommit;
  }else if(id==='dimension.edit'){
-  content=<Numeric name="Значение" value={p.dimensionEditValue} onChange={p.setDimensionEditValue}/>;submit=p.onDimensionEdit;valid=Number.isFinite(p.dimensionEditValue)&&p.dimensionEditValue>0;
+  content=<Numeric name="Значение" value={p.dimensionEditValue} onChange={p.setDimensionEditValue} unit={dimensionEditUnit}/>;submit=p.onDimensionEdit;valid=Number.isFinite(p.dimensionEditValue)&&p.dimensionEditValue>0;
+ }else if(constraintHints[id]){
+  content=<><p className="live-param-note">{constraintHints[id]}</p><p className="live-param-note">Esc отменяет выбор.</p></>;
  }
  const commit=async()=>{if(!valid||!submit||busy)return;setBusy(true);try{await submit();}finally{setBusy(false);}};
- return <section className="live-parameters" ref={box} role="dialog" aria-label={names[id]||'Параметры команды'} data-command={id} style={position?{left:position.x,top:position.y,right:'auto'}:undefined}
+ const title=names[id]||action(id)?.label||'Параметры команды';
+ return <section className={'live-parameters'+(embedded?' live-parameters-embedded':'')} ref={box} role={embedded?'group':'dialog'} aria-label={title} data-command={id} style={!embedded&&position?{left:position.x,top:position.y,right:'auto'}:undefined}
+  onKeyDown={e=>{if(e.key==='Enter'&&submit&&(e.target as Element).matches('input,select')){e.preventDefault();e.stopPropagation();void commit();}if(e.key==='Escape'){e.stopPropagation();p.onCancel();}}}
   onPointerMove={e=>{if(!drag.current||!box.current)return;const r=box.current.getBoundingClientRect();setPosition({x:Math.max(0,Math.min(innerWidth-r.width,e.clientX-drag.current.dx)),y:Math.max(115,Math.min(innerHeight-42-r.height,e.clientY-drag.current.dy))});}}
   onPointerUp={e=>{drag.current=null;if(e.currentTarget.hasPointerCapture(e.pointerId))e.currentTarget.releasePointerCapture(e.pointerId);}} onPointerCancel={()=>{drag.current=null;}}>
-  <header onPointerDown={e=>{if(e.button!==0||(e.target as Element).closest('button'))return;const r=box.current!.getBoundingClientRect();drag.current={dx:e.clientX-r.left,dy:e.clientY-r.top};box.current!.setPointerCapture(e.pointerId);e.preventDefault();}}><button type="button" aria-label={collapsed?'Развернуть параметры':'Свернуть параметры'} onClick={()=>setCollapsed(v=>!v)}>{collapsed?'+':'−'}</button><strong>{names[id]||'Параметры команды'}</strong><button type="button" aria-label="Отменить команду" onClick={p.onCancel}>×</button></header>
-  {!collapsed&&<><div className="live-param-body">{content||fallback}</div>{submit&&<footer><small>мм</small><button type="button" className="live-commit" disabled={!valid||busy} onClick={()=>void commit()}>{busy?'Расчёт…':'ОК'}</button><button type="button" disabled={busy} onClick={p.onCancel}>Отмена</button></footer>}</>}
+  <header onPointerDown={e=>{if(embedded||e.button!==0||(e.target as Element).closest('button'))return;const r=box.current!.getBoundingClientRect();drag.current={dx:e.clientX-r.left,dy:e.clientY-r.top};box.current!.setPointerCapture(e.pointerId);e.preventDefault();}}><button type="button" aria-label={collapsed?'Развернуть параметры':'Свернуть параметры'} onClick={()=>setCollapsed(v=>!v)}>{collapsed?'+':'−'}</button><strong>{title}</strong><button type="button" aria-label="Отменить команду" onClick={p.onCancel}>×</button></header>
+  {!collapsed&&<><div className="live-param-body">{content||fallback}</div>{submit&&<footer><small>{id==='dimension.edit'?dimensionEditUnit:p.dimensionCreation.mode==='angular'?'°':'мм'}</small><button type="button" className="live-commit" disabled={!valid||busy} onClick={()=>void commit()}>{busy?'Расчёт…':'ОК'}</button><button type="button" disabled={busy} onClick={p.onCancel}>Отмена</button></footer>}</>}
  </section>;
 }
