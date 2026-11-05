@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "input": "real left-button pointer clicks on the common sketch interaction surface",
+  "lineTwoPoints": true,
+  "rectangleTwoCorners": true,
+  "circleCenterRadius": true,
+  "entities": 6,
+  "singleSketchSurface": true,
+  "sketchContext": "existing-isolated-2d",
+  "viewCubeInSketch": false,
+  "persistedSerializableEntities": true,
+  "pageErrors": []
+}

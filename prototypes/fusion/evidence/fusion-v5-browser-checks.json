@@ -1,0 +1,93 @@
+{
+  "scope": "Russian Design UI / native empty-Part snapshot",
+  "nativeVersion": "2706.1.17",
+  "kernelConnected": false,
+  "visualParityAccepted": false,
+  "status": "PASS",
+  "counts": {
+    "commands": 180,
+    "tabs": [
+      {
+        "id": "SolidTab",
+        "count": 24
+      },
+      {
+        "id": "SurfaceTab",
+        "count": 21
+      },
+      {
+        "id": "ParaMeshOuterTab",
+        "count": 26
+      },
+      {
+        "id": "SheetMetalTab",
+        "count": 20
+      },
+      {
+        "id": "PlasticTab",
+        "count": 33
+      },
+      {
+        "id": "ToolsTab",
+        "count": 15
+      },
+      {
+        "id": "AutomationTab",
+        "count": 3
+      }
+    ],
+    "translations": true
+  },
+  "menuCounts": {
+    "SolidCreatePanel": 26,
+    "SolidModifyPanel": 23,
+    "ConstructionPanel": 20,
+    "InspectPanel": 15,
+    "InsertPanel": 12,
+    "PartAssemblePanel": 1,
+    "SelectPanel": 7
+  },
+  "dialogDefaultsVerified": 10,
+  "extrudeOptionSets": {
+    "start": [
+      "Плоскость профиля",
+      "Смещение",
+      "Объект"
+    ],
+    "direction": [
+      "В одну сторону",
+      "В две стороны",
+      "Симметрично"
+    ],
+    "extent": [
+      "Расстояние",
+      "До объекта",
+      "Всё"
+    ],
+    "operation": [
+      "Объединение",
+      "Вырезание",
+      "Пересечение",
+      "Новое тело"
+    ]
+  },
+  "emptyStateOkDisabled": true,
+  "drag": true,
+  "collapse": true,
+  "outerOverflow": false,
+  "pageErrors": [],
+  "remoteRequests": [],
+  "nativeComparisonEnvironment": {
+    "nativeDpi": 110,
+    "cssViewport": [
+      1809,
+      975
+    ],
+    "deviceScaleFactor": 1.1458333333333333,
+    "nativeClientPhysical": [
+      2073,
+      1117
+    ],
+    "pixelParityAccepted": false
+  }
+}

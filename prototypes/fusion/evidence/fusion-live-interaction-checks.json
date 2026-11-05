@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "kernelConnected": true,
+  "pixelParityAccepted": false,
+  "fixedHomeRestoresScaleAndPose": true,
+  "frontAndTopAssignment": true,
+  "adjacentFace": true,
+  "nativeCubeSizeChoices": 5,
+  "homeFit": true,
+  "rootMarkingSlots": 8,
+  "sketchMarkingSlots": 8,
+  "contextCreateSketchAndCancel": true,
+  "contextDragZoom": true,
+  "geometryUnchangedByNavigation": true,
+  "pageErrors": []
+}
