@@ -44,6 +44,12 @@ jobs:
         run: node prototypes/fusion/live/typecheck.cjs
       - name: Build isolated shell using the existing App and geometry runtime
         run: node prototypes/fusion/live/run.cjs
+      - name: Verify reproducible offline package and dedicated launch port
+        shell: bash
+        run: |
+          set -euo pipefail
+          node prototypes/fusion/live/package.cjs --out "$RUNNER_TEMP/asa-fusion-v7"
+          node prototypes/fusion/tests/live-package-smoke.mjs "$RUNNER_TEMP/asa-fusion-v7"
       - name: Install pinned Chromium
         run: node vendor/toubkal/node_modules/playwright-core/cli.js install --with-deps chromium
       - name: Start loopback static build server

@@ -16,9 +16,9 @@ for(const name of ['react','react-dom','scheduler','three','opencascade.js','@sa
  for(const f of fs.readdirSync(dir)){if(/^(license|notice|copying)/i.test(f)&&fs.statSync(path.join(dir,f)).isFile())fs.copyFileSync(path.join(dir,f),path.join(licenses,safe+'-'+f));}
 }
 for(const f of ['LICENSE','THIRD_PARTY_NOTICES.md'])fs.copyFileSync(path.join(repo,'vendor/toubkal',f),path.join(licenses,'upstream-'+f));
-const start=['@echo off','setlocal','cd /d "%~dp0"','where node.exe >nul 2>nul','if errorlevel 1 (','  echo Node.js 20 or newer is required. No network is needed after installation.','  pause','  exit /b 1',')','node.exe "%~dp0serve.cjs" --root "%~dp0app" --port 8094 --open','if errorlevel 1 pause'];
+const start=['@echo off','setlocal','cd /d "%~dp0"','where node.exe >nul 2>nul','if errorlevel 1 (','  echo Node.js 20 or newer is required. No network is needed after installation.','  pause','  exit /b 1',')','node.exe "%~dp0serve.cjs" --root "%~dp0app" --port 8098 --open','if errorlevel 1 pause'];
 fs.writeFileSync(path.join(output,'Start.cmd'),start.join('\r\n')+'\r\n','utf8');
-fs.writeFileSync(path.join(output,'start.sh'),'#!/bin/sh\nset -eu\ncd -- "$(dirname -- "$0")"\nexec node ./serve.cjs --root ./app --port 8094 --open\n','utf8');
+fs.writeFileSync(path.join(output,'start.sh'),'#!/bin/sh\nset -eu\ncd -- "$(dirname -- "$0")"\nexec node ./serve.cjs --root ./app --port 8098 --open\n','utf8');
 const files=[];function inventory(dir){for(const f of fs.readdirSync(dir,{withFileTypes:true})){const p=path.join(dir,f.name);if(f.isDirectory())inventory(p);else{const bytes=fs.readFileSync(p);files.push({path:path.relative(output,p).replaceAll('\\','/'),bytes:bytes.length,sha256:crypto.createHash('sha256').update(bytes).digest('hex')});}}}inventory(output);
 const manifest={schemaVersion:1,product:'ASA-CAD-Fusion-Live',version:7,sourceHead:head,createdUTC:new Date().toISOString(),kernel:'existing ASA-CAD / OpenCascade / PlaneGCS',localOnly:true,fullFusionParity:false,files};
 fs.writeFileSync(path.join(output,'delivery-manifest.json'),JSON.stringify(manifest,null,2)+'\n');
