@@ -1,0 +1,84 @@
+name: Fusion kernel shell
+
+on:
+  pull_request:
+    paths:
+      - 'prototypes/fusion/live/**'
+      - 'prototypes/fusion/tests/live-*.mjs'
+      - 'prototypes/fusion/native-reference.v5.json'
+      - 'prototypes/fusion/native-labels.ru.v5.js'
+      - 'src/**'
+      - 'build/**'
+      - 'vendor/toubkal/package-lock.json'
+      - '.github/workflows/fusion-kernel-shell.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fusion-kernel-shell-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  isolated-fusion:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      ASA_FUSION_URL: http://127.0.0.1:8094/
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.19.0'
+          cache: npm
+          cache-dependency-path: vendor/toubkal/package-lock.json
+      - name: Install pinned runtime and browser tooling
+        run: npm --prefix vendor/toubkal ci
+      - name: Verify 142 ribbon placements contain no missing icon artwork
+        run: node prototypes/fusion/tests/live-promoted-artwork.mjs
+      - name: Compare full UI diagnostics against unchanged product baseline
+        run: node prototypes/fusion/live/typecheck.cjs
+      - name: Build isolated shell using the existing App and geometry runtime
+        run: node prototypes/fusion/live/run.cjs
+      - name: Install pinned Chromium
+        run: node vendor/toubkal/node_modules/playwright-core/cli.js install --with-deps chromium
+      - name: Start loopback static build server
+        run: |
+          set -euo pipefail
+          node prototypes/fusion/live/serve.cjs --port 8094 >/tmp/fusion-kernel-shell-http.log 2>&1 &
+          echo $! >/tmp/fusion-kernel-shell-http.pid
+          for i in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:8094/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/fusion-kernel-shell-http.log
+          exit 1
+      - name: Render exact native ribbon order, Russian labels and independent icon assets
+        run: node prototypes/fusion/tests/live-ribbon-browser.mjs
+      - name: Ordinary sketch, real B-Rep, Undo, Redo and persistence
+        run: node prototypes/fusion/tests/live-kernel-browser.mjs
+      - name: Protected Part with face reference, through cut, fillet and re-edit
+        run: node prototypes/fusion/tests/live-protected-part-browser.mjs
+      - name: Real left-button drawing on the existing 2D sketch surface
+        run: node prototypes/fusion/tests/live-sketch-input-browser.mjs
+      - name: All 26 ViewCube directions, projection matrices and model picking
+        run: node prototypes/fusion/tests/live-navigation-browser.mjs
+      - name: Native menu hierarchy, saved scale, orientation frame and marking menu
+        run: node prototypes/fusion/tests/live-interaction-browser.mjs
+      - name: Upload candidate-only evidence and truthful diagnostic baseline
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fusion-kernel-shell-${{ github.sha }}
+          path: |
+            prototypes/fusion/evidence/fusion-live-*.json
+            prototypes/fusion/evidence/fusion-live-*.png
+          retention-days: 30
+      - name: Stop local build server
+        if: always()
+        run: |
+          if test -f /tmp/fusion-kernel-shell-http.pid; then kill "$(cat /tmp/fusion-kernel-shell-http.pid)" || true; fi

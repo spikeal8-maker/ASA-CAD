@@ -1,0 +1,45 @@
+/* Fusion UI v4: screen-matched density, independent SVG and flyout states. */
+:root{--ribbon-bg:#f5f5f5;--v4-hover:#dcecf6;--v4-highlight:#aed8ec}
+.titlebar{display:none!important}
+.ribbon{box-shadow:inset 0 -1px #d7d8d9}
+.rgroup{border-right:1px solid #dadddf}
+.rgroup.v4-disabled{opacity:.38}
+.rgroup.v4-disabled .groupLabel{cursor:default}
+.rgroup.v4-disabled .toolbtn{cursor:not-allowed;opacity:.66}
+.v4-command{position:relative;outline-offset:-2px;transition:background-color 90ms ease,box-shadow 90ms ease;border:1px solid transparent!important;background:transparent}
+.v4-command:not(:disabled):hover,.v4-command:not(:disabled):focus-visible{border-color:#a0c8df!important;background:linear-gradient(180deg,#eaf7fd,#d9ebf6);box-shadow:inset 0 1px rgba(255,255,255,.8)}
+.v4-command:not(:disabled):active{background:#beddec;box-shadow:inset 0 0 0 1px #77acd2}
+.v4-command .v4-art{display:block;overflow:visible;max-width:100%;max-height:100%;pointer-events:none;filter:drop-shadow(0 1px .45px rgba(45,67,78,.2))}
+.v4-group-trigger{width:100%;border:1px solid transparent;cursor:pointer;flex-shrink:0;min-height:20px;background:transparent}
+.v4-group-trigger:hover,.v4-group-trigger[aria-expanded="true"]{border-color:#c5e2f2;background:#e2f1f8;color:#2c5366;border-radius:2px}
+.v4-group-trigger:focus-visible{outline:2px solid #4aa8cf;outline-offset:-2px}
+.v4-group-trigger .arr{font-size:11px;margin-left:3px;transform:translateY(-1px);opacity:.82}
+.toolrow{min-width:0}
+.toolbtn:disabled{pointer-events:auto}
+.v4-popup{min-width:286px;max-width:340px;max-height:min(580px,75vh);padding:0!important;background:#fff!important;border:1px solid #a8b9c4!important;box-shadow:0 5px 18px rgba(0,0,0,.24)!important;overflow-y:auto;overflow-x:hidden}
+.v4-popup-header{height:35px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #dde4e8;background:linear-gradient(#f4f5f7,#ebedf0);padding:0 12px;font-size:12.5px;font-weight:600;color:#46515a}
+.popup-esc{font:10px "Segoe UI",Arial,sans-serif;color:#8d9da6;border:1px solid #c9d4dc;border-radius:3px;padding:2px 5px}
+.v4-popitem{height:45px;min-height:45px;width:100%;padding:3px 13px!important;display:flex;align-items:center;text-align:left;gap:11px;background:transparent;border:0!important;color:#48535d;white-space:nowrap}
+.v4-popitem .cad-icon{height:30px!important;width:30px!important;flex:0 0 30px}
+.v4-popitem .v4-menu-name{flex:1;overflow:hidden;text-overflow:ellipsis;font-size:12.5px}
+.v4-popitem .shortcut{font-size:11px;color:#9aa4aa}
+.v4-popitem:hover,.v4-popitem:focus-visible{background:#e6f2f9!important;outline:0;box-shadow:inset 3px 0 #41a0d1}
+.v4-popup-footer{border-top:1px solid #e4e9ed;background:#f5f7f9;height:25px;font-size:10.5px;color:#91a0aa;padding:6px 10px}
+.fusion-flyout{position:fixed;display:none;z-index:32;width:260px;min-height:145px;padding:16px 17px 13px;background:#fff;border:1px solid #bdcbd2;box-shadow:0 7px 23px rgba(29,54,68,.22);border-radius:2px;color:#4c5962;pointer-events:none}
+.fusion-flyout.show{display:block}
+.fusion-flyout-head{display:flex;align-items:center;gap:11px;border-bottom:1px solid #edf0f1;padding-bottom:9px}
+.fusion-flyout-head .cad-icon{width:65px!important;height:65px!important;flex:0 0 65px}
+.fusion-flyout-head strong{font-size:13px;line-height:1.3;word-wrap:break-word}
+.fusion-flyout p{font-size:12px;line-height:1.5;color:#59666d;margin:11px 0}
+.fusion-flyout-hint{font-size:10.5px;color:#97a0a5;border-top:1px solid #f2f2f2;padding-top:9px}
+.fusion-tip{display:none;position:fixed;z-index:80;padding:6px 9px;font-size:12px;border:1px solid #a8b4bd;background:#fbfbfb;border-radius:2px;box-shadow:0 2px 5px #0002;color:#4d5961;pointer-events:none;max-width:260px;white-space:normal}
+.fusion-tip.show{display:block}
+.paramPanel{border-color:#b9c3c9;background:#fff}
+.paramHeader{border-bottom:1px solid #d8dfe4;background:linear-gradient(#f7f8f9,#eceff2);min-height:42px}
+.paramPanel input,.paramPanel select{max-width:100%;min-width:0}
+.paramField label{overflow-wrap:anywhere}
+.browser{max-width:min(345px,45vw)}
+.groupLabel{line-height:17px}
+@media(max-width:1460px){.v4-command .v4-art{width:34px;height:34px}.v4-popup{max-width:310px}}
+@media(max-width:1080px){.fusion-flyout{display:none!important}.v4-command{width:39px!important;flex-basis:39px!important}.v4-command .v4-art{width:32px;height:32px}.groupLabel{font-size:10px;letter-spacing:-.1px}}
+@media(prefers-reduced-motion:reduce){.v4-command{transition:none}}

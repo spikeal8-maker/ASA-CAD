@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "title": "Fusion-reference coverage and acceptance matrix",
+  "status": "NATIVE_DESIGN_CATALOG_CAPTURED_INTERACTION_PARTIAL",
+  "source": "ASACAD_UI_Exporter v1",
+  "workModes": [
+    "Part/Solid",
+    "Sketch edit",
+    "Surface",
+    "Mesh",
+    "Sheet Metal",
+    "Plastic",
+    "Utilities",
+    "Automation",
+    "Assembly",
+    "Drawing",
+    "Render",
+    "Manufacture"
+  ],
+  "reviewStates": [
+    "idle",
+    "hover",
+    "pressed",
+    "disabled",
+    "active-command",
+    "dropdown",
+    "nested-dropdown",
+    "tooltip-short",
+    "tooltip-expanded",
+    "dialog-default",
+    "dialog-validation",
+    "dialog-commit",
+    "dialog-cancel",
+    "context-menu",
+    "panel-resize",
+    "panel-collapse",
+    "keyboard-navigation"
+  ],
+  "controlTypes": [
+    "CommandControl",
+    "DropDownControl",
+    "SplitButtonControl",
+    "SeparatorControl",
+    "floating-window",
+    "palette",
+    "tree-item",
+    "viewcube-face",
+    "timeline-feature",
+    "viewport-tool",
+    "command-dialog-input"
+  ],
+  "levels": [
+    "INVENTORIED",
+    "ICON_PIXEL_MATCH",
+    "LAYOUT_PIXEL_MATCH",
+    "INTERACTION_MATCH",
+    "KERNEL_OPERATION_MATCH",
+    "PERSISTENCE_MATCH",
+    "REGRESSION_PASS",
+    "OWNER_ACCEPTED"
+  ],
+  "comparison": {
+    "baseResolution": "2048x1137",
+    "zoomPercent": 100,
+    "dpr": 1,
+    "majorRegionToleranceCssPx": 2,
+    "allowUnmappedControls": false,
+    "allowUnlabeledButtons": false,
+    "allowFakeGeometryOps": false,
+    "allowInventedCommandCount": false,
+    "requireOwnerVisualApproval": true
+  },
+  "constraints": {
+    "sourceControl": "Fusion API export + recorded screenshots",
+    "implementation": "One CadUiAction / CadApplication / CadDocument / CadViewport",
+    "noProprietaryAssetCopy": true,
+    "productChangeBlocked": true
+  },
+  "observedCases": "observed-cases.v1.json",
+  "coverage": {
+    "hoveredUniqueCommands": 78,
+    "clickedUniqueCommands": 77,
+    "disabledClickAttempts": 3,
+    "disabledCommandIds": [
+      "FusionConfigurationRulesCmd",
+      "FusionShowDesignConfigPanelCmd",
+      "FusionStartDesignConfigModeCmd"
+    ],
+    "modeChangingCreateForm": "HOVER_ONLY_NO_DOCUMENT_CHANGE",
+    "defaultDialogSchemasTranscribed": 30,
+    "solidMenuRows": {
+      "SolidCreatePanel": 26,
+      "SolidModifyPanel": 23,
+      "ConstructionPanel": 20,
+      "InspectPanel": 15,
+      "InsertPanel": 12,
+      "PartAssemblePanel": 1,
+      "SelectPanel": 7
+    },
+    "allWorkspacesExhaustivelyTested": false,
+    "allCommandInputsTested": false,
+    "kernelConnected": false,
+    "iconParityAccepted": false,
+    "constructionMethodsTranscribed": 19,
+    "constructionTypeOptionCounts": {
+      "plane": 8,
+      "axis": 5,
+      "point": 6
+    },
+    "nativeConstructionEscapeObserved": "Esc cancels the full command even when its method dropdown is open",
+    "analysisInitialStatesObserved": 10,
+    "analysisDialogsTranscribed": 0
+  },
+  "scope": {
+    "workspace": "FusionSolidEnvironment",
+    "documentState": "empty Part / Untitled",
+    "visibleDesignCommandIds": 180,
+    "visibleTabs": 7,
+    "promotedPlacements": 142,
+    "uniqueNativeCommandIdsAllRegisteredUI": 1384
+  },
+  "environment": {
+    "windowDpi": 110,
+    "referenceWindowPhysical": [
+      991,
+      105,
+      2092,
+      1161
+    ],
+    "referenceClientPhysical": [
+      1000,
+      139,
+      2073,
+      1117
+    ],
+    "dipFactor": 0.8727272727272727
+  }
+}

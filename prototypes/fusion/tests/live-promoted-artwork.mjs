@@ -1,0 +1,31 @@
+import assert from 'node:assert/strict';
+import {readFileSync,writeFileSync} from 'node:fs';
+import {resolve,dirname} from 'node:path';
+import {fileURLToPath} from 'node:url';
+const dir=resolve(dirname(fileURLToPath(import.meta.url)),'..');
+const load=p=>JSON.parse(readFileSync(resolve(dir,p),'utf8'));
+const reference=load('native-reference.v5.json');
+const base=load('live/artwork.v6.json');
+const improved=load('live/promoted-artwork.v6.json');
+const all=Object.keys(reference.commands);
+assert.equal(all.length,180,'Reference command count changed: capture new API baseline before updating');
+const promoted=reference.tabs.flatMap(tab=>tab.panels.flatMap(id=>(reference.panels[id]?.promoted||[]).map(x=>({tab:tab.id,panel:id,id:x.commandId})).filter(x=>x.id)));
+const unique=[...new Set(promoted.map(x=>x.id))];
+const originalMissing=unique.filter(id=>base[id]?.status==='missing-reference');
+assert.equal(originalMissing.length,17,'Changed list of 17 originally missing promoted icons');
+assert.deepEqual([...Object.keys(improved)].sort(),originalMissing.sort(),'Individual art mismatch to observed missing promoted IDs');
+for(const [id,a] of Object.entries(improved)){
+ assert.equal(a.status,'independent-redraw-awaiting-review','Missing visual review status '+id);
+ assert.match(a.svg,/<svg[^>]*viewBox="0 0 50 50"/,'Missing SVG viewport '+id);
+ assert.match(a.svg,/<\/svg>$/,'Incomplete SVG '+id);
+ assert.ok(a.svg.includes('<path')||a.svg.includes('<circle'),'No artwork in '+id);
+ assert.ok(!/Autodesk|Fusion360|data:|<image|href=/i.test(a.svg),'No proprietary or external art resources in '+id);
+}
+assert.equal(new Set(Object.values(improved).map(a=>a.svg)).size,17,'All promoted SVGs must have distinct authored artwork');
+const art=id=>improved[id]||base[id];
+const promotedMissing=unique.filter(id=>!art(id)||art(id).status==='missing-reference');
+assert.deepEqual(promotedMissing,[],'No generic placeholder icon should remain on promoted ribbon');
+const statuses=all.reduce((r,id)=>(r[art(id)?.status||'UNMAPPED']=(r[art(id)?.status||'UNMAPPED']||0)+1,r),{});
+const report={schemaVersion:1,scope:'Native Design 2706.1.17, visible promoted ribbon only',status:'REFERENCE_ARTWORK_PRESENT_NOT_PIXEL_APPROVED',nativeCommands:all.length,ribbonPlacements:promoted.length,promotedUnique:unique.length,previousMissingOnPromoted:originalMissing.length,remainingPlaceholderOnPromoted:promotedMissing.length,allCommandStatusCounts:statuses,realCADParity:false,ownerVisualAcceptance:false};
+writeFileSync(resolve(dir,'evidence','fusion-live-icon-coverage.json'),JSON.stringify(report,null,2)+'\n','utf8');
+console.log(JSON.stringify(report,null,2));
