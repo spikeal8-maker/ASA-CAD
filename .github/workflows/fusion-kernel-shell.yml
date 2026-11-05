@@ -22,7 +22,7 @@ concurrency:
 
 jobs:
   isolated-fusion:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       ASA_FUSION_URL: http://127.0.0.1:8094/
