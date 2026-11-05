@@ -72,6 +72,10 @@
     "viewCube3D": "REAL_CAMERA_26_DIRECTIONS_AND_PROJECTION_TESTED",
     "sketch3DViewCube": "NOT_IMPLEMENTED_EXISTING_2D_SKETCH",
     "nativeHoleCommand": "NOT_IMPLEMENTED_USE_CIRCLE_THROUGH_CUT",
-    "fullFusionFunctionalParity": "NOT_COMPLETE"
+    "fullFusionFunctionalParity": "NOT_COMPLETE",
+    "basicThroughHole": "IMPLEMENTED_VIA_EXISTING_SKETCH_CIRCLE_CUT_ACTIONS",
+    "nativeHoleAdvanced": "NOT_IMPLEMENTED",
+    "nativeHoleShortcutSearchRadial": "BROWSER_TESTED",
+    "uiParity": "NOT_ACCEPTED"
   }
 }

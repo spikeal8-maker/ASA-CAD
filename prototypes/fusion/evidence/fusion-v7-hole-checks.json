@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "scope": "Guided basic through-hole only",
+  "nativeEntry": "FusionHoleCommand",
+  "entryPoints": [
+    "native-menu",
+    "keyboard-H",
+    "command-search",
+    "right-click-radial"
+  ],
+  "invalidNegativeDiameterRejected": true,
+  "realSharedActions": [
+    "part.sketch.create",
+    "sketch.circle",
+    "sketch.finish",
+    "part.cutExtrude"
+  ],
+  "support": "selected top B-Rep face",
+  "diameter": 12,
+  "featureTypes": [
+    "extrude",
+    "cut-extrude"
+  ],
+  "stableReferences": 1,
+  "wizardCancellationDoesNotMutateDocument": true,
+  "oneCadDocument": true,
+  "saveOpenPass": true,
+  "fullFusionHoleParity": false,
+  "advancedModesImplemented": false,
+  "pageErrors": [],
+  "failedRequests": []
+}

@@ -63,6 +63,8 @@ jobs:
         run: node prototypes/fusion/tests/live-kernel-browser.mjs
       - name: Protected Part with face reference, through cut, fillet and re-edit
         run: node prototypes/fusion/tests/live-protected-part-browser.mjs
+      - name: Guided basic Hole via native menu, radial, search and keyboard
+        run: node prototypes/fusion/tests/live-hole-wizard-browser.mjs
       - name: Real left-button drawing on the existing 2D sketch surface
         run: node prototypes/fusion/tests/live-sketch-input-browser.mjs
       - name: All 26 ViewCube directions, projection matrices and model picking
@@ -77,6 +79,8 @@ jobs:
           path: |
             prototypes/fusion/evidence/fusion-live-*.json
             prototypes/fusion/evidence/fusion-live-*.png
+            prototypes/fusion/evidence/fusion-v7-hole-*.json
+            prototypes/fusion/evidence/fusion-v7-hole-*.png
           retention-days: 30
       - name: Stop local build server
         if: always()

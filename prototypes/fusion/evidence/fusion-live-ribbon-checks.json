@@ -47,7 +47,7 @@
   ],
   "placements": 142,
   "missingPlaceholders": 0,
-  "nativeHoleDisabledUntilKernelCommandExists": true,
+  "nativeHoleDisabledUntilCompatibleBodyExists": true,
   "rootOverflow": false,
   "labelsNotClipped": true,
   "pageErrors": [],

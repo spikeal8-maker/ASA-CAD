@@ -41,7 +41,7 @@ try{
  assert.ok(metrics.tabLabels.every(x=>x.overflow<=2),'Russian tab label truncation: '+JSON.stringify(metrics.tabLabels));
  await page.screenshot({path:resolve(out,'fusion-live-ribbon-1366.png')});
  assert.deepEqual(errors,[]);
- const report={status:'PASS',scope:'Actual rendered tool ribbon at 2048x1137 and 1366x768',tabs:counts,placements:142,missingPlaceholders:0,nativeHoleDisabledUntilKernelCommandExists:true,rootOverflow:false,labelsNotClipped:true,pageErrors:errors,pixelParityAccepted:false};
+ const report={status:'PASS',scope:'Actual rendered tool ribbon at 2048x1137 and 1366x768',tabs:counts,placements:142,missingPlaceholders:0,nativeHoleDisabledUntilCompatibleBodyExists:true,rootOverflow:false,labelsNotClipped:true,pageErrors:errors,pixelParityAccepted:false};
  await writeFile(resolve(out,'fusion-live-ribbon-checks.json'),JSON.stringify(report,null,2)+'\n');
  console.log(JSON.stringify(report,null,2));
 }catch(error){console.error(error.stack);await page.screenshot({path:resolve(out,'fusion-live-ribbon-debug.png')}).catch(()=>{});process.exitCode=1;}finally{await browser.close();}

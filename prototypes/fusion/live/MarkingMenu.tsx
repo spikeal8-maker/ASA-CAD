@@ -2,6 +2,7 @@ import React,{useEffect,useRef,useState} from 'react';
 import {action,run,repeat,lastAction,reason,forNative} from './liveActions';
 import {LiveIcon} from './LiveIcon';
 import {navigation} from './navigation';
+import {holeWizard} from './HoleWizard';
 type Props={x:number;y:number;activeCommand?:string|null;commit:()=>void|Promise<void>;cancel:()=>void;close:()=>void};
 type Slot={label:string;id?:string;native?:string;callback?:()=>void;enabled?:boolean;icon:string;submenu?:boolean};
 /** Radial/context presentation delegates to the same product action objects as the ribbon. */
@@ -30,8 +31,8 @@ export function MarkingMenu(p:Props){
   {label:'Окружность',id:'sketch.circle',icon:'sketch.circle'},
  ];
  const resolve=(s:Slot)=>s.id?action(s.id):s.native?forNative(s.native):null;
- const enabled=(s:Slot)=>s.enabled??!!resolve(s)?.enabled;
- const execute=(s:Slot)=>{if(!enabled(s))return;if(s.submenu){s.callback?.();return;}choose(()=>s.callback?s.callback():run(resolve(s)!.id));};
+ const enabled=(s:Slot)=>s.enabled??(s.native==='FusionHoleCommand'?holeWizard.snapshot().eligible&&holeWizard.snapshot().stage==='idle':!!resolve(s)?.enabled);
+ const execute=(s:Slot)=>{if(!enabled(s))return;if(s.submenu){s.callback?.();return;}if(s.native==='FusionHoleCommand'){choose(()=>{holeWizard.start();});return;}choose(()=>s.callback?s.callback():run(resolve(s)!.id));};
  const positions=[[0,-102],[105,-66],[127,-29],[108,8],[0,44],[-112,8],[-133,-29],[-107,-66]];
  const origin={left:Math.max(195,Math.min(innerWidth-195,p.x)),top:Math.max(240,Math.min(innerHeight-445,p.y))};
  useEffect(()=>{ref.current?.focus();},[]);
@@ -42,7 +43,7 @@ export function MarkingMenu(p:Props){
   if(['ArrowDown','ArrowUp','Home','End'].includes(e.key)){e.preventDefault();const bs=[...e.currentTarget.querySelectorAll<HTMLButtonElement>('button:not(:disabled)')],i=bs.indexOf(document.activeElement as HTMLButtonElement);bs[e.key==='Home'?0:e.key==='End'?bs.length-1:(i+(e.key==='ArrowUp'?-1:1)+bs.length)%bs.length]?.focus();}
  }}>
   <div className="marking-center" aria-hidden="true"/>
-  {(sketch?sketchSlots:root).map((s,i)=><button key={(sketch?'sketch-':'root-')+i} type="button" role="menuitem" className="marking-slot" aria-label={s.label} data-marking-slot={i} aria-haspopup={s.submenu?'menu':undefined} disabled={!enabled(s)} title={!enabled(s)?reason(resolve(s)):s.label} style={{left:positions[i][0],top:positions[i][1]}} onClick={()=>execute(s)}><LiveIcon id={s.icon} size={17}/><span>{s.label}</span>{s.submenu&&<b>▾</b>}</button>)}
+  {(sketch?sketchSlots:root).map((s,i)=><button key={(sketch?'sketch-':'root-')+i} type="button" role="menuitem" className="marking-slot" aria-label={s.label} data-marking-slot={i} aria-haspopup={s.submenu?'menu':undefined} disabled={!enabled(s)} title={!enabled(s)?s.native==='FusionHoleCommand'?holeWizard.snapshot().disabledReason:reason(resolve(s)):s.label} style={{left:positions[i][0],top:positions[i][1]}} onClick={()=>execute(s)}><LiveIcon id={s.icon} size={17}/><span>{s.label}</span>{s.submenu&&<b>▾</b>}</button>)}
   <div className="live-menu marking-list" style={{maxHeight:Math.max(150,innerHeight-origin.top-78)}}>
    {sketch&&<button type="button" role="menuitem" onClick={()=>setSketch(false)}><span>‹</span><span>Основное меню</span></button>}
    <button type="button" role="menuitem" disabled={!p.activeCommand} onClick={()=>{p.close();void p.commit();}}><span className="marking-symbol" aria-hidden="true">✓</span><span>ОК</span><small>Enter</small></button>
