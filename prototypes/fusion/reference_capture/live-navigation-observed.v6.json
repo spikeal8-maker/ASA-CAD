@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "source": "Owner-authorized installed Fusion on D2-R2, observation only",
+  "capturedUTC": "2026-11-05T17:13:42.034118+00:00",
+  "nativeVersion": "2706.1.17",
+  "privateScreenshotsNotPublished": true,
+  "observations": [
+    "ViewCube main menu",
+    "Home fixed-distance and fit-to-view submenu",
+    "Set-current-view front/top submenu",
+    "All five cube-size choices",
+    "Right-click root marking menu"
+  ],
+  "implemented": {
+    "cubeDirections": 26,
+    "projections": [
+      "orthographic",
+      "perspective",
+      "mixed"
+    ],
+    "home": [
+      "fixed-distance",
+      "fit-to-view"
+    ],
+    "referenceOrientation": [
+      "front",
+      "top",
+      "reset"
+    ],
+    "sizes": [
+      "automatic",
+      "tiny",
+      "small",
+      "normal",
+      "large"
+    ],
+    "markingRootPositions": 8,
+    "markingSketchPositions": 8
+  },
+  "limits": [
+    "Artwork visual parity not accepted",
+    "Native right-hold radial gesture not completed",
+    "Sketch ViewCube integration not completed",
+    "Not all native menu operations have existing ASA command handlers"
+  ],
+  "sourceFiles": [
+    {
+      "privateFileName": "v6-native-cube-menu-current.png",
+      "sha256": "87ca2da5bda9c6e8010e75833e472eff49108260633d35530d5118e95900ee54",
+      "bytes": 45089
+    },
+    {
+      "privateFileName": "v6-native-marking-menu-current.png",
+      "sha256": "10f4c268caaceab7dfceac6e64886440d2076b435fa391d50abb772ba7f81ee1",
+      "bytes": 71719
+    },
+    {
+      "privateFileName": "v6-native-cube-home-submenu.png",
+      "sha256": "6194254fb0ebb48226cac254b4face5cacdd57723417b0a83bc4172bf8729274",
+      "bytes": 67832
+    },
+    {
+      "privateFileName": "v6-native-cube-orientation-submenu.png",
+      "sha256": "715a68fb77749310cea6fffc1cb22785d578e7a998ee24f5e37fcead296781d9",
+      "bytes": 68025
+    },
+    {
+      "privateFileName": "v6-native-cube-size-submenu-verified.png",
+      "sha256": "99c69a4bde1b1ac8b265b1a9d942777ed42b4dbccbd943f5802ec8eeaa612502",
+      "bytes": 65745
+    }
+  ]
+}

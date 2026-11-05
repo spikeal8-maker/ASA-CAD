@@ -9,7 +9,9 @@
     "prototype": "prototypes/fusion/index.html",
     "sourceSha256": "03387923a761b722c1561e7c95890ccd82858e44183c65cac733f17db755fc99",
     "latestVisualPreview": "prototypes/fusion/fusion-v5.html",
-    "v3InitialSha256": "49db02a584e99462e3b9ea72b723009158f5e625035577019e8235e6f75d65c8"
+    "v3InitialSha256": "49db02a584e99462e3b9ea72b723009158f5e625035577019e8235e6f75d65c8",
+    "latestExecutableCandidate": "prototypes/fusion/live/entry.tsx",
+    "candidateBuildCommand": "node prototypes/fusion/live/run.cjs"
   },
   "choices": [
     {
@@ -59,12 +61,17 @@
     "iconParity": "NOT_ACCEPTED",
     "popups": "PARTIAL_IN_DEMO",
     "gridAndCamera": "2D_DEMO_ONLY",
-    "realCAD": "NOT_CONNECTED",
+    "realCAD": "ISOLATED_COMMON_KERNEL_CANDIDATE",
     "startupSelector": "NOT_IMPLEMENTED",
     "distinctPerCommandOriginalSVGs": 51,
     "v4BrowserSmoke": "PASS_2048_1366_NO_NETWORK",
     "nativeUIObservation": "PARTIAL_SEE_OBSERVED_CASES",
     "nativeDesignCommandCatalog": 180,
-    "defaultDialogSchemasTranscribed": 30
+    "defaultDialogSchemasTranscribed": 30,
+    "productIntegration": "NOT_MERGED",
+    "viewCube3D": "REAL_CAMERA_26_DIRECTIONS_AND_PROJECTION_TESTED",
+    "sketch3DViewCube": "NOT_IMPLEMENTED_EXISTING_2D_SKETCH",
+    "nativeHoleCommand": "NOT_IMPLEMENTED_USE_CIRCLE_THROUGH_CUT",
+    "fullFusionFunctionalParity": "NOT_COMPLETE"
   }
 }
