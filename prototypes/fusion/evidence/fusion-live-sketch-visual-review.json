@@ -1,14 +1,14 @@
 {
+  "schemaVersion": 2,
+  "parityRevision": "fusion-sketch-parity-002",
   "status": "NOT_ACCEPTED",
   "nativeSource": {
-    "captureSource": "Autodesk Fusion API (read-only)",
-    "capturedUTC": "2026-11-04T23:21:11.800744+00:00",
-    "applicationVersion": "2706.1.17",
-    "sourceSchemaVersion": 1,
-    "fileName": "fusion-ui-latest.json",
-    "sha256": "651c01dc6fa0594aead189407c3fe29fb87b75aafefea3ad176b61a6c1617c40"
+    "version": "2706.1.17",
+    "capturedUTC": "2026-11-06T00:43:13.217889+00:00",
+    "sha256": "18be2710ecd716650df37cf1ecff3ff14ff783ddadbdc5d08c438d8de00a9434",
+    "dpi": 110
   },
-  "activeNativeSketchScreenshotAvailable": false,
+  "activeNativeSketchScreenshotAvailable": true,
   "candidateViewports": [
     {
       "width": 2048,
@@ -17,28 +17,28 @@
       "panels": [
         {
           "name": "live-tool live-sketch-tool",
-          "x": 1966.5,
-          "y": 54,
-          "right": 2036.5,
-          "bottom": 95,
-          "width": 70,
-          "height": 41
+          "x": 1953,
+          "y": 64,
+          "right": 1999,
+          "bottom": 108,
+          "width": 46,
+          "height": 44
         },
         {
           "name": "live-sketch-palette",
-          "x": 1782,
-          "y": 278,
-          "right": 2040,
-          "bottom": 611,
-          "width": 258,
-          "height": 333
+          "x": 1757,
+          "y": 298,
+          "right": 2043,
+          "bottom": 967,
+          "width": 286,
+          "height": 669
         },
         {
           "name": "live-navigation",
           "x": 918,
-          "y": 1032,
+          "y": 1046,
           "right": 1130,
-          "bottom": 1061,
+          "bottom": 1075,
           "width": 212,
           "height": 29
         }
@@ -51,28 +51,28 @@
       "panels": [
         {
           "name": "live-tool live-sketch-tool",
-          "x": 1518.5,
-          "y": 54,
-          "right": 1588.5,
-          "bottom": 95,
-          "width": 70,
-          "height": 41
+          "x": 1507,
+          "y": 64,
+          "right": 1553,
+          "bottom": 108,
+          "width": 46,
+          "height": 44
         },
         {
           "name": "live-sketch-palette",
-          "x": 1334,
-          "y": 278,
-          "right": 1592,
-          "bottom": 611,
-          "width": 258,
-          "height": 333
+          "x": 1309,
+          "y": 258,
+          "right": 1595,
+          "bottom": 807,
+          "width": 286,
+          "height": 549
         },
         {
           "name": "live-navigation",
           "x": 694,
-          "y": 795,
+          "y": 809,
           "right": 906,
-          "bottom": 824,
+          "bottom": 838,
           "width": 212,
           "height": 29
         }
@@ -85,28 +85,28 @@
       "panels": [
         {
           "name": "live-tool live-sketch-tool",
-          "x": 1284.5,
-          "y": 54,
-          "right": 1354.5,
-          "bottom": 95,
-          "width": 70,
-          "height": 41
+          "x": 1259,
+          "y": 64,
+          "right": 1305,
+          "bottom": 108,
+          "width": 46,
+          "height": 44
         },
         {
           "name": "live-sketch-palette",
-          "x": 1100,
-          "y": 264,
-          "right": 1358,
-          "bottom": 569,
-          "width": 258,
-          "height": 305
+          "x": 1075,
+          "y": 236,
+          "right": 1361,
+          "bottom": 675,
+          "width": 286,
+          "height": 439
         },
         {
           "name": "live-navigation",
           "x": 577,
-          "y": 663,
+          "y": 677,
           "right": 789,
-          "bottom": 692,
+          "bottom": 706,
           "width": 212,
           "height": 29
         }
@@ -114,86 +114,103 @@
     }
   ],
   "toleranceCssPx": 2,
+  "limitation": "GetDpiForWindow returned 110 DPI, not 110 percent. Native client pixels are retained without resampling. Browser candidates use DPR 1 and 100 percent zoom. Full DPR-1 native parity is not accepted from these captures.",
   "comparisons": [
     {
       "state": "new",
       "candidate": "fusion-live-sketch-workspace-new-2048.png",
-      "native": null,
+      "native": "fusion-parity-native-sketch-empty-2048-dpi110.png",
       "panelDeltaCssPx": null,
       "svgVisualParity": null,
-      "status": "BLOCKED_MISSING_NATIVE_ACTIVE_SKETCH_SCREENSHOT"
+      "status": "AWAITING_VISUAL_REVIEW"
     },
     {
       "state": "create-menu",
       "candidate": "fusion-live-sketch-workspace-create-menu-2048.png",
-      "native": null,
+      "native": "fusion-parity-native-create-menu-2048-dpi110.png",
       "panelDeltaCssPx": null,
       "svgVisualParity": null,
-      "status": "BLOCKED_MISSING_NATIVE_ACTIVE_SKETCH_SCREENSHOT"
+      "status": "AWAITING_VISUAL_REVIEW"
+    },
+    {
+      "state": "line-hover",
+      "candidate": "fusion-live-sketch-workspace-line-hover-2048.png",
+      "native": "fusion-parity-native-line-hover-final-2048-dpi110.png",
+      "panelDeltaCssPx": null,
+      "svgVisualParity": null,
+      "status": "AWAITING_VISUAL_REVIEW"
+    },
+    {
+      "state": "line-tooltip",
+      "candidate": "fusion-live-sketch-workspace-line-tooltip-2048.png",
+      "native": "fusion-parity-native-line-tooltip-final-2048-dpi110.png",
+      "panelDeltaCssPx": null,
+      "svgVisualParity": null,
+      "status": "AWAITING_VISUAL_REVIEW"
     },
     {
       "state": "line",
       "candidate": "fusion-live-sketch-workspace-line-2048.png",
-      "native": null,
+      "native": "fusion-parity-native-line-active-2048-dpi110.png",
       "panelDeltaCssPx": null,
       "svgVisualParity": null,
-      "status": "BLOCKED_MISSING_NATIVE_ACTIVE_SKETCH_SCREENSHOT"
+      "status": "AWAITING_VISUAL_REVIEW"
     },
     {
       "state": "rectangle",
       "candidate": "fusion-live-sketch-workspace-rectangle-2048.png",
-      "native": null,
+      "native": "fusion-parity-native-rectangle-preview-2048-dpi110.png",
       "panelDeltaCssPx": null,
       "svgVisualParity": null,
-      "status": "BLOCKED_MISSING_NATIVE_ACTIVE_SKETCH_SCREENSHOT"
+      "status": "AWAITING_VISUAL_REVIEW"
     },
     {
       "state": "circle-selected",
       "candidate": "fusion-live-sketch-workspace-circle-selected-2048.png",
-      "native": null,
+      "native": "fusion-parity-native-circle-diameter-2048-dpi110.png",
       "panelDeltaCssPx": null,
       "svgVisualParity": null,
-      "status": "BLOCKED_MISSING_NATIVE_ACTIVE_SKETCH_SCREENSHOT"
+      "status": "AWAITING_VISUAL_REVIEW"
     },
     {
       "state": "palette",
       "candidate": "fusion-live-sketch-workspace-palette-2048.png",
-      "native": null,
+      "native": "fusion-parity-native-circle-diameter-2048-dpi110.png",
       "panelDeltaCssPx": null,
       "svgVisualParity": null,
-      "status": "BLOCKED_MISSING_NATIVE_ACTIVE_SKETCH_SCREENSHOT"
+      "status": "AWAITING_VISUAL_REVIEW"
     },
     {
       "state": "constraint",
       "candidate": "fusion-live-sketch-workspace-constraint-2048.png",
-      "native": null,
+      "native": "fusion-parity-native-circle-diameter-2048-dpi110.png",
       "panelDeltaCssPx": null,
       "svgVisualParity": null,
-      "status": "BLOCKED_MISSING_NATIVE_ACTIVE_SKETCH_SCREENSHOT"
-    },
-    {
-      "state": "finished",
-      "candidate": "fusion-live-sketch-workspace-finished-2048.png",
-      "native": null,
-      "panelDeltaCssPx": null,
-      "svgVisualParity": null,
-      "status": "BLOCKED_MISSING_NATIVE_ACTIVE_SKETCH_SCREENSHOT"
+      "status": "AWAITING_VISUAL_REVIEW"
     },
     {
       "state": "context",
       "candidate": "fusion-live-sketch-workspace-context-2048.png",
-      "native": null,
+      "native": "fusion-parity-native-context-empty-safe-2048-dpi110.png",
       "panelDeltaCssPx": null,
       "svgVisualParity": null,
-      "status": "BLOCKED_MISSING_NATIVE_ACTIVE_SKETCH_SCREENSHOT"
+      "status": "AWAITING_VISUAL_REVIEW"
+    },
+    {
+      "state": "context-sketch",
+      "candidate": "fusion-live-sketch-workspace-context-sketch-2048.png",
+      "native": "fusion-parity-native-context-sketch-submenu-2048-dpi110.png",
+      "panelDeltaCssPx": null,
+      "svgVisualParity": null,
+      "status": "AWAITING_VISUAL_REVIEW"
     },
     {
       "state": "cube-normal",
       "candidate": "fusion-live-sketch-workspace-cube-normal-2048.png",
-      "native": null,
+      "native": "fusion-parity-native-circle-diameter-2048-dpi110.png",
       "panelDeltaCssPx": null,
       "svgVisualParity": null,
-      "status": "BLOCKED_MISSING_NATIVE_ACTIVE_SKETCH_SCREENSHOT"
+      "status": "AWAITING_VISUAL_REVIEW"
     }
   ]
 }

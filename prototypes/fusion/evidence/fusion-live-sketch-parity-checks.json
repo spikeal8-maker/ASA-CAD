@@ -1,0 +1,3589 @@
+{
+  "schemaVersion": 2,
+  "parityRevision": "fusion-sketch-parity-002",
+  "referenceCaptureSha256": "18be2710ecd716650df37cf1ecff3ff14ff783ddadbdc5d08c438d8de00a9434",
+  "observationSha256": "102867560dc8d0bce507484b64c2212fcf83a74d410cd2227e8fa4cad6ebf6ad",
+  "testSourceSha256": "2c4fc946e0ff623bf93b4ad562a4b3ba47828105ffacac1eb87ad0e42a0a0a3c",
+  "sourceSnapshotSha256": "ec051a47452a8ef383ad3e0bb91f418bb121f7e84e4de676f25ca85e12332736",
+  "status": "CAPTURED",
+  "functionalStatus": "PASS",
+  "visualParityAccepted": false,
+  "input": "Fresh temporary Playwright browser; real pointer/keyboard and public wheel. No injected application state or document.",
+  "nativeDpi": 110,
+  "nativeDpiPolicy": "GetDpiForWindow returned 110 DPI, not 110 percent. Native client pixels are retained without resampling. Browser candidates use DPR 1 and 100 percent zoom. Full DPR-1 native parity is not accepted from these captures.",
+  "expectedGeometry": {
+    "line": {
+      "from": [
+        -50,
+        -25
+      ],
+      "to": [
+        -20,
+        -20
+      ]
+    },
+    "rectangle": {
+      "from": [
+        0,
+        0
+      ],
+      "to": [
+        60,
+        40
+      ]
+    },
+    "circle": {
+      "center": [
+        30,
+        20
+      ],
+      "diameter": 12
+    },
+    "origin": [
+      1024,
+      606
+    ]
+  },
+  "comparisons": [
+    {
+      "state": "empty",
+      "candidate": {
+        "file": "fusion-live-sketch-parity-empty-2048.png",
+        "sha256": "e370492d4f5e2fe1977ae97b1e8e901c29b3f2d4cf82be80c129b1b0fe006da0",
+        "viewport": {
+          "width": 2048,
+          "height": 1137
+        },
+        "dpr": 1
+      },
+      "native": {
+        "file": "fusion-parity-native-sketch-empty-2048-dpi110.png",
+        "sha256": "98901db51d7c933f78b0217b461e5c49335f92eeb1029453b31f4557dcb1e517",
+        "width": 2048,
+        "height": 1137,
+        "bytesPresentInTestWorkspace": true
+      },
+      "actualBounds": {
+        "quickbar": {
+          "x": 0,
+          "y": 0,
+          "width": 2048,
+          "height": 37
+        },
+        "workspace": {
+          "x": 13,
+          "y": 49,
+          "width": 126,
+          "height": 70
+        },
+        "tabs": {
+          "x": 148,
+          "y": 37,
+          "width": 1900,
+          "height": 27
+        },
+        "scene": {
+          "x": 0,
+          "y": 134,
+          "width": 2048,
+          "height": 946
+        },
+        "palette": {
+          "x": 1757,
+          "y": 298,
+          "width": 286,
+          "height": 599
+        },
+        "cube": {
+          "x": 1928,
+          "y": 184,
+          "width": 70,
+          "height": 70
+        },
+        "navigation": {
+          "x": 918,
+          "y": 1046,
+          "width": 212,
+          "height": 29
+        },
+        "finish": {
+          "x": 1953,
+          "y": 64,
+          "width": 46,
+          "height": 44
+        },
+        "menu": null,
+        "tooltip": null,
+        "context": null,
+        "origin": {
+          "x": 1024,
+          "y": 606.9999592285174
+        },
+        "camera": {
+          "span": 177.0209579665648,
+          "center": [
+            0,
+            0
+          ]
+        },
+        "cubeLabel": "СВЕРХУ",
+        "activeCommand": ""
+      },
+      "measurements": [
+        {
+          "region": "quickbar",
+          "expected": {
+            "x": 0,
+            "y": 0,
+            "height": 37
+          },
+          "actual": {
+            "x": 0,
+            "y": 0,
+            "width": 2048,
+            "height": 37
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "workspace",
+          "expected": {
+            "x": 13,
+            "y": 49,
+            "width": 126,
+            "height": 70
+          },
+          "actual": {
+            "x": 13,
+            "y": 49,
+            "width": 126,
+            "height": 70
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "scene",
+          "expected": {
+            "y": 134
+          },
+          "actual": {
+            "x": 0,
+            "y": 134,
+            "width": 2048,
+            "height": 946
+          },
+          "deltaCssPx": {
+            "y": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "cube",
+          "expected": {
+            "x": 1928,
+            "y": 184,
+            "width": 70,
+            "height": 70
+          },
+          "actual": {
+            "x": 1928,
+            "y": 184,
+            "width": 70,
+            "height": 70
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "origin",
+          "expected": {
+            "x": 1024,
+            "y": 606
+          },
+          "actual": {
+            "x": 1024,
+            "y": 606.9999592285174
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0.9999592285173549
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "palette",
+          "expected": {
+            "x": 1757,
+            "y": 298,
+            "width": 286,
+            "height": 599
+          },
+          "actual": {
+            "x": 1757,
+            "y": 298,
+            "width": 286,
+            "height": 599
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        }
+      ],
+      "measuredStatus": "MATCHES_REFERENCE_CLIENT_PX",
+      "visualStatus": "AWAITING_VISUAL_REVIEW"
+    },
+    {
+      "state": "create-menu",
+      "candidate": {
+        "file": "fusion-live-sketch-parity-create-menu-2048.png",
+        "sha256": "aec6dd0990c5131e6978eab42ccebe8ce63ad10e544ab1b82b0c3daafb82e302",
+        "viewport": {
+          "width": 2048,
+          "height": 1137
+        },
+        "dpr": 1
+      },
+      "native": {
+        "file": "fusion-parity-native-create-menu-2048-dpi110.png",
+        "sha256": "a1b9c83b5226a489078621803a6798a404624e86bb3e8f446ca7ba20b07949d0",
+        "width": 2048,
+        "height": 1137,
+        "bytesPresentInTestWorkspace": true
+      },
+      "actualBounds": {
+        "quickbar": {
+          "x": 0,
+          "y": 0,
+          "width": 2048,
+          "height": 37
+        },
+        "workspace": {
+          "x": 13,
+          "y": 49,
+          "width": 126,
+          "height": 70
+        },
+        "tabs": {
+          "x": 148,
+          "y": 37,
+          "width": 1900,
+          "height": 27
+        },
+        "scene": {
+          "x": 0,
+          "y": 134,
+          "width": 2048,
+          "height": 946
+        },
+        "palette": {
+          "x": 1757,
+          "y": 298,
+          "width": 286,
+          "height": 599
+        },
+        "cube": {
+          "x": 1928,
+          "y": 184,
+          "width": 70,
+          "height": 70
+        },
+        "navigation": {
+          "x": 918,
+          "y": 1046,
+          "width": 212,
+          "height": 29
+        },
+        "finish": {
+          "x": 1953,
+          "y": 64,
+          "width": 46,
+          "height": 44
+        },
+        "menu": {
+          "x": 148,
+          "y": 128,
+          "width": 245,
+          "height": 400
+        },
+        "tooltip": null,
+        "context": null,
+        "origin": {
+          "x": 1024,
+          "y": 606.9999592285174
+        },
+        "camera": {
+          "span": 177.0209579665648,
+          "center": [
+            0,
+            0
+          ]
+        },
+        "cubeLabel": "СВЕРХУ",
+        "activeCommand": ""
+      },
+      "measurements": [
+        {
+          "region": "quickbar",
+          "expected": {
+            "x": 0,
+            "y": 0,
+            "height": 37
+          },
+          "actual": {
+            "x": 0,
+            "y": 0,
+            "width": 2048,
+            "height": 37
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "workspace",
+          "expected": {
+            "x": 13,
+            "y": 49,
+            "width": 126,
+            "height": 70
+          },
+          "actual": {
+            "x": 13,
+            "y": 49,
+            "width": 126,
+            "height": 70
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "scene",
+          "expected": {
+            "y": 134
+          },
+          "actual": {
+            "x": 0,
+            "y": 134,
+            "width": 2048,
+            "height": 946
+          },
+          "deltaCssPx": {
+            "y": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "cube",
+          "expected": {
+            "x": 1928,
+            "y": 184,
+            "width": 70,
+            "height": 70
+          },
+          "actual": {
+            "x": 1928,
+            "y": 184,
+            "width": 70,
+            "height": 70
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "origin",
+          "expected": {
+            "x": 1024,
+            "y": 606
+          },
+          "actual": {
+            "x": 1024,
+            "y": 606.9999592285174
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0.9999592285173549
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "menu",
+          "expected": {
+            "x": 148,
+            "y": 128,
+            "width": 245,
+            "height": 400
+          },
+          "actual": {
+            "x": 148,
+            "y": 128,
+            "width": 245,
+            "height": 400
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        }
+      ],
+      "measuredStatus": "MATCHES_REFERENCE_CLIENT_PX",
+      "visualStatus": "AWAITING_VISUAL_REVIEW"
+    },
+    {
+      "state": "line-hover",
+      "candidate": {
+        "file": "fusion-live-sketch-parity-line-hover-2048.png",
+        "sha256": "9d4b2c79ad6d2a48ffe410a681121d8b4442dc77e4dff630801d35dbb385bf0c",
+        "viewport": {
+          "width": 2048,
+          "height": 1137
+        },
+        "dpr": 1
+      },
+      "native": {
+        "file": "fusion-parity-native-line-hover-final-2048-dpi110.png",
+        "sha256": "3d01659225ff59b389507e752baab70cff9f584310c0e3ba1add8f7866277f12",
+        "width": 2048,
+        "height": 1137,
+        "bytesPresentInTestWorkspace": true
+      },
+      "actualBounds": {
+        "quickbar": {
+          "x": 0,
+          "y": 0,
+          "width": 2048,
+          "height": 37
+        },
+        "workspace": {
+          "x": 13,
+          "y": 49,
+          "width": 126,
+          "height": 70
+        },
+        "tabs": {
+          "x": 148,
+          "y": 37,
+          "width": 1900,
+          "height": 27
+        },
+        "scene": {
+          "x": 0,
+          "y": 134,
+          "width": 2048,
+          "height": 946
+        },
+        "palette": {
+          "x": 1757,
+          "y": 298,
+          "width": 286,
+          "height": 599
+        },
+        "cube": {
+          "x": 1928,
+          "y": 184,
+          "width": 70,
+          "height": 70
+        },
+        "navigation": {
+          "x": 918,
+          "y": 1046,
+          "width": 212,
+          "height": 29
+        },
+        "finish": {
+          "x": 1953,
+          "y": 64,
+          "width": 46,
+          "height": 44
+        },
+        "menu": null,
+        "tooltip": {
+          "x": 145.5,
+          "y": 137,
+          "width": 81.9375,
+          "height": 28
+        },
+        "context": null,
+        "origin": {
+          "x": 1024,
+          "y": 606.9999592285174
+        },
+        "camera": {
+          "span": 177.0209579665648,
+          "center": [
+            0,
+            0
+          ]
+        },
+        "cubeLabel": "СВЕРХУ",
+        "activeCommand": ""
+      },
+      "measurements": [
+        {
+          "region": "quickbar",
+          "expected": {
+            "x": 0,
+            "y": 0,
+            "height": 37
+          },
+          "actual": {
+            "x": 0,
+            "y": 0,
+            "width": 2048,
+            "height": 37
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "workspace",
+          "expected": {
+            "x": 13,
+            "y": 49,
+            "width": 126,
+            "height": 70
+          },
+          "actual": {
+            "x": 13,
+            "y": 49,
+            "width": 126,
+            "height": 70
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "scene",
+          "expected": {
+            "y": 134
+          },
+          "actual": {
+            "x": 0,
+            "y": 134,
+            "width": 2048,
+            "height": 946
+          },
+          "deltaCssPx": {
+            "y": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "cube",
+          "expected": {
+            "x": 1928,
+            "y": 184,
+            "width": 70,
+            "height": 70
+          },
+          "actual": {
+            "x": 1928,
+            "y": 184,
+            "width": 70,
+            "height": 70
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "origin",
+          "expected": {
+            "x": 1024,
+            "y": 606
+          },
+          "actual": {
+            "x": 1024,
+            "y": 606.9999592285174
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0.9999592285173549
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        }
+      ],
+      "measuredStatus": "MATCHES_REFERENCE_CLIENT_PX",
+      "visualStatus": "AWAITING_VISUAL_REVIEW"
+    },
+    {
+      "state": "line-tooltip",
+      "candidate": {
+        "file": "fusion-live-sketch-parity-line-tooltip-2048.png",
+        "sha256": "104e523e305d832a41fcf4e5d7e3e4af092279449cd00229233cd25c69674c62",
+        "viewport": {
+          "width": 2048,
+          "height": 1137
+        },
+        "dpr": 1
+      },
+      "native": {
+        "file": "fusion-parity-native-line-tooltip-final-2048-dpi110.png",
+        "sha256": "ffa43efac38804fa98136c5791572e6eb896467e220b1003fecf9b81175b8b7b",
+        "width": 2048,
+        "height": 1137,
+        "bytesPresentInTestWorkspace": true
+      },
+      "actualBounds": {
+        "quickbar": {
+          "x": 0,
+          "y": 0,
+          "width": 2048,
+          "height": 37
+        },
+        "workspace": {
+          "x": 13,
+          "y": 49,
+          "width": 126,
+          "height": 70
+        },
+        "tabs": {
+          "x": 148,
+          "y": 37,
+          "width": 1900,
+          "height": 27
+        },
+        "scene": {
+          "x": 0,
+          "y": 134,
+          "width": 2048,
+          "height": 946
+        },
+        "palette": {
+          "x": 1757,
+          "y": 298,
+          "width": 286,
+          "height": 599
+        },
+        "cube": {
+          "x": 1928,
+          "y": 184,
+          "width": 70,
+          "height": 70
+        },
+        "navigation": {
+          "x": 918,
+          "y": 1046,
+          "width": 212,
+          "height": 29
+        },
+        "finish": {
+          "x": 1953,
+          "y": 64,
+          "width": 46,
+          "height": 44
+        },
+        "menu": null,
+        "tooltip": {
+          "x": 145.5,
+          "y": 134,
+          "width": 385,
+          "height": 418
+        },
+        "context": null,
+        "origin": {
+          "x": 1024,
+          "y": 606.9999592285174
+        },
+        "camera": {
+          "span": 177.0209579665648,
+          "center": [
+            0,
+            0
+          ]
+        },
+        "cubeLabel": "СВЕРХУ",
+        "activeCommand": ""
+      },
+      "measurements": [
+        {
+          "region": "quickbar",
+          "expected": {
+            "x": 0,
+            "y": 0,
+            "height": 37
+          },
+          "actual": {
+            "x": 0,
+            "y": 0,
+            "width": 2048,
+            "height": 37
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "workspace",
+          "expected": {
+            "x": 13,
+            "y": 49,
+            "width": 126,
+            "height": 70
+          },
+          "actual": {
+            "x": 13,
+            "y": 49,
+            "width": 126,
+            "height": 70
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "scene",
+          "expected": {
+            "y": 134
+          },
+          "actual": {
+            "x": 0,
+            "y": 134,
+            "width": 2048,
+            "height": 946
+          },
+          "deltaCssPx": {
+            "y": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "cube",
+          "expected": {
+            "x": 1928,
+            "y": 184,
+            "width": 70,
+            "height": 70
+          },
+          "actual": {
+            "x": 1928,
+            "y": 184,
+            "width": 70,
+            "height": 70
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "origin",
+          "expected": {
+            "x": 1024,
+            "y": 606
+          },
+          "actual": {
+            "x": 1024,
+            "y": 606.9999592285174
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0.9999592285173549
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "tooltip",
+          "expected": {
+            "width": 385,
+            "height": 418
+          },
+          "actual": {
+            "x": 145.5,
+            "y": 134,
+            "width": 385,
+            "height": 418
+          },
+          "deltaCssPx": {
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        }
+      ],
+      "measuredStatus": "MATCHES_REFERENCE_CLIENT_PX",
+      "visualStatus": "AWAITING_VISUAL_REVIEW"
+    },
+    {
+      "state": "line-active",
+      "candidate": {
+        "file": "fusion-live-sketch-parity-line-active-2048.png",
+        "sha256": "4d7426c22da52bcab479f0972ab44baa7d7cc37c8c26cdf4b1ba9ce9533a1206",
+        "viewport": {
+          "width": 2048,
+          "height": 1137
+        },
+        "dpr": 1
+      },
+      "native": {
+        "file": "fusion-parity-native-line-active-2048-dpi110.png",
+        "sha256": "d0ddf952a2744e124475f184dbb17f08861724923c412cac5689d5a652b8416c",
+        "width": 2048,
+        "height": 1137,
+        "bytesPresentInTestWorkspace": true
+      },
+      "actualBounds": {
+        "quickbar": {
+          "x": 0,
+          "y": 0,
+          "width": 2048,
+          "height": 37
+        },
+        "workspace": {
+          "x": 13,
+          "y": 49,
+          "width": 126,
+          "height": 70
+        },
+        "tabs": {
+          "x": 148,
+          "y": 37,
+          "width": 1900,
+          "height": 27
+        },
+        "scene": {
+          "x": 0,
+          "y": 134,
+          "width": 2048,
+          "height": 946
+        },
+        "palette": {
+          "x": 1757,
+          "y": 298,
+          "width": 286,
+          "height": 679
+        },
+        "cube": {
+          "x": 1928,
+          "y": 184,
+          "width": 70,
+          "height": 70
+        },
+        "navigation": {
+          "x": 918,
+          "y": 1046,
+          "width": 212,
+          "height": 29
+        },
+        "finish": {
+          "x": 1953,
+          "y": 64,
+          "width": 46,
+          "height": 44
+        },
+        "menu": null,
+        "tooltip": null,
+        "context": null,
+        "origin": {
+          "x": 1024,
+          "y": 606.9999592285174
+        },
+        "camera": {
+          "span": 177.0209579665648,
+          "center": [
+            0,
+            0
+          ]
+        },
+        "cubeLabel": "СВЕРХУ",
+        "activeCommand": "sketch.line"
+      },
+      "measurements": [
+        {
+          "region": "quickbar",
+          "expected": {
+            "x": 0,
+            "y": 0,
+            "height": 37
+          },
+          "actual": {
+            "x": 0,
+            "y": 0,
+            "width": 2048,
+            "height": 37
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "workspace",
+          "expected": {
+            "x": 13,
+            "y": 49,
+            "width": 126,
+            "height": 70
+          },
+          "actual": {
+            "x": 13,
+            "y": 49,
+            "width": 126,
+            "height": 70
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "scene",
+          "expected": {
+            "y": 134
+          },
+          "actual": {
+            "x": 0,
+            "y": 134,
+            "width": 2048,
+            "height": 946
+          },
+          "deltaCssPx": {
+            "y": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "cube",
+          "expected": {
+            "x": 1928,
+            "y": 184,
+            "width": 70,
+            "height": 70
+          },
+          "actual": {
+            "x": 1928,
+            "y": 184,
+            "width": 70,
+            "height": 70
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "origin",
+          "expected": {
+            "x": 1024,
+            "y": 606
+          },
+          "actual": {
+            "x": 1024,
+            "y": 606.9999592285174
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0.9999592285173549
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        }
+      ],
+      "measuredStatus": "MATCHES_REFERENCE_CLIENT_PX",
+      "visualStatus": "AWAITING_VISUAL_REVIEW"
+    },
+    {
+      "state": "line-preview",
+      "candidate": {
+        "file": "fusion-live-sketch-parity-line-preview-2048.png",
+        "sha256": "e04378e2155167b2014993638274d8ebe2470d92557ac5055e945baee5b8ffd3",
+        "viewport": {
+          "width": 2048,
+          "height": 1137
+        },
+        "dpr": 1
+      },
+      "native": {
+        "file": "fusion-parity-native-line-preview-2048-dpi110.png",
+        "sha256": "8a6819d2465911db4dc70a9871838358fe0a7c1657553761e12d11470e2b72bb",
+        "width": 2048,
+        "height": 1137,
+        "bytesPresentInTestWorkspace": true
+      },
+      "actualBounds": {
+        "quickbar": {
+          "x": 0,
+          "y": 0,
+          "width": 2048,
+          "height": 37
+        },
+        "workspace": {
+          "x": 13,
+          "y": 49,
+          "width": 126,
+          "height": 70
+        },
+        "tabs": {
+          "x": 148,
+          "y": 37,
+          "width": 1900,
+          "height": 27
+        },
+        "scene": {
+          "x": 0,
+          "y": 134,
+          "width": 2048,
+          "height": 946
+        },
+        "palette": {
+          "x": 1757,
+          "y": 298,
+          "width": 286,
+          "height": 679
+        },
+        "cube": {
+          "x": 1928,
+          "y": 184,
+          "width": 70,
+          "height": 70
+        },
+        "navigation": {
+          "x": 918,
+          "y": 1046,
+          "width": 212,
+          "height": 29
+        },
+        "finish": {
+          "x": 1953,
+          "y": 64,
+          "width": 46,
+          "height": 44
+        },
+        "menu": null,
+        "tooltip": null,
+        "context": null,
+        "origin": {
+          "x": 1024,
+          "y": 606.9999592285174
+        },
+        "camera": {
+          "span": 177.0209579665648,
+          "center": [
+            0,
+            0
+          ]
+        },
+        "cubeLabel": "СВЕРХУ",
+        "activeCommand": "sketch.line"
+      },
+      "measurements": [
+        {
+          "region": "quickbar",
+          "expected": {
+            "x": 0,
+            "y": 0,
+            "height": 37
+          },
+          "actual": {
+            "x": 0,
+            "y": 0,
+            "width": 2048,
+            "height": 37
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "workspace",
+          "expected": {
+            "x": 13,
+            "y": 49,
+            "width": 126,
+            "height": 70
+          },
+          "actual": {
+            "x": 13,
+            "y": 49,
+            "width": 126,
+            "height": 70
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "scene",
+          "expected": {
+            "y": 134
+          },
+          "actual": {
+            "x": 0,
+            "y": 134,
+            "width": 2048,
+            "height": 946
+          },
+          "deltaCssPx": {
+            "y": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "cube",
+          "expected": {
+            "x": 1928,
+            "y": 184,
+            "width": 70,
+            "height": 70
+          },
+          "actual": {
+            "x": 1928,
+            "y": 184,
+            "width": 70,
+            "height": 70
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "origin",
+          "expected": {
+            "x": 1024,
+            "y": 606
+          },
+          "actual": {
+            "x": 1024,
+            "y": 606.9999592285174
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0.9999592285173549
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        }
+      ],
+      "measuredStatus": "MATCHES_REFERENCE_CLIENT_PX",
+      "visualStatus": "AWAITING_VISUAL_REVIEW",
+      "pendingGeometry": {
+        "from": [
+          -50,
+          -25
+        ],
+        "to": [
+          -20,
+          -20
+        ]
+      },
+      "previewGeometry": [
+        {
+          "attributes": {
+            "x1": -50,
+            "y1": 25,
+            "x2": -20,
+            "y2": 20
+          },
+          "screenTransform": [
+            5.343999773817399,
+            0,
+            0,
+            5.343999773817399,
+            1024,
+            606.9999592285174
+          ],
+          "clientBounds": {
+            "x": 756.7999877929688,
+            "y": 713.8799438476562,
+            "width": 160.32000732421875,
+            "height": 26.72003173828125
+          },
+          "stroke": "rgb(77, 77, 77)",
+          "strokeWidth": "1px"
+        }
+      ]
+    },
+    {
+      "state": "rectangle-preview",
+      "candidate": {
+        "file": "fusion-live-sketch-parity-rectangle-preview-2048.png",
+        "sha256": "11261d8d21364f263c3fe037683c54d5be7114acaf3629612a2d495cc7bd9a4a",
+        "viewport": {
+          "width": 2048,
+          "height": 1137
+        },
+        "dpr": 1
+      },
+      "native": {
+        "file": "fusion-parity-native-rectangle-preview-2048-dpi110.png",
+        "sha256": "ab3122c3cc8d58f78488cf8068f080a53be33af41844043afd88f62c017e6790",
+        "width": 2048,
+        "height": 1137,
+        "bytesPresentInTestWorkspace": true
+      },
+      "actualBounds": {
+        "quickbar": {
+          "x": 0,
+          "y": 0,
+          "width": 2048,
+          "height": 37
+        },
+        "workspace": {
+          "x": 13,
+          "y": 49,
+          "width": 126,
+          "height": 70
+        },
+        "tabs": {
+          "x": 148,
+          "y": 37,
+          "width": 1900,
+          "height": 27
+        },
+        "scene": {
+          "x": 0,
+          "y": 134,
+          "width": 2048,
+          "height": 946
+        },
+        "palette": {
+          "x": 1757,
+          "y": 298,
+          "width": 286,
+          "height": 746
+        },
+        "cube": {
+          "x": 1928,
+          "y": 184,
+          "width": 70,
+          "height": 70
+        },
+        "navigation": {
+          "x": 918,
+          "y": 1046,
+          "width": 212,
+          "height": 29
+        },
+        "finish": {
+          "x": 1953,
+          "y": 64,
+          "width": 46,
+          "height": 44
+        },
+        "menu": null,
+        "tooltip": null,
+        "context": null,
+        "origin": {
+          "x": 1024,
+          "y": 606.9999592285174
+        },
+        "camera": {
+          "span": 177.0209579665648,
+          "center": [
+            0,
+            0
+          ]
+        },
+        "cubeLabel": "СВЕРХУ",
+        "activeCommand": "sketch.rectangle"
+      },
+      "measurements": [
+        {
+          "region": "quickbar",
+          "expected": {
+            "x": 0,
+            "y": 0,
+            "height": 37
+          },
+          "actual": {
+            "x": 0,
+            "y": 0,
+            "width": 2048,
+            "height": 37
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "workspace",
+          "expected": {
+            "x": 13,
+            "y": 49,
+            "width": 126,
+            "height": 70
+          },
+          "actual": {
+            "x": 13,
+            "y": 49,
+            "width": 126,
+            "height": 70
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "scene",
+          "expected": {
+            "y": 134
+          },
+          "actual": {
+            "x": 0,
+            "y": 134,
+            "width": 2048,
+            "height": 946
+          },
+          "deltaCssPx": {
+            "y": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "cube",
+          "expected": {
+            "x": 1928,
+            "y": 184,
+            "width": 70,
+            "height": 70
+          },
+          "actual": {
+            "x": 1928,
+            "y": 184,
+            "width": 70,
+            "height": 70
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "origin",
+          "expected": {
+            "x": 1024,
+            "y": 606
+          },
+          "actual": {
+            "x": 1024,
+            "y": 606.9999592285174
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0.9999592285173549
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        }
+      ],
+      "measuredStatus": "MATCHES_REFERENCE_CLIENT_PX",
+      "visualStatus": "AWAITING_VISUAL_REVIEW",
+      "pendingGeometry": {
+        "from": [
+          0,
+          0
+        ],
+        "to": [
+          60,
+          40
+        ]
+      },
+      "previewGeometry": [
+        {
+          "attributes": {
+            "x1": 0,
+            "y1": 0,
+            "x2": 60,
+            "y2": 0
+          },
+          "screenTransform": [
+            5.343999773817399,
+            0,
+            0,
+            5.343999773817399,
+            1024,
+            606.9999592285174
+          ],
+          "clientBounds": {
+            "x": 1024,
+            "y": 607,
+            "width": 320.6400146484375,
+            "height": 0
+          },
+          "stroke": "rgb(77, 77, 77)",
+          "strokeWidth": "1px"
+        },
+        {
+          "attributes": {
+            "x1": 60,
+            "y1": 0,
+            "x2": 60,
+            "y2": -40
+          },
+          "screenTransform": [
+            5.343999773817399,
+            0,
+            0,
+            5.343999773817399,
+            1024,
+            606.9999592285174
+          ],
+          "clientBounds": {
+            "x": 1344.6400146484375,
+            "y": 393.2399597167969,
+            "width": 0,
+            "height": 213.76004028320312
+          },
+          "stroke": "rgb(77, 77, 77)",
+          "strokeWidth": "1px"
+        },
+        {
+          "attributes": {
+            "x1": 60,
+            "y1": -40,
+            "x2": 0,
+            "y2": -40
+          },
+          "screenTransform": [
+            5.343999773817399,
+            0,
+            0,
+            5.343999773817399,
+            1024,
+            606.9999592285174
+          ],
+          "clientBounds": {
+            "x": 1024,
+            "y": 393.2399597167969,
+            "width": 320.6400146484375,
+            "height": 0
+          },
+          "stroke": "rgb(77, 77, 77)",
+          "strokeWidth": "1px"
+        },
+        {
+          "attributes": {
+            "x1": 0,
+            "y1": -40,
+            "x2": 0,
+            "y2": 0
+          },
+          "screenTransform": [
+            5.343999773817399,
+            0,
+            0,
+            5.343999773817399,
+            1024,
+            606.9999592285174
+          ],
+          "clientBounds": {
+            "x": 1024,
+            "y": 393.2399597167969,
+            "width": 0,
+            "height": 213.76004028320312
+          },
+          "stroke": "rgb(77, 77, 77)",
+          "strokeWidth": "1px"
+        }
+      ]
+    },
+    {
+      "state": "circle-preview",
+      "candidate": {
+        "file": "fusion-live-sketch-parity-circle-preview-2048.png",
+        "sha256": "f4736ffdc9e9ae7371d84230cefa8784de5b92aa842ff97457aa4ed0c8d001c3",
+        "viewport": {
+          "width": 2048,
+          "height": 1137
+        },
+        "dpr": 1
+      },
+      "native": {
+        "file": "fusion-parity-native-circle-preview-2048-dpi110.png",
+        "sha256": "5681c9fef5063fd50a2dae87b870be873b5265155761d9d9c61f9cb72351b4a8",
+        "width": 2048,
+        "height": 1137,
+        "bytesPresentInTestWorkspace": true
+      },
+      "actualBounds": {
+        "quickbar": {
+          "x": 0,
+          "y": 0,
+          "width": 2048,
+          "height": 37
+        },
+        "workspace": {
+          "x": 13,
+          "y": 49,
+          "width": 126,
+          "height": 70
+        },
+        "tabs": {
+          "x": 148,
+          "y": 37,
+          "width": 1900,
+          "height": 27
+        },
+        "scene": {
+          "x": 0,
+          "y": 134,
+          "width": 2048,
+          "height": 946
+        },
+        "palette": {
+          "x": 1757,
+          "y": 298,
+          "width": 286,
+          "height": 746
+        },
+        "cube": {
+          "x": 1928,
+          "y": 184,
+          "width": 70,
+          "height": 70
+        },
+        "navigation": {
+          "x": 918,
+          "y": 1046,
+          "width": 212,
+          "height": 29
+        },
+        "finish": {
+          "x": 1953,
+          "y": 64,
+          "width": 46,
+          "height": 44
+        },
+        "menu": null,
+        "tooltip": null,
+        "context": null,
+        "origin": {
+          "x": 1024,
+          "y": 606.9999592285174
+        },
+        "camera": {
+          "span": 177.0209579665648,
+          "center": [
+            0,
+            0
+          ]
+        },
+        "cubeLabel": "СВЕРХУ",
+        "activeCommand": "sketch.circle"
+      },
+      "measurements": [
+        {
+          "region": "quickbar",
+          "expected": {
+            "x": 0,
+            "y": 0,
+            "height": 37
+          },
+          "actual": {
+            "x": 0,
+            "y": 0,
+            "width": 2048,
+            "height": 37
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "workspace",
+          "expected": {
+            "x": 13,
+            "y": 49,
+            "width": 126,
+            "height": 70
+          },
+          "actual": {
+            "x": 13,
+            "y": 49,
+            "width": 126,
+            "height": 70
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "scene",
+          "expected": {
+            "y": 134
+          },
+          "actual": {
+            "x": 0,
+            "y": 134,
+            "width": 2048,
+            "height": 946
+          },
+          "deltaCssPx": {
+            "y": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "cube",
+          "expected": {
+            "x": 1928,
+            "y": 184,
+            "width": 70,
+            "height": 70
+          },
+          "actual": {
+            "x": 1928,
+            "y": 184,
+            "width": 70,
+            "height": 70
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "origin",
+          "expected": {
+            "x": 1024,
+            "y": 606
+          },
+          "actual": {
+            "x": 1024,
+            "y": 606.9999592285174
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0.9999592285173549
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        }
+      ],
+      "measuredStatus": "MATCHES_REFERENCE_CLIENT_PX",
+      "visualStatus": "AWAITING_VISUAL_REVIEW",
+      "pendingGeometry": {
+        "center": [
+          30,
+          20
+        ],
+        "diameter": 10
+      },
+      "previewGeometry": [
+        {
+          "attributes": {
+            "cx": 30,
+            "cy": -20,
+            "r": 5
+          },
+          "screenTransform": [
+            5.343999773817399,
+            0,
+            0,
+            5.343999773817399,
+            1024,
+            606.9999592285174
+          ],
+          "clientBounds": {
+            "x": 1157.5999755859375,
+            "y": 473.39996337890625,
+            "width": 53.4400634765625,
+            "height": 53.44000244140625
+          },
+          "stroke": "rgb(77, 77, 77)",
+          "strokeWidth": "1px"
+        }
+      ],
+      "note": "The native preview shows diameter 10. The next real radius click is 6 with snap disabled, followed by the driving diameter 12 command."
+    },
+    {
+      "state": "circle-diameter",
+      "candidate": {
+        "file": "fusion-live-sketch-parity-circle-diameter-2048.png",
+        "sha256": "d4dee67c6f9e952e8994db2352bd2edb7b4d9894bb9b8f37447b760c0a0ef038",
+        "viewport": {
+          "width": 2048,
+          "height": 1137
+        },
+        "dpr": 1
+      },
+      "native": {
+        "file": "fusion-parity-native-circle-diameter-2048-dpi110.png",
+        "sha256": "11c3e4334fa5e5c53d48061b70560493fba139201326384bd72ecc92adafb38f",
+        "width": 2048,
+        "height": 1137,
+        "bytesPresentInTestWorkspace": true
+      },
+      "actualBounds": {
+        "quickbar": {
+          "x": 0,
+          "y": 0,
+          "width": 2048,
+          "height": 37
+        },
+        "workspace": {
+          "x": 13,
+          "y": 49,
+          "width": 126,
+          "height": 70
+        },
+        "tabs": {
+          "x": 148,
+          "y": 37,
+          "width": 1900,
+          "height": 27
+        },
+        "scene": {
+          "x": 0,
+          "y": 134,
+          "width": 2048,
+          "height": 946
+        },
+        "palette": {
+          "x": 1757,
+          "y": 298,
+          "width": 286,
+          "height": 669
+        },
+        "cube": {
+          "x": 1928,
+          "y": 184,
+          "width": 70,
+          "height": 70
+        },
+        "navigation": {
+          "x": 918,
+          "y": 1046,
+          "width": 212,
+          "height": 29
+        },
+        "finish": {
+          "x": 1953,
+          "y": 64,
+          "width": 46,
+          "height": 44
+        },
+        "menu": null,
+        "tooltip": null,
+        "context": null,
+        "origin": {
+          "x": 1024,
+          "y": 606.9999592285174
+        },
+        "camera": {
+          "span": 177.0209579665648,
+          "center": [
+            0,
+            0
+          ]
+        },
+        "cubeLabel": "СВЕРХУ",
+        "activeCommand": ""
+      },
+      "measurements": [
+        {
+          "region": "quickbar",
+          "expected": {
+            "x": 0,
+            "y": 0,
+            "height": 37
+          },
+          "actual": {
+            "x": 0,
+            "y": 0,
+            "width": 2048,
+            "height": 37
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "workspace",
+          "expected": {
+            "x": 13,
+            "y": 49,
+            "width": 126,
+            "height": 70
+          },
+          "actual": {
+            "x": 13,
+            "y": 49,
+            "width": 126,
+            "height": 70
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "scene",
+          "expected": {
+            "y": 134
+          },
+          "actual": {
+            "x": 0,
+            "y": 134,
+            "width": 2048,
+            "height": 946
+          },
+          "deltaCssPx": {
+            "y": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "cube",
+          "expected": {
+            "x": 1928,
+            "y": 184,
+            "width": 70,
+            "height": 70
+          },
+          "actual": {
+            "x": 1928,
+            "y": 184,
+            "width": 70,
+            "height": 70
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "origin",
+          "expected": {
+            "x": 1024,
+            "y": 606
+          },
+          "actual": {
+            "x": 1024,
+            "y": 606.9999592285174
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0.9999592285173549
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        }
+      ],
+      "measuredStatus": "MATCHES_REFERENCE_CLIENT_PX",
+      "visualStatus": "AWAITING_VISUAL_REVIEW"
+    },
+    {
+      "state": "palette",
+      "candidate": {
+        "file": "fusion-live-sketch-parity-palette-2048.png",
+        "sha256": "cbb3f34627a2a520fd8c79ce06df2a9321e21d9f69952f4b10f88f0207077456",
+        "viewport": {
+          "width": 2048,
+          "height": 1137
+        },
+        "dpr": 1
+      },
+      "native": {
+        "file": "fusion-parity-native-circle-diameter-2048-dpi110.png",
+        "sha256": "11c3e4334fa5e5c53d48061b70560493fba139201326384bd72ecc92adafb38f",
+        "width": 2048,
+        "height": 1137,
+        "bytesPresentInTestWorkspace": true
+      },
+      "actualBounds": {
+        "quickbar": {
+          "x": 0,
+          "y": 0,
+          "width": 2048,
+          "height": 37
+        },
+        "workspace": {
+          "x": 13,
+          "y": 49,
+          "width": 126,
+          "height": 70
+        },
+        "tabs": {
+          "x": 148,
+          "y": 37,
+          "width": 1900,
+          "height": 27
+        },
+        "scene": {
+          "x": 0,
+          "y": 134,
+          "width": 2048,
+          "height": 946
+        },
+        "palette": {
+          "x": 1757,
+          "y": 298,
+          "width": 286,
+          "height": 669
+        },
+        "cube": {
+          "x": 1928,
+          "y": 184,
+          "width": 70,
+          "height": 70
+        },
+        "navigation": {
+          "x": 918,
+          "y": 1046,
+          "width": 212,
+          "height": 29
+        },
+        "finish": {
+          "x": 1953,
+          "y": 64,
+          "width": 46,
+          "height": 44
+        },
+        "menu": null,
+        "tooltip": null,
+        "context": null,
+        "origin": {
+          "x": 1024,
+          "y": 606.9999592285174
+        },
+        "camera": {
+          "span": 177.0209579665648,
+          "center": [
+            0,
+            0
+          ]
+        },
+        "cubeLabel": "СВЕРХУ",
+        "activeCommand": ""
+      },
+      "measurements": [
+        {
+          "region": "quickbar",
+          "expected": {
+            "x": 0,
+            "y": 0,
+            "height": 37
+          },
+          "actual": {
+            "x": 0,
+            "y": 0,
+            "width": 2048,
+            "height": 37
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "workspace",
+          "expected": {
+            "x": 13,
+            "y": 49,
+            "width": 126,
+            "height": 70
+          },
+          "actual": {
+            "x": 13,
+            "y": 49,
+            "width": 126,
+            "height": 70
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "scene",
+          "expected": {
+            "y": 134
+          },
+          "actual": {
+            "x": 0,
+            "y": 134,
+            "width": 2048,
+            "height": 946
+          },
+          "deltaCssPx": {
+            "y": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "cube",
+          "expected": {
+            "x": 1928,
+            "y": 184,
+            "width": 70,
+            "height": 70
+          },
+          "actual": {
+            "x": 1928,
+            "y": 184,
+            "width": 70,
+            "height": 70
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "origin",
+          "expected": {
+            "x": 1024,
+            "y": 606
+          },
+          "actual": {
+            "x": 1024,
+            "y": 606.9999592285174
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0.9999592285173549
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "palette",
+          "expected": {
+            "x": 1757,
+            "y": 298,
+            "width": 286
+          },
+          "actual": {
+            "x": 1757,
+            "y": 298,
+            "width": 286,
+            "height": 669
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        }
+      ],
+      "measuredStatus": "MATCHES_REFERENCE_CLIENT_PX",
+      "visualStatus": "AWAITING_VISUAL_REVIEW",
+      "paletteState": "nonempty under-constrained sketch; empty-palette height is intentionally not used"
+    },
+    {
+      "state": "context-circle",
+      "candidate": {
+        "file": "fusion-live-sketch-parity-context-circle-2048.png",
+        "sha256": "a7c4a30ed1d958b32a33191fc582fb48e549c44f0895a92500738cf93b3a349a",
+        "viewport": {
+          "width": 2048,
+          "height": 1137
+        },
+        "dpr": 1
+      },
+      "native": {
+        "file": "fusion-parity-native-context-circle-2048-dpi110.png",
+        "sha256": "1abcdb053af1ceb16b03bf51499f32fe7b1a50db373bc5eb1a08542455c54bbb",
+        "width": 2048,
+        "height": 1137,
+        "bytesPresentInTestWorkspace": true
+      },
+      "actualBounds": {
+        "quickbar": {
+          "x": 0,
+          "y": 0,
+          "width": 2048,
+          "height": 37
+        },
+        "workspace": {
+          "x": 13,
+          "y": 49,
+          "width": 126,
+          "height": 70
+        },
+        "tabs": {
+          "x": 148,
+          "y": 37,
+          "width": 1900,
+          "height": 27
+        },
+        "scene": {
+          "x": 0,
+          "y": 134,
+          "width": 2048,
+          "height": 946
+        },
+        "palette": {
+          "x": 1757,
+          "y": 298,
+          "width": 286,
+          "height": 669
+        },
+        "cube": {
+          "x": 1928,
+          "y": 184,
+          "width": 70,
+          "height": 70
+        },
+        "navigation": {
+          "x": 918,
+          "y": 1046,
+          "width": 212,
+          "height": 29
+        },
+        "finish": {
+          "x": 1953,
+          "y": 64,
+          "width": 46,
+          "height": 44
+        },
+        "menu": null,
+        "tooltip": null,
+        "context": {
+          "x": 1216,
+          "y": 500,
+          "width": 1,
+          "height": 1
+        },
+        "origin": {
+          "x": 1024,
+          "y": 606.9999592285174
+        },
+        "camera": {
+          "span": 177.0209579665648,
+          "center": [
+            0,
+            0
+          ]
+        },
+        "cubeLabel": "СВЕРХУ",
+        "activeCommand": ""
+      },
+      "measurements": [
+        {
+          "region": "quickbar",
+          "expected": {
+            "x": 0,
+            "y": 0,
+            "height": 37
+          },
+          "actual": {
+            "x": 0,
+            "y": 0,
+            "width": 2048,
+            "height": 37
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "workspace",
+          "expected": {
+            "x": 13,
+            "y": 49,
+            "width": 126,
+            "height": 70
+          },
+          "actual": {
+            "x": 13,
+            "y": 49,
+            "width": 126,
+            "height": 70
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "scene",
+          "expected": {
+            "y": 134
+          },
+          "actual": {
+            "x": 0,
+            "y": 134,
+            "width": 2048,
+            "height": 946
+          },
+          "deltaCssPx": {
+            "y": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "cube",
+          "expected": {
+            "x": 1928,
+            "y": 184,
+            "width": 70,
+            "height": 70
+          },
+          "actual": {
+            "x": 1928,
+            "y": 184,
+            "width": 70,
+            "height": 70
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "origin",
+          "expected": {
+            "x": 1024,
+            "y": 606
+          },
+          "actual": {
+            "x": 1024,
+            "y": 606.9999592285174
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0.9999592285173549
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        }
+      ],
+      "measuredStatus": "MATCHES_REFERENCE_CLIENT_PX",
+      "visualStatus": "AWAITING_VISUAL_REVIEW"
+    },
+    {
+      "state": "context-sketch",
+      "candidate": {
+        "file": "fusion-live-sketch-parity-context-sketch-2048.png",
+        "sha256": "127dfeedf6df0b0301dba3f17cd73358f929769e84342b9264bc98a923e5a358",
+        "viewport": {
+          "width": 2048,
+          "height": 1137
+        },
+        "dpr": 1
+      },
+      "native": {
+        "file": "fusion-parity-native-context-sketch-submenu-2048-dpi110.png",
+        "sha256": "684792522c82662f639e46228b2cc282cdec93c0af004860de3c52d7e7ac0981",
+        "width": 2048,
+        "height": 1137,
+        "bytesPresentInTestWorkspace": true
+      },
+      "actualBounds": {
+        "quickbar": {
+          "x": 0,
+          "y": 0,
+          "width": 2048,
+          "height": 37
+        },
+        "workspace": {
+          "x": 13,
+          "y": 49,
+          "width": 126,
+          "height": 70
+        },
+        "tabs": {
+          "x": 148,
+          "y": 37,
+          "width": 1900,
+          "height": 27
+        },
+        "scene": {
+          "x": 0,
+          "y": 134,
+          "width": 2048,
+          "height": 946
+        },
+        "palette": {
+          "x": 1757,
+          "y": 298,
+          "width": 286,
+          "height": 669
+        },
+        "cube": {
+          "x": 1928,
+          "y": 184,
+          "width": 70,
+          "height": 70
+        },
+        "navigation": {
+          "x": 918,
+          "y": 1046,
+          "width": 212,
+          "height": 29
+        },
+        "finish": {
+          "x": 1953,
+          "y": 64,
+          "width": 46,
+          "height": 44
+        },
+        "menu": null,
+        "tooltip": null,
+        "context": {
+          "x": 1216,
+          "y": 500,
+          "width": 1,
+          "height": 1
+        },
+        "origin": {
+          "x": 1024,
+          "y": 606.9999592285174
+        },
+        "camera": {
+          "span": 177.0209579665648,
+          "center": [
+            0,
+            0
+          ]
+        },
+        "cubeLabel": "СВЕРХУ",
+        "activeCommand": ""
+      },
+      "measurements": [
+        {
+          "region": "quickbar",
+          "expected": {
+            "x": 0,
+            "y": 0,
+            "height": 37
+          },
+          "actual": {
+            "x": 0,
+            "y": 0,
+            "width": 2048,
+            "height": 37
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "workspace",
+          "expected": {
+            "x": 13,
+            "y": 49,
+            "width": 126,
+            "height": 70
+          },
+          "actual": {
+            "x": 13,
+            "y": 49,
+            "width": 126,
+            "height": 70
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "scene",
+          "expected": {
+            "y": 134
+          },
+          "actual": {
+            "x": 0,
+            "y": 134,
+            "width": 2048,
+            "height": 946
+          },
+          "deltaCssPx": {
+            "y": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "cube",
+          "expected": {
+            "x": 1928,
+            "y": 184,
+            "width": 70,
+            "height": 70
+          },
+          "actual": {
+            "x": 1928,
+            "y": 184,
+            "width": 70,
+            "height": 70
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "origin",
+          "expected": {
+            "x": 1024,
+            "y": 606
+          },
+          "actual": {
+            "x": 1024,
+            "y": 606.9999592285174
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0.9999592285173549
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        }
+      ],
+      "measuredStatus": "MATCHES_REFERENCE_CLIENT_PX",
+      "visualStatus": "AWAITING_VISUAL_REVIEW"
+    },
+    {
+      "state": "constraints-menu",
+      "candidate": {
+        "file": "fusion-live-sketch-parity-constraints-menu-2048.png",
+        "sha256": "cbe59547f9383b0ee87c051900da432f08e8843690a63d9f39b7330b3d15504b",
+        "viewport": {
+          "width": 2048,
+          "height": 1137
+        },
+        "dpr": 1
+      },
+      "native": {
+        "file": "fusion-parity-native-constraints-menu-2048-dpi110.png",
+        "sha256": "72347cba6fb4342474f377eb3a78f4adfb89333e1c5a59fece02b166b8550dd4",
+        "width": 2048,
+        "height": 1137,
+        "bytesPresentInTestWorkspace": true
+      },
+      "actualBounds": {
+        "quickbar": {
+          "x": 0,
+          "y": 0,
+          "width": 2048,
+          "height": 37
+        },
+        "workspace": {
+          "x": 13,
+          "y": 49,
+          "width": 126,
+          "height": 70
+        },
+        "tabs": {
+          "x": 148,
+          "y": 37,
+          "width": 1900,
+          "height": 27
+        },
+        "scene": {
+          "x": 0,
+          "y": 134,
+          "width": 2048,
+          "height": 946
+        },
+        "palette": {
+          "x": 1757,
+          "y": 298,
+          "width": 286,
+          "height": 669
+        },
+        "cube": {
+          "x": 1928,
+          "y": 184,
+          "width": 70,
+          "height": 70
+        },
+        "navigation": {
+          "x": 918,
+          "y": 1046,
+          "width": 212,
+          "height": 29
+        },
+        "finish": {
+          "x": 1953,
+          "y": 64,
+          "width": 46,
+          "height": 44
+        },
+        "menu": {
+          "x": 662,
+          "y": 128,
+          "width": 284,
+          "height": 348
+        },
+        "tooltip": null,
+        "context": null,
+        "origin": {
+          "x": 1024,
+          "y": 606.9999592285174
+        },
+        "camera": {
+          "span": 177.0209579665648,
+          "center": [
+            0,
+            0
+          ]
+        },
+        "cubeLabel": "СВЕРХУ",
+        "activeCommand": ""
+      },
+      "measurements": [
+        {
+          "region": "quickbar",
+          "expected": {
+            "x": 0,
+            "y": 0,
+            "height": 37
+          },
+          "actual": {
+            "x": 0,
+            "y": 0,
+            "width": 2048,
+            "height": 37
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "workspace",
+          "expected": {
+            "x": 13,
+            "y": 49,
+            "width": 126,
+            "height": 70
+          },
+          "actual": {
+            "x": 13,
+            "y": 49,
+            "width": 126,
+            "height": 70
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "scene",
+          "expected": {
+            "y": 134
+          },
+          "actual": {
+            "x": 0,
+            "y": 134,
+            "width": 2048,
+            "height": 946
+          },
+          "deltaCssPx": {
+            "y": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "cube",
+          "expected": {
+            "x": 1928,
+            "y": 184,
+            "width": 70,
+            "height": 70
+          },
+          "actual": {
+            "x": 1928,
+            "y": 184,
+            "width": 70,
+            "height": 70
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "origin",
+          "expected": {
+            "x": 1024,
+            "y": 606
+          },
+          "actual": {
+            "x": 1024,
+            "y": 606.9999592285174
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0.9999592285173549
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        }
+      ],
+      "measuredStatus": "MATCHES_REFERENCE_CLIENT_PX",
+      "visualStatus": "AWAITING_VISUAL_REVIEW"
+    },
+    {
+      "state": "viewcube",
+      "candidate": {
+        "file": "fusion-live-sketch-parity-viewcube-2048.png",
+        "sha256": "d45c8c37d9741c34c420b19901abd760a8bbcdd05df6a012f71431ecff5b3c74",
+        "viewport": {
+          "width": 2048,
+          "height": 1137
+        },
+        "dpr": 1
+      },
+      "native": {
+        "file": "fusion-parity-native-cube-look-at-2048-dpi110.png",
+        "sha256": "b12350dad63ff0e4523dd9b5dbfd8dcddbdaa1327a9bd44c7bd5c61dceb394e5",
+        "width": 2048,
+        "height": 1137,
+        "bytesPresentInTestWorkspace": true
+      },
+      "actualBounds": {
+        "quickbar": {
+          "x": 0,
+          "y": 0,
+          "width": 2048,
+          "height": 37
+        },
+        "workspace": {
+          "x": 13,
+          "y": 49,
+          "width": 126,
+          "height": 70
+        },
+        "tabs": {
+          "x": 148,
+          "y": 37,
+          "width": 1900,
+          "height": 27
+        },
+        "scene": {
+          "x": 0,
+          "y": 134,
+          "width": 2048,
+          "height": 946
+        },
+        "palette": {
+          "x": 1757,
+          "y": 298,
+          "width": 286,
+          "height": 669
+        },
+        "cube": {
+          "x": 1928,
+          "y": 184,
+          "width": 70,
+          "height": 70
+        },
+        "navigation": {
+          "x": 918,
+          "y": 1046,
+          "width": 212,
+          "height": 29
+        },
+        "finish": {
+          "x": 1953,
+          "y": 64,
+          "width": 46,
+          "height": 44
+        },
+        "menu": null,
+        "tooltip": null,
+        "context": null,
+        "origin": {
+          "x": 990.9230769230768,
+          "y": 656.6153846153845
+        },
+        "camera": {
+          "span": 143,
+          "center": [
+            5,
+            7.5
+          ]
+        },
+        "cubeLabel": "СВЕРХУ",
+        "activeCommand": ""
+      },
+      "measurements": [
+        {
+          "region": "quickbar",
+          "expected": {
+            "x": 0,
+            "y": 0,
+            "height": 37
+          },
+          "actual": {
+            "x": 0,
+            "y": 0,
+            "width": 2048,
+            "height": 37
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "workspace",
+          "expected": {
+            "x": 13,
+            "y": 49,
+            "width": 126,
+            "height": 70
+          },
+          "actual": {
+            "x": 13,
+            "y": 49,
+            "width": 126,
+            "height": 70
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "scene",
+          "expected": {
+            "y": 134
+          },
+          "actual": {
+            "x": 0,
+            "y": 134,
+            "width": 2048,
+            "height": 946
+          },
+          "deltaCssPx": {
+            "y": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "cube",
+          "expected": {
+            "x": 1928,
+            "y": 184,
+            "width": 70,
+            "height": 70
+          },
+          "actual": {
+            "x": 1928,
+            "y": 184,
+            "width": 70,
+            "height": 70
+          },
+          "deltaCssPx": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "toleranceCssPx": 2,
+          "status": "MATCHES_REFERENCE_CLIENT_PX"
+        },
+        {
+          "region": "origin",
+          "expected": {
+            "x": 1024,
+            "y": 606
+          },
+          "actual": {
+            "x": 990.9230769230768,
+            "y": 656.6153846153845
+          },
+          "deltaCssPx": {
+            "x": -33.07692307692321,
+            "y": 50.61538461538453
+          },
+          "toleranceCssPx": 2,
+          "status": "DIFF"
+        }
+      ],
+      "measuredStatus": "DIFF",
+      "visualStatus": "AWAITING_VISUAL_REVIEW",
+      "cameraBehavior": "The real normal-view action was invoked. Its fit/center differences remain in measurements; no state or camera was injected to conceal them."
+    },
+    {
+      "state": "finished-solid",
+      "candidate": {
+        "file": "fusion-live-sketch-parity-finished-solid-2048.png",
+        "sha256": "cc5128764cd61524169bbdc37fb2fc69c3f52874bc649134d8958421b1f29db1",
+        "viewport": {
+          "width": 2048,
+          "height": 1137
+        },
+        "dpr": 1
+      },
+      "native": {
+        "file": "fusion-parity-native-finished-solid-2048-dpi110.png",
+        "sha256": "46862be261ca5d9b196e00ee0549ccee847371c62e2d086f5ec7bbf49f8a9c34",
+        "width": 2048,
+        "height": 1137,
+        "bytesPresentInTestWorkspace": true
+      },
+      "actualBounds": {
+        "quickbar": {
+          "x": 0,
+          "y": 0,
+          "width": 2048,
+          "height": 30
+        },
+        "workspace": {
+          "x": 10,
+          "y": 39,
+          "width": 108,
+          "height": 69
+        },
+        "tabs": {
+          "x": 125,
+          "y": 30,
+          "width": 1923,
+          "height": 23
+        },
+        "scene": {
+          "x": 0,
+          "y": 118,
+          "width": 2048,
+          "height": 948
+        },
+        "palette": null,
+        "cube": null,
+        "navigation": {
+          "x": 918,
+          "y": 1032,
+          "width": 212,
+          "height": 29
+        },
+        "finish": null,
+        "menu": null,
+        "tooltip": null,
+        "context": null,
+        "origin": null,
+        "camera": {
+          "span": 100,
+          "center": [
+            0,
+            0
+          ]
+        },
+        "cubeLabel": null,
+        "activeCommand": ""
+      },
+      "measurements": [],
+      "measuredStatus": "NOT_MEASURED",
+      "visualStatus": "AWAITING_VISUAL_REVIEW",
+      "expectedWorkspace": "solid",
+      "extrusion": "Not run in the visual capture scenario; covered by the functional workspace E2E."
+    }
+  ],
+  "responsive": [
+    {
+      "candidateViewport": {
+        "width": 1600,
+        "height": 900,
+        "dpr": 1
+      },
+      "nativeViewport": {
+        "width": 1600,
+        "height": 900,
+        "requestedWidth": 1600
+      },
+      "native": {
+        "file": "fusion-parity-native-sketch-layout-1600-dpi110.png",
+        "sha256": "94e535258ad2c039ee9acbfdb33add46b8dd99aa23d451f132b192cbef5c201b",
+        "width": 1600,
+        "height": 900,
+        "bytesPresentInTestWorkspace": true
+      },
+      "candidate": "fusion-live-sketch-parity-layout-1600.png",
+      "visiblePromotions": [
+        {
+          "id": "SketchCreatePanel",
+          "visible": [
+            "DrawPolyline",
+            "ShapeRectangleTwoPoint",
+            "CircleCenterRadius",
+            "DrawSpline",
+            "MirrorSketchCommand"
+          ]
+        },
+        {
+          "id": "SketchModifyPanel",
+          "visible": [
+            "FilletSketchCmd",
+            "TrimSketchCmd",
+            "Offset",
+            "BlendG1CurveSketchCmd"
+          ]
+        },
+        {
+          "id": "SketchConstraintsPanel",
+          "visible": [
+            "SketchAutoConstraintAndDimCmd",
+            "ConstraintHorizontalVertical",
+            "ConstraintCoincident",
+            "ConstraintTangent"
+          ]
+        },
+        {
+          "id": "ConfigurePanel",
+          "visible": [
+            "FusionStartDesignConfigModeCmd",
+            "FusionShowDesignConfigPanelCmd",
+            "FusionConfigurationRulesCmd"
+          ]
+        },
+        {
+          "id": "InspectPanel",
+          "visible": [
+            "MeasureCommand",
+            "FusionHalfSectionViewCommand"
+          ]
+        },
+        {
+          "id": "InsertPanel",
+          "visible": [
+            "PullDeriveCommand",
+            "FusionAddCanvasCommand",
+            "ParaMeshInsertAlignCommand"
+          ]
+        },
+        {
+          "id": "PartAssemblePanel",
+          "visible": [
+            "NewAssemblyFromPartCommand"
+          ]
+        },
+        {
+          "id": "SelectPanel",
+          "visible": [
+            "SelectCommand"
+          ]
+        },
+        {
+          "id": "StopSketchPanel",
+          "visible": [
+            "SketchStop"
+          ]
+        }
+      ],
+      "totalVisible": 24,
+      "actualBounds": {
+        "quickbar": {
+          "x": 0,
+          "y": 0,
+          "width": 1600,
+          "height": 37
+        },
+        "workspace": {
+          "x": 13,
+          "y": 49,
+          "width": 126,
+          "height": 70
+        },
+        "tabs": {
+          "x": 148,
+          "y": 37,
+          "width": 1452,
+          "height": 27
+        },
+        "scene": {
+          "x": 0,
+          "y": 134,
+          "width": 1600,
+          "height": 709
+        },
+        "palette": {
+          "x": 1309,
+          "y": 258,
+          "width": 286,
+          "height": 549
+        },
+        "cube": {
+          "x": 1510.084716796875,
+          "y": 171.4695587158203,
+          "width": 52.452880859375,
+          "height": 52.45286560058594
+        },
+        "navigation": {
+          "x": 694,
+          "y": 809,
+          "width": 212,
+          "height": 29
+        },
+        "finish": {
+          "x": 1507,
+          "y": 64,
+          "width": 46,
+          "height": 44
+        },
+        "menu": null,
+        "tooltip": null,
+        "context": null,
+        "origin": {
+          "x": 800,
+          "y": 488.49996944293747
+        },
+        "camera": {
+          "span": 177.0209579665648,
+          "center": [
+            0,
+            0
+          ]
+        },
+        "cubeLabel": "СВЕРХУ",
+        "activeCommand": ""
+      },
+      "camera": {
+        "span": 177.0209579665648,
+        "center": [
+          0,
+          0
+        ],
+        "stage": {
+          "x": 0,
+          "y": 134,
+          "width": 1600,
+          "height": 709
+        },
+        "pxPerMm": 4.005175478340332
+      },
+      "noClipping": [
+        "finish",
+        "palette",
+        "navigation"
+      ],
+      "noHorizontalScroll": true,
+      "limitation": null,
+      "visualStatus": "AWAITING_VISUAL_REVIEW"
+    },
+    {
+      "candidateViewport": {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1
+      },
+      "nativeViewport": {
+        "width": 1375,
+        "height": 768,
+        "requestedWidth": 1366
+      },
+      "native": {
+        "file": "fusion-parity-native-sketch-layout-1366-dpi110.png",
+        "sha256": "3dfc56eaa92b676364016c777b21b020eb9242764a13a48a4d5f3c5c929e1133",
+        "width": 1375,
+        "height": 768,
+        "bytesPresentInTestWorkspace": true
+      },
+      "candidate": "fusion-live-sketch-parity-layout-1366.png",
+      "visiblePromotions": [
+        {
+          "id": "SketchCreatePanel",
+          "visible": [
+            "DrawPolyline",
+            "ShapeRectangleTwoPoint",
+            "CircleCenterRadius"
+          ]
+        },
+        {
+          "id": "SketchModifyPanel",
+          "visible": [
+            "FilletSketchCmd",
+            "TrimSketchCmd",
+            "Offset"
+          ]
+        },
+        {
+          "id": "SketchConstraintsPanel",
+          "visible": [
+            "SketchAutoConstraintAndDimCmd",
+            "ConstraintHorizontalVertical",
+            "ConstraintCoincident"
+          ]
+        },
+        {
+          "id": "ConfigurePanel",
+          "visible": [
+            "FusionStartDesignConfigModeCmd",
+            "FusionShowDesignConfigPanelCmd",
+            "FusionConfigurationRulesCmd"
+          ]
+        },
+        {
+          "id": "InspectPanel",
+          "visible": [
+            "MeasureCommand",
+            "FusionHalfSectionViewCommand"
+          ]
+        },
+        {
+          "id": "InsertPanel",
+          "visible": [
+            "PullDeriveCommand",
+            "FusionAddCanvasCommand"
+          ]
+        },
+        {
+          "id": "PartAssemblePanel",
+          "visible": [
+            "NewAssemblyFromPartCommand"
+          ]
+        },
+        {
+          "id": "SelectPanel",
+          "visible": [
+            "SelectCommand"
+          ]
+        },
+        {
+          "id": "StopSketchPanel",
+          "visible": [
+            "SketchStop"
+          ]
+        }
+      ],
+      "totalVisible": 19,
+      "actualBounds": {
+        "quickbar": {
+          "x": 0,
+          "y": 0,
+          "width": 1366,
+          "height": 37
+        },
+        "workspace": {
+          "x": 13,
+          "y": 49,
+          "width": 126,
+          "height": 70
+        },
+        "tabs": {
+          "x": 148,
+          "y": 37,
+          "width": 1218,
+          "height": 27
+        },
+        "scene": {
+          "x": 0,
+          "y": 134,
+          "width": 1366,
+          "height": 577
+        },
+        "palette": {
+          "x": 1075,
+          "y": 236,
+          "width": 286,
+          "height": 439
+        },
+        "cube": {
+          "x": 1292.8226318359375,
+          "y": 164.49327087402344,
+          "width": 42.6844482421875,
+          "height": 42.68452453613281
+        },
+        "navigation": {
+          "x": 577,
+          "y": 677,
+          "width": 212,
+          "height": 29
+        },
+        "finish": {
+          "x": 1259,
+          "y": 64,
+          "width": 46,
+          "height": 44
+        },
+        "menu": null,
+        "tooltip": null,
+        "context": null,
+        "origin": {
+          "x": 683.0000000000001,
+          "y": 422.49997513198156
+        },
+        "camera": {
+          "span": 177.0209579665648,
+          "center": [
+            0,
+            0
+          ]
+        },
+        "cubeLabel": "СВЕРХУ",
+        "activeCommand": ""
+      },
+      "camera": {
+        "span": 177.0209579665648,
+        "center": [
+          0,
+          0
+        ],
+        "stage": {
+          "x": 0,
+          "y": 134,
+          "width": 1366,
+          "height": 577
+        },
+        "pxPerMm": 3.259501059241709
+      },
+      "noClipping": [
+        "finish",
+        "palette",
+        "navigation"
+      ],
+      "noHorizontalScroll": true,
+      "limitation": "Fusion enforced a 1375-pixel minimum client width at its current DPI; this is not a 1366-pixel native capture.",
+      "visualStatus": "DIFFERENT_NATIVE_CLIENT_WIDTH"
+    }
+  ],
+  "pageErrors": [],
+  "comparisonPolicy": "MATCHES_REFERENCE_CLIENT_PX means only measured client-pixel bounds fit the stated tolerance. DIFF records a measurable difference. Neither result accepts raster/icon parity, semantic equivalence or owner visual acceptance.",
+  "cameraCalibration": {
+    "method": "public mouse wheel at rendered world origin",
+    "deltaY": 380.7319645529614,
+    "desiredSpan": 177.0209580838323,
+    "before": {
+      "span": 100,
+      "center": [
+        0,
+        0
+      ],
+      "stage": {
+        "x": 0,
+        "y": 134,
+        "width": 2048,
+        "height": 946
+      },
+      "pxPerMm": 9.46
+    },
+    "after": {
+      "span": 177.0209579665648,
+      "center": [
+        0,
+        0
+      ],
+      "stage": {
+        "x": 0,
+        "y": 134,
+        "width": 2048,
+        "height": 946
+      },
+      "pxPerMm": 5.344000003540133
+    },
+    "origin": {
+      "x": 1024,
+      "y": 606.9999592285174
+    }
+  },
+  "savedGeometry": {
+    "line": {
+      "id": "entity_b2533864-fb46-4fb2-b527-cc450de43180",
+      "from": [
+        -50,
+        -25
+      ],
+      "to": [
+        -20,
+        -20
+      ]
+    },
+    "rectangle": {
+      "edges": [
+        {
+          "id": "entity_41494c18-9009-4c01-a70f-ce754a563cf4",
+          "from": [
+            0,
+            0
+          ],
+          "to": [
+            60,
+            0
+          ],
+          "role": "rectangle-edge-0"
+        },
+        {
+          "id": "entity_6518e8a4-ba05-4a1e-8af2-7c817fc543fe",
+          "from": [
+            60,
+            0
+          ],
+          "to": [
+            60,
+            40
+          ],
+          "role": "rectangle-edge-1"
+        },
+        {
+          "id": "entity_d7cdcf88-e9c3-4a27-bedd-495484338341",
+          "from": [
+            60,
+            40
+          ],
+          "to": [
+            0,
+            40
+          ],
+          "role": "rectangle-edge-2"
+        },
+        {
+          "id": "entity_1144dad0-eb44-4684-a1a7-d9980263cff5",
+          "from": [
+            0,
+            40
+          ],
+          "to": [
+            0,
+            0
+          ],
+          "role": "rectangle-edge-3"
+        }
+      ],
+      "width": 60,
+      "height": 40
+    },
+    "circle": {
+      "id": "entity_a11c2cd3-5624-43ec-a819-ec09f5835c46",
+      "center": [
+        30,
+        20
+      ],
+      "diameter": 12.00001237863007
+    },
+    "diameter": {
+      "id": "dimension_5439fe12-c9fb-470d-8059-22ea905105a8",
+      "type": "diameter",
+      "value": 12
+    },
+    "entityCount": 6
+  },
+  "viewCube": {
+    "before": {
+      "span": 177.0209579665648,
+      "center": [
+        0,
+        0
+      ],
+      "stage": {
+        "x": 0,
+        "y": 134,
+        "width": 2048,
+        "height": 946
+      },
+      "pxPerMm": 5.344000003540133
+    },
+    "after": {
+      "span": 143,
+      "center": [
+        5,
+        7.5
+      ],
+      "stage": {
+        "x": 0,
+        "y": 134,
+        "width": 2048,
+        "height": 946
+      },
+      "pxPerMm": 6.615384615384615
+    },
+    "plane": "XY",
+    "projection": "orthographic",
+    "mode": "plane-locked",
+    "orbitUnavailable": true
+  },
+  "viewChangesPreserveDocument": true,
+  "finishReturnsSolid": true
+}

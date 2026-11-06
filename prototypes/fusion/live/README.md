@@ -1,6 +1,6 @@
-# Fusion Sketch Workspace v1 — изолированный кандидат ASA-CAD
+# Fusion Sketch Parity 002 — изолированный кандидат ASA-CAD
 
-Контекстная русскоязычная среда «Эскиз» поверх общего приложения ASA-CAD. Ветка `visual/fusion-sketch-workspace-v1` основана на `visual/fusion-live-v6-review-20261105`, исходный SHA `e84fe5378355f62195e8dbd781287b2973f8f53d`. Отдельный Draft PR направляется в исходную Fusion-ветку.
+Контекстная русскоязычная среда «Эскиз» поверх общего приложения ASA-CAD. Ветка `visual/fusion-sketch-parity-v2` основана на проверенном кандидате PR #205: `visual/fusion-sketch-workspace-v1`, SHA `2420935b7d0642d7994a24231f3e123f42dae19d`. Отдельный Draft PR направляется в эту исходную Sketch-ветку. Переработка использует наблюдения установленного Autodesk Fusion 2706.1.17 на D2-R2 в отдельном тестовом документе.
 
 `FULL_REPOSITORY_HEALTH_AUDIT` и `productCodeStartAllowed=false` остаются в силе. Код этого кандидата ограничен `prototypes/fusion/`: продуктовые `src/`, `vendor/`, схемы, основная сборка, `main` и `integration` не изменяются. Это работающая экспериментальная оболочка, а не разрешение на продуктовый merge.
 
@@ -24,6 +24,10 @@ node prototypes/fusion/tests/live-package-smoke.mjs ../ASA-CAD-Fusion-Sketch-v1
 ```
 
 Пакет содержит приложение, WASM, лицензии, сервер и стартовые скрипты. `Start.cmd` / `start.sh` запускают порт 8099. `delivery-manifest.json` содержит Git SHA и SHA-256 файлов. `/__asa_health` возвращает версию, workspace и `sourceHead` установленного пакета.
+
+Для обновления установленной версии используется `--previous-package` с каталогом полностью проверенного предыдущего пакета. Сборку и упаковку выполняют из чистого checkout точного commit: сам `package.cjs` не доказывает, что рабочее дерево было чистым. Нельзя повторно использовать source SHA предыдущего пакета или перезаписывать существующий каталог доставки. Новая entry ссылается на `/__asa_builds/<sourceHead>/`; старые unversioned JS/WASM остаются закреплены за предыдущим приложением, чтобы открытые вкладки могли догрузить ядро после смены сервера. Manifest включает retained-копию и хеш исходного manifest. `Rollback.cmd` / `rollback.sh` переключают entry на предыдущий SHA, сохраняя оба набора ресурсов.
+
+`live-package-browser-upgrade.mjs` проверяет обновление на собственном временном порту: старая вкладка сохраняет Sketch до загрузки OCC, после замены сервера выполняет Extrude, новая вкладка открывает те же сохранённые данные, затем проверяются rollback и холодная загрузка обеих версий. Обязательные переменные: `ASA_FUSION_PREVIOUS_PACKAGE`, `ASA_FUSION_CANDIDATE_PACKAGE`, `ASA_CAD_BROWSER_EXECUTABLE`; `ASA_FUSION_EVIDENCE_DIR` задаёт каталог доказательств вне чистого checkout. Тест не использует пользовательский профиль или установленный порт 8099.
 
 Сохранение использует существующий `LocalStorageCadProjectHost`. Документ хранится в браузере на текущем origin. Открывайте тот же профиль браузера и тот же порт; сохранение в 8098 автоматически не переносится в 8099. «Сохранить» и «Открыть» вызывают штатные команды приложения.
 
@@ -63,16 +67,172 @@ node prototypes/fusion/tests/live-package-smoke.mjs ../ASA-CAD-Fusion-Sketch-v1
 
 Недостающий контракт: разрешение StableRef в рабочую плоскость; единое преобразование screen/ray → sketch-plane; синхронизация камеры, отображения и hit testing эскиза с 3D-моделью. Изменять этот продуктовый контракт до разрешения текущего аудита нельзя. Замена представления в прототипе не создаёт вторую камеру модели, математический движок или независимый документ.
 
+### Предложенный продуктовый контракт — НЕ РЕАЛИЗОВАН
+
+**Статус: `PROPOSED_NOT_IMPLEMENTED / BLOCKED_PRODUCT_CODE_START`.** Основание — `spec/process/active-work.v1.json`, `productCodeStartAllowed=false`; исходная ревизия анализа — `2420935b7d0642d7994a24231f3e123f42dae19d`. Ни один из следующих интерфейсов или extraction-шагов не применён к `src/`. Это предложение для будущего разрешённого изменения продукта. Оно даёт пространственный вид и редактирование существующего **плоского** эскиза; пространственные сущности «3D Sketch» им не вводятся.
+
+Плоскость грани уже умеет вычислять `OpenCascadePartRuntime.resolveSketchPlane`: StableRef → сохранённая сигнатура → `resolveFace` на текущем `featureShapes.get(ownerFeatureId)` → `captureFace` найденной реальной грани → `sketchPlaneFrame(live.axis, live.centroid)`. Нужно выделить и открыть этот read-only путь, а не повторить геометрию в UI. Поля `locator.axis/centroid` служат сигнатурой поиска и сами по себе не доказывают положение грани после перестроения. `captureReference` приложения для этой задачи непригоден: он создаёт StableRef и меняет документ.
+
+**Минимальный DTO и read API.** Следующие определения предполагаются в новом `src/contracts/sketchScene.ts`; существующие типы, frame-конвенция и `CadRenderModel` переиспользуются без изменения формата документа:
+
+```ts
+import type { CadPartDocument, CadSketchSupport } from './document';
+import type { CadDocumentId, CadSketchId } from './ids';
+import type { CadRenderModel } from './render';
+import type { CadSketchPlaneFrame } from './sketchWorkplane';
+
+export interface CadResolvedSketchWorkplane {
+  readonly status: 'ready';
+  readonly sketchId: CadSketchId;
+  readonly support: CadSketchSupport;
+  readonly frame: Readonly<CadSketchPlaneFrame>;
+  readonly runtimeRevision: string | null;
+}
+
+export type CadSketchWorkplaneFailure =
+  | 'runtime-unavailable'
+  | 'runtime-stale'
+  | 'sketch-missing'
+  | 'reference-missing'
+  | 'reference-unresolved'
+  | 'reference-ambiguous'
+  | 'support-non-planar';
+
+export type CadSketchWorkplaneResolution =
+  | CadResolvedSketchWorkplane
+  | {
+      readonly status: 'unavailable';
+      readonly sketchId: CadSketchId;
+      readonly reason: CadSketchWorkplaneFailure;
+    };
+
+export interface CadSketchWorkplaneProvider {
+  getSketchWorkplane(
+    document: Readonly<CadPartDocument>,
+    sketchId: CadSketchId,
+    expectedRuntimeRevision: string | null,
+  ): CadSketchWorkplaneResolution;
+}
+
+export interface CadSketchSceneSnapshot {
+  readonly documentId: CadDocumentId;
+  readonly status: 'ready' | 'rebuilding' | 'unavailable';
+  readonly runtimeRevision: string | null;
+  readonly model: Readonly<CadRenderModel> | null;
+  readonly workplane: CadSketchWorkplaneResolution;
+}
+
+export interface CadSketchSceneProvider {
+  getSketchScene(
+    document: Readonly<CadPartDocument>,
+    sketchId: CadSketchId,
+  ): CadSketchSceneSnapshot;
+}
+```
+
+`OpenCascadePartRuntime` предоставляет `CadSketchWorkplaneProvider`; `BrowserPartRuntimeAdapter` предоставляет `CadSketchSceneProvider`. Его `LoadedPartRuntime` получает `workplanes: CadSketchWorkplaneProvider`, ссылающийся на **тот же** `coreRuntime`, который уже обслуживает render adapter и `SolvedSketchPartRuntimeAdapter`. Второй OCC runtime, solver, документ и путь recompute не создаются.
+
+Один вызов `getSketchScene` публикует согласованные model + frame. Для грани `workplane.runtimeRevision === scene.runtimeRevision === model.runtimeRevision`; отсутствие model или несовпадение даёт `unavailable`, ввод выключается с причиной. Origin-plane использует `originPlaneFrame`: без BRep разрешён `runtimeRevision=null`, без загрузки OCC; при наличии model revision совпадает с ним. Provider хранит идентичность документа последнего успешного recompute и отклоняет геометрию другого документа.
+
+Перед перестроением можно сохранить последнюю **целую согласованную пару** для отображения со статусом `rebuilding`; запрещено соединять старый mesh и новую/неразрешённую плоскость. Ввод на такой паре блокируется. Успешное перестроение атомарно заменяет её, неудачное сбрасывает доступность. Ключ кеша — documentId + sketchId + support + runtimeRevision; изменение StableRef, undo/redo, замена документа и сбой rebuild инвалидируют его. Read API не вызывает recompute, не пишет историю и не выдаёт наружу OCC pointers, shape handles или Three objects.
+
+**Камера и единая проекция.** Предлагаемые presentation-интерфейсы находятся в `src/web/viewport/SketchSceneProjection.ts`; они временные и не сериализуются в CAD-документ:
+
+```ts
+import type { CadPoint2 } from '../../contracts/document';
+import type { CadPoint3 } from '../../contracts/sketchWorkplane';
+import type { CadResolvedSketchWorkplane } from '../../contracts/sketchScene';
+
+export type CadMatrix4 = readonly [
+  number, number, number, number,
+  number, number, number, number,
+  number, number, number, number,
+  number, number, number, number
+];
+
+export interface CadViewportCameraPose {
+  readonly position: CadPoint3;
+  readonly target: CadPoint3;
+  readonly up: CadPoint3;
+  readonly projection: 'perspective' | 'orthographic';
+  readonly zoom: number;
+  readonly viewHeight: number;
+  readonly fovDegrees: number;
+  readonly near: number;
+  readonly far: number;
+}
+
+export interface CadViewportCameraSnapshot {
+  readonly sequence: number;
+  readonly pose: CadViewportCameraPose;
+  readonly screen: Readonly<{
+    left: number; top: number; width: number; height: number;
+  }>;
+  readonly viewProjection: CadMatrix4;
+  readonly inverseViewProjection: CadMatrix4;
+}
+
+export interface CadViewportCameraBridge {
+  snapshot(): CadViewportCameraSnapshot;
+  restore(pose: CadViewportCameraPose): void;
+  normalTo(workplane: CadResolvedSketchWorkplane, scale: 'preserve' | 'fit'): void;
+  subscribe(listener: () => void): () => void;
+}
+
+export interface CadSketchProjection {
+  readonly workplane: CadResolvedSketchWorkplane;
+  readonly camera: CadViewportCameraSnapshot;
+  project(point: CadPoint2): readonly [clientX: number, clientY: number] | null;
+  unproject(clientX: number, clientY: number): CadPoint2 | null;
+}
+```
+
+Матрицы — column-major, `viewProjection = projectionMatrix × matrixWorldInverse` той же камеры, которой рисуется BRep. `screen` и результаты `project` задаются в CSS-пикселях окна, как `PointerEvent.clientX/clientY`; devicePixelRatio учитывается только на границе renderer, не повторно при выборе. `viewHeight` — видимая высота у target; вместе с pose сохраняются target, zoom и тип проекции. Передача только направления position − target, как в нынешнем prototype navigation attach, не сохраняет полный вид.
+
+Прямое преобразование использует существующий `planeFramePoint(frame, [x,y])`, затем общую viewProjection. Обратное строит луч той же камеры через inverseViewProjection и пересекает его с `dot(normal, point − origin)=0`; локальные координаты — скалярные произведения hit − origin на `u` и `v`. Параллельный луч, нечисловой результат, точка за камерой или вне clip range возвращают `null`. Для лежащего ребром эскиза показывается недоступность ввода, а не произвольная точка.
+
+Тот же неизменяемый snapshot проекции на кадр потребляют SketchOverlay, ghost preview, selection/hit testing, точки привязки, размеры, ограничения, direct-tool input и drag. SVG можно сохранить, но его примитивы и hit shapes должны проектироваться этой камерой; вращать только SVG или передать `renderModel` вместо `null` недостаточно. Кривые при наклонном виде требуют корректной проекции/тесселяции с общей экранной погрешностью, а допуски выбора и snap задаются в CSS-пикселях. ID сущностей и callbacks существующих команд не меняются.
+
+Gesture фиксирует sketchId + support + runtimeRevision + camera.sequence + существующий application revisionToken. Изменение plane/document во время drag отменяет preview; изменение камеры либо отменяет gesture, либо явно пересчитывает его от исходной точки до commit. Нельзя молча применить координаты другого кадра. Один `CadViewport` и одна камера остаются смонтированными при переходе Solid ↔ Sketch; ViewCube, «На эскиз», pan, zoom, orbit и восстановление вида используют один camera bridge. Наблюдённая ниже политика нативной камеры задаёт цель будущей реализации; эти сигнатуры не объявляют её уже воспроизведённой.
+
+**Наблюдённая последовательность нативного Fusion, 6 ноября 2026.** Проверка выполнена в реальном приложении, 2048 × 1137, DPI 110; это свидетельство поведения эталона, не результат prototype E2E.
+
+1. Щелчок по углу ViewCube при активном Sketch переводит эскиз в наклонный вид, сохраняя режим редактирования: [cube-oblique-sketch](../evidence/fusion-parity-native-cube-oblique-sketch-2048-dpi110.png).
+2. Запуск Line сохраняет этот наклонный вид; команда активна и ожидает первую точку: [cube-oblique-line-active](../evidence/fusion-parity-native-cube-oblique-line-active-2048-dpi110.png). Само рисование в наклонном виде этим кадром не подтверждается.
+3. Look At возвращает вид по нормали к плоскости эскиза: [cube-look-at](../evidence/fusion-parity-native-cube-look-at-2048-dpi110.png).
+4. Finish Sketch возвращает Solid с прежней наклонной ориентацией: [finished-solid](../evidence/fusion-parity-native-finished-solid-2048-dpi110.png).
+5. Двойной щелчок по эскизу в timeline снова открывает Sketch по нормали: [reopened-sketch](../evidence/fusion-parity-native-reopened-sketch-2048-dpi110.png).
+
+Подтверждены видимая ориентация и переходы режимов в этой последовательности. Равенство полного camera pose, target, zoom и типа проекции пока не измерено. Статус предложения остаётся `PROPOSED_NOT_IMPLEMENTED / BLOCKED_PRODUCT_CODE_START`.
+
+**Точные extraction-шаги после разрешения продуктового изменения.** Замороженные владельцы уже равны byte ceilings; расширение их пределов в это предложение не входит.
+
+| Текущий владелец / предел | Выделение и итоговая ответственность |
+| --- | --- |
+| `src/runtime/OpenCascadePartRuntime.ts`, 15119 байт | В `OpenCascadeSketchPlaneResolver.ts` перенести существующий resolveSketchPlane и нужное преобразование face signature. Экструзия/вырез и новый read provider вызывают один resolver. Владение featureShapes и OCC остаётся внутри runtime; наружу выходит только numeric DTO. |
+| `src/browser/BrowserPartRuntimeAdapter.ts` | Добавить workplanes к существующему LoadedPartRuntime, хранить состояние успешной ревизии/документа и атомарную пару render/frame. Не загружать ядро для origin-only эскиза. |
+| `src/web/CadViewport.tsx`, 27374 байта | В `viewport/ViewportSceneController.ts` выделить scene/camera/controls lifetime и публикацию camera snapshot. CadViewport делегирует ему, сохраняя текущие BRep picking и selection callbacks. |
+| `src/web/PartModelStage.tsx`, 2561 байт; `src/web/SketchEditingStage.tsx`, 5989 байт | Выделить `PartEditingScene`: один постоянно смонтированный CadViewport, origin planes и model, а поверх — выбранный режим. SketchEditingStage сохраняет существующие solve/drag/command hooks и получает scene projection через context, не монтирует собственную camera scene. |
+| `src/web/App.tsx`, 14486 байт | Вынести существующую передачу render/workarea props в `usePartSceneSnapshot`/`PartWorkarea`; подключить один provider read. Сохранить document/controller/history ownership, не добавлять в App геометрию или новый глобальный store. |
+| `SketchViewportFrameContext.tsx`, `SketchOverlayLayer.tsx`, `SketchSelectionLayer.tsx`, `SketchInteractionSurface.tsx`, `SketchDirectToolLayers.tsx` и их constraint layers | Ввести projection context, совместно перевести render и input с отдельного square viewBox на общую проекцию. Старое 2D-преобразование допускается только как явно ограниченный fallback, который не заявляет 3D editing. |
+
+Порядок будущего изменения: (1) разрешённая extraction без изменения поведения и byte ceilings; (2) read-only runtime/frame provider с revision checks; (3) постоянная scene/camera + projection context; (4) одновременное переключение всех overlay/input потребителей; (5) подключение ViewCube и подтверждённой нативной camera policy. Текущий prototype может исправлять компоновку, палитру, grid/fit/pan/snap и обратимые настройки отображения, используя существующие команды. Указанные runtime, projection и scene-lifetime шаги — **product-owned blocker**, они не закрываются CSS или вторым CAD-движком.
+
+Приёмка будущего slice: XY/XZ/YZ и реальная плоская грань; совпадение локальной системы с направлением extrusion; round-trip local → screen → plane после orbit/pan/zoom в обеих проекциях; мышью line/circle/drag/dimension на наклонном виде; одинаковые frame/revision для overlay и mesh после изменения upstream размера, undo/redo и save/open; честный отказ при ambiguous/unresolved/non-planar support; отсутствие ввода со stale frame после failed rebuild; один canvas/camera и сохранение полного pose при переходах. Ни один такой тест этим разделом не объявляется выполненным.
+
 ## Источник ленты и визуальная приёмка
 
-`../reference_capture/sketch-native-reference.v1.json` — компактная копия контекстной вкладки `FusionSolidEnvironment / SketchTab` из реального экспорта Autodesk API:
+Основной API-источник этой переработки — `../reference_capture/sketch-active-ui-20261106.json`, захваченный при действительно активной вкладке `FusionSolidEnvironment / SketchTab`:
 
-- Fusion **2706.1.17**, захват **2026-11-04T23:21:11.800744+00:00**.
-- SHA-256 исходного полного JSON: `651c01dc6fa0594aead189407c3fe29fb87b75aafefea3ad176b61a6c1617c40`.
-- Девять групп, 155 controls, включая 127 command placements, 10 dropdowns и 18 separators. Повторные размещения не равны уникальным командам.
-- Во время экспорта активна SolidTab. `SketchTab.isVisible=false` отражает состояние захвата и не означает отсутствие контекстной вкладки.
+- Fusion **2706.1.17**, захват **2026-11-06T00:43:13.217889+00:00**; exporter errors отсутствуют.
+- SHA-256 полного исходного JSON: `6296518a467ed73ce8b91281bf8727db1788cb8eb6999fbfb70bab245eeb4c1c`; компактного active capture: `18be2710ecd716650df37cf1ecff3ff14ff783ddadbdc5d08c438d8de00a9434`.
+- Девять групп; из 155 исторических позиций 134 представлены в активном меню, 21 скрыта или является удалённым при нормализации разделителем. Скрытые позиции не считаются проверенными disabled-командами.
+- В исходном историческом `sketch-native-reference.v1.json` сохранён экспорт от 4 ноября, когда была активна SolidTab. Он служит перечнем позиций; видимость активного Sketch определяется новым capture.
+- Физически видимые большие кнопки проверяются по снимкам отдельно от API promotion: 33 при 2048 × 1137, 24 при 1600 × 900, 19 в узком окне.
 
-SVG нарисованы самостоятельно. Ресурсы и брендинг Autodesk не извлекались. Русские переводы и дополнительные прямые входы к поддерживаемым операциям — авторская адаптация.
+`../reference_capture/sketch-native-observations-20261106.json` хранит измеренные границы, порядок физических кнопок и ограничения сравнения. Оригиналы `../evidence/fusion-parity-native-*.png` получены из реального клиентского окна без ресэмплинга. `GetDpiForWindow` вернул **110 DPI**, то есть примерно 114,6% от 96 DPI; это не «110%». Окно приняло 2048 × 1137 и 1600 × 900; запрос 1366 × 768 был ограничен самим Fusion до **1375 × 768**. Имя узкого снимка сохраняет запрошенную ширину, фактическая ширина записана в metadata. Поэтому строгая нативная приёмка при DPR 1 ещё не доказана.
+
+SVG в `sketch-icons/` нарисованы отдельно по наблюдённым значкам. Ресурсы и брендинг Autodesk не извлекались. Русские переводы и дополнительные прямые входы к поддерживаемым операциям — авторская адаптация.
 
 `sketch-command-matrix.v1.json` содержит покомандное соответствие Native ID → русский перевод → SVG → меню → CadUiAction. Результаты поведения отделены от проверки состава и disabled-состояний: проверка наличия кнопки не выдаётся за исполнение операции. Для подключённых, но не исполненных в данном браузерном сценарии команд сохраняется `NOT_BROWSER_TESTED`. Матрица содержит SHA-256 использованного отчёта E2E.
 
@@ -82,9 +242,13 @@ SVG нарисованы самостоятельно. Ресурсы и бре�
 node --import ./vendor/toubkal/node_modules/tsx/dist/loader.mjs prototypes/fusion/live/generate-sketch-matrix.mjs
 ```
 
-**Статус визуального совпадения: NOT_ACCEPTED.** Доступного подтверждённого снимка оригинального активного Sketch Workspace с Palette нет; существующий `SketchCreate-opened.png` показывает выбор опоры при Solid-ленте. Поэтому парные скриншоты активного Sketch, отклонение ±2 CSS px, индивидуальная точность всех SVG и полное соответствие hover/pressed не доказаны. API-состав и работа команд проверяются отдельно от визуальной идентичности.
+**Статус полного визуального совпадения: NOT_ACCEPTED.** Реальные снимки активного Sketch, меню, палитры, подсказок и переходов камеры теперь есть. Парный браузерный сценарий приводит поле к измеренному масштабу настоящим wheel input и записывает измерения границ с допуском ±2 CSS px. Это не доказывает индивидуальную точность всех SVG, типографики и всех hover/pressed-состояний. API-состав, исполнение команд, совпадение измеренных границ и окончательная визуальная приёмка имеют разные статусы.
 
-Наши снимки при 2048×1137, 1600×900 и 1366×768, DPR 1, сохраняются как `../evidence/fusion-live-sketch-workspace-*.png`. JSON результатов не присваивает им native visual parity.
+Наши снимки при 2048×1137, 1600×900 и 1366×768, DPR 1, сохраняются как `../evidence/fusion-live-sketch-workspace-*.png` и `../evidence/fusion-live-sketch-parity-*.png`. JSON результатов не присваивает им full native visual parity. Поле использует одну рамку для grid, overlay, выбора и ввода по всей ширине; round-trip и изотропность проверяются отдельными frame/field-сценариями. Начальный span общего продукта остаётся 100; его масштаб отличается от нативного и в парных снимках согласуется реальным колесом мыши, а не подменой модели.
+
+В финальной парной последовательности измерения основных границ 13 состояний укладываются в допуск; это `MATCHES_REFERENCE_CLIENT_PX`, а не приёмка всех пикселей изображения. Реальный «Вид на эскиз» вызывает общее вписывание: после него span меняется с 177,02096 на 143, center — с `[0,0]` на `[5,7.5]`, начало координат смещается относительно нативного примерно на `[-33.08,+50.62]` CSS px. Этот кадр имеет `DIFF`; переход в Solid снят, но его геометрия интерфейса не измерена.
+
+У парной сцены есть отдельный обычный отрезок рядом с прямоугольником и окружностью. Нативный Fusion заливает замкнутую область; текущий общий `analyzeSketchProfile` отклоняет весь профиль при свободном конце, поэтому prototype не рисует эту заливку. Сценарий workspace с вспомогательным отрезком подтверждает действующую голубую заливку и настоящую экструзию. Извлечение отдельных замкнутых областей среди открытых цепочек требует отдельного разрешённого изменения общего profile contract; независимый анализатор контуров в оболочку не добавлен. Также direct-прямоугольник не получает нативные автоматические связи, поэтому индивидуальные цвета определённости и значки связей могут различаться. Эти различия сохраняются в настоящих снимках.
 
 ## Проверки
 
@@ -102,13 +266,15 @@ node prototypes/fusion/tests/live-hole-wizard-browser.mjs
 node prototypes/fusion/tests/live-navigation-browser.mjs
 node prototypes/fusion/tests/live-interaction-browser.mjs
 node prototypes/fusion/tests/live-sketch-input-browser.mjs
+node --import ./vendor/toubkal/node_modules/tsx/dist/loader.mjs prototypes/fusion/tests/sketch-matrix-proof-gate.mjs
+node prototypes/fusion/tests/live-server-upgrade.mjs
 ```
 
-`ASA_FUSION_URL` указывает на уже работающий сервер. `ASA_CAD_BROWSER_EXECUTABLE` необязателен: по умолчанию используется установленный Chromium pinned Playwright. `live-sketch-input-browser.mjs` после исходного direct-input сценария запускает новый `live-sketch-workspace-browser.mjs`, поэтому существующий exact-HEAD CI выполняет обе проверки без изменения workflow.
+`ASA_FUSION_URL` указывает на уже работающий сервер. `ASA_CAD_BROWSER_EXECUTABLE` необязателен для UI-сценариев: по умолчанию используется установленный Chromium pinned Playwright. `live-sketch-input-browser.mjs` после исходного direct-input сценария запускает workspace, frame, field и paired parity, поэтому существующий exact-HEAD CI выполняет эти проверки без изменения workflow.
 
 Новые сценарии создают геометрию через pointer/keyboard UI. Чтение сохранённого JSON используется для проверок. Тесты не записывают документы в localStorage и не вызывают скрытые функции создания модели. Исходные отдельные регрессии камеры сохраняют свои существующие изолированные fixtures.
 
-Новый E2E обходит все девять групп, десять нативных подменю и авторский выбор шести размеров; исполняет вертикальность через комбинированную кнопку H/V, проверяет клавишу D, привязки on/off по сохранённым координатам, трёхточечный ввод поддерживаемой дуги из центра, реальное перетаскивание с Undo, создание на XY/XZ/YZ и удаление цели активного размера через Undo. Панель не оставляет доступное подтверждение для исчезнувшего объекта.
+Новый E2E обходит все девять групп и десять нативных подменю; исполняет вертикальность через комбинированную кнопку H/V, проверяет клавишу D, привязки on/off по сохранённым координатам, трёхточечный ввод поддерживаемой дуги из центра, реальное перетаскивание с Undo, создание на XY/XZ/YZ и удаление цели активного размера через Undo. Размер в Create остаётся нативным leaf; шесть существующих действий доступны через поиск и дополнительный раздел контекстного меню. Панель не оставляет доступное подтверждение для исчезнувшего объекта. Правый клик по пустому полю или профилю очищает прежний выбор через общий callback и не оставляет Delete/Fix включёнными для старой цели.
 
 Typecheck сравнивает кандидата с исходной базой: **8 существующих ошибок; допустимо 0 новых**. `NO_NEW_DIAGNOSTICS` не означает чистый полный TypeScript. Исходные диагностики сохраняются в evidence; фильтры не ослаблены.
 

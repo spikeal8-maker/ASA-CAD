@@ -1,4 +1,9 @@
 {
+  "schemaVersion": 2,
+  "parityRevision": "fusion-sketch-parity-002",
+  "referenceCaptureSha256": "18be2710ecd716650df37cf1ecff3ff14ff783ddadbdc5d08c438d8de00a9434",
+  "sourceSnapshotSha256": "c1122ae134ccdece6dca8f77ffe33656f96c8cec89d4af1f1b2bdb94a7059e0d",
+  "testSourceSha256": "3727c4052b72e88e3a2913f44deb0a0d2879441ffd2c9f5de0ae058ca6bec28e",
   "status": "PASS",
   "input": "Playwright pointer/keyboard actions on the public UI; persisted document is read only for assertions",
   "screenshots": [
@@ -9,28 +14,28 @@
       "panels": [
         {
           "name": "live-tool live-sketch-tool",
-          "x": 1966.5,
-          "y": 54,
-          "right": 2036.5,
-          "bottom": 95,
-          "width": 70,
-          "height": 41
+          "x": 1953,
+          "y": 64,
+          "right": 1999,
+          "bottom": 108,
+          "width": 46,
+          "height": 44
         },
         {
           "name": "live-sketch-palette",
-          "x": 1782,
-          "y": 278,
-          "right": 2040,
-          "bottom": 611,
-          "width": 258,
-          "height": 333
+          "x": 1757,
+          "y": 298,
+          "right": 2043,
+          "bottom": 967,
+          "width": 286,
+          "height": 669
         },
         {
           "name": "live-navigation",
           "x": 918,
-          "y": 1032,
+          "y": 1046,
           "right": 1130,
-          "bottom": 1061,
+          "bottom": 1075,
           "width": 212,
           "height": 29
         }
@@ -43,28 +48,28 @@
       "panels": [
         {
           "name": "live-tool live-sketch-tool",
-          "x": 1518.5,
-          "y": 54,
-          "right": 1588.5,
-          "bottom": 95,
-          "width": 70,
-          "height": 41
+          "x": 1507,
+          "y": 64,
+          "right": 1553,
+          "bottom": 108,
+          "width": 46,
+          "height": 44
         },
         {
           "name": "live-sketch-palette",
-          "x": 1334,
-          "y": 278,
-          "right": 1592,
-          "bottom": 611,
-          "width": 258,
-          "height": 333
+          "x": 1309,
+          "y": 258,
+          "right": 1595,
+          "bottom": 807,
+          "width": 286,
+          "height": 549
         },
         {
           "name": "live-navigation",
           "x": 694,
-          "y": 795,
+          "y": 809,
           "right": 906,
-          "bottom": 824,
+          "bottom": 838,
           "width": 212,
           "height": 29
         }
@@ -77,28 +82,28 @@
       "panels": [
         {
           "name": "live-tool live-sketch-tool",
-          "x": 1284.5,
-          "y": 54,
-          "right": 1354.5,
-          "bottom": 95,
-          "width": 70,
-          "height": 41
+          "x": 1259,
+          "y": 64,
+          "right": 1305,
+          "bottom": 108,
+          "width": 46,
+          "height": 44
         },
         {
           "name": "live-sketch-palette",
-          "x": 1100,
-          "y": 264,
-          "right": 1358,
-          "bottom": 569,
-          "width": 258,
-          "height": 305
+          "x": 1075,
+          "y": 236,
+          "right": 1361,
+          "bottom": 675,
+          "width": 286,
+          "height": 439
         },
         {
           "name": "live-navigation",
           "x": 577,
-          "y": 663,
+          "y": 677,
           "right": 789,
-          "bottom": 692,
+          "bottom": 706,
           "width": 212,
           "height": 29
         }
@@ -108,9 +113,21 @@
   "visualParityAccepted": false,
   "emptySketchUndoRedo": true,
   "removedDimensionTargetCancels": true,
+  "lineTooltip": {
+    "short": true,
+    "expanded": true,
+    "authoredIllustration": true
+  },
   "verticalConstraint": true,
   "removedEditedDimensionCancels": true,
   "dimensionShortcutD": true,
+  "contextTargetSelection": {
+    "entityRightClickSelectsActualTarget": true,
+    "profileClearsStaleEntity": true,
+    "emptyClearsStaleEntity": true,
+    "idleCancelRetainsSketch": true,
+    "noDocumentMutation": true
+  },
   "snapping": {
     "endpointChangesCommittedCoordinate": true,
     "disabledUsesPointerCoordinate": true
@@ -201,7 +218,381 @@
       ]
     }
   ],
-  "authoredDimensionMenu": true,
+  "menuRows": [
+    {
+      "id": "SketchCreatePanel",
+      "level": 0,
+      "rows": [
+        "command:DrawPolyline",
+        "command:SketchMidpointLine",
+        "dropdown:RectangleDropDown",
+        "dropdown:CircleDropDown",
+        "dropdown:ArcDropDown",
+        "dropdown:PolygonDropDown",
+        "command:CircleElipse",
+        "dropdown:SlotDropDown",
+        "dropdown:SplineDropDown",
+        "command:ConicCurveCmd",
+        "command:DrawPoint",
+        "command:MTextCmd",
+        "separator",
+        "command:MirrorSketchCommand",
+        "command:CircularSketchPatternCommand",
+        "command:RectangularSketchPatternCommand",
+        "separator",
+        "dropdown:ProjectIncludeDropDown",
+        "separator",
+        "command:SketchDimension"
+      ],
+      "bounds": {
+        "x": 148,
+        "y": 128,
+        "width": 245,
+        "height": 400
+      }
+    },
+    {
+      "id": "RectangleDropDown",
+      "level": 1,
+      "rows": [
+        "command:ShapeRectangleTwoPoint",
+        "command:ShapeRectangleThreePoint",
+        "command:ShapeRectangleCenter"
+      ],
+      "bounds": {
+        "x": 387,
+        "y": 174,
+        "width": 253,
+        "height": 72
+      }
+    },
+    {
+      "id": "CircleDropDown",
+      "level": 1,
+      "rows": [
+        "command:CircleCenterRadius",
+        "command:CircleTwoPoint",
+        "command:CircleThreePoint",
+        "command:CircleTanTanRadius",
+        "command:CircleThreeTangent"
+      ],
+      "bounds": {
+        "x": 387,
+        "y": 197,
+        "width": 267,
+        "height": 118
+      }
+    },
+    {
+      "id": "ArcDropDown",
+      "level": 1,
+      "rows": [
+        "command:ArcThreePoint",
+        "command:ArcCenterTwoPoint",
+        "command:ArcTangent"
+      ],
+      "bounds": {
+        "x": 387,
+        "y": 220,
+        "width": 186,
+        "height": 72
+      }
+    },
+    {
+      "id": "PolygonDropDown",
+      "level": 1,
+      "rows": [
+        "command:ShapePolygonCircumscribed",
+        "command:ShapePolygonInscribed",
+        "command:ShapePolygonEdge"
+      ],
+      "bounds": {
+        "x": 387,
+        "y": 243,
+        "width": 225,
+        "height": 72
+      }
+    },
+    {
+      "id": "SlotDropDown",
+      "level": 1,
+      "rows": [
+        "command:ShapeSlotCenterToCenter",
+        "command:ShapeSlotOverall",
+        "command:ShapeSlotCenterPoint",
+        "command:ShapeArcSlotThreePoint",
+        "command:ShapeArcSlotCenterTwoPoint"
+      ],
+      "bounds": {
+        "x": 387,
+        "y": 289,
+        "width": 232,
+        "height": 118
+      }
+    },
+    {
+      "id": "SplineDropDown",
+      "level": 1,
+      "rows": [
+        "command:DrawSpline",
+        "command:DrawCVMSpline5D"
+      ],
+      "bounds": {
+        "x": 387,
+        "y": 312,
+        "width": 260,
+        "height": 49
+      }
+    },
+    {
+      "id": "ProjectIncludeDropDown",
+      "level": 1,
+      "rows": [
+        "command:ProjectNewCmd",
+        "command:IntersectCmd",
+        "command:SpunProfileCmd",
+        "separator",
+        "command:Include3DGeometry",
+        "separator",
+        "command:ProjectToSurface",
+        "command:IntersectionCurve",
+        "command:SketchIsoparametricCurve"
+      ],
+      "bounds": {
+        "x": 387,
+        "y": 477,
+        "width": 245,
+        "height": 168
+      }
+    },
+    {
+      "id": "SketchModifyPanel",
+      "level": 0,
+      "rows": [
+        "command:FilletSketchCmd",
+        "dropdown:SketchChamferDropDown",
+        "command:BlendG1CurveSketchCmd",
+        "command:Offset",
+        "separator",
+        "command:TrimSketchCmd",
+        "command:ExtendSketchCmd",
+        "command:BreakSketchCmd",
+        "command:SketchScaleCmd",
+        "command:FusionMoveCommand",
+        "separator",
+        "command:ChangeParameterCommand"
+      ],
+      "bounds": {
+        "x": 452,
+        "y": 128,
+        "width": 245,
+        "height": 237
+      }
+    },
+    {
+      "id": "SketchChamferDropDown",
+      "level": 1,
+      "rows": [
+        "command:ChamferSketchEqualDistance",
+        "command:ChamferSketchDistanceAngle",
+        "command:ChamferSketchDistanceDistance"
+      ],
+      "bounds": {
+        "x": 691,
+        "y": 151,
+        "width": 252,
+        "height": 72
+      }
+    },
+    {
+      "id": "SketchConstraintsPanel",
+      "level": 0,
+      "rows": [
+        "command:SketchAutoConstraintAndDimCmd",
+        "command:SketchAutoConstraintAndDimFromDatumCmd",
+        "command:ConstraintHorizontalVertical",
+        "command:ConstraintCoincident",
+        "command:ConstraintTangent",
+        "command:ConstraintEqual",
+        "command:ConstraintParallel",
+        "command:ConstraintPerpendicular",
+        "command:ConstraintFix",
+        "command:ConstraintMidPoint",
+        "command:ConstraintConcentric",
+        "command:ConstraintCollinear",
+        "command:ConstraintSymmetry",
+        "command:ConstraintSmooth",
+        "command:SketchPolygonConstraintCmd"
+      ],
+      "bounds": {
+        "x": 662,
+        "y": 128,
+        "width": 284,
+        "height": 348
+      }
+    },
+    {
+      "id": "ConfigurePanel",
+      "level": 0,
+      "rows": [
+        "command:FusionStartDesignConfigModeCmd",
+        "command:FusionShowDesignConfigPanelCmd",
+        "command:FusionConfigurationRulesCmd"
+      ],
+      "bounds": {
+        "x": 1266,
+        "y": 128,
+        "width": 245,
+        "height": 72
+      }
+    },
+    {
+      "id": "InspectPanel",
+      "level": 0,
+      "rows": [
+        "command:MeasureCommand",
+        "command:FusionHalfSectionViewCommand",
+        "command:InterferenceCheckCommand",
+        "command:FusionCenterOfMassCommand",
+        "separator",
+        "command:FusionCurvatureCombAnalysisCommand",
+        "command:FusionCurvatureMapAnalysisCommand",
+        "command:FusionDraftAnalysisCommand",
+        "command:FusionEnvironmentMapAnalysisCommand",
+        "command:FusionIsoCurveAnalysisCommand",
+        "command:FusionZebraAnalysisCommand",
+        "separator",
+        "command:FusionAccessibilityAnalysisCommand",
+        "command:FusionMinimumRadiusAnalysisCommand",
+        "separator",
+        "command:FusionViewColorCyclingToggleCmd",
+        "command:FacegroupsToggleCmd",
+        "separator",
+        "command:GravityClimate_ManufacturingSustainabilityInsights_MainDialog"
+      ],
+      "bounds": {
+        "x": 1426,
+        "y": 128,
+        "width": 285,
+        "height": 356
+      }
+    },
+    {
+      "id": "InsertPanel",
+      "level": 0,
+      "rows": [
+        "command:FusionAddEditDecalCommand",
+        "command:FusionAddCanvasCommand",
+        "command:SketchImportSVG",
+        "command:ImportDxfFileCommand",
+        "command:ParaMeshInsertAlignCommand",
+        "command:FusionFastenersCommand",
+        "command:FusionDuplicateWithJointsCommand",
+        "command:PullDeriveCommand",
+        "command:InsertMcMasterCarrComponentCommand",
+        "command:cadenasparts4cad",
+        "command:traceparts_insert"
+      ],
+      "bounds": {
+        "x": 1537,
+        "y": 128,
+        "width": 245,
+        "height": 256
+      }
+    },
+    {
+      "id": "PartAssemblePanel",
+      "level": 0,
+      "rows": [
+        "command:NewAssemblyFromPartCommand"
+      ],
+      "bounds": {
+        "x": 1698,
+        "y": 128,
+        "width": 245,
+        "height": 26
+      }
+    },
+    {
+      "id": "SelectPanel",
+      "level": 0,
+      "rows": [
+        "command:SelectCommand",
+        "separator",
+        "command:selectWindow",
+        "command:selectFreeForm",
+        "command:selectPaint",
+        "separator",
+        "dropdown:SelectionToolsDropDown",
+        "separator",
+        "dropdown:SelectionPriorityCommandsDropDown",
+        "command:SelectionFilterCommand"
+      ],
+      "bounds": {
+        "x": 1795,
+        "y": 128,
+        "width": 245,
+        "height": 170
+      }
+    },
+    {
+      "id": "SelectionToolsDropDown",
+      "level": 1,
+      "rows": [
+        "command:SelectByNameCommand",
+        "command:SelectByBoundaryCommand",
+        "command:FusionSelectBodiesBySizeCommand",
+        "command:SelectByInvertCommand",
+        "command:FusionSelectSeedAndBoundaryFacesCommand"
+      ],
+      "bounds": {
+        "x": 1510,
+        "y": 224,
+        "width": 291,
+        "height": 118
+      }
+    },
+    {
+      "id": "SelectionPriorityCommandsDropDown",
+      "level": 1,
+      "rows": [
+        "command:SelectBodyPriorityCommand",
+        "command:SelectFacePriorityCommand",
+        "command:SelectEdgePriorityCommand"
+      ],
+      "bounds": {
+        "x": 1556,
+        "y": 249,
+        "width": 245,
+        "height": 72
+      }
+    },
+    {
+      "id": "StopSketchPanel",
+      "level": 0,
+      "rows": [
+        "command:SketchStop",
+        "command:SketchAutoConstrainAndFinish"
+      ],
+      "bounds": {
+        "x": 1785,
+        "y": 128,
+        "width": 255,
+        "height": 49
+      }
+    }
+  ],
+  "menuKeyboard": {
+    "arrowDown": true,
+    "arrowRight": true,
+    "arrowLeft": true,
+    "home": true,
+    "end": true,
+    "escape": true,
+    "repeatClick": true,
+    "outsideClick": true
+  },
+  "nativeDimensionLeaf": true,
   "mouseBuiltProfileExtrusion": {
     "status": "PASS",
     "distance": 10,

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { CadPoint2 } from '../../../src/contracts/document';
 import type { SketchEditingStageProps } from '../../../src/web/SketchEditingStage';
 import { CadViewport } from '../../../src/web/CadViewport';
@@ -11,18 +11,19 @@ import { SketchSelectionLayer } from '../../../src/web/viewport/SketchSelectionL
 import { SketchViewportFrameProvider } from '../../../src/web/viewport/SketchViewportFrameContext';
 import {
   panSketchViewport, resetSketchViewportState, screenPointToSketchPoint,
-  sketchDisplayFrame, zoomSketchViewport,
+  zoomSketchViewport,
 } from '../../../src/web/viewport/SketchViewportGeometry';
 import { resolveSketchWorkplaneProjection } from '../../../src/web/viewport/SketchWorkplaneProjection';
 import {
-  editSketchDimension, publishSketchView, registerSketchNavigation, useSketchView,
+  editSketchDimension, publishSketchView, registerSketchCompute, registerSketchNavigation, useSketchView,
 } from './sketchView';
 import type { SketchViewCommand } from './sketchView';
 import {
-  fitSketchViewport, resolveSketchSnap, sketchEntityAnchor, sketchGridStep,
-  sketchPointMarks, sketchProfilePath,
+  fitSketchViewport, resolveSketchSnap, sketchDisplayOverlay, sketchEntityAnchor, sketchFrameForScreen,
+  sketchGridStep, sketchGridTicks, sketchPointMarks, sketchProfilePath,
 } from './sketchPresentation';
 import type { SketchSnap } from './sketchPresentation';
+import './sketchField.css';
 
 export type { SketchEditingStageProps };
 const layerStyle: React.CSSProperties = {
@@ -45,13 +46,13 @@ export function SketchEditingStage(props: SketchEditingStageProps) {
   const view = useSketchView();
   const stageRef = useRef<HTMLDivElement>(null);
   const [viewport, setViewport] = useState(resetSketchViewportState);
-  const [screenSize, setScreenSize] = useState(700);
+  const [stageSize, setStageSize] = useState({ width: 700, height: 700 });
   const [snap, setSnap] = useState<SketchSnap | null>(null);
   const [panning, setPanning] = useState(false);
   const pan = useRef<{ id: number; x: number; y: number } | null>(null);
   const selectionEnabled = props.activeCommand === null && !view.panMode;
   useEffect(() => { setViewport(resetSketchViewportState()); setSnap(null); }, [props.activeSketch.id]);
-  useEffect(() => { setSnap(null); }, [props.activeCommand, view.settings.snap]);
+  useEffect(() => { setSnap(null); }, [props.activeCommand, view.settings.snap, view.settings.construction]);
   const solve = useActiveSketchSolveOverlay({
     document: props.document, sketch: props.activeSketch, active: true, revisionToken: props.revisionToken,
   });
@@ -63,21 +64,29 @@ export function SketchEditingStage(props: SketchEditingStageProps) {
   });
   const overlay = solve.overlay;
   const entities = overlay?.entities ?? props.activeSketch.entities;
-  const frame = sketchDisplayFrame(viewport);
+  const displayOverlay = useMemo(() => sketchDisplayOverlay(overlay, view.settings.construction),
+    [overlay, view.settings.construction]);
+  const displayedEntities = displayOverlay?.entities ?? entities;
+  const displayedIds = useMemo(() => new Set(displayedEntities.map(entity => entity.id)), [displayedEntities]);
+  const frame = sketchFrameForScreen(viewport, stageSize);
   const projection = resolveSketchWorkplaneProjection(props.activeSketch.support);
-  const step = sketchGridStep(viewport.span);
-  const unitPerPixel = viewport.span / screenSize;
-  const points = useMemo(() => sketchPointMarks(entities), [entities]);
+  const step = sketchGridStep(viewport.span, Math.min(stageSize.width, stageSize.height));
+  const unitPerPixel = viewport.span / Math.max(1, Math.min(stageSize.width, stageSize.height));
+  const points = useMemo(() => sketchPointMarks(displayedEntities), [displayedEntities]);
   const profile = useMemo(() => sketchProfilePath(props.activeSketch, entities), [props.activeSketch, entities]);
   const dimensions = props.document.dimensions.filter(dimension => props.activeSketch.dimensionIds.includes(dimension.id));
   const constraints = props.document.constraints.filter(constraint => props.activeSketch.constraintIds.includes(constraint.id));
-  const current = useRef({ viewport, entities, frame, snapEnabled: view.settings.snap, step });
-  current.current = { viewport, entities, frame, snapEnabled: view.settings.snap, step };
+  const current = useRef({ viewport, entities: displayedEntities, frame, snapEnabled: view.settings.snap, step });
+  current.current = { viewport, entities: displayedEntities, frame, snapEnabled: view.settings.snap, step };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const stage = stageRef.current;
     if (!stage) return;
-    const measure = () => { const rect = stage.getBoundingClientRect(); setScreenSize(Math.max(1, Math.min(rect.width, rect.height))); };
+    const measure = () => {
+      const { width, height } = stage.getBoundingClientRect();
+      if (!(width > 0 && height > 0)) return;
+      setStageSize(previous => previous.width === width && previous.height === height ? previous : { width, height });
+    };
     measure();
     const observer = new ResizeObserver(measure);
     observer.observe(stage);
@@ -102,6 +111,11 @@ export function SketchEditingStage(props: SketchEditingStageProps) {
   }), []);
 
   useEffect(() => {
+    if (!entities.length || props.activeCommand || drag.draggingEntityId) return;
+    return registerSketchCompute(solve.restorePersistedPreview);
+  }, [entities.length, props.activeCommand, drag.draggingEntityId, solve.restorePersistedPreview]);
+
+  useEffect(() => {
     const support = String(props.activeSketch.support);
     const supportLabel = ['XY', 'XZ', 'YZ'].includes(support) ? support : 'Плоскость грани';
     publishSketchView({
@@ -109,9 +123,9 @@ export function SketchEditingStage(props: SketchEditingStageProps) {
       supportLabel, planeLabel: supportLabel,
       projection: projection?.kind ?? 'stable-reference', modelContextReady: projection?.modelContextReady ?? false,
       entityCount: entities.length, dimensionCount: dimensions.length, constraintCount: constraints.length,
-    }, viewport);
+    }, viewport, solve.snapshot);
   }, [props.activeSketch.id, props.activeSketch.name, props.activeSketch.support,
-    entities.length, dimensions.length, constraints.length, viewport, projection?.kind, projection?.modelContextReady]);
+    entities.length, dimensions.length, constraints.length, viewport, projection?.kind, projection?.modelContextReady, solve.snapshot]);
 
   const snapPoint = (point: CadPoint2): CadPoint2 => {
     const state = current.current;
@@ -141,16 +155,16 @@ export function SketchEditingStage(props: SketchEditingStageProps) {
     event.preventDefault(); event.stopPropagation(); pan.current = null; setPanning(false);
     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
   };
-  const gridXs: number[] = [], gridYs: number[] = [];
-  for (let x = Math.ceil(frame.minX / step) * step; x <= frame.maxX; x += step) gridXs.push(x);
-  for (let y = Math.ceil(frame.minY / step) * step; y <= frame.maxY; y += step) gridYs.push(y);
+  const gridXs = sketchGridTicks(frame.minX, frame.maxX, step);
+  const gridYs = sketchGridTicks(frame.minY, frame.maxY, step);
 
   return <SketchViewportFrameProvider frame={frame}>
-    <div ref={stageRef} className="part-model-stage" data-testid="part-model-stage"
+    <div ref={stageRef} className="part-model-stage live-sketch-field" data-testid="part-model-stage"
       tabIndex={0} aria-label="Рабочая плоскость эскиза"
       data-sketch-context="isolated-2d" data-sketch-support={props.activeSketch.support}
       data-sketch-projection={projection?.kind ?? ''} data-model-context-ready={projection?.modelContextReady ? 'true' : 'false'}
       data-sketch-view-span={viewport.span} data-sketch-view-center={viewport.center.join(',')}
+      data-sketch-grid-step={step} data-sketch-construction-visible={view.settings.construction ? 'true' : 'false'}
       data-selected-sketch-entity-id={props.selectedSketchEntityId ?? ''} data-dragging-sketch-entity-id={drag.draggingEntityId ?? ''}
       data-sketch-panning={panning ? 'true' : 'false'} data-sketch-snap-enabled={view.settings.snap ? 'true' : 'false'}
       style={{ cursor: panning ? 'grabbing' : view.panMode ? 'grab' : undefined }}
@@ -177,23 +191,39 @@ export function SketchEditingStage(props: SketchEditingStageProps) {
         const rect = event.currentTarget.getBoundingClientRect();
         setViewport(previous => panSketchViewport(previous, rect, direction[0], direction[1]));
       }}>
-      {view.settings.grid && <svg data-sketch-layer="grid" viewBox={frame.viewBox} style={{ ...layerStyle, zIndex: 0 }} aria-hidden="true">
-        <g stroke="#dce4eb" strokeWidth="1" vectorEffect="non-scaling-stroke">
-          {gridXs.map(x => <line key={`x${x}`} x1={x} y1={frame.minY} x2={x} y2={frame.maxY} vectorEffect="non-scaling-stroke" />)}
-          {gridYs.map(y => <line key={`y${y}`} x1={frame.minX} y1={y} x2={frame.maxX} y2={y} vectorEffect="non-scaling-stroke" />)}
+      {view.settings.grid && <svg data-sketch-layer="grid" data-grid-minor-step={step} data-grid-major-step={step * 5}
+        viewBox={frame.viewBox} style={{ ...layerStyle, zIndex: 0 }} aria-hidden="true">
+        <g className="live-sketch-grid-lines" strokeWidth="1">
+          {gridXs.map(({ value: x, major }) => <line key={`x${x}`} data-grid-axis="x" data-grid-kind={major ? 'major' : 'minor'}
+            x1={x} y1={frame.minY} x2={x} y2={frame.maxY} vectorEffect="non-scaling-stroke" />)}
+          {gridYs.map(({ value: y, major }) => <line key={`y${y}`} data-grid-axis="y" data-grid-kind={major ? 'major' : 'minor'}
+            x1={frame.minX} y1={y} x2={frame.maxX} y2={y} vectorEffect="non-scaling-stroke" />)}
         </g>
-        <line x1={frame.minX} y1={0} x2={frame.maxX} y2={0} stroke="#cb6b68" strokeWidth="1" vectorEffect="non-scaling-stroke" />
-        <line x1={0} y1={frame.minY} x2={0} y2={frame.maxY} stroke="#67a47a" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+        <circle data-sketch-origin-ring="true" data-outer-radius-px="12" cx={0} cy={0} r={10.5 * unitPerPixel}
+          fill="none" stroke="#8f9188" strokeOpacity=".55" strokeWidth="3" vectorEffect="non-scaling-stroke" />
+        <line data-sketch-axis="x" x1={frame.minX} y1={0} x2={frame.maxX} y2={0}
+          stroke="#ff6b6b" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+        <line data-sketch-axis="y" x1={0} y1={frame.minY} x2={0} y2={frame.maxY}
+          stroke="#38d744" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+        <g className="live-sketch-grid-labels" fontSize={16 * unitPerPixel} strokeWidth={3 * unitPerPixel}>
+          {gridXs.filter(tick => tick.major && tick.value < 0).map(({ value }) =>
+            <text key={`label-x${value}`} data-grid-label-axis="x" data-grid-label-value={value}
+              transform={`translate(${value} ${7 * unitPerPixel}) rotate(90)`} dominantBaseline="middle">{value}</text>)}
+          {gridYs.filter(tick => tick.major && tick.value < 0).map(({ value }) =>
+            <text key={`label-y${value}`} data-grid-label-axis="y" data-grid-label-value={-value}
+              transform={`translate(${10 * unitPerPixel} ${value - 3 * unitPerPixel}) rotate(90)`}
+              dominantBaseline="middle" textAnchor="end">{-value}</text>)}
+        </g>
       </svg>}
       {view.settings.profiles && <svg data-sketch-layer="profiles" data-closed-profile={profile ? 'true' : 'false'} viewBox={frame.viewBox} style={{ ...layerStyle, zIndex: 1 }} aria-hidden="true">
-        {profile && <path d={profile} fill="#d9a54b" fillOpacity="0.13" fillRule="evenodd" />}
+        {profile && <path d={profile} fill="#67b9d8" fillOpacity="0.17" fillRule="evenodd" />}
       </svg>}
-      <CadViewport model={null} sketchOverlay={overlay} />
-      <SketchSelectionLayer model={overlay} enabled={selectionEnabled}
+      <CadViewport model={null} sketchOverlay={displayOverlay} />
+      <SketchSelectionLayer model={displayOverlay} enabled={selectionEnabled}
         selectedEntityId={props.selectedSketchEntityId} draggingEntityId={drag.draggingEntityId}
         onEntitySelect={props.onSketchEntitySelect} onEntityDragStart={drag.start} onEntityDragMove={drag.move}
         onEntityDragEnd={drag.end} onEntityDragCancel={drag.cancel} />
-      <SketchDirectToolLayers model={overlay} frame={frame} viewportState={viewport} onViewportStateChange={setViewport}
+      <SketchDirectToolLayers model={displayOverlay} frame={frame} viewportState={viewport} onViewportStateChange={setViewport}
         activeCommand={props.activeCommand} lineDraft={props.lineDraft} lineCommitting={props.lineCommitting}
         onLineMove={point => props.onSketchLinePointMove(snapPoint(point))} onLinePoint={point => props.onSketchLinePoint(snapPoint(point))}
         rectangleDraft={props.rectangleDraft} rectangleCommitting={props.rectangleCommitting}
@@ -204,11 +234,12 @@ export function SketchEditingStage(props: SketchEditingStageProps) {
         onArcMove={point => props.onSketchArcPointMove(snapPoint(point))} onArcPoint={point => props.onSketchArcPoint(snapPoint(point))} />
       {view.settings.points && <svg data-sketch-layer="points" viewBox={frame.viewBox} style={{ ...layerStyle, zIndex: 5 }} aria-hidden="true">
         {points.map((mark, index) => <circle key={`${mark.entityId}:${index}`} data-point-kind={mark.kind} data-entity-id={mark.entityId}
-          cx={mark.point[0]} cy={-mark.point[1]} r={unitPerPixel * (mark.kind === 'center' ? 2.5 : 3)}
-          fill={mark.kind === 'center' ? '#fff' : '#2e779b'} stroke="#2e779b" strokeWidth="1" vectorEffect="non-scaling-stroke" />)}
+          cx={mark.point[0]} cy={-mark.point[1]} r={unitPerPixel * 4}
+          fill="#fff" stroke="#929b9e" strokeWidth="1" vectorEffect="non-scaling-stroke" />)}
       </svg>}
       {view.settings.dimensions && <svg data-sketch-layer="dimensions" viewBox={frame.viewBox} style={{ ...layerStyle, zIndex: 5 }}>
         {dimensions.map((dimension, index) => {
+          if (!dimension.entityIds.every(id => displayedIds.has(id))) return null;
           const entity = entities.find(candidate => candidate.id === dimension.entityIds[0]);
           if (!entity) return null;
           const anchor = sketchEntityAnchor(entity);
@@ -217,6 +248,19 @@ export function SketchEditingStage(props: SketchEditingStageProps) {
           const prefix = dimension.type === 'diameter' ? 'Ø' : dimension.type === 'radius' ? 'R' : '';
           const unit = dimensionUnit(dimension.type);
           const text = `${name} = ${prefix}${Number(dimension.value.toFixed(3))}${unit === '°' ? '' : ' '}${unit}`;
+          if (dimension.type === 'diameter' && entity.type === 'circle') {
+            const [x, centerY] = entity.data.center, y = -centerY, radius = entity.data.diameter / 2;
+            const left = x - radius, right = x + radius, arrow = Math.min(9 * unitPerPixel, radius / 2), half = 2.5 * unitPerPixel;
+            return <g key={dimension.id} data-sketch-dimension-id={dimension.id} data-dimension-value={dimension.value} data-dimension-presentation="diameter">
+              <line x1={left} y1={y} x2={right} y2={y} stroke="#000" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+              <path d={`M ${left} ${y} L ${left + arrow} ${y - half} L ${left + arrow} ${y + half} Z M ${right} ${y} L ${right - arrow} ${y - half} L ${right - arrow} ${y + half} Z`} fill="#000" />
+              <text x={x} y={y - 7 * unitPerPixel} fontSize={16 * unitPerPixel} textAnchor="middle" fill="#000" fontFamily="Arial, sans-serif"
+                style={{ pointerEvents: selectionEnabled && view.dimensionEditReady ? 'all' : 'none', cursor: 'pointer' }}
+                onPointerDown={event => event.stopPropagation()} onDoubleClick={event => { event.preventDefault(); event.stopPropagation(); editSketchDimension(dimension.id); }}>
+                <title>{`${text} — двойной щелчок для изменения`}</title>{`Ø${dimension.value.toFixed(2)}`}
+              </text>
+            </g>;
+          }
           const y = -anchor[1] - unitPerPixel * (18 + (index % 3) * 17);
           return <g key={dimension.id} data-sketch-dimension-id={dimension.id} data-dimension-value={dimension.value}>
             <line x1={anchor[0]} y1={-anchor[1]} x2={anchor[0]} y2={y + 3 * unitPerPixel}
@@ -232,6 +276,7 @@ export function SketchEditingStage(props: SketchEditingStageProps) {
       </svg>}
       {view.settings.constraints && <svg data-sketch-layer="constraints" viewBox={frame.viewBox} style={{ ...layerStyle, zIndex: 5 }} aria-hidden="true">
         {constraints.map((constraint, index) => {
+          if (!constraint.entityIds.every(id => displayedIds.has(id))) return null;
           const entity = entities.find(candidate => candidate.id === constraint.entityIds[0]);
           if (!entity) return null;
           const anchor = sketchEntityAnchor(entity);

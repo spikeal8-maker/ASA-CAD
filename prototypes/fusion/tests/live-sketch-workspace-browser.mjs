@@ -1,10 +1,15 @@
 import assert from 'node:assert/strict';
 import {chromium} from '../../../vendor/toubkal/node_modules/playwright-core/index.mjs';
 import {readFile,writeFile} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
 import {dirname,resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 const out=resolve(dirname(fileURLToPath(import.meta.url)),'../evidence');
+const referenceBytes=await readFile(resolve(out,'../reference_capture/sketch-active-ui-20261106.json'));
+const reference=JSON.parse(referenceBytes.toString('utf8'));
+const referenceCaptureSha256=createHash('sha256').update(referenceBytes).digest('hex');
+const observations=JSON.parse(await readFile(resolve(out,'../reference_capture/sketch-native-observations-20261106.json'),'utf8'));
 const browser=await chromium.launch({headless:true,executablePath:process.env.ASA_CAD_BROWSER_EXECUTABLE});
 const page=await browser.newPage({viewport:{width:2048,height:1137},deviceScaleFactor:1});
 const errors=[];page.on('pageerror',error=>errors.push(error.message));page.setDefaultTimeout(20000);
@@ -19,18 +24,32 @@ async function pixel(world,surface=page){
  return {x:r.x+(r.width-v[2]*scale)/2+(world[0]-v[0])*scale,y:r.y+(r.height-v[3]*scale)/2+(-world[1]-v[1])*scale};
 }
 async function click(world,options={}){const p=await pixel(world);await page.mouse.click(p.x,p.y,options);}
-async function contextCommand(id){await click([35,-35],{button:'right'});await page.locator('[data-context-command="'+id+'"]').click();}
+async function contextCommand(id,point){
+ await click(point,{button:'right'});
+ await page.locator('.live-marking[data-marking-level="root"] [data-marking-slot="4"]').hover();
+ await page.locator('[data-context-section="sketch-commands"]').click();
+ await page.locator('[data-context-command="'+id+'"]').click();
+}
 async function save(){
- await quick('system.save').click();await page.waitForFunction(()=>document.querySelector('.live-status')?.textContent?.includes('Сохранено'));
- return page.evaluate(()=>JSON.parse(localStorage.getItem('asa-cad-m2-shell-document')));
+ const canonicalKey='asa-cad-m2-shell-document:state',mirrorKey='asa-cad-m2-shell-document';
+ const before=await page.evaluate(key=>localStorage.getItem(key),canonicalKey);
+ await quick('system.save').click();
+ await page.waitForFunction(({key,before})=>localStorage.getItem(key)!==before,{key:canonicalKey,before});
+ await page.waitForFunction(()=>document.querySelector('.live-status')?.textContent?.includes('Сохранено'));
+ const saved=await page.evaluate(({canonicalKey,mirrorKey})=>({canonical:localStorage.getItem(canonicalKey),mirror:localStorage.getItem(mirrorKey)}),{canonicalKey,mirrorKey});
+ assert.ok(saved.canonical&&saved.mirror,'UI Save must populate canonical and mirror document keys');
+ const envelope=JSON.parse(saved.canonical);
+ assert.ok(Number.isSafeInteger(envelope.revision)&&envelope.revision>0,'UI Save must persist a revision');
+ assert.equal(envelope.serializedDocument,saved.mirror,'UI Save canonical and mirror bytes must agree');
+ return JSON.parse(saved.mirror);
 }
 async function dimensionAt(point,id,value){
- await click(point);await contextCommand(id);await page.getByLabel('Размер',{exact:true}).fill(String(value));
+ await click(point);await contextCommand(id,point);await page.getByLabel('Размер',{exact:true}).fill(String(value));
  await page.getByLabel('Размер',{exact:true}).press('Enter');
  await page.waitForFunction(()=>document.querySelector('.live-workarea')?.getAttribute('data-active-command')==='');
 }
 async function screenshot(name){await page.screenshot({path:resolve(out,'fusion-live-sketch-workspace-'+name+'.png')});}
-const report={status:'RUNNING',input:'Playwright pointer/keyboard actions on the public UI; persisted document is read only for assertions',screenshots:[],visualParityAccepted:false};
+const report={schemaVersion:2,parityRevision:'fusion-sketch-parity-002',referenceCaptureSha256,sourceSnapshotSha256:process.env.ASA_FUSION_SOURCE_SNAPSHOT||null,testSourceSha256:createHash('sha256').update(await readFile(fileURLToPath(import.meta.url))).digest('hex'),status:'RUNNING',input:'Playwright pointer/keyboard actions on the public UI; persisted document is read only for assertions',screenshots:[],visualParityAccepted:false};
 let phase='new-sketch';
 try{
  await page.goto(process.env.ASA_FUSION_URL||'http://127.0.0.1:8099/');
@@ -43,10 +62,13 @@ try{
  assert.equal(await tool('part.sketch.create').isEnabled(),true);await quick('system.redo').click();await page.locator('[data-timeline-sketch]').first().click();
  await page.waitForSelector('.live-workarea[data-workspace="sketch"]');await count(0);report.emptySketchUndoRedo=true;
  phase='undo-dimension-target';await tool('sketch.line').click();await click([-10,10]);await click([10,10]);await count(1);await page.keyboard.press('Escape');
- await click([0,10]);await contextCommand('dimension.linear');await page.getByLabel('Размер',{exact:true}).waitFor();await quick('system.undo').click();await count(0);
+ await click([0,10]);await contextCommand('dimension.linear',[0,10]);await page.getByLabel('Размер',{exact:true}).waitFor();await quick('system.undo').click();await count(0);
  await page.waitForFunction(()=>document.querySelector('.live-workarea')?.getAttribute('data-active-command')==='');
  assert.equal(await page.locator('.live-workarea').getAttribute('data-workspace'),'sketch');assert.equal(await page.getByLabel('Размер',{exact:true}).count(),0);report.removedDimensionTargetCancels=true;
  await screenshot('new-2048');
+ await tool('sketch.line').hover();await page.locator('[data-native-tooltip="DrawPolyline"]:not(.is-expanded)').waitFor();await screenshot('line-hover-2048');
+ await page.locator('[data-native-tooltip="DrawPolyline"].is-expanded').waitFor();await screenshot('line-tooltip-2048');
+ report.lineTooltip={short:true,expanded:true,authoredIllustration:true};
 
  phase='two-corner-rectangle';await tool('sketch.rectangle').click();await screenshot('rectangle-2048');
  await click([-30,-20]);await click([30,20]);await count(4);await page.keyboard.press('Escape');
@@ -64,7 +86,7 @@ try{
 
  phase='line-constraint';await tool('sketch.line').click();await screenshot('line-2048');
  await click([-20,-30]);await click([-2,-29]);await count(6);await page.keyboard.press('Escape');
- await click([-11,-29.5]);await contextCommand('constraint.horizontal');
+ await click([-11,-29.5]);await contextCommand('constraint.horizontal',[-11,-29.5]);
  await page.waitForFunction(()=>document.querySelectorAll('[data-sketch-constraint-id]').length>0);
  await page.getByRole('checkbox',{name:'Вспомогательная геометрия',exact:true}).check();
  await screenshot('constraint-2048');
@@ -76,6 +98,23 @@ try{
  const solvedLine=page.locator('[data-testid="cad-sketch-overlay"] [data-sketch-entity-id="'+construction.id+'"]');
  assert.ok(Math.abs(Number(await solvedLine.getAttribute('y1'))-Number(await solvedLine.getAttribute('y2')))<.0001,'horizontal constraint changes the solved preview');
  const documentBeforeDisplay=JSON.stringify(doc);
+
+ phase='context-target-selection';
+ for(const [point,kind] of [[[20,10],'selection'],[[40,-35],'empty']]){
+  const coords=await solvedLine.evaluate(e=>[(Number(e.getAttribute('x1'))+Number(e.getAttribute('x2')))/2,-(Number(e.getAttribute('y1'))+Number(e.getAttribute('y2')))/2]);
+  await click(coords);assert.equal(await stage().getAttribute('data-selected-sketch-entity-id'),construction.id);
+  await click(point,{button:'right'});
+  assert.equal(await page.locator('.live-marking').getAttribute('data-marking-context'),kind);
+  assert.equal(await stage().getAttribute('data-selected-sketch-entity-id'),'');
+  assert.equal(await page.locator('.live-marking[data-marking-level="root"] [data-marking-slot="7"]').isDisabled(),true);
+  assert.equal(await page.locator('.live-marking [data-context-command="constraint.fixed"]').isDisabled(),true);
+  await page.keyboard.press('Escape');
+ }
+ assert.equal(JSON.stringify(await save()),documentBeforeDisplay);
+ await click([40,-35],{button:'right'});await page.locator('.marking-list button').filter({hasText:'Отмена'}).click();
+ assert.equal(await page.locator('.live-workarea').getAttribute('data-workspace'),'sketch');
+ assert.equal(await page.locator('.live-marking').count(),0);
+ report.contextTargetSelection={entityRightClickSelectsActualTarget:true,profileClearsStaleEntity:true,emptyClearsStaleEntity:true,idleCancelRetainsSketch:true,noDocumentMutation:true};
 
  phase='palette-layers';
  for(const key of ['grid','points','profiles','dimensions','constraints']){
@@ -117,7 +156,8 @@ try{
  await page.mouse.move(activePoint.x,activePoint.y);await page.mouse.down({button:'middle'});await page.mouse.move(activePoint.x+30,activePoint.y+20,{steps:3});await page.mouse.up({button:'middle'});
  assert.notDeepEqual((await view()).center,activeBefore.center);await count(6);await page.keyboard.press('Escape');
  await page.getByRole('button',{name:'Главный вид модели',exact:true}).click();
- await click([20,30],{button:'right'});assert.equal(await page.locator('.live-marking[data-marking-level="sketch"]').count(),1);await screenshot('context-2048');await page.keyboard.press('Escape');
+ await click([20,30],{button:'right'});assert.equal(await page.locator('.live-marking[data-marking-level="root"]').count(),1);await screenshot('context-2048');
+ await page.locator('.live-marking [data-marking-slot="4"]').hover();await page.locator('.live-marking[data-marking-level="sketch"]').waitFor();await screenshot('context-sketch-2048');await page.keyboard.press('Escape');
 
  phase='snap-and-undo';
  const snapSwitch=page.locator('[data-sketch-option="snap"]');await snapSwitch.check();
@@ -130,7 +170,8 @@ try{
  assert.ok(Math.hypot(added.data.from[0]-30,added.data.from[1]-20)>.2,'disabled snap preserves the pointer coordinate');
  await quick('system.undo').click();await count(6);await snapSwitch.check();
  phase='arc-and-keyboard-history';
- await tool('sketch.arc').click();await click([15,30]);await click([20,30]);await click([15,35]);await count(7);await page.keyboard.press('Escape');
+ await page.locator('[data-sketch-group="SketchCreatePanel"]').click();await page.locator('[data-native-dropdown="ArcDropDown"]').hover();await page.locator('[data-native-menu-command="ArcCenterTwoPoint"]').click();
+ await click([15,30]);await click([20,30]);await click([15,35]);await count(7);await page.keyboard.press('Escape');
  const arc=(await save()).sketches[0].entities.find(entity=>entity.type==='arc');assert.ok(arc);assert.ok(Math.abs(arc.data.radius-5)<.001);
  await click([25,-35]);await page.keyboard.press('Control+z');await count(6);await page.keyboard.press('Control+y');await count(7);await quick('system.undo').click();await count(6);
  report.snapping={endpointChangesCommittedCoordinate:true,disabledUsesPointerCoordinate:true};report.arc={threeRealClicks:true,radius:5};report.keyboardHistory={undo:true,redo:true};
@@ -151,37 +192,67 @@ try{
  }
  await page.setViewportSize({width:2048,height:1137});
  phase='menus';
- const reference=JSON.parse(await readFile(resolve(out,'../reference_capture/sketch-native-reference.v1.json'),'utf8'));
+ const visibleControls=controls=>{
+  const result=[];
+  for(const control of controls){
+   if(control.isVisible!==true)continue;
+   if(control.type==='SeparatorControl'&&(!result.length||result.at(-1).type==='SeparatorControl'))continue;
+   result.push({...control,children:visibleControls(control.children||[])});
+  }
+  while(result.at(-1)?.type==='SeparatorControl')result.pop();
+  return result;
+ };
+ const panels=reference.tab.panels.map(panel=>({...panel,controls:visibleControls(panel.controls)}));
  const groups=page.locator('[data-sketch-group]');assert.equal(await groups.count(),9);
- assert.deepEqual(await page.locator('section.live-sketch-group').evaluateAll(elements=>elements.map(e=>e.getAttribute('data-native-panel'))),reference.panels.map(p=>p.id));
- const visited=[],submenus=[];
- const dropdownPaths=(controls,path=[])=>controls.flatMap(control=>control.type==='DropDownControl'?[{path:[...path,control.id],controls:control.controls},...dropdownPaths(control.controls,[...path,control.id])]:[]);
+ assert.deepEqual(await page.locator('section.live-sketch-group').evaluateAll(elements=>elements.map(e=>e.getAttribute('data-native-panel'))),panels.map(p=>p.id));
+ const visited=[],submenus=[],menuRows=[];
+ const dropdownPaths=(controls,path=[])=>controls.flatMap(control=>control.type==='DropDownControl'?[{path:[...path,control.id],controls:control.children},...dropdownPaths(control.children,[...path,control.id])]:[]);
  async function checkMenu(controls,level){
   const menu=page.locator('.live-sketch-menu[data-menu-level="'+level+'"]');await menu.waitFor();
-  const expected=controls.filter(c=>c.type==='CommandControl').map(c=>c.commandDefinition?.id||c.id);
-  assert.deepEqual(await menu.locator(':scope > button[data-native-menu-command]').evaluateAll(elements=>elements.map(e=>e.getAttribute('data-native-menu-command'))),expected);
+  const expected=controls.map(c=>c.type==='SeparatorControl'?'separator':(c.type==='DropDownControl'?'dropdown:':'command:')+(c.commandDefinition?.id||c.id));
+  const actual=await menu.locator(':scope > button,:scope > hr').evaluateAll(elements=>elements.map(e=>e.tagName==='HR'?'separator':e.hasAttribute('data-native-dropdown')?'dropdown:'+e.getAttribute('data-native-dropdown'):'command:'+e.getAttribute('data-native-menu-command')));
+  assert.deepEqual(actual,expected);
+  const box=await menu.boundingBox();assert.ok(box&&box.x>=0&&box.y>=0&&box.x+box.width<=2048&&box.y+box.height<=1137,'menu stays inside viewport');
   for(const item of await menu.locator(':scope > button').all()){
-   assert.match(await item.getAttribute('aria-label'),/[А-Яа-яЁё]/,'Russian menu label');assert.equal(await item.locator('svg.live-icon, .live-icon svg').count(),1,'authored SVG is present');
+   assert.match(await item.getAttribute('aria-label'),/[А-Яа-яЁё]/,'Russian menu label');
+   assert.equal(await item.locator('svg.live-icon, .live-icon svg').count(),await item.getAttribute('data-native-dropdown')?0:1,'native leaf has authored SVG; observed dropdown rows have no icon');
    if(!await item.getAttribute('data-command-id')&&!await item.getAttribute('aria-haspopup'))assert.equal(await item.isDisabled(),true,'unmapped operation is disabled');
   }
+  menuRows.push({id:await menu.getAttribute('data-menu-id'),level,rows:actual,bounds:box});
  }
- for(const panel of reference.panels){
+ for(const panel of panels){
   const nativePromoted=page.locator('section.live-sketch-group[data-native-panel="'+panel.id+'"] .live-tool:not([data-authored-promotion="true"])');
-  assert.deepEqual(await nativePromoted.evaluateAll(elements=>elements.map(e=>e.getAttribute('data-native-command'))),panel.promotedControlIds);
+  assert.deepEqual(await nativePromoted.evaluateAll(elements=>elements.filter(e=>e.getBoundingClientRect().width>0).map(e=>e.getAttribute('data-native-command'))),observations.promotedIds2048[panel.id]);
   const group=page.locator('[data-sketch-group="'+panel.id+'"]');await group.click();
   await checkMenu(panel.controls,0);
   if(panel.id==='SketchCreatePanel'){await screenshot('create-menu-2048');}
   visited.push(panel.id);await page.keyboard.press('Escape');
   for(const branch of dropdownPaths(panel.controls)){
    await group.click();
-   for(const [level,id] of branch.path.entries())await page.locator('.live-sketch-menu[data-menu-level="'+level+'"] [data-native-dropdown="'+id+'"]').click();
+   for(const [level,id] of branch.path.entries())await page.locator('.live-sketch-menu[data-menu-level="'+level+'"] [data-native-dropdown="'+id+'"]').hover();
    await checkMenu(branch.controls,branch.path.length);submenus.push({panel:panel.id,path:branch.path});await page.keyboard.press('Escape');
   }
  }
- assert.equal(submenus.length,10);report.menus=visited;report.nativeSubmenus=submenus;
+ assert.equal(submenus.length,10);report.menus=visited;report.nativeSubmenus=submenus;report.menuRows=menuRows;
+ phase='menu-keyboard';
+ const createGroup=page.locator('[data-sketch-group="SketchCreatePanel"]');
+ await createGroup.focus();await page.keyboard.press('ArrowDown');await page.keyboard.press('ArrowDown');
+ assert.equal(await page.locator(':focus').getAttribute('data-native-dropdown'),'RectangleDropDown');
+ await page.keyboard.press('ArrowRight');await page.locator('.live-sketch-menu[data-menu-level="1"]').waitFor();
+ assert.equal(await page.locator(':focus').getAttribute('data-native-menu-command'),'ShapeRectangleTwoPoint');
+ await page.keyboard.press('ArrowLeft');assert.equal(await page.locator(':focus').getAttribute('data-native-dropdown'),'RectangleDropDown');
+ await page.keyboard.press('Home');assert.equal(await page.locator(':focus').getAttribute('data-native-menu-command'),'DrawPolyline');
+ await page.keyboard.press('End');assert.notEqual(await page.locator(':focus').getAttribute('data-native-menu-command'),'DrawPolyline');
+ await page.keyboard.press('Escape');assert.equal(await page.locator('.live-sketch-menu').count(),0);
+ await createGroup.click();await createGroup.click();assert.equal(await page.locator('.live-sketch-menu').count(),0);
+ await createGroup.click();await click([40,-35]);assert.equal(await page.locator('.live-sketch-menu').count(),0);
+ report.menuKeyboard={arrowDown:true,arrowRight:true,arrowLeft:true,home:true,end:true,escape:true,repeatClick:true,outsideClick:true};
+
+ phase='native-dimension-leaf';await click([7,0]);
  await page.locator('[data-sketch-group="SketchCreatePanel"]').click();await page.locator('.live-sketch-menu[data-menu-level="0"] [data-native-menu-command="SketchDimension"]').click();
- assert.deepEqual(await page.locator('.live-sketch-menu[data-menu-level="1"] [data-command-id]').evaluateAll(elements=>elements.map(e=>e.getAttribute('data-command-id'))),['dimension.linear','dimension.horizontal','dimension.vertical','dimension.diameter','dimension.radius','dimension.angular']);
- report.authoredDimensionMenu=true;await page.keyboard.press('Escape');
+ assert.equal(await page.locator('.live-sketch-menu').count(),0);
+ assert.equal(await page.locator('.live-workarea').getAttribute('data-active-command'),'dimension.diameter');
+ report.nativeDimensionLeaf=true;await page.getByLabel('Размер',{exact:true}).press('Escape');
 
  phase='finish-and-reopen';await tool('sketch.finish').click();await page.waitForSelector('.live-workarea[data-workspace="solid"]');
  assert.equal(await page.locator('[data-testid="sketch-palette"]').count(),0);await screenshot('finished-2048');
@@ -211,7 +282,8 @@ try{
  assert.deepEqual(errors,[]);
  Object.assign(report,{status:'PASS',scenarioA:{rectangle:'two pointer clicks, 60×40 mm driving line dimensions',circle:'two pointer clicks, Ø12 driving dimension, edited to Ø14 by annotation double click',constructionLine:true,horizontalConstraint:true,entities:6},palette:{grid:true,points:true,profiles:true,dimensions:true,constraints:true,collapse:true,noDocumentMutation:true},navigation:{idleWheel:true,middlePanIdle:true,middlePanActiveTool:true,planeNormal:true,reset:true,orbit:'BLOCKED: no shared 3D sketch camera / face-frame bridge'},annotationEdit:{cancelRetainsSketch:true,enterCommits:true},saveReopen:true,pageErrors:errors});
  await writeFile(resolve(out,'fusion-live-sketch-workspace-checks.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report,null,2));
- const comparison={status:'NOT_ACCEPTED',nativeSource:reference.source,activeNativeSketchScreenshotAvailable:false,candidateViewports:report.screenshots,toleranceCssPx:2,comparisons:['new','create-menu','line','rectangle','circle-selected','palette','constraint','finished','context','cube-normal'].map(state=>({state,candidate:'fusion-live-sketch-workspace-'+state+'-2048.png',native:null,panelDeltaCssPx:null,svgVisualParity:null,status:'BLOCKED_MISSING_NATIVE_ACTIVE_SKETCH_SCREENSHOT'}))};
+ const pairedStates={new:'sketch-empty','create-menu':'create-menu','line-hover':'line-hover-final','line-tooltip':'line-tooltip-final',line:'line-active',rectangle:'rectangle-preview','circle-selected':'circle-diameter',palette:'circle-diameter',constraint:'circle-diameter',context:'context-empty-safe','context-sketch':'context-sketch-submenu','cube-normal':'circle-diameter'};
+ const comparison={schemaVersion:2,parityRevision:'fusion-sketch-parity-002',status:'NOT_ACCEPTED',nativeSource:{version:reference.applicationVersion,capturedUTC:reference.capturedUTC,sha256:referenceCaptureSha256,dpi:110},activeNativeSketchScreenshotAvailable:true,candidateViewports:report.screenshots,toleranceCssPx:2,limitation:observations.nativeDpiPolicy,comparisons:Object.entries(pairedStates).map(([state,native])=>({state,candidate:'fusion-live-sketch-workspace-'+state+'-2048.png',native:'fusion-parity-native-'+native+'-2048-dpi110.png',panelDeltaCssPx:null,svgVisualParity:null,status:'AWAITING_VISUAL_REVIEW'}))};
  await writeFile(resolve(out,'fusion-live-sketch-visual-review.json'),JSON.stringify(comparison,null,2)+'\n');
 }catch(error){
  console.error('PHASE',phase,error.stack);console.error('STATUS',await page.locator('.live-status').innerText().catch(()=>''));

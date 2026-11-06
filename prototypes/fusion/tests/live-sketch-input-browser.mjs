@@ -26,3 +26,6 @@ try{
 
 // The existing CI entry point also exercises the contextual Sketch workspace.
 if(!process.exitCode) await import('./live-sketch-workspace-browser.mjs');
+if(!process.exitCode) await import('./live-sketch-frame.mjs');
+if(!process.exitCode) await import('./live-sketch-field-browser.mjs');
+if(!process.exitCode) await import('./live-sketch-parity-browser.mjs');
