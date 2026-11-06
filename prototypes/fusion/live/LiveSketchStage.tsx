@@ -3,7 +3,6 @@ import type { CadPoint2 } from '../../../src/contracts/document';
 import type { SketchEditingStageProps } from '../../../src/web/SketchEditingStage';
 import { CadViewport } from '../../../src/web/CadViewport';
 import { SketchDirectToolLayers } from '../../../src/web/SketchDirectToolLayers';
-import { dimensionLabel, dimensionUnit } from '../../../src/web/SketchDimensionPresentation';
 import { SketchSolveStatus } from '../../../src/web/SketchSolveStatus';
 import { useActiveSketchSolveOverlay } from '../../../src/web/useActiveSketchSolveOverlay';
 import { useSketchEntityDrag } from '../../../src/web/useSketchEntityDrag';
@@ -23,6 +22,7 @@ import {
   sketchGridStep, sketchGridTicks, sketchPointMarks, sketchProfilePath,
 } from './sketchPresentation';
 import type { SketchSnap } from './sketchPresentation';
+import { SketchDimensionAnnotations } from './SketchDimensionAnnotations';
 import './sketchField.css';
 
 export type { SketchEditingStageProps };
@@ -238,41 +238,8 @@ export function SketchEditingStage(props: SketchEditingStageProps) {
           fill="#fff" stroke="#929b9e" strokeWidth="1" vectorEffect="non-scaling-stroke" />)}
       </svg>}
       {view.settings.dimensions && <svg data-sketch-layer="dimensions" viewBox={frame.viewBox} style={{ ...layerStyle, zIndex: 5 }}>
-        {dimensions.map((dimension, index) => {
-          if (!dimension.entityIds.every(id => displayedIds.has(id))) return null;
-          const entity = entities.find(candidate => candidate.id === dimension.entityIds[0]);
-          if (!entity) return null;
-          const anchor = sketchEntityAnchor(entity);
-          const name = dimension.name && !['width', 'height', 'diameter'].includes(dimension.name)
-            ? dimension.name : dimensionLabel(dimension.name, dimension.type);
-          const prefix = dimension.type === 'diameter' ? 'Ø' : dimension.type === 'radius' ? 'R' : '';
-          const unit = dimensionUnit(dimension.type);
-          const text = `${name} = ${prefix}${Number(dimension.value.toFixed(3))}${unit === '°' ? '' : ' '}${unit}`;
-          if (dimension.type === 'diameter' && entity.type === 'circle') {
-            const [x, centerY] = entity.data.center, y = -centerY, radius = entity.data.diameter / 2;
-            const left = x - radius, right = x + radius, arrow = Math.min(9 * unitPerPixel, radius / 2), half = 2.5 * unitPerPixel;
-            return <g key={dimension.id} data-sketch-dimension-id={dimension.id} data-dimension-value={dimension.value} data-dimension-presentation="diameter">
-              <line x1={left} y1={y} x2={right} y2={y} stroke="#000" strokeWidth="1" vectorEffect="non-scaling-stroke" />
-              <path d={`M ${left} ${y} L ${left + arrow} ${y - half} L ${left + arrow} ${y + half} Z M ${right} ${y} L ${right - arrow} ${y - half} L ${right - arrow} ${y + half} Z`} fill="#000" />
-              <text x={x} y={y - 7 * unitPerPixel} fontSize={16 * unitPerPixel} textAnchor="middle" fill="#000" fontFamily="Arial, sans-serif"
-                style={{ pointerEvents: selectionEnabled && view.dimensionEditReady ? 'all' : 'none', cursor: 'pointer' }}
-                onPointerDown={event => event.stopPropagation()} onDoubleClick={event => { event.preventDefault(); event.stopPropagation(); editSketchDimension(dimension.id); }}>
-                <title>{`${text} — двойной щелчок для изменения`}</title>{`Ø${dimension.value.toFixed(2)}`}
-              </text>
-            </g>;
-          }
-          const y = -anchor[1] - unitPerPixel * (18 + (index % 3) * 17);
-          return <g key={dimension.id} data-sketch-dimension-id={dimension.id} data-dimension-value={dimension.value}>
-            <line x1={anchor[0]} y1={-anchor[1]} x2={anchor[0]} y2={y + 3 * unitPerPixel}
-              stroke="#71858e" strokeWidth="1" vectorEffect="non-scaling-stroke" />
-            <text x={anchor[0]} y={y} fontSize={12 * unitPerPixel} textAnchor="middle" fill="#29495c"
-              stroke="#fff" strokeWidth={3 * unitPerPixel} paintOrder="stroke" fontFamily="Arial, sans-serif"
-              style={{ pointerEvents: selectionEnabled && view.dimensionEditReady ? 'all' : 'none', cursor: 'pointer' }}
-              onPointerDown={event => event.stopPropagation()} onDoubleClick={event => { event.preventDefault(); event.stopPropagation(); editSketchDimension(dimension.id); }}>
-              <title>{`${text} — двойной щелчок для изменения`}</title>{text}
-            </text>
-          </g>;
-        })}
+        <SketchDimensionAnnotations dimensions={dimensions} entities={entities} displayedIds={displayedIds}
+          unitPerPixel={unitPerPixel} editable={selectionEnabled && view.dimensionEditReady} onEdit={editSketchDimension} />
       </svg>}
       {view.settings.constraints && <svg data-sketch-layer="constraints" viewBox={frame.viewBox} style={{ ...layerStyle, zIndex: 5 }} aria-hidden="true">
         {constraints.map((constraint, index) => {

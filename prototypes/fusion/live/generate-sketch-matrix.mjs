@@ -8,6 +8,7 @@ import {createHash} from 'node:crypto';
 import assert from 'node:assert/strict';
 import {sketchReference,activeSketchReference,sketchPanels,sketchLabels,sketchNativeActions,dimensionActionIds,flattenSketchItems,observedPromotedIds} from './sketchCommands.ts';
 import {sketchIcons} from './SketchIcons.ts';
+import {readActionEvidence,actionEvidenceProof,actionEvidencePaths} from './sketchActionEvidence.mjs';
 
 const revision='fusion-sketch-parity-002';
 const repoRoot=fileURLToPath(new URL('../../../',import.meta.url));
@@ -44,6 +45,7 @@ export function evaluateBrowserReport(candidate,expectedCaptureSha256){
 let reportBytes=null,report=null,reportParseError=null;
 try{reportBytes=read(browserEvidencePath);report=JSON.parse(reportBytes);}catch(error){if(error.code!=='ENOENT'&&!(error instanceof SyntaxError))throw error;if(error instanceof SyntaxError)reportParseError=error.message;}
 const acceptance=evaluateBrowserReport(report,referenceCaptureSha256),reportPassed=acceptance.accepted;
+const supplementalActionEvidence=readActionEvidence(repoRoot,referenceCaptureSha256);
 const browserEvidence={
  file:browserEvidencePath,sha256:reportBytes?sha256(reportBytes):null,
  reportStatus:reportParseError?'INVALID_JSON':reportBytes?report?.status??'STATUS_MISSING':'MISSING',
@@ -124,6 +126,7 @@ capture('lineTooltip',observations.observedInteractions.lineTooltip.expanded,{bo
 capture('lineActive',observations.observedInteractions.lineActive,{purpose:'Native Line active state; it is not proof of ASA gesture equivalence'});
 capture('rectanglePreview',observations.observedInteractions.rectanglePreview,{purpose:'Native Rectangle command preview'});
 capture('circleDiameter',observations.observedGeometry.source,{purpose:'Native circle diameter and sketch geometry reference'});
+capture('linearDimensions','fusion-parity-native-linear-dimensions-2048-dpi110.png',{purpose:'Native persistent 60.00 and 40.00 dimensions created through D in the separate test document; manually placed annotations.'});
 for(const [index,layout] of observations.responsiveCaptures.entries()){
  const evidence=capture(`responsive${index}`,layout.file,{requestedWidth:layout.requestedWidth,limitation:layout.limitation||null});
  assert.ok(evidence,`Missing responsive original ${layout.file}`);
@@ -141,6 +144,7 @@ function screenshotsFor(control,panel,path,presented,promoted){
  if(id==='DrawPolyline'&&presented)refs.push(screenshotRef('lineHover'),screenshotRef('lineTooltip'),screenshotRef('lineActive'));
  if(id==='ShapeRectangleTwoPoint'&&presented)refs.push(screenshotRef('rectanglePreview'));
  if(['CircleCenterRadius','SketchDimension'].includes(id)&&presented)refs.push(screenshotRef('circleDiameter'));
+ if(id==='SketchDimension'&&presented)refs.push(screenshotRef('linearDimensions'));
  if(id==='SketchStop'&&presented)refs.push(screenshotRef('finishedSolid'));
  return [...new Map(refs.filter(Boolean).map(ref=>[ref.id,ref])).values()];
 }
@@ -168,6 +172,8 @@ function verifyBindings(actions){
  return {status:actions.length?'VERIFIED_EXISTING_BINDING':'NO_ACTION_BINDING',actions,source:bindingPath,sourceSha256:sha256(bindingBytes),scope:'Static binding presence; no operation or native semantic parity is implied.'};
 }
 function actionBehavior(id){
+ const supplemental=actionEvidenceProof(supplementalActionEvidence,id);
+ if(supplemental)return supplemental;
  const proof={
   'sketch.line':{observed:report?.scenarioA?.constructionLine===true,pointers:['/scenarioA/constructionLine','/scenarioA/entities'],route:'Promoted Line; pointer creation and persisted construction line.'},
   'sketch.rectangle':{observed:typeof report?.scenarioA?.rectangle==='string'&&report.scenarioA.rectangle.includes('two pointer clicks'),pointers:['/scenarioA/rectangle'],route:'Promoted Rectangle; two pointer clicks, persisted 60 × 40 mm geometry and dimensions.'},
@@ -194,7 +200,7 @@ function nativeCoverage(control,panel,path,actions,presented){
  const behavior=behaviorSummary(actions);
  const status=!presented?'NOT_PRESENTED_ACTIVE_SKETCH':isDropdown?(opened?'PASS_OPENED_ORDER':'NOT_BROWSER_TESTED'):isCommand&&!actions.length?(row?'PASS_DISABLED':'NOT_BROWSER_TESTED'):isCommand?behavior.status:'NOT_APPLICABLE';
  return {
-  status,browserScenario:browserTest,bindingVerification:verifyBindings(actions),
+  status,browserScenario:browserTest,behaviorBrowserScenarios:[browserTest,actionEvidencePaths.test],bindingVerification:verifyBindings(actions),
   menu:{status:!presented?'NOT_PRESENTED_ACTIVE_SKETCH':row?'PASS_EXACT_ROW':'NOT_BROWSER_TESTED',evidence:row?[row]:[],popupOpened:opened?[opened]:[],scope:'The exact native row must occur in the matching recorded v2 menuRows. Merely opening its parent menu never proves a hidden command or disabled state.'},
   ...(isCommand&&!actions.length?{disabledState:{status:!presented?'NOT_PRESENTED_ACTIVE_SKETCH':row?'PASS_DISABLED':'NOT_BROWSER_TESTED',evidence:row?[row]:[],scope:'The v2 browser check validates that each presented unmapped leaf is disabled. It does not execute unsupported operations.'}}:{}),
   behavior:presented?behavior:{status:'NOT_PRESENTED_ACTIVE_SKETCH',actions:[]},
@@ -287,6 +293,7 @@ const allActions=[...new Set([...nativeEntries.flatMap(entry=>entry.cadUiActions
 const matrix={
  schemaVersion:2,parityRevision:revision,referenceFile:referencePath,referenceCaptureSha256,
  historicalInventoryFile:historicalPath,observationFile:observationPath,sourceHashes,browserEvidence,
+ actionBrowserEvidence:{...supplementalActionEvidence.summary,browserScenario:actionEvidencePaths.test},
  source:{applicationVersion:activeSketchReference.applicationVersion,capturedUTC:activeSketchReference.capturedUTC,activeWorkspaceId:activeSketchReference.activeWorkspaceId,activeToolbarTabId:activeSketchReference.activeToolbarTabId},
  scope:'Observed active native Sketch presentation and existing CadUiAction bindings. Physical promotions, active API visibility, authored extensions, browser execution and visual acceptance are separate claims.',
  captureStatePolicy:'The full historical inventory is retained. Fresh active isVisible determines menu presentation with separator normalization; observed screenshots determine physical promotions. Native isEnabled never enables ASA operations.',

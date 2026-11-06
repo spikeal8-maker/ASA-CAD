@@ -1,0 +1,362 @@
+{
+  "schemaVersion": 2,
+  "parityRevision": "fusion-sketch-parity-002",
+  "status": "PASS",
+  "sourceSnapshotSha256": "3ae8b3ff5c97422d8a53fe26b5d5d341e6be45c2143bf5e39baa668302aa2f8c",
+  "sourceSnapshotDescriptor": {
+    "baseHead": "cb7006efe7a108bc85bcf99d3a3e4a9c2f73568b",
+    "delta": [
+      {
+        "path": "prototypes/fusion/live/LiveSketchStage.tsx",
+        "sha256": "60fb9acc216f50a2d3934d1515a1b3b3f7fbb5c9288175dbf5f8e7b021cbdeaf"
+      },
+      {
+        "path": "prototypes/fusion/live/SketchDimensionAnnotations.tsx",
+        "sha256": "4e754fadc735f478883faa3f4cb83288abcbb89fe7db33ede60b93241901a8e0"
+      },
+      {
+        "path": "prototypes/fusion/live/sketchDimensionLayout.ts",
+        "sha256": "d5b1455664e0477cf7336f3d18cc286051b85a8d70712953e89ef4d8e2c885f2"
+      }
+    ]
+  },
+  "testSourceSha256": "8e9a4c21224a942c63731d43f7852df635518a8b32d7fe51b4a1ab6fddf9c98e",
+  "helperSourceSha256": "6216fa7e0c3b42b91b45ad01dfd8bf418a5da48ecfabc1a4af22e76b2cb89aa7",
+  "bindingSourceSha256": "52152eb5e8400a30cc0126a1749fc6dbb7c7d667f4cbd24600c6d40a2040cdb5",
+  "referenceCaptureSha256": "18be2710ecd716650df37cf1ecff3ff14ff783ddadbdc5d08c438d8de00a9434",
+  "input": "Empty public Fusion route; pointer-built geometry; ribbon/search actions; read-only persisted-document assertions",
+  "origin": "http://127.0.0.1:58371",
+  "viewport": {
+    "width": 2048,
+    "height": 1137,
+    "dpr": 1
+  },
+  "userProfileUsed": false,
+  "visualParityAccepted": false,
+  "pageErrors": [],
+  "actions": [
+    {
+      "cadUiAction": "constraint.coincident",
+      "status": "PASS",
+      "inputRoute": "native-ribbon",
+      "solverVerified": true,
+      "persisted": true,
+      "undoRedo": true,
+      "saveReopen": true,
+      "nativeCommandId": "ConstraintCoincident",
+      "disabledWithoutGeometry": true,
+      "cancelWithoutMutation": true,
+      "solverResidual": 0,
+      "entityIds": [
+        "entity_0265b854-9c6b-4b53-80bd-e0bc2961e342",
+        "entity_63c930d9-6a93-4e7a-a98e-763676ad2cb3"
+      ],
+      "constraintId": "constraint_7ad17bc1-f786-4601-acd6-a70b2d5985bb",
+      "pageErrors": []
+    },
+    {
+      "cadUiAction": "constraint.tangent",
+      "status": "PASS",
+      "inputRoute": "native-ribbon",
+      "solverVerified": true,
+      "persisted": true,
+      "undoRedo": true,
+      "saveReopen": true,
+      "nativeCommandId": "ConstraintTangent",
+      "disabledWithoutGeometry": true,
+      "cancelWithoutMutation": true,
+      "solverResidual": 4.1104897263721796e-12,
+      "entityIds": [
+        "entity_2ed63b33-a7a7-4c28-8e71-d9d07d1c563b",
+        "entity_5b7579c8-c6fd-436c-a716-a1e0869a6725"
+      ],
+      "constraintId": "constraint_9d3a96dc-1ef7-4ccc-8ef5-eb1b950b0ebc",
+      "pageErrors": []
+    },
+    {
+      "cadUiAction": "constraint.equal",
+      "status": "PASS",
+      "inputRoute": "native-ribbon",
+      "solverVerified": true,
+      "persisted": true,
+      "undoRedo": true,
+      "saveReopen": true,
+      "nativeCommandId": "ConstraintEqual",
+      "disabledWithoutGeometry": true,
+      "cancelWithoutMutation": true,
+      "solverResidual": 4.511946372076636e-13,
+      "entityIds": [
+        "entity_ce9c14f3-fb88-4b8a-b6fe-bfd0cf55d205",
+        "entity_3c9d80aa-e3fd-4d60-8459-b441ad813ef0"
+      ],
+      "constraintId": "constraint_4fc735eb-b7eb-40cc-83e6-d92c3b15867b",
+      "pageErrors": []
+    },
+    {
+      "cadUiAction": "constraint.parallel",
+      "status": "PASS",
+      "inputRoute": "native-ribbon",
+      "solverVerified": true,
+      "persisted": true,
+      "undoRedo": true,
+      "saveReopen": true,
+      "nativeCommandId": "ConstraintParallel",
+      "disabledWithoutGeometry": true,
+      "cancelWithoutMutation": true,
+      "solverResidual": 7.1035356242123e-14,
+      "entityIds": [
+        "entity_008a3244-f288-4ebc-a1d6-649c6a088da2",
+        "entity_75278255-a739-4007-93e7-3a19b2feb0da"
+      ],
+      "constraintId": "constraint_2ee9e743-f25b-4740-b967-7cb6ad78360e",
+      "pageErrors": []
+    },
+    {
+      "cadUiAction": "constraint.perpendicular",
+      "status": "PASS",
+      "inputRoute": "native-ribbon",
+      "solverVerified": true,
+      "persisted": true,
+      "undoRedo": true,
+      "saveReopen": true,
+      "nativeCommandId": "ConstraintPerpendicular",
+      "disabledWithoutGeometry": true,
+      "cancelWithoutMutation": true,
+      "solverResidual": 3.080801819623431e-12,
+      "entityIds": [
+        "entity_85e15ad8-ec1a-42a6-b406-75c0580a8ee9",
+        "entity_0a988651-e284-4ebe-b0ae-b37cacb73368"
+      ],
+      "constraintId": "constraint_4110685d-0317-475a-a9d9-9e9696b7fc2f",
+      "pageErrors": []
+    },
+    {
+      "cadUiAction": "constraint.concentric",
+      "status": "PASS",
+      "inputRoute": "native-ribbon",
+      "solverVerified": true,
+      "persisted": true,
+      "undoRedo": true,
+      "saveReopen": true,
+      "nativeCommandId": "ConstraintConcentric",
+      "disabledWithoutGeometry": true,
+      "cancelWithoutMutation": true,
+      "solverResidual": 0,
+      "entityIds": [
+        "entity_b2bc938d-36df-4bf0-9821-a8aab7a4f96d",
+        "entity_6daa2d67-15fa-44d7-a0a2-8d5b9553cc82"
+      ],
+      "constraintId": "constraint_3e75c229-9db3-4e65-90ee-cb15faffd0c4",
+      "pageErrors": []
+    },
+    {
+      "cadUiAction": "constraint.symmetric",
+      "status": "PASS",
+      "inputRoute": "native-ribbon",
+      "solverVerified": true,
+      "persisted": true,
+      "undoRedo": true,
+      "saveReopen": true,
+      "nativeCommandId": "ConstraintSymmetry",
+      "disabledWithoutGeometry": true,
+      "cancelWithoutMutation": true,
+      "solverResidual": 5.327062245741e-11,
+      "entityIds": [
+        "entity_76b7ef85-1cca-4505-9454-cf07fab3800f",
+        "entity_12078c7d-86ff-4685-8b32-ad3e2c6c8da0",
+        "entity_33b9919e-d1c1-46d0-b594-04a4f16b5e66"
+      ],
+      "constraintId": "constraint_4ed81f46-86ed-40ef-b3f8-8db42f4ae2c6",
+      "pageErrors": []
+    },
+    {
+      "cadUiAction": "constraint.pointOnCurve",
+      "status": "PASS",
+      "inputRoute": "authored-search",
+      "solverVerified": true,
+      "persisted": true,
+      "undoRedo": true,
+      "saveReopen": true,
+      "nativeCommandId": null,
+      "disabledWithoutGeometry": true,
+      "cancelWithoutMutation": true,
+      "solverResidual": 5.21646588520831e-15,
+      "entityIds": [
+        "entity_6ca9ce5e-f46f-4339-a869-f1d4f4410041",
+        "entity_07fd3d86-b8fb-4313-a6d8-f032243c1a59"
+      ],
+      "constraintId": "constraint_985b8f3e-0b6a-475f-9bd2-8dbe2e16839b",
+      "pageErrors": []
+    },
+    {
+      "cadUiAction": "constraint.fixed",
+      "status": "PASS",
+      "inputRoute": "native-ribbon",
+      "solverVerified": true,
+      "persisted": true,
+      "undoRedo": true,
+      "saveReopen": true,
+      "nativeCommandId": "ConstraintFix",
+      "disabledWithoutGeometry": true,
+      "freezesSolvedCoordinates": true,
+      "rejectsDrag": true,
+      "duplicateDisabled": true,
+      "entityIds": [
+        "entity_663d4a07-dbe1-42a2-af90-fd3551c0bb52"
+      ],
+      "constraintId": "constraint_e1a7be18-ea90-4a36-9d1e-af9e54c3b864",
+      "pageErrors": []
+    },
+    {
+      "cadUiAction": "dimension.horizontal",
+      "status": "PASS",
+      "inputRoute": "authored-search",
+      "solverVerified": true,
+      "persisted": true,
+      "undoRedo": true,
+      "saveReopen": true,
+      "disabledWithoutGeometry": true,
+      "invalidValueRejected": true,
+      "cancelWithoutMutation": true,
+      "entityIds": [
+        "entity_3990babf-de69-421d-978c-af25e596b8ca"
+      ],
+      "dimensionId": "dimension_6f408234-55c1-4de3-be41-0f2c5a9ad238",
+      "initial": 20.000001290383864,
+      "value": 32,
+      "editedValue": 38,
+      "governingSolverGeometry": true,
+      "annotationEditPreservesId": true,
+      "pageErrors": []
+    },
+    {
+      "cadUiAction": "dimension.vertical",
+      "status": "PASS",
+      "inputRoute": "authored-search",
+      "solverVerified": true,
+      "persisted": true,
+      "undoRedo": true,
+      "saveReopen": true,
+      "disabledWithoutGeometry": true,
+      "invalidValueRejected": true,
+      "cancelWithoutMutation": true,
+      "entityIds": [
+        "entity_e5facb69-121a-4419-835d-839562bb458f"
+      ],
+      "dimensionId": "dimension_5ffe2f4e-bed9-4400-8e10-f34d67833fc3",
+      "initial": 5.000001935575774,
+      "value": 24,
+      "editedValue": 30,
+      "governingSolverGeometry": true,
+      "annotationEditPreservesId": true,
+      "pageErrors": []
+    },
+    {
+      "cadUiAction": "dimension.radius",
+      "status": "PASS",
+      "inputRoute": "authored-search",
+      "solverVerified": true,
+      "persisted": true,
+      "undoRedo": true,
+      "saveReopen": true,
+      "disabledWithoutGeometry": true,
+      "invalidValueRejected": true,
+      "cancelWithoutMutation": true,
+      "entityIds": [
+        "entity_dd23b25b-2d84-494c-920e-791083c9479f"
+      ],
+      "dimensionId": "dimension_b0e09a9d-4a06-4c07-b67e-ee4f895914e0",
+      "initial": 8.000005677688947,
+      "value": 12,
+      "editedValue": 15,
+      "governingSolverGeometry": true,
+      "annotationEditPreservesId": true,
+      "pageErrors": []
+    },
+    {
+      "cadUiAction": "dimension.angular",
+      "status": "PASS",
+      "inputRoute": "authored-search",
+      "solverVerified": true,
+      "persisted": true,
+      "undoRedo": true,
+      "saveReopen": true,
+      "disabledWithoutGeometry": true,
+      "invalidValueRejected": true,
+      "cancelWithoutMutation": true,
+      "entityIds": [
+        "entity_90e2fa4c-b4e8-40df-82cb-0583123e69b6",
+        "entity_af72a99a-dbb2-4834-bf06-7f01064f76c2"
+      ],
+      "dimensionId": "dimension_0370e131-ebe6-4e9d-819c-905e34833c20",
+      "initial": 37.99874822455656,
+      "value": 60,
+      "editedValue": 45,
+      "governingSolverGeometry": true,
+      "annotationEditPreservesId": true,
+      "pageErrors": []
+    },
+    {
+      "cadUiAction": "sketch.entity.delete",
+      "status": "PASS",
+      "inputRoute": "authored-search",
+      "solverVerified": true,
+      "persisted": true,
+      "undoRedo": true,
+      "saveReopen": true,
+      "disabledWithoutGeometry": true,
+      "deletedEntityId": "entity_2fead5ed-f1f5-4b26-aca1-7ccec4834611",
+      "retainedEntityId": "entity_ab0ad044-6583-4f2e-918f-eec0e9516004",
+      "dependentConstraintAndDimensionRemoved": true,
+      "undoRestoresAllStableIds": true,
+      "pageErrors": []
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "fusion-live-sketch-actions-tangent.png",
+      "sha256": "9d26f07c07e1680022ac6131f89ad78dac51aebcab71d2c51eec528c07a1fb3e",
+      "viewport": {
+        "width": 2048,
+        "height": 1137,
+        "dpr": 1
+      }
+    },
+    {
+      "file": "fusion-live-sketch-actions-symmetric.png",
+      "sha256": "c8d286f4ef19485218eb5c45c107a1d53a0c25fd196ac68aa0b7356c69c43d50",
+      "viewport": {
+        "width": 2048,
+        "height": 1137,
+        "dpr": 1
+      }
+    },
+    {
+      "file": "fusion-live-sketch-actions-angular-edited.png",
+      "sha256": "9b5e23bfe6a87b85607b7c87c4751f4d557a4bf45121bf8efd6b35e3af7dbcb3",
+      "viewport": {
+        "width": 2048,
+        "height": 1137,
+        "dpr": 1
+      }
+    }
+  ],
+  "verifiedActionIds": [
+    "constraint.coincident",
+    "constraint.tangent",
+    "constraint.equal",
+    "constraint.parallel",
+    "constraint.perpendicular",
+    "constraint.concentric",
+    "constraint.symmetric",
+    "constraint.pointOnCurve",
+    "constraint.fixed",
+    "dimension.horizontal",
+    "dimension.vertical",
+    "dimension.radius",
+    "dimension.angular",
+    "sketch.entity.delete"
+  ],
+  "expectedActionCount": 14,
+  "complete": true
+}

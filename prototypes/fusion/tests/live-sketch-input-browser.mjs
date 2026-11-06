@@ -29,3 +29,6 @@ if(!process.exitCode) await import('./live-sketch-workspace-browser.mjs');
 if(!process.exitCode) await import('./live-sketch-frame.mjs');
 if(!process.exitCode) await import('./live-sketch-field-browser.mjs');
 if(!process.exitCode) await import('./live-sketch-parity-browser.mjs');
+if(!process.exitCode) await import('./live-sketch-dimensions.mjs');
+if(!process.exitCode) await import('./live-sketch-dimensions-browser.mjs');
+if(!process.exitCode) await import('./live-sketch-actions-browser.mjs');

@@ -12,6 +12,7 @@ import {chromium} from '../../../vendor/toubkal/node_modules/playwright-core/ind
 // ASA_CAD_BROWSER_EXECUTABLE. Optional: ASA_FUSION_EVIDENCE_DIR and
 // ASA_FUSION_UPGRADE_ROLLBACK=0 (rollback runs by default).
 // Syntax-only validation: node --check prototypes/fusion/tests/live-package-browser-upgrade.mjs
+// Both legacy and versioned previous entries are supported; every retained generation is verified.
 // No installed launcher, existing browser profile, or listener on 8099 is used.
 const repo=resolve(dirname(fileURLToPath(import.meta.url)),'../../..');
 const output=resolve(process.env.ASA_FUSION_EVIDENCE_DIR||join(repo,'prototypes/fusion/evidence'));
@@ -20,13 +21,14 @@ const storageKeys={canonical:'asa-cad-m2-shell-document:state',mirror:'asa-cad-m
 const digest=value=>createHash('sha256').update(value).digest('hex');
 const prefix=head=>'/__asa_builds/'+head+'/';
 const within=(base,file)=>file===base||file.startsWith(base+sep);
-const report={schemaVersion:1,status:'RUNNING',startedUTC:new Date().toISOString(),
+const report={schemaVersion:2,status:'RUNNING',startedUTC:new Date().toISOString(),
  scope:'Real packaged PlaneGCS/OpenCascade upgrade on an owned ephemeral loopback origin',
  input:'Public UI only; DOM and LocalStorage reads are assertions, not document injection',
  installedOriginTouched:false,existingBrowserUsed:false,visualParityAccepted:false,
  phases:[],servers:[],requests:[],storageChecks:[],screenshots:[],pageErrors:[],requestFailures:[],cleanupErrors:[]};
 let phase='preflight',browser=null,context=null,server=null,origin=null,port=null,activeHead=null;
-let currentPage=null,previous=null,candidate=null,recordNetwork=true,outputAllowed=false;
+let currentPage=null,previous=null,candidate=null,legacyHead=null,recordNetwork=true,outputAllowed=false;
+const assetSources=new Map();
 const ownedServers=new Set(),pageNames=new WeakMap(),requestRecords=new WeakMap(),responses=[];
 
 function required(name){const value=process.env[name];assert.ok(value,name+' is required');return value;}
@@ -54,6 +56,32 @@ function verifyPackage(folder){
  assert.ok([...files.keys()].some(name=>name.startsWith('app/')&&/opencascade.*\.wasm$/i.test(name)),'Real OCC WASM is absent');
  assert.ok([...files.keys()].some(name=>name.startsWith('app/')&&/planegcs.*\.wasm$/i.test(name)),'Real PlaneGCS WASM is absent');
  return {base,raw,manifest,files,manifestSha256:digest(raw)};
+}
+function packageBuilds(value){
+ const manifest=value.manifest,routing=manifest.assetRouting;
+ const builds=new Map([[manifest.sourceHead,{sourceHead:manifest.sourceHead,version:manifest.version,workspace:manifest.workspace,root:'app',package:value}]]);
+ if(routing){
+  assert.equal(routing.prefix,prefix(manifest.sourceHead));assert.ok(Array.isArray(routing.compatibility));
+  for(const item of routing.compatibility){
+   assert.match(item.sourceHead,/^[a-f0-9]{40}$/);assert.equal(builds.has(item.sourceHead),false,'Duplicate retained build');
+   assert.equal(item.root,'compatibility/'+item.sourceHead+'/app');assert.equal(item.version,8);assert.equal(item.workspace,'fusion-sketch-v1');
+   builds.set(item.sourceHead,{...item,package:value});
+  }
+ }
+ const legacy=routing?.unversionedSourceHead||manifest.sourceHead;
+ assert.ok(builds.has(legacy),'Unversioned owner is absent from the package');
+ for(const build of builds.values()){
+  assert.ok(value.files.has(build.root+'/index.html'),'Retained entry is not hashed');
+  const html=readFileSync(safeFile(value.base,build.root+'/index.html'),'utf8');
+  const urls=[...html.matchAll(/<(?:script|link)\b[^>]*>/gi)].flatMap(tag=>[...tag[0].matchAll(/\b(?:src|href)\s*=\s*(["'])([^"']+)\1/gi)].map(match=>match[2])).filter(url=>!url.startsWith('data:'));
+  assert.ok(urls.length>0,'Entry has no script/style assets');
+  build.versioned=urls.every(url=>url.startsWith(prefix(build.sourceHead)));
+  if(!build.versioned){
+   assert.equal(build.sourceHead,legacy,'Only the original owner may use unversioned entry assets');
+   assert.ok(urls.every(url=>!url.startsWith('/__asa_builds/')&&!/^(?:[a-z][a-z0-9+.-]*:|\/\/)/i.test(url)),'Mixed or external entry assets');
+  }
+ }
+ return builds;
 }
 function packageProof(value){return {directory:value.base,sourceHead:value.manifest.sourceHead,manifestSha256:value.manifestSha256,verifiedFiles:value.files.size,version:value.manifest.version,workspace:value.manifest.workspace};}
 function step(name,detail={}){report.phases.push({name,...detail});console.log(name,JSON.stringify(detail));}
@@ -101,7 +129,7 @@ async function startServer(packageValue,requestedPort,selectedHead=null){
  assert.equal(health.port,port);assert.equal(health.sourceHead,activeHead);
  assert.equal(health.product,'ASA-CAD-Fusion-Live');assert.equal(health.version,8);
  assert.equal(health.workspace,'fusion-sketch-v1');assert.equal(health.localOnly,true);
- assert.equal(health.unversionedSourceHead,previous.manifest.sourceHead);
+ assert.equal(health.unversionedSourceHead,legacyHead);
  assert.equal(health.assetPrefix,prefix(activeHead));
  const knownHeads=[packageValue.manifest.sourceHead,...(packageValue.manifest.assetRouting?.compatibility||[]).map(item=>item.sourceHead)];
  assert.deepEqual([...health.retainedSourceHeads].sort(),knownHeads.filter(head=>head!==activeHead).sort());
@@ -121,11 +149,10 @@ function getHealth(){
 function expectedAsset(record){
  const pathname=decodeURIComponent(new URL(record.url).pathname),versioned=/^\/__asa_builds\/([a-f0-9]{40})\/(.*)$/.exec(pathname);
  const entry=!extname(pathname)||extname(pathname)==='.html';
- const owner=versioned?versioned[1]:entry?record.activeSourceHead:previous.manifest.sourceHead;
- const source=owner===previous.manifest.sourceHead?previous:owner===candidate.manifest.sourceHead?candidate:null;
- assert.ok(source,'Unknown requested build: '+owner);
+ const owner=versioned?versioned[1]:entry?record.activeSourceHead:legacyHead;
+ const source=assetSources.get(owner);assert.ok(source,'Unknown requested build: '+owner);
  const name=versioned?(versioned[2]||'index.html'):pathname==='/'?'index.html':pathname.slice(1);
- const item=source.files.get('app/'+name);assert.ok(item,'Browser requested an unmanifested asset: '+pathname);
+ const item=source.package.files.get(source.root+'/'+name);assert.ok(item,'Browser requested an unmanifested asset: '+pathname);
  return {sourceHead:owner,item,versioned:!!versioned};
 }
 function streamAssetHash(url,expected){
@@ -264,6 +291,12 @@ function runtimeRequests(pageName,head,sincePhase){
  }
  return requests.filter(item=>/\.wasm(?:\?|$)/i.test(item.url)).map(item=>item.id);
 }
+function deferredOccRequests(pageName,head,versioned){
+ const requests=report.requests.filter(item=>item.page===pageName&&item.phase===phase&&/opencascade/i.test(item.url));
+ assert.ok(requests.some(item=>/\.js(?:\?|$)/i.test(item.url))&&requests.some(item=>/\.wasm(?:\?|$)/i.test(item.url)),'Tab must fetch both OCC lazy JS and WASM after upgrade: '+pageName);
+ assert.ok(requests.every(item=>item.verified&&item.assetSourceHead===head&&(versioned?new URL(item.url).pathname.startsWith(prefix(head)):!new URL(item.url).pathname.startsWith('/__asa_builds/'))));
+ return requests.map(item=>item.id);
+}
 async function screenshot(page,label){
  const name='fusion-live-package-browser-upgrade-'+label+'.png';await page.screenshot({path:join(output,name)});report.screenshots.push(name);
 }
@@ -280,22 +313,29 @@ try{
  assert.equal(candidate.manifest.fullFusionParity,false);
  assert.equal(candidate.manifest.previousManifestSha256,previous.manifestSha256,'Candidate retained a different previous package');
  assert.equal(candidate.manifest.assetRouting.prefix,prefix(head));
- assert.equal(candidate.manifest.assetRouting.unversionedSourceHead,previous.manifest.sourceHead);
+ const previousBuilds=packageBuilds(previous),candidateBuilds=packageBuilds(candidate);
+ legacyHead=previous.manifest.assetRouting?.unversionedSourceHead||previous.manifest.sourceHead;
+ assert.equal(candidate.manifest.assetRouting.unversionedSourceHead,legacyHead);
  assert.equal(candidate.manifest.assetRouting.previousSourceHead,previous.manifest.sourceHead);
- const retained=candidate.manifest.assetRouting.compatibility.find(item=>item.sourceHead===previous.manifest.sourceHead);
- assert.equal(retained?.root,'compatibility/'+previous.manifest.sourceHead+'/app');
- for(const [name,item] of previous.files){
-  if(!name.startsWith('app/'))continue;
-  const copy=candidate.files.get(retained.root+name.slice(3));
-  assert.ok(copy,'Retained old asset missing: '+name);assert.equal(copy.sha256,item.sha256);assert.equal(copy.bytes,item.bytes);
+ assert.deepEqual([...candidateBuilds.keys()].filter(value=>value!==head).sort(),[...previousBuilds.keys()].sort(),'Candidate must retain every previous generation exactly once');
+ for(const build of previousBuilds.values()){
+  const retained=candidateBuilds.get(build.sourceHead);
+  assert.equal(retained.root,'compatibility/'+build.sourceHead+'/app');assert.equal(retained.version,build.version);assert.equal(retained.workspace,build.workspace);assert.equal(retained.versioned,build.versioned);
+  for(const [name,item] of previous.files){
+   if(!name.startsWith(build.root+'/'))continue;
+   const copy=candidate.files.get(retained.root+name.slice(build.root.length));
+   assert.ok(copy,'Retained old asset missing: '+name);assert.equal(copy.sha256,item.sha256);assert.equal(copy.bytes,item.bytes);
+  }
+  assetSources.set(build.sourceHead,build);
  }
- const oldEntry=readFileSync(join(previous.base,'app/index.html'),'utf8');
- assert.equal(oldEntry.includes('/__asa_builds/'),false,'This regression requires the verified legacy unversioned v8 entry');
- assert.ok(readFileSync(join(candidate.base,'app/index.html'),'utf8').includes(prefix(head)+'main.js'));
+ assetSources.set(head,candidateBuilds.get(head));
+ const previousEntryVersioned=previousBuilds.get(previous.manifest.sourceHead).versioned;
+ assert.equal(candidateBuilds.get(head).versioned,true,'New entry must use immutable versioned assets');
  const realOutput=resolvedOutputDirectory(output);
  for(const value of [previous,candidate])assert.equal(within(value.base,realOutput),false,'Evidence must not modify a package');
  outputAllowed=true;mkdirSync(output,{recursive:true});
  report.packages={previous:packageProof(previous),candidate:packageProof(candidate)};
+ report.generations={unversionedSourceHead:legacyHead,previousEntryVersioned,verifiedSourceHeads:[...assetSources.keys()],retainedLegacyBrowserFlow:legacyHead!==previous.manifest.sourceHead};
  report.repositoryHead=head;report.serverScriptSha256=candidate.files.get('serve.cjs').sha256;
  report.testScriptSha256=digest(readFileSync(fileURLToPath(import.meta.url)));
  report.rollbackRequested=process.env.ASA_FUSION_UPGRADE_ROLLBACK!=='0';
@@ -320,7 +360,25 @@ try{
  assert.equal(await oldPage.locator('.cad-app').getAttribute('data-runtime-status'),'idle');
  step('old UI rectangle saved before OCC load',{...sketchProof,revision:sketchSave.revision,storage:storageProof(sketchStorage)});
 
- phase='upgrade-old-extrude';await stopServer(server);server=await startServer(candidate,port);
+ let legacyPage=null;
+ if(legacyHead!==previous.manifest.sourceHead){
+  phase='legacy-sketch';legacyPage=await newPage('legacy-tab',origin+prefix(legacyHead)+'index.html');
+  unchangedStorage('legacy entry before Open',sketchStorage,await storage(legacyPage));
+  await quick(legacyPage,'system.open').click();
+  await legacyPage.waitForFunction(()=>document.querySelector('.live-status')?.textContent?.includes('Локальный документ открыт'));
+  await legacyPage.locator('[data-timeline-sketch="'+sketchSave.document.sketches[0].id+'"]').waitFor();
+  const overlay=legacyPage.locator('[data-testid="cad-sketch-overlay"]');
+  if(!await overlay.isVisible())await legacyPage.locator('[data-timeline-sketch="'+sketchSave.document.sketches[0].id+'"]').dblclick();
+  await overlay.waitFor();
+  await legacyPage.waitForFunction(()=>document.querySelector('[data-testid="cad-sketch-overlay"]')?.getAttribute('data-entity-count')==='4');
+  await legacyPage.waitForFunction(()=>document.querySelector('[data-testid="sketch-solve-status"]')?.getAttribute('data-solve-status')==='solved',null,{timeout:90000});
+  unchangedStorage('legacy entry after Open',sketchStorage,await storage(legacyPage));await settleNetwork();
+  assert.equal(await legacyPage.locator('.cad-app').getAttribute('data-runtime-status'),'idle');
+  assert.equal(report.requests.some(item=>item.page==='legacy-tab'&&/opencascade/i.test(item.url)),false,'Legacy OCC must remain lazy until server replacement');
+  step('retained legacy UI opened the same saved sketch before upgrade',{sourceHead:legacyHead,sketchId:sketchSave.document.sketches[0].id});
+ }
+
+ phase='upgrade-old-extrude';currentPage=oldPage;await stopServer(server);server=await startServer(candidate,port);
  assert.equal(oldPage.isClosed(),false);assert.equal(oldPage.url(),origin+'/');
  assert.equal(await oldPage.locator('[data-testid="cad-sketch-overlay"]').getAttribute('data-entity-count'),'4');
  unchangedStorage('server upgrade before old-tab edit',sketchStorage,await storage(oldPage));
@@ -329,12 +387,23 @@ try{
  const oldBrep=await readBrep(oldPage);const solidStorage=await saveUI(oldPage),solidSave=savedDocument(solidStorage);
  assert.equal(solidSave.revision,sketchSave.revision+1);assert.equal(solidSave.document.documentId,sketchSave.document.documentId);
  assertRectangle(solidSave.document,1);await settleNetwork();
- const deferredOcc=report.requests.filter(item=>item.page==='old-tab'&&item.phase===phase&&/opencascade/i.test(item.url));
- assert.ok(deferredOcc.some(item=>/\.js(?:\?|$)/i.test(item.url))&&deferredOcc.some(item=>/\.wasm(?:\?|$)/i.test(item.url)),'Old tab must fetch both OCC lazy JS and WASM after upgrade');
- assert.ok(deferredOcc.every(item=>item.verified&&item.assetSourceHead===previous.manifest.sourceHead&&!new URL(item.url).pathname.startsWith('/__asa_builds/')));
+ const deferredOcc=deferredOccRequests('old-tab',previous.manifest.sourceHead,previousEntryVersioned);
  assert.equal(report.requests.filter(item=>item.page==='old-tab'&&item.resourceType==='document').length,1,'The old tab was reloaded');
  await screenshot(oldPage,'old-after-upgrade');
- step('old tab extruded through retained unversioned OCC',{brep:oldBrep,revision:solidSave.revision,deferredOccRequestIds:deferredOcc.map(item=>item.id),runtimeRequestIds:runtimeRequests('old-tab',previous.manifest.sourceHead)});
+ step('previous tab extruded through its retained OCC',{brep:oldBrep,revision:solidSave.revision,versionedAssets:previousEntryVersioned,deferredOccRequestIds:deferredOcc,runtimeRequestIds:runtimeRequests('old-tab',previous.manifest.sourceHead)});
+ if(legacyPage){
+  phase='upgrade-legacy-extrude';currentPage=legacyPage;
+  assert.equal(await legacyPage.locator('[data-testid="cad-sketch-overlay"]').getAttribute('data-entity-count'),'4');
+  unchangedStorage('legacy before deferred extrude',solidStorage,await storage(legacyPage));
+  await tool(legacyPage,'sketch.finish').click();await tool(legacyPage,'part.extrude').click();
+  await legacyPage.getByLabel('Расстояние',{exact:true}).fill('10');await legacyPage.locator('.live-commit').click();
+  const legacyBrep=await readBrep(legacyPage);sameBounds(legacyBrep.bounds,oldBrep.bounds);await settleNetwork();
+  const legacyDeferred=deferredOccRequests('legacy-tab',legacyHead,previousBuilds.get(legacyHead).versioned);
+  unchangedStorage('legacy extrude without Save',solidStorage,await storage(legacyPage));
+  assert.equal(report.requests.filter(item=>item.page==='legacy-tab'&&item.resourceType==='document').length,1,'Legacy tab was reloaded');
+  await screenshot(legacyPage,'legacy-after-upgrade');
+  step('original legacy tab fetched and used retained OCC after upgrade',{brep:legacyBrep,deferredOccRequestIds:legacyDeferred,runtimeRequestIds:runtimeRequests('legacy-tab',legacyHead)});
+ }
 
  phase='current-open';const newPageCurrent=await newPage('current-tab',origin+'/');
  const currentBrep=await openUI(newPageCurrent,solidStorage,solidSave.document,'current entry');await settleNetwork();
@@ -360,13 +429,22 @@ try{
   const retainedCurrent=await newPage('retained-current-entry',origin+prefix(head)+'index.html');
   const retainedBrep=await openUI(retainedCurrent,solidStorage,solidSave.document,'retained current entry during rollback');
   sameBounds(retainedBrep.bounds,currentBrep.bounds);await settleNetwork();
-  step('rollback preserves open current tab and both cold runtimes',{oldEntryRuntimeRequestIds:runtimeRequests('rollback-old-entry',previous.manifest.sourceHead,'rollback'),retainedCurrentRuntimeRequestIds:runtimeRequests('retained-current-entry',head,'rollback'),existingCurrentTabCameraChanged:true});
+  const rollbackRuntimeProof={previousEntryRuntimeRequestIds:runtimeRequests('rollback-old-entry',previous.manifest.sourceHead,'rollback'),retainedCurrentRuntimeRequestIds:runtimeRequests('retained-current-entry',head,'rollback'),existingCurrentTabCameraChanged:true};
+  if(legacyPage){
+   const retainedLegacy=await newPage('rollback-legacy-entry',origin+prefix(legacyHead)+'index.html');
+   const legacyRollbackBrep=await openUI(retainedLegacy,solidStorage,solidSave.document,'original legacy entry during rollback');
+   sameBounds(legacyRollbackBrep.bounds,currentBrep.bounds);await settleNetwork();
+   rollbackRuntimeProof.originalLegacyRuntimeRequestIds=runtimeRequests('rollback-legacy-entry',legacyHead,'rollback');
+   await screenshot(retainedLegacy,'rollback-legacy-open');
+  }
+  step('rollback preserves current tab and every tested cold generation',rollbackRuntimeProof);
  }
 
  phase='final-verification';await settleNetwork();
  assert.ok(report.requests.length>0&&report.requests.every(item=>item.verified),'Every browser response must match its source manifest');
  unchangedStorage('final old-tab storage',solidStorage,await storage(oldPage));
  unchangedStorage('final current-tab storage',solidStorage,await storage(newPageCurrent));
+ if(legacyPage)unchangedStorage('final original legacy-tab storage',solidStorage,await storage(legacyPage));
  assert.equal(report.requests.filter(item=>item.page==='old-tab'&&item.resourceType==='document').length,1);
  assert.equal(report.requests.filter(item=>item.page==='current-tab'&&item.resourceType==='document').length,1);
  for(const value of [previous,candidate])assert.equal(verifyPackage(value.base).manifestSha256,value.manifestSha256,'A package changed during the test');
