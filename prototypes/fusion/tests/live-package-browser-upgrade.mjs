@@ -368,14 +368,18 @@ try{
   await legacyPage.waitForFunction(()=>document.querySelector('.live-status')?.textContent?.includes('Локальный документ открыт'));
   await legacyPage.locator('[data-timeline-sketch="'+sketchSave.document.sketches[0].id+'"]').waitFor();
   const overlay=legacyPage.locator('[data-testid="cad-sketch-overlay"]');
-  if(!await overlay.isVisible())await legacyPage.locator('[data-timeline-sketch="'+sketchSave.document.sketches[0].id+'"]').dblclick();
+  // Open also renders a read-only sketch overlay in Solid; it is not an editing-state assertion.
+  const sketchWorkspace=legacyPage.locator('.live-workarea[data-workspace="sketch"]');
+  if(!await sketchWorkspace.isVisible())await legacyPage.locator('[data-timeline-sketch="'+sketchSave.document.sketches[0].id+'"]').click();
+  await sketchWorkspace.waitFor();await tool(legacyPage,'sketch.finish').waitFor();
+  assert.equal(await tool(legacyPage,'sketch.finish').isEnabled(),true,'Legacy timeline edit must enter a writable Sketch');
   await overlay.waitFor();
   await legacyPage.waitForFunction(()=>document.querySelector('[data-testid="cad-sketch-overlay"]')?.getAttribute('data-entity-count')==='4');
   await legacyPage.waitForFunction(()=>document.querySelector('[data-testid="sketch-solve-status"]')?.getAttribute('data-solve-status')==='solved',null,{timeout:90000});
   unchangedStorage('legacy entry after Open',sketchStorage,await storage(legacyPage));await settleNetwork();
   assert.equal(await legacyPage.locator('.cad-app').getAttribute('data-runtime-status'),'idle');
   assert.equal(report.requests.some(item=>item.page==='legacy-tab'&&/opencascade/i.test(item.url)),false,'Legacy OCC must remain lazy until server replacement');
-  step('retained legacy UI opened the same saved sketch before upgrade',{sourceHead:legacyHead,sketchId:sketchSave.document.sketches[0].id});
+  step('retained legacy UI opened the same saved sketch before upgrade',{sourceHead:legacyHead,sketchId:sketchSave.document.sketches[0].id,editableSketchConfirmed:true});
  }
 
  phase='upgrade-old-extrude';currentPage=oldPage;await stopServer(server);server=await startServer(candidate,port);
@@ -393,6 +397,7 @@ try{
  step('previous tab extruded through its retained OCC',{brep:oldBrep,revision:solidSave.revision,versionedAssets:previousEntryVersioned,deferredOccRequestIds:deferredOcc,runtimeRequestIds:runtimeRequests('old-tab',previous.manifest.sourceHead)});
  if(legacyPage){
   phase='upgrade-legacy-extrude';currentPage=legacyPage;
+  assert.equal(await legacyPage.locator('.live-workarea').getAttribute('data-workspace'),'sketch','Legacy editor stays open across server replacement');
   assert.equal(await legacyPage.locator('[data-testid="cad-sketch-overlay"]').getAttribute('data-entity-count'),'4');
   unchangedStorage('legacy before deferred extrude',solidStorage,await storage(legacyPage));
   await tool(legacyPage,'sketch.finish').click();await tool(legacyPage,'part.extrude').click();
