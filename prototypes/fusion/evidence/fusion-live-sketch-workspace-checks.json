@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "parityRevision": "fusion-sketch-parity-002",
   "referenceCaptureSha256": "18be2710ecd716650df37cf1ecff3ff14ff783ddadbdc5d08c438d8de00a9434",
-  "sourceSnapshotSha256": "c1122ae134ccdece6dca8f77ffe33656f96c8cec89d4af1f1b2bdb94a7059e0d",
-  "testSourceSha256": "3727c4052b72e88e3a2913f44deb0a0d2879441ffd2c9f5de0ae058ca6bec28e",
+  "sourceSnapshotSha256": "050d7eaa8574f20c19c6dd7e19c4da347605a2f69a1c2e036bb8a3ea8c46a4d3",
+  "testSourceSha256": "1c5dbc594421b7d8b181435233c5e3abcd7e62b2cd374a1483dcbb8b001311f6",
   "status": "PASS",
   "input": "Playwright pointer/keyboard actions on the public UI; persisted document is read only for assertions",
   "screenshots": [
@@ -583,12 +583,16 @@
     }
   ],
   "menuKeyboard": {
+    "committedOpenFocus": true,
+    "rapidArrowDown": true,
     "arrowDown": true,
     "arrowRight": true,
     "arrowLeft": true,
+    "arrowLeftRestoresParent": true,
     "home": true,
     "end": true,
     "escape": true,
+    "escapeRestoresCaption": true,
     "repeatClick": true,
     "outsideClick": true
   },

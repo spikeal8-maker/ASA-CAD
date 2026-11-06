@@ -236,17 +236,24 @@ try{
  assert.equal(submenus.length,10);report.menus=visited;report.nativeSubmenus=submenus;report.menuRows=menuRows;
  phase='menu-keyboard';
  const createGroup=page.locator('[data-sketch-group="SketchCreatePanel"]');
+ await createGroup.focus();await page.keyboard.press('ArrowDown');
+ assert.equal(await page.locator(':focus').getAttribute('data-native-menu-command'),'DrawPolyline','Opening a menu must commit its first-item focus');
+ await page.keyboard.press('Escape');assert.equal(await page.locator('.live-sketch-menu').count(),0);
+ assert.equal(await createGroup.evaluate(element=>document.activeElement===element),true,'Escape restores the caption focus');
+ // Keep these two key presses adjacent: a wait between them would hide a
+ // requestAnimationFrame focus race that leaves the second key on the caption.
  await createGroup.focus();await page.keyboard.press('ArrowDown');await page.keyboard.press('ArrowDown');
  assert.equal(await page.locator(':focus').getAttribute('data-native-dropdown'),'RectangleDropDown');
  await page.keyboard.press('ArrowRight');await page.locator('.live-sketch-menu[data-menu-level="1"]').waitFor();
  assert.equal(await page.locator(':focus').getAttribute('data-native-menu-command'),'ShapeRectangleTwoPoint');
  await page.keyboard.press('ArrowLeft');assert.equal(await page.locator(':focus').getAttribute('data-native-dropdown'),'RectangleDropDown');
+ assert.equal(await page.locator('.live-sketch-menu[data-menu-level="1"]').count(),0,'ArrowLeft closes the child menu while restoring its parent row');
  await page.keyboard.press('Home');assert.equal(await page.locator(':focus').getAttribute('data-native-menu-command'),'DrawPolyline');
  await page.keyboard.press('End');assert.notEqual(await page.locator(':focus').getAttribute('data-native-menu-command'),'DrawPolyline');
  await page.keyboard.press('Escape');assert.equal(await page.locator('.live-sketch-menu').count(),0);
  await createGroup.click();await createGroup.click();assert.equal(await page.locator('.live-sketch-menu').count(),0);
  await createGroup.click();await click([40,-35]);assert.equal(await page.locator('.live-sketch-menu').count(),0);
- report.menuKeyboard={arrowDown:true,arrowRight:true,arrowLeft:true,home:true,end:true,escape:true,repeatClick:true,outsideClick:true};
+ report.menuKeyboard={committedOpenFocus:true,rapidArrowDown:true,arrowDown:true,arrowRight:true,arrowLeft:true,arrowLeftRestoresParent:true,home:true,end:true,escape:true,escapeRestoresCaption:true,repeatClick:true,outsideClick:true};
 
  phase='native-dimension-leaf';await click([7,0]);
  await page.locator('[data-sketch-group="SketchCreatePanel"]').click();await page.locator('.live-sketch-menu[data-menu-level="0"] [data-native-menu-command="SketchDimension"]').click();

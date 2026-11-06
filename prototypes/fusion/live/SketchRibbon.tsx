@@ -1,4 +1,4 @@
-import React,{useEffect,useRef,useState} from 'react';
+import React,{useEffect,useLayoutEffect,useRef,useState} from 'react';
 import {createPortal} from 'react-dom';
 import {LiveIcon} from './LiveIcon';
 import {reason,run} from './liveActions';
@@ -15,9 +15,16 @@ export function SketchRibbon({getAction}:{getAction:SketchActionGetter}){
  const [menus,setMenus]=useState<Menu[]>([]),[activeCommand,setActiveCommand]=useState('');
  const [hover,setHover]=useState<Hover|null>(null);
  const menuState=useRef(menus);menuState.current=menus;
+ const pendingMenuFocus=useRef<{level:number;id:string}|null>(null);
  const hoverTimers=useRef<ReturnType<typeof setTimeout>[]>([]);
+ useLayoutEffect(()=>{
+  const pending=pendingMenuFocus.current;pendingMenuFocus.current=null;
+  if(!pending||menus[pending.level]?.id!==pending.id)return;
+  const menu=document.querySelector<HTMLDivElement>(`.live-sketch-menu[data-menu-level="${pending.level}"]`);
+  if(menu?.getAttribute('data-menu-id')===pending.id)menu.querySelector<HTMLButtonElement>('button:not(:disabled)')?.focus();
+ },[menus]);
  const clearHover=()=>{hoverTimers.current.forEach(clearTimeout);hoverTimers.current=[];setHover(null);};
- const close=(focus=false)=>{if(focus)menuState.current[0]?.anchor.focus();setMenus([]);};
+ const close=(focus=false)=>{pendingMenuFocus.current=null;if(focus)menuState.current[0]?.anchor.focus();setMenus([]);};
  useEffect(()=>{
   const outside=(e:PointerEvent)=>{const target=e.target as Element;if(!root.current?.contains(target)&&!target.closest('.live-sketch-menu'))close();clearHover();};
   const key=(e:KeyboardEvent)=>{clearHover();if(e.key==='Escape'&&menuState.current.length){e.preventDefault();e.stopImmediatePropagation();close(true);}};
@@ -40,8 +47,10 @@ export function SketchRibbon({getAction}:{getAction:SketchActionGetter}){
   let left=level?rect.right-5:rect.left;
   if(left+width>innerWidth-8)left=level?rect.left-width+5:innerWidth-width-8;
   const top=Math.max(8,Math.min(level?rect.top-2:rect.bottom-2,innerHeight-height-8));
+  // Hand off keyboard focus in the menu's DOM commit, before another key can
+  // reach the caption. Pointer opens cancel a pending keyboard handoff.
+  pendingMenuFocus.current=focus?{level,id}:null;
   setMenus(previous=>[...previous.slice(0,level),{items,left:Math.max(8,left),top,width,anchor,label,id}]);
-  if(focus)requestAnimationFrame(()=>document.querySelector<HTMLButtonElement>(`.live-sketch-menu[data-menu-level="${level}"] button:not(:disabled)`)?.focus());
  };
  const invoke=(item:SketchItem)=>{const a=itemAction(item,getAction);if(!a?.enabled)return;clearHover();close();run(a.id);};
  const unavailableReason=(item:SketchItem)=>{const a=itemAction(item,getAction);return !a?.enabled&&!item.children?.length?reason(a):'';};

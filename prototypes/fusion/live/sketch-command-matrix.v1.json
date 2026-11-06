@@ -10,21 +10,21 @@
     "historicalInventory": "4c186683e3271497cae5dc4cf1bd46ad94a937f1cce84d3034eaf3aa6caa8401",
     "observations": "102867560dc8d0bce507484b64c2212fcf83a74d410cd2227e8fa4cad6ebf6ad",
     "presentation": "5da2275e8d774151c23531cc0edbac5e980ccd7bc5b6da118d1462d925a699a9",
-    "ribbon": "32e8b23fbfb440890f032a1f8a3daef9dbc1f1c5b11df4c222fb15f3c893ccca",
+    "ribbon": "2d76fd500f6868802a2ed0361a781c437ac54e181366da2417f01a6204cdf658",
     "icons": "4aeced66b8308707f6e2979ae7b860055d79455c7d2deb6d64afa1a28ae6ccf7",
-    "browserTest": "3727c4052b72e88e3a2913f44deb0a0d2879441ffd2c9f5de0ae058ca6bec28e"
+    "browserTest": "1c5dbc594421b7d8b181435233c5e3abcd7e62b2cd374a1483dcbb8b001311f6"
   },
   "browserEvidence": {
     "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-    "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+    "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
     "reportStatus": "PASS",
     "schemaVersion": 2,
     "parityRevision": "fusion-sketch-parity-002",
     "referenceCaptureSha256": "18be2710ecd716650df37cf1ecff3ff14ff783ddadbdc5d08c438d8de00a9434",
     "expectedReferenceCaptureSha256": "18be2710ecd716650df37cf1ecff3ff14ff783ddadbdc5d08c438d8de00a9434",
-    "sourceSnapshotSha256": "c1122ae134ccdece6dca8f77ffe33656f96c8cec89d4af1f1b2bdb94a7059e0d",
-    "testSourceSha256": "3727c4052b72e88e3a2913f44deb0a0d2879441ffd2c9f5de0ae058ca6bec28e",
-    "currentTestSourceSha256": "3727c4052b72e88e3a2913f44deb0a0d2879441ffd2c9f5de0ae058ca6bec28e",
+    "sourceSnapshotSha256": "050d7eaa8574f20c19c6dd7e19c4da347605a2f69a1c2e036bb8a3ea8c46a4d3",
+    "testSourceSha256": "1c5dbc594421b7d8b181435233c5e3abcd7e62b2cd374a1483dcbb8b001311f6",
+    "currentTestSourceSha256": "1c5dbc594421b7d8b181435233c5e3abcd7e62b2cd374a1483dcbb8b001311f6",
     "testSourceMatchesCurrent": true,
     "acceptedForCoverage": true,
     "rejectionReasons": [],
@@ -146,7 +146,7 @@
         "evidence": [
           {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menus/0"
           }
         ],
@@ -222,7 +222,7 @@
         "evidence": [
           {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menus/1"
           }
         ],
@@ -367,7 +367,7 @@
         "evidence": [
           {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menus/2"
           }
         ],
@@ -426,7 +426,7 @@
         "evidence": [
           {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menus/3"
           }
         ],
@@ -497,7 +497,7 @@
         "evidence": [
           {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menus/4"
           }
         ],
@@ -564,7 +564,7 @@
         "evidence": [
           {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menus/5"
           }
         ],
@@ -605,7 +605,7 @@
         "evidence": [
           {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menus/6"
           }
         ],
@@ -655,7 +655,7 @@
         "evidence": [
           {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menus/7"
           }
         ],
@@ -697,7 +697,7 @@
         "evidence": [
           {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menus/8"
           }
         ],
@@ -780,7 +780,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/0/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -838,7 +838,7 @@
             "evidence": [
               {
                 "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-                "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+                "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
                 "jsonPointer": "/lineTooltip"
               }
             ]
@@ -897,7 +897,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/0/rows/0"
             }
           ],
@@ -914,12 +914,12 @@
               "evidence": [
                 {
                   "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-                  "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+                  "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
                   "jsonPointer": "/scenarioA/constructionLine"
                 },
                 {
                   "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-                  "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+                  "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
                   "jsonPointer": "/scenarioA/entities"
                 }
               ]
@@ -974,7 +974,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/0/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -1054,7 +1054,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/0/rows/1"
             }
           ],
@@ -1066,7 +1066,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/0/rows/1"
             }
           ],
@@ -1219,7 +1219,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/0/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -1279,7 +1279,7 @@
             },
             "evidence": {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/1/bounds"
             },
             "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -1318,14 +1318,14 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/0/rows/2"
             }
           ],
           "popupOpened": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/nativeSubmenus/0"
             }
           ],
@@ -1405,7 +1405,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/1/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -1499,7 +1499,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/1/rows/0"
             }
           ],
@@ -1516,7 +1516,7 @@
               "evidence": [
                 {
                   "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-                  "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+                  "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
                   "jsonPointer": "/scenarioA/rectangle"
                 }
               ]
@@ -1571,7 +1571,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/1/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -1652,7 +1652,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/1/rows/1"
             }
           ],
@@ -1664,7 +1664,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/1/rows/1"
             }
           ],
@@ -1722,7 +1722,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/1/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -1803,7 +1803,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/1/rows/2"
             }
           ],
@@ -1815,7 +1815,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/1/rows/2"
             }
           ],
@@ -1871,7 +1871,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/0/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -1931,7 +1931,7 @@
             },
             "evidence": {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/2/bounds"
             },
             "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -1970,14 +1970,14 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/0/rows/3"
             }
           ],
           "popupOpened": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/nativeSubmenus/1"
             }
           ],
@@ -2057,7 +2057,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/2/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -2152,7 +2152,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/2/rows/0"
             }
           ],
@@ -2169,7 +2169,7 @@
               "evidence": [
                 {
                   "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-                  "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+                  "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
                   "jsonPointer": "/scenarioA/circle"
                 }
               ]
@@ -2224,7 +2224,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/2/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -2305,7 +2305,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/2/rows/1"
             }
           ],
@@ -2317,7 +2317,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/2/rows/1"
             }
           ],
@@ -2375,7 +2375,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/2/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -2456,7 +2456,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/2/rows/2"
             }
           ],
@@ -2468,7 +2468,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/2/rows/2"
             }
           ],
@@ -2526,7 +2526,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/2/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -2607,7 +2607,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/2/rows/3"
             }
           ],
@@ -2619,7 +2619,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/2/rows/3"
             }
           ],
@@ -2677,7 +2677,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/2/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -2758,7 +2758,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/2/rows/4"
             }
           ],
@@ -2770,7 +2770,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/2/rows/4"
             }
           ],
@@ -2826,7 +2826,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/0/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -2886,7 +2886,7 @@
             },
             "evidence": {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/3/bounds"
             },
             "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -2925,14 +2925,14 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/0/rows/4"
             }
           ],
           "popupOpened": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/nativeSubmenus/2"
             }
           ],
@@ -2990,7 +2990,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/3/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -3071,7 +3071,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/3/rows/0"
             }
           ],
@@ -3083,7 +3083,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/3/rows/0"
             }
           ],
@@ -3141,7 +3141,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/3/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -3229,7 +3229,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/3/rows/1"
             }
           ],
@@ -3246,7 +3246,7 @@
               "evidence": [
                 {
                   "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-                  "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+                  "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
                   "jsonPointer": "/arc"
                 }
               ]
@@ -3301,7 +3301,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/3/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -3382,7 +3382,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/3/rows/2"
             }
           ],
@@ -3394,7 +3394,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/3/rows/2"
             }
           ],
@@ -3450,7 +3450,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/0/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -3510,7 +3510,7 @@
             },
             "evidence": {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/4/bounds"
             },
             "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -3549,14 +3549,14 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/0/rows/5"
             }
           ],
           "popupOpened": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/nativeSubmenus/3"
             }
           ],
@@ -3614,7 +3614,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/4/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -3695,7 +3695,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/4/rows/0"
             }
           ],
@@ -3707,7 +3707,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/4/rows/0"
             }
           ],
@@ -3765,7 +3765,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/4/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -3846,7 +3846,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/4/rows/1"
             }
           ],
@@ -3858,7 +3858,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/4/rows/1"
             }
           ],
@@ -3916,7 +3916,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/4/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -3997,7 +3997,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/4/rows/2"
             }
           ],
@@ -4009,7 +4009,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/4/rows/2"
             }
           ],
@@ -4067,7 +4067,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/0/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -4147,7 +4147,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/0/rows/6"
             }
           ],
@@ -4159,7 +4159,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/0/rows/6"
             }
           ],
@@ -4215,7 +4215,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/0/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -4275,7 +4275,7 @@
             },
             "evidence": {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/5/bounds"
             },
             "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -4314,14 +4314,14 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/0/rows/7"
             }
           ],
           "popupOpened": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/nativeSubmenus/4"
             }
           ],
@@ -4379,7 +4379,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/5/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -4460,7 +4460,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/5/rows/0"
             }
           ],
@@ -4472,7 +4472,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/5/rows/0"
             }
           ],
@@ -4530,7 +4530,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/5/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -4611,7 +4611,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/5/rows/1"
             }
           ],
@@ -4623,7 +4623,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/5/rows/1"
             }
           ],
@@ -4681,7 +4681,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/5/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -4762,7 +4762,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/5/rows/2"
             }
           ],
@@ -4774,7 +4774,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/5/rows/2"
             }
           ],
@@ -4832,7 +4832,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/5/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -4913,7 +4913,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/5/rows/3"
             }
           ],
@@ -4925,7 +4925,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/5/rows/3"
             }
           ],
@@ -4983,7 +4983,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/5/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -5064,7 +5064,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/5/rows/4"
             }
           ],
@@ -5076,7 +5076,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/5/rows/4"
             }
           ],
@@ -5132,7 +5132,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/0/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -5192,7 +5192,7 @@
             },
             "evidence": {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/6/bounds"
             },
             "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -5231,14 +5231,14 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/0/rows/8"
             }
           ],
           "popupOpened": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/nativeSubmenus/5"
             }
           ],
@@ -5313,7 +5313,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/6/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -5401,7 +5401,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/6/rows/0"
             }
           ],
@@ -5413,7 +5413,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/6/rows/0"
             }
           ],
@@ -5575,7 +5575,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/6/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -5656,7 +5656,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/6/rows/1"
             }
           ],
@@ -5668,7 +5668,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/6/rows/1"
             }
           ],
@@ -5726,7 +5726,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/0/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -5806,7 +5806,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/0/rows/9"
             }
           ],
@@ -5818,7 +5818,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/0/rows/9"
             }
           ],
@@ -5876,7 +5876,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/0/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -5956,7 +5956,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/0/rows/10"
             }
           ],
@@ -5968,7 +5968,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/0/rows/10"
             }
           ],
@@ -6026,7 +6026,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/0/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -6106,7 +6106,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/0/rows/11"
             }
           ],
@@ -6118,7 +6118,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/0/rows/11"
             }
           ],
@@ -6168,7 +6168,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/0/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -6245,7 +6245,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/0/rows/12"
             }
           ],
@@ -6505,7 +6505,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/0/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -6592,7 +6592,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/0/rows/13"
             }
           ],
@@ -6604,7 +6604,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/0/rows/13"
             }
           ],
@@ -6662,7 +6662,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/0/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -6742,7 +6742,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/0/rows/14"
             }
           ],
@@ -6754,7 +6754,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/0/rows/14"
             }
           ],
@@ -6812,7 +6812,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/0/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -6892,7 +6892,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/0/rows/15"
             }
           ],
@@ -6904,7 +6904,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/0/rows/15"
             }
           ],
@@ -6954,7 +6954,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/0/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -7031,7 +7031,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/0/rows/12"
             }
           ],
@@ -7088,7 +7088,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/0/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -7148,7 +7148,7 @@
             },
             "evidence": {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/7/bounds"
             },
             "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -7187,14 +7187,14 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/0/rows/17"
             }
           ],
           "popupOpened": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/nativeSubmenus/6"
             }
           ],
@@ -7252,7 +7252,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/7/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -7333,7 +7333,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/7/rows/0"
             }
           ],
@@ -7345,7 +7345,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/7/rows/0"
             }
           ],
@@ -7403,7 +7403,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/7/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -7484,7 +7484,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/7/rows/1"
             }
           ],
@@ -7496,7 +7496,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/7/rows/1"
             }
           ],
@@ -7554,7 +7554,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/7/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -7635,7 +7635,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/7/rows/2"
             }
           ],
@@ -7647,7 +7647,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/7/rows/2"
             }
           ],
@@ -7697,7 +7697,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/7/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -7775,7 +7775,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/7/rows/3"
             }
           ],
@@ -7834,7 +7834,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/7/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -7915,7 +7915,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/7/rows/4"
             }
           ],
@@ -7927,7 +7927,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/7/rows/4"
             }
           ],
@@ -7977,7 +7977,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/7/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -8055,7 +8055,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/7/rows/3"
             }
           ],
@@ -8114,7 +8114,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/7/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -8195,7 +8195,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/7/rows/6"
             }
           ],
@@ -8207,7 +8207,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/7/rows/6"
             }
           ],
@@ -8265,7 +8265,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/7/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -8346,7 +8346,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/7/rows/7"
             }
           ],
@@ -8358,7 +8358,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/7/rows/7"
             }
           ],
@@ -8416,7 +8416,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/7/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -8497,7 +8497,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/7/rows/8"
             }
           ],
@@ -8509,7 +8509,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/7/rows/8"
             }
           ],
@@ -8559,7 +8559,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/0/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -8636,7 +8636,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/0/rows/12"
             }
           ],
@@ -8717,7 +8717,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/0/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -8780,7 +8780,7 @@
             "evidence": [
               {
                 "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-                "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+                "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
                 "jsonPointer": "/nativeDimensionLeaf"
               }
             ]
@@ -8837,7 +8837,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/0/rows/19"
             }
           ],
@@ -8854,7 +8854,7 @@
               "evidence": [
                 {
                   "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-                  "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+                  "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
                   "jsonPointer": "/scenarioA/rectangle"
                 }
               ]
@@ -8876,7 +8876,7 @@
               "evidence": [
                 {
                   "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-                  "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+                  "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
                   "jsonPointer": "/scenarioA/circle"
                 }
               ]
@@ -9045,7 +9045,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/8/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -9132,7 +9132,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/8/rows/0"
             }
           ],
@@ -9144,7 +9144,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/8/rows/0"
             }
           ],
@@ -9200,7 +9200,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/8/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -9260,7 +9260,7 @@
             },
             "evidence": {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/9/bounds"
             },
             "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -9299,14 +9299,14 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/8/rows/1"
             }
           ],
           "popupOpened": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/nativeSubmenus/7"
             }
           ],
@@ -9358,7 +9358,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/9/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -9439,7 +9439,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/9/rows/0"
             }
           ],
@@ -9451,7 +9451,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/9/rows/0"
             }
           ],
@@ -9503,7 +9503,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/9/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -9584,7 +9584,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/9/rows/1"
             }
           ],
@@ -9596,7 +9596,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/9/rows/1"
             }
           ],
@@ -9648,7 +9648,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/9/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -9729,7 +9729,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/9/rows/2"
             }
           ],
@@ -9741,7 +9741,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/9/rows/2"
             }
           ],
@@ -9816,7 +9816,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/8/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -9903,7 +9903,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/8/rows/2"
             }
           ],
@@ -9915,7 +9915,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/8/rows/2"
             }
           ],
@@ -9990,7 +9990,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/8/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -10077,7 +10077,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/8/rows/3"
             }
           ],
@@ -10089,7 +10089,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/8/rows/3"
             }
           ],
@@ -10139,7 +10139,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/8/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -10216,7 +10216,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/8/rows/4"
             }
           ],
@@ -10292,7 +10292,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/8/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -10379,7 +10379,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/8/rows/5"
             }
           ],
@@ -10391,7 +10391,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/8/rows/5"
             }
           ],
@@ -10443,7 +10443,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/8/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -10523,7 +10523,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/8/rows/6"
             }
           ],
@@ -10535,7 +10535,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/8/rows/6"
             }
           ],
@@ -10587,7 +10587,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/8/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -10667,7 +10667,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/8/rows/7"
             }
           ],
@@ -10679,7 +10679,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/8/rows/7"
             }
           ],
@@ -10731,7 +10731,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/8/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -10811,7 +10811,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/8/rows/8"
             }
           ],
@@ -10823,7 +10823,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/8/rows/8"
             }
           ],
@@ -10875,7 +10875,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/8/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -10955,7 +10955,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/8/rows/9"
             }
           ],
@@ -10967,7 +10967,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/8/rows/9"
             }
           ],
@@ -11017,7 +11017,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/8/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -11094,7 +11094,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/8/rows/4"
             }
           ],
@@ -11147,7 +11147,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/8/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -11227,7 +11227,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/8/rows/11"
             }
           ],
@@ -11239,7 +11239,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/8/rows/11"
             }
           ],
@@ -11314,7 +11314,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/10/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -11401,7 +11401,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/10/rows/0"
             }
           ],
@@ -11413,7 +11413,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/10/rows/0"
             }
           ],
@@ -11465,7 +11465,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/10/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -11545,7 +11545,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/10/rows/1"
             }
           ],
@@ -11557,7 +11557,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/10/rows/1"
             }
           ],
@@ -11632,7 +11632,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/10/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -11729,7 +11729,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/10/rows/2"
             }
           ],
@@ -11746,7 +11746,7 @@
               "evidence": [
                 {
                   "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-                  "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+                  "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
                   "jsonPointer": "/scenarioA/horizontalConstraint"
                 }
               ]
@@ -11758,7 +11758,7 @@
               "evidence": [
                 {
                   "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-                  "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+                  "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
                   "jsonPointer": "/verticalConstraint"
                 }
               ]
@@ -11830,7 +11830,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/10/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -11923,7 +11923,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/10/rows/3"
             }
           ],
@@ -12005,7 +12005,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/10/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -12098,7 +12098,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/10/rows/4"
             }
           ],
@@ -12180,7 +12180,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/10/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -12273,7 +12273,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/10/rows/5"
             }
           ],
@@ -12355,7 +12355,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/10/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -12448,7 +12448,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/10/rows/6"
             }
           ],
@@ -12530,7 +12530,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/10/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -12623,7 +12623,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/10/rows/7"
             }
           ],
@@ -12705,7 +12705,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/10/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -12799,7 +12799,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/10/rows/8"
             }
           ],
@@ -12881,7 +12881,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/10/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -12968,7 +12968,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/10/rows/9"
             }
           ],
@@ -12980,7 +12980,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/10/rows/9"
             }
           ],
@@ -13055,7 +13055,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/10/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -13148,7 +13148,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/10/rows/10"
             }
           ],
@@ -13230,7 +13230,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/10/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -13317,7 +13317,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/10/rows/11"
             }
           ],
@@ -13329,7 +13329,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/10/rows/11"
             }
           ],
@@ -13404,7 +13404,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/10/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -13497,7 +13497,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/10/rows/12"
             }
           ],
@@ -13556,7 +13556,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/10/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -13637,7 +13637,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/10/rows/13"
             }
           ],
@@ -13649,7 +13649,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/10/rows/13"
             }
           ],
@@ -13701,7 +13701,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/10/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -13781,7 +13781,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/10/rows/14"
             }
           ],
@@ -13793,7 +13793,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/10/rows/14"
             }
           ],
@@ -13868,7 +13868,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/11/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -13955,7 +13955,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/11/rows/0"
             }
           ],
@@ -13967,7 +13967,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/11/rows/0"
             }
           ],
@@ -14042,7 +14042,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/11/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -14129,7 +14129,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/11/rows/1"
             }
           ],
@@ -14141,7 +14141,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/11/rows/1"
             }
           ],
@@ -14216,7 +14216,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/11/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -14303,7 +14303,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/11/rows/2"
             }
           ],
@@ -14315,7 +14315,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/11/rows/2"
             }
           ],
@@ -14390,7 +14390,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/12/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -14477,7 +14477,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/0"
             }
           ],
@@ -14489,7 +14489,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/0"
             }
           ],
@@ -14564,7 +14564,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/12/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -14651,7 +14651,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/1"
             }
           ],
@@ -14663,7 +14663,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/1"
             }
           ],
@@ -14715,7 +14715,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/12/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -14795,7 +14795,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/2"
             }
           ],
@@ -14807,7 +14807,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/2"
             }
           ],
@@ -14859,7 +14859,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/12/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -14939,7 +14939,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/3"
             }
           ],
@@ -14951,7 +14951,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/3"
             }
           ],
@@ -15001,7 +15001,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/12/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -15078,7 +15078,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/4"
             }
           ],
@@ -15131,7 +15131,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/12/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -15211,7 +15211,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/5"
             }
           ],
@@ -15223,7 +15223,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/5"
             }
           ],
@@ -15275,7 +15275,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/12/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -15355,7 +15355,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/6"
             }
           ],
@@ -15367,7 +15367,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/6"
             }
           ],
@@ -15419,7 +15419,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/12/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -15499,7 +15499,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/7"
             }
           ],
@@ -15511,7 +15511,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/7"
             }
           ],
@@ -15563,7 +15563,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/12/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -15643,7 +15643,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/8"
             }
           ],
@@ -15655,7 +15655,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/8"
             }
           ],
@@ -15707,7 +15707,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/12/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -15787,7 +15787,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/9"
             }
           ],
@@ -15799,7 +15799,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/9"
             }
           ],
@@ -15851,7 +15851,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/12/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -15931,7 +15931,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/10"
             }
           ],
@@ -15943,7 +15943,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/10"
             }
           ],
@@ -16090,7 +16090,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/12/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -16167,7 +16167,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/4"
             }
           ],
@@ -16220,7 +16220,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/12/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -16300,7 +16300,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/12"
             }
           ],
@@ -16312,7 +16312,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/12"
             }
           ],
@@ -16364,7 +16364,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/12/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -16444,7 +16444,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/13"
             }
           ],
@@ -16456,7 +16456,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/13"
             }
           ],
@@ -16506,7 +16506,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/12/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -16583,7 +16583,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/4"
             }
           ],
@@ -17208,7 +17208,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/12/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -17288,7 +17288,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/15"
             }
           ],
@@ -17300,7 +17300,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/15"
             }
           ],
@@ -17352,7 +17352,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/12/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -17432,7 +17432,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/16"
             }
           ],
@@ -17444,7 +17444,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/16"
             }
           ],
@@ -17494,7 +17494,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/12/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -17571,7 +17571,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/4"
             }
           ],
@@ -18012,7 +18012,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/12/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -18092,7 +18092,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/18"
             }
           ],
@@ -18104,7 +18104,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/12/rows/18"
             }
           ],
@@ -18156,7 +18156,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/13/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -18236,7 +18236,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/13/rows/0"
             }
           ],
@@ -18248,7 +18248,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/13/rows/0"
             }
           ],
@@ -18323,7 +18323,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/13/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -18410,7 +18410,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/13/rows/1"
             }
           ],
@@ -18422,7 +18422,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/13/rows/1"
             }
           ],
@@ -18571,7 +18571,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/13/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -18651,7 +18651,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/13/rows/2"
             }
           ],
@@ -18663,7 +18663,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/13/rows/2"
             }
           ],
@@ -18715,7 +18715,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/13/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -18795,7 +18795,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/13/rows/3"
             }
           ],
@@ -18807,7 +18807,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/13/rows/3"
             }
           ],
@@ -18882,7 +18882,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/13/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -18969,7 +18969,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/13/rows/4"
             }
           ],
@@ -18981,7 +18981,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/13/rows/4"
             }
           ],
@@ -19130,7 +19130,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/13/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -19210,7 +19210,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/13/rows/5"
             }
           ],
@@ -19222,7 +19222,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/13/rows/5"
             }
           ],
@@ -19274,7 +19274,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/13/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -19354,7 +19354,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/13/rows/6"
             }
           ],
@@ -19366,7 +19366,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/13/rows/6"
             }
           ],
@@ -19441,7 +19441,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/13/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -19528,7 +19528,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/13/rows/7"
             }
           ],
@@ -19540,7 +19540,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/13/rows/7"
             }
           ],
@@ -19592,7 +19592,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/13/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -19672,7 +19672,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/13/rows/8"
             }
           ],
@@ -19684,7 +19684,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/13/rows/8"
             }
           ],
@@ -19736,7 +19736,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/13/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -19816,7 +19816,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/13/rows/9"
             }
           ],
@@ -19828,7 +19828,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/13/rows/9"
             }
           ],
@@ -19880,7 +19880,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/13/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -19960,7 +19960,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/13/rows/10"
             }
           ],
@@ -19972,7 +19972,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/13/rows/10"
             }
           ],
@@ -20047,7 +20047,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/14/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -20135,7 +20135,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/14/rows/0"
             }
           ],
@@ -20147,7 +20147,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/14/rows/0"
             }
           ],
@@ -20222,7 +20222,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/15/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -20310,7 +20310,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/15/rows/0"
             }
           ],
@@ -20322,7 +20322,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/15/rows/0"
             }
           ],
@@ -20372,7 +20372,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/15/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -20449,7 +20449,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/15/rows/1"
             }
           ],
@@ -20502,7 +20502,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/15/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -20582,7 +20582,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/15/rows/2"
             }
           ],
@@ -20594,7 +20594,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/15/rows/2"
             }
           ],
@@ -20646,7 +20646,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/15/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -20726,7 +20726,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/15/rows/3"
             }
           ],
@@ -20738,7 +20738,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/15/rows/3"
             }
           ],
@@ -20790,7 +20790,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/15/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -20870,7 +20870,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/15/rows/4"
             }
           ],
@@ -20882,7 +20882,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/15/rows/4"
             }
           ],
@@ -20932,7 +20932,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/15/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -21009,7 +21009,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/15/rows/1"
             }
           ],
@@ -21061,7 +21061,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/15/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -21116,7 +21116,7 @@
             },
             "evidence": {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/16/bounds"
             },
             "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -21155,14 +21155,14 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/15/rows/6"
             }
           ],
           "popupOpened": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/nativeSubmenus/8"
             }
           ],
@@ -21208,7 +21208,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/16/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -21289,7 +21289,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/16/rows/0"
             }
           ],
@@ -21301,7 +21301,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/16/rows/0"
             }
           ],
@@ -21347,7 +21347,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/16/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -21428,7 +21428,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/16/rows/1"
             }
           ],
@@ -21440,7 +21440,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/16/rows/1"
             }
           ],
@@ -21486,7 +21486,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/16/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -21567,7 +21567,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/16/rows/2"
             }
           ],
@@ -21579,7 +21579,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/16/rows/2"
             }
           ],
@@ -21625,7 +21625,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/16/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -21706,7 +21706,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/16/rows/3"
             }
           ],
@@ -21718,7 +21718,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/16/rows/3"
             }
           ],
@@ -21764,7 +21764,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/16/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -21845,7 +21845,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/16/rows/4"
             }
           ],
@@ -21857,7 +21857,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/16/rows/4"
             }
           ],
@@ -21907,7 +21907,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/15/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -21984,7 +21984,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/15/rows/1"
             }
           ],
@@ -22220,7 +22220,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/15/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -22274,7 +22274,7 @@
             },
             "evidence": {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/17/bounds"
             },
             "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -22313,14 +22313,14 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/15/rows/8"
             }
           ],
           "popupOpened": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/nativeSubmenus/9"
             }
           ],
@@ -22366,7 +22366,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/17/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -22447,7 +22447,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/17/rows/0"
             }
           ],
@@ -22459,7 +22459,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/17/rows/0"
             }
           ],
@@ -22505,7 +22505,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/17/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -22586,7 +22586,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/17/rows/1"
             }
           ],
@@ -22598,7 +22598,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/17/rows/1"
             }
           ],
@@ -22644,7 +22644,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/17/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -22725,7 +22725,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/17/rows/2"
             }
           ],
@@ -22737,7 +22737,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/17/rows/2"
             }
           ],
@@ -22887,7 +22887,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/15/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -22967,7 +22967,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/15/rows/9"
             }
           ],
@@ -22979,7 +22979,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/15/rows/9"
             }
           ],
@@ -23059,7 +23059,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/18/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -23152,7 +23152,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/18/rows/0"
             }
           ],
@@ -23169,7 +23169,7 @@
               "evidence": [
                 {
                   "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-                  "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+                  "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
                   "jsonPointer": "/saveReopen"
                 }
               ]
@@ -23218,7 +23218,7 @@
           },
           "evidence": {
             "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-            "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+            "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
             "jsonPointer": "/menuRows/18/bounds"
           },
           "status": "BROWSER_MEASURED_NOT_VISUALLY_ACCEPTED"
@@ -23298,7 +23298,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/18/rows/1"
             }
           ],
@@ -23310,7 +23310,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/menuRows/18/rows/1"
             }
           ],
@@ -23364,7 +23364,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/scenarioA/rectangle"
             }
           ]
@@ -23494,7 +23494,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/scenarioA/circle"
             }
           ]
@@ -23665,7 +23665,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/scenarioA/constructionLine"
             }
           ]
@@ -23713,7 +23713,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/scenarioA/horizontalConstraint"
             }
           ]
@@ -23723,7 +23723,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/verticalConstraint"
             }
           ],
@@ -23767,7 +23767,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/verticalConstraint"
             }
           ]
@@ -23777,7 +23777,7 @@
           "evidence": [
             {
               "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
-              "sha256": "b9215d254ddf006e768ecafcad312e30d161fba5d5c4e407aa7cee3492332454",
+              "sha256": "ba9cecf27f36cfa5358d1466509e01e8a8b82e384040b0e7cd2542f9ea66170f",
               "jsonPointer": "/verticalConstraint"
             }
           ],
