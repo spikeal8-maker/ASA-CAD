@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "parityRevision": "fusion-sketch-parity-002",
+  "stage": "BEFORE_CANDIDATE_INSTALL",
+  "stableOrigin": "http://127.0.0.1:8099/",
+  "installedSourceHead": "2420935b7d0642d7994a24231f3e123f42dae19d",
+  "installedManifestSha256": "6aa8b64f66ffb59519ea98c1d57393571104cfa4f3fa3e2b5845d4128f44749a",
+  "installedPackageVerification": {
+    "files": 29,
+    "bytes": 55690534,
+    "allSizesAndSha256Matched": true,
+    "rollbackCopyAllFilesMatched": true
+  },
+  "storage": {
+    "method": "Read the existing application through the connected browser UI in the separate service tab. Clicked Open; never Save, New, Reload, or clear-storage.",
+    "visibleResult": "Нет локально сохраненного документа",
+    "documentTitle": "Деталь 1",
+    "sketchCount": 0,
+    "featureCount": 0,
+    "keys": [
+      {
+        "name": "asa-cad-m2-shell-document:state",
+        "status": "ABSENT_INFERRED_FROM_EXISTING_PUBLIC_PRESENCE_CHECK"
+      },
+      {
+        "name": "asa-cad-m2-shell-document",
+        "status": "ABSENT_INFERRED_FROM_EXISTING_PUBLIC_PRESENCE_CHECK"
+      }
+    ],
+    "reasoning": "The observed UI notice is emitted only when CadEditorPersistence.hasPersistedDocument returns false. The standalone host returns false only if both named getItem calls return null. This is an implementation-backed UI observation, not a direct browser storage enumeration.",
+    "sourceFiles": [
+      {
+        "file": "src/host/LocalStorageCadProjectHost.ts",
+        "sha256": "f08104a04b5fbb3867bcd9055a5e6a727bc61422363c7cf732d9c0d8ec570cb0"
+      },
+      {
+        "file": "src/host/CadEditorPersistence.ts",
+        "sha256": "2062cb4758639223165ba270a5a22adf089a552fcc5c65f53f3b6fd14a93479e"
+      },
+      {
+        "file": "src/web/useCadPersistenceCommands.ts",
+        "sha256": "2bf83670d03aa6337b25dc10a8bd326098de7dab0a4853467740bed31b93c6e2"
+      }
+    ],
+    "directKeyByteBackup": "NOT_APPLICABLE_TO_ABSENT_DOCUMENT_KEYS",
+    "indexedDb": "NOT_INSPECTED; no browser database was deleted or modified by this audit",
+    "userChromeViewport": {
+      "width": 1800,
+      "height": 1116,
+      "devicePixelRatio": 1.1458333730697632
+    },
+    "isolatedTestContextsAreSeparate": true
+  },
+  "unexpectedDeviceRestart": {
+    "lastBootUpTimeMoscow": "2026-11-06 03:11:05",
+    "taskDidNotRequestRestart": true,
+    "originalFusionProcess": 18296,
+    "testFusionProcessAfterRestart": 25904,
+    "originalNativeRecovery": {
+      "file": "8352af1d4c6f4703ae6f2a9e1334ad14.backup",
+      "bytes": 30869,
+      "sha256": "53a67fe7aecbe2684da2015e87e2afd1c663422d1263d6cff17f30a1bf19a4e0",
+      "indexSha256": "1dc6299d17965583c85bafa85506bc1f61c178dc3f3707173df6e76c38375cd6",
+      "savedTime": "20261106T024736",
+      "copiedAndSourceUnchanged": true,
+      "privateRecoveryBytesExcludedFromRepository": true
+    },
+    "browserDraft": "The old memory-only browser document was not present in the restored user tab after the system restart. This task did not save, reload, or close that original tab. Recovery of that unsaved browser document is not claimed."
+  },
+  "portPolicy": {
+    "8099": "Existing verified baseline remains until candidate package/browser gates finish",
+    "8094": "NOT_TOUCHED; not listening after external restart",
+    "8098": "NOT_TOUCHED; not listening after external restart",
+    "temporaryServers": "Ephemeral loopback ports; each owned test server stopped in finally"
+  },
+  "candidateInstallStatus": "NOT_YET_PERFORMED_IN_THIS_PREFLIGHT_RECORD"
+}

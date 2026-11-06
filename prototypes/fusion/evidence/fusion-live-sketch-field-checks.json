@@ -1,0 +1,625 @@
+{
+  "status": "PASS",
+  "input": "Real pointer/keyboard actions; saved document is read only for assertions",
+  "isolatedBrowserContext": true,
+  "sourceSnapshotSha256": "ec051a47452a8ef383ad3e0bb91f418bb121f7e84e4de676f25ca85e12332736",
+  "testSourceSha256": "2833ac9d169afb323228811613a53226b0f0ef3bb83d2cabbf1377f26673d2cd",
+  "nativeVisualParity": "NOT_ASSERTED",
+  "screenshots": [
+    "fusion-live-sketch-field-empty-2048.png",
+    "fusion-live-sketch-field-2048.png",
+    "fusion-live-sketch-field-1600.png",
+    "fusion-live-sketch-field-1366.png"
+  ],
+  "screenChecks": [
+    {
+      "viewport": {
+        "width": 2048,
+        "height": 1137,
+        "dpr": 1
+      },
+      "stage": {
+        "x": 0,
+        "y": 134,
+        "width": 2048,
+        "height": 946
+      },
+      "frame": {
+        "x": -108.24524688720703,
+        "y": -50,
+        "width": 216.49049377441406,
+        "height": 100
+      },
+      "span": 100,
+      "layerFrames": [
+        "-108.24524312896405 -49.99999999999999 216.4904862579281 99.99999999999999",
+        "-108.24524312896405 -49.99999999999999 216.4904862579281 99.99999999999999",
+        "-108.24524312896405 -49.99999999999999 216.4904862579281 99.99999999999999",
+        "-108.24524312896405 -49.99999999999999 216.4904862579281 99.99999999999999",
+        "-108.24524312896405 -49.99999999999999 216.4904862579281 99.99999999999999",
+        "-108.24524312896405 -49.99999999999999 216.4904862579281 99.99999999999999",
+        "-108.24524312896405 -49.99999999999999 216.4904862579281 99.99999999999999"
+      ],
+      "background": "rgb(255, 255, 255)",
+      "grid": {
+        "left": 0,
+        "right": 2048,
+        "top": 134.00001525878906,
+        "bottom": 1080.000015258789,
+        "minorStep": 2.5,
+        "minorPitch": 23.649999618530273,
+        "majorPitch": 118.25,
+        "minorColor": "rgb(233, 233, 233)",
+        "majorColor": "rgb(213, 213, 213)",
+        "xAxisColor": "rgb(255, 107, 107)",
+        "yAxisColor": "rgb(56, 215, 68)",
+        "labels": [
+          {
+            "axis": "x",
+            "value": -100,
+            "text": "-100"
+          },
+          {
+            "axis": "x",
+            "value": -87.5,
+            "text": "-87.5"
+          },
+          {
+            "axis": "x",
+            "value": -75,
+            "text": "-75"
+          },
+          {
+            "axis": "x",
+            "value": -62.5,
+            "text": "-62.5"
+          },
+          {
+            "axis": "x",
+            "value": -50,
+            "text": "-50"
+          },
+          {
+            "axis": "x",
+            "value": -37.5,
+            "text": "-37.5"
+          },
+          {
+            "axis": "x",
+            "value": -25,
+            "text": "-25"
+          },
+          {
+            "axis": "x",
+            "value": -12.5,
+            "text": "-12.5"
+          },
+          {
+            "axis": "y",
+            "value": 50,
+            "text": "50"
+          },
+          {
+            "axis": "y",
+            "value": 37.5,
+            "text": "37.5"
+          },
+          {
+            "axis": "y",
+            "value": 25,
+            "text": "25"
+          },
+          {
+            "axis": "y",
+            "value": 12.5,
+            "text": "12.5"
+          }
+        ]
+      },
+      "origin": {
+        "x": 1024,
+        "y": 607,
+        "outerDiameter": 24
+      },
+      "cube": {
+        "x": 1928,
+        "y": 184,
+        "width": 70,
+        "height": 70,
+        "face": "СВЕРХУ",
+        "worldUp": "Z",
+        "mode": "plane-locked"
+      },
+      "circle": {
+        "x": 1591.60009765625,
+        "y": 890.800048828125,
+        "width": 94.599853515625,
+        "height": 94.599853515625,
+        "center": [
+          1638.9000244140625,
+          938.0999755859375
+        ],
+        "scaleX": 9.459999671551596,
+        "scaleY": 9.459999671551596
+      }
+    },
+    {
+      "viewport": {
+        "width": 1600,
+        "height": 900,
+        "dpr": 1
+      },
+      "stage": {
+        "x": 0,
+        "y": 134,
+        "width": 1600,
+        "height": 709
+      },
+      "frame": {
+        "x": -112.83497619628906,
+        "y": -50,
+        "width": 225.66995239257812,
+        "height": 100
+      },
+      "span": 100,
+      "layerFrames": [
+        "-112.83497884344148 -50 225.66995768688295 100",
+        "-112.83497884344148 -50 225.66995768688295 100",
+        "-112.83497884344148 -50 225.66995768688295 100",
+        "-112.83497884344148 -50 225.66995768688295 100",
+        "-112.83497884344148 -50 225.66995768688295 100",
+        "-112.83497884344148 -50 225.66995768688295 100",
+        "-112.83497884344148 -50 225.66995768688295 100"
+      ],
+      "background": "rgb(255, 255, 255)",
+      "grid": {
+        "left": 0.000018768310837913305,
+        "right": 1600.0000187683108,
+        "top": 134,
+        "bottom": 843,
+        "minorStep": 5,
+        "minorPitch": 35.44999885559082,
+        "majorPitch": 177.25,
+        "minorColor": "rgb(233, 233, 233)",
+        "majorColor": "rgb(213, 213, 213)",
+        "xAxisColor": "rgb(255, 107, 107)",
+        "yAxisColor": "rgb(56, 215, 68)",
+        "labels": [
+          {
+            "axis": "x",
+            "value": -100,
+            "text": "-100"
+          },
+          {
+            "axis": "x",
+            "value": -75,
+            "text": "-75"
+          },
+          {
+            "axis": "x",
+            "value": -50,
+            "text": "-50"
+          },
+          {
+            "axis": "x",
+            "value": -25,
+            "text": "-25"
+          },
+          {
+            "axis": "y",
+            "value": 50,
+            "text": "50"
+          },
+          {
+            "axis": "y",
+            "value": 25,
+            "text": "25"
+          }
+        ]
+      },
+      "origin": {
+        "x": 800,
+        "y": 488.5,
+        "outerDiameter": 24
+      },
+      "cube": {
+        "x": 1510.084716796875,
+        "y": 171.4695587158203,
+        "width": 52.452880859375,
+        "height": 52.45286560058594,
+        "face": "СВЕРХУ",
+        "worldUp": "Z",
+        "mode": "plane-locked"
+      },
+      "circle": {
+        "x": 1225.4000244140625,
+        "y": 701.2000122070312,
+        "width": 70.89990234375,
+        "height": 70.89990234375,
+        "center": [
+          1260.8499755859375,
+          736.6499633789062
+        ],
+        "scaleX": 7.09,
+        "scaleY": 7.09
+      }
+    },
+    {
+      "viewport": {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1
+      },
+      "stage": {
+        "x": 0,
+        "y": 134,
+        "width": 1366,
+        "height": 577
+      },
+      "frame": {
+        "x": -118.37088012695312,
+        "y": -50,
+        "width": 236.74176025390625,
+        "height": 100
+      },
+      "span": 100,
+      "layerFrames": [
+        "-118.37088388214906 -50.00000000000001 236.74176776429812 100.00000000000001",
+        "-118.37088388214906 -50.00000000000001 236.74176776429812 100.00000000000001",
+        "-118.37088388214906 -50.00000000000001 236.74176776429812 100.00000000000001",
+        "-118.37088388214906 -50.00000000000001 236.74176776429812 100.00000000000001",
+        "-118.37088388214906 -50.00000000000001 236.74176776429812 100.00000000000001",
+        "-118.37088388214906 -50.00000000000001 236.74176776429812 100.00000000000001",
+        "-118.37088388214906 -50.00000000000001 236.74176776429812 100.00000000000001"
+      ],
+      "background": "rgb(255, 255, 255)",
+      "grid": {
+        "left": 0.000021667479813913815,
+        "right": 1366.0000216674798,
+        "top": 134,
+        "bottom": 711,
+        "minorStep": 5,
+        "minorPitch": 28.849998474121094,
+        "majorPitch": 144.25,
+        "minorColor": "rgb(233, 233, 233)",
+        "majorColor": "rgb(213, 213, 213)",
+        "xAxisColor": "rgb(255, 107, 107)",
+        "yAxisColor": "rgb(56, 215, 68)",
+        "labels": [
+          {
+            "axis": "x",
+            "value": -100,
+            "text": "-100"
+          },
+          {
+            "axis": "x",
+            "value": -75,
+            "text": "-75"
+          },
+          {
+            "axis": "x",
+            "value": -50,
+            "text": "-50"
+          },
+          {
+            "axis": "x",
+            "value": -25,
+            "text": "-25"
+          },
+          {
+            "axis": "y",
+            "value": 50,
+            "text": "50"
+          },
+          {
+            "axis": "y",
+            "value": 25,
+            "text": "25"
+          }
+        ]
+      },
+      "origin": {
+        "x": 683,
+        "y": 422.5,
+        "outerDiameter": 24
+      },
+      "cube": {
+        "x": 1292.8226318359375,
+        "y": 164.49327087402344,
+        "width": 42.6844482421875,
+        "height": 42.68452453613281,
+        "face": "СВЕРХУ",
+        "worldUp": "Z",
+        "mode": "plane-locked"
+      },
+      "circle": {
+        "x": 1029.2000732421875,
+        "y": 595.6000366210938,
+        "width": 57.6998291015625,
+        "height": 57.69989013671875,
+        "center": [
+          1058.0499877929688,
+          624.4499816894531
+        ],
+        "scaleX": 5.77,
+        "scaleY": 5.77
+      }
+    }
+  ],
+  "emptyField": {
+    "stage": {
+      "x": 0,
+      "y": 134,
+      "width": 2048,
+      "height": 946
+    },
+    "frame": {
+      "x": -108.24524688720703,
+      "y": -50,
+      "width": 216.49049377441406,
+      "height": 100
+    },
+    "span": 100,
+    "layerFrames": [
+      "-108.24524312896405 -49.99999999999999 216.4904862579281 99.99999999999999",
+      "-108.24524312896405 -49.99999999999999 216.4904862579281 99.99999999999999",
+      "-108.24524312896405 -49.99999999999999 216.4904862579281 99.99999999999999",
+      "-108.24524312896405 -49.99999999999999 216.4904862579281 99.99999999999999",
+      "-108.24524312896405 -49.99999999999999 216.4904862579281 99.99999999999999",
+      "-108.24524312896405 -49.99999999999999 216.4904862579281 99.99999999999999",
+      "-108.24524312896405 -49.99999999999999 216.4904862579281 99.99999999999999"
+    ],
+    "background": "rgb(255, 255, 255)",
+    "grid": {
+      "left": 0,
+      "right": 2048,
+      "top": 134.00001525878906,
+      "bottom": 1080.000015258789,
+      "minorStep": 2.5,
+      "minorPitch": 23.649999618530273,
+      "majorPitch": 118.25,
+      "minorColor": "rgb(233, 233, 233)",
+      "majorColor": "rgb(213, 213, 213)",
+      "xAxisColor": "rgb(255, 107, 107)",
+      "yAxisColor": "rgb(56, 215, 68)",
+      "labels": [
+        {
+          "axis": "x",
+          "value": -100,
+          "text": "-100"
+        },
+        {
+          "axis": "x",
+          "value": -87.5,
+          "text": "-87.5"
+        },
+        {
+          "axis": "x",
+          "value": -75,
+          "text": "-75"
+        },
+        {
+          "axis": "x",
+          "value": -62.5,
+          "text": "-62.5"
+        },
+        {
+          "axis": "x",
+          "value": -50,
+          "text": "-50"
+        },
+        {
+          "axis": "x",
+          "value": -37.5,
+          "text": "-37.5"
+        },
+        {
+          "axis": "x",
+          "value": -25,
+          "text": "-25"
+        },
+        {
+          "axis": "x",
+          "value": -12.5,
+          "text": "-12.5"
+        },
+        {
+          "axis": "y",
+          "value": 50,
+          "text": "50"
+        },
+        {
+          "axis": "y",
+          "value": 37.5,
+          "text": "37.5"
+        },
+        {
+          "axis": "y",
+          "value": 25,
+          "text": "25"
+        },
+        {
+          "axis": "y",
+          "value": 12.5,
+          "text": "12.5"
+        }
+      ]
+    },
+    "origin": {
+      "x": 1024,
+      "y": 607,
+      "outerDiameter": 24
+    },
+    "cube": {
+      "x": 1928,
+      "y": 184,
+      "width": 70,
+      "height": 70,
+      "face": "СВЕРХУ",
+      "worldUp": "Z",
+      "mode": "plane-locked"
+    }
+  },
+  "reference": {
+    "image": "fusion-parity-native-sketch-empty-2048-dpi110.png",
+    "nativeMinorPitchCssPx": 26.7,
+    "nativeMajorPitchCssPx": 133.6,
+    "cameraDifference": "Existing span 100 is retained; ticks use actual model units, so starting grid pitch differs from native zoom.",
+    "orientationDifference": "Native screenshot uses Y-up FRONT; existing model uses Z-up, so XY remains TOP.",
+    "cube": {
+      "presentation": "Face and offsets follow actual scene height / 946; camera orientation is unchanged.",
+      "nativePixelBounds": [
+        {
+          "image": "fusion-parity-native-sketch-empty-2048-dpi110.png",
+          "viewport": [
+            2048,
+            1137
+          ],
+          "x": 1928,
+          "y": 184,
+          "extent": 70
+        },
+        {
+          "image": "fusion-parity-native-sketch-layout-1600-dpi110.png",
+          "viewport": [
+            1600,
+            900
+          ],
+          "x": 1510,
+          "y": 171,
+          "extent": 53
+        },
+        {
+          "image": "fusion-parity-native-sketch-layout-1366-dpi110.png",
+          "viewport": [
+            1375,
+            768
+          ],
+          "x": 1301,
+          "y": 165,
+          "extent": 43
+        }
+      ]
+    }
+  },
+  "sideDrawing": {
+    "leftClicks": [
+      {
+        "world": [
+          -70,
+          -30
+        ],
+        "pixel": {
+          "x": 361.79999999999995,
+          "y": 890.8000000000001
+        },
+        "side": "left"
+      },
+      {
+        "world": [
+          -60,
+          -25
+        ],
+        "pixel": {
+          "x": 456.3999999999999,
+          "y": 843.5000000000001
+        },
+        "side": "left"
+      }
+    ],
+    "rightClicks": [
+      {
+        "world": [
+          65,
+          -35
+        ],
+        "pixel": {
+          "x": 1638.8999999999999,
+          "y": 938.1
+        },
+        "side": "right"
+      },
+      {
+        "world": [
+          70,
+          -35
+        ],
+        "pixel": {
+          "x": 1686.1999999999998,
+          "y": 938.1
+        },
+        "side": "right"
+      }
+    ],
+    "persistedLine": {
+      "from": [
+        -70.00000129038384,
+        -29.999998709616143
+      ],
+      "to": [
+        -60.00000064519192,
+        -25.000000000000007
+      ]
+    },
+    "persistedCircle": {
+      "center": [
+        65.00000258076771,
+        -34.999997419232294
+      ],
+      "diameter": 9.999984515393749
+    }
+  },
+  "geometryAppearance": {
+    "line": "rgb(0, 165, 232)",
+    "circle": "rgb(0, 165, 232)",
+    "endpoint": {
+      "width": 8,
+      "height": 8,
+      "fill": "rgb(255, 255, 255)",
+      "stroke": "rgb(146, 155, 158)"
+    }
+  },
+  "constructionVisibility": {
+    "publicUiConversion": true,
+    "visibleGeometryAndHitTargetsHideTogether": true,
+    "pointMarksHidden": true,
+    "documentUnchangedByDisplay": true,
+    "projectedFilter": "UNAVAILABLE: no provenance in the shared model"
+  },
+  "wheel": {
+    "anchorWorld": [
+      65.00000258076771,
+      -34.999997419232294
+    ],
+    "before": {
+      "x": 1591.60009765625,
+      "y": 890.800048828125,
+      "width": 94.599853515625,
+      "height": 94.599853515625,
+      "center": [
+        1638.9000244140625,
+        938.0999755859375
+      ],
+      "scaleX": 9.459999671551596,
+      "scaleY": 9.459999671551596
+    },
+    "after": {
+      "x": 1577.2176513671875,
+      "y": 876.1697387695312,
+      "width": 123.9224853515625,
+      "height": 123.92242431640625,
+      "center": [
+        1639.1788940429688,
+        938.1309509277344
+      ],
+      "scaleX": 12.392263226393549,
+      "scaleY": 12.392263226393549
+    },
+    "anchorToleranceCssPx": 0.5
+  },
+  "fullAreaDrawing": true,
+  "isotropicCircle": true,
+  "sharedFrame": true,
+  "viewChangesPreserveDocument": true,
+  "pageErrors": []
+}

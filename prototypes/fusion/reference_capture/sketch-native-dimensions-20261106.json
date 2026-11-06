@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "application": "Autodesk Fusion",
+  "applicationVersion": "2706.1.17",
+  "capturedUTC": "2026-11-06T15:46:25.0495319Z",
+  "device": "D2-R2",
+  "document": "Untitled*(1)",
+  "source": "Ordinary native UI in the separate test document; D, line selection, placement and numeric confirmation.",
+  "capture": {
+    "file": "prototypes/fusion/evidence/fusion-parity-native-linear-dimensions-2048-dpi110.png",
+    "sha256": "c3711aa63e440bbea8d32bbad31c970466081e42f52866918d894c7e3ebfa269",
+    "width": 2048,
+    "height": 1137,
+    "nativeDpi": 110
+  },
+  "geometry": {
+    "rectangle": {
+      "corners": [
+        [
+          0,
+          0
+        ],
+        [
+          60,
+          0
+        ],
+        [
+          60,
+          40
+        ],
+        [
+          0,
+          40
+        ]
+      ],
+      "width": 60,
+      "height": 40
+    },
+    "circle": {
+      "center": [
+        30,
+        20
+      ],
+      "diameter": 12
+    },
+    "looseLine": {
+      "start": [
+        -50,
+        -25
+      ],
+      "end": [
+        -20,
+        -20
+      ]
+    }
+  },
+  "observedClientPixels": {
+    "origin": [
+      1024,
+      606
+    ],
+    "rectangle": {
+      "left": 1024,
+      "right": 1344,
+      "top": 393,
+      "bottom": 606
+    },
+    "widthDimensionLine": {
+      "y": 660
+    },
+    "heightDimensionLine": {
+      "x": 1400
+    },
+    "text": [
+      "60.00",
+      "40.00",
+      "Ø12.00"
+    ],
+    "style": {
+      "extensionGapApprox": 8,
+      "extensionOverhangApprox": 8,
+      "filledArrowheads": true,
+      "lineWidthApprox": 1,
+      "textHeightApprox": 16,
+      "verticalTextRotationDegrees": -90
+    }
+  },
+  "limits": [
+    "Values and line positions observed in actual native client pixels at DPI110; not a DPR1 acceptance.",
+    "Dimension placement was selected manually in native Fusion. The prototype uses automatic presentation placement because existing document contracts do not store annotation positions.",
+    "Native per-entity constraint colours are not inferred or implemented in prototype rendering.",
+    "This native reference is evidence, not acceptance of candidate visual parity."
+  ]
+}

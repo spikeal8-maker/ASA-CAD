@@ -1,0 +1,793 @@
+{
+  "status": "PASS",
+  "schemaVersion": 1,
+  "input": "Public pointer/keyboard UI; document reads only for assertions",
+  "sourceSnapshotSha256": "3ae8b3ff5c97422d8a53fe26b5d5d341e6be45c2143bf5e39baa668302aa2f8c",
+  "testSourceSha256": "aa82b00dbf63f3c1b818b3b366186fbf4cd96912ed0bf0f68bc7993c4c64b2f9",
+  "isolatedBrowserContext": true,
+  "installedOriginTouched": false,
+  "visualParityAccepted": false,
+  "screenshots": [
+    {
+      "file": "fusion-live-sketch-dimensions-before-2048.png",
+      "sha256": "0ce38e93ae13bc07080f75618f6959c986295147b89cc89dc0d98822618c89e9"
+    },
+    {
+      "file": "fusion-live-sketch-dimensions-native-paired-2048.png",
+      "sha256": "ef97f2db1a03a82f7a9f7d9f4e6fb3011da2a3b050f287ccb2af761304798405"
+    },
+    {
+      "file": "fusion-live-sketch-dimensions-after-2048.png",
+      "sha256": "93923ef1e6851ec35453cb6054d1cafd3054ad00f1d94263f49cdeca9febf912"
+    },
+    {
+      "file": "fusion-live-sketch-dimensions-zoomed-2048.png",
+      "sha256": "9cd58013bf5fa8514dec19ab6cef6e11a0950227b0abd0fc389096b8d7a11df0"
+    },
+    {
+      "file": "fusion-live-sketch-dimensions-zoomed-1600.png",
+      "sha256": "4b05c351d132a0a1608fc65aebe1ca8cd3cdf304ff3dbc121d2bee46033578e3"
+    },
+    {
+      "file": "fusion-live-sketch-dimensions-zoomed-1366.png",
+      "sha256": "2ef6308b1e82729acfb8e45ea6c3dcdfaab8f362ffb9123431b2a0efaf73c3b6"
+    }
+  ],
+  "viewportChecks": [
+    {
+      "viewport": {
+        "width": 2048,
+        "height": 1137,
+        "dpr": 1
+      },
+      "annotations": [
+        {
+          "id": "dimension_13bb4fed-675a-495d-9730-d6e5d37cd3e9",
+          "value": 80,
+          "presentation": "linear",
+          "visibleText": "80.00",
+          "fontCssPx": 16.000047198713776,
+          "color": "rgb(0, 0, 0)",
+          "line": [
+            -39.99999999995347,
+            24.55812640729454,
+            39.99999999995401,
+            24.55812640729454
+          ],
+          "vectorEffect": "non-scaling-stroke",
+          "arrows": [
+            [
+              {
+                "local": [
+                  -40,
+                  24.55812644958496
+                ],
+                "screen": [
+                  550.1210994339008,
+                  897.9394490473142
+                ]
+              },
+              {
+                "local": [
+                  -39.24031066894531,
+                  24.76915168762207
+                ],
+                "screen": [
+                  559.1211180582005,
+                  900.4394592421322
+                ]
+              },
+              {
+                "local": [
+                  -39.24031066894531,
+                  24.34710121154785
+                ],
+                "screen": [
+                  559.1211180582005,
+                  895.439438852496
+                ]
+              }
+            ],
+            [
+              {
+                "local": [
+                  40,
+                  24.55812644958496
+                ],
+                "screen": [
+                  1497.8789005660992,
+                  897.9394490473142
+                ]
+              },
+              {
+                "local": [
+                  39.24031066894531,
+                  24.76915168762207
+                ],
+                "screen": [
+                  1488.8788819417996,
+                  900.4394592421322
+                ]
+              },
+              {
+                "local": [
+                  39.24031066894531,
+                  24.34710121154785
+                ],
+                "screen": [
+                  1488.8788819417996,
+                  895.439438852496
+                ]
+              }
+            ]
+          ],
+          "extensions": [
+            [
+              -39.99999999995347,
+              20.675277986265858,
+              -39.99999999995347,
+              25.2334043935604
+            ],
+            [
+              39.99999999995401,
+              20.675277986265858,
+              39.99999999995401,
+              25.2334043935604
+            ]
+          ]
+        },
+        {
+          "id": "dimension_a8990c3b-fea5-47d8-b803-8bf91566d04f",
+          "value": 40,
+          "presentation": "linear",
+          "visibleText": "40.00",
+          "fontCssPx": 16.000047198713776,
+          "color": "rgb(0, 0, 0)",
+          "line": [
+            44.55812640724855,
+            20,
+            44.55812640724855,
+            -20
+          ],
+          "vectorEffect": "non-scaling-stroke",
+          "arrows": [
+            [
+              {
+                "local": [
+                  44.558128356933594,
+                  20
+                ],
+                "screen": [
+                  1551.8789219266705,
+                  843.9394502830496
+                ]
+              },
+              {
+                "local": [
+                  44.76914978027344,
+                  19.240312576293945
+                ],
+                "screen": [
+                  1554.378886928875,
+                  834.9394542550567
+                ]
+              },
+              {
+                "local": [
+                  44.347103118896484,
+                  19.240312576293945
+                ],
+                "screen": [
+                  1549.3789117318524,
+                  834.9394542550567
+                ]
+              }
+            ],
+            [
+              {
+                "local": [
+                  44.558128356933594,
+                  -20
+                ],
+                "screen": [
+                  1551.8789219266705,
+                  370.0605497169504
+                ]
+              },
+              {
+                "local": [
+                  44.76914978027344,
+                  -19.240312576293945
+                ],
+                "screen": [
+                  1554.378886928875,
+                  379.0605457449433
+                ]
+              },
+              {
+                "local": [
+                  44.347103118896484,
+                  -19.240312576293945
+                ],
+                "screen": [
+                  1549.3789117318524,
+                  379.0605457449433
+                ]
+              }
+            ]
+          ],
+          "extensions": [
+            [
+              40.67527798621987,
+              20,
+              45.23340439351441,
+              20
+            ],
+            [
+              40.67527798621987,
+              -20,
+              45.23340439351441,
+              -20
+            ]
+          ]
+        },
+        {
+          "id": "dimension_8120a302-9f4f-4891-99ed-8ed9ad47519e",
+          "value": 12,
+          "presentation": "diameter",
+          "visibleText": "Ø12.00",
+          "fontCssPx": 16.000047198713776,
+          "color": "rgb(0, 0, 0)",
+          "line": null,
+          "arrows": [],
+          "extensions": []
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1600,
+        "height": 900,
+        "dpr": 1
+      },
+      "annotations": [
+        {
+          "id": "dimension_13bb4fed-675a-495d-9730-d6e5d37cd3e9",
+          "value": 80,
+          "presentation": "linear",
+          "visibleText": "80.00",
+          "fontCssPx": 15.99998880374297,
+          "color": "rgb(0, 0, 0)",
+          "line": [
+            -39.99999999995347,
+            26.081787843865495,
+            39.99999999995401,
+            26.081787843865495
+          ],
+          "vectorEffect": "non-scaling-stroke",
+          "arrows": [
+            [
+              {
+                "local": [
+                  -40,
+                  26.081787109375
+                ],
+                "screen": [
+                  444.84128714617634,
+                  720.0793484673269
+                ]
+              },
+              {
+                "local": [
+                  -38.98637008666992,
+                  26.363351821899414
+                ],
+                "screen": [
+                  453.8412745293874,
+                  722.5793524894576
+                ]
+              },
+              {
+                "local": [
+                  -38.98637008666992,
+                  25.80022430419922
+                ],
+                "screen": [
+                  453.8412745293874,
+                  717.5793613804833
+                ]
+              }
+            ],
+            [
+              {
+                "local": [
+                  40,
+                  26.081787109375
+                ],
+                "screen": [
+                  1155.1587128538235,
+                  720.0793484673269
+                ]
+              },
+              {
+                "local": [
+                  38.98637008666992,
+                  26.363351821899414
+                ],
+                "screen": [
+                  1146.1587254706126,
+                  722.5793524894576
+                ]
+              },
+              {
+                "local": [
+                  38.98637008666992,
+                  25.80022430419922
+                ],
+                "screen": [
+                  1146.1587254706126,
+                  717.5793613804833
+                ]
+              }
+            ]
+          ],
+          "extensions": [
+            [
+              -39.99999999995347,
+              20.901005606498593,
+              -39.99999999995347,
+              26.98279345036409
+            ],
+            [
+              39.99999999995401,
+              20.901005606498593,
+              39.99999999995401,
+              26.98279345036409
+            ]
+          ]
+        },
+        {
+          "id": "dimension_a8990c3b-fea5-47d8-b803-8bf91566d04f",
+          "value": 40,
+          "presentation": "linear",
+          "visibleText": "40.00",
+          "fontCssPx": 15.99998880374297,
+          "color": "rgb(0, 0, 0)",
+          "line": [
+            46.081787843819505,
+            20,
+            46.081787843819505,
+            -20
+          ],
+          "vectorEffect": "non-scaling-stroke",
+          "arrows": [
+            [
+              {
+                "local": [
+                  46.081787109375,
+                  20
+                ],
+                "screen": [
+                  1209.1587048942388,
+                  666.0793564269118
+                ]
+              },
+              {
+                "local": [
+                  46.36335372924805,
+                  18.98636817932129
+                ],
+                "screen": [
+                  1211.6587258516565,
+                  657.0793521084136
+                ]
+              },
+              {
+                "local": [
+                  45.80022430419922,
+                  18.98636817932129
+                ],
+                "screen": [
+                  1206.658717807395,
+                  657.0793521084136
+                ]
+              }
+            ],
+            [
+              {
+                "local": [
+                  46.081787109375,
+                  -20
+                ],
+                "screen": [
+                  1209.1587048942388,
+                  310.92064357308817
+                ]
+              },
+              {
+                "local": [
+                  46.36335372924805,
+                  -18.98636817932129
+                ],
+                "screen": [
+                  1211.6587258516565,
+                  319.9206478915864
+                ]
+              },
+              {
+                "local": [
+                  45.80022430419922,
+                  -18.98636817932129
+                ],
+                "screen": [
+                  1206.658717807395,
+                  319.9206478915864
+                ]
+              }
+            ]
+          ],
+          "extensions": [
+            [
+              40.9010056064526,
+              20,
+              46.9827934503181,
+              20
+            ],
+            [
+              40.9010056064526,
+              -20,
+              46.9827934503181,
+              -20
+            ]
+          ]
+        },
+        {
+          "id": "dimension_8120a302-9f4f-4891-99ed-8ed9ad47519e",
+          "value": 12,
+          "presentation": "diameter",
+          "visibleText": "Ø12.00",
+          "fontCssPx": 15.99998880374297,
+          "color": "rgb(0, 0, 0)",
+          "line": null,
+          "arrows": [],
+          "extensions": []
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1
+      },
+      "annotations": [
+        {
+          "id": "dimension_13bb4fed-675a-495d-9730-d6e5d37cd3e9",
+          "value": 80,
+          "presentation": "linear",
+          "visibleText": "80.00",
+          "fontCssPx": 16.00002559043147,
+          "color": "rgb(0, 0, 0)",
+          "line": [
+            -39.99999999995347,
+            27.473115392202143,
+            39.99999999995401,
+            27.473115392202143
+          ],
+          "vectorEffect": "non-scaling-stroke",
+          "arrows": [
+            [
+              {
+                "local": [
+                  -40,
+                  27.473115921020508
+                ],
+                "screen": [
+                  393.9639231087321,
+                  621.01804114477
+                ]
+              },
+              {
+                "local": [
+                  -38.75448226928711,
+                  27.819093704223633
+                ],
+                "screen": [
+                  402.9639120733263,
+                  623.5180426734842
+                ]
+              },
+              {
+                "local": [
+                  -38.75448226928711,
+                  27.127138137817383
+                ],
+                "screen": [
+                  402.9639120733263,
+                  618.5180396160558
+                ]
+              }
+            ],
+            [
+              {
+                "local": [
+                  40,
+                  27.473115921020508
+                ],
+                "screen": [
+                  972.0360768912678,
+                  621.01804114477
+                ]
+              },
+              {
+                "local": [
+                  38.75448226928711,
+                  27.819093704223633
+                ],
+                "screen": [
+                  963.0360879266736,
+                  623.5180426734842
+                ]
+              },
+              {
+                "local": [
+                  38.75448226928711,
+                  27.127138137817383
+                ],
+                "screen": [
+                  963.0360879266736,
+                  618.5180396160558
+                ]
+              }
+            ]
+          ],
+          "extensions": [
+            [
+              -39.99999999995347,
+              21.10712820625217,
+              -39.99999999995347,
+              28.580243598454313
+            ],
+            [
+              39.99999999995401,
+              21.10712820625217,
+              39.99999999995401,
+              28.580243598454313
+            ]
+          ]
+        },
+        {
+          "id": "dimension_a8990c3b-fea5-47d8-b803-8bf91566d04f",
+          "value": 40,
+          "presentation": "linear",
+          "visibleText": "40.00",
+          "fontCssPx": 16.00002559043147,
+          "color": "rgb(0, 0, 0)",
+          "line": [
+            47.473115392156146,
+            20,
+            47.473115392156146,
+            -20
+          ],
+          "vectorEffect": "non-scaling-stroke",
+          "arrows": [
+            [
+              {
+                "local": [
+                  47.473114013671875,
+                  20
+                ],
+                "screen": [
+                  1026.03606580809,
+                  567.0180384456339
+                ]
+              },
+              {
+                "local": [
+                  47.819091796875,
+                  18.754480361938477
+                ],
+                "screen": [
+                  1028.536067336804,
+                  558.0180356987256
+                ]
+              },
+              {
+                "local": [
+                  47.12713623046875,
+                  18.754480361938477
+                ],
+                "screen": [
+                  1023.5360642793755,
+                  558.0180356987256
+                ]
+              }
+            ],
+            [
+              {
+                "local": [
+                  47.473114013671875,
+                  -20
+                ],
+                "screen": [
+                  1026.03606580809,
+                  277.9819615543661
+                ]
+              },
+              {
+                "local": [
+                  47.819091796875,
+                  -18.754480361938477
+                ],
+                "screen": [
+                  1028.536067336804,
+                  286.9819643012744
+                ]
+              },
+              {
+                "local": [
+                  47.12713623046875,
+                  -18.754480361938477
+                ],
+                "screen": [
+                  1023.5360642793755,
+                  286.9819643012744
+                ]
+              }
+            ]
+          ],
+          "extensions": [
+            [
+              41.10712820620618,
+              20,
+              48.580243598408316,
+              20
+            ],
+            [
+              41.10712820620618,
+              -20,
+              48.580243598408316,
+              -20
+            ]
+          ]
+        },
+        {
+          "id": "dimension_8120a302-9f4f-4891-99ed-8ed9ad47519e",
+          "value": 12,
+          "presentation": "diameter",
+          "visibleText": "Ø12.00",
+          "fontCssPx": 16.00002559043147,
+          "color": "rgb(0, 0, 0)",
+          "line": null,
+          "arrows": [],
+          "extensions": []
+        }
+      ]
+    }
+  ],
+  "sourceFiles": {
+    "live/LiveSketchStage.tsx": "60fb9acc216f50a2d3934d1515a1b3b3f7fbb5c9288175dbf5f8e7b021cbdeaf",
+    "live/SketchDimensionAnnotations.tsx": "4e754fadc735f478883faa3f4cb83288abcbb89fe7db33ede60b93241901a8e0",
+    "live/sketchDimensionLayout.ts": "d5b1455664e0477cf7336f3d18cc286051b85a8d70712953e89ef4d8e2c885f2",
+    "tests/live-sketch-actions-harness.mjs": "6216fa7e0c3b42b91b45ad01dfd8bf418a5da48ecfabc1a4af22e76b2cb89aa7",
+    "tests/live-sketch-dimension-native-evidence.mjs": "96ff5a485342e7af745996173d8a3b89929cfc93dde49c0fa16352fbad5e3fcf"
+  },
+  "servers": [
+    {
+      "role": "baseline",
+      "url": "http://127.0.0.1:58004/"
+    },
+    {
+      "role": "candidate",
+      "url": "http://127.0.0.1:59642/"
+    }
+  ],
+  "baselineHealth": {
+    "product": "ASA-CAD-Fusion-Live",
+    "version": 8,
+    "localOnly": true,
+    "workspace": "fusion-sketch-v1",
+    "sourceHead": "cb7006efe7a108bc85bcf99d3a3e4a9c2f73568b",
+    "port": 58004,
+    "assetPrefix": "/__asa_builds/cb7006efe7a108bc85bcf99d3a3e4a9c2f73568b/",
+    "unversionedSourceHead": "2420935b7d0642d7994a24231f3e123f42dae19d",
+    "retainedSourceHeads": [
+      "2420935b7d0642d7994a24231f3e123f42dae19d"
+    ]
+  },
+  "nativeComparison": {
+    "native": {
+      "file": "fusion-parity-native-linear-dimensions-2048-dpi110.png",
+      "sha256": "c3711aa63e440bbea8d32bbad31c970466081e42f52866918d894c7e3ebfa269",
+      "client": [
+        2048,
+        1137
+      ],
+      "dpi": 110
+    },
+    "candidate": {
+      "file": "fusion-live-sketch-dimensions-native-paired-2048.png",
+      "viewport": [
+        2048,
+        1137
+      ],
+      "dpr": 1
+    },
+    "input": "Real pointer geometry, native dimensions and public mouse wheel",
+    "wheelDelta": 380.7319645529614,
+    "camera": {
+      "span": 177.0209579665648,
+      "pixelsPerMm": 5.343999773817399,
+      "origin": [
+        1024,
+        606.9999592285174
+      ],
+      "center": [
+        0,
+        0
+      ]
+    },
+    "dimensions": [
+      {
+        "value": 60,
+        "presentation": "linear",
+        "text": "60.00",
+        "arrowTips": [
+          [
+            1024.0000072180155,
+            660.9999583773157
+          ],
+          [
+            1344.6399864290438,
+            660.9999583773157
+          ]
+        ]
+      },
+      {
+        "value": 40,
+        "presentation": "linear",
+        "text": "40.00",
+        "arrowTips": [
+          [
+            1398.6399804814068,
+            606.9999544165079
+          ],
+          [
+            1398.6399804814068,
+            393.2399682758214
+          ]
+        ]
+      },
+      {
+        "value": 12,
+        "presentation": "diameter",
+        "text": "Ø12.00",
+        "arrowTips": []
+      }
+    ],
+    "documentGeometryMatchesNative": true,
+    "visualParityAccepted": false,
+    "differences": [
+      "Native FRONT/Y-up versus existing XY TOP/Z-up",
+      "Native auto constraints and per-entity fully-constrained black are not synthesized",
+      "Shared profile analyzer rejects a scene with a loose ordinary line; native fills its closed rectangle",
+      "Automatic annotation offset is 54 CSS px; the native height was placed at 56 px"
+    ]
+  },
+  "edit": {
+    "cancelPreservesDocument": true,
+    "governingValueChanged": [
+      60,
+      80
+    ],
+    "solvedWidth": 79.99999999990747,
+    "sameDimensionId": "dimension_13bb4fed-675a-495d-9730-d6e5d37cd3e9",
+    "undoRedoPreservesDocument": true
+  },
+  "saveOpenPreservesDocument": true,
+  "displayChangesPreserveDocument": true,
+  "nativeReference": "fusion-parity-native-linear-dimensions-2048-dpi110.png",
+  "placement": "Automatic 54 CSS px offset; shared document has no persisted annotation position",
+  "pageErrors": [],
+  "ownedServersClosed": true
+}

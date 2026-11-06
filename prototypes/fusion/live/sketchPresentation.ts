@@ -1,6 +1,10 @@
 import type { CadPoint2, CadSketch, CadSketchEntity } from '../../../src/contracts/document';
 import { analyzeSketchProfile } from '../../../src/application/SketchProfile';
-import type { SketchViewportState } from '../../../src/web/viewport/SketchViewportGeometry';
+import type { SketchOverlayModel } from '../../../src/web/viewport/SketchOverlayModel';
+import {
+  sketchDisplayFrame,
+  type SketchDisplayFrame, type SketchScreenRect, type SketchViewportState,
+} from '../../../src/web/viewport/SketchViewportGeometry';
 
 export interface SketchPointMark {
   entityId: string;
@@ -11,6 +15,25 @@ export interface SketchSnap {
   point: CadPoint2;
   kind: 'endpoint' | 'center' | 'origin' | 'grid';
   entityId?: string;
+}
+export interface SketchGridTick {
+  value: number;
+  major: boolean;
+}
+
+/** Fill the scene without changing the product camera's short-edge scale. */
+export function sketchFrameForScreen(
+  viewport: SketchViewportState,
+  size: Pick<SketchScreenRect, 'width' | 'height'>,
+): SketchDisplayFrame {
+  const square = sketchDisplayFrame(viewport);
+  if (!(size.width > 0 && size.height > 0)
+    || !Number.isFinite(size.width) || !Number.isFinite(size.height)) return square;
+  const scale = Math.min(size.width / square.width, size.height / square.height);
+  const width = size.width / scale, height = size.height / scale;
+  const minX = viewport.center[0] - width / 2, minY = -viewport.center[1] - height / 2;
+  return { minX, minY, maxX: minX + width, maxY: minY + height,
+    width, height, viewBox: [minX, minY, width, height].join(' ') };
 }
 
 /** Presentation coordinates only; entity creation and constraint solving remain in App. */
@@ -32,11 +55,32 @@ export function sketchPointMarks(entities: readonly CadSketchEntity[]): SketchPo
   });
 }
 
-export function sketchGridStep(span: number): number {
-  const target = span / 20;
+/** Native reference minor pitch is about 26.7 CSS px; ticks retain real sketch units. */
+export function sketchGridStep(span: number, shortEdge = 700): number {
+  const validSpan = Number.isFinite(span) && span > 0 ? span : 100;
+  const validEdge = Number.isFinite(shortEdge) && shortEdge > 0 ? shortEdge : 700;
+  const target = 26.7 * validSpan / validEdge;
   const magnitude = 10 ** Math.floor(Math.log10(target));
-  const normalized = target / magnitude;
-  return magnitude * (normalized <= 1 ? 1 : normalized <= 2 ? 2 : normalized <= 5 ? 5 : 10);
+  return [1, 2, 2.5, 5, 10].map(value => value * magnitude).reduce((best, value) =>
+    Math.abs(Math.log(value / target)) < Math.abs(Math.log(best / target)) ? value : best);
+}
+
+/** Integer tick indices avoid floating-point drift between major lines and labels. */
+export function sketchGridTicks(min: number, max: number, step: number): SketchGridTick[] {
+  const result: SketchGridTick[] = [];
+  for (let index = Math.ceil(min / step - 1e-10); index <= Math.floor(max / step + 1e-10); index += 1) {
+    result.push({ value: Number((index * step).toPrecision(12)), major: index % 5 === 0 });
+  }
+  return result;
+}
+
+/** A render-only subset: retain entity identity and every solver field, never clone CAD intent. */
+export function sketchDisplayOverlay(
+  overlay: SketchOverlayModel | null, showConstruction: boolean,
+): SketchOverlayModel | null {
+  if (!overlay || showConstruction) return overlay;
+  const entities = overlay.entities.filter(entity => entity.type !== 'line' || !entity.data.construction);
+  return entities.length === overlay.entities.length ? overlay : { ...overlay, entities };
 }
 
 /** Snap affects the actual existing drawing callback, not just a visual marker. */

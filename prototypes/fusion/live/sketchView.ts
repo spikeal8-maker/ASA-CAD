@@ -1,9 +1,10 @@
 import { useSyncExternalStore } from 'react';
 import type { CadDimensionId, CadSketchId } from '../../../src/contracts/ids';
 import type { SketchViewportState } from '../../../src/web/viewport/SketchViewportGeometry';
+import type { CadSketchSolveSnapshot } from '../../../src/application/SketchSolveSession';
 
 /** Prototype presentation only. The document, solver and editing commands stay in App. */
-export type SketchDisplayOption = 'grid' | 'snap' | 'points' | 'profiles' | 'dimensions' | 'constraints';
+export type SketchDisplayOption = 'grid' | 'snap' | 'points' | 'profiles' | 'dimensions' | 'constraints' | 'construction' | 'projected';
 export type SketchViewCommand = 'look-at' | 'fit' | 'zoom-in' | 'zoom-out' | 'reset';
 export interface ActiveSketchView {
   id: CadSketchId;
@@ -24,6 +25,8 @@ export interface SketchViewSnapshot {
   panMode: boolean;
   navigationReady: boolean;
   dimensionEditReady: boolean;
+  solve: Readonly<CadSketchSolveSnapshot> | null;
+  computeReady: boolean;
   capabilities: Readonly<Record<SketchDisplayOption, boolean> & {
     lookAt: boolean; fit: boolean; zoom: boolean; pan: boolean; orbit: false;
   }>;
@@ -33,15 +36,18 @@ export interface SketchViewSnapshot {
 }
 
 let snapshot: SketchViewSnapshot = {
-  settings: { grid: true, snap: true, points: true, profiles: true, dimensions: true, constraints: true },
+  settings: { grid: true, snap: true, points: true, profiles: true, dimensions: true, constraints: true, construction: true, projected: false },
   active: null,
   viewport: null,
   panMode: false,
   navigationReady: false,
   dimensionEditReady: false,
+  solve: null,
+  computeReady: false,
   capabilities: { grid: true, snap: true, points: true, profiles: true, dimensions: true, constraints: true,
+    construction: true, projected: false,
     lookAt: true, fit: true, zoom: true, pan: true, orbit: false },
-  unavailable: {},
+  unavailable: { projected: 'Проецированная геометрия пока не поддерживается: в модели эскиза нет признака проекции.' },
   orbitUnavailableReason: 'Эскиз отображается в собственной 2D-плоскости. Для вращения нужен общий мост камеры и проекции выбора; плоскости граней пока не разрешены в origin/u/v/normal.',
   snapScope: 'При построении линии, прямоугольника, окружности и дуги: концы, центры и узлы сетки. Привязка не добавляет геометрические ограничения.',
 };
@@ -97,11 +103,28 @@ export function registerSketchNavigation(handler: (command: SketchViewCommand) =
     if (navigation !== handler) return;
     navigation = null;
     // The stage owns this publication; Solid must not retain its last sketch view.
-    update({ navigationReady: false, active: null, viewport: null, panMode: false });
+    update({ navigationReady: false, active: null, viewport: null, panMode: false, solve: null });
   };
 }
-export function publishSketchView(active: ActiveSketchView, viewport: SketchViewportState): void {
-  update({ active, viewport });
+export function publishSketchView(active: ActiveSketchView, viewport: SketchViewportState, solve: Readonly<CadSketchSolveSnapshot> | null = null): void {
+  update({ active, viewport, solve });
+}
+
+let compute: (() => Promise<unknown>) | null = null;
+/** Uses the active stage's existing solve session; never creates another solver. */
+export function registerSketchCompute(handler: () => Promise<unknown>): () => void {
+  compute = handler;
+  update({ computeReady: true });
+  return () => {
+    if (compute !== handler) return;
+    compute = null;
+    update({ computeReady: false });
+  };
+}
+export function requestSketchCompute(): boolean {
+  if (!compute || snapshot.solve?.status === 'solving') return false;
+  void compute().catch(error => window.dispatchEvent(new CustomEvent('asa-live-error', { detail: String(error) })));
+  return true;
 }
 
 let dimensionEditor: ((id: CadDimensionId) => void) | null = null;

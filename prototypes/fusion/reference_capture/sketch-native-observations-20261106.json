@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "applicationVersion": "2706.1.17",
+  "source": "Observed Autodesk Fusion client captures on D2-R2 in a separate test document",
+  "captureDirectory": "prototypes/fusion/evidence",
+  "nativeDpi": 110,
+  "nativeDpiPolicy": "GetDpiForWindow returned 110 DPI, not 110 percent. Native client pixels are retained without resampling. Browser candidates use DPR 1 and 100 percent zoom. Full DPR-1 native parity is not accepted from these captures.",
+  "toleranceCssPx": 2,
+  "primaryCapture": "fusion-parity-native-sketch-empty-2048-dpi110.png",
+  "primaryViewport": {"width": 2048, "height": 1137},
+  "observedBounds": {
+    "quickbar": {"x": 0, "y": 0, "height": 37},
+    "tabs": {"y": 37, "height": 26},
+    "scene": {"y": 134},
+    "workspace": {"x": 13, "y": 49, "width": 126, "height": 70},
+    "paletteEmpty": {"x": 1757, "y": 298, "width": 286, "height": 599},
+    "cube": {"x": 1928, "y": 184, "width": 70, "height": 70},
+    "createMenu": {"x": 148, "y": 128, "width": 245, "height": 400},
+    "menuRowHeight": 23,
+    "contextRowHeight": 25
+  },
+  "promotedIds2048": {
+    "SketchCreatePanel": ["DrawPolyline", "ShapeRectangleTwoPoint", "CircleCenterRadius", "DrawSpline", "MirrorSketchCommand", "SketchDimension"],
+    "SketchModifyPanel": ["FilletSketchCmd", "TrimSketchCmd", "Offset", "BlendG1CurveSketchCmd"],
+    "SketchConstraintsPanel": ["SketchAutoConstraintAndDimCmd", "ConstraintHorizontalVertical", "ConstraintCoincident", "ConstraintTangent", "ConstraintEqual", "ConstraintParallel", "ConstraintPerpendicular", "ConstraintFix", "ConstraintMidPoint", "ConstraintConcentric", "ConstraintCollinear", "ConstraintSymmetry"],
+    "ConfigurePanel": ["FusionStartDesignConfigModeCmd", "FusionShowDesignConfigPanelCmd", "FusionConfigurationRulesCmd"],
+    "InspectPanel": ["MeasureCommand", "FusionHalfSectionViewCommand"],
+    "InsertPanel": ["PullDeriveCommand", "FusionAddCanvasCommand", "ParaMeshInsertAlignCommand"],
+    "PartAssemblePanel": ["NewAssemblyFromPartCommand"],
+    "SelectPanel": ["SelectCommand"],
+    "StopSketchPanel": ["SketchStop"]
+  },
+  "responsiveCaptures": [
+    {"requestedWidth": 1600, "width": 1600, "height": 900, "file": "fusion-parity-native-sketch-layout-1600-dpi110.png", "visibleGroupCounts": [5, 4, 4, 3, 2, 3, 1, 1, 1]},
+    {"requestedWidth": 1366, "width": 1375, "height": 768, "file": "fusion-parity-native-sketch-layout-1366-dpi110.png", "visibleGroupCounts": [3, 3, 3, 3, 2, 2, 1, 1, 1], "limitation": "Fusion enforced a 1375-pixel minimum client width at its current DPI; this is not a 1366-pixel native capture."}
+  ],
+  "observedGeometry": {"nativeUnits": "mm", "source": "fusion-parity-native-circle-diameter-2048-dpi110.png", "rectangle": {"width": 60, "height": 40}, "circle": {"center": [30, 20], "diameter": 12}, "pixelsPerMm2048": 5.344, "gridMinorMm2048": 5, "gridMajorMm2048": 25},
+  "observedInteractions": {
+    "context": {"root": "fusion-parity-native-context-empty-safe-2048-dpi110.png", "sketchSubmenu": "fusion-parity-native-context-sketch-submenu-2048-dpi110.png", "openSketchSubmenu": "hover", "entitySelectionSource": "actual hit target"},
+    "lineTooltip": {"short": "fusion-parity-native-line-hover-final-2048-dpi110.png", "expanded": "fusion-parity-native-line-tooltip-final-2048-dpi110.png", "expandedWidth": 385, "expandedHeight": 418},
+    "lineActive": "fusion-parity-native-line-active-2048-dpi110.png",
+    "rectanglePreview": "fusion-parity-native-rectangle-preview-2048-dpi110.png"
+  },
+  "status": "OBSERVED_REFERENCE; native visual acceptance and full behavior equivalence remain separate"
+}
