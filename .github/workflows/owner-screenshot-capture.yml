@@ -15,7 +15,7 @@ permissions:
 jobs:
   owner-screenshot-capture:
     name: CAD-VIS-006B
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # Pinned Playwright 1.60.0 does not support Ubuntu 26.04.
     steps:
       - name: Checkout exact V6B head
         uses: actions/checkout@v4
