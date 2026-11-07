@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import type { CadPoint2 } from '../../../src/contracts/document';
 import type { SketchEditingStageProps } from '../../../src/web/SketchEditingStage';
 import { CadViewport } from '../../../src/web/CadViewport';
@@ -23,6 +23,9 @@ import {
 } from './sketchPresentation';
 import type { SketchSnap } from './sketchPresentation';
 import { SketchDimensionAnnotations } from './SketchDimensionAnnotations';
+import { LiveLineInput, handleLiveLineKey, resolveLiveLinePointer } from './LiveLineInput';
+import { liveLineInteraction, registerLiveLineSolver } from './LiveLineInteraction';
+import type { LiveLineSnap } from './LiveLineInteraction';
 import './sketchField.css';
 
 export type { SketchEditingStageProps };
@@ -44,15 +47,21 @@ const drawingCommands = new Set(['sketch.line', 'sketch.rectangle', 'sketch.circ
 /** Prototype replacement: all editing, drag preview, solving and entity rendering are product owners. */
 export function SketchEditingStage(props: SketchEditingStageProps) {
   const view = useSketchView();
+  const lineInteraction = useSyncExternalStore(liveLineInteraction.subscribe, liveLineInteraction.getSnapshot);
+  const [lineSettled, setLineSettled] = useState<{ sketchId: string; revision: number } | null>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const [viewport, setViewport] = useState(resetSketchViewportState);
   const [stageSize, setStageSize] = useState({ width: 700, height: 700 });
-  const [snap, setSnap] = useState<SketchSnap | null>(null);
+  const [snap, setSnap] = useState<SketchSnap | LiveLineSnap | null>(null);
   const [panning, setPanning] = useState(false);
   const pan = useRef<{ id: number; x: number; y: number } | null>(null);
   const selectionEnabled = props.activeCommand === null && !view.panMode;
   useEffect(() => { setViewport(resetSketchViewportState()); setSnap(null); }, [props.activeSketch.id]);
-  useEffect(() => { setSnap(null); }, [props.activeCommand, view.settings.snap, view.settings.construction]);
+  useEffect(() => {
+    setSnap(null);
+    const line = liveLineInteraction.getSnapshot();
+    liveLineInteraction.setPointerContext({ point: line.to ?? [0, 0], snap: null });
+  }, [props.activeCommand, props.activeSketch.id, view.settings.snap, view.settings.construction]);
   const solve = useActiveSketchSolveOverlay({
     document: props.document, sketch: props.activeSketch, active: true, revisionToken: props.revisionToken,
   });
@@ -62,6 +71,47 @@ export function SketchEditingStage(props: SketchEditingStageProps) {
     previewCandidate: solve.previewCandidate, restorePersistedPreview: solve.restorePersistedPreview,
     commit: props.onSketchEntityTranslate, onRejected: props.onSketchDragRejected,
   });
+  const lineSolveState = useRef({ document: props.document, sketch: props.activeSketch,
+    revision: props.revisionToken, restore: solve.restorePersistedPreview });
+  lineSolveState.current = { document: props.document, sketch: props.activeSketch,
+    revision: props.revisionToken, restore: solve.restorePersistedPreview };
+  const lineSolveMounted = useRef(true);
+  useEffect(() => { lineSolveMounted.current = true; return () => { lineSolveMounted.current = false; }; }, []);
+  const lineFingerprint = (value: typeof lineSolveState.current) => JSON.stringify([
+    value.sketch.entities,
+    value.document.constraints.filter(item => value.sketch.constraintIds.includes(item.id)),
+    value.document.dimensions.filter(item => value.sketch.dimensionIds.includes(item.id)),
+  ]);
+  const settleLineSolve = useCallback(async () => {
+    for (let attempt = 0; attempt < 4; attempt += 1) {
+      await new Promise<void>(resolve => requestAnimationFrame(() => resolve()));
+      if (!lineSolveMounted.current) throw new Error('Рабочая плоскость эскиза закрыта');
+      const before = lineSolveState.current, fingerprint = lineFingerprint(before);
+      // Reuse the sole active SketchSolveSession. The awaited request is bound
+      // to document identity, complete sketch intent and the observed revision.
+      const snapshot = await before.restore();
+      const after = lineSolveState.current;
+      if (!lineSolveMounted.current) throw new Error('Рабочая плоскость эскиза закрыта');
+      if (after.document !== before.document || after.sketch.id !== before.sketch.id
+        || after.revision !== before.revision || lineFingerprint(after) !== fingerprint
+        || snapshot.status === 'solving') continue;
+      if (snapshot.status === 'solved' && snapshot.converged && snapshot.sketchId === before.sketch.id) {
+        setLineSettled({ sketchId: before.sketch.id, revision: before.revision });
+      } else setLineSettled(null);
+      return snapshot;
+    }
+    throw new Error('Решение эскиза изменилось во время построения. Дождитесь завершения расчёта');
+  }, []);
+  useLayoutEffect(() => registerLiveLineSolver(props.activeSketch.id, settleLineSolve),
+    [props.activeSketch.id, settleLineSolve]);
+  const lineReady = props.activeSketch.entities.length === 0
+    || (lineSettled?.sketchId === props.activeSketch.id && lineSettled.revision === props.revisionToken);
+  useEffect(() => {
+    if (props.activeCommand !== 'sketch.line' || lineInteraction.committing || lineReady) return;
+    void settleLineSolve().catch(error => {
+      if (lineSolveMounted.current) props.onSketchDragRejected(String(error));
+    });
+  }, [props.activeCommand, props.revisionToken, props.activeSketch.id, lineInteraction.committing, lineReady, settleLineSolve]);
   const overlay = solve.overlay;
   const entities = overlay?.entities ?? props.activeSketch.entities;
   const displayOverlay = useMemo(() => sketchDisplayOverlay(overlay, view.settings.construction),
@@ -135,7 +185,17 @@ export function SketchEditingStage(props: SketchEditingStageProps) {
     setSnap(resolved);
     return resolved?.point ?? point;
   };
+  const linePoint = (point: CadPoint2): CadPoint2 => {
+    const state = current.current;
+    const rect = stageRef.current?.getBoundingClientRect();
+    const units = state.viewport.span / Math.max(1, Math.min(rect?.width ?? 700, rect?.height ?? 700));
+    const context = resolveLiveLinePointer(point, state.entities, units, state.snapEnabled);
+    liveLineInteraction.setPointerContext(context);
+    setSnap(context.snap);
+    return context.point;
+  };
   const startPan = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.target instanceof Element && event.target.closest('input,textarea,select,button,label,[contenteditable="true"]')) return;
     if (event.button !== 1 && !(view.panMode && event.button === 0 && event.pointerType !== 'touch')) return;
     event.preventDefault(); event.stopPropagation();
     pan.current = { id: event.pointerId, x: event.clientX, y: event.clientY };
@@ -166,6 +226,7 @@ export function SketchEditingStage(props: SketchEditingStageProps) {
       data-sketch-view-span={viewport.span} data-sketch-view-center={viewport.center.join(',')}
       data-sketch-grid-step={step} data-sketch-construction-visible={view.settings.construction ? 'true' : 'false'}
       data-selected-sketch-entity-id={props.selectedSketchEntityId ?? ''} data-dragging-sketch-entity-id={drag.draggingEntityId ?? ''}
+      data-line-solver-ready={String(lineReady)}
       data-sketch-panning={panning ? 'true' : 'false'} data-sketch-snap-enabled={view.settings.snap ? 'true' : 'false'}
       style={{ cursor: panning ? 'grabbing' : view.panMode ? 'grab' : undefined }}
       onPointerDownCapture={event => {
@@ -183,7 +244,14 @@ export function SketchEditingStage(props: SketchEditingStageProps) {
       onLostPointerCapture={() => { pan.current = null; setPanning(false); }}
       onAuxClick={event => { if (event.button === 1) { event.preventDefault(); event.stopPropagation(); } }}
       onPointerLeave={() => { if (!pan.current) setSnap(null); }}
+      onDoubleClickCapture={event => {
+        if (props.activeCommand !== 'sketch.line' || view.panMode || pan.current || !(event.target instanceof Element)
+          || event.target.closest('input,button,label')) return;
+        event.preventDefault(); event.stopPropagation();
+        liveLineInteraction.finishChain();
+      }}
       onKeyDownCapture={event => {
+        if (props.activeCommand === 'sketch.line' && handleLiveLineKey(event)) return;
         if (!(event.target instanceof Element) || event.target.closest('input,textarea,select,button,[contenteditable="true"]')) return;
         const direction = { ArrowLeft: [40, 0], ArrowRight: [-40, 0], ArrowUp: [0, 40], ArrowDown: [0, -40] }[event.key];
         if (!direction || event.altKey || event.ctrlKey || event.metaKey) return;
@@ -224,8 +292,8 @@ export function SketchEditingStage(props: SketchEditingStageProps) {
         onEntitySelect={props.onSketchEntitySelect} onEntityDragStart={drag.start} onEntityDragMove={drag.move}
         onEntityDragEnd={drag.end} onEntityDragCancel={drag.cancel} />
       <SketchDirectToolLayers model={displayOverlay} frame={frame} viewportState={viewport} onViewportStateChange={setViewport}
-        activeCommand={props.activeCommand} lineDraft={props.lineDraft} lineCommitting={props.lineCommitting}
-        onLineMove={point => props.onSketchLinePointMove(snapPoint(point))} onLinePoint={point => props.onSketchLinePoint(snapPoint(point))}
+        activeCommand={props.activeCommand} lineDraft={props.lineDraft} lineCommitting={props.lineCommitting || !lineReady}
+        onLineMove={point => { if (lineReady) props.onSketchLinePointMove(linePoint(point)); }} onLinePoint={point => { if (lineReady) return props.onSketchLinePoint(linePoint(point)); }}
         rectangleDraft={props.rectangleDraft} rectangleCommitting={props.rectangleCommitting}
         onRectangleMove={point => props.onSketchRectanglePointMove(snapPoint(point))} onRectanglePoint={point => props.onSketchRectanglePoint(snapPoint(point))}
         circleDraft={props.circleDraft} circleCommitting={props.circleCommitting}
@@ -255,10 +323,12 @@ export function SketchEditingStage(props: SketchEditingStageProps) {
         })}
       </svg>}
       {view.settings.snap && snap && drawingCommands.has(props.activeCommand ?? '') && <svg data-sketch-layer="snap" data-snap-kind={snap.kind}
-        data-snap-point={snap.point.join(',')} data-snap-entity-id={snap.entityId ?? ''} viewBox={frame.viewBox} style={{ ...layerStyle, zIndex: 6 }} aria-hidden="true">
+        data-snap-point={snap.point.join(',')} data-snap-entity-id={'entityId' in snap ? snap.entityId ?? '' : 'ref' in snap ? snap.ref?.entityId ?? '' : ''} viewBox={frame.viewBox} style={{ ...layerStyle, zIndex: 6 }} aria-hidden="true">
         <rect x={snap.point[0] - 5 * unitPerPixel} y={-snap.point[1] - 5 * unitPerPixel} width={10 * unitPerPixel} height={10 * unitPerPixel}
           fill="none" stroke="#df8430" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
       </svg>}
+      {props.activeCommand === 'sketch.line' && <LiveLineInput frame={frame} size={stageSize}
+        focusStage={() => stageRef.current?.focus({ preventScroll: true })} />}
       <div className="sketch-solve-hud" data-testid="sketch-solve-hud" data-overlay-source={overlay?.source ?? 'document'}>
         <SketchSolveStatus snapshot={solve.snapshot} />
       </div>

@@ -5,10 +5,11 @@ import {navigation} from './navigation';
 import {holeWizard} from './HoleWizard';
 import {requestSketchView,setSketchPanMode} from './sketchView';
 import {contextualDimension} from './sketchCommands';
+import {liveLineInteraction} from './LiveLineInteraction';
 import './sketchMarking.css';
 
 type Props={x:number;y:number;workspace?:'solid'|'sketch';selectionContext?:boolean;activeCommand?:string|null;commit:()=>void|Promise<void>;cancel:()=>void;close:()=>void};
-type Slot={label:string;id?:string;native?:string;callback?:()=>void;enabled?:boolean;icon:string;submenu?:boolean};
+type Slot={label:string;id?:string;native?:string;callback?:()=>void;enabled?:boolean;icon:string;submenu?:boolean;contextGlyph?:ContextGlyphName};
 type ContextGlyphName='ok'|'cancel'|'orbit'|'orbit-center'|'orbit-reset'|'configuration'|'selection-set'|'fixed'|'delete-coincident'|'blank';
 
 function ContextGlyph({name}:{name:ContextGlyphName}){
@@ -36,13 +37,13 @@ export function MarkingMenu(p:Props){
  const choose=(fn:()=>void)=>{fn();p.close();};
  const last=lastAction(),lastLabel=last?action(last)?.label:null;
  const root:Slot[]=[
-  {label:lastLabel?'Повторить: '+lastLabel:'Повторить',callback:repeat,enabled:!!last&&!!action(last)?.enabled,icon:editingSketch&&last?last:'system.redo'},
+  {label:lastLabel?'Повторить: '+lastLabel:'Повторить',callback:p.activeCommand==='sketch.line'?()=>liveLineInteraction.finishChain():repeat,enabled:!!last&&!!action(last)?.enabled,icon:editingSketch&&last?last:'system.redo'},
   {label:'Нажать/Вытянуть',native:'FusionPressPullCommand',icon:'FusionPressPullCommand'},
-  {label:editingSketch?'Вернуть':'Повторить действие',id:'system.redo',icon:'system.redo'},
+  {label:p.activeCommand==='sketch.line'?'ОК':editingSketch?'Вернуть':'Повторить действие',id:p.activeCommand==='sketch.line'?undefined:'system.redo',callback:p.activeCommand==='sketch.line'?()=>{void p.commit();}:undefined,enabled:p.activeCommand==='sketch.line'?true:undefined,contextGlyph:p.activeCommand==='sketch.line'?'ok':undefined,icon:'system.redo'},
   {label:'Отверстие',native:'FusionHoleCommand',icon:'FusionHoleCommand'},
   {label:'Эскиз',callback:()=>setSketch(true),enabled:true,icon:'SketchCreate',submenu:true},
   {label:'Переместить/Копировать',native:'FusionMoveCommand',icon:'FusionMoveCommand'},
-  {label:editingSketch?'Отменить':'Отменить действие',id:'system.undo',icon:'system.undo'},
+  {label:p.activeCommand==='sketch.line'?'Отмена':editingSketch?'Отменить':'Отменить действие',id:p.activeCommand==='sketch.line'?undefined:'system.undo',callback:p.activeCommand==='sketch.line'?p.cancel:undefined,enabled:p.activeCommand==='sketch.line'?true:undefined,contextGlyph:p.activeCommand==='sketch.line'?'cancel':undefined,icon:'system.undo'},
   {label:'Удалить',id:'sketch.entity.delete',icon:'sketch.entity.delete'},
  ];
  const dimension=editingSketch?contextualDimension(id=>action(id)!):null;
@@ -148,7 +149,7 @@ export function MarkingMenu(p:Props){
   }}>
   <div className="marking-center" aria-hidden="true"/>
   {(sketch?sketchSlots:root).map((slot,index)=><button key={(sketch?'sketch-':'root-')+index} type="button" role="menuitem" className="marking-slot" aria-label={slot.label} data-marking-slot={index} aria-haspopup={slot.submenu?'menu':undefined} disabled={!enabled(slot)} title={!enabled(slot)?slot.native==='FusionHoleCommand'?holeWizard.snapshot().disabledReason:reason(resolve(slot)):slot.label} style={{left:positions[index][0],top:positions[index][1]}}
-   onMouseEnter={()=>{if(editingSketch&&slot.submenu&&enabled(slot))setSketch(true);}} onClick={()=>execute(slot)}><LiveIcon id={slot.icon} size={17}/><span>{slot.label}</span>{slot.submenu&&<b>▾</b>}</button>)}
+   onMouseEnter={()=>{if(editingSketch&&slot.submenu&&enabled(slot))setSketch(true);}} onClick={()=>execute(slot)}>{slot.contextGlyph?<ContextGlyph name={slot.contextGlyph}/>:<LiveIcon id={slot.icon} size={17}/>}<span>{slot.label}</span>{slot.submenu&&<b>▾</b>}</button>)}
   {editingSketch&&sketch?<>
    <button type="button" className="sketch-marking-home" role="menuitem" aria-label="Основное контекстное меню" data-context-back="root" title="Основное меню" onClick={()=>{setSketch(false);setCommandsOpen(false);}}><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="m3 10 7-7 7 7h-4v7H7v-7Z" fill="#303030"/></svg></button>
    <section className="live-menu sketch-context-authored" aria-label="Дополнительные команды ASA-CAD" style={{maxHeight:listMaxHeight}}>{commandSection}</section>

@@ -15,10 +15,18 @@ import {holeWizard} from './HoleWizard';
 import {navigation} from './navigation';
 import {action,run,repeat,lastAction,reason} from './liveActions';
 import type {CadDimensionId} from '../../../src/contracts/ids';
+import {acceptLiveLine,focusLineStage,handleLiveLineKey} from './LiveLineInput';
+import {liveLineInteraction} from './LiveLineInteraction';
 export function CadShellMain(p:CadShellMainProps){
  const [treeOpen,setTreeOpen]=useState(true),[context,setContext]=useState<{x:number;y:number;selectionContext:boolean}|null>(null);
  const contextFrame=useRef<number|null>(null);
- const closeContext=useCallback(()=>{if(contextFrame.current!==null)cancelAnimationFrame(contextFrame.current);contextFrame.current=null;setContext(null);},[]);
+ const closeContext=useCallback(()=>{
+  if(contextFrame.current!==null)cancelAnimationFrame(contextFrame.current);
+  contextFrame.current=null;
+  // Keep the next Escape / numeric keystroke inside the active Line surface.
+  if(liveLineInteraction.getSnapshot().active&&document.activeElement?.closest('.live-context'))focusLineStage();
+  setContext(null);
+ },[]);
  const [editingDimensionId,setEditingDimensionId]=useState<CadDimensionId|null>(null);
  const view=useSyncExternalStore(navigation.subscribe,navigation.snapshot);
  const sketchView=useSketchView();
@@ -39,6 +47,7 @@ export function CadShellMain(p:CadShellMainProps){
  useEffect(()=>{if(orphanedSketchTool){p.cancelCommand();requestSketchWorkspaceExit();}},[orphanedSketchTool,p.cancelCommand]);
  function cancel(){
   if(!p.activeCommand)return;
+  if(p.activeCommand==='sketch.line'){focusLineStage();liveLineInteraction.exitTool();return;}
   p.cancelCommand();
   if(sketchMode&&p.activeCommand==='dimension.edit'&&tree?.activeSketchId)tree.onEditSketch(tree.activeSketchId);
  }
@@ -96,7 +105,7 @@ export function CadShellMain(p:CadShellMainProps){
   if(e.key==='Enter'&&p.activeCommand){e.preventDefault();e.stopPropagation();void Promise.resolve(p.commitActiveCommand()).catch(error=>window.dispatchEvent(new CustomEvent('asa-live-error',{detail:String(error)})));}
  }
  return <main className="live-workarea" data-workspace={sketchMode?'sketch':'solid'} data-active-command={p.activeCommand||''}
-  onKeyDown={sketchKeys}>
+  onKeyDown={sketchKeys} onKeyDownCapture={event=>{if(sketchMode&&p.activeCommand==='sketch.line')handleLiveLineKey(event);}}>
   <section className="live-scene" aria-label="Область моделирования" onContextMenu={openContext}>{p.modelContent}</section>
   <aside className={'live-tree '+(!treeOpen?'collapsed':'')}><header><button type="button" aria-label={treeOpen?'Свернуть обозреватель':'Развернуть обозреватель'} onClick={()=>setTreeOpen(v=>!v)}>{treeOpen?'«':'»'}</button><span>ОБОЗРЕВАТЕЛЬ</span><button type="button" aria-label="Скрыть дерево" onClick={()=>setTreeOpen(false)}>−</button></header>{treeOpen&&treeContent}</aside>
   {sketchMode?<SketchPlaneCube view={sketchView}/>:<ViewCube/>}
@@ -115,7 +124,7 @@ export function CadShellMain(p:CadShellMainProps){
    <button type="button" aria-label="Показать всё" title="Показать всё" onClick={fit}>▣</button><button type="button" aria-label="Главный вид модели" title="Главный вид" onClick={()=>sketchMode?requestSketchView('reset'):navigation.home()}>⌂</button>
   </div>
   <div className="live-timeline" aria-label="История построения">{part?.sketches.map(s=><button type="button" key={s.id} data-timeline-sketch={s.id} title={'Редактировать '+s.name} onClick={()=>tree?.onEditSketch(s.id)}><LiveIcon id="SketchCreate" size={22}/></button>)}{part?.features.map(f=><span key={f.id} data-timeline-feature={f.id} title={f.name}><LiveIcon id={f.type==='extrude'?'Extrude':f.type==='fillet'?'FusionFilletEdgesCommand':'part.cutExtrude'} size={23}/></span>)}<b className="live-timeline-cursor"/></div>
-  {context&&<MarkingMenu x={context.x} y={context.y} selectionContext={context.selectionContext} workspace={sketchMode?'sketch':'solid'} activeCommand={p.activeCommand} commit={p.commitActiveCommand} cancel={cancel} close={closeContext}/>}
+  {context&&<MarkingMenu x={context.x} y={context.y} selectionContext={context.selectionContext} workspace={sketchMode?'sketch':'solid'} activeCommand={p.activeCommand} commit={p.activeCommand==='sketch.line'?acceptLiveLine:p.commitActiveCommand} cancel={cancel} close={closeContext}/>}
 
  </main>;
 }
