@@ -54,13 +54,17 @@ function profileAvailability(
   sketch: Readonly<CadSketch>,
   solved: Readonly<FeatureProfileSnapshot> | null,
 ): FeatureAvailability {
-  if (!sketch.entities.length) return { enabled: false, reason: 'Профиль: эскиз не содержит геометрии' };
+  if (!sketch.entities.length) return analyzedProfileAvailability(sketch);
   if (!currentFeatureProfile(solved, document, sketch.id) || solved.status === 'solving') {
     return { enabled: false, reason: 'Проверка решённого профиля…' };
   }
   if (solved.status !== 'solved' || !solved.sketch) {
     return { enabled: false, reason: solved.reason ?? 'Не удалось решить профиль эскиза' };
   }
-  const profile = analyzeSketchProfile(solved.sketch);
+  return analyzedProfileAvailability(solved.sketch);
+}
+
+function analyzedProfileAvailability(sketch: Readonly<CadSketch>): FeatureAvailability {
+  const profile = analyzeSketchProfile(sketch);
   return profile.ok ? { enabled: true } : { enabled: false, reason: profile.reason };
 }
