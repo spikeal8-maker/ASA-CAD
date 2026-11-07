@@ -9,7 +9,6 @@ const roadmap = readFileSync('docs/ROADMAP.md', 'utf8');
 const spec = readFileSync('docs/UI_CORE_UNIFICATION_SPEC.md', 'utf8');
 const visualSpec = readFileSync('docs/VISUAL_REFERENCE_SPEC.md', 'utf8');
 const u1aMap = readFileSync('docs/UI_CORE_U1A_MAPPING.md', 'utf8');
-const canonicalUtf8Bytes = (path) => Buffer.byteLength(readFileSync(path, 'utf8').replace(/\r\n/g, '\n'), 'utf8');
 
 const integrationWorkflows = [
   '.github/workflows/baseline.yml',
@@ -150,10 +149,20 @@ assert.equal(commandGroupsPressure.targetBytes, 10240);
 assert.equal(commandGroupsPressure.pressureRatio, 0.85);
 assert.equal(commandGroupsPressure.pressureThresholdBytes, 8704);
 assert.equal(commandGroupsPressure.rule, 'EXTRACT_SUBCOMPONENT_BEFORE_EXCEEDING_PRESSURE_THRESHOLD');
+// Preserve the accepted U1A pressure evidence after LEGACY-CLEANUP-202 retires its owner.
+assert.equal(commandGroupsPressure.currentBytesAtContract, 8350);
+assert.equal(commandGroupsPressure.remainingBytesBeforePressureAtContract, 354);
+assert.equal(commandGroupsPressure.retiredBy, 'LEGACY-CLEANUP-202');
+assert.deepEqual(commandGroupsPressure.historicalSource, {
+  acceptedHead: '1be7bdb3b351fb0caee9c040abb43fd690bed687',
+  canonicalUtf8Bytes: 8350,
+  canonicalUtf8Sha256: '1be3f63dbc7e029be81ae4aa8cdfcec5e8f47ff5cbec1c8f494cf4b918220e25',
+});
 assert.ok(
-  canonicalUtf8Bytes('src/web/CadShellCommandGroups.tsx') <= commandGroupsPressure.pressureThresholdBytes,
-  'U1A BLOCKED: CadShellCommandGroups.tsx exceeded 8704 canonical UTF-8 bytes; extract a focused subcomponent before more growth',
+  commandGroupsPressure.historicalSource.canonicalUtf8Bytes <= commandGroupsPressure.pressureThresholdBytes,
+  'Accepted U1A owner must remain below its immutable 8704-byte pressure threshold',
 );
+assert.equal(existsSync('src/web/CadShellCommandGroups.tsx'), false, 'Retired U1A command-group owner must not return');
 
 assert.match(status, /U1A|U1B|U1C/);
 assert.match(status, /KNOWN_RISK/);

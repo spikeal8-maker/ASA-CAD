@@ -110,7 +110,7 @@ const layer = fs.readFileSync('src/web/viewport/SketchConcentricInteractionLayer
 const bridge = fs.readFileSync('src/web/CoincidentPartModelStage.tsx', 'utf8');
 const appSource = fs.readFileSync('src/web/App.tsx', 'utf8');
 const mobile = fs.readFileSync('src/web/MobileToolsPanel.tsx', 'utf8');
-const commandGroups = fs.readFileSync('src/web/CadShellCommandGroups.tsx', 'utf8');
+const toolsets = fs.readFileSync('src/web/kompas/kompasToolsets.ts', 'utf8');
 const registry = JSON.parse(fs.readFileSync('spec/ui/command-registry.v1.json', 'utf8'));
 assert.match(handler, /'constraint\.concentric'/);
 assert.match(handler, /addCirclePairConcentricConstraint/);
@@ -130,7 +130,7 @@ assert.match(bridge, /useSketchConcentricCommit/);
 assert.match(appSource, /concentricConstraint: workspace\.beginConcentricConstraint/);
 assert.match(appSource, /concentricCommit=\{workspace\.applyConcentricConstraint\}/);
 assert.match(mobile, /id: 'constraint\.concentric'/);
-assert.match(commandGroups, /getAction\('constraint\.concentric'\)/);
+assert.match(toolsets, /I\([^)]*,'constraint\.concentric'\)/);
 const command = registry.commands.find((item: { id: string }) => item.id === 'constraint.concentric');
 assert.equal(command?.status, 'implemented');
 assert.equal(command?.backendCommand, 'constraint.concentric');
