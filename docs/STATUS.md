@@ -5,7 +5,7 @@
 ## Канон продукта
 
 - UI/UX reference: frozen [#170](https://github.com/spikeal8-maker/ASA-CAD/pull/170), tag `ui-reference-20261004`, SHA `88c535c652dac8b04f0d68fa144cf8486afdc926`. Его prototype runtime не является продуктовым ядром.
-- Принятый integration: `4af80b690610ec23241c528df0b2144105773e73` — одна продуктовая оболочка `src/web/kompas`, адаптивная на desktop/tablet/phone; прежний fallback <900 px удалён.
+- Принятый integration: `d9484da144d2dddfc71bc32e35173683832a5400` — одна продуктовая оболочка `src/web/kompas`, адаптивная на desktop/tablet/phone; прежний fallback <900 px удалён.
 - Main: `1f8d2627da7ddfa63b31876d46347d0b8080c154`, с прежним fallback и без текущих audit repairs. Перенос integration в main и production не выполнен.
 - Авторитеты: `CadDocument`, история `CadApplication`, typed actions, ASA → PlaneGCS → solved profile → OpenCascade B-Rep, product persistence. Three.js отображает производные данные.
 - Контракты описывают six document kinds: Part, Assembly, Drawing, Fragment, Specification, Text. Готовность редакторов и команд различается.
@@ -22,6 +22,7 @@
 | [#211](https://github.com/spikeal8-maker/ASA-CAD/pull/211) | Ownership async document/history/render/OCC cache | `82f0146` | 8/8 |
 | [#212](https://github.com/spikeal8-maker/ASA-CAD/pull/212) | Snapshot-before-await и atomic recovery acknowledgement | `75d5d6e` | 7/7 |
 | [#214](https://github.com/spikeal8-maker/ASA-CAD/pull/214) | Stable edge/face/owner identity и ASA temporary handles | `4af80b6` | 7/7 |
+| [#215](https://github.com/spikeal8-maker/ASA-CAD/pull/215) | Current solved-profile admission и shared solver lifecycle | `d9484da` | 9/9 |
 
 Maintenance/audit repairs приняты после независимого read-only APPROVE и проверок точного candidate/synthetic tree. CI, agent review и owner product acceptance — разные факты. Для #214 проверены Protected Part, actual OCC async 10/10, topology 18/18 и ordinary M2/M3. Recovery #212: реальные IndexedDB 3 cases PASS, удаление своей test DB подтверждено. Cleanup: 47 локальных browser entries PASS; четыре CI before/after PNG пары побайтно одинаковы.
 
@@ -31,8 +32,8 @@ Maintenance/audit repairs приняты после независимого rea
 
 **Machine checkpoint = `FULL_REPOSITORY_HEALTH_AUDIT` (Full Repository Health Audit); outcome = PENDING; `productCodeStartAllowed=false`.** Cadence после общего U1: 2/3 → 3/3. #199 разрешает только подтверждённые RED/P0 repairs и необходимые регрессии, не новые U2–U5 функции.
 
-- Current solved-profile eligibility для Extrude/Cut: проверочный преемник [#213](https://github.com/spikeal8-maker/ASA-CAD/pull/213), ветка `maintenance/audit-solved-profile-review-20261107`. Кандидат выровнен на принятую topology; exact CI и финальное ревью ещё нужны. Проверки raw-vs-solved, stale results и shared solver lifecycle сохранены. Fixture gate различает PlaneGCS и OCC; sketch-only не загружает OCC.
-- Fixed constraint: независимый actual hook/app/PlaneGCS probe подтвердил порчу нового same-ID документа поздней командой после init. Отдельный ремонт ownership выполняется; этот RED должен быть закрыт до приёмки аудита.
+- Solved profile #215 принят; предшественник #213 закрыт с сохранением истории и причин исправлений CI. Actual GCS/OCC 14/14, isolated React 7/7, ordinary product fixtures 5/5; post-merge 8/8 jobs PASS. Sketch-only загружает PlaneGCS, не OCC.
+- Fixed constraint: подтверждена порча нового same-ID документа поздней командой. Кандидат использует detached snapshot, проверки document/context/request до commit и после ответа, общий non-owning solver client. Одинаковые actual React + PlaneGCS tests: baseline 3/17 PASS, candidate 17/17 PASS, включая StrictMode и поздний ответ. Exact CI/review ещё требуются; RED не считается закрытым до технической приёмки.
 - Итоговый аудит требует общей проверенной базы, пяти измеренных performance baselines, актуальной dependency classification, независимого архитектурного verdict и единого committed report. Pilot не является принятой performance-базой.
 - Toolchain advisories, прежние full-web type diagnostics и vendor StableRef lifetime finding остаются явно открытыми; они не обозначаются исправленными результатом отдельных PR.
 

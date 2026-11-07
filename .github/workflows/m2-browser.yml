@@ -111,6 +111,9 @@ jobs:
       - name: Verify current solved-profile actions and shared solver lifecycle
         run: node tests/m2/solved-profile-eligibility-browser.mjs
 
+      - name: Verify Fixed command document and shared solver ownership
+        run: node tests/m2/fixed-constraint-ownership-browser.mjs
+
       - name: Exercise V5 ordinary Part lesson sequence
         env:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/

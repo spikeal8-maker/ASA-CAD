@@ -19,8 +19,9 @@ assert.match(handlers, /assertFrozenGeometryMatchesOrientation/, 'frozen geometr
 assert.match(handlers, /sketch\.entities\[entityIndex\] = [\s\S]*persistConstraint/, 'entity freeze and Fixed persistence must occur in one command handler');
 assert.doesNotMatch(handlers, /PlaneGCS|OpenCascade|vendor\//, 'application constraint owner must stay runtime-neutral');
 
-assert.match(controller, /BrowserSketchSolverAdapter/, 'web Fixed owner must use the ASA lazy sketch-solver seam');
-assert.match(controller, /freezeSolver\.solve\(document, activeSketchId\)/, 'Fixed must re-solve the current persisted Sketch before commit');
+assert.match(controller, /useMemo\(createSharedBrowserSketchSolverClient, \[\]\)/, 'web Fixed owner must use the non-owning shared sketch-solver client');
+assert.match(controller, /const snapshot = structuredClone\(document\);[\s\S]*await freezeSolver\.init\(\)/, 'Fixed must capture a detached document intent before asynchronous initialization');
+assert.match(controller, /freezeSolver\.solve\(snapshot, activeSketchId\)/, 'Fixed must re-solve the captured persisted Sketch intent before commit');
 assert.match(controller, /!solved\.ok \|\| !solved\.converged/, 'non-converged solve must block Fixed before mutation');
 assert.match(controller, /id: 'constraint\.fixed'/, 'focused controller must execute the typed Fixed command');
 assert.match(controller, /frozenGeometry:[\s\S]*from: solvedEntity\.data\.from[\s\S]*to: solvedEntity\.data\.to/, 'Fixed payload must come from solved DTO geometry');
