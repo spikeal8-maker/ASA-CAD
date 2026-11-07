@@ -5,7 +5,7 @@
 ## Канон продукта
 
 - UI/UX reference: frozen [#170](https://github.com/spikeal8-maker/ASA-CAD/pull/170), tag `ui-reference-20261004`, SHA `88c535c652dac8b04f0d68fa144cf8486afdc926`. Его prototype runtime не является продуктовым ядром.
-- Принятый integration: `4af80b690610ec23241c528df0b2144105773e73`. Одна адаптивная оболочка `src/web/kompas` на desktop/tablet/phone; прежний fallback <900 px удалён.
+- Принятый integration: `4af80b690610ec23241c528df0b2144105773e73` — одна продуктовая оболочка `src/web/kompas`, адаптивная на desktop/tablet/phone; прежний fallback <900 px удалён.
 - Main: `1f8d2627da7ddfa63b31876d46347d0b8080c154`, с прежним fallback и без текущих audit repairs. Перенос integration в main и production не выполнен.
 - Авторитеты: `CadDocument`, история `CadApplication`, typed actions, ASA → PlaneGCS → solved profile → OpenCascade B-Rep, product persistence. Three.js отображает производные данные.
 - Контракты описывают six document kinds: Part, Assembly, Drawing, Fragment, Specification, Text. Готовность редакторов и команд различается.
