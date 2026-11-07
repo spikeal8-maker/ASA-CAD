@@ -10,6 +10,8 @@ on:
       - src/runtime/**
       - src/application/**
       - src/contracts/**
+      - src/host/**
+      - tests/m1b/recovery-indexeddb-browser.mjs
       - build/**
       - tests/m2/**
       - spec/ui/command-registry.v1.json
@@ -24,6 +26,8 @@ on:
       - src/runtime/**
       - src/application/**
       - src/contracts/**
+      - src/host/**
+      - tests/m1b/recovery-indexeddb-browser.mjs
       - build/**
       - tests/m2/**
       - spec/ui/command-registry.v1.json
@@ -141,6 +145,9 @@ jobs:
         env:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m2/file-menu-browser.mjs
+
+      - name: Verify atomic IndexedDB recovery acknowledgement
+        run: node tests/m1b/recovery-indexeddb-browser.mjs
 
       - name: Exercise viewport mouse navigation
         env:

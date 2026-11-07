@@ -81,3 +81,5 @@ assert.deepEqual(parseCadClientRoute('/cad/projects/p%201'), { kind: 'editor', p
 assert.deepEqual(parseCadClientRoute('/cad/view/v%2F2'), { kind: 'viewer', versionId: 'v/2' });
 
 console.log('ASA-CAD M1B capability/lazy-loader/routes PASS');
+
+await import('./client-runtime-async');
