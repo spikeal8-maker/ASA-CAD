@@ -4,6 +4,7 @@ import type { CadCommand } from '../../src/contracts/commands';
 import { createEmptyCadDocument, parseCadDocument, serializeCadDocument, type CadDocument, type CadPartDocument } from '../../src/contracts/document';
 import type { CadFeatureId, CadSketchId, CadStableReferenceId } from '../../src/contracts/ids';
 import { OpenCascadePartRuntime } from '../../src/runtime/OpenCascadePartRuntime';
+import { resolveFilletReferenceEdge } from '../../src/runtime/OpenCascadeReferenceResolver';
 import { PlaneGCSSketchSolverRuntime } from '../../src/runtime/PlaneGCSSketchSolverRuntime';
 import { SolvedSketchPartRuntimeAdapter } from '../../src/runtime/SolvedSketchPartRuntimeAdapter';
 import { commitParametricRectangle } from '../../src/web/SketchParametricRectangleOwner';
@@ -62,8 +63,13 @@ export async function runStableTopologyRegression(oc: any): Promise<void> {
   function edgeMap(source: any) {
     const map = new oc.TopTools_IndexedMapOfShape_1();
     const explorer = new oc.TopExp_Explorer_2(source, oc.TopAbs_ShapeEnum.TopAbs_EDGE, oc.TopAbs_ShapeEnum.TopAbs_SHAPE);
-    try { while (explorer.More()) { map.Add(explorer.Current()); explorer.Next(); } }
-    finally { explorer.delete(); }
+    try {
+      while (explorer.More()) {
+        const current = explorer.Current();
+        try { map.Add(current); } finally { current.delete(); }
+        explorer.Next();
+      }
+    } finally { explorer.delete(); }
     return map;
   }
   function edgeCount(core: OpenCascadePartRuntime) {
@@ -81,8 +87,11 @@ export async function runStableTopologyRegression(oc: any): Promise<void> {
     const resolved = resolveEdge(oc, source, signature);
     assert.equal(resolved.rejected, false, resolved.reason);
     const map = edgeMap(source);
-    const edge = oc.TopoDS.Edge_1(map.FindKey(resolved.index + 1));
-    map.delete();
+    let edge: any;
+    try {
+      const key = map.FindKey(resolved.index + 1);
+      try { edge = oc.TopoDS.Edge_1(key); } finally { key.delete(); }
+    } finally { map.delete(); }
     const builder = new oc.BRepFilletAPI_MakeFillet(source, oc.ChFi3d_FilletShape.ChFi3d_Rational);
     try {
       builder.Add_2(1, edge);
@@ -304,6 +313,62 @@ export async function runStableTopologyRegression(oc: any): Promise<void> {
       volume(h.core, 20 * 20 * 10 - Math.PI * 4 * 2);
     }));
   }
+  await check('ASA edge retrieval deletes owned handles and returns a caller-owned edge', async () => {
+    const h = await block();
+    const maps: { native: any; currents: any[]; keys: any[] }[] = [];
+    let edge: any;
+    try {
+      const refId = await selectedEdge(h, [30, 0, 0]);
+      const reference = part(h.app).stableReferences.find(item => item.id === refId)!;
+      // Observe real native handles without changing the OCC module or the resolver result.
+      const TrackedMap = new Proxy(oc.TopTools_IndexedMapOfShape_1, {
+        construct(target, args) {
+          const native: any = Reflect.construct(target, args);
+          const record = { native, currents: [] as any[], keys: [] as any[] };
+          maps.push(record);
+          const add = native.Add.bind(native);
+          native.Add = (current: any) => { record.currents.push(current); return add(current); };
+          const findKey = native.FindKey.bind(native);
+          native.FindKey = (index: number) => {
+            const key = findKey(index);
+            record.keys.push(key);
+            return key;
+          };
+          return native;
+        },
+      });
+      const observedOc = new Proxy(oc, {
+        get(target, property) {
+          return property === 'TopTools_IndexedMapOfShape_1' ? TrackedMap : Reflect.get(target, property);
+        },
+      });
+      edge = resolveFilletReferenceEdge(observedOc, shape(h.core), reference, 'Handle lifetime',
+        new Map([[h.featureId, shape(h.core)]]));
+      // StableRef's scoring maps precede the final ASA map used for native edge retrieval.
+      const retrieval = maps.at(-1)!;
+      assert.ok(retrieval.currents.length > 0, 'must observe actual Current handles added to the ASA map');
+      assert.equal(retrieval.keys.length, 1, 'must observe the selected FindKey handle');
+      const lifetime = {
+        currentAlive: retrieval.currents.filter(handle => !handle.isDeleted()).length,
+        keyAlive: retrieval.keys.filter(handle => !handle.isDeleted()).length,
+        mapAlive: !retrieval.native.isDeleted(),
+        edgeAlive: !edge.isDeleted(),
+      };
+      console.log('  Actual OCC retrieval: ' + JSON.stringify({ currentCount: retrieval.currents.length, ...lifetime }));
+      assert.deepEqual(lifetime, { currentAlive: 0, keyAlive: 0, mapAlive: false, edgeAlive: true });
+      assert.equal(edge.ShapeType().value, oc.TopAbs_ShapeEnum.TopAbs_EDGE.value);
+      edge.delete();
+      assert.equal(edge.isDeleted(), true, 'the caller must be able to release the returned edge');
+    } finally {
+      if (edge && !edge.isDeleted()) edge.delete();
+      // Keep the test isolated even on RED; legacy vendor temporaries are outside this assertion.
+      for (const record of maps) {
+        for (const handle of [...record.currents, ...record.keys]) if (!handle.isDeleted()) handle.delete();
+        if (!record.native.isDeleted()) record.native.delete();
+      }
+      h.app.dispose();
+    }
+  });
   console.log('Stable topology ownership: ' + passed + ' PASS, ' + failures.length + ' FAIL');
   assert.equal(failures.length, 0, failures.join('\n'));
 }

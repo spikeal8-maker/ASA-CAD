@@ -22,11 +22,16 @@ export function resolveFilletReferenceEdge(
   const map = new oc.TopTools_IndexedMapOfShape_1();
   const explorer = new oc.TopExp_Explorer_2(target, oc.TopAbs_ShapeEnum.TopAbs_EDGE, oc.TopAbs_ShapeEnum.TopAbs_SHAPE);
   try {
-    while (explorer.More()) { map.Add(explorer.Current()); explorer.Next(); }
+    while (explorer.More()) {
+      const current = explorer.Current();
+      try { map.Add(current); } finally { current.delete(); }
+      explorer.Next();
+    }
     if (resolved.index < 0 || resolved.index >= map.Extent()) {
       throw new Error(featureName + ': resolved edge ' + resolved.index + ' is unavailable');
     }
-    return oc.TopoDS.Edge_1(map.FindKey(resolved.index + 1));
+    const key = map.FindKey(resolved.index + 1);
+    try { return oc.TopoDS.Edge_1(key); } finally { key.delete(); }
   } finally {
     explorer.delete();
     map.delete();
