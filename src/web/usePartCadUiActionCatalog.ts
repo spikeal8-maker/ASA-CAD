@@ -15,7 +15,7 @@ export interface PartCadUiActionCatalogOptions {
   canRedo: boolean;
   newDocument: CadUiActionExecutor;
   open: CadUiActionExecutor;
-  save: CadUiActionExecutor;
+  save: () => void | Promise<boolean | void>;
   undo: CadUiActionExecutor;
   redo: CadUiActionExecutor;
   rebuild: CadUiActionExecutor;
@@ -38,7 +38,7 @@ export function usePartCadUiActionCatalog(options: PartCadUiActionCatalogOptions
     requestView,
   } = options;
   return useM2CadUiActions({
-    newDocument, open, save, undo, redo, rebuild,
+    newDocument, open, save: ignoreResult(save), undo, redo, rebuild,
     createSketch: workspace.beginCreateSketch,
     line: workspace.beginLine,
     rectangle: workspace.beginRectangle,

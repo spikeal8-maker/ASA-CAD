@@ -10,7 +10,7 @@ import {useSketchConstraintControllers} from './useSketchConstraintControllers';
 import {useSketchEntityMutationController} from './useSketchEntityMutationController';
 import {usePartFeatureController} from './usePartFeatureController';
 import {partDocument} from './PartSketchWorkspaceModel';
-import type {CadWorkspacePanel} from './PartSketchWorkspaceTypes';
+import type {CadWorkspacePanel, Workspace} from './PartSketchWorkspaceTypes';
 import {usePartWorkspaceNavigation} from './usePartWorkspaceNavigation';
 export type { CadWorkspacePanel,PartSketchSelectionMode } from './PartSketchWorkspaceTypes';
 export interface PartSketchWorkspaceOptions {
@@ -19,7 +19,7 @@ export interface PartSketchWorkspaceOptions {
 }
 export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
   const { app,document,renderModelAvailable,setPanel,setNotice }=options;
-  const [activeWorkspace,setActiveWorkspace]=useState('solid');
+  const [activeWorkspace,setActiveWorkspace]=useState<Workspace>('solid');
   const [activeCommand,setActiveCommand]=useState<string | null>(null);
   const part=partDocument(document);
   const {
@@ -61,7 +61,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     clearTransientSelection: selection.clearTransientSelection,
   });
   const navigation=usePartWorkspaceNavigation({
-    app,documentKind: document.kind,setActiveCommand,setActiveWorkspace,setPanel,setNotice,
+    app,setActiveCommand,setActiveWorkspace,setPanel,setNotice,
     activateSketch,clearActiveSketch,clearTransientSelection: selection.clearTransientSelection,
     clearDimensionEdit: dimensions.clearDimensionEdit,
   });

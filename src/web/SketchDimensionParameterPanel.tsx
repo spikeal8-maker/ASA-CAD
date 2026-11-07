@@ -4,7 +4,7 @@ import { dimensionLabel } from './SketchDimensionPresentation';
 import type { SketchDimensionCreationState } from './useSketchDimensionCreationControllers';
 
 export interface SketchDimensionParameterPanelProps {
-  activeCommand: string;
+  activeCommand: string | null;
   creation: SketchDimensionCreationState;
   dimensionEditValue: number;
   setDimensionEditValue(value: number): void;
@@ -76,7 +76,7 @@ function DimensionPanelFrame(props: React.PropsWithChildren<{
   title: string;
   value: number;
   setValue(value: number): void;
-  onApply(): void | Promise<void>;
+  onApply(): void | Promise<boolean | void>;
   onCancel(): void;
   applyLabel: string;
   applyDisabled?: boolean;

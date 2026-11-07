@@ -200,7 +200,7 @@ export function SketchInteractionSurface(props: SketchInteractionSurfaceProps) {
 }
 
 function averagePoint(points: readonly ActiveTouch[]): readonly [number, number] {
-  const sum = points.reduce((value, point) => [value[0] + point.x, value[1] + point.y] as const, [0, 0] as const);
+  const sum = points.reduce<CadPoint2>((value, point) => [value[0] + point.x, value[1] + point.y], [0, 0]);
   return [sum[0] / points.length, sum[1] / points.length];
 }
 
