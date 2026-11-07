@@ -18,7 +18,22 @@ async function exerciseRecoveryStore() {
     projectKey: key, pendingMutationId: id, baseRevision: 0,
     savedAt: '2026-11-07T00:00:00.000Z', document: createEmptyCadDocument('part', { title }),
   });
+  // close() can remain pending until its readonly transaction completes.
+  // A blocked event is diagnostic; only delete success proves cleanup.
+  function deleteDatabaseAfterClose(name, timeoutMs = 5000) {
+    return new Promise((resolve, reject) => {
+      const state = { blockedEvents: 0, deleted: false };
+      const request = indexedDB.deleteDatabase(name);
+      const deadline = setTimeout(() => reject(new Error(
+        'test DB deletion did not complete within ' + timeoutMs + 'ms (blocked=' + state.blockedEvents + ')',
+      )), timeoutMs);
+      request.onsuccess = () => { clearTimeout(deadline); state.deleted = true; resolve(state); };
+      request.onerror = () => { clearTimeout(deadline); reject(request.error ?? new Error('test DB deletion failed')); };
+      request.onblocked = () => { state.blockedEvents += 1; };
+    });
+  }
   const cases = [];
+  let cleanup;
   try {
     const original = record('snapshot', 'snapshot-id', 'Before open');
     original.document.metadata.note = 'before';
@@ -107,14 +122,9 @@ async function exerciseRecoveryStore() {
 
 
   } finally {
-    await new Promise((resolve, reject) => {
-      const request = indexedDB.deleteDatabase(dbName);
-      request.onsuccess = resolve;
-      request.onerror = () => reject(request.error);
-      request.onblocked = () => reject(new Error('test DB connections were not closed'));
-    });
+    cleanup = await deleteDatabaseAfterClose(dbName);
   }
-  return cases;
+  return { cases, cleanup };
 }
 
 const bundled = await esbuild.build({
@@ -160,7 +170,8 @@ try {
     new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('IndexedDB timeout')), 20000); }),
   ]);
   assert.deepEqual(errors, []);
-  assert.equal(result.length, 3);
+  assert.equal(result.cases.length, 3);
+  assert.equal(result.cleanup.deleted, true);
 } finally {
   clearTimeout(timer);
   try { await context?.close(); }
@@ -176,4 +187,4 @@ try {
 }
 assert.equal(server.listening, false);
 assert.equal(browser.isConnected(), false);
-console.log(JSON.stringify({ status: 'PASS', cases: result, ownedServerClosed: true, ownedBrowserClosed: true }));
+console.log(JSON.stringify({ status: 'PASS', cases: result.cases, databaseCleanup: result.cleanup, ownedServerClosed: true, ownedBrowserClosed: true }));
