@@ -6,7 +6,7 @@
 
 - Новый внешний интерфейс/взаимодействия: frozen #170, tag `ui-reference-20261004`, SHA `88c535c652dac8b04f0d68fa144cf8486afdc926`.
 - Единственный продуктовый runtime: `CadDocument` / `CadApplication` / typed UI actions / PlaneGCS / OpenCascade B-Rep / persistence. Демо-математика прототипа #170 не является ядром.
-- Канон принятого integration `82f0146` после PR #202/#208 — **одна продуктовая оболочка** `src/web/kompas` на любых экранах. Legacy fallback <900 px удалён. В main `1f8d262` он ещё присутствует; перенос integration в main не выполнен.
+- Канон принятого integration `75d5d6e` после PR #202/#208 — **одна продуктовая оболочка** `src/web/kompas` на любых экранах. Legacy fallback <900 px удалён. В main `1f8d262` он ещё присутствует; перенос integration в main не выполнен.
 - Система документов по контрактам — шесть видов (six document kinds): Part, Assembly, Drawing, Fragment, Specification, Text. Не все редакторы/команды готовы.
 
 ## Факт объединения U1
@@ -29,7 +29,9 @@ Maintenance принят в integration: [#209](https://github.com/spikeal8-make
 
 Приняты audit repairs: [#210](https://github.com/spikeal8-maker/ASA-CAD/pull/210), merge `03b7956`, отклоняет несогласованные constraint refs; [#211](https://github.com/spikeal8-maker/ASA-CAD/pull/211), merge `82f0146812ea274e7661e0d87d8293e2b9bf80f9`, сохраняет ownership async document/OCC cache. Exact CI 7/7 и 8/8 SUCCESS, независимый review APPROVE; merge trees совпали с tested candidates.
 
-Открыты repairs Save ACK/recovery, raw-vs-solved profile eligibility и StableRef topology (неверное ребро / противоположная опорная грань). Полный audit и продуктовая/визуальная приёмка остаются PENDING.
+[#212](https://github.com/spikeal8-maker/ASA-CAD/pull/212), merge `75d5d6ed610f1a7e4020f9492a533a9d0a1e4192`, принят: Save ACK очищает только свою recovery-запись, payload фиксируется до await, новый Open изолирует старый ACK. Exact CI 7/7 и post-merge CI SUCCESS; independent review APPROVE. Реальный IndexedDB: три сценария PASS, удаление тестовой БД подтверждено.
+
+Открыты repairs raw-vs-solved profile eligibility и StableRef topology (неверное ребро / противоположная опорная грань / недоступный owner). Полный audit и продуктовая/визуальная приёмка остаются PENDING.
 
 `U2 = BLOCKED` до аудита GREEN или явно принятого YELLOW. Это обязательный технический gate, а не административная GitHub Ruleset-блокировка. `DETECT_ONLY` integration — известный риск `KNOWN_RISK` (`ADMIN_BRANCH_PROTECTION_NOT_ENFORCED`); не выдавать его за ENFORCED.
 
