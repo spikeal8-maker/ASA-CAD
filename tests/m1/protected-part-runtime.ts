@@ -177,3 +177,6 @@ console.log('  ✓ M1 protected Part runtime vertical slice PASS\n');
 
 const { runRuntimeAsyncRegression } = await import('./runtime-async');
 await runRuntimeAsyncRegression(oc);
+
+const { runStableTopologyRegression } = await import('./stable-topology-runtime');
+await runStableTopologyRegression(oc);
