@@ -101,6 +101,9 @@ jobs:
       - name: Solved profiles and general OpenCascade profile classes
         run: npm run test:m1:profiles
 
+      - name: Current solved-profile feature eligibility
+        run: node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m1/solved-profile-eligibility.ts
+
   asa-m1b:
     runs-on: ubuntu-latest
     steps:
