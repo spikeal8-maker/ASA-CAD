@@ -6,7 +6,7 @@
 
 - Новый внешний интерфейс/взаимодействия: frozen #170, tag `ui-reference-20261004`, SHA `88c535c652dac8b04f0d68fa144cf8486afdc926`.
 - Единственный продуктовый runtime: `CadDocument` / `CadApplication` / typed UI actions / PlaneGCS / OpenCascade B-Rep / persistence. Демо-математика прототипа #170 не является ядром.
-- Канон принятого integration `4381141` после PR #202/#208 — **одна продуктовая оболочка** `src/web/kompas` на любых экранах. Legacy fallback <900 px удалён. В main `1f8d262` он ещё присутствует; перенос integration в main не выполнен.
+- Канон принятого integration `82f0146` после PR #202/#208 — **одна продуктовая оболочка** `src/web/kompas` на любых экранах. Legacy fallback <900 px удалён. В main `1f8d262` он ещё присутствует; перенос integration в main не выполнен.
 - Система документов по контрактам — шесть видов (six document kinds): Part, Assembly, Drawing, Fragment, Specification, Text. Не все редакторы/команды готовы.
 
 ## Факт объединения U1
@@ -27,7 +27,9 @@
 
 Maintenance принят в integration: [#209](https://github.com/spikeal8-maker/ASA-CAD/pull/209), merge `169cb832df109858df43cd69a3418ac415a4e8c4`, закрепил совместимый CI runner; [#208](https://github.com/spikeal8-maker/ASA-CAD/pull/208), merge `438114115f7700dcc216e962acc2e0282a885ee4`, закрыл LEGACY-CLEANUP-202. Недостижимые pre-U1 owners удалены; KOMPAS/core сохранены. Оба PR: 9/9 exact-head jobs SUCCESS и независимый review APPROVE; post-merge CI SUCCESS. Cleanup: 47 локальных M2/M3 entries PASS, четыре пары CI PNG побайтно одинаковы. Merge tree совпадает с tested candidate `18a75e2`.
 
-Аудит подтвердил открытые дефекты async ownership/OCC cache, Save ACK/recovery, semantic refs ingress ([#210](https://github.com/spikeal8-maker/ASA-CAD/pull/210)) и проверки сырого профиля вместо solved geometry. Repairs проверяются отдельно; полный audit и продуктовая/визуальная приёмка остаются PENDING.
+Приняты audit repairs: [#210](https://github.com/spikeal8-maker/ASA-CAD/pull/210), merge `03b7956`, отклоняет несогласованные constraint refs; [#211](https://github.com/spikeal8-maker/ASA-CAD/pull/211), merge `82f0146812ea274e7661e0d87d8293e2b9bf80f9`, сохраняет ownership async document/OCC cache. Exact CI 7/7 и 8/8 SUCCESS, независимый review APPROVE; merge trees совпали с tested candidates.
+
+Открыты repairs Save ACK/recovery, raw-vs-solved profile eligibility и StableRef topology (неверное ребро / противоположная опорная грань). Полный audit и продуктовая/визуальная приёмка остаются PENDING.
 
 `U2 = BLOCKED` до аудита GREEN или явно принятого YELLOW. Это обязательный технический gate, а не административная GitHub Ruleset-блокировка. `DETECT_ONLY` integration — известный риск `KNOWN_RISK` (`ADMIN_BRANCH_PROTECTION_NOT_ENFORCED`); не выдавать его за ENFORCED.
 
