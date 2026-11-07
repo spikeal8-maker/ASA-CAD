@@ -211,7 +211,7 @@ U1 acceptance:
 - PR #194: CLOSED / superseded by #195. PR #170 остаётся immutable UI/UX reference.
 - Большой scope требует постфактум независимой оценки, учитываемой в обязательном Full Repository Health Audit. Автоматическая визуальная съёмка не является owner acceptance. Отличия Sketch-in-Viewport и отсутствующие команды остаются отдельными задачами.
 
-**Действующий checkpoint: Full Repository Health Audit.** U2–U5 запускаются только после разрешённого исхода аудита, затем продолжается реальная продуктовая разработка. При обычном сдвиге HEAD выполнять rebase/CI guard, а не административный STOP.
+**Действующий checkpoint: U2 после технической приёмки PR аудита.** Full Repository Health Audit на `128480e1a150253359ce44158d5588f6b08f27b8`: YELLOW_ACCEPTED контролёром ChatGPT `/root`, [единый отчёт](FULL_REPOSITORY_HEALTH_AUDIT.md). Три OPEN долга — toolchain findings, 8 full-web diagnostics, vendor StableRef lifetime P2 — устранить до U2 acceptance / следующей milestone boundary; vendor также до расширения paths. Допускается только отсутствие роста долга; это не утверждение о bounded native memory. Owner product/visual acceptance и main/production остаются отдельными gates. При сдвиге HEAD обновить baseline и проверить exact CI.
 
 ## 8. Cadence gate
 

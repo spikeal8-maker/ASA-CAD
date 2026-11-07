@@ -1,6 +1,6 @@
 # ASA-CAD — UI/core convergence roadmap
 
-Редакция: 2026-10-13.
+Редакция: 2026-11-07.
 Central issue: **#184**.
 Integration branch: **`integration/ui-core-unification`**.
 Frozen UI reference: **`ui-reference-20261004` -> `88c535c652dac8b04f0d68fa144cf8486afdc926`**.
@@ -69,7 +69,7 @@ Acceptance U1:
 
 PR CI #195 = 9/9 SUCCESS; PR #196 проверен GitHub Actions до merge. Это **code integration**, не независимая финальная архитектурная/визуальная приёмка. Отдельные уникальные части PR #177 и Drawing #179 остаются на рассмотрении. `U1A` больше не активный продуктовый checkpoint.
 
-**Текущий NEXT = Full Repository Health Audit после U1.** После принятия допустимого результата запускается U2. Исторические ограничения отдельных U1A/U1B/U1C не должны запускать повторную работу.
+**Текущий NEXT = U2.** Post-U1 Full Repository Health Audit на `128480e1a150253359ce44158d5588f6b08f27b8` получил техническое решение YELLOW_ACCEPTED контролёра ChatGPT `/root`: [canonical report](FULL_REPOSITORY_HEALTH_AUDIT.md). Переход вступает в силу после технического merge PR отчёта. Три открытых долга устраняются до U2 acceptance / следующей milestone boundary, без роста; vendor lifetime также до расширения paths. Owner product/visual acceptance и перенос в main отдельно. Исторические U1A/U1B/U1C не запускаются повторно.
 
 ### Обязательный gate после U1
 

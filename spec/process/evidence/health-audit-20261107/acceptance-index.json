@@ -1,0 +1,1597 @@
+{
+  "schemaVersion": 1,
+  "auditId": "FULL_REPOSITORY_HEALTH_AUDIT-20261107",
+  "source": {
+    "branch": "integration/ui-core-unification",
+    "auditedSha": "128480e1a150253359ce44158d5588f6b08f27b8",
+    "tree": "9bd71a94b29245754be9fc01f4f08bb5c657ec65",
+    "mainObservedSha": "1f8d2627da7ddfa63b31876d46347d0b8080c154",
+    "mainContainsAuditRepairs": false
+  },
+  "technicalDecision": {
+    "outcome": "YELLOW_ACCEPTED",
+    "acceptedBy": "ChatGPT technical controller /root",
+    "authorization": "OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008",
+    "recordedAtUtc": "2026-11-07 22:14:26 UTC",
+    "effectiveInIntegration": "Only after this canonical report PR passes exact CI, independent report/state review and merges into integration",
+    "ownerProductAcceptance": "PENDING",
+    "mainMerge": false,
+    "productionDeployment": false
+  },
+  "repairs": [
+    {
+      "topic": "ciRunner",
+      "pr": 209,
+      "merge": "169cb832df109858df43cd69a3418ac415a4e8c4",
+      "proof": {
+        "schemaVersion": 1,
+        "pullRequest": "https://github.com/spikeal8-maker/ASA-CAD/pull/209",
+        "candidateHead": "a02a194028a3f0ea6b236b177cb669c7b72b6d40",
+        "baseHead": "1be7bdb3b351fb0caee9c040abb43fd690bed687",
+        "ciMergeHead": "4bd05043e68a297c9087a2c9e8f20c57fa9631b4",
+        "candidateTree": "ec42b2571746f226839c392284ba557479362ea4",
+        "ciMergeTree": "ec42b2571746f226839c392284ba557479362ea4",
+        "treeEqual": true,
+        "independentReview": {
+          "reviewer": "line_contract_003",
+          "head": "a02a194028a3f0ea6b236b177cb669c7b72b6d40",
+          "verdict": "APPROVE",
+          "blockingFindings": 0,
+          "kind": "read-only agent review, not GitHub formal approval"
+        },
+        "jobs": [
+          {
+            "jobId": 128512181524,
+            "name": "shell-build",
+            "conclusion": "success",
+            "steps": 25,
+            "checkoutShas": [
+              "4bd05043e68a297c9087a2c9e8f20c57fa9631b4"
+            ]
+          },
+          {
+            "jobId": 128512181807,
+            "name": "vendor-baseline",
+            "conclusion": "success",
+            "steps": 12,
+            "checkoutShas": [
+              "4bd05043e68a297c9087a2c9e8f20c57fa9631b4"
+            ]
+          },
+          {
+            "jobId": 128512181983,
+            "name": "asa-m1",
+            "conclusion": "success",
+            "steps": 19,
+            "checkoutShas": [
+              "4bd05043e68a297c9087a2c9e8f20c57fa9631b4"
+            ]
+          },
+          {
+            "jobId": 128512182016,
+            "name": "asa-m1b",
+            "conclusion": "success",
+            "steps": 11,
+            "checkoutShas": [
+              "4bd05043e68a297c9087a2c9e8f20c57fa9631b4"
+            ]
+          },
+          {
+            "jobId": 128512181581,
+            "name": "u1-visual-evidence",
+            "conclusion": "success",
+            "steps": 22,
+            "checkoutShas": [
+              "a02a194028a3f0ea6b236b177cb669c7b72b6d40",
+              "88c535c652dac8b04f0d68fa144cf8486afdc926",
+              "1be7bdb3b351fb0caee9c040abb43fd690bed687"
+            ]
+          },
+          {
+            "jobId": 128512182043,
+            "name": "build-and-smoke",
+            "conclusion": "success",
+            "steps": 16,
+            "checkoutShas": [
+              "4bd05043e68a297c9087a2c9e8f20c57fa9631b4"
+            ]
+          },
+          {
+            "jobId": 128512182236,
+            "name": "CAD-VIS-006B",
+            "conclusion": "success",
+            "steps": 19,
+            "checkoutShas": [
+              "a02a194028a3f0ea6b236b177cb669c7b72b6d40",
+              "015e445f179a62f5c96b9d931bf03ccca1a86d1d"
+            ]
+          },
+          {
+            "jobId": 128512182274,
+            "name": "m3-browser",
+            "conclusion": "success",
+            "steps": 34,
+            "checkoutShas": [
+              "4bd05043e68a297c9087a2c9e8f20c57fa9631b4"
+            ]
+          },
+          {
+            "jobId": 128512181844,
+            "name": "browser-smoke",
+            "conclusion": "success",
+            "steps": 36,
+            "checkoutShas": [
+              "4bd05043e68a297c9087a2c9e8f20c57fa9631b4"
+            ]
+          }
+        ],
+        "productFreezeUnchanged": true
+      }
+    },
+    {
+      "topic": "legacyCleanup",
+      "pr": 208,
+      "merge": "438114115f7700dcc216e962acc2e0282a885ee4",
+      "proof": {
+        "task": "LEGACY-CLEANUP-202",
+        "base": "169cb832df109858df43cd69a3418ac415a4e8c4",
+        "head": "18a75e26e3282b4bfd3fdb10988067a52c16d06e",
+        "testedMerge": "1575971983daf9c62fecf72fc8fe7650aabdc572",
+        "identicalTree": "77d59b06d2b6aec3c7231d28b9399c18717a75e9",
+        "independentReview": {
+          "agent": "line_contract_003",
+          "decision": "APPROVE",
+          "blockingFindings": 0,
+          "scope": "exact head against accepted base; architectural footprint reviewed"
+        },
+        "ci": {
+          "jobs": [
+            {
+              "jobId": 128514323874,
+              "name": "shell-build",
+              "conclusion": "success",
+              "steps": 25,
+              "checkoutShas": [
+                "1575971983daf9c62fecf72fc8fe7650aabdc572"
+              ]
+            },
+            {
+              "jobId": 128514323867,
+              "name": "CAD-VIS-006B",
+              "conclusion": "success",
+              "steps": 19,
+              "checkoutShas": [
+                "18a75e26e3282b4bfd3fdb10988067a52c16d06e",
+                "015e445f179a62f5c96b9d931bf03ccca1a86d1d"
+              ]
+            },
+            {
+              "jobId": 128514323869,
+              "name": "build-and-smoke",
+              "conclusion": "success",
+              "steps": 16,
+              "checkoutShas": [
+                "1575971983daf9c62fecf72fc8fe7650aabdc572"
+              ]
+            },
+            {
+              "jobId": 128514323515,
+              "name": "u1-visual-evidence",
+              "conclusion": "success",
+              "steps": 22,
+              "checkoutShas": [
+                "18a75e26e3282b4bfd3fdb10988067a52c16d06e",
+                "88c535c652dac8b04f0d68fa144cf8486afdc926",
+                "169cb832df109858df43cd69a3418ac415a4e8c4"
+              ]
+            },
+            {
+              "jobId": 128514324135,
+              "name": "asa-m1",
+              "conclusion": "success",
+              "steps": 19,
+              "checkoutShas": [
+                "1575971983daf9c62fecf72fc8fe7650aabdc572"
+              ]
+            },
+            {
+              "jobId": 128514324276,
+              "name": "asa-m1b",
+              "conclusion": "success",
+              "steps": 11,
+              "checkoutShas": [
+                "1575971983daf9c62fecf72fc8fe7650aabdc572"
+              ]
+            },
+            {
+              "jobId": 128514324387,
+              "name": "vendor-baseline",
+              "conclusion": "success",
+              "steps": 12,
+              "checkoutShas": [
+                "1575971983daf9c62fecf72fc8fe7650aabdc572"
+              ]
+            },
+            {
+              "jobId": 128514323805,
+              "name": "m3-browser",
+              "conclusion": "success",
+              "steps": 34,
+              "checkoutShas": [
+                "1575971983daf9c62fecf72fc8fe7650aabdc572"
+              ]
+            },
+            {
+              "jobId": 128514323570,
+              "name": "browser-smoke",
+              "conclusion": "success",
+              "steps": 36,
+              "checkoutShas": [
+                "1575971983daf9c62fecf72fc8fe7650aabdc572"
+              ]
+            }
+          ],
+          "allNineSuccessful": true
+        },
+        "local": {
+          "focused": 13,
+          "aggregate": "npm run check PASS",
+          "browserEntries": 47
+        },
+        "visual": {
+          "artifactId": 13588743256,
+          "zipSha256": "b6e4d4625d5b3f259ecb7f207a14ca5b1656a243b4bb9a7a95f6b83a865d31dc",
+          "actualPngHashesVerified": 8,
+          "byteIdenticalBeforeAfterPairs": 4,
+          "viewports": [
+            "360x640",
+            "768x1024",
+            "844x390",
+            "1600x900"
+          ],
+          "inspected": "mobile and desktop actual CI screenshots"
+        },
+        "auditGate": "PENDING; this receipt accepts only legacy cleanup"
+      }
+    },
+    {
+      "topic": "semanticIngress",
+      "pr": 210,
+      "merge": "03b79564f5296a1f15474d96d03e5e3ab7216319",
+      "proof": {
+        "pr": 210,
+        "base": "438114115f7700dcc216e962acc2e0282a885ee4",
+        "head": "a15d634f320c9104d4910178122e4b9a86b08d5a",
+        "review": {
+          "agent": "line_e2e_003",
+          "decision": "APPROVE",
+          "blockingFindings": 0
+        },
+        "ci": [
+          {
+            "jobId": 128518239495,
+            "name": "m3-browser",
+            "conclusion": "success",
+            "checkoutShas": [
+              "9d5520765e9ec9076e58bc380c6691a221a98952"
+            ],
+            "signals": [
+              "2026-11-07T20:23:07.4716471Z ASA-CAD M3.6B Sketch entity translate PASS (rigid DTO semantics + stable ID + fixed guard + rollback + history + transient candidate)",
+              "2026-11-07T20:23:07.8874401Z ASA-CAD M3.7A orientation boundary PASS (focused owner + Line-only semantics + shared actions + Fixed remains separate)",
+              "2026-11-07T20:23:34.0175171Z ##[group]Run set -euo pipefail",
+              "2026-11-07T20:23:34.0175470Z \u001b[36;1mset -euo pipefail\u001b[0m",
+              "2026-11-07T20:23:34.0176651Z \u001b[36;1m  if curl --fail --silent http://127.0.0.1:8090/ >/dev/null; then\u001b[0m",
+              "2026-11-07T20:23:34.0200071Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}"
+            ]
+          },
+          {
+            "jobId": 128518239843,
+            "name": "shell-build",
+            "conclusion": "success",
+            "checkoutShas": [
+              "9d5520765e9ec9076e58bc380c6691a221a98952"
+            ],
+            "signals": [
+              "2026-11-07T20:23:16.3798871Z > npm run test:m2o:docs && npm run test:m2o:registry && npm run test:m2o:persistence && npm run test:m2o:actions && npm run test:m2o:decomposition && npm run test:m2o:handlers && npm run test:m2o:sketc",
+              "2026-11-07T20:23:20.2792504Z > asa-cad@0.0.0 test:m2o:semantics",
+              "2026-11-07T20:23:20.2793872Z > node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m2o/semantic-document-validation.ts",
+              "2026-11-07T20:23:20.6592973Z M2O Part semantic validation PASS (ownership + dangling IDs + StableRef support + 15 point-reference ingress cases)",
+              "2026-11-07T20:23:26.2624575Z ASA-CAD M3.6B Sketch entity translate PASS (rigid DTO semantics + stable ID + fixed guard + rollback + history + transient candidate)",
+              "2026-11-07T20:23:26.8584429Z ASA-CAD M3.7A orientation boundary PASS (focused owner + Line-only semantics + shared actions + Fixed remains separate)",
+              "2026-11-07T20:23:39.2402559Z   ✓ numeric/text/contenteditable focus keeps native editing semantics"
+            ]
+          },
+          {
+            "jobId": 128518239547,
+            "name": "build-and-smoke",
+            "conclusion": "success",
+            "checkoutShas": [
+              "9d5520765e9ec9076e58bc380c6691a221a98952"
+            ],
+            "signals": [
+              "2026-11-07T20:24:34.2568673Z ##[group]Run set -euo pipefail",
+              "2026-11-07T20:24:34.2568964Z \u001b[36;1mset -euo pipefail\u001b[0m",
+              "2026-11-07T20:24:34.2569806Z \u001b[36;1m  if curl --fail --silent http://127.0.0.1:8088/health/live >/dev/null; then\u001b[0m",
+              "2026-11-07T20:24:34.2594283Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}",
+              "2026-11-07T20:24:35.2863112Z ##[group]Run set -euo pipefail",
+              "2026-11-07T20:24:35.2863414Z \u001b[36;1mset -euo pipefail\u001b[0m",
+              "2026-11-07T20:24:35.2863737Z \u001b[36;1mcurl --fail --silent http://127.0.0.1:8088/ >/tmp/asa-cad-index.html\u001b[0m",
+              "2026-11-07T20:24:35.2864908Z \u001b[36;1mcurl --fail --silent http://127.0.0.1:8088/cad/projects/m0d-protected >/tmp/asa-cad-project.html\u001b[0m",
+              "2026-11-07T20:24:35.2865937Z \u001b[36;1mcurl --fail --silent http://127.0.0.1:8088/cad/asa-cad-release.json >/tmp/asa-cad-release.json\u001b[0m",
+              "2026-11-07T20:24:35.2888171Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}",
+              "2026-11-07T20:24:38.2820211Z ASA-CAD M2 protected Part browser slice",
+              "2026-11-07T20:24:49.0148037Z   ✓ M2 full protected Part browser workflow PASS"
+            ]
+          },
+          {
+            "jobId": 128518239658,
+            "name": "asa-m1",
+            "conclusion": "success",
+            "checkoutShas": [
+              "9d5520765e9ec9076e58bc380c6691a221a98952"
+            ],
+            "signals": [
+              "2026-11-07T20:23:19.1959563Z ASA-CAD M1 Angular Dimension PASS (degrees 60->45 + same ID + fail-closed solver targets)",
+              "2026-11-07T20:23:24.1756890Z ASA-CAD M1 protected Part through CadApplication + OpenCascade",
+              "2026-11-07T20:23:28.5719140Z   ✓ M1 protected Part runtime vertical slice PASS",
+              "2026-11-07T20:23:29.0910643Z ASA-CAD sketch profile PASS (lines/arcs/circles, holes, fail-closed reasons)",
+              "2026-11-07T20:23:33.7121903Z   ✓ open contour fails closed with the same reason the UI shows"
+            ]
+          },
+          {
+            "jobId": 128518239930,
+            "name": "vendor-baseline",
+            "conclusion": "success",
+            "checkoutShas": [
+              "9d5520765e9ec9076e58bc380c6691a221a98952"
+            ],
+            "signals": [
+              "2026-11-07T20:23:44.8467917Z \u001b[32mALL PASS\u001b[0m  10 passed, 0 failed",
+              "2026-11-07T20:23:50.0878518Z \u001b[32mALL PASS\u001b[0m  6 passed, 0 failed",
+              "2026-11-07T20:23:57.9934229Z \u001b[32m4 passed, 0 failed\u001b[0m",
+              "2026-11-07T20:24:02.8881010Z \u001b[32m9 passed, 0 failed\u001b[0m",
+              "2026-11-07T20:24:10.7145840Z \u001b[32m21 passed, 0 failed\u001b[0m",
+              "2026-11-07T20:24:18.6513764Z \u001b[32m10 passed, 0 failed\u001b[0m",
+              "2026-11-07T20:24:26.5937716Z \u001b[32m9 passed, 0 failed\u001b[0m",
+              "2026-11-07T20:24:34.3984269Z \u001b[32m38 passed, 0 failed\u001b[0m",
+              "2026-11-07T20:24:42.2188946Z \u001b[32m9 passed, 0 failed\u001b[0m",
+              "2026-11-07T20:24:44.9992135Z \u001b[32m11 passed, 0 failed\u001b[0m",
+              "2026-11-07T20:24:47.8013763Z \u001b[32m7 passed, 0 failed\u001b[0m",
+              "2026-11-07T20:24:48.9471301Z ✅ ALL PASS — 8 passed, 0 failed",
+              "2026-11-07T20:24:53.6519471Z ASA-CAD M0 protected Part regression",
+              "2026-11-07T20:24:54.1524428Z   ✓ M0 protected Part regression PASS"
+            ]
+          },
+          {
+            "jobId": 128518239967,
+            "name": "asa-m1b",
+            "conclusion": "success",
+            "checkoutShas": [
+              "9d5520765e9ec9076e58bc380c6691a221a98952"
+            ],
+            "signals": [
+              "2026-11-07T20:23:10.5356702Z ##[group]Run npm run test:m1b:recovery",
+              "2026-11-07T20:23:10.5357143Z \u001b[36;1mnpm run test:m1b:recovery\u001b[0m",
+              "2026-11-07T20:23:10.6290808Z > asa-cad@0.0.0 test:m1b:recovery",
+              "2026-11-07T20:23:10.6291304Z > node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m1b/recovery.ts",
+              "2026-11-07T20:23:10.9032912Z ASA-CAD M1B recovery/save session PASS"
+            ]
+          },
+          {
+            "jobId": 128518239631,
+            "name": "browser-smoke",
+            "conclusion": "success",
+            "checkoutShas": [
+              "9d5520765e9ec9076e58bc380c6691a221a98952"
+            ]
+          }
+        ],
+        "tree": "21cd2848194ade8e47f65e63def2bccf67203207",
+        "focusedReportSha256": "9b3e2881d84960d9d976cda6cd4d6deb447e4b33e15f2d95c2fd65c19c547655",
+        "fullAudit": "PENDING"
+      }
+    },
+    {
+      "topic": "asyncOwnership",
+      "pr": 211,
+      "merge": "82f0146812ea274e7661e0d87d8293e2b9bf80f9",
+      "proof": {
+        "pr": 211,
+        "base": "03b79564f5296a1f15474d96d03e5e3ab7216319",
+        "head": "535db59a855fc838d907291a25e81da02e325473",
+        "testedSyntheticMerge": "4ce0588b8d73fc177c89227958e45abbc8724e7f",
+        "tree": "47327017dc7a332973292c536256db07854a4615",
+        "review": {
+          "agent": "line_contract_003",
+          "decision": "APPROVE",
+          "blockingFindings": 0,
+          "exactHead": true
+        },
+        "ci": [
+          {
+            "jobId": 128519970656,
+            "name": "shell-build",
+            "conclusion": "success",
+            "checkoutShas": [
+              "4ce0588b8d73fc177c89227958e45abbc8724e7f"
+            ]
+          },
+          {
+            "jobId": 128519970891,
+            "name": "build-and-smoke",
+            "conclusion": "success",
+            "checkoutShas": [
+              "4ce0588b8d73fc177c89227958e45abbc8724e7f"
+            ]
+          },
+          {
+            "jobId": 128519970995,
+            "name": "u1-visual-evidence",
+            "conclusion": "success",
+            "checkoutShas": [
+              "535db59a855fc838d907291a25e81da02e325473",
+              "88c535c652dac8b04f0d68fa144cf8486afdc926",
+              "03b79564f5296a1f15474d96d03e5e3ab7216319"
+            ]
+          },
+          {
+            "jobId": 128519970592,
+            "name": "asa-m1b",
+            "conclusion": "success",
+            "checkoutShas": [
+              "4ce0588b8d73fc177c89227958e45abbc8724e7f"
+            ]
+          },
+          {
+            "jobId": 128519970777,
+            "name": "asa-m1",
+            "conclusion": "success",
+            "checkoutShas": [
+              "4ce0588b8d73fc177c89227958e45abbc8724e7f"
+            ]
+          },
+          {
+            "jobId": 128519970893,
+            "name": "vendor-baseline",
+            "conclusion": "success",
+            "checkoutShas": [
+              "4ce0588b8d73fc177c89227958e45abbc8724e7f"
+            ]
+          },
+          {
+            "jobId": 128519971147,
+            "name": "m3-browser",
+            "conclusion": "success",
+            "checkoutShas": [
+              "4ce0588b8d73fc177c89227958e45abbc8724e7f"
+            ]
+          },
+          {
+            "jobId": 128519970749,
+            "name": "browser-smoke",
+            "conclusion": "success",
+            "checkoutShas": [
+              "4ce0588b8d73fc177c89227958e45abbc8724e7f"
+            ]
+          }
+        ],
+        "visual": {
+          "artifact": 13589044922,
+          "zipSha256": "1d33c3ac72550f566e2e15dc60a846fdb32348e5003735d1ff0b11378c8b2ec5",
+          "pngHashesVerified": 8,
+          "byteIdenticalPairs": 4,
+          "identicalToPreviouslyInspectedPng": true
+        },
+        "fullAudit": "PENDING"
+      }
+    },
+    {
+      "topic": "recovery",
+      "pr": 212,
+      "merge": "75d5d6ed610f1a7e4020f9492a533a9d0a1e4192",
+      "proof": {
+        "pr": 212,
+        "base": "82f0146812ea274e7661e0d87d8293e2b9bf80f9",
+        "head": "bcb7b96f0cce55904764f4499aeed4448b26c816",
+        "testedSyntheticMerge": "bb4302c7ea8999627f6e57f44aaaaaf7641f7c54",
+        "tree": "9bd78cb918d3da9f0f77bae1368cee2b279399fc",
+        "review": {
+          "core": "line_native_support_003 APPROVE",
+          "workflowAndStatus": "line_contract_003 APPROVE",
+          "finalTestCorrection": "solved_profile_review exact bcb7b96 APPROVE",
+          "blockingFindings": 0
+        },
+        "ci": [
+          {
+            "jobId": 128525803536,
+            "name": "browser-smoke",
+            "conclusion": "success",
+            "checkoutShas": [
+              "bb4302c7ea8999627f6e57f44aaaaaf7641f7c54"
+            ]
+          },
+          {
+            "jobId": 128525803181,
+            "name": "m3-browser",
+            "conclusion": "success",
+            "checkoutShas": [
+              "bb4302c7ea8999627f6e57f44aaaaaf7641f7c54"
+            ]
+          },
+          {
+            "jobId": 128525803199,
+            "name": "build-and-smoke",
+            "conclusion": "success",
+            "checkoutShas": [
+              "bb4302c7ea8999627f6e57f44aaaaaf7641f7c54"
+            ]
+          },
+          {
+            "jobId": 128525803010,
+            "name": "vendor-baseline",
+            "conclusion": "success",
+            "checkoutShas": [
+              "bb4302c7ea8999627f6e57f44aaaaaf7641f7c54"
+            ]
+          },
+          {
+            "jobId": 128525803188,
+            "name": "asa-m1",
+            "conclusion": "success",
+            "checkoutShas": [
+              "bb4302c7ea8999627f6e57f44aaaaaf7641f7c54"
+            ]
+          },
+          {
+            "jobId": 128525803288,
+            "name": "asa-m1b",
+            "conclusion": "success",
+            "checkoutShas": [
+              "bb4302c7ea8999627f6e57f44aaaaaf7641f7c54"
+            ]
+          },
+          {
+            "jobId": 128525803468,
+            "name": "shell-build",
+            "conclusion": "success",
+            "checkoutShas": [
+              "bb4302c7ea8999627f6e57f44aaaaaf7641f7c54"
+            ]
+          }
+        ],
+        "testCorrectionReportSha256": "9c057e87c6853bd9addfbcd7db746e497a91f6f46263eddb9718c3dc45543891",
+        "realIndexedDb": {
+          "cases": 3,
+          "deleted": true,
+          "ownedResourcesClosed": true
+        },
+        "fullAudit": "PENDING"
+      }
+    },
+    {
+      "topic": "topology",
+      "pr": 214,
+      "merge": "4af80b690610ec23241c528df0b2144105773e73",
+      "proof": {
+        "pr": 214,
+        "base": "75d5d6ed610f1a7e4020f9492a533a9d0a1e4192",
+        "head": "4099b44378f91b9d9647ae967b8370a33c65c9bb",
+        "testedSyntheticMerge": "b094b2a3d10fe335b3d8530771fe2ea95348236d",
+        "tree": "c8c9809fd8f7b1d4eaf2f2698033790aae0e0275",
+        "review": {
+          "agent": "line_native_support_003",
+          "verdict": "APPROVE",
+          "exactHead": true,
+          "blockingFindings": 0,
+          "scope": "focused topology repair; existing vendor P2 remains open"
+        },
+        "ci": [
+          {
+            "jobId": 128532196330,
+            "name": "shell-build",
+            "conclusion": "success",
+            "checkoutShas": [
+              "b094b2a3d10fe335b3d8530771fe2ea95348236d"
+            ]
+          },
+          {
+            "jobId": 128532197242,
+            "name": "build-and-smoke",
+            "conclusion": "success",
+            "checkoutShas": [
+              "b094b2a3d10fe335b3d8530771fe2ea95348236d"
+            ]
+          },
+          {
+            "jobId": 128532196207,
+            "name": "asa-m1",
+            "conclusion": "success",
+            "checkoutShas": [
+              "b094b2a3d10fe335b3d8530771fe2ea95348236d"
+            ]
+          },
+          {
+            "jobId": 128532196447,
+            "name": "asa-m1b",
+            "conclusion": "success",
+            "checkoutShas": [
+              "b094b2a3d10fe335b3d8530771fe2ea95348236d"
+            ]
+          },
+          {
+            "jobId": 128532196499,
+            "name": "vendor-baseline",
+            "conclusion": "success",
+            "checkoutShas": [
+              "b094b2a3d10fe335b3d8530771fe2ea95348236d"
+            ]
+          },
+          {
+            "jobId": 128532196664,
+            "name": "m3-browser",
+            "conclusion": "success",
+            "checkoutShas": [
+              "b094b2a3d10fe335b3d8530771fe2ea95348236d"
+            ]
+          },
+          {
+            "jobId": 128532196516,
+            "name": "browser-smoke",
+            "conclusion": "success",
+            "checkoutShas": [
+              "b094b2a3d10fe335b3d8530771fe2ea95348236d"
+            ]
+          }
+        ],
+        "evidence": {
+          "alignedResultsSha256": "bae0861ea3b3d667b0e7038887668efc8249f0c56364e974a2d338900f33f12c",
+          "r1GreenSha256": "599869521e15b484f82a130c1c36548eed1cfbae455d56b6cbc27cb657ab0ffd",
+          "topologyCases": 18,
+          "actualOccAsyncCases": 10
+        },
+        "fullAudit": "PENDING",
+        "fixedConstraintRed": "OPEN",
+        "vendorLifetimeP2": "OPEN",
+        "mainMerge": false
+      }
+    },
+    {
+      "topic": "solvedProfile",
+      "pr": 215,
+      "merge": "d9484da144d2dddfc71bc32e35173683832a5400",
+      "proof": {
+        "pr": 215,
+        "predecessor": 213,
+        "base": "4af80b690610ec23241c528df0b2144105773e73",
+        "head": "9f4d781e8e85d10ac76e99cdf4b5c088af24b44a",
+        "testedSyntheticMerge": "570cf470af149f0550bf8a5e31cb27afdf58a215",
+        "tree": "d9194c857b92ca091c4935d195d896252e110eb3",
+        "review": {
+          "full": "solved_profile_review APPROVE exact804045ac",
+          "lastDocLine": "line_native_support_003 APPROVE exact9f4d781e",
+          "blockingFindings": 0,
+          "footprintReviewed": {
+            "commits": 2,
+            "paths": 19,
+            "additions": 904,
+            "deletions": 101
+          }
+        },
+        "ci": [
+          {
+            "jobId": 128535978672,
+            "name": "shell-build",
+            "conclusion": "success",
+            "checkoutShas": [
+              "570cf470af149f0550bf8a5e31cb27afdf58a215"
+            ]
+          },
+          {
+            "jobId": 128535978242,
+            "name": "CAD-VIS-006B",
+            "conclusion": "success",
+            "checkoutShas": [
+              "9f4d781e8e85d10ac76e99cdf4b5c088af24b44a",
+              "015e445f179a62f5c96b9d931bf03ccca1a86d1d"
+            ]
+          },
+          {
+            "jobId": 128535978391,
+            "name": "build-and-smoke",
+            "conclusion": "success",
+            "checkoutShas": [
+              "570cf470af149f0550bf8a5e31cb27afdf58a215"
+            ]
+          },
+          {
+            "jobId": 128535978182,
+            "name": "m3-browser",
+            "conclusion": "success",
+            "checkoutShas": [
+              "570cf470af149f0550bf8a5e31cb27afdf58a215"
+            ]
+          },
+          {
+            "jobId": 128535978229,
+            "name": "u1-visual-evidence",
+            "conclusion": "success",
+            "checkoutShas": [
+              "9f4d781e8e85d10ac76e99cdf4b5c088af24b44a",
+              "88c535c652dac8b04f0d68fa144cf8486afdc926",
+              "4af80b690610ec23241c528df0b2144105773e73"
+            ]
+          },
+          {
+            "jobId": 128535978226,
+            "name": "asa-m1b",
+            "conclusion": "success",
+            "checkoutShas": [
+              "570cf470af149f0550bf8a5e31cb27afdf58a215"
+            ]
+          },
+          {
+            "jobId": 128535978360,
+            "name": "asa-m1",
+            "conclusion": "success",
+            "checkoutShas": [
+              "570cf470af149f0550bf8a5e31cb27afdf58a215"
+            ]
+          },
+          {
+            "jobId": 128535978427,
+            "name": "vendor-baseline",
+            "conclusion": "success",
+            "checkoutShas": [
+              "570cf470af149f0550bf8a5e31cb27afdf58a215"
+            ]
+          },
+          {
+            "jobId": 128535978596,
+            "name": "browser-smoke",
+            "conclusion": "success",
+            "checkoutShas": [
+              "570cf470af149f0550bf8a5e31cb27afdf58a215"
+            ]
+          }
+        ],
+        "visual": {
+          "run": 42416617307,
+          "artifact": 13591702938,
+          "sha256": "379b7f16c958f7094689ada3233f6b46656e13c705e059a1c02432cf4aa871f2",
+          "verifiedPngs": 8,
+          "identicalPairs": 4
+        },
+        "focused": {
+          "realPlaneGcsOccSuite": 14,
+          "isolatedReactFixtureCases": 7,
+          "fullProductFixtures": 5
+        },
+        "fullAudit": "PENDING",
+        "fixedConstraintRed": "OPEN",
+        "ownerProductAcceptance": "PENDING"
+      }
+    },
+    {
+      "topic": "fixedOwnership",
+      "pr": 216,
+      "merge": "128480e1a150253359ce44158d5588f6b08f27b8",
+      "proof": {
+        "pr": 216,
+        "base": "d9484da144d2dddfc71bc32e35173683832a5400",
+        "head": "490b5b18219698f02034b0d7fc90d97ecc4f0b12",
+        "testedSyntheticMerge": "b795519c5d3229b3e9c30d329f06beeca360645f",
+        "tree": "9bd71a94b29245754be9fc01f4f08bb5c657ec65",
+        "review": {
+          "agent": "line_native_support_003",
+          "verdict": "APPROVE",
+          "head": "490b5b18219698f02034b0d7fc90d97ecc4f0b12",
+          "tree": "9bd71a94b29245754be9fc01f4f08bb5c657ec65",
+          "blockingFindings": 0,
+          "kind": "independent read-only agent review, not formal GitHub approval"
+        },
+        "ci": [
+          {
+            "jobId": 128540989648,
+            "runId": 42418279359,
+            "name": "m3-browser",
+            "conclusion": "success",
+            "checkoutShas": [
+              "b795519c5d3229b3e9c30d329f06beeca360645f"
+            ]
+          },
+          {
+            "jobId": 128540989694,
+            "runId": 42418279405,
+            "name": "browser-smoke",
+            "conclusion": "success",
+            "checkoutShas": [
+              "b795519c5d3229b3e9c30d329f06beeca360645f"
+            ]
+          },
+          {
+            "jobId": 128540989789,
+            "runId": 42418279382,
+            "name": "shell-build",
+            "conclusion": "success",
+            "checkoutShas": [
+              "b795519c5d3229b3e9c30d329f06beeca360645f"
+            ]
+          },
+          {
+            "jobId": 128540989591,
+            "runId": 42418279349,
+            "name": "vendor-baseline",
+            "conclusion": "success",
+            "checkoutShas": [
+              "b795519c5d3229b3e9c30d329f06beeca360645f"
+            ]
+          },
+          {
+            "jobId": 128540989763,
+            "runId": 42418279349,
+            "name": "asa-m1b",
+            "conclusion": "success",
+            "checkoutShas": [
+              "b795519c5d3229b3e9c30d329f06beeca360645f"
+            ]
+          },
+          {
+            "jobId": 128540989787,
+            "runId": 42418279349,
+            "name": "asa-m1",
+            "conclusion": "success",
+            "checkoutShas": [
+              "b795519c5d3229b3e9c30d329f06beeca360645f"
+            ]
+          },
+          {
+            "jobId": 128540989487,
+            "runId": 42418279343,
+            "name": "CAD-VIS-006B",
+            "conclusion": "success",
+            "checkoutShas": [
+              "490b5b18219698f02034b0d7fc90d97ecc4f0b12",
+              "015e445f179a62f5c96b9d931bf03ccca1a86d1d"
+            ]
+          },
+          {
+            "jobId": 128540989540,
+            "runId": 42418279375,
+            "name": "build-and-smoke",
+            "conclusion": "success",
+            "checkoutShas": [
+              "b795519c5d3229b3e9c30d329f06beeca360645f"
+            ]
+          },
+          {
+            "jobId": 128540989638,
+            "runId": 42418279341,
+            "name": "u1-visual-evidence",
+            "conclusion": "success",
+            "checkoutShas": [
+              "490b5b18219698f02034b0d7fc90d97ecc4f0b12",
+              "88c535c652dac8b04f0d68fa144cf8486afdc926",
+              "d9484da144d2dddfc71bc32e35173683832a5400"
+            ]
+          }
+        ],
+        "focused": {
+          "baseline": {
+            "passed": 3,
+            "failed": 14
+          },
+          "candidate": {
+            "passed": 17,
+            "failed": 0
+          },
+          "alignedReceiptSha256": "e618a013a1e43acebfc8614e31ea24ffca057b9db65eb94a763f0e41b72fc450",
+          "localGatesReceiptSha256": "89c43adac13a9caae2cef56195771306766236da3335a6be2e9cef3537b9e135"
+        },
+        "types": {
+          "schemaVersion": 1,
+          "method": "All TypeScript diagnostics; compare file/code/category/message; no suppression",
+          "baseline": {
+            "head": "d9484da144d2dddfc71bc32e35173683832a5400",
+            "count": 8
+          },
+          "candidate": {
+            "head": "490b5b18219698f02034b0d7fc90d97ecc4f0b12",
+            "count": 8
+          },
+          "identicalDiagnosticSet": true,
+          "newDiagnostics": [],
+          "removedDiagnostics": [],
+          "sourceUnchanged": true,
+          "fullWebPass": false
+        },
+        "visual": {
+          "run": 42418279341,
+          "artifact": 13592791038,
+          "sha256": "11401e61f438a1afb352d9d8ec5265e61e25abd9092514bef4ab8aace9e16301",
+          "verifiedPngs": 8,
+          "identicalPairs": 4,
+          "sameAsPreviouslyInspected": true,
+          "scope": "new Part, light theme, UI Scale 100%, initial tree/camera",
+          "actualRootInspection": [
+            "360x640",
+            "1600x900"
+          ]
+        },
+        "fullAudit": "PENDING",
+        "ownerProductAcceptance": "PENDING",
+        "mainMerge": false
+      }
+    }
+  ],
+  "postMergeCi": [
+    {
+      "pr": 209,
+      "topic": "ciRunner",
+      "merge": "169cb832df109858df43cd69a3418ac415a4e8c4",
+      "runs": [
+        {
+          "id": 42409301061,
+          "name": "ASA-CAD M2 browser",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "169cb832df109858df43cd69a3418ac415a4e8c4",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42409301061"
+        },
+        {
+          "id": 42409301102,
+          "name": "UI_CORE_INTEGRATION_GUARD",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "169cb832df109858df43cd69a3418ac415a4e8c4",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42409301102"
+        },
+        {
+          "id": 42409301054,
+          "name": "ASA-CAD M2 shell",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "169cb832df109858df43cd69a3418ac415a4e8c4",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42409301054"
+        },
+        {
+          "id": 42409301009,
+          "name": "ASA-CAD Docker",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "169cb832df109858df43cd69a3418ac415a4e8c4",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42409301009"
+        },
+        {
+          "id": 42409301065,
+          "name": "ASA-CAD M3 browser",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "169cb832df109858df43cd69a3418ac415a4e8c4",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42409301065"
+        },
+        {
+          "id": 42409301015,
+          "name": "ASA-CAD baseline",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "169cb832df109858df43cd69a3418ac415a4e8c4",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42409301015"
+        }
+      ]
+    },
+    {
+      "pr": 208,
+      "topic": "legacyCleanup",
+      "merge": "438114115f7700dcc216e962acc2e0282a885ee4",
+      "runs": [
+        {
+          "id": 42410485049,
+          "name": "UI_CORE_INTEGRATION_GUARD",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "438114115f7700dcc216e962acc2e0282a885ee4",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42410485049"
+        },
+        {
+          "id": 42410484911,
+          "name": "ASA-CAD M2 shell",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "438114115f7700dcc216e962acc2e0282a885ee4",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42410484911"
+        },
+        {
+          "id": 42410484930,
+          "name": "ASA-CAD Docker",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "438114115f7700dcc216e962acc2e0282a885ee4",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42410484930"
+        },
+        {
+          "id": 42410484945,
+          "name": "ASA-CAD baseline",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "438114115f7700dcc216e962acc2e0282a885ee4",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42410484945"
+        },
+        {
+          "id": 42410484817,
+          "name": "ASA-CAD M3 browser",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "438114115f7700dcc216e962acc2e0282a885ee4",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42410484817"
+        },
+        {
+          "id": 42410484814,
+          "name": "ASA-CAD M2 browser",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "438114115f7700dcc216e962acc2e0282a885ee4",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42410484814"
+        }
+      ]
+    },
+    {
+      "pr": 210,
+      "topic": "semanticIngress",
+      "merge": "03b79564f5296a1f15474d96d03e5e3ab7216319",
+      "runs": [
+        {
+          "id": 42411248848,
+          "name": "UI_CORE_INTEGRATION_GUARD",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "03b79564f5296a1f15474d96d03e5e3ab7216319",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42411248848"
+        },
+        {
+          "id": 42411248757,
+          "name": "ASA-CAD M2 shell",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "03b79564f5296a1f15474d96d03e5e3ab7216319",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42411248757"
+        },
+        {
+          "id": 42411248808,
+          "name": "ASA-CAD Docker",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "03b79564f5296a1f15474d96d03e5e3ab7216319",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42411248808"
+        },
+        {
+          "id": 42411248841,
+          "name": "ASA-CAD baseline",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "03b79564f5296a1f15474d96d03e5e3ab7216319",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42411248841"
+        },
+        {
+          "id": 42411248785,
+          "name": "ASA-CAD M3 browser",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "03b79564f5296a1f15474d96d03e5e3ab7216319",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42411248785"
+        },
+        {
+          "id": 42411248851,
+          "name": "ASA-CAD M2 browser",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "03b79564f5296a1f15474d96d03e5e3ab7216319",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42411248851"
+        }
+      ]
+    },
+    {
+      "pr": 211,
+      "topic": "asyncOwnership",
+      "merge": "82f0146812ea274e7661e0d87d8293e2b9bf80f9",
+      "runs": [
+        {
+          "id": 42411979770,
+          "name": "ASA-CAD M2 browser",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "82f0146812ea274e7661e0d87d8293e2b9bf80f9",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42411979770"
+        },
+        {
+          "id": 42411979788,
+          "name": "UI_CORE_INTEGRATION_GUARD",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "82f0146812ea274e7661e0d87d8293e2b9bf80f9",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42411979788"
+        },
+        {
+          "id": 42411979802,
+          "name": "ASA-CAD M2 shell",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "82f0146812ea274e7661e0d87d8293e2b9bf80f9",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42411979802"
+        },
+        {
+          "id": 42411979703,
+          "name": "ASA-CAD baseline",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "82f0146812ea274e7661e0d87d8293e2b9bf80f9",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42411979703"
+        },
+        {
+          "id": 42411979869,
+          "name": "ASA-CAD Docker",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "82f0146812ea274e7661e0d87d8293e2b9bf80f9",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42411979869"
+        },
+        {
+          "id": 42411979776,
+          "name": "ASA-CAD M3 browser",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "82f0146812ea274e7661e0d87d8293e2b9bf80f9",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42411979776"
+        }
+      ]
+    },
+    {
+      "pr": 212,
+      "topic": "recovery",
+      "merge": "75d5d6ed610f1a7e4020f9492a533a9d0a1e4192",
+      "runs": [
+        {
+          "id": 42413735481,
+          "name": "UI_CORE_INTEGRATION_GUARD",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "75d5d6ed610f1a7e4020f9492a533a9d0a1e4192",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42413735481"
+        },
+        {
+          "id": 42413735473,
+          "name": "ASA-CAD M2 shell",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "75d5d6ed610f1a7e4020f9492a533a9d0a1e4192",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42413735473"
+        },
+        {
+          "id": 42413735510,
+          "name": "ASA-CAD baseline",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "75d5d6ed610f1a7e4020f9492a533a9d0a1e4192",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42413735510"
+        },
+        {
+          "id": 42413735539,
+          "name": "ASA-CAD Docker",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "75d5d6ed610f1a7e4020f9492a533a9d0a1e4192",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42413735539"
+        },
+        {
+          "id": 42413735731,
+          "name": "ASA-CAD M3 browser",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "75d5d6ed610f1a7e4020f9492a533a9d0a1e4192",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42413735731"
+        },
+        {
+          "id": 42413735541,
+          "name": "ASA-CAD M2 browser",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "75d5d6ed610f1a7e4020f9492a533a9d0a1e4192",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42413735541"
+        }
+      ]
+    },
+    {
+      "pr": 214,
+      "topic": "topology",
+      "merge": "4af80b690610ec23241c528df0b2144105773e73",
+      "runs": [
+        {
+          "id": 42415745096,
+          "name": "UI_CORE_INTEGRATION_GUARD",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "4af80b690610ec23241c528df0b2144105773e73",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42415745096"
+        },
+        {
+          "id": 42415745043,
+          "name": "ASA-CAD M2 shell",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "4af80b690610ec23241c528df0b2144105773e73",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42415745043"
+        },
+        {
+          "id": 42415745018,
+          "name": "ASA-CAD baseline",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "4af80b690610ec23241c528df0b2144105773e73",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42415745018"
+        },
+        {
+          "id": 42415745147,
+          "name": "ASA-CAD Docker",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "4af80b690610ec23241c528df0b2144105773e73",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42415745147"
+        },
+        {
+          "id": 42415745078,
+          "name": "ASA-CAD M3 browser",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "4af80b690610ec23241c528df0b2144105773e73",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42415745078"
+        },
+        {
+          "id": 42415745143,
+          "name": "ASA-CAD M2 browser",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "4af80b690610ec23241c528df0b2144105773e73",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42415745143"
+        }
+      ]
+    },
+    {
+      "pr": 215,
+      "topic": "solvedProfile",
+      "merge": "d9484da144d2dddfc71bc32e35173683832a5400",
+      "runs": [
+        {
+          "id": 42416994701,
+          "name": "UI_CORE_INTEGRATION_GUARD",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "d9484da144d2dddfc71bc32e35173683832a5400",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42416994701"
+        },
+        {
+          "id": 42416994682,
+          "name": "ASA-CAD M2 shell",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "d9484da144d2dddfc71bc32e35173683832a5400",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42416994682"
+        },
+        {
+          "id": 42416994731,
+          "name": "ASA-CAD Docker",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "d9484da144d2dddfc71bc32e35173683832a5400",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42416994731"
+        },
+        {
+          "id": 42416994669,
+          "name": "ASA-CAD baseline",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "d9484da144d2dddfc71bc32e35173683832a5400",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42416994669"
+        },
+        {
+          "id": 42416994723,
+          "name": "ASA-CAD M3 browser",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "d9484da144d2dddfc71bc32e35173683832a5400",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42416994723"
+        },
+        {
+          "id": 42416994686,
+          "name": "ASA-CAD M2 browser",
+          "event": "push",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "d9484da144d2dddfc71bc32e35173683832a5400",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42416994686"
+        }
+      ]
+    },
+    {
+      "pr": 216,
+      "topic": "fixedOwnership",
+      "merge": "128480e1a150253359ce44158d5588f6b08f27b8",
+      "runs": [
+        {
+          "id": 42418655267,
+          "name": "UI_CORE_INTEGRATION_GUARD",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "128480e1a150253359ce44158d5588f6b08f27b8",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42418655267",
+          "event": "push"
+        },
+        {
+          "id": 42418655305,
+          "name": "ASA-CAD M2 shell",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "128480e1a150253359ce44158d5588f6b08f27b8",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42418655305",
+          "event": "push"
+        },
+        {
+          "id": 42418655251,
+          "name": "ASA-CAD baseline",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "128480e1a150253359ce44158d5588f6b08f27b8",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42418655251",
+          "event": "push"
+        },
+        {
+          "id": 42418655253,
+          "name": "ASA-CAD Docker",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "128480e1a150253359ce44158d5588f6b08f27b8",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42418655253",
+          "event": "push"
+        },
+        {
+          "id": 42418655252,
+          "name": "ASA-CAD M3 browser",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "128480e1a150253359ce44158d5588f6b08f27b8",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42418655252",
+          "event": "push"
+        },
+        {
+          "id": 42418655250,
+          "name": "ASA-CAD M2 browser",
+          "status": "completed",
+          "conclusion": "success",
+          "headSha": "128480e1a150253359ce44158d5588f6b08f27b8",
+          "url": "https://github.com/spikeal8-maker/ASA-CAD/actions/runs/42418655250",
+          "event": "push"
+        }
+      ]
+    }
+  ],
+  "finalSourcePostMerge": {
+    "workflows": 6,
+    "jobs": 8,
+    "allSuccess": true
+  },
+  "independentAuditReview": {
+    "agent": "health_audit_review",
+    "exactHead": "128480e1a150253359ce44158d5588f6b08f27b8",
+    "architecture": "APPROVE; no confirmed open P0/P1/RED in reviewed integration scope",
+    "measurement": "106 samples and 20 warmups recounted; 53 case summaries and 4 cold summaries recomputed",
+    "archive": "76 measurement sources independently decoded; 49 repair originals matched prior independent inventory; remaining writer roundtrip evidence reviewed",
+    "reportAndMachineReview": "Required separately on final proposed files before commit",
+    "formalGithubApproval": false
+  },
+  "performance": {
+    "kind": "STANDARD_OBSERVATIONAL_BASELINE",
+    "technicalControllerAcceptsMeasurement": true,
+    "sourceToolAcceptedBaselineFlag": false,
+    "reportSha256": "8185f5be5575e0dc1069a0e4c0a019550ee30cd0ac66b7484db0990b53ef5335",
+    "phases": 10,
+    "cases": 16,
+    "samples": 106,
+    "warmups": 20,
+    "failures": 0,
+    "unattempted": 0,
+    "sourceFingerprint": "ee2fb9470c592d5d007cda9beea7a5e70d6f3ceedcd2e260fc35a87910c753ef",
+    "environment": {
+      "cpu": "13th Gen Intel(R) Core(TM) i5-13400",
+      "node": "v22.23.3",
+      "platform": "win32",
+      "arch": "x64"
+    },
+    "limitations": {
+      "clock": "node:perf_hooks performance.now, milliseconds",
+      "warmupPolicy": "Explicit, bounded, recorded separately; correctness checked",
+      "failures": "Failed attempts retained; statistics include every finite recorded metric, including failures",
+      "startup": "Fresh Node processes, not browser startup and not OS disk-cache cold",
+      "solveCache": "Direct PlaneGCSSketchSolverRuntime; no BrowserSketchSolverAdapter LRU",
+      "scope": "No browser, network, server, product changes or installation",
+      "thresholds": "No performance SLO or pass/fail latency threshold; only correctness/identity/cleanup gates",
+      "sampling": "Sequential workers; CPU/memory/OS cache state uncontrolled and recorded as limitations"
+    }
+  },
+  "archives": {
+    "measurement": {
+      "path": "measurement",
+      "manifestSha256": "d6346a4afe203568d0238455a425cbe042fc43351a1d07a632114812bfdbc426",
+      "physicalFiles": 11,
+      "originalFiles": 76,
+      "originalBytes": 3501851,
+      "roundtripByteIdentical": true,
+      "largestPhysicalBytes": 1509008,
+      "independentLargeArtifactReview": true
+    },
+    "repairs": {
+      "path": "repairs",
+      "manifestSha256": "c245f4e3684239d02fbbe2bc4bc6c976f0a61766ce29e0e036dfc0dae5998fd1",
+      "physicalFiles": 16,
+      "originalFiles": 119,
+      "originalBytes": 1813814,
+      "roundtripByteIdentical": true,
+      "largestPhysicalBytes": 499816,
+      "provenanceLimitation": "One Temp checker has only current capture hash, not a recorded historical expected hash. Four aliases are explicitly resolved without modifying original JSON."
+    },
+    "visual": {
+      "run": 42418279341,
+      "artifact": 13592791038,
+      "sha256": "11401e61f438a1afb352d9d8ec5265e61e25abd9092514bef4ab8aace9e16301",
+      "verifiedPngs": 8,
+      "identicalPairs": 4,
+      "sameAsPreviouslyInspected": true,
+      "scope": "new Part, light theme, UI Scale 100%, initial tree/camera",
+      "actualRootInspection": [
+        "360x640",
+        "1600x900"
+      ],
+      "path": "visual",
+      "manifestSha256": "4d3afa1be868074627ab689c8d281de9369c0188c7c286222d1a3b2a9783a455",
+      "actualPngBytesPreserved": true
+    }
+  },
+  "debts": [
+    {
+      "id": "HA-20261107-DEPENDENCIES",
+      "status": "OPEN",
+      "owner": "ChatGPT technical controller /root",
+      "gate": "Before technical acceptance / next milestone boundary U2, and before beta",
+      "nonGrowthRule": "Do not increase affected toolchain dependency exposure; remediate in a separately reviewed compatibility-tested dependency change.",
+      "affectedPackageEntries": 16,
+      "packageAggregate": {
+        "high": 4,
+        "moderate": 12,
+        "critical": 0
+      },
+      "uniqueGhsa": 21,
+      "directAdvisorySeverity": {
+        "high": 12,
+        "moderate": 7,
+        "low": 2
+      },
+      "sourceGraphFiles": 217,
+      "runtimeNpmRoots": 6,
+      "unresolvedLiteralImports": 0,
+      "affectedRuntimeIntersection": 0,
+      "limitation": "Static import/packaging analysis is not exploit or bundle proof; captured npm audit was not refreshed."
+    },
+    {
+      "id": "HA-20261107-WEB-TYPES",
+      "status": "OPEN",
+      "owner": "ChatGPT technical controller /root",
+      "gate": "Before technical acceptance / next milestone boundary U2",
+      "nonGrowthRule": "The complete file/code/category/message diagnostic multiset may not grow or gain new diagnostics.",
+      "baselineHead": "d9484da144d2dddfc71bc32e35173683832a5400",
+      "candidateHead": "490b5b18219698f02034b0d7fc90d97ecc4f0b12",
+      "counts": {
+        "baseline": 8,
+        "candidate": 8,
+        "new": 0,
+        "removed": 0
+      },
+      "fullWebPass": false,
+      "comparisonReceiptSha256": "e120c1a244eba5e6ac53f7113682d818ccd9c263b0b5622afab72d1e2ad6a371"
+    },
+    {
+      "id": "HA-20261107-VENDOR-LIFETIME",
+      "status": "OPEN",
+      "severity": "P2",
+      "owner": "ChatGPT technical controller /root",
+      "gate": "Before next milestone boundary U2 OR expansion of affected StableRef paths, whichever is earlier",
+      "nonGrowthRule": "Do not expand the defect scope or affected paths; this is not a bound on heap growth.",
+      "file": "vendor/toubkal/src/services/StableRef.ts",
+      "canonicalSha256": "53d6bf536c1c7cc08a6ca9c501e131f0038f253ef94b276f79233976a13cb35c",
+      "affectedMethods": [
+        "subMap Current",
+        "nthSub FindKey",
+        "resolve FindKey",
+        "nearestFaceIndex FindKey",
+        "vertexCloudScale FindKey"
+      ],
+      "nativeHeapClean": false,
+      "rssOrGrowthRateMeasured": false,
+      "upstreamMatchingAndSchemaMustRemainUnchanged": true
+    }
+  ],
+  "releaseAndKnownRiskGates": {
+    "main": "Older main is a release integration gap; no claim that repairs are deployed there.",
+    "license": "Root LICENSE / THIRD_PARTY_NOTICE missing: existing pre-beta gate, no first-party license selected by controller.",
+    "branchProtection": "DETECT_ONLY; ADMIN_BRANCH_PROTECTION_NOT_ENFORCED remains KNOWN_RISK.",
+    "visualParity": "PENDING owner decision, including theme parity.",
+    "fusionCandidate": "Draft queue #204-#207 remains separate; no install or modification of user browser documents."
+  },
+  "branchReconciliation": [
+    {
+      "pr": 170,
+      "role": "FROZEN_UI_REFERENCE_ONLY",
+      "sha": "88c535c652dac8b04f0d68fa144cf8486afdc926"
+    },
+    {
+      "pr": 177,
+      "role": "REUSE_AFTER_SEPARATE_EXACT_REVIEW",
+      "sha": "44d87bef78fd66aa0e85fa1fa7ba9dc58e280a65"
+    },
+    {
+      "pr": 179,
+      "role": "DRAWING_SCHEMA_CANDIDATE_HOLD",
+      "sha": "034d0fc4d51606425794fc76508f61600a41d0cb"
+    },
+    {
+      "prs": [
+        204,
+        205,
+        206,
+        207
+      ],
+      "role": "SEPARATE_FUSION_DRAFT_QUEUE"
+    },
+    {
+      "pr": 213,
+      "role": "CLOSED_SUPERSEDED_BY_215_HISTORY_PRESERVED"
+    }
+  ]
+}

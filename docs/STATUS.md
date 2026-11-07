@@ -1,52 +1,50 @@
-# ASA-CAD — актуальное состояние репозитория
+# ASA-CAD — актуальное состояние
 
-Снимок: 2026-11-07 UTC. Live GitHub SHA имеет приоритет над сохранёнными датами.
+Снимок: 2026-11-07 UTC. Live GitHub и machine pointer имеют приоритет.
 
-## Канон продукта
+## Действующая точка
 
-- UI/UX reference: frozen [#170](https://github.com/spikeal8-maker/ASA-CAD/pull/170), tag `ui-reference-20261004`, SHA `88c535c652dac8b04f0d68fa144cf8486afdc926`. Его prototype runtime не является продуктовым ядром.
-- Принятый integration: `d9484da144d2dddfc71bc32e35173683832a5400` — одна продуктовая оболочка `src/web/kompas`, адаптивная на desktop/tablet/phone; прежний fallback <900 px удалён.
-- Main: `1f8d2627da7ddfa63b31876d46347d0b8080c154`, с прежним fallback и без текущих audit repairs. Перенос integration в main и production не выполнен.
-- Авторитеты: `CadDocument`, история `CadApplication`, typed actions, ASA → PlaneGCS → solved profile → OpenCascade B-Rep, product persistence. Three.js отображает производные данные.
-- Контракты описывают six document kinds: Part, Assembly, Drawing, Fragment, Specification, Text. Готовность редакторов и команд различается.
+**Checkpoint = U2. Full Repository Health Audit = YELLOW_ACCEPTED.** Переход этого пакета вступает в силу после exact CI, независимого review и технического merge в integration. Основание: [единый отчёт](FULL_REPOSITORY_HEALTH_AUDIT.md), audited SHA `128480e1a150253359ce44158d5588f6b08f27b8`. Контролёр приёмки — ChatGPT `/root`; owner product acceptance остаётся PENDING.
 
-## Принятые изменения
+U2: настоящий Sketch-in-Viewport, Line/Rectangle/Circle/Arc и числовой ввод через существующие product commands. Acceptance: Part → XY → Sketch → Rectangle 60×40 → Undo/Redo → Save/Open → те же intent/IDs. Затем U3 → U4 → U5. Работающие К1/U1 заново не реализуются.
 
-| PR | Принятый результат | Integration merge | Exact PR CI |
-| --- | --- | --- | --- |
-| [#195](https://github.com/spikeal8-maker/ASA-CAD/pull/195) | Общий U1A/U1B/U1C: shell/tree/parameters/viewport, K1/C1 | `cc2ceaa` | 9/9 |
-| [#202](https://github.com/spikeal8-maker/ASA-CAD/pull/202) | Единый responsive KOMPAS, menu/tree/quick actions/resize | `1be7bdb` | 9/9 |
-| [#209](https://github.com/spikeal8-maker/ASA-CAD/pull/209) | CI browser runner, совместимый с pinned Playwright | `169cb83` | 9/9 |
-| [#208](https://github.com/spikeal8-maker/ASA-CAD/pull/208) | LEGACY-CLEANUP-202: удалены недостижимые owners/CSS | `4381141` | 9/9 |
-| [#210](https://github.com/spikeal8-maker/ASA-CAD/pull/210) | Семантическая проверка constraint refs при загрузке | `03b7956` | 7/7 |
-| [#211](https://github.com/spikeal8-maker/ASA-CAD/pull/211) | Ownership async document/history/render/OCC cache | `82f0146` | 8/8 |
-| [#212](https://github.com/spikeal8-maker/ASA-CAD/pull/212) | Snapshot-before-await и atomic recovery acknowledgement | `75d5d6e` | 7/7 |
-| [#214](https://github.com/spikeal8-maker/ASA-CAD/pull/214) | Stable edge/face/owner identity и ASA temporary handles | `4af80b6` | 7/7 |
-| [#215](https://github.com/spikeal8-maker/ASA-CAD/pull/215) | Current solved-profile admission и shared solver lifecycle | `d9484da` | 9/9 |
+## Канон и принятая база
 
-Maintenance/audit repairs приняты после независимого read-only APPROVE и проверок точного candidate/synthetic tree. CI, agent review и owner product acceptance — разные факты. Для #214 проверены Protected Part, actual OCC async 10/10, topology 18/18 и ordinary M2/M3. Recovery #212: реальные IndexedDB 3 cases PASS, удаление своей test DB подтверждено. Cleanup: 47 локальных browser entries PASS; четыре CI before/after PNG пары побайтно одинаковы.
+- Integration: `128480e1a150253359ce44158d5588f6b08f27b8` — одна продуктовая оболочка `src/web/kompas` для desktop/tablet/phone, без legacy fallback.
+- Main: `1f8d2627da7ddfa63b31876d46347d0b8080c154`, прежняя версия без текущих repairs. Main/production не обновлены.
+- Frozen reference #170: tag `ui-reference-20261004`, SHA `88c535c652dac8b04f0d68fa144cf8486afdc926`; UI/UX reference, не второе CAD-ядро.
+- CadDocument/CadApplication/history → typed actions/ASA adapters → PlaneGCS/solved profile/OpenCascade B-Rep; Three.js отображает результат.
+- six document kinds: Part, Assembly, Drawing, Fragment, Specification, Text. Реальная готовность редакторов различается.
 
-Исторический U1 также включён в main через #196 (`e37650f`). #194 закрыт как superseded; #200/#201 — сохранённые предшественники #202. Повторно их не сливать.
+| Принято | Результат |
+| --- | --- |
+| #195/#196, U1A/U1B/U1C | Общий U1 технически интегрирован; final visual acceptance отдельно |
+| #202 / `1be7bdb` | Общий responsive KOMPAS |
+| #209 / `169cb83` | Совместимый CI browser runner |
+| #208 / `4381141` | LEGACY-CLEANUP-202 |
+| #210 / `03b7956` | Семантическая проверка constraint refs |
+| #211 / `82f0146` | Async document/history/render/OCC ownership |
+| #212 / `75d5d6e` | Snapshot/atomic recovery acknowledgement |
+| #214 / `4af80b6` | Stable topology и временные ASA handles |
+| #215 / `d9484da` | Current solved profiles/shared solver lifecycle |
+| #216 / `128480e` | Fixed ownership/StrictMode/late result |
 
-## Действующая точка работ
+Каждый repair принят после exact CI и независимого read-only review. Последний #216: 9/9 PR jobs и 8/8 post-merge jobs SUCCESS; ordinary Fixed и Protected Part/Docker PASS. Четыре actual PNG before/after пары одинаковы. Полная visual/theme parity этим не принята. #213 закрыт как предшественник #215; история сохранена.
 
-**Machine checkpoint = `FULL_REPOSITORY_HEALTH_AUDIT` (Full Repository Health Audit); outcome = PENDING; `productCodeStartAllowed=false`.** Cadence после общего U1: 2/3 → 3/3. #199 разрешает только подтверждённые RED/P0 repairs и необходимые регрессии, не новые U2–U5 функции.
+## Аудит и обязательный долг
 
-- Solved profile #215 принят; предшественник #213 закрыт с сохранением истории и причин исправлений CI. Actual GCS/OCC 14/14, isolated React 7/7, ordinary product fixtures 5/5; post-merge 8/8 jobs PASS. Sketch-only загружает PlaneGCS, не OCC.
-- Fixed constraint: подтверждена порча нового same-ID документа поздней командой. Кандидат использует detached snapshot, проверки document/context/request до commit и после ответа, общий non-owning solver client. Одинаковые actual React + PlaneGCS tests: baseline 3/17 PASS, candidate 17/17 PASS, включая StrictMode и поздний ответ. Exact CI/review ещё требуются; RED не считается закрытым до технической приёмки.
-- Итоговый аудит требует общей проверенной базы, пяти измеренных performance baselines, актуальной dependency classification, независимого архитектурного verdict и единого committed report. Pilot не является принятой performance-базой.
-- Toolchain advisories, прежние full-web type diagnostics и vendor StableRef lifetime finding остаются явно открытыми; они не обозначаются исправленными результатом отдельных PR.
+STANDARD measurement на общей базе: 10 phases, 106 samples, 20 warmups, correctness PASS. Raw evidence и воспроизводимый harness сохранены в отчёте. Browser cold-start, SLO и native-heap cleanliness не заявляются.
 
-`U2 = BLOCKED` до GREEN или явно принятого YELLOW. Следующий разрешённый checkpoint после аудита — U2: настоящий Sketch-in-Viewport, Line/Rectangle/Circle/Arc, numeric entry, Undo/Redo и Save/Open поверх существующего ядра; затем U3 → U4 → U5. Повторно реализовывать работающий K1/U1 не требуется.
+Три OPEN долга, ответственный ChatGPT `/root`; устранить до технической приёмки U2 / следующей milestone boundary:
 
-Полная visual parity, включая темы, и owner product acceptance остаются PENDING. `DETECT_ONLY` / `ADMIN_BRANCH_PROTECTION_NOT_ENFORCED` — `KNOWN_RISK`, известный административный риск, не ENFORCED и не отдельный запрет разработки.
+- Toolchain: 16 affected package entries / 21 GHSA. Static runtime intersection 0 не закрывает High findings.
+- Full-web: 8 прежних diagnostics, новых 0; это не полный typecheck PASS.
+- Vendor StableRef lifetime P2: owning Current/FindKey wrappers. Дополнительный gate — до расширения соответствующих paths. ASA cleanup не закрывает vendor leak.
 
-## Сохраняемые кандидаты и контроль
+Frozen owners не растут; новый долг/ответственность сверх pressure policy запрещены. LICENSE/THIRD_PARTY_NOTICE остаётся pre-beta gate. `DETECT_ONLY` / `ADMIN_BRANCH_PROTECTION_NOT_ENFORCED` — `KNOWN_RISK`, не ENFORCED и по действующему разрешению не запрет U2.
 
-- #170 — immutable reference, не merge-источник product runtime.
-- #177 — Draft Part recovery; уникальные изменения переносить только после отдельной проверки.
-- #179 — Draft Drawing/schema-v4; требует отдельного совместимого PR и миграций.
-- #204–#207 — отдельная Fusion-очередь кандидатов; не приняты в текущую integration автоматически.
-- Governance branch `governance/align-main-20261008` не создаёт второй продуктовый путь.
+## Очередь и полномочия
 
-Действует `OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008`: технический контролёр сверяет `spec/process/active-work.v1.json`, этот STATUS, Issue #184 и live PR/branches; выполняет Draft PR, exact CI, ordinary-user flow и независимое ревью. Дополнительное решение владельца требуется для integration → main, production, final visual parity и изменения продуктовой цели.
+#177 — reuse после exact review; #179 — отдельный Drawing/schema candidate; #204–#207 — отдельная Fusion Draft очередь. Installer не запускался, пользовательские документы/8099 не изменены.
+
+Действует `OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008`: Draft PR в integration, exact CI, ordinary-user proof, независимый review, затем технический merge без повторного разрешения. Integration → main, production, final visual parity и изменение продуктовой цели требуют отдельного решения владельца.

@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "kind": "asa-cad-repair-evidence-payloads",
+  "concern": "recovery",
+  "auditAccepted": false,
+  "sources": [
+    {
+      "sourceId": "maintenance/audit-probes/recovery-idb-cleanup-5ebf906-20261107/results.json",
+      "originalPath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\recovery-idb-cleanup-5ebf906-20261107\\results.json",
+      "physicalByteLength": 3434,
+      "sha256": "9c057e87c6853bd9addfbcd7db746e497a91f6f46263eddb9718c3dc45543891",
+      "encoding": "utf8",
+      "payload": "{\n  \"schemaVersion\": 1,\n  \"head\": \"5ebf90640a415ad4f326e818acd6351fa3ad89cd\",\n  \"startedAt\": \"2026-11-07T20:50:39.541Z\",\n  \"status\": \"PASS\",\n  \"node\": \"v22.23.3\",\n  \"pinnedChromium\": {\n    \"revision\": \"1223\",\n    \"expectedVersion\": \"148.0.7778.96\",\n    \"executable\": \"C:\\\\Users\\\\spike\\\\AppData\\\\Local\\\\ms-playwright\\\\chromium_headless_shell-1223\\\\chrome-headless-shell-win64\\\\chrome-headless-shell.exe\",\n    \"executableSha256\": \"2d8f2abad1a0f2998aaf861967c374d4aad6a104916b8794318760ed35db772f\",\n    \"actualVersion\": \"148.0.7778.96\"\n  },\n  \"sourceSha256\": \"aee1723e1c8bcf51053ed48c996bad3135e4d10df0d96ad176db599cd9e380a4\",\n  \"baselineGitTextSha256\": \"35952bb15d1a4d29a7aa4dd8e3511689343609265c8f1990a043cee456116e8f\",\n  \"assertionBlockUnchanged\": true,\n  \"assertionBlockSha256\": \"864408bcfa283d2428cbd174fc1db64a389baf7f39eafcdc45ab8c6f85133160\",\n  \"productOwnersBefore\": [\n    {\n      \"name\": \"src/host/CadProjectSession.ts\",\n      \"sha256\": \"86ff873796b0aab52ec8d422d39d0dab93af12507adb5190daeaed9525946e70\"\n    },\n    {\n      \"name\": \"src/host/CadRecoveryStore.ts\",\n      \"sha256\": \"30c8db89a54af0ed808aae2b06eb090e8668743a68409b78b1d1f8bfc7c527af\"\n    }\n  ],\n  \"cleanupHelperSha256\": \"6db50c30a775308733e7ffd50e786ce38422028482487c28b57542474418bb57\",\n  \"legacyCleanupSha256\": \"f04a90c51f7b69be1dc1b29579416b089ebf1eb4e0a1a720d38a83ac321d2fa4\",\n  \"syntax\": {\n    \"exit\": 0,\n    \"stdout\": \"\",\n    \"stderr\": \"\"\n  },\n  \"focused\": {\n    \"exit\": 0,\n    \"signal\": null,\n    \"error\": null,\n    \"stdoutSha256\": \"880e116b5c3a5b5bb7dfbde3b7967ad3523759225a8d5c47e9fe8ef04f1b1ea6\",\n    \"stderrSha256\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\n    \"stdout\": \"{\\\"status\\\":\\\"PASS\\\",\\\"cases\\\":[\\\"snapshot-before-open\\\",\\\"identity-match-mismatch-legacy-discard\\\",\\\"atomic-two-connection-interleave\\\"],\\\"databaseCleanup\\\":{\\\"blockedEvents\\\":0,\\\"deleted\\\":true},\\\"ownedServerClosed\\\":true,\\\"ownedBrowserClosed\\\":true}\\n\"\n  },\n  \"lifecycle\": [\n    {\n      \"mode\": \"legacy-close-pending\",\n      \"events\": [\n        \"close-called\",\n        \"blocked\",\n        \"cleanup-rejected\",\n        \"transaction-complete\",\n        \"delete-success\"\n      ],\n      \"deleteCalls\": 1,\n      \"error\": \"test DB connections were not closed\",\n      \"result\": null,\n      \"databaseDeleted\": true\n    },\n    {\n      \"mode\": \"eventual-close-pending\",\n      \"events\": [\n        \"close-called\",\n        \"blocked\",\n        \"transaction-complete\",\n        \"delete-success\"\n      ],\n      \"deleteCalls\": 1,\n      \"error\": null,\n      \"result\": {\n        \"blockedEvents\": 1,\n        \"deleted\": true\n      },\n      \"databaseDeleted\": true\n    },\n    {\n      \"mode\": \"persistent-open-connection\",\n      \"events\": [\n        \"blocked\",\n        \"cleanup-rejected\",\n        \"release-test-owned-connection-after-failure\",\n        \"delete-success\"\n      ],\n      \"deleteCalls\": 1,\n      \"error\": \"test DB deletion did not complete within 250ms (blocked=1)\",\n      \"result\": null,\n      \"databaseDeleted\": true\n    }\n  ],\n  \"cleanup\": {\n    \"ownedServerClosed\": true,\n    \"ownedBrowserClosed\": true\n  },\n  \"productOwnersAfter\": [\n    {\n      \"name\": \"src/host/CadProjectSession.ts\",\n      \"sha256\": \"86ff873796b0aab52ec8d422d39d0dab93af12507adb5190daeaed9525946e70\"\n    },\n    {\n      \"name\": \"src/host/CadRecoveryStore.ts\",\n      \"sha256\": \"30c8db89a54af0ed808aae2b06eb090e8668743a68409b78b1d1f8bfc7c527af\"\n    }\n  ],\n  \"endedAt\": \"2026-11-07T20:50:41.321Z\"\n}\n",
+      "segment": {
+        "index": 0,
+        "count": 1,
+        "offset": 0,
+        "byteLength": 3434,
+        "sha256": "9c057e87c6853bd9addfbcd7db746e497a91f6f46263eddb9718c3dc45543891"
+      }
+    }
+  ]
+}

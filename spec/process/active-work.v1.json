@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "initiative": "UI-CORE-UNIFICATION-001",
   "issue": 184,
-  "currentCheckpoint": "FULL_REPOSITORY_HEALTH_AUDIT",
+  "currentCheckpoint": "U2",
   "baseBranch": "integration/ui-core-unification",
   "baseHeadPolicy": "RESOLVE_LIVE_AND_GUARD",
   "uiReference": {
@@ -11,7 +11,7 @@
     "sha": "88c535c652dac8b04f0d68fa144cf8486afdc926",
     "frozen": true
   },
-  "productCodeStartAllowed": false,
+  "productCodeStartAllowed": true,
   "blocker": null,
   "canonicalDocuments": [
     "docs/DEVELOPMENT_QUALITY_GATES.md",
@@ -19,18 +19,18 @@
     "docs/STATUS.md"
   ],
   "scope": [
-    "U1 post-merge Full Repository Health Audit on live main and integration",
-    "architecture and owner budgets; KOMPAS UI vs CadApplication single state",
-    "PlaneGCS -> solved profiles -> OpenCascade B-Rep; topology and persistence",
-    "schema, migrations, CI, Docker, visual evidence, documentation and branch reconciliation",
-    "independent review of merged U1; repair confirmed RED and unsafe regressions"
+    "U2 real Sketch-in-Viewport through existing product commands",
+    "Line, Rectangle, Circle and Arc with numeric entry derived from frozen reference",
+    "Part -> XY -> Sketch -> Rectangle 60x40 -> Undo/Redo -> Save/Open with stable intent/IDs",
+    "Resolve accepted audit debts before U2 technical acceptance; no debt growth",
+    "Exact-head CI, real ordinary-user flow, independent read-only review and integration PR"
   ],
   "outOfScope": [
-    "U2-U5 feature expansion until audit GREEN or explicitly accepted YELLOW",
-    "indiscriminate merge of old #177 / #179 or frozen #170 prototype runtime",
-    "production deployment and claim of final visual parity without owner acceptance"
+    "Automatic merge of #170 prototype runtime, #177/#179 or Fusion #204-#207 candidates",
+    "U3-U5 expansion without the preceding checkpoint technical gates",
+    "Integration-to-main, production deployment and final visual parity without owner decision"
   ],
-  "nextCheckpoint": "U2",
+  "nextCheckpoint": "U3",
   "developmentAuthorization": "OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008",
   "checkpointTechnicalStatus": "IN_PROGRESS",
   "ownerProductAcceptance": "PENDING",
@@ -43,9 +43,17 @@
     "mergeSha": "e37650f08d9e2fa6cf13ceb6a09ecd8e8a568c15"
   },
   "fullRepositoryHealthAudit": {
-    "outcome": "PENDING",
-    "auditBaseSha": "e37650f08d9e2fa6cf13ceb6a09ecd8e8a568c15"
-  },
-  "auditRepairAllowed": true,
-  "auditRepairScope": "CONFIRMED_P0_RED_DEFECTS_AND_ESSENTIAL_REGRESSION_FIXES_ONLY"
+    "outcome": "YELLOW_ACCEPTED",
+    "auditBaseSha": "e37650f08d9e2fa6cf13ceb6a09ecd8e8a568c15",
+    "auditedSha": "128480e1a150253359ce44158d5588f6b08f27b8",
+    "report": "docs/FULL_REPOSITORY_HEALTH_AUDIT.md",
+    "acceptedBy": "ChatGPT technical controller /root under OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008",
+    "acceptanceScope": "TECHNICAL_INTEGRATION_ONLY",
+    "openDebtIds": [
+      "HA-20261107-DEPENDENCIES",
+      "HA-20261107-WEB-TYPES",
+      "HA-20261107-VENDOR-LIFETIME"
+    ],
+    "debtGate": "BEFORE_U2_TECHNICAL_ACCEPTANCE_OR_NEXT_MILESTONE_BOUNDARY; VENDOR_LIFETIME_BEFORE_PATH_EXPANSION_IF_EARLIER"
+  }
 }
