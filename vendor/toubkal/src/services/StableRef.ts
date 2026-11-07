@@ -91,15 +91,15 @@ function nearestFaceIndex(oc: any, shape: any, point: [number, number, number]):
   let best = -1, bestD = Infinity;
   try {
     const pnt = s0.keep(new oc.gp_Pnt_3(point[0], point[1], point[2]));
-    const vtx = s0.keep(new oc.BRepBuilderAPI_MakeVertex(pnt)).Vertex();
+    const vtx = s0.keep(s0.keep(new oc.BRepBuilderAPI_MakeVertex(pnt)).Vertex());
     const n = map.Extent();
     for (let i = 1; i <= n; i++) {
       const s = new WasmScope();
       try {
-        const face = oc.TopoDS.Face_1(map.FindKey(i));
+        const face = s.keep(mapSub(map, i, (key: any) => oc.TopoDS.Face_1(key)));
         const dss  = s.keep(new oc.BRepExtrema_DistShapeShape_1());
         dss.LoadS1(vtx); dss.LoadS2(face);
-        dss.Perform(new oc.Message_ProgressRange_1());
+        dss.Perform(s.keep(new oc.Message_ProgressRange_1()));
         if (dss.IsDone() && dss.Value() < bestD) { bestD = dss.Value(); best = i - 1; }
       } catch { /* unmeasurable face */ } finally { s.free(); }
     }
@@ -282,15 +282,18 @@ function vertexSig(oc: any, vertex: any): VertexSig {
 function vertexCloudScale(oc: any, shape: any): number {
   const map = subMap(oc, shape, oc.TopAbs_ShapeEnum.TopAbs_VERTEX);
   const lo = [Infinity, Infinity, Infinity], hi = [-Infinity, -Infinity, -Infinity];
-  const n = map.Extent();
-  for (let i = 1; i <= n; i++) {
-    const v = oc.TopoDS.Vertex_1(map.FindKey(i));
-    const p = oc.BRep_Tool.Pnt(v);
-    const c = [p.X(), p.Y(), p.Z()];
-    for (let k = 0; k < 3; k++) { lo[k] = Math.min(lo[k], c[k]); hi[k] = Math.max(hi[k], c[k]); }
-    try { p.delete(); } catch {} try { v.delete(); } catch {}
-  }
-  map.delete();
+  try {
+    const n = map.Extent();
+    for (let i = 1; i <= n; i++) {
+      const scope = new WasmScope();
+      try {
+        const v = scope.keep(mapSub(map, i, (key: any) => oc.TopoDS.Vertex_1(key)));
+        const p = scope.keep(oc.BRep_Tool.Pnt(v));
+        const c = [p.X(), p.Y(), p.Z()];
+        for (let k = 0; k < 3; k++) { lo[k] = Math.min(lo[k], c[k]); hi[k] = Math.max(hi[k], c[k]); }
+      } finally { scope.free(); }
+    }
+  } finally { map.delete(); }
   const d = Math.hypot(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]);
   return d > 1e-6 ? d : 1;
 }
@@ -303,18 +306,30 @@ function vertexCloudScale(oc: any, shape: any): number {
  *  face-index-invariant). Raw TopExp_Explorer would double-count shared edges. */
 function subMap(oc: any, shape: any, enumType: any): any {
   const map = new oc.TopTools_IndexedMapOfShape_1();
-  const exp = new oc.TopExp_Explorer_2(shape, enumType, oc.TopAbs_ShapeEnum.TopAbs_SHAPE);
-  while (exp.More()) { map.Add(exp.Current()); exp.Next(); }
-  exp.delete();
-  return map;
+  try {
+    const exp = new oc.TopExp_Explorer_2(shape, enumType, oc.TopAbs_ShapeEnum.TopAbs_SHAPE);
+    try {
+      while (exp.More()) {
+        const current = exp.Current();
+        try { map.Add(current); } finally { current.delete(); }
+        exp.Next();
+      }
+    } finally { exp.delete(); }
+    return map;
+  } catch (error) { map.delete(); throw error; }
+}
+
+/** FindKey and the typed cast each return an owned native wrapper. */
+function mapSub(map: any, index: number, cast: (key: any) => any): any {
+  const key = map.FindKey(index);
+  try { return cast(key); } finally { key.delete(); }
 }
 
 /** The sub-shape at ordinal `n` (0-based). Caller deletes the returned shape. */
 function nthSub(oc: any, shape: any, enumType: any, n: number, cast: (c: any) => any): any | null {
   const map = subMap(oc, shape, enumType);
-  const out = (n >= 0 && n < map.Extent()) ? cast(map.FindKey(n + 1)) : null;   // FindKey is 1-based
-  map.delete();
-  return out;
+  try { return (n >= 0 && n < map.Extent()) ? mapSub(map, n + 1, cast) : null; } // FindKey is 1-based
+  finally { map.delete(); }
 }
 
 /** Generic best-match resolver over every (deduped) sub-shape of a kind. */
@@ -325,16 +340,17 @@ function resolve(
   score: (cand: any) => number,
 ): ResolveResult {
   const map = subMap(oc, shape, enumType);
-  const n = map.Extent();
   let best = Infinity, bestIdx = -1, second = Infinity;
-  for (let i = 1; i <= n; i++) {
-    const sub = cast(map.FindKey(i));
-    let sc = Infinity;
-    try { sc = score(sig(sub)); } catch { /* unscoreable candidate */ } finally { try { sub.delete(); } catch {} }
-    if (sc < best) { second = best; best = sc; bestIdx = i - 1; }
-    else if (sc < second) { second = sc; }
-  }
-  map.delete();
+  try {
+    const n = map.Extent();
+    for (let i = 1; i <= n; i++) {
+      const sub = mapSub(map, i, cast);
+      let sc = Infinity;
+      try { sc = score(sig(sub)); } catch { /* unscoreable candidate */ } finally { try { sub.delete(); } catch {} }
+      if (sc < best) { second = best; best = sc; bestIdx = i - 1; }
+      else if (sc < second) { second = sc; }
+    }
+  } finally { map.delete(); }
 
   if (bestIdx < 0) return { index: -1, score: Infinity, runnerUp: Infinity, rejected: true, reason: 'no candidates' };
   const ambiguous = (second - best) < AMBIG_MARGIN;
