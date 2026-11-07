@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 
 const ref = JSON.parse(readFileSync('spec/process/active-work.v1.json', 'utf8')).uiReference;
 assert.equal(ref.sha, '88c535c652dac8b04f0d68fa144cf8486afdc926');
@@ -13,6 +13,16 @@ for (const [path, component] of [
   const source = readFileSync(path, 'utf8');
   assert.match(source, new RegExp('\\b' + component + '\\b'), path + ' must mount the canonical product UI');
   assert.doesNotMatch(source, /LegacyCadShell|useKompasDesktop|matchMedia|innerWidth/, path + ': UI shell routing cannot revert to the retired layout');
+}
+for (const path of [
+  'src/web/CadFileMenu.tsx',
+  'src/web/CadShellCommandGroups.tsx',
+  'src/web/CadShellReferenceGroups.tsx',
+  'src/web/CadShellMenu.tsx',
+  'src/web/CadShellKeys.ts',
+  'src/web/CadUiActionControls.tsx',
+]) {
+  assert.equal(existsSync(path), false, path + ' is retired; the canonical KOMPAS shell must remain its sole owner');
 }
 const entry = readFileSync('src/web/index.tsx', 'utf8');
 assert.match(entry, /kompas\/kompas-responsive\.css/, 'compact layout must be supplied by KOMPAS CSS, not legacy components');

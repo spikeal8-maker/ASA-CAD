@@ -23,7 +23,7 @@ try {
         const response = await page.goto(`${source.url}/cad/?uiScale=100`, { waitUntil: 'networkidle' });
         assert.equal(response.status(), 200);
         await page.locator('.cad-app[data-document-kind="part"]').waitFor();
-        await page.locator('canvas').first().waitFor();
+        await page.locator('[data-testid="cad-viewport"][data-scene-revision="reference"] canvas').waitFor();
         await page.evaluate(() => document.fonts.ready);
         const file = `${source.side}/kompas-${width}x${height}.png`;
         const png = await page.screenshot({ path: join(root, file), fullPage: false });
