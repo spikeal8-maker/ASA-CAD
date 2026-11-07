@@ -10,7 +10,7 @@ U2: настоящий Sketch-in-Viewport, Line/Rectangle/Circle/Arc и числ
 
 ## Канон и принятая база
 
-- Принятая integration-база: `20603c34f277dc9f0cf2696f5bd3971dd7645678` — одна продуктовая оболочка `src/web/kompas` для desktop/tablet/phone, без legacy fallback.
+- Принятая integration-база: `6efe79c27c497aabd4ec31c8c61c63586fc26011` (#218) — одна продуктовая оболочка `src/web/kompas` для desktop/tablet/phone, без legacy fallback.
 - Main: `1f8d2627da7ddfa63b31876d46347d0b8080c154`, прежняя версия без текущих repairs. Main/production не обновлены.
 - Frozen reference #170: tag `ui-reference-20261004`, SHA `88c535c652dac8b04f0d68fa144cf8486afdc926`; UI/UX reference, не второе CAD-ядро.
 - CadDocument/CadApplication/history → typed actions/ASA adapters → PlaneGCS/solved profile/OpenCascade B-Rep; Three.js отображает результат.
@@ -18,20 +18,23 @@ U2: настоящий Sketch-in-Viewport, Line/Rectangle/Circle/Arc и числ
 
 U1A/U1B/U1C объединены в #195/#196; #202 закрепил responsive KOMPAS. Приняты #209 (CI runner), #208 (LEGACY-CLEANUP-202), #210–#216 (refs, async/recovery, topology, solved profiles и Fixed). Подробные результаты и hashes сохранены в canonical audit report.
 
-Repairs приняты после exact CI и независимого review. #216: 9/9 PR и 8/8 post-merge jobs SUCCESS; ordinary Fixed и Protected Part/Docker PASS, четыре пары PNG одинаковы. Final visual/theme parity PENDING. #213 — закрытый предшественник #215.
+Repairs приняты после exact CI и независимого review. Final visual/theme parity PENDING; #213 — закрытый предшественник #215.
 
 ## Аудит и обязательный долг
 
 STANDARD measurement на общей базе: 10 phases, 106 samples, 20 warmups, correctness PASS. Raw evidence и воспроизводимый harness сохранены в отчёте. Browser cold-start, SLO и native-heap cleanliness не заявляются.
 
-Full-web debt закрывается этим пакетом после exact CI, независимого review и merge: прежние 8 ошибок устранены, постоянный `typecheck:web` проверяет все 183 roots (182 исходных + typed workspace owner), включая fixtures. M2 CI запускает gate также при изменении импортируемого vendor source/типов. Frozen budgets понижены без роста owners.
+Full-web debt закрыт #218: 8 → 0 diagnostics, все 183 physical roots и fixtures в постоянном `typecheck:web`. Exact CI 9/9 SUCCESS, independent APPROVE; четыре actual PNG пары до/после одинаковы. M2 gate покрывает также vendor source/типы; frozen ceilings понижены.
 
-Остаются два OPEN долга, ответственный ChatGPT `/root`; устранить до приёмки U2 / следующей milestone boundary:
+Vendor StableRef lifetime закрывается этим repair после exact CI/review/merge: один и тот же corpus14 на реальном OCC, 451 live owning wrappers → 0; успех/ошибки и borrowed solid проверены. Тест включён в обязательный M1 Protected Part. Это scoped lifetime proof, не оценка всего native heap.
+
+Остаётся OPEN долг, ответственный ChatGPT `/root`; устранить до приёмки U2 / следующей milestone boundary:
 
 - Toolchain: 16 affected package entries / 21 GHSA. Static runtime intersection 0 не закрывает High findings.
-- Vendor StableRef lifetime P2: owning Current/FindKey wrappers. Дополнительный gate — до расширения соответствующих paths. ASA cleanup не закрывает vendor leak.
 
 Frozen owners не растут; новый долг/ответственность сверх pressure policy запрещены. LICENSE/THIRD_PARTY_NOTICE остаётся pre-beta gate. `DETECT_ONLY` / `ADMIN_BRANCH_PROTECTION_NOT_ENFORCED` — `KNOWN_RISK`, не ENFORCED и по действующему разрешению не запрет U2.
+
+Cadence от #217: #218 = 1/3; этот repair станет 2/3 после приёмки. Третий accepted slice требует Full Audit до продолжения feature work.
 
 ## Очередь и полномочия
 

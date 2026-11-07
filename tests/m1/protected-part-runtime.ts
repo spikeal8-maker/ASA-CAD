@@ -180,3 +180,6 @@ await runRuntimeAsyncRegression(oc);
 
 const { runStableTopologyRegression } = await import('./stable-topology-runtime');
 await runStableTopologyRegression(oc);
+
+const { runStableRefLifetimeRegression } = await import('./stable-ref-lifetime');
+await runStableRefLifetimeRegression(oc);
