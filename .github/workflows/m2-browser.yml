@@ -108,6 +108,9 @@ jobs:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m2/extrude-parameters-browser.mjs
 
+      - name: Verify current solved-profile actions and shared solver lifecycle
+        run: node tests/m2/solved-profile-eligibility-browser.mjs
+
       - name: Exercise V5 ordinary Part lesson sequence
         env:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/

@@ -1,4 +1,3 @@
-import { cutAvailability, featureProfileSketch } from './PartFeatureAvailability';
 import type { CadUiActionExecutor } from './CadUiAction';
 import { useM2CadUiActions } from './useM2CadUiActions';
 import type { usePartSketchWorkspace } from './usePartSketchWorkspace';
@@ -103,7 +102,7 @@ export function usePartCadUiActionCatalog(options: PartCadUiActionCatalogOptions
     canExtrude: workspace.extrude.canStart,
     extrudeDisabledReason: workspace.extrude.disabledReason,
     canCutExtrude: workspace.canCut,
-    cutExtrudeDisabledReason: cutAvailability(workspace.part, featureProfileSketch(workspace.part, workspace.sketch)).reason,
+    cutExtrudeDisabledReason: workspace.cutDisabledReason,
     canFillet: workspace.canFillet,
   });
 }

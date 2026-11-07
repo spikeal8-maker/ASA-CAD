@@ -5,8 +5,9 @@ import type { CadDocument, CadSketch } from '../contracts/document';
 import type { CadSketchId, CadStableReferenceId } from '../contracts/ids';
 import type { CadViewportPick } from '../contracts/render';
 import type { CadWorkspacePanel, PartSketchSelectionMode } from './PartSketchWorkspaceTypes';
-import { findSketch, hasCircle, hasRectangle, partDocument } from './PartSketchWorkspaceModel';
-import { cutAvailability } from './PartFeatureAvailability';
+import { hasCircle, hasRectangle, partDocument } from './PartSketchWorkspaceModel';
+import { usePartFeatureProfile } from './usePartFeatureProfile';
+import { useCutOperationController } from './useCutOperationController';
 import { useExtrudeOperationController } from './useExtrudeOperationController';
 
 export interface PartFeatureControllerOptions {
@@ -42,10 +43,11 @@ export function usePartFeatureController(options: PartFeatureControllerOptions) 
   const circleReady = hasCircle(sketch);
   const hasSolid = Boolean(part?.bodies.length);
   const lastFeature = part?.features.at(-1);
-  const canCut = cutAvailability(part, sketch).enabled;
+  const profile = usePartFeatureProfile(app, sketch?.id ?? null);
+  const cut = useCutOperationController({ ...options, profile, rebuild: rebuildFeature });
   const canFillet = Boolean(hasSolid && lastFeature?.type === 'cut-extrude');
   const extrude = useExtrudeOperationController({
-    app, document, activeSketchId, sketch, setActiveCommand, setActiveWorkspace,
+    app, document, activeSketchId, sketch, profile, setActiveCommand, setActiveWorkspace,
     setPanel, setNotice, clearTransientSelection,
   });
 
@@ -93,33 +95,6 @@ export function usePartFeatureController(options: PartFeatureControllerOptions) 
     setActiveWorkspace('sketch');
     clearTransientSelection();
     setNotice(`Создан эскиз на ${supportText}`);
-  }
-
-  function beginCut() {
-    if (!canCut) return;
-    setActiveCommand('part.cutExtrude');
-    setPanel('parameters');
-    clearTransientSelection();
-    setNotice('Вырез будет выполнен сквозь всё тело');
-  }
-
-  async function commitCut() {
-    const currentPart = partDocument(app.getDocument());
-    const currentSketch = findSketch(currentPart, sketch?.id ?? null);
-    const check = cutAvailability(currentPart, currentSketch);
-    if (!currentSketch || !check.enabled) {
-      setNotice(check.reason ?? 'Вырез недоступен');
-      return;
-    }
-    const feature = await app.execute({
-      id: 'feature.cutExtrude',
-      payload: { sketchId: currentSketch.id, end: 'through-all' },
-    });
-    if (!feature.ok) {
-      setNotice(feature.error?.message ?? 'Не удалось создать вырез');
-      return;
-    }
-    await rebuildFeature('Перестроение сквозного выреза…', 'Ошибка перестроения выреза', 'Сквозной вырез построен локально');
   }
 
   function beginFillet() {
@@ -181,7 +156,7 @@ export function usePartFeatureController(options: PartFeatureControllerOptions) 
 
   return {
     part, sketchPlane, setSketchPlane: selectBasePlane, filletRadius, setFilletRadius,
-    rectangleReady, circleReady, hasSolid, canCut, canFillet, extrude,
-    beginCreateSketch, commitCreateSketch, beginCut, commitCut, beginFillet, commitFillet,
+    rectangleReady, circleReady, hasSolid, canCut: cut.canStart, cutDisabledReason: cut.disabledReason, canFillet, extrude,
+    beginCreateSketch, commitCreateSketch, beginCut: cut.begin, commitCut: cut.commit, beginFillet, commitFillet,
   };
 }

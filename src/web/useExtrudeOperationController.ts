@@ -5,6 +5,7 @@ import type { CadSketchId } from '../contracts/ids';
 import type { CadWorkspacePanel } from './PartSketchWorkspaceTypes';
 import { findSketch, partDocument } from './PartSketchWorkspaceModel';
 import { extrudeAvailability } from './PartFeatureAvailability';
+import type { PartFeatureProfile } from './PartFeatureProfile';
 
 export interface ExtrudeOperationController {
   profileId: CadSketchId | null;
@@ -26,6 +27,7 @@ export interface ExtrudeOperationController {
 
 export interface ExtrudeOperationControllerOptions {
   app: CadApplication;
+  profile: PartFeatureProfile;
   document: Readonly<CadDocument>;
   activeSketchId: CadSketchId | null;
   sketch: Readonly<CadSketch> | null;
@@ -45,10 +47,19 @@ export function useExtrudeOperationController(
   const [reverse, setReverse] = useState(false);
   const [symmetric, setSymmetricState] = useState(false);
   const [executionError, setExecutionError] = useState<string | null>(null);
-  const currentAvailability = availability(options.document, options.sketch, options.activeSketchId);
-  const validationError = Number.isFinite(distance) && distance > 0
-    ? executionError
-    : 'Расстояние должно быть больше 0';
+  const currentAvailability = inspect().availability;
+  const validationError = !currentAvailability.enabled
+    ? currentAvailability.reason ?? 'Выдавливание недоступно'
+    : Number.isFinite(distance) && distance > 0 ? executionError : 'Расстояние должно быть больше 0';
+
+  function inspect() {
+    const document = options.app.getDocument();
+    const sketch = findSketch(partDocument(document), options.sketch?.id ?? null);
+    return {
+      sketch,
+      availability: availability(document, sketch, options.activeSketchId, options.profile.getSnapshot()),
+    };
+  }
 
   function reset() {
     setDistance(10);
@@ -70,7 +81,11 @@ export function useExtrudeOperationController(
   }
 
   function begin() {
-    if (!currentAvailability.enabled) return;
+    const current = inspect().availability;
+    if (!current.enabled) {
+      options.setNotice(current.reason ?? 'Выдавливание недоступно');
+      return;
+    }
     reset();
     options.setActiveCommand('part.extrude');
     options.setPanel('parameters');
@@ -80,9 +95,7 @@ export function useExtrudeOperationController(
 
   async function commit() {
     setExecutionError(null);
-    const currentPart = partDocument(options.app.getDocument());
-    const currentSketch = findSketch(currentPart, options.sketch?.id ?? null);
-    const current = availability(options.app.getDocument(), currentSketch, null);
+    const { sketch: currentSketch, availability: current } = inspect();
     if (!current.enabled || !currentSketch) {
       const message = current.reason ?? 'Выдавливание недоступно';
       setExecutionError(message);

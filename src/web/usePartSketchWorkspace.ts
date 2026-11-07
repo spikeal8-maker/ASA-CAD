@@ -93,7 +93,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     if (activeCommand === 'dimension.edit') return dimensions.commitDimensionEdit();
   }
   return {
-    ...editing,
+    ...editing,...features,
     activeWorkspace,setActiveWorkspace,activeCommand,activeSketchId,
     selectedSketchEntityId: selectedEntityId,
     ...constraints,
@@ -101,12 +101,8 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     selectionMode: selection.selectionMode,selectedPick: selection.selectedPick,
     selectedBodyId: selection.selectedBodyId,
     selectedPlane: selection.selectedPlane,selectBasePlane: selection.selectBasePlane,
-    sketchPlane: features.sketchPlane,setSketchPlane: features.setSketchPlane,
-    extrude: features.extrude,
-    filletRadius: features.filletRadius,setFilletRadius: features.setFilletRadius,
     dimensionEditValue: dimensions.dimensionEditValue,setDimensionEditValue: dimensions.setDimensionEditValue,
-    part: features.part,sketch,rectangleReady: features.rectangleReady,circleReady: features.circleReady,
-    hasSolid: features.hasSolid,canCut: features.canCut,canFillet: features.canFillet,
+    sketch,
     selectedPointText: selection.selectedPointText,selectedBody: selection.selectedBody,
     clearTransientSelection: selection.clearTransientSelection,clearSelectedPick: selection.clearSelectedPick,
     clearSketchEntitySelection: clearEntitySelection,...navigation,
@@ -115,9 +111,6 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     deleteSelectedSketchEntity: entityMutations.deleteSelectedSketchEntity,
     toggleSelectedConstruction: entityMutations.toggleSelectedConstruction,
     translateSketchEntity: entityMutations.translateSketchEntity,
-    beginCreateSketch: features.beginCreateSketch,commitCreateSketch: features.commitCreateSketch,
-    beginCut: features.beginCut,commitCut: features.commitCut,
-    beginFillet: features.beginFillet,commitFillet: features.commitFillet,
     beginDimensionEdit: dimensions.beginDimensionEdit,commitDimensionEdit: dimensions.commitDimensionEdit,
     cancelCommand,commitActiveCommand,
   };
