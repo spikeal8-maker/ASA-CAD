@@ -73,6 +73,8 @@ jobs:
         run: node prototypes/fusion/tests/live-hole-wizard-browser.mjs
       - name: Real left-button drawing on the existing 2D sketch surface
         run: node prototypes/fusion/tests/live-sketch-input-browser.mjs
+      - name: Continuous Line, real endpoint constraints, numeric input and closed-profile extrusion
+        run: node prototypes/fusion/tests/live-fusion-line-behavior-browser.mjs
       - name: All 26 ViewCube directions, projection matrices and model picking
         run: node prototypes/fusion/tests/live-navigation-browser.mjs
       - name: Native menu hierarchy, saved scale, orientation frame and marking menu

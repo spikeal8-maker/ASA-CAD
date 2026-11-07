@@ -61,8 +61,10 @@ try{
  await page.waitForFunction(()=>document.querySelector('.live-workarea')?.getAttribute('data-active-command')==='');assert.equal(await page.locator('.live-parameters').count(),0);
  assert.equal(await tool('part.sketch.create').isEnabled(),true);await quick('system.redo').click();await page.locator('[data-timeline-sketch]').first().click();
  await page.waitForSelector('.live-workarea[data-workspace="sketch"]');await count(0);report.emptySketchUndoRedo=true;
- phase='undo-dimension-target';await tool('sketch.line').click();await click([-10,10]);await click([10,10]);await count(1);await page.keyboard.press('Escape');
- await click([0,10]);await contextCommand('dimension.linear',[0,10]);await page.getByLabel('Размер',{exact:true}).waitFor();await quick('system.undo').click();await count(0);
+ // Isolate target deletion with one unconstrained Line. Automatic H/V adds its
+ // own real Undo frame; Line 003 separately verifies that non-atomic history.
+ phase='undo-dimension-target';await tool('sketch.line').click();await click([-10,10]);await click([10,15]);await count(1);await page.keyboard.press('Escape');
+ await click([0,12.5]);await contextCommand('dimension.linear',[0,12.5]);await page.getByLabel('Размер',{exact:true}).waitFor();await quick('system.undo').click();await count(0);
  await page.waitForFunction(()=>document.querySelector('.live-workarea')?.getAttribute('data-active-command')==='');
  assert.equal(await page.locator('.live-workarea').getAttribute('data-workspace'),'sketch');assert.equal(await page.getByLabel('Размер',{exact:true}).count(),0);report.removedDimensionTargetCancels=true;
  await screenshot('new-2048');
@@ -156,14 +158,30 @@ try{
  await page.mouse.move(activePoint.x,activePoint.y);await page.mouse.down({button:'middle'});await page.mouse.move(activePoint.x+30,activePoint.y+20,{steps:3});await page.mouse.up({button:'middle'});
  assert.notDeepEqual((await view()).center,activeBefore.center);await count(6);await page.keyboard.press('Escape');
  await page.getByRole('button',{name:'Главный вид модели',exact:true}).click();
- await click([20,30],{button:'right'});assert.equal(await page.locator('.live-marking[data-marking-level="root"]').count(),1);await screenshot('context-2048');
+ await click([20,30],{button:'right'});
+ await page.locator('.live-marking[data-marking-level="root"]').waitFor({state:'visible',timeout:15000});
+ assert.equal(await page.locator('.live-marking[data-marking-level="root"]').count(),1);await screenshot('context-2048');
  await page.locator('.live-marking [data-marking-slot="4"]').hover();await page.locator('.live-marking[data-marking-level="sketch"]').waitFor();await screenshot('context-sketch-2048');await page.keyboard.press('Escape');
 
  phase='snap-and-undo';
  const snapSwitch=page.locator('[data-sketch-option="snap"]');await snapSwitch.check();
  await tool('sketch.line').click();await click([30.4,20.4]);await click([35,25]);await count(7);await page.keyboard.press('Escape');
- let added=(await save()).sketches[0].entities.at(-1);assert.equal(added.type,'line');
+ const snappedDocument=await save();let added=snappedDocument.sketches[0].entities.at(-1);assert.equal(added.type,'line');
  assert.ok(Math.hypot(added.data.from[0]-30,added.data.from[1]-20)<.001,'endpoint snap changes the committed coordinate');
+ const endpointLinks=snappedDocument.constraints.filter(c=>c.type==='coincident'&&c.data.refs.some(ref=>ref.entityId===added.id));
+ assert.equal(endpointLinks.length,1,'endpoint snap persists one real Coincident');const endpointLink=endpointLinks[0];
+ assert.equal(endpointLink.data.refs.length,2);assert.ok(endpointLink.data.refs.some(ref=>ref.entityId===added.id&&ref.point==='a'));
+ const endpointRef=endpointLink.data.refs.find(ref=>ref.entityId!==added.id);
+ assert.ok(endpointRef&&(endpointRef.point==='a'||endpointRef.point==='b'),'Coincident references an existing endpoint');
+ const endpointEntity=snappedDocument.sketches[0].entities.find(entity=>entity.id===endpointRef.entityId);
+ assert.equal(endpointEntity?.type,'line');const endpoint=endpointRef.point==='a'?endpointEntity.data.from:endpointEntity.data.to;
+ assert.ok(Math.hypot(endpoint[0]-30,endpoint[1]-20)<.001,'Coincident targets the snapped corner');
+ // The existing command contract records Coincident and Line in separate Undo
+ // frames. Verify both states explicitly; this coordinate test assumes no transaction.
+ await page.locator('[data-sketch-constraint-id="'+endpointLink.id+'"]').waitFor();
+ await quick('system.undo').click();await page.locator('[data-sketch-constraint-id="'+endpointLink.id+'"]').waitFor({state:'detached'});await count(7);
+ const afterSnapLinkUndo=await save();assert.ok(afterSnapLinkUndo.sketches[0].entities.some(entity=>entity.id===added.id),'first Undo retains the created Line');
+ assert.equal(afterSnapLinkUndo.constraints.some(constraint=>constraint.id===endpointLink.id),false,'first Undo removes the actual Coincident');
  await quick('system.undo').click();await count(6);
  await snapSwitch.uncheck();await tool('sketch.line').click();await click([30.4,20.4]);await click([35.4,25.4]);await count(7);await page.keyboard.press('Escape');
  added=(await save()).sketches[0].entities.at(-1);
@@ -174,7 +192,7 @@ try{
  await click([15,30]);await click([20,30]);await click([15,35]);await count(7);await page.keyboard.press('Escape');
  const arc=(await save()).sketches[0].entities.find(entity=>entity.type==='arc');assert.ok(arc);assert.ok(Math.abs(arc.data.radius-5)<.001);
  await click([25,-35]);await page.keyboard.press('Control+z');await count(6);await page.keyboard.press('Control+y');await count(7);await quick('system.undo').click();await count(6);
- report.snapping={endpointChangesCommittedCoordinate:true,disabledUsesPointerCoordinate:true};report.arc={threeRealClicks:true,radius:5};report.keyboardHistory={undo:true,redo:true};
+ report.snapping={endpointChangesCommittedCoordinate:true,disabledUsesPointerCoordinate:true,realEndpointCoincident:{id:endpointLink.id,refs:endpointLink.data.refs},endpointSnapUndo:{firstRemovesCoincidentRetainsLine:true,secondRemovesLine:true},snapOffUndoFrames:1};report.arc={threeRealClicks:true,radius:5};report.keyboardHistory={undo:true,redo:true};
  phase='entity-drag';
  const beforeDrag=await solvedLine.evaluate(e=>['x1','y1','x2','y2'].map(name=>Number(e.getAttribute(name))));
  const middle=[(beforeDrag[0]+beforeDrag[2])/2,-(beforeDrag[1]+beforeDrag[3])/2];await click(middle);

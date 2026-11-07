@@ -5,8 +5,8 @@ const root=path.resolve(__dirname,'../../..');
 const req=createRequire(path.join(root,'vendor/toubkal/package.json'));
 const {rspack,NormalModuleReplacementPlugin,HtmlRspackPlugin}=req('@rspack/core');
 const base=require(path.join(root,'build/rspack.asa.config.cjs'));
-const swaps={CadShellTop:'LiveTop.tsx',CadShellMain:'LiveMain.tsx',CadShellBottom:'LiveBottom.tsx',ViewportReferenceLayer:'LiveReferenceLayer.ts',SketchEditingStage:'LiveSketchStage.tsx'};
-const replacement=new NormalModuleReplacementPlugin(/(CadShellTop|CadShellMain|CadShellBottom|ViewportReferenceLayer|SketchEditingStage|OrbitControls\.js|^three$)/,r=>{
+const swaps={CadShellTop:'LiveTop.tsx',CadShellMain:'LiveMain.tsx',CadShellBottom:'LiveBottom.tsx',ViewportReferenceLayer:'LiveReferenceLayer.ts',SketchEditingStage:'LiveSketchStage.tsx',useSketchLineTool:'LiveSketchLineTool.ts'};
+const replacement=new NormalModuleReplacementPlugin(/(CadShellTop|CadShellMain|CadShellBottom|ViewportReferenceLayer|SketchEditingStage|useSketchLineTool|OrbitControls\.js|^three$)/,r=>{
  const ctx=r.context.replaceAll('\\','/');
  if(!ctx.includes('/src/web'))return;
  const name=r.request.split('/').pop();

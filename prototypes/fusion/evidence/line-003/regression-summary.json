@@ -1,0 +1,751 @@
+{
+  "schemaVersion": 1,
+  "task": "FUSION-SKETCH-TOOLS-BEHAVIOR-003",
+  "status": "PASS",
+  "nativeBehaviorAcceptance": "BLOCKED_PRODUCT_CONTRACT",
+  "visualParityAccepted": false,
+  "finalRun": {
+    "device": "D2-R2",
+    "directory": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z",
+    "summary": {
+      "file": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\summary.json",
+      "sha256": "dbea712b9a436caa3d57b9b6ba4a1bca7303878b02c11e7ca258ea632078b439"
+    },
+    "startedUTC": "2026-11-07T17:45:10.464Z",
+    "finishedUTC": "2026-11-07T17:47:13.308Z"
+  },
+  "source": {
+    "headAtRun": "99eb8d2ca5c0a6e9790fe65e18cfe064fe5b8390",
+    "branchAtRun": "visual/fusion-sketch-tools-behavior-v3",
+    "sourceSnapshotSha256": "38bc5a2c67daae5c52eb9bed91659a0a40f211956ab20971b7c58a46e144c812",
+    "sourceSnapshotDescriptor": {
+      "baseHead": "cb7006efe7a108bc85bcf99d3a3e4a9c2f73568b",
+      "delta": [
+        {
+          "path": "prototypes/fusion/live/LiveLineInput.tsx",
+          "sha256": "c9e167f28853f1ee8b7a1291ab37dac2f293c39a9c75d7f6cf880c76a5834d29"
+        },
+        {
+          "path": "prototypes/fusion/live/LiveLineInteraction.ts",
+          "sha256": "51c17f50e1acaee167685f878241634827b54808c4c2a45998392a116d92b8fa"
+        },
+        {
+          "path": "prototypes/fusion/live/LiveMain.tsx",
+          "sha256": "617ef013d3c3d83be66b3e508158b35b9d2ea0eae6347ee6131110d5d7fe4e53"
+        },
+        {
+          "path": "prototypes/fusion/live/LiveSketchLineTool.ts",
+          "sha256": "46a0cd748d639d64b6e611d87bc70b49ece0dd33b082e1b7aa7ca57c76c3f57b"
+        },
+        {
+          "path": "prototypes/fusion/live/LiveSketchStage.tsx",
+          "sha256": "7d0d18515380a9999f0536ba51493a5927e755415cd895e0854b215a54cf6700"
+        },
+        {
+          "path": "prototypes/fusion/live/MarkingMenu.tsx",
+          "sha256": "59c35ca8985f7e917bed92c2be1cc0afc359ffe79e969461937afb862ce8bcf1"
+        },
+        {
+          "path": "prototypes/fusion/live/SketchDimensionAnnotations.tsx",
+          "sha256": "4e754fadc735f478883faa3f4cb83288abcbb89fe7db33ede60b93241901a8e0"
+        },
+        {
+          "path": "prototypes/fusion/live/lineInput.css",
+          "sha256": "31a400691bb282b96329dc66f06bf91be99a47296a0bb404e24da737655ea80f"
+        },
+        {
+          "path": "prototypes/fusion/live/run.cjs",
+          "sha256": "1c4fa06389fefbd8c409b1a5aaeafb905fedd10e086236818ea02f236615faa4"
+        },
+        {
+          "path": "prototypes/fusion/live/sketchDimensionLayout.ts",
+          "sha256": "d5b1455664e0477cf7336f3d18cc286051b85a8d70712953e89ef4d8e2c885f2"
+        }
+      ]
+    },
+    "distInventorySha256": "261220fdce71fd2da485dc0a186af21044efcae3062e83edd102fbd79406ee98",
+    "distFiles": 97,
+    "testInputsSha256": "e809159b6b3613e2ae08689b5ea106b748c66e1bd4d274a9093f31f110ee6d6f",
+    "testInputs": [
+      {
+        "file": "live-ribbon-browser.mjs",
+        "sha256": "cf116271213555d038a2f253757fc00164803c79bdd25542eecac466af5ba065"
+      },
+      {
+        "file": "live-kernel-browser.mjs",
+        "sha256": "50f3c7c12b2ea6078f7b9807f89974abd97daebf9fdb5ef41876486b2e16e54a"
+      },
+      {
+        "file": "live-protected-part-browser.mjs",
+        "sha256": "78d9512c3f974e76d76376bfe5736493523d304602596e0056aa50425898ff53"
+      },
+      {
+        "file": "live-hole-wizard-browser.mjs",
+        "sha256": "26e002d3ade4e3c03ebdc872286aa0ae783ee974089344013c8021c74e27df62"
+      },
+      {
+        "file": "live-sketch-input-browser.mjs",
+        "sha256": "6a562815d44910a64af25050e8b42421beeb5392976f978a41897f7f861762fc"
+      },
+      {
+        "file": "live-navigation-browser.mjs",
+        "sha256": "5c5aee3f4c00ea6f3f0264249b0d215267ee59d0a01f62afe8f70fdaa50dc58c"
+      },
+      {
+        "file": "live-interaction-browser.mjs",
+        "sha256": "29ca1a5f60e402c1098874d6e1416296bd8ad7d027499a89e06384852dd489d9"
+      },
+      {
+        "file": "live-sketch-workspace-browser.mjs",
+        "sha256": "e6322d71f46dab78bbd5821cca596de642f82e6364306509d38e3ba9e8aa1014"
+      },
+      {
+        "file": "live-sketch-frame.mjs",
+        "sha256": "42402acc2566fd0df19a5a46443052aee1aa99508be6b4092e3ab6b3c2c32b3d"
+      },
+      {
+        "file": "live-sketch-field-browser.mjs",
+        "sha256": "2833ac9d169afb323228811613a53226b0f0ef3bb83d2cabbf1377f26673d2cd"
+      },
+      {
+        "file": "live-sketch-parity-browser.mjs",
+        "sha256": "2c4fc946e0ff623bf93b4ad562a4b3ba47828105ffacac1eb87ad0e42a0a0a3c"
+      },
+      {
+        "file": "live-sketch-dimensions.mjs",
+        "sha256": "936790ae91224e5aac421fe564a3dbfb9baca434dbaa00086d29998c1c81b2ef"
+      },
+      {
+        "file": "live-sketch-dimensions-browser.mjs",
+        "sha256": "aa82b00dbf63f3c1b818b3b366186fbf4cd96912ed0bf0f68bc7993c4c64b2f9"
+      },
+      {
+        "file": "live-sketch-actions-browser.mjs",
+        "sha256": "8e9a4c21224a942c63731d43f7852df635518a8b32d7fe51b4a1ab6fddf9c98e"
+      },
+      {
+        "file": "live-sketch-actions-harness.mjs",
+        "sha256": "6216fa7e0c3b42b91b45ad01dfd8bf418a5da48ecfabc1a4af22e76b2cb89aa7"
+      },
+      {
+        "file": "live-sketch-dimension-native-evidence.mjs",
+        "sha256": "96ff5a485342e7af745996173d8a3b89929cfc93dde49c0fa16352fbad5e3fcf"
+      }
+    ],
+    "runtimeUnchanged": true,
+    "testsUnchanged": true,
+    "scope": "Exact build-input and test snapshot in the precommit working tree. This is not a claim of completed exact-final-HEAD CI."
+  },
+  "gates": [
+    {
+      "name": "live-ribbon-browser.mjs",
+      "status": "PASS",
+      "exitCode": 0,
+      "origin": "http://127.0.0.1:65235/",
+      "startedUTC": "2026-11-07T17:45:10.835Z",
+      "finishedUTC": "2026-11-07T17:45:13.501Z",
+      "externalEvidence": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\01-live-ribbon-browser",
+      "serverClosed": true,
+      "serverPortClosed": true,
+      "ownedProfiles": [
+        {
+          "pid": 35868,
+          "path": "C:\\Users\\spike\\AppData\\Local\\Temp\\playwright_chromiumdev_profile-8YauIG",
+          "existsAfterTest": false,
+          "exitRecorded": true
+        }
+      ],
+      "nestedServerUrls": [],
+      "nestedPortsClosed": [],
+      "reports": [
+        {
+          "file": "fusion-live-ribbon-checks.json",
+          "status": "PASS",
+          "phase": null,
+          "error": null,
+          "servers": null,
+          "ownedServersClosed": null
+        }
+      ]
+    },
+    {
+      "name": "live-kernel-browser.mjs",
+      "status": "PASS",
+      "exitCode": 0,
+      "origin": "http://127.0.0.1:61353/",
+      "startedUTC": "2026-11-07T17:45:13.642Z",
+      "finishedUTC": "2026-11-07T17:45:21.960Z",
+      "externalEvidence": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\02-live-kernel-browser",
+      "serverClosed": true,
+      "serverPortClosed": true,
+      "ownedProfiles": [
+        {
+          "pid": 35540,
+          "path": "C:\\Users\\spike\\AppData\\Local\\Temp\\playwright_chromiumdev_profile-dlI2nH",
+          "existsAfterTest": false,
+          "exitRecorded": true
+        }
+      ],
+      "nestedServerUrls": [],
+      "nestedPortsClosed": [],
+      "reports": [
+        {
+          "file": "fusion-live-kernel-checks.json",
+          "status": "PASS",
+          "phase": null,
+          "error": null,
+          "servers": null,
+          "ownedServersClosed": null
+        }
+      ]
+    },
+    {
+      "name": "live-protected-part-browser.mjs",
+      "status": "PASS",
+      "exitCode": 0,
+      "origin": "http://127.0.0.1:56948/",
+      "startedUTC": "2026-11-07T17:45:22.117Z",
+      "finishedUTC": "2026-11-07T17:45:31.889Z",
+      "externalEvidence": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\03-live-protected-part-browser",
+      "serverClosed": true,
+      "serverPortClosed": true,
+      "ownedProfiles": [
+        {
+          "pid": 40040,
+          "path": "C:\\Users\\spike\\AppData\\Local\\Temp\\playwright_chromiumdev_profile-EODifK",
+          "existsAfterTest": false,
+          "exitRecorded": true
+        }
+      ],
+      "nestedServerUrls": [],
+      "nestedPortsClosed": [],
+      "reports": [
+        {
+          "file": "fusion-live-protected-part-checks.json",
+          "status": "PASS",
+          "phase": null,
+          "error": null,
+          "servers": null,
+          "ownedServersClosed": null
+        }
+      ]
+    },
+    {
+      "name": "live-hole-wizard-browser.mjs",
+      "status": "PASS",
+      "exitCode": 0,
+      "origin": "http://127.0.0.1:49985/",
+      "startedUTC": "2026-11-07T17:45:32.031Z",
+      "finishedUTC": "2026-11-07T17:45:41.205Z",
+      "externalEvidence": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\04-live-hole-wizard-browser",
+      "serverClosed": true,
+      "serverPortClosed": true,
+      "ownedProfiles": [
+        {
+          "pid": 37928,
+          "path": "C:\\Users\\spike\\AppData\\Local\\Temp\\playwright_chromiumdev_profile-myPZsT",
+          "existsAfterTest": false,
+          "exitRecorded": true
+        }
+      ],
+      "nestedServerUrls": [],
+      "nestedPortsClosed": [],
+      "reports": [
+        {
+          "file": "fusion-v7-hole-checks.json",
+          "status": "PASS",
+          "phase": null,
+          "error": null,
+          "servers": null,
+          "ownedServersClosed": null
+        }
+      ]
+    },
+    {
+      "name": "live-sketch-input-browser.mjs",
+      "status": "PASS",
+      "exitCode": 0,
+      "origin": "http://127.0.0.1:60913/",
+      "startedUTC": "2026-11-07T17:45:41.365Z",
+      "finishedUTC": "2026-11-07T17:46:58.808Z",
+      "externalEvidence": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser",
+      "serverClosed": true,
+      "serverPortClosed": true,
+      "ownedProfiles": [
+        {
+          "pid": 35324,
+          "path": "C:\\Users\\spike\\AppData\\Local\\Temp\\playwright_chromiumdev_profile-oorLwb",
+          "existsAfterTest": false,
+          "exitRecorded": true
+        },
+        {
+          "pid": 29372,
+          "path": "C:\\Users\\spike\\AppData\\Local\\Temp\\playwright_chromiumdev_profile-6qkN8i",
+          "existsAfterTest": false,
+          "exitRecorded": true
+        },
+        {
+          "pid": 34032,
+          "path": "C:\\Users\\spike\\AppData\\Local\\Temp\\playwright_chromiumdev_profile-fhGbxg",
+          "existsAfterTest": false,
+          "exitRecorded": true
+        },
+        {
+          "pid": 1108,
+          "path": "C:\\Users\\spike\\AppData\\Local\\Temp\\playwright_chromiumdev_profile-nabqjO",
+          "existsAfterTest": false,
+          "exitRecorded": true
+        },
+        {
+          "pid": 42040,
+          "path": "C:\\Users\\spike\\AppData\\Local\\Temp\\playwright_chromiumdev_profile-5LPgPf",
+          "existsAfterTest": false,
+          "exitRecorded": true
+        },
+        {
+          "pid": 30112,
+          "path": "C:\\Users\\spike\\AppData\\Local\\Temp\\playwright_chromiumdev_profile-660vJG",
+          "existsAfterTest": false,
+          "exitRecorded": true
+        }
+      ],
+      "nestedServerUrls": [
+        "http://127.0.0.1:51327/"
+      ],
+      "nestedPortsClosed": [
+        {
+          "url": "http://127.0.0.1:51327/",
+          "closed": true
+        }
+      ],
+      "reports": [
+        {
+          "file": "fusion-live-sketch-actions-checks.json",
+          "status": "PASS",
+          "phase": null,
+          "error": null,
+          "servers": null,
+          "ownedServersClosed": null
+        },
+        {
+          "file": "fusion-live-sketch-dimensions-checks.json",
+          "status": "PASS",
+          "phase": null,
+          "error": null,
+          "servers": [
+            {
+              "role": "candidate",
+              "url": "http://127.0.0.1:51327/"
+            }
+          ],
+          "ownedServersClosed": true
+        },
+        {
+          "file": "fusion-live-sketch-field-checks.json",
+          "status": "PASS",
+          "phase": null,
+          "error": null,
+          "servers": null,
+          "ownedServersClosed": null
+        },
+        {
+          "file": "fusion-live-sketch-input-checks.json",
+          "status": "PASS",
+          "phase": null,
+          "error": null,
+          "servers": null,
+          "ownedServersClosed": null
+        },
+        {
+          "file": "fusion-live-sketch-parity-checks.json",
+          "status": "CAPTURED",
+          "phase": null,
+          "error": null,
+          "servers": null,
+          "ownedServersClosed": null
+        },
+        {
+          "file": "fusion-live-sketch-visual-review.json",
+          "status": "NOT_ACCEPTED",
+          "phase": null,
+          "error": null,
+          "servers": null,
+          "ownedServersClosed": null
+        },
+        {
+          "file": "fusion-live-sketch-workspace-checks.json",
+          "status": "PASS",
+          "phase": null,
+          "error": null,
+          "servers": null,
+          "ownedServersClosed": null
+        }
+      ]
+    },
+    {
+      "name": "live-navigation-browser.mjs",
+      "status": "PASS",
+      "exitCode": 0,
+      "origin": "http://127.0.0.1:52490/",
+      "startedUTC": "2026-11-07T17:46:58.964Z",
+      "finishedUTC": "2026-11-07T17:47:05.637Z",
+      "externalEvidence": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\06-live-navigation-browser",
+      "serverClosed": true,
+      "serverPortClosed": true,
+      "ownedProfiles": [
+        {
+          "pid": 38160,
+          "path": "C:\\Users\\spike\\AppData\\Local\\Temp\\playwright_chromiumdev_profile-EKdIDa",
+          "existsAfterTest": false,
+          "exitRecorded": true
+        }
+      ],
+      "nestedServerUrls": [],
+      "nestedPortsClosed": [],
+      "reports": [
+        {
+          "file": "fusion-live-navigation-checks.json",
+          "status": "PASS",
+          "phase": null,
+          "error": null,
+          "servers": null,
+          "ownedServersClosed": null
+        }
+      ]
+    },
+    {
+      "name": "live-interaction-browser.mjs",
+      "status": "PASS",
+      "exitCode": 0,
+      "origin": "http://127.0.0.1:63504/",
+      "startedUTC": "2026-11-07T17:47:05.788Z",
+      "finishedUTC": "2026-11-07T17:47:13.094Z",
+      "externalEvidence": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\07-live-interaction-browser",
+      "serverClosed": true,
+      "serverPortClosed": true,
+      "ownedProfiles": [
+        {
+          "pid": 38904,
+          "path": "C:\\Users\\spike\\AppData\\Local\\Temp\\playwright_chromiumdev_profile-jwDL97",
+          "existsAfterTest": false,
+          "exitRecorded": true
+        }
+      ],
+      "nestedServerUrls": [],
+      "nestedPortsClosed": [],
+      "reports": [
+        {
+          "file": "fusion-live-interaction-checks.json",
+          "status": "PASS",
+          "phase": null,
+          "error": null,
+          "servers": null,
+          "ownedServersClosed": null
+        }
+      ]
+    }
+  ],
+  "cascade": {
+    "entry": "live-sketch-input-browser.mjs",
+    "completedEntryPoints": [
+      "live-sketch-workspace-browser.mjs",
+      "live-sketch-frame.mjs",
+      "live-sketch-field-browser.mjs",
+      "live-sketch-parity-browser.mjs",
+      "live-sketch-dimensions.mjs",
+      "live-sketch-dimensions-browser.mjs",
+      "live-sketch-actions-browser.mjs"
+    ],
+    "status": "PASS",
+    "evidence": [
+      {
+        "gate": "live-sketch-input-browser.mjs",
+        "file": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-actions-checks.json",
+        "sha256": "7a67eb3e676eaebfe7b34a0590a3f6326808d26e500cef9b189d29f9590d4ad5",
+        "status": "PASS"
+      },
+      {
+        "gate": "live-sketch-input-browser.mjs",
+        "file": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-dimensions-checks.json",
+        "sha256": "fb7762b2f4e0f54973772bfec568f745e56191381dae02c3a35879f1e6fc9c66",
+        "status": "PASS"
+      },
+      {
+        "gate": "live-sketch-input-browser.mjs",
+        "file": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-field-checks.json",
+        "sha256": "f58472c76e6bdf5ca3417a766e3485565a8aa7ab33f0158c5b5303ca3e8bf102",
+        "status": "PASS"
+      },
+      {
+        "gate": "live-sketch-input-browser.mjs",
+        "file": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-input-checks.json",
+        "sha256": "037cfea5706695567b133692073d55df6b224219155061681d9a7e62fa46a788",
+        "status": "PASS"
+      },
+      {
+        "gate": "live-sketch-input-browser.mjs",
+        "file": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-parity-checks.json",
+        "sha256": "dc95312e96b401114f5a7fe305b1d8d850676a38e07509ade3915abcf2f0b92a",
+        "status": "CAPTURED"
+      },
+      {
+        "gate": "live-sketch-input-browser.mjs",
+        "file": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-visual-review.json",
+        "sha256": "e7bddcea59899e4b6123b4310d298f8fd6cd6f2e6fe722d5dafaa48a729e51c3",
+        "status": "NOT_ACCEPTED"
+      },
+      {
+        "gate": "live-sketch-input-browser.mjs",
+        "file": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-workspace-checks.json",
+        "sha256": "570280ad1707a6bb517fe3568e768e9a259c74ca1643ba3a6e542bcba90ef05d",
+        "status": "PASS"
+      }
+    ],
+    "functionalOnly": [
+      "live-sketch-parity-browser.mjs"
+    ],
+    "visualReviewStatus": "NOT_ACCEPTED"
+  },
+  "cleanup": {
+    "ownServersClosed": 7,
+    "additionalDimensionServerClosed": true,
+    "freshChromeProfilesRemoved": 12,
+    "installedOriginsTouched": false,
+    "userProfileUsed": false
+  },
+  "outputRouting": {
+    "preload": "C:\\Users\\spike\\AppData\\Local\\Temp\\fusion_line003_regression_precommit_20261107_output_redirect.cjs",
+    "sha256": "d0a8eb1f18029835d24c6ecfefb8ee9fa43d2a80e324a04c9a942145916259ca",
+    "policy": "External filesystem path redirection only; repository test code and assertions unchanged",
+    "sourceOrTestsModifiedByRunner": false
+  },
+  "sourceTestFixtureChanges": [
+    {
+      "file": "prototypes/fusion/tests/live-sketch-workspace-browser.mjs",
+      "sha256": "e6322d71f46dab78bbd5821cca596de642f82e6364306509d38e3ba9e8aa1014",
+      "reason": "The existing common contract stores inferred H/V and Coincident in separate Undo frames. The target-deletion fixture uses an oblique unconstrained line; the endpoint-snap fixture asserts the actual Coincident refs, Undo of only that relationship, then Undo of the line. Snap-off cleanup still requires one Undo. The root marking-menu assertion now waits for visible state at the existing requestAnimationFrame mount boundary before checking the same exact count=1 and taking the same screenshot. No assertion tolerance was weakened."
+    }
+  ],
+  "canonicalEvidence": {
+    "importedUTC": "2026-11-07T17:48:05.713Z",
+    "previousGeneratedEvidenceArchive": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\canonical-before-final-2026-11-07T174805559Z",
+    "reports": 2,
+    "pngs": 21,
+    "files": [
+      {
+        "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json",
+        "source": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-workspace-checks.json",
+        "sha256": "570280ad1707a6bb517fe3568e768e9a259c74ca1643ba3a6e542bcba90ef05d",
+        "bytes": 15555,
+        "previousSha256": "c8e99503803cb90824637b13774b8a692f703926198821a88842da228509b812"
+      },
+      {
+        "file": "prototypes/fusion/evidence/fusion-live-sketch-actions-checks.json",
+        "source": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-actions-checks.json",
+        "sha256": "7a67eb3e676eaebfe7b34a0590a3f6326808d26e500cef9b189d29f9590d4ad5",
+        "bytes": 12764,
+        "previousSha256": "e221be04a6ff0002bd25475b29516c3f73260f4c5c727c2990b97f1e12242452"
+      },
+      {
+        "file": "prototypes/fusion/evidence/fusion-live-sketch-actions-angular-edited.png",
+        "source": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-actions-angular-edited.png",
+        "sha256": "9b5e23bfe6a87b85607b7c87c4751f4d557a4bf45121bf8efd6b35e3af7dbcb3",
+        "bytes": 118841,
+        "previousSha256": "9b5e23bfe6a87b85607b7c87c4751f4d557a4bf45121bf8efd6b35e3af7dbcb3"
+      },
+      {
+        "file": "prototypes/fusion/evidence/fusion-live-sketch-actions-symmetric.png",
+        "source": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-actions-symmetric.png",
+        "sha256": "c8d286f4ef19485218eb5c45c107a1d53a0c25fd196ac68aa0b7356c69c43d50",
+        "bytes": 121302,
+        "previousSha256": "00d06f87ed3aa2425d8d60acd3f568e057aa98384f459212ac4ccfacb8426456"
+      },
+      {
+        "file": "prototypes/fusion/evidence/fusion-live-sketch-actions-tangent.png",
+        "source": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-actions-tangent.png",
+        "sha256": "9d26f07c07e1680022ac6131f89ad78dac51aebcab71d2c51eec528c07a1fb3e",
+        "bytes": 126018,
+        "previousSha256": "9d26f07c07e1680022ac6131f89ad78dac51aebcab71d2c51eec528c07a1fb3e"
+      },
+      {
+        "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-canvas-1366.png",
+        "source": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-workspace-canvas-1366.png",
+        "sha256": "b989178689eef2acdf7c6c0a0f511b41a3bab9900a8b95ac3471b72e568a4d90",
+        "bytes": 92865,
+        "previousSha256": "b989178689eef2acdf7c6c0a0f511b41a3bab9900a8b95ac3471b72e568a4d90"
+      },
+      {
+        "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-canvas-1600.png",
+        "source": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-workspace-canvas-1600.png",
+        "sha256": "2db4a72e0f80adb7ddb5292ce1621cc347be5e4a90eedcfef0e462366ae81b37",
+        "bytes": 104170,
+        "previousSha256": "2db4a72e0f80adb7ddb5292ce1621cc347be5e4a90eedcfef0e462366ae81b37"
+      },
+      {
+        "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-canvas-2048.png",
+        "source": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-workspace-canvas-2048.png",
+        "sha256": "bfe0d2a220bbda191059bacac948485f85e15d95bc91a2df41ea4b0f7f3eee53",
+        "bytes": 138551,
+        "previousSha256": "bfe0d2a220bbda191059bacac948485f85e15d95bc91a2df41ea4b0f7f3eee53"
+      },
+      {
+        "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-circle-selected-2048.png",
+        "source": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-workspace-circle-selected-2048.png",
+        "sha256": "f2cacb42d6444dd45994852a5349aeaeabbc3f3f4366770f4f701c7d960d82b4",
+        "bytes": 138156,
+        "previousSha256": "f2cacb42d6444dd45994852a5349aeaeabbc3f3f4366770f4f701c7d960d82b4"
+      },
+      {
+        "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-constraint-2048.png",
+        "source": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-workspace-constraint-2048.png",
+        "sha256": "c89d296f1192c6fa7c990e06a3ec707b47c340917364b78bbe4249f1c57491c8",
+        "bytes": 139900,
+        "previousSha256": "c89d296f1192c6fa7c990e06a3ec707b47c340917364b78bbe4249f1c57491c8"
+      },
+      {
+        "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-context-2048.png",
+        "source": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-workspace-context-2048.png",
+        "sha256": "0fff9b90b02d3ab10df586dc812815815d9e3f0eec4d21ce752ddcac5bbdc970",
+        "bytes": 167678,
+        "previousSha256": "0fff9b90b02d3ab10df586dc812815815d9e3f0eec4d21ce752ddcac5bbdc970"
+      },
+      {
+        "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-context-sketch-2048.png",
+        "source": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-workspace-context-sketch-2048.png",
+        "sha256": "bc345c6cf25c69b2f4106beb710a89d1dcf2b2bac3ec054f6239ea271872af81",
+        "bytes": 156611,
+        "previousSha256": "bc345c6cf25c69b2f4106beb710a89d1dcf2b2bac3ec054f6239ea271872af81"
+      },
+      {
+        "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-create-menu-2048.png",
+        "source": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-workspace-create-menu-2048.png",
+        "sha256": "4f7cf12c420feae307f0de78a7ed06706b40cdb56b0f63b210fda4596e447a3a",
+        "bytes": 153825,
+        "previousSha256": "4f7cf12c420feae307f0de78a7ed06706b40cdb56b0f63b210fda4596e447a3a"
+      },
+      {
+        "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-cube-normal-2048.png",
+        "source": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-workspace-cube-normal-2048.png",
+        "sha256": "50e629d6fab3b1c51fde12342074ab0c5ae58b81269cc5b351843294a36808f9",
+        "bytes": 145629,
+        "previousSha256": "50e629d6fab3b1c51fde12342074ab0c5ae58b81269cc5b351843294a36808f9"
+      },
+      {
+        "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-extruded-2048.png",
+        "source": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-workspace-extruded-2048.png",
+        "sha256": "d7aa57ddd99b80bab2ec91d9b82e14ceafd1386d1b3e3dc655c0881934f39317",
+        "bytes": 200743,
+        "previousSha256": "d7aa57ddd99b80bab2ec91d9b82e14ceafd1386d1b3e3dc655c0881934f39317"
+      },
+      {
+        "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-finished-2048.png",
+        "source": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-workspace-finished-2048.png",
+        "sha256": "73303b071de7f0e7ec4b5b0c9ae3b1bd790a33f149c46c98264faf5636d07de0",
+        "bytes": 138278,
+        "previousSha256": "73303b071de7f0e7ec4b5b0c9ae3b1bd790a33f149c46c98264faf5636d07de0"
+      },
+      {
+        "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-line-2048.png",
+        "source": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-workspace-line-2048.png",
+        "sha256": "2a7f07e2c2f336ed097068ca4d0fa558a5f28216b7f54a7ef90f6958cd5e3fec",
+        "bytes": 140527,
+        "previousSha256": "2a7f07e2c2f336ed097068ca4d0fa558a5f28216b7f54a7ef90f6958cd5e3fec"
+      },
+      {
+        "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-line-hover-2048.png",
+        "source": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-workspace-line-hover-2048.png",
+        "sha256": "bca4bfa4ef4efb27de55df632b9a855f6970793bcb3a1bbea6ac22131b2f5f0c",
+        "bytes": 107032,
+        "previousSha256": "bca4bfa4ef4efb27de55df632b9a855f6970793bcb3a1bbea6ac22131b2f5f0c"
+      },
+      {
+        "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-line-tooltip-2048.png",
+        "source": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-workspace-line-tooltip-2048.png",
+        "sha256": "1bb0cb6d9b252d38bbb9d298a31dd70f424030ba78a04a0ffd331da2ef4e4574",
+        "bytes": 126237,
+        "previousSha256": "1bb0cb6d9b252d38bbb9d298a31dd70f424030ba78a04a0ffd331da2ef4e4574"
+      },
+      {
+        "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-new-2048.png",
+        "source": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-workspace-new-2048.png",
+        "sha256": "b440d6a9ab11141d45d78af35958020d3f0d6b75d219d30617e1a1829f9f25e2",
+        "bytes": 105839,
+        "previousSha256": "b440d6a9ab11141d45d78af35958020d3f0d6b75d219d30617e1a1829f9f25e2"
+      },
+      {
+        "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-palette-2048.png",
+        "source": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-workspace-palette-2048.png",
+        "sha256": "9b8238fa05dc43cbb6ed0d4201d5b78cbcefee75da4e97ff09cb3cb154939ea8",
+        "bytes": 138812,
+        "previousSha256": "9b8238fa05dc43cbb6ed0d4201d5b78cbcefee75da4e97ff09cb3cb154939ea8"
+      },
+      {
+        "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-palette-detail.png",
+        "source": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-workspace-palette-detail.png",
+        "sha256": "56c59fc1469fe814cde0f2231f5a5219c5dcc02230efd649bc40cb774e480c7f",
+        "bytes": 19849,
+        "previousSha256": "56c59fc1469fe814cde0f2231f5a5219c5dcc02230efd649bc40cb774e480c7f"
+      },
+      {
+        "file": "prototypes/fusion/evidence/fusion-live-sketch-workspace-rectangle-2048.png",
+        "source": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\regression-precommit\\run-2026-11-07T174510463Z\\05-live-sketch-input-browser\\fusion-live-sketch-workspace-rectangle-2048.png",
+        "sha256": "56a8d92ac63ca71d7cbe35faa2c5563deb1fb85b623d557a579590de363ad5be",
+        "bytes": 113167,
+        "previousSha256": "56a8d92ac63ca71d7cbe35faa2c5563deb1fb85b623d557a579590de363ad5be"
+      }
+    ],
+    "policy": "Both canonical action/workspace reports and every generated PNG in their namespaces were copied from this same successful run. Previous generated evidence was archived externally."
+  },
+  "concurrentRepositoryEvidenceChanges": {
+    "owner": "parent gallery refresh during regression",
+    "paths": [],
+    "regressionOutputWroteRepositoryEvidence": false
+  },
+  "supersededRuns": [
+    {
+      "directory": "run-2026-11-07T173027341Z",
+      "status": "PASS_SUPERSEDED",
+      "reason": "This genuine PASS used the corrected numeric-input runtime. It is superseded only by the workspace fixture synchronization change: wait for the root marking menu to be visible across the existing requestAnimationFrame mount boundary, then retain the exact count=1 assertion and screenshot. The failed GitHub Fusion run 42397367391 remains preserved separately in ci-99eb8d2; no runtime change or weakened assertion is represented by this refresh."
+    },
+    {
+      "directory": "run-2026-11-07T161648245Z",
+      "status": "PASS_SUPERSEDED",
+      "reason": "All legacy gates passed, but subsequent focused review found that immediate numeric typing after the first anchor without any mouse move lost the first digit. The final runtime focuses the newly mounted numeric input, preserves its caret and retains edited zero-value fields; the expanded existing 17-case focused regression verifies the correction."
+    },
+    {
+      "directory": "run-2026-11-07T160636609Z",
+      "status": "PASS_SUPERSEDED",
+      "reason": "All legacy gates passed, but subsequent focused review found the raw-pointer halo moved numeric inputs during a smooth mouse approach; the final runtime uses the corrected exclusion and preserves the last real canvas pick."
+    },
+    {
+      "directory": "run-2026-11-07T153907990Z",
+      "status": "FAIL",
+      "reason": "Earlier runtime and horizontal target-deletion fixture assumed one atomic Undo frame."
+    },
+    {
+      "directory": "run-cascade-2026-11-07T154214129Z",
+      "status": "FAIL",
+      "reason": "Earlier floating angle input intercepted a real endpoint click; fixed in runtime."
+    },
+    {
+      "directory": "run-actions-overlay-2026-11-07T154835549Z",
+      "status": "PASS_SUPERSEDED",
+      "reason": "Targeted actions validation before later interior-angle and raw-pointer exclusion changes."
+    },
+    {
+      "directory": "run-2026-11-07T160033348Z",
+      "status": "FAIL",
+      "reason": "Earlier endpoint-snap cleanup assumed one atomic Undo frame; final fixture explicitly verifies both real frames."
+    },
+    {
+      "directory": "run-cascade-2026-11-07T160301192Z",
+      "status": "PASS_SUPERSEDED",
+      "reason": "Passed unchanged cascades before final raw-pointer exclusion runtime fix."
+    }
+  ],
+  "limitations": [
+    "Line native acceptance remains BLOCKED: atomic segment intent, absolute driving angle, persisted native chain-interior angle sense/annotation, persistent origin/midpoint references, tangent-arc continuation.",
+    "The old visual parity gate captures candidate screenshots and does not accept native visual parity.",
+    "WASM angular mapping research uses isolated memory documents, not a native Fusion document API dump."
+  ]
+}
