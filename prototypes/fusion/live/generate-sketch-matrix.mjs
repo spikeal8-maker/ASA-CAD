@@ -21,6 +21,10 @@ const iconPath='prototypes/fusion/live/SketchIcons.ts';
 const browserTest='prototypes/fusion/tests/live-sketch-workspace-browser.mjs';
 const browserEvidencePath='prototypes/fusion/evidence/fusion-live-sketch-workspace-checks.json';
 const bindingPath='src/web/M2CadUiActions.ts';
+const behavior003Task='FUSION-SKETCH-TOOLS-BEHAVIOR-003';
+const behavior003NativePath='prototypes/fusion/evidence/line-003-native-observed.json';
+const behavior003TestPath='prototypes/fusion/tests/live-fusion-line-behavior-browser.mjs';
+const behavior003ProposalPath='prototypes/fusion/evidence/line-003-product-contract.proposed.patch';
 const sha256=bytes=>createHash('sha256').update(bytes).digest('hex');
 const read=file=>readFileSync(resolve(repoRoot,file));
 const digest=file=>sha256(read(file));
@@ -46,6 +50,61 @@ let reportBytes=null,report=null,reportParseError=null;
 try{reportBytes=read(browserEvidencePath);report=JSON.parse(reportBytes);}catch(error){if(error.code!=='ENOENT'&&!(error instanceof SyntaxError))throw error;if(error instanceof SyntaxError)reportParseError=error.message;}
 const acceptance=evaluateBrowserReport(report,referenceCaptureSha256),reportPassed=acceptance.accepted;
 const supplementalActionEvidence=readActionEvidence(repoRoot,referenceCaptureSha256);
+const behavior003NativeBytes=read(behavior003NativePath),behavior003Native=JSON.parse(behavior003NativeBytes);
+const behavior003NativeSha256=sha256(behavior003NativeBytes);
+assert.equal(behavior003Native.task,behavior003Task);
+assert.equal(behavior003Native.status,'OBSERVED_NATIVE_UI');
+assert.equal(behavior003Native.version,'2706.1.17');
+assert.ok(Array.isArray(behavior003Native.lifecycle)&&Array.isArray(behavior003Native.captures));
+assert.ok(behavior003Native.captures.every(capture=>typeof capture.file==='string'&&/^[0-9a-f]{64}$/.test(capture.sha256)));
+
+const behavior003ReportPath='prototypes/fusion/evidence/line-003/checks.json';
+const behavior003HelperPath='prototypes/fusion/tests/live-sketch-actions-harness.mjs';
+const behavior003OwnerPath='prototypes/fusion/live/LiveSketchLineTool.ts';
+const behavior003Expected={
+ sourceSnapshotSha256:supplementalActionEvidence.summary.expected.sourceSnapshotSha256,
+ sourceSnapshotDescriptor:supplementalActionEvidence.summary.expected.sourceSnapshotDescriptor,
+ testSourceSha256:digest(behavior003TestPath),helperSourceSha256:digest(behavior003HelperPath),lineToolSourceSha256:digest(behavior003OwnerPath),
+ caseIds:[...read(behavior003TestPath).toString('utf8').matchAll(/\bawait runCase\('([^']+)'/g)].map(match=>match[1]),
+};
+assert.ok(behavior003Expected.caseIds.length>0,'Focused behavior cases must be explicit in the current test');
+/** Functional checks can be admitted without accepting native semantic parity. */
+export function evaluateBehavior003Report(candidate,expected){
+ const rejected=[];
+ if(!candidate||typeof candidate!=='object')rejected.push('MISSING_OR_INVALID_REPORT');
+ if(candidate?.schemaVersion!==1||candidate?.behaviorRevision!==behavior003Task)rejected.push('BEHAVIOR_SCHEMA_OR_REVISION_MISMATCH');
+ if(candidate?.status!=='BLOCKED'||candidate?.executableChecksStatus!=='PASS'||candidate?.acceptanceStatus!=='BLOCKED')rejected.push('FUNCTIONAL_CHECKS_NOT_PASS_OR_ACCEPTANCE_NOT_BLOCKED');
+ if(candidate?.behaviorParityAccepted!==false||candidate?.visualParityAccepted!==false)rejected.push('UNSUPPORTED_PARITY_CLAIM');
+ for(const [key,reason] of [['pageErrors','PAGE_ERRORS'],['requestFailures','REQUEST_FAILURES'],['cleanupErrors','CLEANUP_ERRORS']])if(!Array.isArray(candidate?.[key])||candidate[key].length)rejected.push(reason+'_NOT_EMPTY_OR_MISSING');
+ if(candidate?.ownedServersClosed!==true)rejected.push('OWNED_SERVERS_NOT_CLOSED');
+ if(candidate?.installedOriginsTouched!==false||candidate?.userProfileUsed!==false)rejected.push('ISOLATION_NOT_CONFIRMED');
+ for(const [key,reason] of [['sourceSnapshotSha256','SOURCE_SNAPSHOT'],['testSourceSha256','TEST_SOURCE'],['helperSourceSha256','HELPER_SOURCE'],['lineToolSourceSha256','LINE_OWNER_SOURCE']])if(candidate?.[key]!==expected[key])rejected.push(reason+'_MISMATCH');
+ const descriptor=candidate?.sourceSnapshotDescriptor;
+ if(!descriptor||sha256(JSON.stringify(descriptor))!==expected.sourceSnapshotSha256||JSON.stringify(descriptor)!==JSON.stringify(expected.sourceSnapshotDescriptor))rejected.push('SOURCE_DESCRIPTOR_MISMATCH');
+ const cases=Array.isArray(candidate?.cases)?candidate.cases:[],ids=cases.map(item=>item?.id);
+ if(ids.length!==expected.caseIds.length||new Set(ids).size!==ids.length||expected.caseIds.some(id=>!ids.includes(id)))rejected.push('FOCUSED_CASE_SET_MISMATCH');
+ if(!cases.length||cases.some(item=>item?.status!=='PASS'))rejected.push('FOCUSED_CASE_NOT_PASS');
+ return {accepted:rejected.length===0,rejected};
+}
+let behavior003ReportBytes=null,behavior003Report=null,behavior003ReportParseError=null;
+try{behavior003ReportBytes=read(behavior003ReportPath);behavior003Report=JSON.parse(behavior003ReportBytes);}catch(error){if(error.code!=='ENOENT'&&!(error instanceof SyntaxError))throw error;if(error instanceof SyntaxError)behavior003ReportParseError=error.message;}
+const behavior003ReportGate=evaluateBehavior003Report(behavior003Report,behavior003Expected);
+const behavior003CandidateEvidence={
+ status:behavior003ReportGate.accepted?'FUNCTIONAL_CHECKS_PASS_ACCEPTANCE_BLOCKED':behavior003ReportBytes?'NOT_VERIFIED_FOR_FINAL_SOURCE':'NOT_RUN_FOR_FINAL_SOURCE',
+ report:behavior003ReportBytes?behavior003ReportPath:null,sha256:behavior003ReportBytes?sha256(behavior003ReportBytes):null,
+ reportStatus:behavior003ReportParseError?'INVALID_JSON':behavior003Report?.status??'MISSING',
+ acceptedForFunctionalChecks:behavior003ReportGate.accepted,acceptedForBehavior003:false,rejectionReasons:behavior003ReportGate.rejected,
+ expected:behavior003Expected,
+ test:{file:behavior003TestPath,sha256:behavior003Expected.testSourceSha256},
+ checks:behavior003ReportGate.accepted?behavior003Report.cases.map((item,index)=>({id:item.id,label:item.label,status:item.status,jsonPointer:'/cases/'+index})):[],
+ sourceSnapshotAtGeneration:{sha256:behavior003Expected.sourceSnapshotSha256,descriptorPointer:'/actionBrowserEvidence/expected/sourceSnapshotDescriptor'},
+ ...(behavior003ReportParseError?{parseError:behavior003ReportParseError}:{}),
+ policy:'Only the exact current build-input descriptor, test, helper and owner hashes with all explicit focused cases passing and no browser/cleanup errors admit these functional checks. Full native behavior and visual acceptance remain blocked. Historical single-Line and 24-action proof never establish continuous native Line parity.',
+};
+const behavior003ExcludedNativeCaptures=behavior003Native.captures.filter(capture=>/^(48|52|53)-/.test(capture.file)).map(({file,sha256})=>({
+ file,sha256,reason:file.startsWith('48-')?'Native focus changed; this capture does not confirm entered numeric values.':'Native window partly off screen; excluded from behavior and visual proof.',
+}));
+
 const browserEvidence={
  file:browserEvidencePath,sha256:reportBytes?sha256(reportBytes):null,
  reportStatus:reportParseError?'INVALID_JSON':reportBytes?report?.status??'STATUS_MISSING':'MISSING',
@@ -208,6 +267,21 @@ function nativeCoverage(control,panel,path,actions,presented){
  };
 }
 const actionIds=id=>id==='SketchDimension'?[...dimensionActionIds]:id==='ConstraintHorizontalVertical'?['constraint.horizontal','constraint.vertical']:sketchNativeActions[id]?[sketchNativeActions[id]]:[];
+/** Behavior-003 admission is independent of historical binding/menu/action proof. */
+function behavior003For(type,actions){
+ const line=actions.includes('sketch.line'),command=type==='CommandControl';
+ const status=!command?'MENU_ONLY':line?'BLOCKED_PRODUCT_CONTRACT':actions.length?'DEFERRED_UNTIL_LINE_ACCEPTANCE':'UNSUPPORTED_COMMON_CONTRACT';
+ return {
+  status,nativeSemanticParity:'NOT_ACCEPTED',candidateValidation:line?behavior003CandidateEvidence.status:'NOT_RUN_FOR_FINAL_SOURCE',legacyProofAdmitted:false,
+  reason:!command?'Presentation structure only; no geometry command behavior.':line?'Continuous Line is implemented, but missing product contracts prevent full native acceptance.':actions.length?'Existing action retained; behavior-003 implementation and acceptance wait for Line acceptance.':'No mapped existing CadUiAction is available for this native command.',
+  ...(line?{
+   implementation:'CONTINUOUS_FSM_IMPLEMENTED_NOT_ACCEPTED',
+   nativeEvidence:[{file:behavior003NativePath,sha256:behavior003NativeSha256,jsonPointer:'/lifecycle'}],
+   blockers:['ATOMIC_SEGMENT_UNDO','ABSOLUTE_DRIVING_ANGLE','INTERIOR_DRIVING_ANGLE','PERSISTED_ORIGIN_MIDPOINT_REFERENCES','TANGENT_ARC_CHAIN'],
+  }:{}),
+ };
+}
+const countBehavior003=entries=>entries.reduce((counts,entry)=>{const status=entry.behavior003.status;counts[status]=(counts[status]||0)+1;return counts;},{});
 const semanticNotes={
  DrawPolyline:'Existing ASA line/chain tool. The tooltip describes supported segments; native drag-to-arc semantics are not implemented or claimed equivalent.',
  CircleCenterRadius:'Native command name is Center Diameter Circle. ASA uses the existing center and radius-point circle operation; the icon identity does not change its parameters.',
@@ -268,6 +342,7 @@ function collect(controls,panel,path,pointer){
    interaction:interactionsFor(control,panel.id,path,actions,presented,physical),
    evidence:{historicalComposition:{file:historicalPath,sha256:sourceHashes.historicalInventory,jsonPointer:`${pointer}/${index}`},activeComposition:active?{file:referencePath,sha256:referenceCaptureSha256,jsonPointer:active.pointer}:null,physicalPromotion:physical?{file:observationPath,sha256:sourceHashes.observations,jsonPointer:`/promotedIds2048/${panel.id}`} :null,localization:isCommand||isDropdown?{kind:'authored Russian translation',file:sourcePath}:null},
    testCoverage:nativeCoverage(control,panel.id,path,actions,presented),
+   behavior003:behavior003For(control.type,actions),
   });
   if(control.controls?.length)collect(control.controls,panel,next,`${pointer}/${index}/controls`);
  });
@@ -281,6 +356,7 @@ const authoredExtensions=sketchPanels.flatMap(panel=>flattenSketchItems(panel.it
  id:item.id,nativeParentId:item.nativeId??null,labelRu:item.label,svgKey:item.icon,svgSource:iconPath,cadUiAction:item.actionId,
  surfaces:item.nativeId==='ConstraintHorizontalVertical'?['authored-orientation-chooser','search']:['search','context-command-section where exposed'],
  nativeMenuRow:false,nativeScreenshot:null,evidence:{kind:'authored presentation of existing CadUiAction',file:sourcePath,nativeMenuParity:false},testCoverage:authoredCoverage(item),
+ behavior003:behavior003For('CommandControl',[item.actionId]),
 })));
 const responsive=observations.responsiveCaptures.map((layout,index)=>({
  ...layout,screenshot:screenshotRef(`responsive${index}`),nativeDpi:observations.nativeDpi,
@@ -294,6 +370,35 @@ const matrix={
  schemaVersion:2,parityRevision:revision,referenceFile:referencePath,referenceCaptureSha256,
  historicalInventoryFile:historicalPath,observationFile:observationPath,sourceHashes,browserEvidence,
  actionBrowserEvidence:{...supplementalActionEvidence.summary,browserScenario:actionEvidencePaths.test},
+ behavior003:{
+  task:behavior003Task,status:'BLOCKED_PRODUCT_CONTRACT',lineAcceptance:'NOT_ACCEPTED',remainingActionWork:'DEFERRED_UNTIL_LINE_ACCEPTANCE',
+  coverage:{nativeEntries:nativeEntries.length,authoredExtensions:authoredExtensions.length,nativeStatuses:countBehavior003(nativeEntries),authoredStatuses:countBehavior003(authoredExtensions)},
+  candidateEvidence:behavior003CandidateEvidence,
+  nativeEvidence:{
+   status:behavior003Native.status,file:behavior003NativePath,sha256:behavior003NativeSha256,applicationVersion:behavior003Native.version,
+   recordedCaptureCount:behavior003Native.captures.length,lifecycleObservationCount:behavior003Native.lifecycle.length,
+   excludedFromBehaviorAndVisualProof:behavior003ExcludedNativeCaptures,
+   boundary:behavior003Native.evidenceBoundary,captureDirectory:behavior003Native.captureDirectory,
+   lifecycle:behavior003Native.lifecycle,caveats:behavior003Native.caveats,
+   captures:behavior003Native.captures.map(({file,sha256})=>({file,sha256})),
+   hashPolicy:'PNG hashes are recorded by the native observation manifest; this generator hashes that manifest and does not independently re-read the external screenshots.',
+  },
+  lineImplementation:{
+   status:'CONTINUOUS_FSM_IMPLEMENTED_NOT_ACCEPTED',owner:behavior003OwnerPath,ownerSha256:digest(behavior003OwnerPath),
+   bridge:'prototypes/fusion/live/LiveLineInteraction.ts',bridgeSha256:digest('prototypes/fusion/live/LiveLineInteraction.ts'),
+   states:['IDLE','AWAITING_START','PREVIEW_SEGMENT','NUMERIC_INPUT','COMMITTING_SEGMENT','CONTINUING_CHAIN','CLOSING_CHAIN','CANCELLED'],
+   commandPath:['sketch.line','constraint.coincident','constraint.horizontal','constraint.vertical','dimension.linear'],
+   continuation:'Previous endpoint to new start through real Coincident; await the existing stage solver and use its solved endpoint before continuation.',
+   numericLength:'Existing driving dimension.linear when explicitly entered or locked.',numericAbsoluteAngle:'Transient coordinate control only; no absolute driving angular dimension.',
+   numericChainInteriorAngle:'Display and coordinate input use the interior angle to the reverse previous solved segment; the nearest raw-pointer branch is selected. Native interior 120 degrees produces global +60 or -60 after a rightward segment. No native interior driving dimension is persisted: the common forward-line angular contract would store and annotate the complement 60 degrees, with ref order controlling the signed branch. angleDriving remains false.',
+   orientationInference:'A current accepted snap may persist real H/V together with endpoint or closure Coincident. Null snap context never infers H/V.',
+   history:'Every changed execute is a separate Undo frame; no atomic segment transaction is claimed.',
+   originAndMidpoint:'Coordinate snap only; no persisted origin/midpoint reference is claimed.',tangentArc:'Observed natively; not implemented through a fake or alternative document model.',
+   blockers:['ATOMIC_SEGMENT_UNDO','ABSOLUTE_DRIVING_ANGLE','INTERIOR_DRIVING_ANGLE','PERSISTED_ORIGIN_MIDPOINT_REFERENCES','TANGENT_ARC_CHAIN'],
+   productProposal:{file:behavior003ProposalPath,sha256:digest(behavior003ProposalPath),status:'PROPOSED_NOT_IMPLEMENTED'},
+  },
+  policy:'This additive behavior-003 section covers every catalogue row without replacing schemaVersion 2 binding/menu proof. Existing proof fields retain their original admission rules; their PASS is never inherited as behavior-003 acceptance. Other action-backed tools stay deferred until Line acceptance.',
+ },
  source:{applicationVersion:activeSketchReference.applicationVersion,capturedUTC:activeSketchReference.capturedUTC,activeWorkspaceId:activeSketchReference.activeWorkspaceId,activeToolbarTabId:activeSketchReference.activeToolbarTabId},
  scope:'Observed active native Sketch presentation and existing CadUiAction bindings. Physical promotions, active API visibility, authored extensions, browser execution and visual acceptance are separate claims.',
  captureStatePolicy:'The full historical inventory is retained. Fresh active isVisible determines menu presentation with separator normalization; observed screenshots determine physical promotions. Native isEnabled never enables ASA operations.',

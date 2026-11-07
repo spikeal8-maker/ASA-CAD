@@ -1,0 +1,195 @@
+{
+  "schemaVersion": 1,
+  "task": "FUSION-SKETCH-TOOLS-BEHAVIOR-003",
+  "createdUTC": "2026-11-07T16:17:19.962Z",
+  "acceptance": "BLOCKED_PRODUCT_CONTRACT",
+  "pixelParity": "NOT_ACCEPTED",
+  "nativeManifestSha256": "0218cd9a85ddca9ff68e6a8e6579304fd5994d85b7d613bcef067d9ffa9e10ff",
+  "candidateReportSha256": "9ec36744f6e79501a57bae1664e11d95aa0745d22a1d6d41956be532be5d35a0",
+  "candidateEvidenceDirectory": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\candidate-mouse-fields-verified",
+  "comparisonBoundary": "Semantic lifecycle pairs. Independent documents, coordinates and workplanes; native DPI110 vs browser DPR1. Originals copied byte-for-byte, no resampling or image edits. Screenshots do not prove native constraint IDs.",
+  "pairs": [
+    {
+      "state": "Первый клик",
+      "native": {
+        "file": "native-01.png",
+        "source": "10-line-first-click.png",
+        "sha256": "e3ad9c65dbf929dde2143bcabef66dcfe8d4c41d878e55a9e0603aad511d4744"
+      },
+      "candidate": {
+        "file": "asa-01.png",
+        "source": "fusion-live-line-behavior-native-pair-01-first-click.png",
+        "sha256": "dc9312e9bacfd1289f1325b07906c11ceb58aba08ab1f383a784933a73fd476b"
+      }
+    },
+    {
+      "state": "Движение мыши: длина и угол",
+      "native": {
+        "file": "native-02.png",
+        "source": "11-line-move-fields.png",
+        "sha256": "0a18116530d0166327cba954cddf1c4698a8259314b0ca159d03ac3fd5b5cf8e"
+      },
+      "candidate": {
+        "file": "asa-02.png",
+        "source": "fusion-live-line-behavior-native-pair-02-first-preview.png",
+        "sha256": "bf0f011d7a3c64c5253a0af47f169b2f315f3c846db6ff384cd2dc4aa0bb1eb4"
+      }
+    },
+    {
+      "state": "Ввод длины",
+      "native": {
+        "file": "native-03.png",
+        "source": "12-line-length-typed.png",
+        "sha256": "b7735d2868f98fcf7002b8c6f9504e093517aa129c0d12fc02a8b2ca5622e24b"
+      },
+      "candidate": {
+        "file": "asa-03.png",
+        "source": "fusion-live-line-behavior-native-pair-03-length-entered.png",
+        "sha256": "2da47d0b1ada8916c40bae24bb7c0e911b8622029d30645eb6541fa3e591b390"
+      }
+    },
+    {
+      "state": "Ввод угла",
+      "native": {
+        "file": "native-04.png",
+        "source": "14-line-angle-typed.png",
+        "sha256": "9003b50cb09ab3e0f181fdca2d942c87feac1cf78cb69f14c27849b991eda287"
+      },
+      "candidate": {
+        "file": "asa-04.png",
+        "source": "fusion-live-line-behavior-native-pair-04-angle-entered.png",
+        "sha256": "44e3915b2749360be1168a8b4393b1293d00a4dd014feda8dedff09ca6c151b7"
+      }
+    },
+    {
+      "state": "Подтверждение первого отрезка кликом",
+      "native": {
+        "file": "native-05.png",
+        "source": "17-chain-first-click-commit.png",
+        "sha256": "c19ae38c0f7adf55b7b72b49eef698ae40079613af113d6e2a1d0986d1efea1d"
+      },
+      "candidate": {
+        "file": "asa-05.png",
+        "source": "fusion-live-line-behavior-native-pair-05-first-commit.png",
+        "sha256": "ef5c3a1b4733c4cf716f5613fa0bc5e9e66bb9a877fddbbb911d76698395e43a"
+      }
+    },
+    {
+      "state": "Следующий preview из принятой точки",
+      "native": {
+        "file": "native-06.png",
+        "source": "18-chain-next-preview.png",
+        "sha256": "3f33ec8cf257740b984dc2d888aaafca3c0f19051c99d62b3bf2c0690aaa1394"
+      },
+      "candidate": {
+        "file": "asa-06.png",
+        "source": "fusion-live-line-behavior-native-pair-06-next-preview.png",
+        "sha256": "3ad847ee1fc92b0f947ac9e97eb8f88e8b4ebffe0e14a598fc82ca46dc9f782c"
+      }
+    },
+    {
+      "state": "Третий подтверждённый сегмент",
+      "native": {
+        "file": "native-07.png",
+        "source": "19-chain-third-committed.png",
+        "sha256": "4fe3703cb4fc96bb494ee44cd5498b219b2d869ffe4575d5e416ab2002ee7b06"
+      },
+      "candidate": {
+        "file": "asa-07.png",
+        "source": "fusion-live-line-behavior-native-pair-07-third-commit.png",
+        "sha256": "ee3cbe6151260c16cfb232d6edc72cc0fe896f76e539c230e57bc5e126352f20"
+      }
+    },
+    {
+      "state": "Замкнутый профиль",
+      "native": {
+        "file": "native-08.png",
+        "source": "26-closure-committed.png",
+        "sha256": "00eafaecb7db88773974e9acb559ce7d947a287e19316d652b145ceda697fd93"
+      },
+      "candidate": {
+        "file": "asa-08.png",
+        "source": "fusion-live-line-behavior-native-pair-08-closure.png",
+        "sha256": "4e53000b6a5095ac5aeddbe051fbd51b31d1ef21460f3e10c99e7bee6ccce40b"
+      }
+    },
+    {
+      "state": "Завершение цепочки, Line активна",
+      "native": {
+        "file": "native-09.png",
+        "source": "21-chain-check-finish.png",
+        "sha256": "85ff5041e23bb59fa7cfafe27077743482333626506452cbff90f29d6875cc32"
+      },
+      "candidate": {
+        "file": "asa-09.png",
+        "source": "fusion-live-line-behavior-native-pair-09-finish-chain.png",
+        "sha256": "21ae258b3eb89f4f67a5f16da931d1870ace4d5f73ccf95de61441a8f35d4e12"
+      }
+    },
+    {
+      "state": "Полный выход из Line",
+      "native": {
+        "file": "native-10.png",
+        "source": "22-line-exit-escape-awaiting.png",
+        "sha256": "7b12f4c127bb50e6778f594831e7012216afcbadd777fefac62e8af7a1c19cbe"
+      },
+      "candidate": {
+        "file": "asa-10.png",
+        "source": "fusion-live-line-behavior-native-pair-10-exit-line.png",
+        "sha256": "e72bfa0e00610e427c52dc06c6f8614fb344f0663d21111b4d7a7388cbc3c201"
+      }
+    }
+  ],
+  "additional": [
+    {
+      "file": "four-segments.png",
+      "source": "fusion-live-line-behavior-A-four-segments-preview.png",
+      "sha256": "3a4425fb1add056783317e7f84db56dbda5af6ad2a20096bb833fae5e7156de5"
+    },
+    {
+      "file": "numeric-click-continues.png",
+      "source": "fusion-live-line-behavior-H-numeric-click-continues.png",
+      "sha256": "e41a98bd5787fac890efcbc6ab9cb7727eb84144f5f7af3c55d4cfbc1bb6a0ea"
+    },
+    {
+      "file": "interior120-length30.png",
+      "source": "fusion-live-line-behavior-H-interior120-length30-pointer-below.png",
+      "sha256": "79a87dc31f27c8539635028fed8d8d61fe7da5ae6a469604e20f717971ec7a5b"
+    },
+    {
+      "file": "native-interior120-length30.png",
+      "source": "51-chain-angle-pointer-commit.png",
+      "sha256": "e6a1395c6fa4d8fe788a24dfe0b049c99cc5a9121afaf0b08789d161f4dec9b9"
+    },
+    {
+      "file": "numeric-after-enter.png",
+      "source": "fusion-live-line-behavior-B-numeric-enter-exits.png",
+      "sha256": "d023b4142bac6e9db5d12f2fffcb8d105b8a2005394ed1eba57addfa01989645"
+    },
+    {
+      "file": "closed-profile.png",
+      "source": "fusion-live-line-behavior-C-closed-profile.png",
+      "sha256": "d86539647917bbeafa56075f83317fd884f89dffb83a5f5c57edab22f633b522"
+    },
+    {
+      "file": "occ-extrude10.png",
+      "source": "fusion-live-line-behavior-C-occ-extrude10.png",
+      "sha256": "ed02439053aced3ef0e8def130eae18b7549686f0824502eea40ea16a58eb189"
+    },
+    {
+      "file": "cancel-before-escape.png",
+      "source": "fusion-live-line-behavior-D-third-preview-before-escape.png",
+      "sha256": "c29fc48054120a7af0576febef5105e5f21262ca42b7f0355e2c31e89978c87e"
+    },
+    {
+      "file": "cancel-after-escape.png",
+      "source": "fusion-live-line-behavior-D-after-escape-two-lines.png",
+      "sha256": "5c84eeebf6edde0d90dffd81fe970daf14ce2fb1fab213447804154a1f650c91"
+    },
+    {
+      "file": "native-tangent-arc.png",
+      "source": "38-tangent-arc-released.png",
+      "sha256": "f3b435701be89a092c524611b019f336daa24c6b19d3838732e4aa47bf7ccba2"
+    }
+  ]
+}

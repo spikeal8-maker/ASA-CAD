@@ -1,0 +1,2116 @@
+{
+  "schemaVersion": 1,
+  "behaviorRevision": "FUSION-SKETCH-TOOLS-BEHAVIOR-003",
+  "status": "BLOCKED",
+  "startedUTC": "2026-11-07T16:16:17.451Z",
+  "input": "Public UI only; solved SVG and public Save document reads",
+  "installedOriginsTouched": false,
+  "userProfileUsed": false,
+  "visualParityAccepted": false,
+  "behaviorParityAccepted": false,
+  "viewport": {
+    "width": 2048,
+    "height": 1137,
+    "dpr": 1
+  },
+  "cases": [
+    {
+      "id": "A",
+      "label": "Four continuous Line segments and five real topological points",
+      "status": "PASS",
+      "ids": [
+        "entity_45933103-1f86-49a8-a9a4-dd802ea23b94",
+        "entity_e36da1d0-68b2-4915-8fbd-0d28b4571dbf",
+        "entity_54f0d559-36e5-45b1-9d3b-1d5c21b038aa",
+        "entity_3789e7f7-51e8-421f-9b04-4a18ad8c015a"
+      ],
+      "topology": {
+        "lines": 4,
+        "endpointSlots": 8,
+        "topologicalPoints": 5,
+        "joins": [
+          {
+            "id": "constraint_2ae5890d-1ca1-4a42-a39c-8beacf106f8b",
+            "refs": [
+              {
+                "entityId": "entity_45933103-1f86-49a8-a9a4-dd802ea23b94",
+                "point": "b"
+              },
+              {
+                "entityId": "entity_e36da1d0-68b2-4915-8fbd-0d28b4571dbf",
+                "point": "a"
+              }
+            ],
+            "pair": [
+              "entity_45933103-1f86-49a8-a9a4-dd802ea23b94:b",
+              "entity_e36da1d0-68b2-4915-8fbd-0d28b4571dbf:a"
+            ]
+          },
+          {
+            "id": "constraint_13f0bbe4-3c9c-4036-b0be-ba805f1e8be8",
+            "refs": [
+              {
+                "entityId": "entity_e36da1d0-68b2-4915-8fbd-0d28b4571dbf",
+                "point": "b"
+              },
+              {
+                "entityId": "entity_54f0d559-36e5-45b1-9d3b-1d5c21b038aa",
+                "point": "a"
+              }
+            ],
+            "pair": [
+              "entity_e36da1d0-68b2-4915-8fbd-0d28b4571dbf:b",
+              "entity_54f0d559-36e5-45b1-9d3b-1d5c21b038aa:a"
+            ]
+          },
+          {
+            "id": "constraint_c24481fd-065a-4534-b160-dd7a5908f4d5",
+            "refs": [
+              {
+                "entityId": "entity_54f0d559-36e5-45b1-9d3b-1d5c21b038aa",
+                "point": "b"
+              },
+              {
+                "entityId": "entity_3789e7f7-51e8-421f-9b04-4a18ad8c015a",
+                "point": "a"
+              }
+            ],
+            "pair": [
+              "entity_54f0d559-36e5-45b1-9d3b-1d5c21b038aa:b",
+              "entity_3789e7f7-51e8-421f-9b04-4a18ad8c015a:a"
+            ]
+          }
+        ]
+      },
+      "solver": {
+        "geometry": [
+          [
+            -31.999996903078753,
+            -20.000001290383857,
+            -15.99999845153937,
+            -7.999999225769692
+          ],
+          [
+            -15.99999845153937,
+            -7.999999225769692,
+            0,
+            15.99999845153937
+          ],
+          [
+            0,
+            15.99999845153937,
+            19.999994838464588,
+            4.000002838844473
+          ],
+          [
+            19.999994838464588,
+            4.000002838844473,
+            36.00000619384248,
+            24.000000903268692
+          ]
+        ],
+        "coincidentResiduals": [
+          0,
+          0,
+          0
+        ]
+      },
+      "beforeFinish": {
+        "command": "sketch.line",
+        "phase": "anchored"
+      },
+      "afterFinish": {
+        "command": "sketch.line",
+        "phase": "awaiting-start"
+      },
+      "afterEscape": {
+        "command": "",
+        "phase": null
+      },
+      "documentSha256": "29f45c2ebbef8aebdd90512e0cb79f135a008a2c5cd163b1d332f9518db24184",
+      "wasm": [
+        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+      ]
+    },
+    {
+      "id": "B.numeric",
+      "label": "Real keyboard 40 mm / 30 degrees; driving-angle acceptance remains BLOCKED",
+      "status": "PASS",
+      "coordinateSubcheck": "PASS",
+      "actualSolvedLine": [
+        -20.00000129038385,
+        -9.999997419232294,
+        14.6410148609937,
+        10.000002580767703
+      ],
+      "ids": [
+        "entity_ac94411f-1f2e-4be3-a28a-a8d6f91e7b92"
+      ],
+      "drivingLength": [
+        {
+          "id": "dimension_896d78ab-87ec-4930-8f4f-d622576980f9",
+          "type": "linear",
+          "entityIds": [
+            "entity_ac94411f-1f2e-4be3-a28a-a8d6f91e7b92"
+          ],
+          "value": 40,
+          "driving": true
+        }
+      ],
+      "saveReloadOpen": true,
+      "reopenedDrivingLength": {
+        "id": "dimension_896d78ab-87ec-4930-8f4f-d622576980f9",
+        "type": "linear",
+        "entityIds": [
+          "entity_ac94411f-1f2e-4be3-a28a-a8d6f91e7b92"
+        ],
+        "value": 40,
+        "driving": true
+      },
+      "reopenedSolvedLine": [
+        -20.00000129038385,
+        -9.999997419232294,
+        14.6410148609937,
+        10.000002580767703
+      ],
+      "absoluteDrivingAngle": "BLOCKED",
+      "acceptance": "BLOCKED",
+      "exitState": {
+        "command": "",
+        "phase": null
+      },
+      "wasm": [
+        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+      ]
+    },
+    {
+      "id": "C",
+      "label": "Closed Line profile produces a real OCC 10 mm extrusion",
+      "status": "PASS",
+      "ids": [
+        "entity_2dc406f1-e36d-4ddd-b621-253e545abdfe",
+        "entity_1760c047-e706-42bf-8b03-de53b8d24add",
+        "entity_2971f926-afcb-4500-b7e6-91f4388c3411",
+        "entity_a3873534-ebb7-455f-b261-71b3607b3203"
+      ],
+      "topology": {
+        "lines": 4,
+        "endpointSlots": 8,
+        "topologicalPoints": 4,
+        "joins": [
+          {
+            "id": "constraint_2fe7e6b3-8cbb-4077-9684-8eba22f71ab6",
+            "refs": [
+              {
+                "entityId": "entity_2dc406f1-e36d-4ddd-b621-253e545abdfe",
+                "point": "b"
+              },
+              {
+                "entityId": "entity_1760c047-e706-42bf-8b03-de53b8d24add",
+                "point": "a"
+              }
+            ],
+            "pair": [
+              "entity_2dc406f1-e36d-4ddd-b621-253e545abdfe:b",
+              "entity_1760c047-e706-42bf-8b03-de53b8d24add:a"
+            ]
+          },
+          {
+            "id": "constraint_04199cdd-c1f9-4f79-af2c-60dbdd04ea97",
+            "refs": [
+              {
+                "entityId": "entity_1760c047-e706-42bf-8b03-de53b8d24add",
+                "point": "b"
+              },
+              {
+                "entityId": "entity_2971f926-afcb-4500-b7e6-91f4388c3411",
+                "point": "a"
+              }
+            ],
+            "pair": [
+              "entity_1760c047-e706-42bf-8b03-de53b8d24add:b",
+              "entity_2971f926-afcb-4500-b7e6-91f4388c3411:a"
+            ]
+          },
+          {
+            "id": "constraint_f07160b7-4b88-41fc-8323-cd6ecfad6a3b",
+            "refs": [
+              {
+                "entityId": "entity_2971f926-afcb-4500-b7e6-91f4388c3411",
+                "point": "b"
+              },
+              {
+                "entityId": "entity_a3873534-ebb7-455f-b261-71b3607b3203",
+                "point": "a"
+              }
+            ],
+            "pair": [
+              "entity_2971f926-afcb-4500-b7e6-91f4388c3411:b",
+              "entity_a3873534-ebb7-455f-b261-71b3607b3203:a"
+            ]
+          },
+          {
+            "id": "constraint_6cddbf13-1e97-47f0-8c82-4e27fc6d7d0b",
+            "refs": [
+              {
+                "entityId": "entity_a3873534-ebb7-455f-b261-71b3607b3203",
+                "point": "b"
+              },
+              {
+                "entityId": "entity_2dc406f1-e36d-4ddd-b621-253e545abdfe",
+                "point": "a"
+              }
+            ],
+            "pair": [
+              "entity_a3873534-ebb7-455f-b261-71b3607b3203:b",
+              "entity_2dc406f1-e36d-4ddd-b621-253e545abdfe:a"
+            ]
+          }
+        ]
+      },
+      "orientations": [
+        {
+          "id": "constraint_dc4c5059-7b0d-4a7c-b743-e298e7f6e795",
+          "type": "horizontal",
+          "entityIds": [
+            "entity_2dc406f1-e36d-4ddd-b621-253e545abdfe"
+          ]
+        },
+        {
+          "id": "constraint_a91b4559-98e2-442b-b453-1d24938ca47b",
+          "type": "vertical",
+          "entityIds": [
+            "entity_1760c047-e706-42bf-8b03-de53b8d24add"
+          ]
+        },
+        {
+          "id": "constraint_93fc165c-aaf0-4457-8afd-b040cb41e69d",
+          "type": "horizontal",
+          "entityIds": [
+            "entity_2971f926-afcb-4500-b7e6-91f4388c3411"
+          ]
+        },
+        {
+          "id": "constraint_0d9e019c-848b-4d73-87d5-54078b60b749",
+          "type": "vertical",
+          "entityIds": [
+            "entity_a3873534-ebb7-455f-b261-71b3607b3203"
+          ]
+        }
+      ],
+      "solver": {
+        "geometry": [
+          [
+            -29.99999870961615,
+            -20.000001290383857,
+            30.000005161535412,
+            -20.000001290383857
+          ],
+          [
+            30.000005161535412,
+            -20.000001290383857,
+            30.000005161535412,
+            20.00000129038385
+          ],
+          [
+            30.000005161535412,
+            20.00000129038385,
+            -29.99999870961615,
+            20.00000129038385
+          ],
+          [
+            -29.99999870961615,
+            20.00000129038385,
+            -29.99999870961615,
+            -20.000001290383857
+          ]
+        ],
+        "coincidentResiduals": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "closureState": {
+        "command": "sketch.line",
+        "phase": "awaiting-start"
+      },
+      "distance": 10,
+      "bounds": [
+        -29.99999870961615,
+        -20.000001290383857,
+        0,
+        30.000005161535412,
+        20.00000129038385,
+        10
+      ],
+      "realOpenCascade": true,
+      "solidDocumentSha256": "fd7eb7c01b2f25844acdf9edb1e72a1a63c4038853264bef86573515a32cef72",
+      "wasm": [
+        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm",
+        "http://127.0.0.1:50729/wasm/opencascade.full.cb905367.wasm"
+      ]
+    },
+    {
+      "id": "D",
+      "label": "One Escape cancels a third preview and preserves two committed lines",
+      "status": "PASS",
+      "ids": [
+        "entity_a2742bd8-6d11-4d2e-aec0-5a8682c397c4",
+        "entity_5ade0e5d-dc36-4273-bba7-f07edbb710c3"
+      ],
+      "preview": [
+        0,
+        15.99999845153937,
+        19.999994838464588,
+        4.000002838844473
+      ],
+      "topology": {
+        "lines": 2,
+        "endpointSlots": 4,
+        "topologicalPoints": 3,
+        "joins": [
+          {
+            "id": "constraint_3393e3f1-f743-4447-90d5-e4d33da0a280",
+            "refs": [
+              {
+                "entityId": "entity_a2742bd8-6d11-4d2e-aec0-5a8682c397c4",
+                "point": "b"
+              },
+              {
+                "entityId": "entity_5ade0e5d-dc36-4273-bba7-f07edbb710c3",
+                "point": "a"
+              }
+            ],
+            "pair": [
+              "entity_a2742bd8-6d11-4d2e-aec0-5a8682c397c4:b",
+              "entity_5ade0e5d-dc36-4273-bba7-f07edbb710c3:a"
+            ]
+          }
+        ]
+      },
+      "solver": {
+        "geometry": [
+          [
+            -31.999996903078753,
+            -20.000001290383857,
+            -15.99999845153937,
+            -7.999999225769692
+          ],
+          [
+            -15.99999845153937,
+            -7.999999225769692,
+            0,
+            15.99999845153937
+          ]
+        ],
+        "coincidentResiduals": [
+          0
+        ]
+      },
+      "escapeCount": 1,
+      "preservedDocumentSha256": "6e12881d9f0e1e960f93400ae21cc0e0fc3272276797ae7e75940d0625a14d8b",
+      "wasm": [
+        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+      ]
+    },
+    {
+      "id": "E.ids",
+      "label": "Single unconstrained Line Undo/Redo keeps IDs; atomic chain history remains BLOCKED",
+      "status": "PASS",
+      "singleSegmentStableIds": "PASS",
+      "ids": [
+        "entity_c7ee7c7d-9b6c-4d47-88d2-e2f8d70a62ed"
+      ],
+      "atomicSegmentAndInferenceUndo": "BLOCKED",
+      "acceptance": "BLOCKED",
+      "wasm": [
+        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+      ]
+    },
+    {
+      "id": "E.chain",
+      "label": "Five real chain Undo/Redo frames preserve line and constraint IDs without dangling refs",
+      "status": "PASS",
+      "ids": [
+        "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
+        "entity_29767930-c001-468b-b3d3-588c4b72d6ea",
+        "entity_a275e105-8555-4881-b10f-04758fdf7d1b"
+      ],
+      "constraintIds": [
+        "constraint_b4a17146-4c07-4cdf-9ec5-7229bc834c3f",
+        "constraint_d615ab84-b9ad-4433-b728-cd6d0329c9bf"
+      ],
+      "frames": [
+        {
+          "direction": "undo",
+          "frame": 1,
+          "command": "constraint.coincident",
+          "entityIds": [
+            "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
+            "entity_29767930-c001-468b-b3d3-588c4b72d6ea",
+            "entity_a275e105-8555-4881-b10f-04758fdf7d1b"
+          ],
+          "constraintIds": [
+            "constraint_b4a17146-4c07-4cdf-9ec5-7229bc834c3f"
+          ],
+          "constraints": [
+            {
+              "id": "constraint_b4a17146-4c07-4cdf-9ec5-7229bc834c3f",
+              "type": "coincident",
+              "entityIds": [
+                "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
+                "entity_29767930-c001-468b-b3d3-588c4b72d6ea"
+              ],
+              "data": {
+                "refs": [
+                  {
+                    "entityId": "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
+                    "point": "b"
+                  },
+                  {
+                    "entityId": "entity_29767930-c001-468b-b3d3-588c4b72d6ea",
+                    "point": "a"
+                  }
+                ]
+              }
+            }
+          ],
+          "documentSha256": "196f0a17bb17fa3e6c0bb13878d1f391566bac1d07db82faf80a4ee04e0a1705"
+        },
+        {
+          "direction": "undo",
+          "frame": 2,
+          "command": "sketch.line",
+          "entityIds": [
+            "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
+            "entity_29767930-c001-468b-b3d3-588c4b72d6ea"
+          ],
+          "constraintIds": [
+            "constraint_b4a17146-4c07-4cdf-9ec5-7229bc834c3f"
+          ],
+          "constraints": [
+            {
+              "id": "constraint_b4a17146-4c07-4cdf-9ec5-7229bc834c3f",
+              "type": "coincident",
+              "entityIds": [
+                "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
+                "entity_29767930-c001-468b-b3d3-588c4b72d6ea"
+              ],
+              "data": {
+                "refs": [
+                  {
+                    "entityId": "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
+                    "point": "b"
+                  },
+                  {
+                    "entityId": "entity_29767930-c001-468b-b3d3-588c4b72d6ea",
+                    "point": "a"
+                  }
+                ]
+              }
+            }
+          ],
+          "documentSha256": "7fc257f495b7605db8e6fb1cfef55ea11fc0df50731c6d671593d697619421ca"
+        },
+        {
+          "direction": "undo",
+          "frame": 3,
+          "command": "constraint.coincident",
+          "entityIds": [
+            "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
+            "entity_29767930-c001-468b-b3d3-588c4b72d6ea"
+          ],
+          "constraintIds": [],
+          "constraints": [],
+          "documentSha256": "e3097b512d9aaa3c865af39550ae2352b30e7dbea03770912833a5504f11c7fd"
+        },
+        {
+          "direction": "undo",
+          "frame": 4,
+          "command": "sketch.line",
+          "entityIds": [
+            "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637"
+          ],
+          "constraintIds": [],
+          "constraints": [],
+          "documentSha256": "4ecad99a78fc22acf6e1b56e89fda100954cf0685883d59643608ca8a4986fc2"
+        },
+        {
+          "direction": "undo",
+          "frame": 5,
+          "command": "sketch.line",
+          "entityIds": [],
+          "constraintIds": [],
+          "constraints": [],
+          "documentSha256": "abff17b1cdb3578084a49dec41da5804100109504215424e10f76fc6e514b2b0"
+        },
+        {
+          "direction": "redo",
+          "frame": 1,
+          "command": "sketch.line",
+          "entityIds": [
+            "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637"
+          ],
+          "constraintIds": [],
+          "constraints": [],
+          "documentSha256": "4ecad99a78fc22acf6e1b56e89fda100954cf0685883d59643608ca8a4986fc2"
+        },
+        {
+          "direction": "redo",
+          "frame": 2,
+          "command": "sketch.line",
+          "entityIds": [
+            "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
+            "entity_29767930-c001-468b-b3d3-588c4b72d6ea"
+          ],
+          "constraintIds": [],
+          "constraints": [],
+          "documentSha256": "e3097b512d9aaa3c865af39550ae2352b30e7dbea03770912833a5504f11c7fd"
+        },
+        {
+          "direction": "redo",
+          "frame": 3,
+          "command": "constraint.coincident",
+          "entityIds": [
+            "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
+            "entity_29767930-c001-468b-b3d3-588c4b72d6ea"
+          ],
+          "constraintIds": [
+            "constraint_b4a17146-4c07-4cdf-9ec5-7229bc834c3f"
+          ],
+          "constraints": [
+            {
+              "id": "constraint_b4a17146-4c07-4cdf-9ec5-7229bc834c3f",
+              "type": "coincident",
+              "entityIds": [
+                "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
+                "entity_29767930-c001-468b-b3d3-588c4b72d6ea"
+              ],
+              "data": {
+                "refs": [
+                  {
+                    "entityId": "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
+                    "point": "b"
+                  },
+                  {
+                    "entityId": "entity_29767930-c001-468b-b3d3-588c4b72d6ea",
+                    "point": "a"
+                  }
+                ]
+              }
+            }
+          ],
+          "documentSha256": "7fc257f495b7605db8e6fb1cfef55ea11fc0df50731c6d671593d697619421ca"
+        },
+        {
+          "direction": "redo",
+          "frame": 4,
+          "command": "sketch.line",
+          "entityIds": [
+            "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
+            "entity_29767930-c001-468b-b3d3-588c4b72d6ea",
+            "entity_a275e105-8555-4881-b10f-04758fdf7d1b"
+          ],
+          "constraintIds": [
+            "constraint_b4a17146-4c07-4cdf-9ec5-7229bc834c3f"
+          ],
+          "constraints": [
+            {
+              "id": "constraint_b4a17146-4c07-4cdf-9ec5-7229bc834c3f",
+              "type": "coincident",
+              "entityIds": [
+                "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
+                "entity_29767930-c001-468b-b3d3-588c4b72d6ea"
+              ],
+              "data": {
+                "refs": [
+                  {
+                    "entityId": "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
+                    "point": "b"
+                  },
+                  {
+                    "entityId": "entity_29767930-c001-468b-b3d3-588c4b72d6ea",
+                    "point": "a"
+                  }
+                ]
+              }
+            }
+          ],
+          "documentSha256": "196f0a17bb17fa3e6c0bb13878d1f391566bac1d07db82faf80a4ee04e0a1705"
+        },
+        {
+          "direction": "redo",
+          "frame": 5,
+          "command": "constraint.coincident",
+          "entityIds": [
+            "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
+            "entity_29767930-c001-468b-b3d3-588c4b72d6ea",
+            "entity_a275e105-8555-4881-b10f-04758fdf7d1b"
+          ],
+          "constraintIds": [
+            "constraint_b4a17146-4c07-4cdf-9ec5-7229bc834c3f",
+            "constraint_d615ab84-b9ad-4433-b728-cd6d0329c9bf"
+          ],
+          "constraints": [
+            {
+              "id": "constraint_b4a17146-4c07-4cdf-9ec5-7229bc834c3f",
+              "type": "coincident",
+              "entityIds": [
+                "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
+                "entity_29767930-c001-468b-b3d3-588c4b72d6ea"
+              ],
+              "data": {
+                "refs": [
+                  {
+                    "entityId": "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
+                    "point": "b"
+                  },
+                  {
+                    "entityId": "entity_29767930-c001-468b-b3d3-588c4b72d6ea",
+                    "point": "a"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "constraint_d615ab84-b9ad-4433-b728-cd6d0329c9bf",
+              "type": "coincident",
+              "entityIds": [
+                "entity_29767930-c001-468b-b3d3-588c4b72d6ea",
+                "entity_a275e105-8555-4881-b10f-04758fdf7d1b"
+              ],
+              "data": {
+                "refs": [
+                  {
+                    "entityId": "entity_29767930-c001-468b-b3d3-588c4b72d6ea",
+                    "point": "b"
+                  },
+                  {
+                    "entityId": "entity_a275e105-8555-4881-b10f-04758fdf7d1b",
+                    "point": "a"
+                  }
+                ]
+              }
+            }
+          ],
+          "documentSha256": "54489d94fe298be769c12e1bd1dc54242913e9f5ffa121a4f9e503d98b6189ac"
+        }
+      ],
+      "undoFrameCount": 5,
+      "redoFrameCount": 5,
+      "snapEnabled": false,
+      "noDanglingReferences": true,
+      "topology": {
+        "lines": 3,
+        "endpointSlots": 6,
+        "topologicalPoints": 4,
+        "joins": [
+          {
+            "id": "constraint_b4a17146-4c07-4cdf-9ec5-7229bc834c3f",
+            "refs": [
+              {
+                "entityId": "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
+                "point": "b"
+              },
+              {
+                "entityId": "entity_29767930-c001-468b-b3d3-588c4b72d6ea",
+                "point": "a"
+              }
+            ],
+            "pair": [
+              "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637:b",
+              "entity_29767930-c001-468b-b3d3-588c4b72d6ea:a"
+            ]
+          },
+          {
+            "id": "constraint_d615ab84-b9ad-4433-b728-cd6d0329c9bf",
+            "refs": [
+              {
+                "entityId": "entity_29767930-c001-468b-b3d3-588c4b72d6ea",
+                "point": "b"
+              },
+              {
+                "entityId": "entity_a275e105-8555-4881-b10f-04758fdf7d1b",
+                "point": "a"
+              }
+            ],
+            "pair": [
+              "entity_29767930-c001-468b-b3d3-588c4b72d6ea:b",
+              "entity_a275e105-8555-4881-b10f-04758fdf7d1b:a"
+            ]
+          }
+        ]
+      },
+      "solver": {
+        "geometry": [
+          [
+            -31.999996903078753,
+            -20.000001290383857,
+            -15.99999845153937,
+            -7.999999225769692
+          ],
+          [
+            -15.99999845153937,
+            -7.999999225769692,
+            0,
+            15.99999845153937
+          ],
+          [
+            0,
+            15.99999845153937,
+            19.999994838464588,
+            4.000002838844473
+          ]
+        ],
+        "coincidentResiduals": [
+          0,
+          0
+        ]
+      },
+      "atomicSegmentAndInferenceUndo": "BLOCKED",
+      "acceptance": "BLOCKED",
+      "wasm": [
+        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+      ]
+    },
+    {
+      "id": "F",
+      "label": "Save/reload/Open preserves chain IDs, refs, and actual solved topology",
+      "status": "PASS",
+      "ids": [
+        "entity_6717416d-9f56-4bd6-9d2d-d0c753b4baf3",
+        "entity_04fd8cfa-d5a4-41f9-b3e3-380ba0a1f333",
+        "entity_46d8d3bb-0d36-47ed-b441-fecef7e52149",
+        "entity_80106c57-aaa4-48fd-83c6-811cfa0e50a6"
+      ],
+      "beforeTopology": {
+        "lines": 4,
+        "endpointSlots": 8,
+        "topologicalPoints": 5,
+        "joins": [
+          {
+            "id": "constraint_ebb39d29-45fb-475b-ad36-fbe10c327b49",
+            "refs": [
+              {
+                "entityId": "entity_6717416d-9f56-4bd6-9d2d-d0c753b4baf3",
+                "point": "b"
+              },
+              {
+                "entityId": "entity_04fd8cfa-d5a4-41f9-b3e3-380ba0a1f333",
+                "point": "a"
+              }
+            ],
+            "pair": [
+              "entity_6717416d-9f56-4bd6-9d2d-d0c753b4baf3:b",
+              "entity_04fd8cfa-d5a4-41f9-b3e3-380ba0a1f333:a"
+            ]
+          },
+          {
+            "id": "constraint_c502f5b6-452e-47fa-b32a-524a7021fe95",
+            "refs": [
+              {
+                "entityId": "entity_04fd8cfa-d5a4-41f9-b3e3-380ba0a1f333",
+                "point": "b"
+              },
+              {
+                "entityId": "entity_46d8d3bb-0d36-47ed-b441-fecef7e52149",
+                "point": "a"
+              }
+            ],
+            "pair": [
+              "entity_04fd8cfa-d5a4-41f9-b3e3-380ba0a1f333:b",
+              "entity_46d8d3bb-0d36-47ed-b441-fecef7e52149:a"
+            ]
+          },
+          {
+            "id": "constraint_dd622d8d-fbae-42bc-a9f8-b8fa97d98627",
+            "refs": [
+              {
+                "entityId": "entity_46d8d3bb-0d36-47ed-b441-fecef7e52149",
+                "point": "b"
+              },
+              {
+                "entityId": "entity_80106c57-aaa4-48fd-83c6-811cfa0e50a6",
+                "point": "a"
+              }
+            ],
+            "pair": [
+              "entity_46d8d3bb-0d36-47ed-b441-fecef7e52149:b",
+              "entity_80106c57-aaa4-48fd-83c6-811cfa0e50a6:a"
+            ]
+          }
+        ]
+      },
+      "afterTopology": {
+        "lines": 4,
+        "endpointSlots": 8,
+        "topologicalPoints": 5,
+        "joins": [
+          {
+            "id": "constraint_ebb39d29-45fb-475b-ad36-fbe10c327b49",
+            "refs": [
+              {
+                "entityId": "entity_6717416d-9f56-4bd6-9d2d-d0c753b4baf3",
+                "point": "b"
+              },
+              {
+                "entityId": "entity_04fd8cfa-d5a4-41f9-b3e3-380ba0a1f333",
+                "point": "a"
+              }
+            ],
+            "pair": [
+              "entity_6717416d-9f56-4bd6-9d2d-d0c753b4baf3:b",
+              "entity_04fd8cfa-d5a4-41f9-b3e3-380ba0a1f333:a"
+            ]
+          },
+          {
+            "id": "constraint_c502f5b6-452e-47fa-b32a-524a7021fe95",
+            "refs": [
+              {
+                "entityId": "entity_04fd8cfa-d5a4-41f9-b3e3-380ba0a1f333",
+                "point": "b"
+              },
+              {
+                "entityId": "entity_46d8d3bb-0d36-47ed-b441-fecef7e52149",
+                "point": "a"
+              }
+            ],
+            "pair": [
+              "entity_04fd8cfa-d5a4-41f9-b3e3-380ba0a1f333:b",
+              "entity_46d8d3bb-0d36-47ed-b441-fecef7e52149:a"
+            ]
+          },
+          {
+            "id": "constraint_dd622d8d-fbae-42bc-a9f8-b8fa97d98627",
+            "refs": [
+              {
+                "entityId": "entity_46d8d3bb-0d36-47ed-b441-fecef7e52149",
+                "point": "b"
+              },
+              {
+                "entityId": "entity_80106c57-aaa4-48fd-83c6-811cfa0e50a6",
+                "point": "a"
+              }
+            ],
+            "pair": [
+              "entity_46d8d3bb-0d36-47ed-b441-fecef7e52149:b",
+              "entity_80106c57-aaa4-48fd-83c6-811cfa0e50a6:a"
+            ]
+          }
+        ]
+      },
+      "solver": {
+        "geometry": [
+          [
+            -31.999996903078753,
+            -20.000001290383857,
+            -15.99999845153937,
+            -7.999999225769692
+          ],
+          [
+            -15.99999845153937,
+            -7.999999225769692,
+            0,
+            15.99999845153937
+          ],
+          [
+            0,
+            15.99999845153937,
+            19.999994838464588,
+            4.000002838844473
+          ],
+          [
+            19.999994838464588,
+            4.000002838844473,
+            36.00000619384248,
+            24.000000903268692
+          ]
+        ],
+        "coincidentResiduals": [
+          0,
+          0,
+          0
+        ]
+      },
+      "documentSha256": "cc92abc36f705b8b59be5fca170f43ded9b3642bac07fa36795429a5a9a0452d",
+      "wasm": [
+        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+      ]
+    },
+    {
+      "id": "G",
+      "label": "Wheel and middle-button pan preserve an anchored Line preview",
+      "status": "PASS",
+      "originalPreview": [
+        -20.00000129038385,
+        -9.999997419232294,
+        9.999997419232287,
+        11.999998838654527
+      ],
+      "preview": [
+        -20.00000129038385,
+        -9.999997419232294,
+        -15.000001287483855,
+        8.00000184072033
+      ],
+      "actual": [
+        [
+          -20.00000129038385,
+          -9.999997419232294,
+          10.00000258804593,
+          11.999999899668406
+        ]
+      ],
+      "oldSpan": 100,
+      "newSpan": 76.33794943368531,
+      "oldCenter": "2.351197413566153,2.8514521824100143",
+      "newCenter": "-3.7009655965040356,5.675794920442769",
+      "wasm": [
+        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+      ]
+    },
+    {
+      "id": "H.keyboard",
+      "label": "L, real typing, Tab locks, invalid values, rapid Enter, and pointer double commit",
+      "status": "PASS",
+      "lShortcut": true,
+      "typedFromField": true,
+      "tabFocusAndLengthLock": true,
+      "shiftTabFocus": true,
+      "invalidValueNoMutation": true,
+      "adjacentEnterEntityCount": 1,
+      "doubleClickTotalEntityCount": 2,
+      "doubleClickState": {
+        "command": "sketch.line",
+        "phase": "awaiting-start"
+      },
+      "ids": [
+        "entity_2fe46408-671e-4a56-8944-4a365a7375cc",
+        "entity_efb77f33-6886-4258-8973-0940d998d0c5"
+      ],
+      "actual": [
+        [
+          -20.00000129038385,
+          -9.999997419232294,
+          14.6410148609937,
+          10.000002580767703
+        ],
+        [
+          -29.99999870961615,
+          20.00000129038385,
+          -9.999997419232287,
+          29.999998709616143
+        ]
+      ],
+      "lockedPreview": [
+        -20.00000129038385,
+        -9.999997419232294,
+        14.6410148609937,
+        10.000002580767703
+      ],
+      "nativeDoubleClickLifecycle": "PASS",
+      "wasm": [
+        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+      ]
+    },
+    {
+      "id": "H.numeric-chain",
+      "label": "Numeric pointer commit continues the chain with reset locks and real driving length",
+      "status": "PASS",
+      "ids": [
+        "entity_a843576c-7440-4758-8fe0-1da4058a4eef",
+        "entity_22f3f5eb-e067-43a3-8478-52ed5d73dbdd"
+      ],
+      "firstLine": [
+        -20.00000129038385,
+        -9.999997419232294,
+        14.6410148609937,
+        10.000002580767703
+      ],
+      "firstContinuedState": {
+        "command": "sketch.line",
+        "phase": "anchored"
+      },
+      "resetNumericLocks": true,
+      "nextPreview": [
+        14.6410148609937,
+        10.000002580767703,
+        34.99999741923229,
+        -15.000002580767706
+      ],
+      "actual": [
+        [
+          -20.00000129038385,
+          -9.999997419232294,
+          14.6410148609937,
+          10.000002580767703
+        ],
+        [
+          14.6410148609937,
+          10.000002580767703,
+          34.99999741923229,
+          -15.000002580767706
+        ]
+      ],
+      "topology": {
+        "lines": 2,
+        "endpointSlots": 4,
+        "topologicalPoints": 3,
+        "joins": [
+          {
+            "id": "constraint_220dcc19-c8dc-4c70-9dc4-e62a2fb87779",
+            "refs": [
+              {
+                "entityId": "entity_a843576c-7440-4758-8fe0-1da4058a4eef",
+                "point": "b"
+              },
+              {
+                "entityId": "entity_22f3f5eb-e067-43a3-8478-52ed5d73dbdd",
+                "point": "a"
+              }
+            ],
+            "pair": [
+              "entity_a843576c-7440-4758-8fe0-1da4058a4eef:b",
+              "entity_22f3f5eb-e067-43a3-8478-52ed5d73dbdd:a"
+            ]
+          }
+        ]
+      },
+      "solver": {
+        "geometry": [
+          [
+            -20.00000129038385,
+            -9.999997419232294,
+            14.6410148609937,
+            10.000002580767703
+          ],
+          [
+            14.6410148609937,
+            10.000002580767703,
+            34.99999741923229,
+            -15.000002580767706
+          ]
+        ],
+        "coincidentResiduals": [
+          0
+        ]
+      },
+      "drivingLength": {
+        "id": "dimension_666f0427-5d84-41de-9338-4b2e108d3abe",
+        "type": "linear",
+        "entityIds": [
+          "entity_a843576c-7440-4758-8fe0-1da4058a4eef"
+        ],
+        "value": 40,
+        "driving": true
+      },
+      "numericPointerContinuation": true,
+      "escapePreservesDocument": true,
+      "absoluteDrivingAngle": "BLOCKED",
+      "wasm": [
+        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+      ]
+    },
+    {
+      "id": "H.interior-angle",
+      "label": "A chained 120 degree interior input follows the pointer branch and keeps Line active",
+      "status": "PASS",
+      "ids": [
+        "entity_64c53ddf-c2a2-4687-a295-4a628ea20854",
+        "entity_b09072f7-dd01-4f91-9974-ce101293dc29"
+      ],
+      "rawPreview": [
+        -2,
+        25
+      ],
+      "rawCommit": [
+        10,
+        5
+      ],
+      "previewAngle": 128.659804,
+      "actual": [
+        [
+          -29.99999870961615,
+          14.999999354808068,
+          -9.999997419232287,
+          14.999999354808068
+        ],
+        [
+          -9.999997419232287,
+          14.999999354808068,
+          5.000002580767694,
+          -10.980762758725103
+        ]
+      ],
+      "interiorAngle": 119.99999999999997,
+      "continuedState": {
+        "command": "sketch.line",
+        "phase": "anchored"
+      },
+      "topology": {
+        "lines": 2,
+        "endpointSlots": 4,
+        "topologicalPoints": 3,
+        "joins": [
+          {
+            "id": "constraint_2da082bc-2848-434b-9c83-69a9bbf02a7b",
+            "refs": [
+              {
+                "entityId": "entity_64c53ddf-c2a2-4687-a295-4a628ea20854",
+                "point": "b"
+              },
+              {
+                "entityId": "entity_b09072f7-dd01-4f91-9974-ce101293dc29",
+                "point": "a"
+              }
+            ],
+            "pair": [
+              "entity_64c53ddf-c2a2-4687-a295-4a628ea20854:b",
+              "entity_b09072f7-dd01-4f91-9974-ce101293dc29:a"
+            ]
+          }
+        ]
+      },
+      "solver": {
+        "geometry": [
+          [
+            -29.99999870961615,
+            14.999999354808068,
+            -9.999997419232287,
+            14.999999354808068
+          ],
+          [
+            -9.999997419232287,
+            14.999999354808068,
+            5.000002580767694,
+            -10.980762758725103
+          ]
+        ],
+        "coincidentResiduals": [
+          0
+        ]
+      },
+      "orientations": [
+        {
+          "id": "constraint_d66de6d7-8f95-4b41-82cc-9ea437642a68",
+          "type": "horizontal",
+          "entityIds": [
+            "entity_64c53ddf-c2a2-4687-a295-4a628ea20854"
+          ]
+        }
+      ],
+      "drivingLength": {
+        "id": "dimension_ed0ed5e7-23af-4715-a6a7-c9049bcd7d7a",
+        "type": "linear",
+        "entityIds": [
+          "entity_b09072f7-dd01-4f91-9974-ce101293dc29"
+        ],
+        "value": 30,
+        "driving": true
+      },
+      "angleMode": "chain-interior",
+      "relativeDrivingAngle": "NOT_ASSERTED",
+      "wasm": [
+        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+      ]
+    },
+    {
+      "id": "H.mouse-input",
+      "label": "A smooth mouse approach can focus, edit and toggle locked numeric input without committing",
+      "status": "PASS",
+      "baselineIds": [
+        "entity_e5825de6-246b-4550-9e36-3a81be39f102"
+      ],
+      "lockedPreview": [
+        -20.00000129038385,
+        -9.999997419232294,
+        14.6410148609937,
+        10.000002580767703
+      ],
+      "editedPreview": [
+        -20.00000129038385,
+        -9.999997419232294,
+        18.97114187991589,
+        12.500002580767703
+      ],
+      "approaches": [
+        {
+          "label": "length input",
+          "box": {
+            "x": 897.140625,
+            "y": 547.59375,
+            "width": 103.125,
+            "height": 24
+          },
+          "point": {
+            "x": 948.703125,
+            "y": 559.59375
+          },
+          "samples": [
+            {
+              "distance": 36,
+              "x": 897.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 34,
+              "x": 897.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 32,
+              "x": 897.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 30,
+              "x": 897.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 28,
+              "x": 897.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 26,
+              "x": 897.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 24,
+              "x": 897.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 22,
+              "x": 897.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 20,
+              "x": 897.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 18,
+              "x": 897.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 16,
+              "x": 897.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 14,
+              "x": 897.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 12,
+              "x": 897.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 10,
+              "x": 897.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 8,
+              "x": 897.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 6,
+              "x": 897.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 4,
+              "x": 897.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 2,
+              "x": 897.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 0,
+              "x": 897.140625,
+              "y": 547.59375
+            }
+          ]
+        },
+        {
+          "label": "length lock",
+          "box": {
+            "x": 1024.140625,
+            "y": 547.59375,
+            "width": 23,
+            "height": 24
+          },
+          "point": {
+            "x": 1035.640625,
+            "y": 559.59375
+          },
+          "samples": [
+            {
+              "distance": 36,
+              "x": 1024.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 34,
+              "x": 1024.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 32,
+              "x": 1024.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 30,
+              "x": 1024.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 28,
+              "x": 1024.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 26,
+              "x": 1024.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 24,
+              "x": 1024.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 22,
+              "x": 1024.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 20,
+              "x": 1024.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 18,
+              "x": 1024.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 16,
+              "x": 1024.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 14,
+              "x": 1024.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 12,
+              "x": 1024.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 10,
+              "x": 1024.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 8,
+              "x": 1024.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 6,
+              "x": 1024.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 4,
+              "x": 1024.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 2,
+              "x": 1024.140625,
+              "y": 547.59375
+            },
+            {
+              "distance": 0,
+              "x": 1024.140625,
+              "y": 547.59375
+            }
+          ]
+        }
+      ],
+      "mouseInputFocus": true,
+      "mouseInputEdit": true,
+      "mouseLengthLockToggle": "locked-to-unlocked",
+      "noAdditionalEntities": true,
+      "escapePreservesDocument": true,
+      "wasm": [
+        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+      ]
+    },
+    {
+      "id": "H.lifecycle",
+      "label": "Repeated Line selection preserves the chain; plain Enter commits preview and exits",
+      "status": "PASS",
+      "repeatedToolbarPreservedAnchor": true,
+      "before": [
+        0,
+        15.99999845153937,
+        19.999994838464588,
+        4.000002838844473
+      ],
+      "after": [
+        0,
+        15.99999845153937,
+        19.999994838464588,
+        4.000002838844473
+      ],
+      "plainEnter": "commit-and-exit",
+      "ids": [
+        "entity_04911c7a-8838-4ea9-814d-16e12ad3e8de",
+        "entity_8921d81d-9081-47c3-b8da-32970bc8e995",
+        "entity_71d1a900-1905-4608-bbd5-b318965536d8"
+      ],
+      "topology": {
+        "lines": 3,
+        "endpointSlots": 6,
+        "topologicalPoints": 4,
+        "joins": [
+          {
+            "id": "constraint_d68ea774-ce64-4147-a048-8749016554bd",
+            "refs": [
+              {
+                "entityId": "entity_04911c7a-8838-4ea9-814d-16e12ad3e8de",
+                "point": "b"
+              },
+              {
+                "entityId": "entity_8921d81d-9081-47c3-b8da-32970bc8e995",
+                "point": "a"
+              }
+            ],
+            "pair": [
+              "entity_04911c7a-8838-4ea9-814d-16e12ad3e8de:b",
+              "entity_8921d81d-9081-47c3-b8da-32970bc8e995:a"
+            ]
+          },
+          {
+            "id": "constraint_6625984e-4ce2-4024-bf5e-76ebe69fd89f",
+            "refs": [
+              {
+                "entityId": "entity_8921d81d-9081-47c3-b8da-32970bc8e995",
+                "point": "b"
+              },
+              {
+                "entityId": "entity_71d1a900-1905-4608-bbd5-b318965536d8",
+                "point": "a"
+              }
+            ],
+            "pair": [
+              "entity_8921d81d-9081-47c3-b8da-32970bc8e995:b",
+              "entity_71d1a900-1905-4608-bbd5-b318965536d8:a"
+            ]
+          }
+        ]
+      },
+      "solver": {
+        "geometry": [
+          [
+            -31.999996903078753,
+            -20.000001290383857,
+            -15.99999845153937,
+            -7.999999225769692
+          ],
+          [
+            -15.99999845153937,
+            -7.999999225769692,
+            0,
+            15.99999845153937
+          ],
+          [
+            0,
+            15.99999845153937,
+            19.999994838464588,
+            4.000002838844473
+          ]
+        ],
+        "coincidentResiduals": [
+          0,
+          0
+        ]
+      },
+      "wasm": [
+        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+      ]
+    },
+    {
+      "id": "H.focus",
+      "label": "Numeric Enter and Escape restore stage focus; immediate Ctrl+Z reaches real history",
+      "status": "PASS",
+      "ids": [
+        "entity_52274ebe-3b45-4c97-b617-cd196f94e016"
+      ],
+      "dimensionId": "dimension_fc7527b5-ede6-4dee-995c-9791772bcdc0",
+      "enterFocus": {
+        "tag": "DIV",
+        "testId": "part-model-stage",
+        "insidePersistentStage": true
+      },
+      "escapeFocus": {
+        "tag": "DIV",
+        "testId": "part-model-stage",
+        "insidePersistentStage": true
+      },
+      "immediateKeyboardUndo": true,
+      "lastRealCommandUndone": "dimension.linear",
+      "linePreservedByDimensionUndo": true,
+      "redoStableDimensionId": true,
+      "atomicLineAndDimensionUndo": "BLOCKED",
+      "wasm": [
+        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+      ]
+    },
+    {
+      "id": "H.snap-toggle",
+      "label": "Disabling Snap invalidates the pending inference without breaking chain coincidence",
+      "status": "PASS",
+      "snapEnabledAtPreview": true,
+      "snapEnabledAtCommit": false,
+      "fieldPointerMovesAfterToggle": 0,
+      "snappedPreview": [
+        -9.999997419232287,
+        -4.9999987096161504,
+        18.000003096921247,
+        -4.9999987096161504
+      ],
+      "ids": [
+        "entity_a9d44f94-f245-47a6-a589-55f6d6cfdf02",
+        "entity_c907f66d-2525-4184-9357-173f9dbe7dfb"
+      ],
+      "topology": {
+        "lines": 2,
+        "endpointSlots": 4,
+        "topologicalPoints": 3,
+        "joins": [
+          {
+            "id": "constraint_01c21fc7-7581-4e3c-ab41-a1f50137876c",
+            "refs": [
+              {
+                "entityId": "entity_a9d44f94-f245-47a6-a589-55f6d6cfdf02",
+                "point": "b"
+              },
+              {
+                "entityId": "entity_c907f66d-2525-4184-9357-173f9dbe7dfb",
+                "point": "a"
+              }
+            ],
+            "pair": [
+              "entity_a9d44f94-f245-47a6-a589-55f6d6cfdf02:b",
+              "entity_c907f66d-2525-4184-9357-173f9dbe7dfb:a"
+            ]
+          }
+        ]
+      },
+      "solver": {
+        "geometry": [
+          [
+            -29.99999870961615,
+            -20.000001290383857,
+            -9.999997419232287,
+            -4.9999987096161504
+          ],
+          [
+            -9.999997419232287,
+            -4.9999987096161504,
+            18.000003096921247,
+            -4.9999987096161504
+          ]
+        ],
+        "coincidentResiduals": [
+          0
+        ]
+      },
+      "constraints": [
+        {
+          "id": "constraint_01c21fc7-7581-4e3c-ab41-a1f50137876c",
+          "type": "coincident",
+          "entityIds": [
+            "entity_a9d44f94-f245-47a6-a589-55f6d6cfdf02",
+            "entity_c907f66d-2525-4184-9357-173f9dbe7dfb"
+          ],
+          "data": {
+            "refs": [
+              {
+                "entityId": "entity_a9d44f94-f245-47a6-a589-55f6d6cfdf02",
+                "point": "b"
+              },
+              {
+                "entityId": "entity_c907f66d-2525-4184-9357-173f9dbe7dfb",
+                "point": "a"
+              }
+            ]
+          }
+        }
+      ],
+      "chainCoincidencePreserved": true,
+      "wasm": [
+        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+      ]
+    },
+    {
+      "id": "H.context",
+      "label": "Context Escape preserves Line; Repeat Line finishes the current chain",
+      "status": "PASS",
+      "ids": [
+        "entity_3ee3f793-0428-4b17-9638-413c2c76d8e7",
+        "entity_4adb3a36-552f-4e07-8fdd-cb4ce20cab4d"
+      ],
+      "preview": [
+        0,
+        15.99999845153937,
+        19.999994838464588,
+        4.000002838844473
+      ],
+      "afterMenuEscape": [
+        0,
+        15.99999845153937,
+        19.999994838464588,
+        4.000002838844473
+      ],
+      "escapeState": {
+        "command": "sketch.line",
+        "phase": "anchored"
+      },
+      "repeatState": {
+        "command": "sketch.line",
+        "phase": "awaiting-start"
+      },
+      "repeatLabel": "Повторить: Отрезок",
+      "escapeFocus": {
+        "tag": "DIV",
+        "testId": "part-model-stage",
+        "insidePersistentStage": true
+      },
+      "repeatFocus": {
+        "tag": "DIV",
+        "testId": "part-model-stage",
+        "insidePersistentStage": true
+      },
+      "cancelFocus": {
+        "tag": "DIV",
+        "testId": "part-model-stage",
+        "insidePersistentStage": true
+      },
+      "menuEscapeOnly": true,
+      "repeatFinishesChainWithoutCommit": true,
+      "menuCancelPreservesDocument": true,
+      "topology": {
+        "lines": 2,
+        "endpointSlots": 4,
+        "topologicalPoints": 3,
+        "joins": [
+          {
+            "id": "constraint_b3c37254-ab2d-4c97-8b94-4d41527137aa",
+            "refs": [
+              {
+                "entityId": "entity_3ee3f793-0428-4b17-9638-413c2c76d8e7",
+                "point": "b"
+              },
+              {
+                "entityId": "entity_4adb3a36-552f-4e07-8fdd-cb4ce20cab4d",
+                "point": "a"
+              }
+            ],
+            "pair": [
+              "entity_3ee3f793-0428-4b17-9638-413c2c76d8e7:b",
+              "entity_4adb3a36-552f-4e07-8fdd-cb4ce20cab4d:a"
+            ]
+          }
+        ]
+      },
+      "solver": {
+        "geometry": [
+          [
+            -31.999996903078753,
+            -20.000001290383857,
+            -15.99999845153937,
+            -7.999999225769692
+          ],
+          [
+            -15.99999845153937,
+            -7.999999225769692,
+            0,
+            15.99999845153937
+          ]
+        ],
+        "coincidentResiduals": [
+          0
+        ]
+      },
+      "wasm": [
+        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+      ]
+    },
+    {
+      "id": "H.locale",
+      "label": "Comma and dot numeric entry use the same actual values",
+      "status": "PASS",
+      "segments": [
+        {
+          "id": "entity_622e7d20-2dcb-43e3-8b0b-3e8aed4d8360",
+          "lengthText": "40,5",
+          "angleText": "30,5",
+          "geometry": [
+            -34.99999741923229,
+            -25.000000000000007,
+            -0.10401642135049372,
+            -4.44469630009149
+          ]
+        },
+        {
+          "id": "entity_13ec6e0b-b3c9-4af1-8727-bdfe5e97303e",
+          "lengthText": "40.5",
+          "angleText": "30.5",
+          "geometry": [
+            -34.99999741923229,
+            4.999998709616143,
+            -0.10401642135049372,
+            25.55530240952466
+          ]
+        }
+      ],
+      "persistedLengths": [
+        40.5,
+        40.5
+      ],
+      "absoluteDrivingAngle": "BLOCKED",
+      "wasm": [
+        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "fusion-live-line-behavior-native-pair-01-first-click.png",
+      "sha256": "dc9312e9bacfd1289f1325b07906c11ceb58aba08ab1f383a784933a73fd476b",
+      "viewport": {
+        "width": 2048,
+        "height": 1137
+      }
+    },
+    {
+      "file": "fusion-live-line-behavior-native-pair-02-first-preview.png",
+      "sha256": "bf0f011d7a3c64c5253a0af47f169b2f315f3c846db6ff384cd2dc4aa0bb1eb4",
+      "viewport": {
+        "width": 2048,
+        "height": 1137
+      }
+    },
+    {
+      "file": "fusion-live-line-behavior-native-pair-05-first-commit.png",
+      "sha256": "ef5c3a1b4733c4cf716f5613fa0bc5e9e66bb9a877fddbbb911d76698395e43a",
+      "viewport": {
+        "width": 2048,
+        "height": 1137
+      }
+    },
+    {
+      "file": "fusion-live-line-behavior-native-pair-06-next-preview.png",
+      "sha256": "3ad847ee1fc92b0f947ac9e97eb8f88e8b4ebffe0e14a598fc82ca46dc9f782c",
+      "viewport": {
+        "width": 2048,
+        "height": 1137
+      }
+    },
+    {
+      "file": "fusion-live-line-behavior-native-pair-07-third-commit.png",
+      "sha256": "ee3cbe6151260c16cfb232d6edc72cc0fe896f76e539c230e57bc5e126352f20",
+      "viewport": {
+        "width": 2048,
+        "height": 1137
+      }
+    },
+    {
+      "file": "fusion-live-line-behavior-A-four-segments-preview.png",
+      "sha256": "3a4425fb1add056783317e7f84db56dbda5af6ad2a20096bb833fae5e7156de5",
+      "viewport": {
+        "width": 2048,
+        "height": 1137
+      }
+    },
+    {
+      "file": "fusion-live-line-behavior-native-pair-09-finish-chain.png",
+      "sha256": "21ae258b3eb89f4f67a5f16da931d1870ace4d5f73ccf95de61441a8f35d4e12",
+      "viewport": {
+        "width": 2048,
+        "height": 1137
+      }
+    },
+    {
+      "file": "fusion-live-line-behavior-native-pair-10-exit-line.png",
+      "sha256": "e72bfa0e00610e427c52dc06c6f8614fb344f0663d21111b4d7a7388cbc3c201",
+      "viewport": {
+        "width": 2048,
+        "height": 1137
+      }
+    },
+    {
+      "file": "fusion-live-line-behavior-native-pair-03-length-entered.png",
+      "sha256": "2da47d0b1ada8916c40bae24bb7c0e911b8622029d30645eb6541fa3e591b390",
+      "viewport": {
+        "width": 2048,
+        "height": 1137
+      }
+    },
+    {
+      "file": "fusion-live-line-behavior-native-pair-04-angle-entered.png",
+      "sha256": "44e3915b2749360be1168a8b4393b1293d00a4dd014feda8dedff09ca6c151b7",
+      "viewport": {
+        "width": 2048,
+        "height": 1137
+      }
+    },
+    {
+      "file": "fusion-live-line-behavior-B-length40-angle30-entry.png",
+      "sha256": "44e3915b2749360be1168a8b4393b1293d00a4dd014feda8dedff09ca6c151b7",
+      "viewport": {
+        "width": 2048,
+        "height": 1137
+      }
+    },
+    {
+      "file": "fusion-live-line-behavior-B-numeric-enter-exits.png",
+      "sha256": "d023b4142bac6e9db5d12f2fffcb8d105b8a2005394ed1eba57addfa01989645",
+      "viewport": {
+        "width": 2048,
+        "height": 1137
+      }
+    },
+    {
+      "file": "fusion-live-line-behavior-native-pair-08-closure.png",
+      "sha256": "4e53000b6a5095ac5aeddbe051fbd51b31d1ef21460f3e10c99e7bee6ccce40b",
+      "viewport": {
+        "width": 2048,
+        "height": 1137
+      }
+    },
+    {
+      "file": "fusion-live-line-behavior-C-closed-profile.png",
+      "sha256": "d86539647917bbeafa56075f83317fd884f89dffb83a5f5c57edab22f633b522",
+      "viewport": {
+        "width": 2048,
+        "height": 1137
+      }
+    },
+    {
+      "file": "fusion-live-line-behavior-C-occ-extrude10.png",
+      "sha256": "ed02439053aced3ef0e8def130eae18b7549686f0824502eea40ea16a58eb189",
+      "viewport": {
+        "width": 2048,
+        "height": 1137
+      }
+    },
+    {
+      "file": "fusion-live-line-behavior-D-third-preview-before-escape.png",
+      "sha256": "c29fc48054120a7af0576febef5105e5f21262ca42b7f0355e2c31e89978c87e",
+      "viewport": {
+        "width": 2048,
+        "height": 1137
+      }
+    },
+    {
+      "file": "fusion-live-line-behavior-D-after-escape-two-lines.png",
+      "sha256": "5c84eeebf6edde0d90dffd81fe970daf14ce2fb1fab213447804154a1f650c91",
+      "viewport": {
+        "width": 2048,
+        "height": 1137
+      }
+    },
+    {
+      "file": "fusion-live-line-behavior-F-reopened-chain.png",
+      "sha256": "92720f3a71cc8aa0f2b0b551437e963174a76417cf93412c385b5cbbd30e1531",
+      "viewport": {
+        "width": 2048,
+        "height": 1137
+      }
+    },
+    {
+      "file": "fusion-live-line-behavior-G-anchored-preview-after-pan-zoom.png",
+      "sha256": "228b170650f90aa47bf70cfb53358102d714031de3c3ae87f0c4bfa32c976656",
+      "viewport": {
+        "width": 2048,
+        "height": 1137
+      }
+    },
+    {
+      "file": "fusion-live-line-behavior-H-no-double-commit.png",
+      "sha256": "e8cd7cc77395708f12302a397019e7f90296c71196c896f87de91b02ae552960",
+      "viewport": {
+        "width": 2048,
+        "height": 1137
+      }
+    },
+    {
+      "file": "fusion-live-line-behavior-H-numeric-click-continues.png",
+      "sha256": "e41a98bd5787fac890efcbc6ab9cb7727eb84144f5f7af3c55d4cfbc1bb6a0ea",
+      "viewport": {
+        "width": 2048,
+        "height": 1137
+      }
+    },
+    {
+      "file": "fusion-live-line-behavior-H-interior120-length30-pointer-below.png",
+      "sha256": "79a87dc31f27c8539635028fed8d8d61fe7da5ae6a469604e20f717971ec7a5b",
+      "viewport": {
+        "width": 2048,
+        "height": 1137
+      }
+    },
+    {
+      "file": "fusion-live-line-behavior-H-horizontal-preview-before-snap-off.png",
+      "sha256": "8e618cdf26686f9f054cdd5bb1aa68f98463c0dea8bbc3f8bc396955b77f6d3b",
+      "viewport": {
+        "width": 2048,
+        "height": 1137
+      }
+    },
+    {
+      "file": "fusion-live-line-behavior-H-preview-context-before-escape.png",
+      "sha256": "757f22d15107d3a1b672afab7b4718df18ddb1d3a4b8bbd52261d302ec3ef419",
+      "viewport": {
+        "width": 2048,
+        "height": 1137
+      }
+    },
+    {
+      "file": "fusion-live-line-behavior-H-context-repeat-line-awaiting-start.png",
+      "sha256": "4fbc782552c26b646f3eddade2a75d7aae36eb4edfb0a9897d778ff03e49871e",
+      "viewport": {
+        "width": 2048,
+        "height": 1137
+      }
+    }
+  ],
+  "pageErrors": [],
+  "requestFailures": [],
+  "cleanupErrors": [],
+  "ownedServers": [
+    {
+      "pid": 6744,
+      "requestedPort": 0,
+      "appRoot": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Sketch-Parity-002-20261106\\dist\\fusion-live",
+      "port": 50729,
+      "origin": "http://127.0.0.1:50729",
+      "startedUTC": "2026-11-07T16:16:17.550Z",
+      "stoppedUTC": "2026-11-07T16:16:58.412Z"
+    }
+  ],
+  "nativeLifecycle": {
+    "source": "Parent-observed installed Fusion 2706.1.17, captures 11-44",
+    "pointerCommit": "continue chain with Line active",
+    "numericEnter": "commit segment and exit Line",
+    "finishChainCheck": "finish chain with Line active awaiting first point",
+    "escapePreview": "exit Line, retain committed geometry",
+    "escapeAwaitingFirst": "exit Line",
+    "closure": "finish chain with Line active awaiting first point",
+    "doubleClick": "commit exactly one segment and finish chain with Line active awaiting first point",
+    "plainEnter": "commit preview and exit Line",
+    "reselectActiveLine": "preserve the current chain",
+    "escapeMarkingMenu": "close the menu only and preserve the active Line preview",
+    "repeatContextLine": "finish the current chain with Line active awaiting first point"
+  },
+  "knownBlockers": [
+    {
+      "id": "B.absolute-driving-angle",
+      "status": "BLOCKED",
+      "reason": "Shared angular dimension requires two distinct entities; absolute Line orientation is absent from the frozen common contract. Coordinates are not a driving angular constraint."
+    },
+    {
+      "id": "E.atomic-segment-and-inference-undo",
+      "status": "BLOCKED",
+      "reason": "Existing Line and coincident commands execute separately. Extending atomic creationIntent is frozen; single-Line stable-ID history does not prove atomic segment-plus-constraints Undo."
+    },
+    {
+      "id": "I.full-compatibility",
+      "status": "NOT_RUN_IN_FOCUSED_TEST",
+      "reason": "Existing Sketch actions/dimensions/workspace and protected Part regression gates must run separately against the final candidate."
+    }
+  ],
+  "sourceHead": "c1959b1e84a7c38288022622a9585a38c07d3f7e",
+  "testSourceSha256": "01dedbbdc76fb02aa9934856c77032b15682854596330fa66df666cc7cf6dc08",
+  "helperSourceSha256": "6216fa7e0c3b42b91b45ad01dfd8bf418a5da48ecfabc1a4af22e76b2cb89aa7",
+  "lineToolSourceSha256": "46a0cd748d639d64b6e611d87bc70b49ece0dd33b082e1b7aa7ca57c76c3f57b",
+  "sourceSnapshotSha256": "d600b707c4a90898cdad30a2123118936cf3bb4ce37f19ee98ad6bc4db0c3b09",
+  "sourceSnapshotDescriptor": {
+    "baseHead": "cb7006efe7a108bc85bcf99d3a3e4a9c2f73568b",
+    "delta": [
+      {
+        "path": "prototypes/fusion/live/LiveLineInput.tsx",
+        "sha256": "1d4cad1996e36f422d8b792a9c4994ce3ceaece05d8493c19596dc1139c1a5c0"
+      },
+      {
+        "path": "prototypes/fusion/live/LiveLineInteraction.ts",
+        "sha256": "51c17f50e1acaee167685f878241634827b54808c4c2a45998392a116d92b8fa"
+      },
+      {
+        "path": "prototypes/fusion/live/LiveMain.tsx",
+        "sha256": "617ef013d3c3d83be66b3e508158b35b9d2ea0eae6347ee6131110d5d7fe4e53"
+      },
+      {
+        "path": "prototypes/fusion/live/LiveSketchLineTool.ts",
+        "sha256": "46a0cd748d639d64b6e611d87bc70b49ece0dd33b082e1b7aa7ca57c76c3f57b"
+      },
+      {
+        "path": "prototypes/fusion/live/LiveSketchStage.tsx",
+        "sha256": "7d0d18515380a9999f0536ba51493a5927e755415cd895e0854b215a54cf6700"
+      },
+      {
+        "path": "prototypes/fusion/live/MarkingMenu.tsx",
+        "sha256": "59c35ca8985f7e917bed92c2be1cc0afc359ffe79e969461937afb862ce8bcf1"
+      },
+      {
+        "path": "prototypes/fusion/live/SketchDimensionAnnotations.tsx",
+        "sha256": "4e754fadc735f478883faa3f4cb83288abcbb89fe7db33ede60b93241901a8e0"
+      },
+      {
+        "path": "prototypes/fusion/live/lineInput.css",
+        "sha256": "31a400691bb282b96329dc66f06bf91be99a47296a0bb404e24da737655ea80f"
+      },
+      {
+        "path": "prototypes/fusion/live/run.cjs",
+        "sha256": "1c4fa06389fefbd8c409b1a5aaeafb905fedd10e086236818ea02f236615faa4"
+      },
+      {
+        "path": "prototypes/fusion/live/sketchDimensionLayout.ts",
+        "sha256": "d5b1455664e0477cf7336f3d18cc286051b85a8d70712953e89ef4d8e2c885f2"
+      }
+    ]
+  },
+  "nativeCapture": {
+    "path": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Sketch-Parity-002-20261106\\prototypes\\fusion\\evidence\\line-003-native-observed.json",
+    "sha256": "0218cd9a85ddca9ff68e6a8e6579304fd5994d85b7d613bcef067d9ffa9e10ff"
+  },
+  "origin": "http://127.0.0.1:50729",
+  "executableChecksStatus": "PASS",
+  "acceptanceStatus": "BLOCKED",
+  "acceptanceReason": "B absolute driving angle, E atomic segment+inference history, and separate I compatibility gates are not completed by this focused runner.",
+  "ownedServersClosed": true,
+  "finishedUTC": "2026-11-07T16:16:58.412Z"
+}

@@ -1,0 +1,585 @@
+{
+  "schemaVersion": 1,
+  "task": "FUSION-SKETCH-TOOLS-BEHAVIOR-003",
+  "status": "OBSERVED_NATIVE_UI",
+  "application": "Autodesk Fusion",
+  "version": "2706.1.17",
+  "versionProvenance": "Installed native reference from the existing Fusion capture session; same running application PID 25904",
+  "device": "D2-R2",
+  "pid": 25904,
+  "hwnd": 265536,
+  "document": "Untitled*(2)",
+  "protectedDocuments": [
+    "Untitled",
+    "Untitled*(1)"
+  ],
+  "captureDirectory": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107",
+  "captureGeometry": {
+    "width": 2048,
+    "height": 1137,
+    "dpi": 110,
+    "clientOrigin": [
+      553,
+      86
+    ],
+    "resized": false,
+    "scope": "Captures00-51 have the original client origin; per-capture metadata governs52-53, which are excluded."
+  },
+  "evidenceBoundary": "Direct native UI actions, client screenshots and focused UIA ValuePattern. No native document API dump; screenshots do not independently prove constraint IDs or history internals.",
+  "lifecycle": [
+    {
+      "action": "Pointer commit",
+      "result": "Create segment and continue from its endpoint with Line active",
+      "evidence": [
+        "17-chain-first-click-commit",
+        "18-chain-next-preview",
+        "20-chain-four-committed"
+      ]
+    },
+    {
+      "action": "Typed 40, Tab, typed 30, Enter",
+      "result": "Create segment with visible 40.00 and 30.0 degree annotations and exit Line",
+      "evidence": [
+        "12-line-length-typed",
+        "13-line-tab-angle",
+        "14-line-angle-typed",
+        "15-line-first-commit-enter"
+      ]
+    },
+    {
+      "action": "Plain Enter on untyped preview",
+      "result": "Commit preview and exit Line",
+      "evidence": [
+        "30-plain-enter-preview-before",
+        "31-plain-enter-after"
+      ]
+    },
+    {
+      "action": "Endpoint check",
+      "result": "Finish chain; Line stays active awaiting first point",
+      "evidence": [
+        "20-chain-four-committed",
+        "21-chain-check-finish"
+      ]
+    },
+    {
+      "action": "Double click endpoint",
+      "result": "Commit one segment and finish chain; Line stays active",
+      "evidence": [
+        "32-doubleclick-endpoint"
+      ]
+    },
+    {
+      "action": "Escape from awaiting first point",
+      "result": "Exit Line",
+      "evidence": [
+        "22-line-exit-escape-awaiting"
+      ]
+    },
+    {
+      "action": "Escape from third preview",
+      "result": "Discard preview and exit Line; preserve two committed segments",
+      "evidence": [
+        "23-cancel-two-plus-preview",
+        "24-escape-from-preview"
+      ]
+    },
+    {
+      "action": "Close four-sided chain",
+      "result": "Filled closed profile; Line stays active awaiting first point",
+      "evidence": [
+        "25-closure-preview",
+        "26-closure-committed",
+        "27-after-closure-awaiting"
+      ]
+    },
+    {
+      "action": "Click active Line toolbar",
+      "result": "Preserve current chain and preview anchor",
+      "evidence": [
+        "33-repeat-line-toolbar"
+      ]
+    },
+    {
+      "action": "Marking Menu Repeat Line",
+      "result": "Discard preview and finish chain; Line awaits first point",
+      "evidence": [
+        "42-line-repeat-menu-before",
+        "43-repeat-line-menu-after"
+      ]
+    },
+    {
+      "action": "Escape while Marking Menu focused",
+      "result": "Close menu only; Line stays active",
+      "evidence": [
+        "44-marking-menu-escape"
+      ]
+    },
+    {
+      "action": "Delayed hold-drag committed endpoint",
+      "result": "Tangent arc preview; release creates visible arc, then Line continues from arc endpoint",
+      "evidence": [
+        "36-arc-gesture-anchor",
+        "37-tangent-arc-held",
+        "38-tangent-arc-released",
+        "39-after-arc-next-preview"
+      ]
+    },
+    {
+      "action": "Chain interior-angle display and numeric pointer confirmation",
+      "result": "For a previous rightward segment, the next numeric angle is interior to the reversed previous ray. Length30 / interior120 / Tab / canvas click creates a down-right segment at approximately global -60 degrees, with visible persistent30.00 and120.0 annotations and Line still active at the endpoint.",
+      "evidence": [
+        "18-chain-next-preview",
+        "47-chain-interior-preview",
+        "49-chain-interior-numeric-focused",
+        "50-chain-angle-120-locked",
+        "51-chain-angle-pointer-commit"
+      ]
+    }
+  ],
+  "caveats": [
+    "Captures 00-08 are setup/transition evidence, not tool-behavior acceptance.",
+    "The first immediate hold-drag attempt in 34-35 ended a chain as a double click; only the delayed exact-endpoint gesture in 36-39 supports the tangent-arc observation.",
+    "Capture 40 shows 0.5 mm after SendKeys 40,5 in this native session. Native comma equivalence is not asserted. Candidate comma/dot normalization is an explicit task requirement.",
+    "Absolute angle quadrant formatting and native expression parsing remain outside accepted parity.",
+    "Capture48 did not change the native numeric values after root-window focus changed; it is excluded from numeric confirmation. Capture49 explicitly focused the visible length field and UIA confirmed angle input120.",
+    "During captures52-53 the native window moved partly off screen; these desktop-copy screenshots are excluded from behavior/visual proof. No further native input was sent. Capture51 is the last fully visible admitted numeric-chain state."
+  ],
+  "captures": [
+    {
+      "file": "00-prior-task-sketch.png",
+      "metadata": "00-prior-task-sketch.json",
+      "capturedUTC": "2026-11-07T14:57:51.5306255Z",
+      "sha256": "440fa4646034e293db9c4e4b85e03fc68e460ab7472319b20b42fa391a4764f3",
+      "action": "Focus existing task-owned Untitled(1), no document mutation"
+    },
+    {
+      "file": "01-new-test-document.png",
+      "metadata": "01-new-test-document.json",
+      "capturedUTC": "2026-11-07T14:58:18.5681916Z",
+      "sha256": "94395c627c21a3a4fdef257e240e510cf170240b0228dd9ac1830d284413f181",
+      "action": "Click observed document-tab plus to create a separate test document"
+    },
+    {
+      "file": "02-new-design-guide-dismissed.png",
+      "metadata": "02-new-design-guide-dismissed.json",
+      "capturedUTC": "2026-11-07T14:58:44.5866572Z",
+      "sha256": "440fa4646034e293db9c4e4b85e03fc68e460ab7472319b20b42fa391a4764f3",
+      "action": "Dismiss informational new-design guide with visible OK"
+    },
+    {
+      "file": "03-new-design-choice.png",
+      "metadata": "03-new-design-choice.json",
+      "capturedUTC": "2026-11-07T14:59:44.3231728Z",
+      "sha256": "ad843ea20237eca85c76a110ca31a9d182fe349a710cf353a42401a68703ba24",
+      "action": "Click document-tab plus after informational guide was dismissed"
+    },
+    {
+      "file": "04-new-part-design.png",
+      "metadata": "04-new-part-design.json",
+      "capturedUTC": "2026-11-07T15:02:53.5486209Z",
+      "sha256": "ae97f85648299f6702856a7d4400bd35d138f7052cd3b87c415b7c81c9061157",
+      "action": "Create New Part Design in separate test document"
+    },
+    {
+      "file": "05-new-part-ready.png",
+      "metadata": "05-new-part-ready.json",
+      "capturedUTC": "2026-11-07T15:03:06.8827929Z",
+      "sha256": "6d0e3ce5129d5eff2a5d5e702ccbeaebf015c355d19f0b74fe060ab34530944d",
+      "action": "New isolated Part Design ready"
+    },
+    {
+      "file": "06-create-sketch-planes.png",
+      "metadata": "06-create-sketch-planes.json",
+      "capturedUTC": "2026-11-07T15:03:18.4851173Z",
+      "sha256": "8ecd4609b4bfa3aa86fff50376d01ce0bdc2fd2278b5c71fe72754610a8a7151",
+      "action": "Create Sketch in isolated Part Design"
+    },
+    {
+      "file": "07-sketch-plane-selected.png",
+      "metadata": "07-sketch-plane-selected.json",
+      "capturedUTC": "2026-11-07T15:03:33.8021021Z",
+      "sha256": "2abfb6ce0c4f1a282965ae97493a9ec436b823b67bdea9e2787bfe161661da5c",
+      "action": "Select visible front plane for isolated sketch"
+    },
+    {
+      "file": "08-sketch-ready.png",
+      "metadata": "08-sketch-ready.json",
+      "capturedUTC": "2026-11-07T15:03:44.0664797Z",
+      "sha256": "9c49d1fa1e8135dcdbb66ab6e6356e6f5c1bc7ed898375043a690af78c8400be",
+      "action": "Isolated sketch ready before Line activation"
+    },
+    {
+      "file": "10-line-first-click.png",
+      "metadata": "10-line-first-click.json",
+      "capturedUTC": "2026-11-07T15:03:57.3910660Z",
+      "sha256": "e3ad9c65dbf929dde2143bcabef66dcfe8d4c41d878e55a9e0603aad511d4744",
+      "action": "Line L; first point at sketch origin"
+    },
+    {
+      "file": "11-line-move-fields.png",
+      "metadata": "11-line-move-fields.json",
+      "capturedUTC": "2026-11-07T15:04:08.7481808Z",
+      "sha256": "0a18116530d0166327cba954cddf1c4698a8259314b0ca159d03ac3fd5b5cf8e",
+      "action": "Move from origin; native length and angle fields"
+    },
+    {
+      "file": "12-line-length-typed.png",
+      "metadata": "12-line-length-typed.json",
+      "capturedUTC": "2026-11-07T15:04:19.3151860Z",
+      "sha256": "b7735d2868f98fcf7002b8c6f9504e093517aa129c0d12fc02a8b2ca5622e24b",
+      "action": "Type 40 into focused native dynamic length"
+    },
+    {
+      "file": "13-line-tab-angle.png",
+      "metadata": "13-line-tab-angle.json",
+      "capturedUTC": "2026-11-07T15:04:19.7244309Z",
+      "sha256": "8d0e89ac11215bdbad2b60c1b1bc3bbbd85f3c6332505ebf38274bc18eda1fe1",
+      "action": "Tab locks length and focuses angle"
+    },
+    {
+      "file": "14-line-angle-typed.png",
+      "metadata": "14-line-angle-typed.json",
+      "capturedUTC": "2026-11-07T15:04:31.3525927Z",
+      "sha256": "9003b50cb09ab3e0f181fdca2d942c87feac1cf78cb69f14c27849b991eda287",
+      "action": "Type native angle 30 after length 40 and Tab"
+    },
+    {
+      "file": "15-line-first-commit-enter.png",
+      "metadata": "15-line-first-commit-enter.json",
+      "capturedUTC": "2026-11-07T15:04:32.1165720Z",
+      "sha256": "6f5480b6caed213774dc106021ff5d681fafe5fd68b864bdbe98b0dff6fb2186",
+      "action": "Enter with length 40 and angle 30 typed"
+    },
+    {
+      "file": "16-chain-first-preview.png",
+      "metadata": "16-chain-first-preview.json",
+      "capturedUTC": "2026-11-07T15:05:02.7092423Z",
+      "sha256": "d97dcc38e26c697c99bd40cb26579b352684e0a3ed2f2fa224fa300dc9fa2737",
+      "action": "Separate chain first point and horizontal preview"
+    },
+    {
+      "file": "17-chain-first-click-commit.png",
+      "metadata": "17-chain-first-click-commit.json",
+      "capturedUTC": "2026-11-07T15:05:03.5393648Z",
+      "sha256": "c19ae38c0f7adf55b7b72b49eef698ae40079613af113d6e2a1d0986d1efea1d",
+      "action": "Click commits first segment; inspect continuation"
+    },
+    {
+      "file": "18-chain-next-preview.png",
+      "metadata": "18-chain-next-preview.json",
+      "capturedUTC": "2026-11-07T15:05:14.7936867Z",
+      "sha256": "3f33ec8cf257740b984dc2d888aaafca3c0f19051c99d62b3bf2c0690aaa1394",
+      "action": "Next segment previews from previous endpoint without restarting Line"
+    },
+    {
+      "file": "19-chain-third-committed.png",
+      "metadata": "19-chain-third-committed.json",
+      "capturedUTC": "2026-11-07T15:05:15.6607365Z",
+      "sha256": "4fe3703cb4fc96bb494ee44cd5498b219b2d869ffe4575d5e416ab2002ee7b06",
+      "action": "Three segments committed; fourth preview continues"
+    },
+    {
+      "file": "20-chain-four-committed.png",
+      "metadata": "20-chain-four-committed.json",
+      "capturedUTC": "2026-11-07T15:05:16.0720496Z",
+      "sha256": "152c5e57ac38a22ede5dbbb0b16f2ea333c6814a2e742915d867ad55f5a8f56b",
+      "action": "Four connected native segments from one Line invocation"
+    },
+    {
+      "file": "21-chain-check-finish.png",
+      "metadata": "21-chain-check-finish.json",
+      "capturedUTC": "2026-11-07T15:05:27.1373263Z",
+      "sha256": "85ff5041e23bb59fa7cfafe27077743482333626506452cbff90f29d6875cc32",
+      "action": "Click endpoint check after four segments; move pointer to inspect chain termination"
+    },
+    {
+      "file": "22-line-exit-escape-awaiting.png",
+      "metadata": "22-line-exit-escape-awaiting.json",
+      "capturedUTC": "2026-11-07T15:05:42.6323254Z",
+      "sha256": "7b12f4c127bb50e6778f594831e7012216afcbadd777fefac62e8af7a1c19cbe",
+      "action": "Escape from awaiting first point exits Line"
+    },
+    {
+      "file": "23-cancel-two-plus-preview.png",
+      "metadata": "23-cancel-two-plus-preview.json",
+      "capturedUTC": "2026-11-07T15:05:57.2100682Z",
+      "sha256": "2054371ae3a069157e7a5f11a734f3a0c4bec9459ed6ec9916441bf7dc044394",
+      "action": "Two committed native segments and third preview before Escape"
+    },
+    {
+      "file": "24-escape-from-preview.png",
+      "metadata": "24-escape-from-preview.json",
+      "capturedUTC": "2026-11-07T15:05:57.6239327Z",
+      "sha256": "faf525bbe87578b66d7ca164b2a9322617f5b95195e2d49443fe1917bf8752b9",
+      "action": "Escape once from preview, inspect Line and preserved segments"
+    },
+    {
+      "file": "25-closure-preview.png",
+      "metadata": "25-closure-preview.json",
+      "capturedUTC": "2026-11-07T15:06:23.5779685Z",
+      "sha256": "ca8751a89bc5698e14f179a15545d4712910b61c7637fbb05d0b3f4fe5b1b82a",
+      "action": "Fourth side previews snap to chain start"
+    },
+    {
+      "file": "26-closure-committed.png",
+      "metadata": "26-closure-committed.json",
+      "capturedUTC": "2026-11-07T15:06:24.0792618Z",
+      "sha256": "00eafaecb7db88773974e9acb559ce7d947a287e19316d652b145ceda697fd93",
+      "action": "Closed four-sided chain; inspect active Line after closure"
+    },
+    {
+      "file": "27-after-closure-awaiting.png",
+      "metadata": "27-after-closure-awaiting.json",
+      "capturedUTC": "2026-11-07T15:07:21.6590895Z",
+      "sha256": "072af75048c3a7ac4560ff61c92208783dc764629ebd8268673a78ab4239d923",
+      "action": "Move after closed profile; native Line remains active and awaiting first point"
+    },
+    {
+      "file": "28-right-click-awaiting.png",
+      "metadata": "28-right-click-awaiting.json",
+      "capturedUTC": "2026-11-07T15:07:22.1709175Z",
+      "sha256": "b82a3395b27e0103b6f8df3e92fd141afa866ba16faad083c1bd483c82e64856",
+      "action": "Right click Marking Menu with Line active after closure"
+    },
+    {
+      "file": "29-menu-ok-awaiting.png",
+      "metadata": "29-menu-ok-awaiting.json",
+      "capturedUTC": "2026-11-07T15:07:39.0826266Z",
+      "sha256": "b3d3880ca51e604a767f956fcc7d096b5329472c745cd9518f9685464667c199",
+      "action": "Marking Menu OK while awaiting first point"
+    },
+    {
+      "file": "30-plain-enter-preview-before.png",
+      "metadata": "30-plain-enter-preview-before.json",
+      "capturedUTC": "2026-11-07T15:07:40.1697703Z",
+      "sha256": "934e7571d0214dd68a2e558c8a393cc53a8de1f074fd5f73c7d31a228e904842",
+      "action": "One segment and untitled second preview before plain Enter"
+    },
+    {
+      "file": "31-plain-enter-after.png",
+      "metadata": "31-plain-enter-after.json",
+      "capturedUTC": "2026-11-07T15:07:40.5042709Z",
+      "sha256": "ac9d6fdf1d802bc1ae4200a5b228f7acdf371dab4534b803972b4269a00805a9",
+      "action": "Plain Enter from untyped preview"
+    },
+    {
+      "file": "32-doubleclick-endpoint.png",
+      "metadata": "32-doubleclick-endpoint.json",
+      "capturedUTC": "2026-11-07T15:08:04.4153911Z",
+      "sha256": "cb9bfd71dab4d2d23986feaa0afda91e8971bd0b5c3a6065c8fa221af30c1915",
+      "action": "Double click endpoint from preview, then move away to inspect continuation"
+    },
+    {
+      "file": "33-repeat-line-toolbar.png",
+      "metadata": "33-repeat-line-toolbar.json",
+      "capturedUTC": "2026-11-07T15:08:24.9694909Z",
+      "sha256": "0b8a58afbbffdf1bd17f08a245d74d756ca603affdd5fba6a7b5d94feb0af221",
+      "action": "Reinvoke Line toolbar during preview; inspect new start state"
+    },
+    {
+      "file": "34-line-to-arc-drag.png",
+      "metadata": "34-line-to-arc-drag.json",
+      "capturedUTC": "2026-11-07T15:09:12.8694354Z",
+      "sha256": "fbe18b4aa4871117258cac5d5fbb06aa3580549220148315a9afc4b85f0e9d42",
+      "action": "Hold and drag committed Line endpoint to native tangent arc preview"
+    },
+    {
+      "file": "35-line-to-arc-release.png",
+      "metadata": "35-line-to-arc-release.json",
+      "capturedUTC": "2026-11-07T15:09:13.4202994Z",
+      "sha256": "dc777d3e17972ce31920f411a1149ce442e6a27cf8b941dec1a850dfc3193d37",
+      "action": "Release native tangent arc endpoint drag"
+    },
+    {
+      "file": "36-arc-gesture-anchor.png",
+      "metadata": "36-arc-gesture-anchor.json",
+      "capturedUTC": "2026-11-07T15:09:42.1838028Z",
+      "sha256": "710d4ef2a51e1be326eac2b2fa3f6041587845f5bac2b8d4e0c81d972052120b",
+      "action": "Committed line endpoint before a delayed press-drag, avoiding double click"
+    },
+    {
+      "file": "37-tangent-arc-held.png",
+      "metadata": "37-tangent-arc-held.json",
+      "capturedUTC": "2026-11-07T15:09:59.3674179Z",
+      "sha256": "2669560c1060a0e99eb6a62f4acc220402a4a573cd7b3056e0c000e62ae0bb9b",
+      "action": "Delayed hold-drag exact native endpoint; inspect tangent arc"
+    },
+    {
+      "file": "38-tangent-arc-released.png",
+      "metadata": "38-tangent-arc-released.json",
+      "capturedUTC": "2026-11-07T15:09:59.8879652Z",
+      "sha256": "f3b435701be89a092c524611b019f336daa24c6b19d3838732e4aa47bf7ccba2",
+      "action": "Release delayed hold-drag endpoint gesture"
+    },
+    {
+      "file": "39-after-arc-next-preview.png",
+      "metadata": "39-after-arc-next-preview.json",
+      "capturedUTC": "2026-11-07T15:10:15.1527480Z",
+      "sha256": "2fc1168b7cdd0c4cadd6ac7176caae21204618d337a19b3241ed113f45049d9f",
+      "action": "Line continues from native tangent arc endpoint"
+    },
+    {
+      "file": "40-comma-native-input.png",
+      "metadata": "40-comma-native-input.json",
+      "capturedUTC": "2026-11-07T15:10:16.8331515Z",
+      "sha256": "f6b3b83c0927dfdeb0d617d9920cfcaedf5893c9f29ce832938a6ba459886c50",
+      "action": "Locale observation: native length entered 40 comma 5 then Tab"
+    },
+    {
+      "file": "41-native-observation-ended.png",
+      "metadata": "41-native-observation-ended.json",
+      "capturedUTC": "2026-11-07T15:10:17.1577025Z",
+      "sha256": "9709a3bc6a9bde7d868ec16b08e505e4c76805b16d690953f88dcfb79dfb2560",
+      "action": "Exit Line after input observation; preserve test document"
+    },
+    {
+      "file": "42-line-repeat-menu-before.png",
+      "metadata": "42-line-repeat-menu-before.json",
+      "capturedUTC": "2026-11-07T15:17:33.1666267Z",
+      "sha256": "d64062f93b450ab1fe3ad148ee020b36e6cf401f17b3c43ee50c43c01362d45d",
+      "action": "Right click during active chained preview before Repeat Line"
+    },
+    {
+      "file": "43-repeat-line-menu-after.png",
+      "metadata": "43-repeat-line-menu-after.json",
+      "capturedUTC": "2026-11-07T15:18:02.0326083Z",
+      "sha256": "41e9a6b899a0d524295a80d89a5b4bf1aa5e580b07c42a1e038f27c9445fe1a4",
+      "action": "Repeat Line from Marking Menu during a preview"
+    },
+    {
+      "file": "44-marking-menu-escape.png",
+      "metadata": "44-marking-menu-escape.json",
+      "capturedUTC": "2026-11-07T15:18:02.8049612Z",
+      "sha256": "6b5c2f8f45c1914138d2ff25794fb647d0368459c347e9df6889db8ccbd185f8",
+      "action": "Escape while Marking Menu open; inspect whether Line remains"
+    },
+    {
+      "file": "45-native-final-idle.png",
+      "metadata": "45-native-final-idle.json",
+      "capturedUTC": "2026-11-07T15:18:03.1478266Z",
+      "sha256": "162cfce54297d98c390fd1680b6e14755370b4f474addb44069744989dd9a5d6",
+      "action": "Return isolated native test document to idle"
+    },
+    {
+      "file": "46-chain-angle-review-start.png",
+      "metadata": "46-chain-angle-review-start.json",
+      "sha256": "8999aeabc97ea35539fcdd835683e69c0097e82551b7d885c8c7e2821d0ad139",
+      "action": "Fresh read-only state before testing numeric interior angle in the task-owned Fusion document",
+      "capturedUTC": "2026-11-07T15:49:57.6642146Z",
+      "client": {
+        "x": 553,
+        "y": 86,
+        "width": 2048,
+        "height": 1137,
+        "dpi": 110
+      },
+      "admittedForBehavior": true
+    },
+    {
+      "file": "47-chain-interior-preview.png",
+      "metadata": "47-chain-interior-preview.json",
+      "sha256": "9086bfe8eccdef0db5bd182badde80c9128dcc2674a77d65258e77414f8b6ccc",
+      "action": "New independent horizontal first segment; next preview points up-right. Inspect native interior-angle field.",
+      "capturedUTC": "2026-11-07T15:50:15.0299200Z",
+      "client": {
+        "x": 553,
+        "y": 86,
+        "width": 2048,
+        "height": 1137,
+        "dpi": 110
+      },
+      "admittedForBehavior": true
+    },
+    {
+      "file": "48-chain-interior-numeric.png",
+      "metadata": "48-chain-interior-numeric.json",
+      "sha256": "963b81788da7e7acba91b05ced532190c036cda420041613066c790a98b502aa",
+      "action": "Second segment: length30 then Tab then interior angle120 typed; first segment points right",
+      "capturedUTC": "2026-11-07T15:50:42.7125517Z",
+      "client": {
+        "x": 553,
+        "y": 86,
+        "width": 2048,
+        "height": 1137,
+        "dpi": 110
+      },
+      "admittedForBehavior": false
+    },
+    {
+      "file": "49-chain-interior-numeric-focused.png",
+      "metadata": "49-chain-interior-numeric-focused.json",
+      "sha256": "3561d3f7c6b2c186b0ea893e214e19f386335e56ed2918318a573f8943eee0c4",
+      "action": "Explicit visible length field focus; CtrlA30 Tab120 for second segment; prior capture48 did not change values after root window focus",
+      "capturedUTC": "2026-11-07T15:51:08.2703245Z",
+      "client": {
+        "x": 553,
+        "y": 86,
+        "width": 2048,
+        "height": 1137,
+        "dpi": 110
+      },
+      "admittedForBehavior": true
+    },
+    {
+      "file": "50-chain-angle-120-locked.png",
+      "metadata": "50-chain-angle-120-locked.json",
+      "sha256": "5f7f82277486770d129b97e444913a80c29bb63d725ff2b6ae2047c2e14af14e",
+      "action": "Tab commits the second-segment interior angle120 with length30; inspect preview orientation and locks",
+      "capturedUTC": "2026-11-07T15:51:55.5960259Z",
+      "client": {
+        "x": 553,
+        "y": 86,
+        "width": 2048,
+        "height": 1137,
+        "dpi": 110
+      },
+      "admittedForBehavior": true
+    },
+    {
+      "file": "51-chain-angle-pointer-commit.png",
+      "metadata": "51-chain-angle-pointer-commit.json",
+      "sha256": "e6a1395c6fa4d8fe788a24dfe0b049c99cc5a9121afaf0b08789d161f4dec9b9",
+      "action": "Canvas click after both numeric fields are locked; inspect persistence of interior120 and whether Line continues",
+      "capturedUTC": "2026-11-07T15:51:56.0874046Z",
+      "client": {
+        "x": 553,
+        "y": 86,
+        "width": 2048,
+        "height": 1137,
+        "dpi": 110
+      },
+      "admittedForBehavior": true
+    },
+    {
+      "file": "52-after-numeric-chain-preview.png",
+      "metadata": "52-after-numeric-chain-preview.json",
+      "sha256": "3261ca2a9335b61fc466f3aba4c19ae716e69af3be456a2b3b1666547b44b889",
+      "action": "Move after pointer-confirmed length30/interior120: Line continues from committed endpoint",
+      "capturedUTC": "2026-11-07T15:54:06.6705217Z",
+      "client": {
+        "x": -338,
+        "y": 603,
+        "width": 2048,
+        "height": 1137,
+        "dpi": 110
+      },
+      "admittedForBehavior": false
+    },
+    {
+      "file": "53-native-angle-review-idle.png",
+      "metadata": "53-native-angle-review-idle.json",
+      "sha256": "38bcee0a62702ea3bba76bf268f5598bdd60f7ab75d21fff7ecc490263972cd0",
+      "action": "Exit active Line after numeric chain test; retain actual geometry and native30/120 dimensions in task-owned document",
+      "capturedUTC": "2026-11-07T15:54:07.0809771Z",
+      "client": {
+        "x": -537,
+        "y": 51,
+        "width": 2048,
+        "height": 1137,
+        "dpi": 110
+      },
+      "admittedForBehavior": false
+    }
+  ]
+}

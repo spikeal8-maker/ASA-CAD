@@ -1,0 +1,1835 @@
+Subject: [PROPOSED, NOT APPLIED] FUSION-SKETCH-TOOLS-BEHAVIOR-003 product contract
+Base: c1959b1e84a7c38288022622a9585a38c07d3f7e
+
+Status: PROPOSED_NOT_IMPLEMENTED / BLOCKED_PRODUCT_CODE_START.
+This patch is a review artifact. It has not been applied to src/, vendor/,
+tests/, spec/, release/, or package.json. Product audit authorization is required.
+
+Scope:
+- Existing sketch.line/sketch.arc receive typed creationIntent; geometry,
+  inferred constraints and dimensions execute under the existing one-command
+  CadApplicationImpl before-snapshot. No nested execute or second history.
+- Origin, midpoint and direction use coordinate_x/y, p2p_symmetric_ppp and
+  p2p_angle in the same existing PlaneGCS instance. No auxiliary axis geometry.
+- Angular angleSense stores the selected forward/interior measure and turn
+  branch with ordered semantic Line refs. Interior 120 remains 120 for Save/Open
+  and setValue; only runtime maps it to solver 60 and swaps refs for clockwise.
+  Missing angleSense preserves legacy schema-v3 ordered-forward behavior.
+- Line/Arc Coincident and Tangent use the existing native adapter support.
+  Clockwise input explicitly maps input start to canonical Arc.b.
+- Persisted grammar becomes schema 4, with explicit v3 migration and a fixture.
+  Legacy grammars remain frozen; load does not write storage.
+- Focused executable tests cover atomic undo/redo, rejected substep rollback,
+  solved 40 mm at 30 deg, origin, dependent midpoint, closed chain,
+  clockwise/counterclockwise tangent Arc and serialization. The separate angular
+  sense regression defines 16 real-solver cases (2 bearings, 2 values, 2 senses,
+  2 branches), atomic creation, native-value edits, Save/Open, invalid selectors,
+  rejected mixed orientation and frozen-schema migration guards.
+
+Limits:
+- This is atomic command/history composition, not an async solve transaction.
+  CadApplicationImpl.execute still publishes before later recompute. A failed
+  later solve is not silently rolled back by this patch.
+- Native gesture timing, UI inference arbitration, numeric focus/Tab/Escape,
+  annotation placement and conflict recovery require the authorized UI slice.
+- Angular/direction editing still needs the shared parameter panel to carry
+  the selected dimension unit/type and expose the semantic selector. Existing
+  common setValue preserves angleSense and edits the selected stored value;
+  its current UI edit panel still has the old mm default. Document-tree labels
+  use the stored value and degree unit; no complementary-value relabel is used.
+- Angular values 0 and 180 remain excluded by the existing strict angular range.
+  No degenerate-angle solve behavior or complete native angle UI is claimed.
+- Full geometry/OCC, UI, migration-host and exact-HEAD CI gates must be run in a
+  separately authorized product worktree before acceptance. They were not run
+  to produce this artifact. No product acceptance or delivery is claimed.
+- The future diff exceeds the 20-handwritten-file architecture review trigger,
+  mostly because adding persisted grammar requires host/schema test updates.
+  It does not grow frozen useSketchDimensionController; other frozen owners
+  and CadApplicationImpl are unchanged.
+
+Mapping evidence (existing baseline only, not execution of this proposal):
+  D2-R2 external regression-precommit/angle-contract-probe-20261107.json
+  within ASA-CAD-Fusion-Captures/sketch-tools-behavior-003-20261107.
+  Probe SHA-256: 4d9ead77a474d034f26abc9be9a7ad32613af0f07e8dc9f7635e71cd1177540f.
+  The observed positive PlaneGCS angle uses ordered forward refs; reversed refs
+  select the opposite branch. Solver convergence alone does not establish the
+  requested branch. The new regression therefore asserts actual endpoints.
+
+After authorization, required checks:
+  git apply --check prototypes/fusion/evidence/line-003-product-contract.proposed.patch
+  npm run typecheck:asa
+  npm run test:process
+  npm run test:m1:migrations
+  npm run test:m1:host
+  npm run test:m1b:asa-host
+  npm run test:m3:creation-intent
+  npm run test:m3:angular-sense
+  npm run test:m3:coincident
+  npm run test:m3:tangent
+  npm run test:asa
+Then perform the task's native/candidate A-I UI and exact-HEAD CI gates.
+
+diff --git a/src/contracts/sketchCreation.ts b/src/contracts/sketchCreation.ts
+new file mode 100644
+--- /dev/null
++++ b/src/contracts/sketchCreation.ts
+@@ -0,0 +1,34 @@
++import type { CadSketchEntityId } from './ids';
++import type { CadAngularSense } from './sketchDimensions';
++
++export interface CadSketchEndpointReference {
++  entityId: CadSketchEntityId;
++  point: 'a' | 'b';
++}
++
++/** Anchors describe persisted constraints, never replacement geometry. */
++export type CadSketchCreationAnchor =
++  | { kind: 'endpoint'; reference: CadSketchEndpointReference }
++  | { kind: 'origin' }
++  | { kind: 'midpoint'; entityId: CadSketchEntityId };
++
++export interface CadSketchCurveCreationIntent {
++  start?: CadSketchCreationAnchor;
++  end?: CadSketchCreationAnchor;
++  /** Requires start.kind=endpoint and a Line/Arc pair. Adds Coincident plus Tangent. */
++  tangentAtStart?: boolean;
++}
++
++export interface CadSketchLineCreationIntent extends CadSketchCurveCreationIntent {
++  orientation?: 'horizontal' | 'vertical';
++  length?: number;
++  /** Counterclockwise degrees from a named sketch-plane axis, in [0, 360). */
++  direction?: { axis: 'x' | 'y'; value: number };
++  /** Relative angle to the forward direction of the previous Line. Requires
++   * start at that Line.b. Stores the selected value and branch, never 180-value. */
++  angle?: { referenceEntityId: CadSketchEntityId; value: number; angleSense: CadAngularSense };
++}
++
++export interface CadSketchArcCreationIntent extends CadSketchCurveCreationIntent {
++  radius?: number;
++}
+diff --git a/src/contracts/commands.ts b/src/contracts/commands.ts
+--- a/src/contracts/commands.ts
++++ b/src/contracts/commands.ts
+@@ -8,6 +8,10 @@
+   CadStableReferenceId,
+ } from './ids';
+ 
++import type { CadSketchArcCreationIntent, CadSketchLineCreationIntent } from './sketchCreation';
++import type { CadAngularSense } from './sketchDimensions';
++export type { CadSketchArcCreationIntent, CadSketchLineCreationIntent, CadSketchCreationAnchor, CadSketchEndpointReference } from './sketchCreation';
++
+ export type CadSketchPointName = 'a' | 'b' | 'c';
+ 
+ export interface CadSketchCommandReference {
+@@ -60,6 +64,8 @@
+     sketchId: CadSketchId;
+     from: readonly [number, number];
+     to: readonly [number, number];
++    /** Geometry, inferred constraints and entered dimensions form one history entry. */
++    creationIntent?: CadSketchLineCreationIntent;
+   };
+   'sketch.rectangle': {
+     sketchId: CadSketchId;
+@@ -77,6 +83,9 @@
+     center: readonly [number, number];
+     start: readonly [number, number];
+     end: readonly [number, number];
++    /** Clockwise input is stored canonically with input start at Arc.b and end at Arc.a. */
++    clockwise?: boolean;
++    creationIntent?: CadSketchArcCreationIntent;
+   };
+   'sketch.entity.delete': {
+     sketchId: CadSketchId;
+@@ -185,6 +194,7 @@
+     aEntityId: CadSketchEntityId;
+     bEntityId: CadSketchEntityId;
+     value: number;
++    angleSense?: CadAngularSense;
+     name?: string;
+   };
+   'feature.extrude': {
+diff --git a/src/contracts/sketch.ts b/src/contracts/sketch.ts
+--- a/src/contracts/sketch.ts
++++ b/src/contracts/sketch.ts
+@@ -12,6 +12,8 @@
+ 
+ export type {
+   CadAngularDimension,
++  CadAngularSense,
++  CadDirectionDimension,
+   CadDiameterDimension,
+   CadDimension,
+   CadHorizontalDimension,
+@@ -67,6 +69,10 @@
+ 
+ export interface CadCoincidentConstraint extends CadConstraintBase<'coincident'> { entityIds: [CadSketchEntityId, CadSketchEntityId]; data: { refs: [CadConstraintPointReference, CadConstraintPointReference] }; }
+ 
++export interface CadOriginCoincidentConstraint extends CadConstraintBase<'originCoincident'> { entityIds: [CadSketchEntityId]; data: { source: CadConstraintPointReference }; }
++
++export interface CadMidpointConstraint extends CadConstraintBase<'midpoint'> { entityIds: [CadSketchEntityId, CadSketchEntityId]; data: { source: CadConstraintPointReference }; }
++
+ export type CadConstraint =
+   | CadHorizontalConstraint
+   | CadVerticalConstraint
+@@ -78,7 +84,9 @@
+   | CadSymmetricConstraint
+   | CadPointOnCurveConstraint
+   | CadFixedConstraint
+-  | CadCoincidentConstraint;
++  | CadCoincidentConstraint
++  | CadOriginCoincidentConstraint
++  | CadMidpointConstraint;
+ 
+ export interface CadPartSketchCollections {
+   sketches: CadSketch[];
+@@ -163,6 +171,15 @@
+       data.refs.forEach((ref, index) => validateConstraintReference(ref, `${path}.data.refs[${index}]`));
+       return;
+     }
++    case 'originCoincident':
++    case 'midpoint': {
++      requireCount(constraint.type === 'originCoincident' ? 1 : 2, 'the declared anchor operands');
++      const data = expectRecord(constraint.data, `${path}.data`);
++      validateConstraintReference(data.source, `${path}.data.source`);
++      const source = expectRecord(data.source, `${path}.data.source`);
++      if (source.point !== 'a' && source.point !== 'b') throw new Error(`${path}.source must select endpoint a or b`);
++      return;
++    }
+     case 'pointOnCurve': {
+       requireCount(2, 'two entity ids');
+       const data = expectRecord(constraint.data, `${path}.data`);
+diff --git a/src/contracts/sketchDimensions.ts b/src/contracts/sketchDimensions.ts
+--- a/src/contracts/sketchDimensions.ts
++++ b/src/contracts/sketchDimensions.ts
+@@ -1,5 +1,5 @@
+ import type { CadDimensionId, CadSketchEntityId } from './ids';
+-import { expectId, expectPositiveFinite, expectRecord } from './contractValidation';
++import { expectFinite, expectId, expectPositiveFinite, expectRecord } from './contractValidation';
+ 
+ interface CadDimensionBase<T extends string> {
+   id: CadDimensionId;
+@@ -29,25 +29,79 @@
+   entityIds: [CadSketchEntityId];
+ }
+ 
++/** Ordered entityIds remain [reference Line, measured Line]. Branch is measured
++ * from their forward a->b vectors in sketch-plane coordinates. */
++export interface CadAngularSense {
++  reference: 'forward' | 'interior';
++  branch: 'counterclockwise' | 'clockwise';
++}
++
+ export interface CadAngularDimension extends CadDimensionBase<'angular'> {
+   entityIds: [CadSketchEntityId, CadSketchEntityId];
++  /** Absent preserves the schema-v3 ordered-forward solver contract. */
++  angleSense?: CadAngularSense;
+ }
+ 
++export function assertCadAngularSense(
++  value: unknown, path = 'Angular dimension angleSense',
++): asserts value is CadAngularSense {
++  const sense = expectRecord(value, path);
++  if (sense.reference !== 'forward' && sense.reference !== 'interior') {
++    throw new Error(path + '.reference must be forward or interior');
++  }
++  if (sense.branch !== 'counterclockwise' && sense.branch !== 'clockwise') {
++    throw new Error(path + '.branch must be counterclockwise or clockwise');
++  }
++}
++
++/** Representation mapping only: no geometry, solve, document mutation or extra
++ * dimension. Native interior alpha stays alpha in persistence/presentation.
++ * PlaneGCS consumes its supplement and a clockwise branch swaps solver refs. */
++export function toCadAngularSolverInput(
++  dimension: Pick<CadAngularDimension, 'entityIds' | 'value' | 'angleSense'>,
++): { entityIds: [CadSketchEntityId, CadSketchEntityId]; value: number } {
++  expectPositiveFinite(dimension.value, 'Angular dimension value');
++  if (dimension.value >= 180) throw new Error('Angular dimension value must be less than 180 degrees');
++  if (dimension.angleSense !== undefined) assertCadAngularSense(dimension.angleSense);
++  const [reference, measured] = dimension.entityIds;
++  return {
++    entityIds: dimension.angleSense?.branch === 'clockwise'
++      ? [measured, reference] : [reference, measured],
++    value: dimension.angleSense?.reference === 'interior' ? 180 - dimension.value : dimension.value,
++  };
++}
++
++export interface CadDirectionDimension extends CadDimensionBase<'direction'> {
++  entityIds: [CadSketchEntityId];
++  axis: 'x' | 'y';
++}
++
++export function assertCadDirectionValue(value: unknown): asserts value is number {
++  expectFinite(value, 'Direction dimension value');
++  if (value < 0 || value >= 360) throw new Error('Direction dimension value must be in [0, 360) degrees');
++}
++
+ export type CadDimension =
+   | CadLinearDimension
+   | CadHorizontalDimension
+   | CadVerticalDimension
+   | CadDiameterDimension
+   | CadRadiusDimension
+-  | CadAngularDimension;
++  | CadAngularDimension
++  | CadDirectionDimension;
+ 
+ export function validateCadDimension(value: unknown, path: string): asserts value is CadDimension {
+   const dimension = expectRecord(value, path);
+   expectId(dimension.id, `${path}.id`);
+   if (!Array.isArray(dimension.entityIds)) throw new Error(`${path}.entityIds must be an array`);
+   dimension.entityIds.forEach((id, index) => expectId(id, `${path}.entityIds[${index}]`));
+-  expectPositiveFinite(dimension.value, `${path}.value`);
++  if (dimension.type === 'direction') assertCadDirectionValue(dimension.value);
++  else expectPositiveFinite(dimension.value, `${path}.value`);
+   if (typeof dimension.driving !== 'boolean') throw new Error(`${path}.driving must be boolean`);
++  if (dimension.angleSense !== undefined) {
++    if (dimension.type !== 'angular') throw new Error(`${path}.angleSense is only valid on angular dimensions`);
++    assertCadAngularSense(dimension.angleSense, `${path}.angleSense`);
++  }
+   if (dimension.name !== undefined && typeof dimension.name !== 'string') throw new Error(`${path}.name must be a string when provided`);
+ 
+   switch (dimension.type) {
+@@ -62,6 +116,10 @@
+     case 'radius':
+       if (dimension.entityIds.length !== 1) throw new Error(`${path}.${dimension.type} requires exactly one entity id`);
+       return;
++    case 'direction':
++      if (dimension.entityIds.length !== 1) throw new Error(`${path}.direction requires exactly one entity id`);
++      if (dimension.axis !== 'x' && dimension.axis !== 'y') throw new Error(`${path}.direction axis must be x or y`);
++      return;
+     case 'angular':
+       if (dimension.entityIds.length !== 2) throw new Error(`${path}.angular requires exactly two entity ids`);
+       if (dimension.entityIds[0] === dimension.entityIds[1]) throw new Error(`${path}.angular requires two distinct entity ids`);
+diff --git a/src/contracts/document.ts b/src/contracts/document.ts
+--- a/src/contracts/document.ts
++++ b/src/contracts/document.ts
+@@ -27,6 +27,10 @@
+   CadHorizontalDimension,
+   CadLinearDimension,
+   CadAngularDimension,
++  CadAngularSense,
++  CadDirectionDimension,
++  CadOriginCoincidentConstraint,
++  CadMidpointConstraint,
+   CadRadiusDimension,
+   CadPartSketchCollections,
+   CadPoint2,
+@@ -44,7 +48,7 @@
+   CadVerticalDimension,
+ } from './sketch';
+ 
+-export const CAD_DOCUMENT_SCHEMA_VERSION = 3 as const;
++export const CAD_DOCUMENT_SCHEMA_VERSION = 4 as const;
+ export const ASA_CAD_ENGINE_VERSION = '0.1.0-m1' as const;
+ 
+ export type CadDocumentKind =
+diff --git a/src/contracts/migrations.ts b/src/contracts/migrations.ts
+--- a/src/contracts/migrations.ts
++++ b/src/contracts/migrations.ts
+@@ -39,7 +39,11 @@
+   if (!Array.isArray(input.dimensions)) return;
+   input.dimensions.forEach((value, index) => {
+     if (!value || typeof value !== 'object') return;
+-    const type = String((value as Record<string, unknown>).type);
++    const record = value as Record<string, unknown>;
++    const type = String(record.type);
++    if (Object.prototype.hasOwnProperty.call(record, 'angleSense')) {
++      throw new Error(`Schema v${schemaVersion} dimensions[${index}].angleSense is unsupported`);
++    }
+     if (!allowedTypes.has(type)) {
+       throw new Error(`Schema v${schemaVersion} dimensions[${index}].type is unsupported: ${type}`);
+     }
+@@ -56,6 +60,26 @@
+   return { ...input, schemaVersion: context.targetSchemaVersion };
+ });
+ 
++const SCHEMA_V3_DIMENSION_TYPES = new Set([...SCHEMA_V2_DIMENSION_TYPES, 'angular']);
++const SCHEMA_V3_CONSTRAINT_TYPES = new Set([
++  'horizontal', 'vertical', 'parallel', 'perpendicular', 'tangent', 'concentric',
++  'equal', 'symmetric', 'pointOnCurve', 'fixed', 'coincident',
++]);
++
++registerCadDocumentMigration(3, (input, context) => {
++  assertFrozenDimensionGrammar(input, 3, SCHEMA_V3_DIMENSION_TYPES);
++  if (Array.isArray(input.constraints)) {
++    input.constraints.forEach((value, index) => {
++      if (!value || typeof value !== 'object') return;
++      const type = String((value as Record<string, unknown>).type);
++      if (!SCHEMA_V3_CONSTRAINT_TYPES.has(type)) {
++        throw new Error(`Schema v3 constraints[${index}].type is unsupported: ${type}`);
++      }
++    });
++  }
++  return { ...input, schemaVersion: context.targetSchemaVersion };
++});
++
+ export function migrateCadDocument(value: string | unknown): CadDocument {
+   let current: unknown = typeof value === 'string' ? JSON.parse(value) : structuredClone(value);
+   if (!current || typeof current !== 'object') throw new Error('CadDocument must be an object');
+diff --git a/src/application/commands/SketchCreationAnchorOwner.ts b/src/application/commands/SketchCreationAnchorOwner.ts
+new file mode 100644
+--- /dev/null
++++ b/src/application/commands/SketchCreationAnchorOwner.ts
+@@ -0,0 +1,51 @@
++import type { CadCommandResult } from '../../contracts/commands';
++import type { CadPartDocument } from '../../contracts/document';
++import type { CadConstraintId, CadSketchId } from '../../contracts/ids';
++import { createCadId } from '../../contracts/ids';
++import type { CadSketchCreationAnchor, CadSketchEndpointReference } from '../../contracts/sketchCreation';
++import { requireSketch, requireSketchEntity } from './SketchCommandHandlerShared';
++import { addCoincidentConstraint } from './SketchCoincidentConstraintOwner';
++
++/** Application-owned creation anchors; source geometry remains the input seed. */
++export function addCreationAnchor(
++  part: CadPartDocument,
++  sketchId: CadSketchId,
++  source: CadSketchEndpointReference,
++  anchor: CadSketchCreationAnchor,
++): CadCommandResult {
++  const sketch = requireSketch(part, sketchId);
++  const entity = requireSketchEntity(sketch, source.entityId);
++  if ((entity.type !== 'line' && entity.type !== 'arc') || (source.point !== 'a' && source.point !== 'b')) {
++    throw new Error('Creation anchor source must be a Line or Arc endpoint');
++  }
++  if (anchor.kind === 'endpoint') {
++    return addCoincidentConstraint(part, sketchId, [source, anchor.reference]);
++  }
++  if (anchor.kind !== 'origin' && anchor.kind !== 'midpoint') {
++    throw new Error('Unsupported creation anchor kind');
++  }
++  if (anchor.kind === 'midpoint') {
++    const target = requireSketchEntity(sketch, anchor.entityId);
++    if (target.type !== 'line' || target.id === source.entityId) {
++      throw new Error('Midpoint target must be a distinct Line in the same Sketch');
++    }
++  }
++  const ids = new Set(sketch.constraintIds);
++  const duplicate = part.constraints.some((constraint) => {
++    if (!ids.has(constraint.id)) return false;
++    if (constraint.type !== 'originCoincident' && constraint.type !== 'midpoint') return false;
++    if (constraint.data.source.entityId !== source.entityId || constraint.data.source.point !== source.point) return false;
++    return anchor.kind === 'origin'
++      ? constraint.type === 'originCoincident'
++      : constraint.type === 'midpoint' && constraint.entityIds[1] === anchor.entityId;
++  });
++  if (duplicate) throw new Error('Creation anchor constraint already exists');
++  const id = createCadId<CadConstraintId>('constraint');
++  if (anchor.kind === 'origin') {
++    part.constraints.push({ id, type: 'originCoincident', entityIds: [source.entityId], data: { source: { ...source } } });
++  } else {
++    part.constraints.push({ id, type: 'midpoint', entityIds: [source.entityId, anchor.entityId], data: { source: { ...source } } });
++  }
++  sketch.constraintIds.push(id);
++  return { ok: true, changed: true, createdIds: [id] };
++}
+diff --git a/src/application/commands/SketchDirectionDimensionOwner.ts b/src/application/commands/SketchDirectionDimensionOwner.ts
+new file mode 100644
+--- /dev/null
++++ b/src/application/commands/SketchDirectionDimensionOwner.ts
+@@ -0,0 +1,31 @@
++import type { CadCommandResult } from '../../contracts/commands';
++import type { CadPartDocument } from '../../contracts/document';
++import type { CadDimensionId, CadSketchEntityId, CadSketchId } from '../../contracts/ids';
++import { createCadId } from '../../contracts/ids';
++import { assertCadDirectionValue } from '../../contracts/sketchDimensions';
++import { requireSketch, requireSketchEntity } from './SketchCommandHandlerShared';
++
++export function addDirectionDimension(
++  part: CadPartDocument,
++  sketchId: CadSketchId,
++  entityId: CadSketchEntityId,
++  direction: { axis: 'x' | 'y'; value: number },
++): CadCommandResult {
++  const sketch = requireSketch(part, sketchId);
++  if (requireSketchEntity(sketch, entityId).type !== 'line') {
++    throw new Error('Direction dimension requires a Line entity');
++  }
++  if (direction.axis !== 'x' && direction.axis !== 'y') throw new Error('Direction axis must be x or y');
++  assertCadDirectionValue(direction.value);
++  if (part.dimensions.some((dimension) => dimension.type === 'direction'
++    && dimension.driving && dimension.entityIds[0] === entityId)) {
++    throw new Error('Driving direction dimension already exists for Line');
++  }
++  const id = createCadId<CadDimensionId>('dimension');
++  part.dimensions.push({
++    id, type: 'direction', entityIds: [entityId], axis: direction.axis,
++    value: direction.value, driving: true,
++  });
++  sketch.dimensionIds.push(id);
++  return { ok: true, changed: true, createdIds: [id] };
++}
+diff --git a/src/application/commands/SketchCreationIntentOwner.ts b/src/application/commands/SketchCreationIntentOwner.ts
+new file mode 100644
+--- /dev/null
++++ b/src/application/commands/SketchCreationIntentOwner.ts
+@@ -0,0 +1,96 @@
++import type { CadCommandResult } from '../../contracts/commands';
++import type { CadPartDocument } from '../../contracts/document';
++import type { CadSketchEntityId, CadSketchId } from '../../contracts/ids';
++import type {
++  CadSketchArcCreationIntent, CadSketchCurveCreationIntent, CadSketchLineCreationIntent,
++} from '../../contracts/sketchCreation';
++import { assertCadAngularSense } from '../../contracts/sketchDimensions';
++import { addCreationAnchor } from './SketchCreationAnchorOwner';
++import { addDirectionDimension } from './SketchDirectionDimensionOwner';
++import { sketchConstraintCommandHandlers } from './SketchConstraintCommandHandlers';
++import { sketchDimensionCommandHandlers } from './SketchDimensionCommandHandlers';
++
++type CreatedIds = NonNullable<CadCommandResult['createdIds']>;
++
++function collect(ids: CreatedIds, result: CadCommandResult): void {
++  if (!result.ok) throw new Error(result.error?.message ?? 'Creation intent command failed');
++  ids.push(...result.createdIds ?? []);
++}
++
++function applyAnchors(
++  part: CadPartDocument, sketchId: CadSketchId, entityId: CadSketchEntityId,
++  intent: CadSketchCurveCreationIntent, ids: CreatedIds, startPoint: 'a' | 'b',
++): void {
++  const endPoint = startPoint === 'a' ? 'b' : 'a';
++  if (intent.start) collect(ids, addCreationAnchor(part, sketchId, { entityId, point: startPoint }, intent.start));
++  if (intent.end) collect(ids, addCreationAnchor(part, sketchId, { entityId, point: endPoint }, intent.end));
++  if (intent.tangentAtStart) {
++    if (intent.start?.kind !== 'endpoint') throw new Error('Tangent creation requires an existing start endpoint');
++    collect(ids, sketchConstraintCommandHandlers['constraint.tangent'].execute(part, {
++      id: 'constraint.tangent',
++      payload: { sketchId, aEntityId: intent.start.reference.entityId, bEntityId: entityId },
++    }));
++  }
++}
++
++/**
++ * Called only inside the owning geometry command. No nested application.execute:
++ * its existing before-snapshot covers the geometry and every inferred relation.
++ */
++export function completeLineCreation(
++  part: CadPartDocument, sketchId: CadSketchId, entityId: CadSketchEntityId,
++  intent?: CadSketchLineCreationIntent,
++): CadCommandResult {
++  const ids: CreatedIds = [entityId];
++  if (!intent) return { ok: true, changed: true, createdIds: ids };
++  if ([intent.orientation, intent.direction, intent.angle].filter((value) => value !== undefined).length > 1) {
++    throw new Error('Choose one inferred orientation, axis direction or relative angle');
++  }
++  if (intent.angle !== undefined) {
++    if (!intent.angle || intent.start?.kind !== 'endpoint' || intent.start.reference.point !== 'b'
++      || intent.start.reference.entityId !== intent.angle.referenceEntityId) {
++      throw new Error('Creation angle requires start at its reference Line.b');
++    }
++    assertCadAngularSense(intent.angle.angleSense, 'Creation angle.angleSense');
++  }
++  applyAnchors(part, sketchId, entityId, intent, ids, 'a');
++  if (intent.orientation === 'horizontal') {
++    collect(ids, sketchConstraintCommandHandlers['constraint.horizontal'].execute(part, {
++      id: 'constraint.horizontal', payload: { sketchId, entityId },
++    }));
++  } else if (intent.orientation === 'vertical') {
++    collect(ids, sketchConstraintCommandHandlers['constraint.vertical'].execute(part, {
++      id: 'constraint.vertical', payload: { sketchId, entityId },
++    }));
++  } else if (intent.orientation !== undefined) {
++    throw new Error('Creation orientation must be horizontal or vertical');
++  }
++  if (intent.length !== undefined) {
++    collect(ids, sketchDimensionCommandHandlers['dimension.linear'].execute(part, {
++      id: 'dimension.linear', payload: { sketchId, entityIds: [entityId], value: intent.length },
++    }));
++  }
++  if (intent.direction) collect(ids, addDirectionDimension(part, sketchId, entityId, intent.direction));
++  if (intent.angle) collect(ids, sketchDimensionCommandHandlers['dimension.angular'].execute(part, {
++    id: 'dimension.angular', payload: {
++      sketchId, aEntityId: intent.angle.referenceEntityId, bEntityId: entityId,
++      value: intent.angle.value, angleSense: intent.angle.angleSense,
++    },
++  }));
++  return { ok: true, changed: true, createdIds: ids };
++}
++
++export function completeArcCreation(
++  part: CadPartDocument, sketchId: CadSketchId, entityId: CadSketchEntityId,
++  intent?: CadSketchArcCreationIntent, clockwise = false,
++): CadCommandResult {
++  const ids: CreatedIds = [entityId];
++  if (!intent) return { ok: true, changed: true, createdIds: ids };
++  applyAnchors(part, sketchId, entityId, intent, ids, clockwise ? 'b' : 'a');
++  if (intent.radius !== undefined) {
++    collect(ids, sketchDimensionCommandHandlers['dimension.radius'].execute(part, {
++      id: 'dimension.radius', payload: { sketchId, entityId, value: intent.radius },
++    }));
++  }
++  return { ok: true, changed: true, createdIds: ids };
++}
+diff --git a/src/application/commands/SketchGeometryCommandHandlers.ts b/src/application/commands/SketchGeometryCommandHandlers.ts
+--- a/src/application/commands/SketchGeometryCommandHandlers.ts
++++ b/src/application/commands/SketchGeometryCommandHandlers.ts
+@@ -10,6 +10,8 @@
+   type SketchCommandHandlerMap,
+ } from './SketchCommandHandlerShared';
+ 
++import { completeArcCreation, completeLineCreation } from './SketchCreationIntentOwner';
++
+ export const SKETCH_GEOMETRY_COMMAND_IDS = [
+   'sketch.create',
+   'sketch.line',
+@@ -42,13 +44,17 @@
+     availability: requireSketchAvailability,
+     execute: (part, command) => {
+       const sketch = requireSketch(part, command.payload.sketchId);
++      const { from, to } = command.payload;
++      if (from.length !== 2 || to.length !== 2 || ![...from, ...to].every(Number.isFinite) || !(pointDistance(from, to) > 1e-6)) {
++        throw new Error('Line endpoints must be finite and distinct');
++      }
+       const id = createCadId<CadSketchEntityId>('entity');
+       sketch.entities.push({
+         id,
+         type: 'line',
+         data: { from: command.payload.from, to: command.payload.to },
+       });
+-      return { ok: true, changed: true, createdIds: [id] };
++      return completeLineCreation(part, sketch.id, id, command.payload.creationIntent);
+     },
+   }),
+ 
+@@ -101,8 +107,12 @@
+       const { center, start, end } = command.payload;
+       const radius = pointDistance(center, start);
+       if (!(radius > 1e-6)) throw new Error('Arc radius must be positive');
+-      const startAngle = normalizeAngle(Math.atan2(start[1] - center[1], start[0] - center[0]));
+-      const rawEndAngle = normalizeAngle(Math.atan2(end[1] - center[1], end[0] - center[0]));
++      if (![...center, ...start, ...end].every(Number.isFinite)) throw new Error('Arc input must be finite');
++      if (command.payload.clockwise !== undefined && typeof command.payload.clockwise !== 'boolean') throw new Error('Arc clockwise must be boolean');
++      const inputStart = command.payload.clockwise ? end : start;
++      const inputEnd = command.payload.clockwise ? start : end;
++      const startAngle = normalizeAngle(Math.atan2(inputStart[1] - center[1], inputStart[0] - center[0]));
++      const rawEndAngle = normalizeAngle(Math.atan2(inputEnd[1] - center[1], inputEnd[0] - center[0]));
+       const sweep = positiveSweep(startAngle, rawEndAngle);
+       if (!(sweep > 1e-9) || !(sweep < TWO_PI - 1e-9)) {
+         throw new Error('Arc sweep must be greater than 0 and less than 2π');
+@@ -113,7 +123,7 @@
+         type: 'arc',
+         data: { center, radius, startAngle, endAngle: startAngle + sweep },
+       });
+-      return { ok: true, changed: true, createdIds: [id] };
++      return completeArcCreation(part, sketch.id, id, command.payload.creationIntent, command.payload.clockwise);
+     },
+   }),
+ } satisfies SketchCommandHandlerMap<SketchGeometryCommandId>;
+diff --git a/src/application/commands/SketchCoincidentConstraintOwner.ts b/src/application/commands/SketchCoincidentConstraintOwner.ts
+--- a/src/application/commands/SketchCoincidentConstraintOwner.ts
++++ b/src/application/commands/SketchCoincidentConstraintOwner.ts
+@@ -4,7 +4,7 @@
+ import { createCadId } from '../../contracts/ids';
+ import { requireSketch, requireSketchEntity } from './SketchCommandHandlerShared';
+ 
+-/** Focused application owner for stable Line-endpoint Coincident semantics. */
++/** Focused application owner for stable Line/Arc endpoint Coincident semantics. */
+ export function addCoincidentConstraint(
+   part: CadPartDocument,
+   sketchId: CadSketchId,
+@@ -13,7 +13,7 @@
+   const sketch = requireSketch(part, sketchId);
+   const a = requireLineEndpointReference(sketch, refs[0], 'first');
+   const b = requireLineEndpointReference(sketch, refs[1], 'second');
+-  if (a.entityId === b.entityId) throw new Error('M3.7C Coincident requires endpoints from two distinct Lines');
++  if (a.entityId === b.entityId) throw new Error('M3.7C Coincident requires endpoints from two distinct Lines or Arcs');
+   const ids = new Set(sketch.constraintIds);
+   const duplicate = part.constraints.some((constraint) => (
+     ids.has(constraint.id) && constraint.type === 'coincident' && sameUnorderedEndpointPair(constraint.data.refs, [a, b])
+@@ -31,7 +31,7 @@
+   label: string,
+ ): CadSketchCommandReference & { point: 'a' | 'b' } {
+   const entity = requireSketchEntity(sketch, ref.entityId);
+-  if (entity.type !== 'line') throw new Error(`M3.7C Coincident ${label} reference must target a Line entity`);
++  if (entity.type !== 'line' && entity.type !== 'arc') throw new Error(`Coincident ${label} reference must target a Line entity or an Arc entity`);
+   if (ref.point !== 'a' && ref.point !== 'b') {
+     throw new Error(`M3.7C Coincident ${label} Line reference must select endpoint a or b`);
+   }
+diff --git a/src/application/commands/SketchTangentConstraintOwner.ts b/src/application/commands/SketchTangentConstraintOwner.ts
+--- a/src/application/commands/SketchTangentConstraintOwner.ts
++++ b/src/application/commands/SketchTangentConstraintOwner.ts
+@@ -4,7 +4,7 @@
+ import { createCadId } from '../../contracts/ids';
+ import { requireSketch, requireSketchEntity } from './SketchCommandHandlerShared';
+ 
+-/** Focused application owner for the first Tangent product slice: Line ↔ Circle only. */
++/** Focused application owner for Line ↔ Circle/Arc Tangent. The legacy export name remains compatible. */
+ export function addLineCircleTangentConstraint(
+   part: CadPartDocument,
+   sketchId: CadSketchId,
+@@ -16,13 +16,12 @@
+   const a = requireSketchEntity(sketch, aEntityId);
+   const b = requireSketchEntity(sketch, bEntityId);
+ 
+-  const lineId = a.type === 'line' && b.type === 'circle' ? aEntityId
+-    : b.type === 'line' && a.type === 'circle' ? bEntityId
+-      : null;
+-  const circleId = a.type === 'circle' && b.type === 'line' ? aEntityId
+-    : b.type === 'circle' && a.type === 'line' ? bEntityId
+-      : null;
+-  if (!lineId || !circleId) throw new Error('Tangent currently requires exactly one Line and one Circle');
++  const isCurve = (type: string) => type === 'circle' || type === 'arc';
++  const lineId = a.type === 'line' && isCurve(b.type) ? aEntityId
++    : b.type === 'line' && isCurve(a.type) ? bEntityId : null;
++  const circleId = isCurve(a.type) && b.type === 'line' ? aEntityId
++    : isCurve(b.type) && a.type === 'line' ? bEntityId : null;
++  if (!lineId || !circleId) throw new Error('Tangent requires exactly one Line and one Circle or Arc');
+ 
+   const ids = new Set(sketch.constraintIds);
+   const duplicate = part.constraints.some((constraint) => (
+diff --git a/src/application/commands/SketchDimensionCommandHandlers.ts b/src/application/commands/SketchDimensionCommandHandlers.ts
+--- a/src/application/commands/SketchDimensionCommandHandlers.ts
++++ b/src/application/commands/SketchDimensionCommandHandlers.ts
+@@ -1,6 +1,7 @@
+ import type { CadCommandId } from '../../contracts/commands';
+ import type { CadDimension } from '../../contracts/document';
+ import type { CadDimensionId } from '../../contracts/ids';
++import { assertCadAngularSense, assertCadDirectionValue } from '../../contracts/sketchDimensions';
+ import { createCadId } from '../../contracts/ids';
+ import {
+   ENABLED,
+@@ -169,12 +170,14 @@
+       if (!Number.isFinite(command.payload.value) || command.payload.value <= 0 || command.payload.value >= 180) {
+         throw new Error('Angular dimension value must be finite and between 0 and 180 degrees');
+       }
++      if (command.payload.angleSense !== undefined) assertCadAngularSense(command.payload.angleSense);
+       const id = createCadId<CadDimensionId>('dimension');
+       const dimension: CadDimension = {
+         id,
+         type: 'angular',
+         entityIds: [command.payload.aEntityId, command.payload.bEntityId],
+         value: command.payload.value,
++        ...(command.payload.angleSense ? { angleSense: { ...command.payload.angleSense } } : {}),
+         driving: true,
+         name: command.payload.name,
+       };
+@@ -190,7 +193,8 @@
+       const dimension = part.dimensions.find((item) => item.id === command.payload.dimensionId);
+       if (!dimension) throw new Error(`Unknown dimension: ${command.payload.dimensionId}`);
+       if (!dimension.driving) throw new Error(`Dimension is not driving: ${command.payload.dimensionId}`);
+-      if (!Number.isFinite(command.payload.value) || command.payload.value <= 0) {
++      if (dimension.type === 'direction') assertCadDirectionValue(command.payload.value);
++      else if (!Number.isFinite(command.payload.value) || command.payload.value <= 0) {
+         throw new Error('Driving dimension value must be positive finite');
+       }
+       if (dimension.type === 'angular' && command.payload.value >= 180) {
+diff --git a/src/contracts/partSemantics.ts b/src/contracts/partSemantics.ts
+--- a/src/contracts/partSemantics.ts
++++ b/src/contracts/partSemantics.ts
+@@ -63,6 +63,22 @@
+       for (const entityId of constraint.entityIds) {
+         assertEntityOwnedBySketch(entityOwner, entityId, sketch.id, `Constraint ${constraint.id}`);
+       }
++      if (constraint.type === 'originCoincident' || constraint.type === 'midpoint') {
++        const source = constraint.data.source;
++        if (source.entityId !== constraint.entityIds[0] || (source.point !== 'a' && source.point !== 'b')) {
++          throw new Error('Creation anchor source must match its first entity and select endpoint a or b');
++        }
++        const sourceEntity = sketch.entities.find((item) => item.id === source.entityId);
++        if (!sourceEntity || (sourceEntity.type !== 'line' && sourceEntity.type !== 'arc')) {
++          throw new Error('Creation anchor source requires a Line or Arc endpoint');
++        }
++        if (constraint.type === 'midpoint') {
++          const target = sketch.entities.find((item) => item.id === constraint.entityIds[1]);
++          if (!target || target.type !== 'line' || target.id === source.entityId) {
++            throw new Error('Midpoint requires a distinct target Line in the same Sketch');
++          }
++        }
++      }
+       if (constraint.type === 'coincident') {
+         for (const ref of constraint.data.refs) {
+           assertEntityOwnedBySketch(entityOwner, ref.entityId, sketch.id, `Constraint ${constraint.id} ref`);
+@@ -83,6 +99,10 @@
+       for (const entityId of dimension.entityIds) {
+         assertEntityOwnedBySketch(entityOwner, entityId, sketch.id, `Dimension ${dimension.id}`);
+       }
++      if (dimension.type === 'direction') {
++        const target = sketch.entities.find((entity) => entity.id === dimension.entityIds[0]);
++        if (target?.type !== 'line') throw new Error('Direction dimension requires a Line in its owning Sketch');
++      }
+     }
+   }
+ 
+diff --git a/vendor/toubkal/src/services/solver/PlaneGCSConstraintIntent.ts b/vendor/toubkal/src/services/solver/PlaneGCSConstraintIntent.ts
+new file mode 100644
+--- /dev/null
++++ b/vendor/toubkal/src/services/solver/PlaneGCSConstraintIntent.ts
+@@ -0,0 +1,10 @@
++import type { SketchConstraint, SketchRef } from '../../store/cadStore';
++
++/**
++ * Semantic inputs supported by the existing PlaneGCS instance.
++ * They add no document geometry and never escape the ASA runtime boundary.
++ */
++export type PlaneGCSConstraintIntent = SketchConstraint
++  | { id: string; type: 'POINT_POSITION'; refs: SketchRef[]; position: readonly [number, number] }
++  | { id: string; type: 'MIDPOINT'; refs: SketchRef[] }
++  | { id: string; type: 'DIRECTION'; refs: SketchRef[]; value: number };
+diff --git a/vendor/toubkal/src/services/solver/PlaneGCSSolverAdapter.ts b/vendor/toubkal/src/services/solver/PlaneGCSSolverAdapter.ts
+--- a/vendor/toubkal/src/services/solver/PlaneGCSSolverAdapter.ts
++++ b/vendor/toubkal/src/services/solver/PlaneGCSSolverAdapter.ts
+@@ -31,7 +31,8 @@
+ 
+ import type { ISketchSolver } from './ISketchSolver';
+ import type { EntityGeom, DragPin, SolveResult } from './model';
+-import type { SketchConstraint, SketchRef } from '../../store/cadStore';
++import type { PlaneGCSConstraintIntent } from './PlaneGCSConstraintIntent';
++import type { SketchRef } from '../../store/cadStore';
+ import { loadPlaneGcs, type ModuleStatic } from './planegcs/loadPlaneGcs';
+ import { GcsWrapper, Algorithm, SolveStatus } from '@salusoft89/planegcs';
+ import type {
+@@ -73,7 +74,7 @@
+     this.wrapper = new GcsWrapper(new this.mod.GcsSystem());
+   }
+ 
+-  solve(geoms: EntityGeom[], constraints: SketchConstraint[], dragPin?: DragPin): PlaneGCSSolveResult {
++  solve(geoms: EntityGeom[], constraints: PlaneGCSConstraintIntent[], dragPin?: DragPin): PlaneGCSSolveResult {
+     const w = this.wrapper;
+     if (!w) throw new Error('PlaneGCSSolverAdapter.init() not awaited before solve()');
+     w.clear_data();
+@@ -218,13 +219,38 @@
+ 
+ const DEG2RAD = Math.PI / 180;
+ 
+-function emitConstraint(prims: (SketchPrimitive | SketchParam)[], c: SketchConstraint, ctx: Ctx): void {
++function emitConstraint(prims: (SketchPrimitive | SketchParam)[], c: PlaneGCSConstraintIntent, ctx: Ctx): void {
+   const { point, ent, geomById, nextId } = ctx;
+   const r0 = c.refs[0], r1 = c.refs[1], r2 = c.refs[2];
+   const id = nextId();
+   const push = (p: SketchPrimitive) => prims.push(p);
+ 
+   switch (c.type) {
++    case 'POINT_POSITION': {
++      const p = point(r0);
++      if (!p || !c.position.every(Number.isFinite)) throw new Error('Invalid point-position intent');
++      push({ id, type: 'coordinate_x', p_id: p, x: c.position[0] });
++      push({ id: nextId(), type: 'coordinate_y', p_id: p, y: c.position[1] });
++      return;
++    }
++    case 'MIDPOINT': {
++      const p = point(r0);
++      const a = point({ ...r1, kind: 'point', pt: 'a' });
++      const b = point({ ...r1, kind: 'point', pt: 'b' });
++      if (!p || !a || !b || geomById.get(r1.id)?.kind !== 'line') throw new Error('Invalid midpoint intent');
++      push({ id, type: 'p2p_symmetric_ppp', p1_id: a, p2_id: b, p_id: p });
++      return;
++    }
++    case 'DIRECTION': {
++      const a = point({ ...r0, kind: 'point', pt: 'a' });
++      const b = point({ ...r0, kind: 'point', pt: 'b' });
++      if (!a || !b || geomById.get(r0.id)?.kind !== 'line' || !Number.isFinite(c.value)) {
++        throw new Error('Invalid Line direction intent');
++      }
++      const angle = (((c.value + 180) % 360 + 360) % 360 - 180) * DEG2RAD;
++      push({ id, type: 'p2p_angle', p1_id: a, p2_id: b, angle });
++      return;
++    }
+     case 'FIXED': return;                                     // handled via point `fixed`
+ 
+     case 'COINCIDENT':
+diff --git a/src/runtime/PlaneGCSSketchSolverRuntime.ts b/src/runtime/PlaneGCSSketchSolverRuntime.ts
+--- a/src/runtime/PlaneGCSSketchSolverRuntime.ts
++++ b/src/runtime/PlaneGCSSketchSolverRuntime.ts
+@@ -8,8 +8,10 @@
+   CadSketchEntity,
+ } from '../contracts/document';
+ import type { CadSketchId } from '../contracts/ids';
++import { toCadAngularSolverInput } from '../contracts/sketchDimensions';
+ import type { CadSketchSolveDiagnostic, CadSketchSolveResult, CadSketchSolverAdapter } from '../contracts/sketchSolver';
+ import { PlaneGCSSolverAdapter } from '../../vendor/toubkal/src/services/solver/PlaneGCSSolverAdapter';
++import type { PlaneGCSConstraintIntent } from '../../vendor/toubkal/src/services/solver/PlaneGCSConstraintIntent';
+ import type { EntityGeom } from '../../vendor/toubkal/src/services/solver/model';
+ import type { SketchConstraint, SketchRef } from '../../vendor/toubkal/src/store/cadStore';
+ 
+@@ -165,14 +167,14 @@
+     });
+   }
+ 
+-  private toVendorConstraints(part: CadPartDocument, sketch: CadSketch): SketchConstraint[] {
++  private toVendorConstraints(part: CadPartDocument, sketch: CadSketch): PlaneGCSConstraintIntent[] {
+     const ids = new Set(sketch.constraintIds);
+     return part.constraints
+       .filter((constraint) => ids.has(constraint.id))
+       .map((constraint) => this.toVendorConstraint(constraint));
+   }
+ 
+-  private toVendorConstraint(constraint: CadConstraint): SketchConstraint {
++  private toVendorConstraint(constraint: CadConstraint): PlaneGCSConstraintIntent {
+     switch (constraint.type) {
+       case 'horizontal':
+         return this.vendorConstraint(constraint, 'HORIZONTAL', [{ entityId: constraint.entityIds[0] }]);
+@@ -194,19 +196,32 @@
+         return this.vendorConstraint(constraint, 'POINT_ON_CURVE', [constraint.data.source, { entityId: constraint.entityIds[1] }]);
+       case 'fixed':
+         return this.vendorConstraint(constraint, 'FIXED', [{ entityId: constraint.entityIds[0] }]);
++      case 'originCoincident':
++        return {
++          id: constraint.id, type: 'POINT_POSITION', position: [0, 0],
++          refs: [{ kind: 'point', id: constraint.data.source.entityId, pt: constraint.data.source.point }],
++        };
++      case 'midpoint':
++        return {
++          id: constraint.id, type: 'MIDPOINT',
++          refs: [
++            { kind: 'point', id: constraint.data.source.entityId, pt: constraint.data.source.point },
++            { kind: 'entity', id: constraint.entityIds[1] },
++          ],
++        };
+       case 'coincident':
+         return this.vendorConstraint(constraint, 'COINCIDENT', constraint.data.refs);
+     }
+   }
+ 
+-  private toVendorDimensions(part: CadPartDocument, sketch: CadSketch): SketchConstraint[] {
++  private toVendorDimensions(part: CadPartDocument, sketch: CadSketch): PlaneGCSConstraintIntent[] {
+     const ids = new Set(sketch.dimensionIds);
+     return part.dimensions
+       .filter((dimension) => ids.has(dimension.id) && dimension.driving)
+       .map((dimension) => this.toVendorDimension(dimension, sketch));
+   }
+ 
+-  private toVendorDimension(dimension: CadDimension, sketch: CadSketch): SketchConstraint {
++  private toVendorDimension(dimension: CadDimension, sketch: CadSketch): PlaneGCSConstraintIntent {
+     switch (dimension.type) {
+       case 'linear':
+         if (dimension.entityIds.length !== 1) {
+@@ -264,6 +279,19 @@
+           value: dimension.value,
+         };
+       }
++      case 'direction': {
++        const entity = sketch.entities.find((item) => item.id === dimension.entityIds[0]);
++        if (entity?.type !== 'line') throw new Error('Direction dimension requires one Line');
++        if (dimension.axis !== 'x' && dimension.axis !== 'y') throw new Error('Direction dimension axis is invalid');
++        if (!Number.isFinite(dimension.value) || dimension.value < 0 || dimension.value >= 360) {
++          throw new Error('Direction dimension value must be in [0, 360) degrees');
++        }
++        return {
++          id: dimension.id, type: 'DIRECTION',
++          refs: [{ kind: 'entity', id: entity.id }],
++          value: (dimension.value + (dimension.axis === 'y' ? 90 : 0)) % 360,
++        };
++      }
+       case 'angular': {
+         if (dimension.entityIds.length !== 2) {
+           throw new Error(`Angular dimension ${dimension.id} requires exactly two Line entity refs`);
+@@ -277,14 +305,15 @@
+         if (a.type !== 'line' || b.type !== 'line') {
+           throw new Error(`Angular dimension ${dimension.id} requires two Line entities, got ${a.type} and ${b.type}`);
+         }
++        const mapped = toCadAngularSolverInput(dimension);
+         return {
+           id: dimension.id,
+           type: 'ANGLE',
+           refs: [
+-            { kind: 'entity', id: aId },
+-            { kind: 'entity', id: bId },
++            { kind: 'entity', id: mapped.entityIds[0] },
++            { kind: 'entity', id: mapped.entityIds[1] },
+           ],
+-          value: dimension.value,
++          value: mapped.value,
+         };
+       }
+     }
+diff --git a/spec/process/cad-document-schema-policy.v1.json b/spec/process/cad-document-schema-policy.v1.json
+--- a/spec/process/cad-document-schema-policy.v1.json
++++ b/spec/process/cad-document-schema-policy.v1.json
+@@ -1,7 +1,7 @@
+ {
+   "policyVersion": 1,
+   "schemaVersionSemantics": "exact-persisted-grammar",
+-  "currentCadDocumentSchemaVersion": 3,
++  "currentCadDocumentSchemaVersion": 4,
+   "persistedUnionDiscriminantAdditionRequiresSchemaBump": true,
+   "readMustNotSilentlyRewriteStoredDocuments": true,
+   "schemas": [
+@@ -28,6 +28,21 @@
+       "constraintTypes": ["horizontal", "vertical", "parallel", "perpendicular", "tangent", "concentric", "equal", "symmetric", "pointOnCurve", "fixed", "coincident"],
+       "dimensionTypes": ["linear", "horizontal", "vertical", "diameter", "radius", "angular"],
+       "fixture": "tests/fixtures/schema/v3-part-angular.json"
++    },
++    {
++      "version": 4,
++      "documentKinds": ["part", "assembly", "drawing", "fragment", "specification", "text"],
++      "sketchEntityTypes": ["line", "circle", "arc"],
++      "constraintTypes": ["horizontal", "vertical", "parallel", "perpendicular", "tangent", "concentric", "equal", "symmetric", "pointOnCurve", "fixed", "coincident", "originCoincident", "midpoint"],
++      "dimensionTypes": ["linear", "horizontal", "vertical", "diameter", "radius", "angular", "direction"],
++      "angularAngleSense": {
++        "optional": true,
++        "reference": ["forward", "interior"],
++        "branch": ["counterclockwise", "clockwise"],
++        "valueDegreesExclusive": [0, 180],
++        "whenAbsent": "preserve schema-v3 ordered-forward solver semantics"
++      },
++      "fixture": "tests/fixtures/schema/v4-part-creation-intent.json"
+     }
+   ]
+ }
+diff --git a/tests/fixtures/schema/v4-part-creation-intent.json b/tests/fixtures/schema/v4-part-creation-intent.json
+new file mode 100644
+--- /dev/null
++++ b/tests/fixtures/schema/v4-part-creation-intent.json
+@@ -0,0 +1,196 @@
++{
++  "kind": "part",
++  "schemaVersion": 4,
++  "engineVersion": "schema-v4-fixture",
++  "documentId": "doc_schema_v4_creation",
++  "title": "Schema v4 creation intents",
++  "units": "mm",
++  "metadata": {
++    "fixture": "creation-v4"
++  },
++  "linkedDocuments": [],
++  "origin": {
++    "planes": [
++      "XY",
++      "XZ",
++      "YZ"
++    ]
++  },
++  "variables": {},
++  "sketches": [
++    {
++      "id": "sketch_v4",
++      "name": "Creation intent",
++      "support": "XY",
++      "entities": [
++        {
++          "id": "entity_direction_v4",
++          "type": "line",
++          "data": {
++            "from": [
++              0,
++              0
++            ],
++            "to": [
++              34.64101615137755,
++              20
++            ]
++          }
++        },
++        {
++          "id": "entity_midpoint_v4",
++          "type": "line",
++          "data": {
++            "from": [
++              17.320508075688775,
++              10
++            ],
++            "to": [
++              17.320508075688775,
++              30
++            ]
++          }
++        },
++        {
++          "id": "entity_chain_v4",
++          "type": "line",
++          "data": {
++            "from": [
++              34.64101615137755,
++              20
++            ],
++            "to": [
++              60.621778264910716,
++              5
++            ]
++          }
++        }
++      ],
++      "constraintIds": [
++        "constraint_origin_v4",
++        "constraint_midpoint_v4",
++        "constraint_vertical_v4",
++        "constraint_chain_join_v4"
++      ],
++      "dimensionIds": [
++        "dimension_length_v4",
++        "dimension_direction_v4",
++        "dimension_branch_v4",
++        "dimension_chain_length_v4",
++        "dimension_chain_angle_v4"
++      ]
++    }
++  ],
++  "constraints": [
++    {
++      "id": "constraint_origin_v4",
++      "type": "originCoincident",
++      "entityIds": [
++        "entity_direction_v4"
++      ],
++      "data": {
++        "source": {
++          "entityId": "entity_direction_v4",
++          "point": "a"
++        }
++      }
++    },
++    {
++      "id": "constraint_midpoint_v4",
++      "type": "midpoint",
++      "entityIds": [
++        "entity_midpoint_v4",
++        "entity_direction_v4"
++      ],
++      "data": {
++        "source": {
++          "entityId": "entity_midpoint_v4",
++          "point": "a"
++        }
++      }
++    },
++    {
++      "id": "constraint_vertical_v4",
++      "type": "vertical",
++      "entityIds": [
++        "entity_midpoint_v4"
++      ]
++    },
++    {
++      "id": "constraint_chain_join_v4",
++      "type": "coincident",
++      "entityIds": [
++        "entity_direction_v4",
++        "entity_chain_v4"
++      ],
++      "data": {
++        "refs": [
++          {
++            "entityId": "entity_direction_v4",
++            "point": "b"
++          },
++          {
++            "entityId": "entity_chain_v4",
++            "point": "a"
++          }
++        ]
++      }
++    }
++  ],
++  "dimensions": [
++    {
++      "id": "dimension_length_v4",
++      "type": "linear",
++      "entityIds": [
++        "entity_direction_v4"
++      ],
++      "value": 40,
++      "driving": true
++    },
++    {
++      "id": "dimension_direction_v4",
++      "type": "direction",
++      "entityIds": [
++        "entity_direction_v4"
++      ],
++      "axis": "x",
++      "value": 30,
++      "driving": true
++    },
++    {
++      "id": "dimension_branch_v4",
++      "type": "linear",
++      "entityIds": [
++        "entity_midpoint_v4"
++      ],
++      "value": 20,
++      "driving": true
++    },
++    {
++      "id": "dimension_chain_length_v4",
++      "type": "linear",
++      "entityIds": [
++        "entity_chain_v4"
++      ],
++      "value": 30,
++      "driving": true
++    },
++    {
++      "id": "dimension_chain_angle_v4",
++      "type": "angular",
++      "entityIds": [
++        "entity_direction_v4",
++        "entity_chain_v4"
++      ],
++      "value": 120,
++      "driving": true,
++      "angleSense": {
++        "reference": "interior",
++        "branch": "clockwise"
++      }
++    }
++  ],
++  "features": [],
++  "bodies": [],
++  "stableReferences": []
++}
+diff --git a/release/manifest.json b/release/manifest.json
+--- a/release/manifest.json
++++ b/release/manifest.json
+@@ -3,7 +3,7 @@
+   "releaseVersion": "0.2.0-m2",
+   "releaseChannel": "development",
+   "productShell": "asa-m2",
+-  "cadDocumentSchemaVersion": 3,
++  "cadDocumentSchemaVersion": 4,
+   "engineVersion": "0.1.0-m1",
+   "mountPath": "/cad",
+   "editorRoute": "/cad/projects/:projectId",
+diff --git a/tests/m1/migrations.ts b/tests/m1/migrations.ts
+--- a/tests/m1/migrations.ts
++++ b/tests/m1/migrations.ts
+@@ -9,7 +9,7 @@
+   parseCadDocument,
+ } from '../../src';
+ 
+-assert.equal(CAD_DOCUMENT_SCHEMA_VERSION, 3);
++assert.equal(CAD_DOCUMENT_SCHEMA_VERSION, 4);
+ 
+ const current = createEmptyCadDocument('part');
+ assert.deepEqual(migrateCadDocument(current), current);
+@@ -39,8 +39,8 @@
+ const migratedV1 = migrateCadDocument(v1Fixture);
+ assert.deepEqual(
+   migratedV1,
+-  { ...v1Fixture, schemaVersion: 3 },
+-  'v1 -> v2 -> v3 must preserve all persisted content except schemaVersion',
++  { ...v1Fixture, schemaVersion: 4 },
++  'v1 -> v2 -> v3 -> v4 must preserve all persisted content except schemaVersion',
+ );
+ assert.deepEqual(
+   migratedV1.kind === 'part' ? migratedV1.dimensions.map((dimension) => dimension.type) : [],
+@@ -58,8 +58,8 @@
+ const migratedV2 = migrateCadDocument(v2Fixture);
+ assert.deepEqual(
+   migratedV2,
+-  { ...v2Fixture, schemaVersion: 3 },
+-  'v2 -> v3 must preserve Radius fixture content except schemaVersion',
++  { ...v2Fixture, schemaVersion: 4 },
++  'v2 -> v3 -> v4 must preserve Radius fixture content except schemaVersion',
+ );
+ assert.equal(migratedV2.kind, 'part');
+ if (migratedV2.kind !== 'part') throw new Error('Expected migrated v2 Part fixture');
+@@ -83,7 +83,14 @@
+ 
+ const v3Fixture = fixture(3);
+ const migratedV3 = migrateCadDocument(v3Fixture);
+-assert.deepEqual(migratedV3, v3Fixture, 'native schema-v3 fixture must open without semantic changes');
++assert.deepEqual(migratedV3, { ...v3Fixture, schemaVersion: 4 }, 'v3 must migrate without semantic changes');
++const invalidV3Direction = structuredClone(v3Fixture);
++invalidV3Direction.dimensions[0].type = 'direction';
++assert.throws(() => migrateCadDocument(invalidV3Direction), /Schema v3 dimensions.*unsupported: direction/);
++const invalidV3Origin = structuredClone(v3Fixture);
++invalidV3Origin.constraints.push({ id: 'constraint_invalid_origin', type: 'originCoincident' });
++assert.throws(() => migrateCadDocument(invalidV3Origin), /Schema v3 constraints.*unsupported: originCoincident/);
++assert.deepEqual(migrateCadDocument(fixture(4)), fixture(4));
+ assert.equal(migratedV3.kind, 'part');
+ if (migratedV3.kind !== 'part') throw new Error('Expected v3 Part fixture');
+ const angular = migratedV3.dimensions.find((dimension) => dimension.type === 'angular');
+@@ -94,15 +101,15 @@
+ assert.throws(
+   () => parseCadDocument(v2Fixture),
+   /Unsupported CadDocument schemaVersion: 2/,
+-  'raw v2 must not masquerade as native v3 outside migration ingress',
++  'raw v2 must not masquerade as native v4 outside migration ingress',
+ );
+ 
+ assert.throws(
+-  () => migrateCadDocument({ ...current, schemaVersion: 4 }),
++  () => migrateCadDocument({ ...current, schemaVersion: 5 }),
+   (error: unknown) => {
+     assert.ok(error instanceof CadDocumentFutureVersionError);
+-    assert.equal(error.documentVersion, 4);
+-    assert.equal(error.supportedVersion, 3);
++    assert.equal(error.documentVersion, 5);
++    assert.equal(error.supportedVersion, 4);
+     return true;
+   },
+ );
+@@ -117,4 +124,4 @@
+   },
+ );
+ 
+-console.log('ASA-CAD M1 migration contract PASS (v1->v3 chain + v2->v3 guard + v3 Angular fixture)');
++console.log('ASA-CAD M1 migration contract PASS (v1->v4 chain + frozen grammar guards + v4 creation fixture)');
+diff --git a/tests/m1/host.ts b/tests/m1/host.ts
+--- a/tests/m1/host.ts
++++ b/tests/m1/host.ts
+@@ -66,7 +66,7 @@
+ });
+ const migratedLocal = await localHost.load();
+ assert.equal(migratedLocal.document.schemaVersion, CAD_DOCUMENT_SCHEMA_VERSION);
+-assert.equal(CAD_DOCUMENT_SCHEMA_VERSION, 3);
++assert.equal(CAD_DOCUMENT_SCHEMA_VERSION, 4);
+ assert.equal(storageWrites, 0, 'LocalStorage load must not rewrite migrated schema-v2 content');
+ assert.equal(storageValues.get('schema-v2-host'), v2Raw, 'stored raw v2 document must remain byte-identical after load');
+ 
+diff --git a/tests/m1b/asa-host.ts b/tests/m1b/asa-host.ts
+--- a/tests/m1b/asa-host.ts
++++ b/tests/m1b/asa-host.ts
+@@ -56,7 +56,7 @@
+ const opened = await host.load();
+ assert.equal(opened.revision, 5);
+ assert.equal(opened.document.schemaVersion, CAD_DOCUMENT_SCHEMA_VERSION);
+-assert.equal(CAD_DOCUMENT_SCHEMA_VERSION, 3);
++assert.equal(CAD_DOCUMENT_SCHEMA_VERSION, 4);
+ assert.equal(stored.schemaVersion, 2, 'ASA Lab GET draft must remain stored as v2 after in-memory migration');
+ assert.deepEqual(calls.map((call) => [call.method, call.url]), [['GET', '/api/projects/project%20one']]);
+ 
+diff --git a/tests/m2o/typed-sketch-dtos.ts b/tests/m2o/typed-sketch-dtos.ts
+--- a/tests/m2o/typed-sketch-dtos.ts
++++ b/tests/m2o/typed-sketch-dtos.ts
+@@ -21,7 +21,7 @@
+ } from '../../src';
+ import type { CadConstraintId, CadDimensionId } from '../../src/contracts/ids';
+ 
+-assert.equal(CAD_DOCUMENT_SCHEMA_VERSION, 3, 'current typed Sketch DTO test must track schema v3');
++assert.equal(CAD_DOCUMENT_SCHEMA_VERSION, 4, 'current typed Sketch DTO test must track schema v4');
+ 
+ const part = createEmptyCadDocument('part', { title: 'O7 typed sketch' });
+ const sketchId = createCadId<CadSketchId>('sketch');
+diff --git a/tests/m3/RadiusDimensionBrowserHelpers.mjs b/tests/m3/RadiusDimensionBrowserHelpers.mjs
+--- a/tests/m3/RadiusDimensionBrowserHelpers.mjs
++++ b/tests/m3/RadiusDimensionBrowserHelpers.mjs
+@@ -30,7 +30,7 @@
+ }
+ 
+ export function assertRadius(saved, entityId, value, entityType) {
+-  assert.equal(saved.schemaVersion, 3);
++  assert.equal(saved.schemaVersion, 4);
+   assert.deepEqual(saved.dimensions.map((item) => item.type), ['radius']);
+   assert.equal(saved.sketches[0]?.entities.length, 1);
+   assert.equal(saved.sketches[0]?.entities[0]?.type, entityType);
+diff --git a/tests/m3/sketch-radius-dimension-browser.mjs b/tests/m3/sketch-radius-dimension-browser.mjs
+--- a/tests/m3/sketch-radius-dimension-browser.mjs
++++ b/tests/m3/sketch-radius-dimension-browser.mjs
+@@ -45,7 +45,7 @@
+     await waitSolvedOverlay(page, 1, 'Radius reopen');
+     near(await circleDiameter(page, id), 30, 0.1, 'reopen Circle diameter');
+     saved = JSON.parse(await page.evaluate(() => localStorage.getItem('asa-cad-m2-shell-document')));
+-    assert.equal(saved.schemaVersion, 3);
++    assert.equal(saved.schemaVersion, 4);
+     assert.equal(saved.dimensions[0]?.id, dimensionId);
+     assert.deepEqual(saved.dimensions[0]?.entityIds, [id]);
+ 
+diff --git a/tests/m3/sketch-tangent.ts b/tests/m3/sketch-tangent.ts
+--- a/tests/m3/sketch-tangent.ts
++++ b/tests/m3/sketch-tangent.ts
+@@ -91,9 +91,10 @@
+ const arcId = (await app.execute({ id: 'sketch.arc', payload: { sketchId, center: [40, 5], start: [44, 5], end: [40, 9] } })).createdIds?.[0] as CadSketchEntityId;
+ const beforeArc = serializeCadDocument(app.getDocument());
+ const lineArc = await app.execute({ id: 'constraint.tangent', payload: { sketchId, aEntityId: lineId, bEntityId: arcId } });
+-assert.equal(lineArc.ok, false);
+-assert.match(lineArc.error?.message ?? '', /one Line and one Circle/);
+-assert.equal(serializeCadDocument(app.getDocument()), beforeArc, 'Line↔Arc Tangent is explicitly out of scope for the first slice');
++assert.equal(lineArc.ok, true, lineArc.error?.message);
++assert.notEqual(serializeCadDocument(app.getDocument()), beforeArc, 'Line↔Arc creates a real Tangent constraint');
++assert.ok(part().constraints.some((constraint) => constraint.id === lineArc.createdIds?.[0]
++  && constraint.type === 'tangent' && constraint.entityIds[0] === lineId && constraint.entityIds[1] === arcId));
+ 
+ const otherSketchId = (await app.execute({ id: 'sketch.create', payload: { support: 'XY', name: 'Other sketch' } })).createdIds?.[0] as CadSketchId;
+ const crossCircle = (await app.execute({ id: 'sketch.circle', payload: { sketchId: otherSketchId, center: [1, 4], diameter: 4 } })).createdIds?.[0] as CadSketchEntityId;
+@@ -121,7 +122,7 @@
+ const runtime = fs.readFileSync('src/runtime/PlaneGCSSketchSolverRuntime.ts', 'utf8');
+ assert.match(handler, /'constraint\.tangent'/, 'constraint handler map must register Tangent');
+ assert.match(handler, /addLineCircleTangentConstraint/, 'general constraint map must delegate Tangent semantics');
+-assert.match(owner, /exactly one Line and one Circle/, 'focused owner must enforce first-slice operand scope');
++assert.match(owner, /exactly one Line and one Circle/, 'focused owner must require Line and Circle/Arc operands');
+ assert.match(owner, /constraint\.type === 'tangent'/, 'focused owner must reject duplicate Tangent intent');
+ assert.doesNotMatch(`${handler}\n${owner}`, /PlaneGCS|OpenCascade|vendor\//, 'application Tangent owners must remain runtime-neutral');
+ assert.match(router, /case 'constraint\.tangent'/, 'Sketch command router must dispatch Tangent');
+@@ -131,4 +132,4 @@
+ undoApp.dispose();
+ solver.dispose();
+ app.dispose();
+-console.log('ASA-CAD Tangent PASS (Line↔Circle scope + validation + PlaneGCS + persistence/history + focused ownership)');
++console.log('ASA-CAD Tangent PASS (Line↔Circle/Arc scope + validation + PlaneGCS + persistence/history + focused ownership)');
+diff --git a/src/web/SketchDimensionPresentation.ts b/src/web/SketchDimensionPresentation.ts
+--- a/src/web/SketchDimensionPresentation.ts
++++ b/src/web/SketchDimensionPresentation.ts
+@@ -4,6 +4,7 @@
+   if (name === 'diameter') return 'Диаметр';
+   if (type === 'diameter') return 'Диаметральный размер';
+   if (type === 'radius') return 'Радиальный размер';
++  if (type === 'direction') return 'Направление от оси';
+   if (type === 'angular') return 'Угловой размер';
+   if (type === 'linear') return 'Линейный размер';
+   if (type === 'horizontal') return 'Горизонтальный размер';
+@@ -12,5 +13,5 @@
+ }
+ 
+ export function dimensionUnit(type: string): string {
+-  return type === 'angular' ? '°' : 'мм';
++  return type === 'angular' || type === 'direction' ? '°' : 'мм';
+ }
+diff --git a/src/web/useSketchDimensionController.ts b/src/web/useSketchDimensionController.ts
+--- a/src/web/useSketchDimensionController.ts
++++ b/src/web/useSketchDimensionController.ts
+@@ -2,6 +2,7 @@
+ import type {CadApplication} from '../contracts/application';
+ import type {CadDimensionId,CadSketchId} from '../contracts/ids';
+ import type {CadWorkspacePanel} from './PartSketchWorkspaceTypes';
++import {dimensionUnit} from './SketchDimensionPresentation';
+ import {dimensionLabel,partDocument} from './PartSketchWorkspaceModel';
+ 
+ export interface SketchDimensionControllerOptions {
+@@ -48,10 +49,7 @@
+   }
+ 
+   async function commitDimensionEdit() {
+-    if (!editingDimensionId || !(dimensionEditValue > 0)) {
+-      setNotice('Введите положительное значение размера');
+-      return;
+-    }
++    if (!editingDimensionId) return;
+     const before = partDocument(app.getDocument())?.dimensions.find((item) => item.id === editingDimensionId);
+     const result = await app.execute({
+       id: 'part.dimension.setValue',
+@@ -77,7 +75,7 @@
+     setActiveCommand(null);
+     setPanel('tree');
+     clearTransientSelection();
+-    setNotice(`${label} изменен на ${dimensionEditValue} мм; модель перестроена`);
++    setNotice(`${label} изменен на ${dimensionEditValue} ${dimensionUnit(before?.type ?? '')}; модель перестроена`);
+   }
+ 
+   const clearDimensionEdit = useCallback(() => {
+diff --git a/package.json b/package.json
+--- a/package.json
++++ b/package.json
+@@ -75,7 +75,7 @@
+     "test:m3:symmetry": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m3/sketch-symmetry.ts",
+     "test:m3:point-on-curve": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m3/sketch-point-on-curve.ts",
+     "test:m3:construction": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m3/sketch-construction.ts",
+-    "test:m3": "npm run test:m3:foundation && npm run test:m3:circle && npm run test:m3:arc-contract && npm run test:m3:arc-direct && npm run test:m3:rectangle-direct && npm run test:m3:selection-delete && npm run test:m3:entity-drag && npm run test:m3:orientation-constraints && npm run test:m3:fixed-freeze && npm run test:m3:coincident && npm run test:m3:parallel && npm run test:m3:perpendicular && npm run test:m3:tangent && npm run test:m3:concentric && npm run test:m3:equal && npm run test:m3:symmetry && npm run test:m3:point-on-curve && npm run test:m3:construction",
++    "test:m3": "npm run test:m3:foundation && npm run test:m3:circle && npm run test:m3:arc-contract && npm run test:m3:arc-direct && npm run test:m3:rectangle-direct && npm run test:m3:selection-delete && npm run test:m3:entity-drag && npm run test:m3:orientation-constraints && npm run test:m3:fixed-freeze && npm run test:m3:coincident && npm run test:m3:parallel && npm run test:m3:perpendicular && npm run test:m3:tangent && npm run test:m3:concentric && npm run test:m3:equal && npm run test:m3:symmetry && npm run test:m3:point-on-curve && npm run test:m3:construction && npm run test:m3:creation-intent && npm run test:m3:angular-sense",
+     "test:asa": "npm run test:process && npm run test:m0 && npm run test:m1 && npm run test:m1b && npm run test:m2:shell && npm run test:m2o && npm run test:m3",
+     "test": "npm run test:asa",
+     "check:vendor": "npm run build:vendor && npm run lint:vendor && npm run test:vendor",
+@@ -89,7 +89,9 @@
+     "test:m3:rectangle-direct": "node tests/m3/direct-rectangle-boundary.mjs",
+     "test:m3:selection-delete": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m3/sketch-entity-delete.ts && node tests/m3/sketch-selection-delete-boundary.mjs",
+     "test:m3:fixed-freeze": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m3/sketch-fixed-freeze.ts && node tests/m3/sketch-fixed-freeze-boundary.mjs",
+-    "test:m2o:visibility": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m2o/action-visibility.ts"
++    "test:m2o:visibility": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m2o/action-visibility.ts",
++    "test:m3:creation-intent": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m3/sketch-creation-intent.ts",
++    "test:m3:angular-sense": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m3/sketch-angular-sense.ts"
+   },
+   "engines": {
+     "node": ">=20.19.0",
+diff --git a/tests/m3/sketch-creation-intent.ts b/tests/m3/sketch-creation-intent.ts
+new file mode 100644
+--- /dev/null
++++ b/tests/m3/sketch-creation-intent.ts
+@@ -0,0 +1,220 @@
++import assert from 'node:assert/strict';
++import {
++  CadApplicationImpl, PlaneGCSSketchSolverRuntime, createEmptyCadDocument,
++  parseCadDocument, serializeCadDocument,
++  type CadPartDocument, type CadRuntimeAdapter, type CadRuntimeRecomputeResult,
++  type CadSketchEntityId, type CadSketchId,
++} from '../../src';
++import type { CadCommand, CadCommandResult } from '../../src/contracts/commands';
++
++class NoopSolidRuntime implements CadRuntimeAdapter {
++  async recompute(): Promise<CadRuntimeRecomputeResult> { return { ok: true, diagnostics: [] }; }
++  async captureReference(): Promise<never> { throw new Error('No B-Rep reference is needed for this contract test'); }
++  dispose(): void {}
++}
++
++const solver = new PlaneGCSSketchSolverRuntime();
++await solver.init();
++const apps: CadApplicationImpl[] = [];
++const close = (actual: number, expected: number) => {
++  assert.ok(Math.abs(actual - expected) < 1e-5, String(actual) + ' != ' + String(expected));
++};
++const pointClose = (actual: readonly number[], expected: readonly number[]) => {
++  close(actual[0], expected[0]); close(actual[1], expected[1]);
++};
++const part = (app: CadApplicationImpl): Readonly<CadPartDocument> => {
++  const document = app.getDocument();
++  if (document.kind !== 'part') throw new Error('Expected Part');
++  return document;
++};
++async function execute(app: CadApplicationImpl, command: CadCommand): Promise<CadCommandResult> {
++  const result = await app.execute(command);
++  assert.equal(result.ok, true, result.error?.message);
++  return result;
++}
++async function scene() {
++  const app = new CadApplicationImpl(createEmptyCadDocument('part'), new NoopSolidRuntime());
++  apps.push(app);
++  const result = await execute(app, { id: 'sketch.create', payload: { support: 'XY' } });
++  const sketchId = result.createdIds?.[0] as CadSketchId;
++  assert.ok(sketchId);
++  return { app, sketchId };
++}
++function solved(app: CadApplicationImpl, sketchId: CadSketchId) {
++  const result = solver.solve(app.getDocument(), sketchId);
++  assert.equal(result.ok, true, JSON.stringify(result.diagnostics));
++  assert.equal(result.diagnostics.some((item) => item.severity === 'error'), false, JSON.stringify(result.diagnostics));
++  return result;
++}
++function solvedLine(app: CadApplicationImpl, sketchId: CadSketchId, id: CadSketchEntityId) {
++  const entity = solved(app, sketchId).entities.find((item) => item.id === id);
++  if (entity?.type !== 'line') throw new Error('Expected solved Line');
++  return entity;
++}
++
++try {
++  const { app, sketchId } = await scene();
++  const before = serializeCadDocument(app.getDocument());
++  const created = await execute(app, {
++    id: 'sketch.line',
++    payload: {
++      sketchId, from: [3, 2], to: [33, 20],
++      creationIntent: { start: { kind: 'origin' }, length: 40, direction: { axis: 'x', value: 30 } },
++    },
++  });
++  const firstId = created.createdIds?.[0] as CadSketchEntityId;
++  assert.equal(created.createdIds?.length, 4, 'One Line, one origin relation, two dimensions');
++  let line = solvedLine(app, sketchId, firstId);
++  pointClose(line.data.from, [0, 0]);
++  pointClose(line.data.to, [40 * Math.cos(Math.PI / 6), 20]);
++  assert.equal(part(app).sketches[0].entities.length, 1, 'No hidden axis/reference geometry');
++  const after = serializeCadDocument(app.getDocument());
++  await app.undo();
++  assert.equal(serializeCadDocument(app.getDocument()), before, 'One Undo removes the complete segment intent');
++  await app.redo();
++  assert.equal(serializeCadDocument(app.getDocument()), after, 'Redo restores geometry and all IDs');
++
++  const direction = part(app).dimensions.find((item) => item.type === 'direction');
++  assert.ok(direction);
++  await execute(app, { id: 'part.dimension.setValue', payload: { dimensionId: direction.id, value: 0 } });
++  line = solvedLine(app, sketchId, firstId);
++  pointClose(line.data.to, [40, 0]);
++  await app.undo();
++  line = solvedLine(app, sketchId, firstId);
++  pointClose(line.data.to, [40 * Math.cos(Math.PI / 6), 20]);
++  const beforeSecond = serializeCadDocument(app.getDocument());
++  const second = await execute(app, {
++    id: 'sketch.line', payload: {
++      sketchId, from: line.data.to, to: [line.data.to[0], line.data.to[1] + 10],
++      creationIntent: {
++        start: { kind: 'endpoint', reference: { entityId: firstId, point: 'b' } },
++        orientation: 'vertical', length: 10,
++      },
++    },
++  });
++  const secondId = second.createdIds?.[0] as CadSketchEntityId;
++  pointClose(solvedLine(app, sketchId, secondId).data.from, line.data.to);
++  const completeSecond = serializeCadDocument(app.getDocument());
++  await app.undo();
++  assert.equal(serializeCadDocument(app.getDocument()), beforeSecond);
++  await app.redo();
++  assert.equal(serializeCadDocument(app.getDocument()), completeSecond);
++  const reopened = parseCadDocument(completeSecond);
++  assert.equal(serializeCadDocument(reopened), completeSecond);
++  assert.equal(solver.solve(reopened, sketchId).ok, true);
++
++  for (const intent of [
++    { length: 0 },
++    { direction: { axis: 'x' as const, value: 360 } },
++    { direction: { axis: 'x' as const, value: Number.NaN } },
++    { orientation: 'horizontal' as const, direction: { axis: 'x' as const, value: 0 } },
++  ]) {
++    const prior = serializeCadDocument(app.getDocument());
++    const history = { canUndo: app.getState().canUndo, canRedo: app.getState().canRedo };
++    const rejected = await app.execute({
++      id: 'sketch.line', payload: { sketchId, from: [0, 0], to: [4, 5], creationIntent: { start: { kind: 'origin' }, ...intent } },
++    });
++    assert.equal(rejected.ok, false);
++    assert.equal(serializeCadDocument(app.getDocument()), prior, 'A failed substep leaves no partial segment');
++    assert.deepEqual({ canUndo: app.getState().canUndo, canRedo: app.getState().canRedo }, history);
++  }
++
++  for (const [axis, value] of [['x', 90], ['x', 180], ['x', 270], ['y', 0], ['y', 30]] as const) {
++    const angled = await scene();
++    const radians = (value + (axis === 'y' ? 90 : 0)) * Math.PI / 180;
++    const target = [40 * Math.cos(radians), 40 * Math.sin(radians)] as const;
++    const result = await execute(angled.app, { id: 'sketch.line', payload: {
++      sketchId: angled.sketchId, from: [1, 1], to: [target[0] + 1, target[1] + 1],
++      creationIntent: { start: { kind: 'origin' }, length: 40, direction: { axis, value } },
++    } });
++    const entity = solvedLine(angled.app, angled.sketchId, result.createdIds?.[0] as CadSketchEntityId);
++    pointClose(entity.data.from, [0, 0]); pointClose(entity.data.to, target);
++    assert.equal(part(angled.app).sketches[0].entities.length, 1);
++  }
++
++  const midpoint = await scene();
++  const baseResult = await execute(midpoint.app, { id: 'sketch.line', payload: {
++    sketchId: midpoint.sketchId, from: [0, 0], to: [20, 0],
++    creationIntent: { start: { kind: 'origin' }, orientation: 'horizontal', length: 20 },
++  } });
++  const baseId = baseResult.createdIds?.[0] as CadSketchEntityId;
++  const branchResult = await execute(midpoint.app, { id: 'sketch.line', payload: {
++    sketchId: midpoint.sketchId, from: [11, 1], to: [11, 9],
++    creationIntent: { start: { kind: 'midpoint', entityId: baseId }, orientation: 'vertical', length: 10 },
++  } });
++  const branchId = branchResult.createdIds?.[0] as CadSketchEntityId;
++  pointClose(solvedLine(midpoint.app, midpoint.sketchId, branchId).data.from, [10, 0]);
++  const baseLength = part(midpoint.app).dimensions.find((item) => item.type === 'linear' && item.entityIds[0] === baseId);
++  assert.ok(baseLength);
++  await execute(midpoint.app, { id: 'part.dimension.setValue', payload: { dimensionId: baseLength.id, value: 40 } });
++  pointClose(solvedLine(midpoint.app, midpoint.sketchId, branchId).data.from, [20, 0]);
++  assert.equal(part(midpoint.app).sketches[0].entities.length, 2, 'Midpoint uses native solver relation');
++
++  const ring = await scene();
++  const corners = [[0, 0], [40, 0], [40, 30], [0, 30], [0, 0]] as const;
++  const ringIds: CadSketchEntityId[] = [];
++  for (let index = 0; index < 4; index++) {
++    const result = await execute(ring.app, { id: 'sketch.line', payload: {
++      sketchId: ring.sketchId, from: corners[index], to: corners[index + 1],
++      creationIntent: {
++        start: index === 0 ? { kind: 'origin' }
++          : { kind: 'endpoint', reference: { entityId: ringIds[index - 1], point: 'b' } },
++        end: index === 3 ? { kind: 'endpoint', reference: { entityId: ringIds[0], point: 'a' } } : undefined,
++        orientation: index % 2 === 0 ? 'horizontal' : 'vertical',
++        length: index === 0 ? 40 : index === 1 ? 30 : undefined,
++      },
++    } });
++    ringIds.push(result.createdIds?.[0] as CadSketchEntityId);
++  }
++  const ringSolved = solved(ring.app, ring.sketchId);
++  assert.equal(ringSolved.entities.length, 4);
++  assert.equal(part(ring.app).constraints.filter((item) => item.type === 'coincident').length, 4);
++  for (let index = 0; index < 4; index++) {
++    const edge = solvedLine(ring.app, ring.sketchId, ringIds[index]);
++    pointClose(edge.data.from, corners[index]); pointClose(edge.data.to, corners[index + 1]);
++  }
++
++  for (const clockwise of [false, true]) {
++    const tangent = await scene();
++    const base = await execute(tangent.app, { id: 'sketch.line', payload: {
++      sketchId: tangent.sketchId, from: [0, 0], to: [20, 0],
++      creationIntent: { start: { kind: 'origin' }, orientation: 'horizontal', length: 20 },
++    } });
++    const tangentLineId = base.createdIds?.[0] as CadSketchEntityId;
++    const cy = clockwise ? -5 : 5;
++    const beforeArc = serializeCadDocument(tangent.app.getDocument());
++    const arcResult = await execute(tangent.app, { id: 'sketch.arc', payload: {
++      sketchId: tangent.sketchId, center: [20, cy], start: [20, 0], end: [25, cy], clockwise,
++      creationIntent: {
++        start: { kind: 'endpoint', reference: { entityId: tangentLineId, point: 'b' } },
++        tangentAtStart: true, radius: 5,
++      },
++    } });
++    const arcId = arcResult.createdIds?.[0] as CadSketchEntityId;
++    const arc = solved(tangent.app, tangent.sketchId).entities.find((item) => item.id === arcId);
++    if (arc?.type !== 'arc') throw new Error('Expected tangent Arc');
++    const angle = clockwise ? arc.data.endAngle : arc.data.startAngle;
++    const connection = [
++      arc.data.center[0] + arc.data.radius * Math.cos(angle),
++      arc.data.center[1] + arc.data.radius * Math.sin(angle),
++    ];
++    pointClose(connection, [20, 0]);
++    close(arc.data.radius, 5);
++    close(arc.data.center[0] - connection[0], 0);
++    const coincidence = part(tangent.app).constraints.find((item) => item.type === 'coincident'
++      && item.entityIds.includes(arcId));
++    assert.ok(coincidence?.type === 'coincident');
++    assert.equal(coincidence.data.refs.find((ref) => ref.entityId === arcId)?.point, clockwise ? 'b' : 'a');
++    const afterArc = serializeCadDocument(tangent.app.getDocument());
++    await tangent.app.undo();
++    assert.equal(serializeCadDocument(tangent.app.getDocument()), beforeArc);
++    await tangent.app.redo();
++    assert.equal(serializeCadDocument(tangent.app.getDocument()), afterArc);
++    assert.equal(solver.solve(parseCadDocument(afterArc), tangent.sketchId).ok, true);
++  }
++
++  console.log('Creation intent contract PASS: atomic history, origin, midpoint, direction, closure, tangent Arc, persistence');
++} finally {
++  for (const app of apps) app.dispose();
++  solver.dispose();
++}
+diff --git a/tests/m3/sketch-angular-sense.ts b/tests/m3/sketch-angular-sense.ts
+new file mode 100644
+--- /dev/null
++++ b/tests/m3/sketch-angular-sense.ts
+@@ -0,0 +1,182 @@
++import assert from 'node:assert/strict';
++import {
++  CadApplicationImpl, PlaneGCSSketchSolverRuntime, createEmptyCadDocument,
++  migrateCadDocument, parseCadDocument, serializeCadDocument,
++  type CadAngularSense, type CadDimensionId, type CadPartDocument, type CadPoint2,
++  type CadRuntimeAdapter, type CadRuntimeRecomputeResult, type CadSketchEntityId, type CadSketchId,
++} from '../../src';
++import type { CadCommand } from '../../src/contracts/commands';
++
++class NoopSolidRuntime implements CadRuntimeAdapter {
++  async recompute(): Promise<CadRuntimeRecomputeResult> { return { ok: true, diagnostics: [] }; }
++  async captureReference(): Promise<never> { throw new Error('No B-Rep reference in this solver contract test'); }
++  dispose(): void {}
++}
++const solver = new PlaneGCSSketchSolverRuntime();
++await solver.init();
++const apps: CadApplicationImpl[] = [];
++const near = (actual: number, expected: number) => {
++  assert.ok(Math.abs(actual - expected) < 1e-5, String(actual) + ' != ' + String(expected));
++};
++const pointNear = (actual: CadPoint2, expected: CadPoint2) => {
++  near(actual[0], expected[0]); near(actual[1], expected[1]);
++};
++const part = (app: CadApplicationImpl): Readonly<CadPartDocument> => {
++  const document = app.getDocument();
++  if (document.kind !== 'part') throw new Error('Expected Part');
++  return document;
++};
++async function execute(app: CadApplicationImpl, command: CadCommand) {
++  const result = await app.execute(command);
++  assert.equal(result.ok, true, result.error?.message);
++  return result;
++}
++function angular(app: CadApplicationImpl, id: CadDimensionId) {
++  const dimension = part(app).dimensions.find((item) => item.id === id);
++  if (dimension?.type !== 'angular') throw new Error('Expected angular dimension');
++  return dimension;
++}
++
++try {
++  let caseCount = 0;
++  for (const bearing of [0, 35]) for (const value of [30, 120]) {
++    for (const reference of ['forward', 'interior'] as const) for (const branch of ['counterclockwise', 'clockwise'] as const) {
++      const app = new CadApplicationImpl(createEmptyCadDocument('part'), new NoopSolidRuntime());
++      apps.push(app);
++      const created = await execute(app, { id: 'sketch.create', payload: { support: 'XY' } });
++      const sketchId = created.createdIds?.[0] as CadSketchId;
++      const radians = bearing * Math.PI / 180;
++      const end: CadPoint2 = [20 * Math.cos(radians), 20 * Math.sin(radians)];
++      const previous = await execute(app, { id: 'sketch.line', payload: { sketchId, from: [0, 0], to: end } });
++      const previousId = previous.createdIds?.[0] as CadSketchEntityId;
++      await execute(app, { id: 'constraint.fixed', payload: { sketchId, entityId: previousId } });
++      const sense: CadAngularSense = { reference, branch };
++      const sign = branch === 'counterclockwise' ? 1 : -1;
++      const forwardValue = (selectedValue: number) => reference === 'interior' ? 180 - selectedValue : selectedValue;
++      const expectedEnd = (selectedValue: number): CadPoint2 => {
++        const theta = (bearing + sign * forwardValue(selectedValue)) * Math.PI / 180;
++        return [end[0] + 30 * Math.cos(theta), end[1] + 30 * Math.sin(theta)];
++      };
++      const before = serializeCadDocument(app.getDocument());
++      const result = await execute(app, { id: 'sketch.line', payload: {
++        sketchId, from: end, to: expectedEnd(value),
++        creationIntent: {
++          start: { kind: 'endpoint', reference: { entityId: previousId, point: 'b' } },
++          length: 30, angle: { referenceEntityId: previousId, value, angleSense: sense },
++        },
++      } });
++      const nextId = result.createdIds?.[0] as CadSketchEntityId;
++      const angleId = result.createdIds?.[3] as CadDimensionId;
++      assert.equal(result.createdIds?.length, 4, 'One Line, Coincident, length, semantic angle in one command');
++      assert.equal(part(app).sketches[0].entities.length, 2, 'No hidden axis or duplicate model');
++      assert.deepEqual(angular(app, angleId).entityIds, [previousId, nextId], 'Persistence keeps semantic ref order on both branches');
++      assert.deepEqual(angular(app, angleId).angleSense, sense);
++      assert.equal(angular(app, angleId).value, value, 'Display/edit value is the selected measure, never silently complemented');
++
++      const verify = (document: Readonly<CadPartDocument>, alpha: number) => {
++        const solved = solver.solve(document, sketchId);
++        assert.equal(solved.ok, true, JSON.stringify(solved.diagnostics));
++        assert.equal(solved.diagnostics.some((item) => item.severity === 'error'), false);
++        const a = solved.entities.find((item) => item.id === previousId);
++        const b = solved.entities.find((item) => item.id === nextId);
++        if (a?.type !== 'line' || b?.type !== 'line') throw new Error('Expected two real solved Lines');
++        pointNear(a.data.from, [0, 0]); pointNear(a.data.to, end);
++        pointNear(b.data.from, a.data.to); pointNear(b.data.to, expectedEnd(alpha));
++        const ax = a.data.to[0] - a.data.from[0], ay = a.data.to[1] - a.data.from[1];
++        const bx = b.data.to[0] - b.data.from[0], by = b.data.to[1] - b.data.from[1];
++        const turn = Math.atan2(ax * by - ay * bx, ax * bx + ay * by) * 180 / Math.PI;
++        near(turn, sign * forwardValue(alpha));
++        near(180 - Math.abs(turn), reference === 'interior' ? alpha : 180 - alpha);
++      };
++      verify(part(app), value);
++      const complete = serializeCadDocument(app.getDocument());
++      await app.undo();
++      assert.equal(serializeCadDocument(app.getDocument()), before, 'One Undo removes the segment and all three relations');
++      await app.redo();
++      assert.equal(serializeCadDocument(app.getDocument()), complete, 'Redo restores IDs and the angle semantic selector');
++      verify(part(app), value);
++
++      const editedValue = value + 15;
++      await execute(app, { id: 'part.dimension.setValue', payload: { dimensionId: angleId, value: editedValue } });
++      assert.equal(angular(app, angleId).value, editedValue);
++      assert.deepEqual(angular(app, angleId).angleSense, sense, 'Editing native alpha preserves the selected turn branch');
++      verify(part(app), editedValue);
++      const serialized = serializeCadDocument(app.getDocument());
++      const reopened = parseCadDocument(serialized);
++      assert.equal(serializeCadDocument(reopened), serialized, 'Save/Open preserves alpha, selector, semantic ref order and IDs');
++      if (reopened.kind !== 'part') throw new Error('Expected reopened Part');
++      verify(reopened, editedValue);
++      await app.undo();
++      assert.equal(angular(app, angleId).value, value);
++      verify(part(app), value);
++      await app.redo();
++      assert.equal(serializeCadDocument(app.getDocument()), serialized);
++
++      const beforeRejected = serializeCadDocument(app.getDocument());
++      const invalidSense = { reference: 'interior', branch: 'sideways' } as unknown as CadAngularSense;
++      const invalidCommand = await app.execute({ id: 'dimension.angular', payload: {
++        sketchId, aEntityId: previousId, bEntityId: nextId, value, angleSense: invalidSense,
++      } });
++      assert.equal(invalidCommand.ok, false);
++      assert.equal(serializeCadDocument(app.getDocument()), beforeRejected);
++      const invalidCreation = await app.execute({ id: 'sketch.line', payload: {
++        sketchId, from: end, to: expectedEnd(value),
++        creationIntent: { angle: { referenceEntityId: previousId, value, angleSense: sense } },
++      } });
++      assert.equal(invalidCreation.ok, false, 'Relative creation requires the matching previous.b start intent');
++      assert.equal(serializeCadDocument(app.getDocument()), beforeRejected, 'Rejected angle intent leaves no orphan segment');
++
++      const conflictingCreation = await app.execute({ id: 'sketch.line', payload: {
++        sketchId, from: end, to: expectedEnd(value), creationIntent: {
++          start: { kind: 'endpoint', reference: { entityId: previousId, point: 'b' } },
++          orientation: 'horizontal', angle: { referenceEntityId: previousId, value, angleSense: sense },
++        },
++      } });
++      assert.equal(conflictingCreation.ok, false, 'Creation cannot combine inferred orientation and a driving relative angle');
++      assert.equal(serializeCadDocument(app.getDocument()), beforeRejected);
++
++      const malformed = JSON.parse(serialized);
++      malformed.dimensions.find((item: { id: string }) => item.id === angleId).angleSense.branch = 'sideways';
++      assert.throws(() => parseCadDocument(malformed), /angleSense.branch/);
++      const missingBranch = JSON.parse(serialized);
++      delete missingBranch.dimensions.find((item: { id: string }) => item.id === angleId).angleSense.branch;
++      assert.throws(() => parseCadDocument(missingBranch), /angleSense.branch/);
++      const invalidReference = JSON.parse(serialized);
++      invalidReference.dimensions.find((item: { id: string }) => item.id === angleId).angleSense.reference = 'axis';
++      assert.throws(() => parseCadDocument(invalidReference), /angleSense.reference/);
++      for (const schemaVersion of [1, 2, 3]) {
++        const oldGrammar = JSON.parse(serialized);
++        oldGrammar.schemaVersion = schemaVersion;
++        oldGrammar.dimensions[0].angleSense = sense;
++        assert.throws(() => migrateCadDocument(oldGrammar), /angleSense is unsupported/, 'Old grammar cannot smuggle semantic angle fields');
++      }
++      const misplaced = JSON.parse(serialized);
++      misplaced.dimensions[0].angleSense = sense;
++      assert.throws(() => parseCadDocument(misplaced), /angleSense is only valid on angular/);
++
++      const legacy = JSON.parse(serialized);
++      legacy.schemaVersion = 3;
++      const legacyAngle = legacy.dimensions.find((item: { id: string }) => item.id === angleId);
++      delete legacyAngle.angleSense; legacyAngle.value = 60;
++      const migrated = migrateCadDocument(legacy);
++      if (migrated.kind !== 'part') throw new Error('Expected migrated Part');
++      const preserved = migrated.dimensions.find((item) => item.id === angleId);
++      assert.ok(preserved?.type === 'angular');
++      if (preserved?.type !== 'angular') throw new Error('Expected migrated legacy angular dimension');
++      assert.equal(preserved.value, 60, 'Migration never silently changes old forward 60 into native interior 120');
++      assert.equal(preserved.angleSense, undefined);
++      assert.deepEqual(preserved.entityIds, [previousId, nextId]);
++      const legacySolve = solver.solve(migrated, sketchId);
++      assert.equal(legacySolve.ok, true);
++      const legacyLine = legacySolve.entities.find((item) => item.id === nextId);
++      if (legacyLine?.type !== 'line') throw new Error('Expected legacy solved Line');
++      const legacyDirection = (bearing + 60) * Math.PI / 180;
++      pointNear(legacyLine.data.to, [end[0] + 30 * Math.cos(legacyDirection), end[1] + 30 * Math.sin(legacyDirection)]);
++      caseCount += 1;
++    }
++  }
++  console.log('Angular sense contract PASS: ' + caseCount + ' real-solver cases, native alpha, both branches, atomic history, edit, migration and Save/Open');
++} finally {
++  for (const app of apps) app.dispose();
++  solver.dispose();
++}
