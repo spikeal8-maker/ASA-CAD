@@ -1,0 +1,86 @@
+{
+  "state": "new Part, light theme, UI Scale 100%, initial tree/camera",
+  "browser": "148.0.7778.96",
+  "images": [
+    {
+      "side": "before",
+      "url": "http://127.0.0.1:8092",
+      "sha": "d9484da144d2dddfc71bc32e35173683832a5400",
+      "width": 360,
+      "height": 640,
+      "deviceScaleFactor": 1,
+      "file": "before/kompas-360x640.png",
+      "sha256": "b13d0f41b11db6831e8f484c29f961e15fcbb9914b34f649de8b9188c55391eb"
+    },
+    {
+      "side": "before",
+      "url": "http://127.0.0.1:8092",
+      "sha": "d9484da144d2dddfc71bc32e35173683832a5400",
+      "width": 768,
+      "height": 1024,
+      "deviceScaleFactor": 1,
+      "file": "before/kompas-768x1024.png",
+      "sha256": "faf053742a7e95f4fbd5e3b431666040899dec3c3abd4aa5e2e0a114187881be"
+    },
+    {
+      "side": "before",
+      "url": "http://127.0.0.1:8092",
+      "sha": "d9484da144d2dddfc71bc32e35173683832a5400",
+      "width": 844,
+      "height": 390,
+      "deviceScaleFactor": 1,
+      "file": "before/kompas-844x390.png",
+      "sha256": "b4d642e371ce5b08cc1a472e30c3ede111761bf8106196b1d0f680fd4b8e9fe7"
+    },
+    {
+      "side": "before",
+      "url": "http://127.0.0.1:8092",
+      "sha": "d9484da144d2dddfc71bc32e35173683832a5400",
+      "width": 1600,
+      "height": 900,
+      "deviceScaleFactor": 1,
+      "file": "before/kompas-1600x900.png",
+      "sha256": "05d016041115bce0f5f2cc036e139831e0991ff37f873ef2f5d9bc6d8ae8e1c2"
+    },
+    {
+      "side": "after",
+      "url": "http://127.0.0.1:8088",
+      "sha": "490b5b18219698f02034b0d7fc90d97ecc4f0b12",
+      "width": 360,
+      "height": 640,
+      "deviceScaleFactor": 1,
+      "file": "after/kompas-360x640.png",
+      "sha256": "b13d0f41b11db6831e8f484c29f961e15fcbb9914b34f649de8b9188c55391eb"
+    },
+    {
+      "side": "after",
+      "url": "http://127.0.0.1:8088",
+      "sha": "490b5b18219698f02034b0d7fc90d97ecc4f0b12",
+      "width": 768,
+      "height": 1024,
+      "deviceScaleFactor": 1,
+      "file": "after/kompas-768x1024.png",
+      "sha256": "faf053742a7e95f4fbd5e3b431666040899dec3c3abd4aa5e2e0a114187881be"
+    },
+    {
+      "side": "after",
+      "url": "http://127.0.0.1:8088",
+      "sha": "490b5b18219698f02034b0d7fc90d97ecc4f0b12",
+      "width": 844,
+      "height": 390,
+      "deviceScaleFactor": 1,
+      "file": "after/kompas-844x390.png",
+      "sha256": "b4d642e371ce5b08cc1a472e30c3ede111761bf8106196b1d0f680fd4b8e9fe7"
+    },
+    {
+      "side": "after",
+      "url": "http://127.0.0.1:8088",
+      "sha": "490b5b18219698f02034b0d7fc90d97ecc4f0b12",
+      "width": 1600,
+      "height": 900,
+      "deviceScaleFactor": 1,
+      "file": "after/kompas-1600x900.png",
+      "sha256": "05d016041115bce0f5f2cc036e139831e0991ff37f873ef2f5d9bc6d8ae8e1c2"
+    }
+  ]
+}

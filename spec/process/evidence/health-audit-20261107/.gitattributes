@@ -1,0 +1,4 @@
+# Preserve immutable audit evidence and harness bytes across checkouts.
+** -text
+# The captured npm audit uses CRLF; CR remains part of its line ending.
+measurement/dependency-audit-input.json whitespace=cr-at-eol
