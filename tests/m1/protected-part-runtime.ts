@@ -174,3 +174,6 @@ console.log('  ✓ serialized ASA CadDocument reopens and recomputes identical B
 
 reopenedApp.dispose();
 console.log('  ✓ M1 protected Part runtime vertical slice PASS\n');
+
+const { runRuntimeAsyncRegression } = await import('./runtime-async');
+await runRuntimeAsyncRegression(oc);

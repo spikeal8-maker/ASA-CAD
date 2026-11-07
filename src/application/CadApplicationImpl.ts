@@ -22,7 +22,8 @@ import type {
   CadStableReferenceId,
 } from '../contracts/ids';
 import { createCadId } from '../contracts/ids';
-import type { CadReferenceCaptureRequest, CadRuntimeAdapter } from '../contracts/runtime';
+import type { CadReferenceCaptureRequest, CadRuntimeAdapter, CadRuntimeRequest } from '../contracts/runtime';
+import { errorResult, recomputeOutcome, recomputeFailure, supersededResult } from './CadCommandOutcome';
 import {
   applySketchGrowthCommand,
   getSketchGrowthCommandAvailability,
@@ -34,17 +35,6 @@ function cloneDocument<T extends CadDocument>(document: T): T {
   return structuredClone(document);
 }
 
-function errorResult(error: unknown): CadCommandResult {
-  return {
-    ok: false,
-    changed: false,
-    error: {
-      code: 'CAD_COMMAND_FAILED',
-      message: error instanceof Error ? error.message : String(error),
-    },
-  };
-}
-
 export class CadApplicationImpl implements CadApplication {
   private document: CadDocument;
   private readonly runtime: CadRuntimeAdapter;
@@ -52,6 +42,8 @@ export class CadApplicationImpl implements CadApplication {
   private undoStack: CadDocument[] = [];
   private redoStack: CadDocument[] = [];
   private disposed = false;
+  private documentGeneration = 0;
+  private rebuildRequest = 0;
   private state: CadApplicationState;
 
   constructor(document: CadDocument, runtime: CadRuntimeAdapter) {
@@ -124,11 +116,13 @@ export class CadApplicationImpl implements CadApplication {
     try {
       const result = this.applyDocumentCommand(command);
       if (result.changed) {
+        this.documentGeneration++;
         this.undoStack.push(before);
         this.redoStack = [];
         this.state = {
           ...this.state,
           dirty: true,
+          mode: 'idle',
           recompute: { status: 'dirty' },
           canUndo: this.undoStack.length > 0,
           canRedo: false,
@@ -144,16 +138,22 @@ export class CadApplicationImpl implements CadApplication {
 
   async captureReference(request: CadReferenceCaptureRequest): Promise<CadStableReferenceId> {
     this.assertAlive();
-    const part = this.requirePart();
+    this.requirePart();
+    const ownership = this.documentRequest();
+    const input = structuredClone(request);
 
-    if (this.state.recompute.status === 'dirty' || this.state.recompute.status === 'error') {
+    if (this.state.recompute.status !== 'clean' && this.state.recompute.status !== 'warning') {
       const rebuild = await this.recompute();
+      this.assertCurrent(ownership);
       if (!rebuild.ok) {
         throw new Error(rebuild.error?.message ?? 'Cannot capture reference from an invalid model');
       }
     }
 
-    const captured = await this.runtime.captureReference(this.document, request);
+    this.assertCurrent(ownership);
+    const captured = await this.runtime.captureReference(this.document, input, ownership);
+    this.assertCurrent(ownership);
+    const part = this.requirePart();
     const before = cloneDocument(this.document);
     const id = createCadId<CadStableReferenceId>('ref');
     const reference: CadStableReference = {
@@ -163,6 +163,7 @@ export class CadApplicationImpl implements CadApplication {
       locator: structuredClone(captured.locator),
     };
     part.stableReferences.push(reference);
+    this.documentGeneration++;
     this.undoStack.push(before);
     this.redoStack = [];
     this.state = {
@@ -181,6 +182,7 @@ export class CadApplicationImpl implements CadApplication {
     if (!previous) return { ok: true, changed: false };
 
     this.redoStack.push(cloneDocument(this.document));
+    this.documentGeneration++;
     this.document = cloneDocument(previous);
     this.state = {
       ...this.state,
@@ -201,6 +203,7 @@ export class CadApplicationImpl implements CadApplication {
     if (!next) return { ok: true, changed: false };
 
     this.undoStack.push(cloneDocument(this.document));
+    this.documentGeneration++;
     this.document = cloneDocument(next);
     this.state = {
       ...this.state,
@@ -217,6 +220,7 @@ export class CadApplicationImpl implements CadApplication {
 
   async replaceDocument(document: CadDocument): Promise<void> {
     this.assertAlive();
+    this.documentGeneration++;
     this.document = cloneDocument(document);
     this.undoStack = [];
     this.redoStack = [];
@@ -242,6 +246,7 @@ export class CadApplicationImpl implements CadApplication {
   dispose(): void {
     if (this.disposed) return;
     this.disposed = true;
+    this.documentGeneration++;
     this.listeners.clear();
     this.undoStack = [];
     this.redoStack = [];
@@ -322,47 +327,40 @@ export class CadApplicationImpl implements CadApplication {
   }
 
   private async recompute(): Promise<CadCommandResult> {
+    const document = this.document;
+    const current = this.documentRequest();
+    const requestId = ++this.rebuildRequest;
+    const ownership = { isCurrent: () => current.isCurrent() && requestId === this.rebuildRequest };
     this.state = { ...this.state, mode: 'rebuilding', recompute: { status: 'running' } };
     this.emit();
     try {
-      const result = await this.runtime.recompute(this.document);
-      const firstError = result.diagnostics.find((item) => item.severity === 'error');
-      const firstWarning = result.diagnostics.find((item) => item.severity === 'warning');
-      this.state = {
-        ...this.state,
-        mode: result.ok ? 'idle' : 'error',
-        recompute: result.ok
-          ? firstWarning
-            ? { status: 'warning', message: firstWarning.message }
-            : { status: 'clean' }
-          : { status: 'error', message: firstError?.message ?? 'Recompute failed' },
-      };
+      this.assertCurrent(ownership);
+      const result = await this.runtime.recompute(document, ownership);
+      if (!ownership.isCurrent()) return supersededResult();
+      const outcome = recomputeOutcome(result);
+      this.state = { ...this.state, ...outcome.state };
       this.emit();
-      return result.ok
-        ? {
-            ok: true,
-            changed: false,
-            warnings: result.diagnostics
-              .filter((item) => item.severity === 'warning')
-              .map((item) => item.message),
-          }
-        : {
-            ok: false,
-            changed: false,
-            error: {
-              code: firstError?.code ?? 'CAD_RECOMPUTE_FAILED',
-              message: firstError?.message ?? 'Recompute failed',
-            },
-          };
+      return outcome.command;
     } catch (error) {
-      this.state = {
-        ...this.state,
-        mode: 'error',
-        recompute: { status: 'error', message: error instanceof Error ? error.message : String(error) },
-      };
+      if (!ownership.isCurrent()) return supersededResult();
+      const outcome = recomputeFailure(error);
+      this.state = { ...this.state, ...outcome.state };
       this.emit();
-      return errorResult(error);
+      return outcome.command;
     }
+  }
+
+  private documentRequest(): CadRuntimeRequest {
+    const generation = this.documentGeneration;
+    const documentId = this.document.documentId;
+    return {
+      isCurrent: () => !this.disposed && generation === this.documentGeneration
+        && documentId === this.document.documentId,
+    };
+  }
+
+  private assertCurrent(request: CadRuntimeRequest): void {
+    if (!request.isCurrent()) throw new Error(supersededResult().error!.message);
   }
 
   private requirePart(): CadPartDocument {

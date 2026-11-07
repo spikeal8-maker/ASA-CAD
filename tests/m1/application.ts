@@ -161,3 +161,5 @@ await assert.rejects(
 );
 
 console.log('ASA-CAD M1 CadApplication behavior PASS');
+
+await import('./application-async');
