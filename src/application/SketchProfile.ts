@@ -5,10 +5,10 @@ import type { CadSketchEntityId } from '../contracts/ids';
  * Feature profile from Sketch geometry: one outer closed contour plus optional
  * holes, built from Lines, Arcs and Circles. Construction Lines are ignored.
  *
- * The B-Rep runtime calls this on solver output; the UI calls the same
- * function on the persisted Sketch to decide whether a feature can start.
- * One analysis, one set of reasons — the UI never offers what the kernel
- * rejects.
+ * The B-Rep runtime and feature UI analyze solved Sketch geometry with the
+ * same function. An empty Sketch can be rejected without initializing a solver.
+ * One analysis and one set of reasons keep feature admission and the kernel
+ * aligned.
  */
 
 const TOLERANCE = 1e-5;
