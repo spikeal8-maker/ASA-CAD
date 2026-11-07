@@ -53,7 +53,7 @@
   "bindingSourceSha256": "52152eb5e8400a30cc0126a1749fc6dbb7c7d667f4cbd24600c6d40a2040cdb5",
   "referenceCaptureSha256": "18be2710ecd716650df37cf1ecff3ff14ff783ddadbdc5d08c438d8de00a9434",
   "input": "Empty public Fusion route; pointer-built geometry; ribbon/search actions; read-only persisted-document assertions",
-  "origin": "http://127.0.0.1:63915",
+  "origin": "http://127.0.0.1:60913",
   "viewport": {
     "width": 2048,
     "height": 1137,
@@ -76,10 +76,10 @@
       "cancelWithoutMutation": true,
       "solverResidual": 0,
       "entityIds": [
-        "entity_fa4fec77-3e07-4f7a-89e7-3cbe98aec012",
-        "entity_07be279a-2855-4087-846e-cfa66fd91982"
+        "entity_5241339d-60bc-47c9-ac2f-f521aee633ca",
+        "entity_b4b24ffd-915d-4d1f-bc5f-7d9de4fc6655"
       ],
-      "constraintId": "constraint_4084c937-ac64-4a6d-8fcc-98ce3cdd92bd",
+      "constraintId": "constraint_219b1cce-e1e0-4ed4-a8e3-f77829373bc5",
       "pageErrors": []
     },
     {
@@ -95,10 +95,10 @@
       "cancelWithoutMutation": true,
       "solverResidual": 4.1104897263721796e-12,
       "entityIds": [
-        "entity_30e7ccdc-5dde-42fc-9cff-3962c0b02dc4",
-        "entity_a223ea86-7459-4f96-8da0-9a7370739451"
+        "entity_9c8eab78-08e0-447c-8fe8-1f976a1fe034",
+        "entity_a83067c6-23ca-466a-92ff-e1ae0a35af04"
       ],
-      "constraintId": "constraint_4540da3f-c6f8-4964-8514-72bcbc886274",
+      "constraintId": "constraint_b700da16-1a5c-4c42-9366-a605b2f01530",
       "pageErrors": []
     },
     {
@@ -114,10 +114,10 @@
       "cancelWithoutMutation": true,
       "solverResidual": 4.511946372076636e-13,
       "entityIds": [
-        "entity_f8894d51-d14b-4424-832a-29cdee3390fe",
-        "entity_a3e3d541-f057-420d-907f-247e7b99a401"
+        "entity_101a788a-732e-410f-864e-b7c9a57a875f",
+        "entity_51ba6d65-0a6a-4751-b255-0d76399ce0ea"
       ],
-      "constraintId": "constraint_f04669cd-2357-4635-ab86-16b5d6dc2459",
+      "constraintId": "constraint_513bfdb2-101f-46ec-bc61-b023b3902fe9",
       "pageErrors": []
     },
     {
@@ -133,10 +133,10 @@
       "cancelWithoutMutation": true,
       "solverResidual": 7.1035356242123e-14,
       "entityIds": [
-        "entity_eb0f5fed-c760-4086-b425-d0de8775f6c7",
-        "entity_cd33da9b-e320-4a28-ba06-fe2ebea7d6d2"
+        "entity_4f37e5b2-3a45-4217-a3a8-aaf55e4ac567",
+        "entity_17177f09-205a-4aea-9d6e-74248503c31d"
       ],
-      "constraintId": "constraint_a12c710b-5af3-4db2-bd15-759b342a489e",
+      "constraintId": "constraint_610dd505-3d52-4ef2-a914-a01df5ad3f5a",
       "pageErrors": []
     },
     {
@@ -152,10 +152,10 @@
       "cancelWithoutMutation": true,
       "solverResidual": 3.080801819623431e-12,
       "entityIds": [
-        "entity_1258fdff-ed33-48ab-b640-6b453c5bf79e",
-        "entity_2fa7dcfd-5bbd-4949-bc3e-0c3e7a653241"
+        "entity_7ef961ed-3c86-4032-86db-2cef093ba603",
+        "entity_27d24f7b-b404-4b14-aa27-f8c1171089cf"
       ],
-      "constraintId": "constraint_ce9a0eac-dee1-4443-9256-9e4dd92bed7f",
+      "constraintId": "constraint_8909e6c5-0d2e-4490-91e2-ac174784097c",
       "pageErrors": []
     },
     {
@@ -171,10 +171,10 @@
       "cancelWithoutMutation": true,
       "solverResidual": 0,
       "entityIds": [
-        "entity_f76f40a5-e517-4182-ab2e-18271fb8b1de",
-        "entity_be47e3af-34cc-47e4-b530-03aaeb1a130c"
+        "entity_fec23582-86da-4c5e-9dc2-1eb1e2d6dd9a",
+        "entity_526888bb-1f4a-49ed-b139-6a89c14cc798"
       ],
-      "constraintId": "constraint_5865fa45-dec6-445e-89b2-d963d5920569",
+      "constraintId": "constraint_ffb9f492-8b36-4e71-a54c-8c6a7811fa59",
       "pageErrors": []
     },
     {
@@ -190,11 +190,11 @@
       "cancelWithoutMutation": true,
       "solverResidual": 5.327062245741e-11,
       "entityIds": [
-        "entity_2d8342c3-fd41-4b92-b1af-762a72b7086c",
-        "entity_9edcd510-afaf-4585-ad3d-2f94693dcebb",
-        "entity_de047556-4ba1-42e4-a7a0-d4897d0ad8b8"
+        "entity_4904b368-05c2-47bf-a88b-9bfa4750e8ac",
+        "entity_44e52253-131e-4d6a-aa34-90a3c561c388",
+        "entity_3edf5af0-fdf7-4124-bc25-5c046f138146"
       ],
-      "constraintId": "constraint_a330bfc4-8c1c-4b97-b459-f6bb6f462bdb",
+      "constraintId": "constraint_8d3f24d6-8b48-4fd3-9219-6cf254fcf92d",
       "pageErrors": []
     },
     {
@@ -210,10 +210,10 @@
       "cancelWithoutMutation": true,
       "solverResidual": 5.21646588520831e-15,
       "entityIds": [
-        "entity_161fb7b2-524c-471b-9cad-ad63b1f6c2f0",
-        "entity_bd9b9951-0bd1-405b-94d1-a6dee1d88c29"
+        "entity_d80b3b71-3f92-40ef-8fc0-278904bd100a",
+        "entity_6444ad1f-2f4b-4385-a79c-715ca618ba28"
       ],
-      "constraintId": "constraint_dbfa6fe9-e481-40e7-bbcf-a199f76d83e8",
+      "constraintId": "constraint_d5d00924-59bf-47f0-8c65-1ac74a3a5cee",
       "pageErrors": []
     },
     {
@@ -230,9 +230,9 @@
       "rejectsDrag": true,
       "duplicateDisabled": true,
       "entityIds": [
-        "entity_9b2524b4-4843-4d0e-8636-434f7d61077f"
+        "entity_fc6cbfe9-a727-4b35-8137-d22291458311"
       ],
-      "constraintId": "constraint_35a0ffa5-b5cb-473d-8831-1b8e536fe6cc",
+      "constraintId": "constraint_96063ce2-aa40-4425-9dbf-0cfa4fb73e0a",
       "pageErrors": []
     },
     {
@@ -247,9 +247,9 @@
       "invalidValueRejected": true,
       "cancelWithoutMutation": true,
       "entityIds": [
-        "entity_414f6f15-97ae-411d-aabb-06a9e2cf8601"
+        "entity_8b38ac50-5c29-46fb-9fdc-0f3941d7be64"
       ],
-      "dimensionId": "dimension_a92eed7c-32b4-4343-b0a7-888ccc22be73",
+      "dimensionId": "dimension_d7eaab5c-3248-4375-87b6-f32ce8474109",
       "initial": 20.000001290383864,
       "value": 32,
       "editedValue": 38,
@@ -269,9 +269,9 @@
       "invalidValueRejected": true,
       "cancelWithoutMutation": true,
       "entityIds": [
-        "entity_1483f17e-aeb6-4c04-b8a2-7d6d08ccf96e"
+        "entity_c47d37de-e0d1-4b75-aa12-035ed7a33eda"
       ],
-      "dimensionId": "dimension_f792f7b2-981c-4cb6-ac07-f7939577ab36",
+      "dimensionId": "dimension_313acbbc-dd37-4149-b89e-83405e551b04",
       "initial": 5.000001935575774,
       "value": 24,
       "editedValue": 30,
@@ -291,9 +291,9 @@
       "invalidValueRejected": true,
       "cancelWithoutMutation": true,
       "entityIds": [
-        "entity_1afa175a-c8a8-466b-81c3-0e9325551251"
+        "entity_4d0a0964-440d-47d3-ba69-f2cff1f8aafd"
       ],
-      "dimensionId": "dimension_a3d5df31-7d06-47b8-a9ee-7ef1e493b534",
+      "dimensionId": "dimension_c3405d75-5561-404a-9d65-d4a539bfd363",
       "initial": 8.000005677688947,
       "value": 12,
       "editedValue": 15,
@@ -313,10 +313,10 @@
       "invalidValueRejected": true,
       "cancelWithoutMutation": true,
       "entityIds": [
-        "entity_2eed11a2-6026-4773-a545-0e2d03e02abe",
-        "entity_defc8932-3bea-4cd7-b8fa-9d1bfc7ee950"
+        "entity_e30274e0-3bdb-4ddc-bdcc-aff180de9123",
+        "entity_4c64007c-efa5-4bd2-b86e-5603843973c6"
       ],
-      "dimensionId": "dimension_6ecd7deb-4a0b-417c-a9c2-a4566485035a",
+      "dimensionId": "dimension_d9914ac5-81a8-4fb2-aabc-50a0656f286b",
       "initial": 37.99874822455656,
       "value": 60,
       "editedValue": 45,
@@ -333,8 +333,8 @@
       "undoRedo": true,
       "saveReopen": true,
       "disabledWithoutGeometry": true,
-      "deletedEntityId": "entity_b9845aa3-cefc-46ee-874b-b15a8459a436",
-      "retainedEntityId": "entity_66764775-e513-48f3-9519-3621f4bcdf8c",
+      "deletedEntityId": "entity_4e64f79f-6698-4a90-9f6e-e0322b35323c",
+      "retainedEntityId": "entity_8c45e195-fbe4-4f01-b2e2-59659ff7e86a",
       "dependentConstraintAndDimensionRemoved": true,
       "undoRestoresAllStableIds": true,
       "pageErrors": []
@@ -352,7 +352,7 @@
     },
     {
       "file": "fusion-live-sketch-actions-symmetric.png",
-      "sha256": "00d06f87ed3aa2425d8d60acd3f568e057aa98384f459212ac4ccfacb8426456",
+      "sha256": "c8d286f4ef19485218eb5c45c107a1d53a0c25fd196ac68aa0b7356c69c43d50",
       "viewport": {
         "width": 2048,
         "height": 1137,

@@ -158,7 +158,9 @@ try{
  await page.mouse.move(activePoint.x,activePoint.y);await page.mouse.down({button:'middle'});await page.mouse.move(activePoint.x+30,activePoint.y+20,{steps:3});await page.mouse.up({button:'middle'});
  assert.notDeepEqual((await view()).center,activeBefore.center);await count(6);await page.keyboard.press('Escape');
  await page.getByRole('button',{name:'Главный вид модели',exact:true}).click();
- await click([20,30],{button:'right'});assert.equal(await page.locator('.live-marking[data-marking-level="root"]').count(),1);await screenshot('context-2048');
+ await click([20,30],{button:'right'});
+ await page.locator('.live-marking[data-marking-level="root"]').waitFor({state:'visible',timeout:15000});
+ assert.equal(await page.locator('.live-marking[data-marking-level="root"]').count(),1);await screenshot('context-2048');
  await page.locator('.live-marking [data-marking-slot="4"]').hover();await page.locator('.live-marking[data-marking-level="sketch"]').waitFor();await screenshot('context-sketch-2048');await page.keyboard.press('Escape');
 
  phase='snap-and-undo';
