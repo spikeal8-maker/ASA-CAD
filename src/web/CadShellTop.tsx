@@ -1,9 +1,10 @@
 import React from 'react';
 import type { CadDocumentKind } from '../contracts/document';
 import type { CadUiAction } from './CadUiAction';
+import type { Workspace } from './CadWorkspaceTypes';
 import { KompasTop } from './kompas/KompasTop';
 
-export type CadWorkspaceId = 'solid' | 'sketch' | 'surfaces' | 'diagnostics' | 'view';
+export type CadWorkspaceId = Workspace;
 
 export interface CadShellTopProps {
   documentKind: CadDocumentKind; documentTitle: string; dirty: boolean;

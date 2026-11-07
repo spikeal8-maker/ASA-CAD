@@ -12,7 +12,7 @@ export interface CadShellMainProps {
   selectedBodyName?: string;
   selectedSketchEntityId?: string | null;
   activeCommand?: string | null;
-  commitActiveCommand: () => void | Promise<void>;
+  commitActiveCommand: () => void | Promise<boolean | void>;
   cancelCommand: () => void;
   treeContent: React.ReactNode;
   parametersContent: React.ReactNode;

@@ -14,7 +14,8 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
-    "tests/m2/**/*.ts"
+    "tests/m2/**/*.ts",
+    "tests/m2/**/*.tsx"
   ],
   "exclude": ["vendor/**"]
 }

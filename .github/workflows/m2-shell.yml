@@ -9,11 +9,7 @@ on:
       - .github/workflows/**
       - scripts/**
       - tools/**
-      - src/web/**
-      - src/browser/**
-      - src/runtime/**
-      - src/application/**
-      - src/contracts/**
+      - src/**
       - docs/**
       - spec/process/**
       - spec/ui/command-registry.v1.json
@@ -25,6 +21,10 @@ on:
       - tests/m2o/**
       - tests/m3/**
       - package.json
+      - tsconfig*.json
+      - vendor/toubkal/package.json
+      - vendor/toubkal/package-lock.json
+      - vendor/toubkal/src/**
   pull_request:
     paths:
       - AGENTS.md
@@ -32,11 +32,7 @@ on:
       - .github/workflows/**
       - scripts/**
       - tools/**
-      - src/web/**
-      - src/browser/**
-      - src/runtime/**
-      - src/application/**
-      - src/contracts/**
+      - src/**
       - docs/**
       - spec/process/**
       - spec/ui/command-registry.v1.json
@@ -48,6 +44,10 @@ on:
       - tests/m2o/**
       - tests/m3/**
       - package.json
+      - tsconfig*.json
+      - vendor/toubkal/package.json
+      - vendor/toubkal/package-lock.json
+      - vendor/toubkal/src/**
 
 permissions:
   contents: read
@@ -96,6 +96,9 @@ jobs:
 
       - name: Typecheck ASA M2 presentation boundary
         run: npm run typecheck:asa
+
+      - name: Typecheck full ASA web presentation and UI fixtures
+        run: npm run typecheck:web
 
       - name: Enforce canonical KOMPAS #170 product shell (no Legacy fallback)
         run: node tests/process/canonical-kompas-shell.mjs

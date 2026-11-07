@@ -2,7 +2,7 @@ import { useState, type Dispatch, type SetStateAction } from 'react';
 import type { CadApplication } from '../contracts/application';
 import type { CadDocument, CadSketch } from '../contracts/document';
 import type { CadSketchId } from '../contracts/ids';
-import type { CadWorkspacePanel } from './PartSketchWorkspaceTypes';
+import type { CadWorkspacePanel, SetWorkspace } from './PartSketchWorkspaceTypes';
 import { findSketch, partDocument } from './PartSketchWorkspaceModel';
 import { extrudeAvailability } from './PartFeatureAvailability';
 import type { PartFeatureProfile } from './PartFeatureProfile';
@@ -32,7 +32,7 @@ export interface ExtrudeOperationControllerOptions {
   activeSketchId: CadSketchId | null;
   sketch: Readonly<CadSketch> | null;
   setActiveCommand: Dispatch<SetStateAction<string | null>>;
-  setActiveWorkspace: Dispatch<SetStateAction<string>>;
+  setActiveWorkspace: SetWorkspace;
   setPanel(panel: CadWorkspacePanel): void;
   setNotice(message: string): void;
   clearTransientSelection(): void;

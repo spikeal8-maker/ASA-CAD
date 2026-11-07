@@ -4,7 +4,7 @@ import type { CadPlaneName } from '../contracts/commands';
 import type { CadDocument, CadSketch } from '../contracts/document';
 import type { CadSketchId, CadStableReferenceId } from '../contracts/ids';
 import type { CadViewportPick } from '../contracts/render';
-import type { CadWorkspacePanel, PartSketchSelectionMode } from './PartSketchWorkspaceTypes';
+import type { CadWorkspacePanel, PartSketchSelectionMode, SetWorkspace } from './PartSketchWorkspaceTypes';
 import { hasCircle, hasRectangle, partDocument } from './PartSketchWorkspaceModel';
 import { usePartFeatureProfile } from './usePartFeatureProfile';
 import { useCutOperationController } from './useCutOperationController';
@@ -21,7 +21,7 @@ export interface PartFeatureControllerOptions {
   selectedPlane: CadPlaneName | null;
   selectBasePlane(plane: CadPlaneName): void;
   setActiveCommand: Dispatch<SetStateAction<string | null>>;
-  setActiveWorkspace: Dispatch<SetStateAction<string>>;
+  setActiveWorkspace: SetWorkspace;
   setPanel(panel: CadWorkspacePanel): void;
   setNotice(message: string): void;
   activateSketch(sketchId: CadSketchId): void;

@@ -1,13 +1,13 @@
 import { useCallback,useState,type Dispatch,type SetStateAction} from 'react';
 import type {CadApplication} from '../contracts/application';
 import type {CadDimensionId,CadSketchId} from '../contracts/ids';
-import type {CadWorkspacePanel} from './PartSketchWorkspaceTypes';
+import type {CadWorkspacePanel, SetWorkspace} from './PartSketchWorkspaceTypes';
 import {dimensionLabel,partDocument} from './PartSketchWorkspaceModel';
 
 export interface SketchDimensionControllerOptions {
   app: CadApplication;
   setActiveCommand: Dispatch<SetStateAction<string | null>>;
-  setActiveWorkspace: Dispatch<SetStateAction<string>>;
+  setActiveWorkspace: SetWorkspace;
   setPanel(panel: CadWorkspacePanel): void;
   setNotice(message: string): void;
   activeSketchId: CadSketchId | null;

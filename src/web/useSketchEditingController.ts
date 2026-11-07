@@ -2,7 +2,7 @@ import {useState,type Dispatch,type SetStateAction} from 'react';
 import type {CadApplication} from '../contracts/application';
 import type {CadSketch} from '../contracts/document';
 import type {CadSketchEntityId,CadSketchId} from '../contracts/ids';
-import type {CadWorkspacePanel} from './PartSketchWorkspaceTypes';
+import type {CadWorkspacePanel, SetWorkspace} from './PartSketchWorkspaceTypes';
 import {findSketch,partDocument} from './PartSketchWorkspaceModel';
 import {useSketchLineTool} from './useSketchLineTool';
 import {useSketchCircleTool} from './useSketchCircleTool';
@@ -13,7 +13,7 @@ import {commitParametricRectangle} from './SketchParametricRectangleOwner';
 export interface SketchEditingControllerOptions {
   app: CadApplication; activeSketchId: CadSketchId | null; sketch: Readonly<CadSketch> | null;
   activeCommand: string | null; setActiveCommand: Dispatch<SetStateAction<string | null>>;
-  setActiveWorkspace: Dispatch<SetStateAction<string>>; setPanel(panel: CadWorkspacePanel): void;
+  setActiveWorkspace: SetWorkspace; setPanel(panel: CadWorkspacePanel): void;
   setNotice(message: string): void; clearTransientSelection(): void; finishSession(): void;
 }
 
