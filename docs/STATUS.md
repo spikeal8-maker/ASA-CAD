@@ -12,7 +12,7 @@
 
 ## Канон и принятая база
 
-- Integration: `8684b56aff2a24d46458741249d27dd08f59b292` (#219), одна оболочка `src/web/kompas` для desktop/tablet/phone.
+- Integration: `8684b56aff2a24d46458741249d27dd08f59b292` (#219), одна продуктовая оболочка `src/web/kompas` для desktop/tablet/phone.
 - Main: `1f8d2627da7ddfa63b31876d46347d0b8080c154`; main/production отдельно.
 - Frozen #170: `ui-reference-20261004`, `88c535c652dac8b04f0d68fa144cf8486afdc926`; UI/UX reference.
 - CadDocument/CadApplication/history → typed actions/ASA adapters → PlaneGCS/OpenCascade B-Rep; Three.js отображает результат.
