@@ -266,7 +266,13 @@
           "CadSurfaceGroups.tsx",
           "CadSketchGroups.tsx",
           "CadViewGroups.tsx"
-        ]
+        ],
+        "retiredBy": "LEGACY-CLEANUP-202",
+        "historicalSource": {
+          "acceptedHead": "1be7bdb3b351fb0caee9c040abb43fd690bed687",
+          "canonicalUtf8Bytes": 8350,
+          "canonicalUtf8Sha256": "1be3f63dbc7e029be81ae4aa8cdfcec5e8f47ff5cbec1c8f494cf4b918220e25"
+        }
       }
     },
     "candidateAcceptanceStates": [
