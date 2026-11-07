@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "parityRevision": "fusion-sketch-parity-002",
   "referenceCaptureSha256": "18be2710ecd716650df37cf1ecff3ff14ff783ddadbdc5d08c438d8de00a9434",
-  "sourceSnapshotSha256": "d600b707c4a90898cdad30a2123118936cf3bb4ce37f19ee98ad6bc4db0c3b09",
+  "sourceSnapshotSha256": "38bc5a2c67daae5c52eb9bed91659a0a40f211956ab20971b7c58a46e144c812",
   "testSourceSha256": "7fbc4a2e58226fb44fbe87c763033e6d54205ac771d9db59d50ac14e073f1667",
   "status": "PASS",
   "input": "Playwright pointer/keyboard actions on the public UI; persisted document is read only for assertions",
@@ -132,14 +132,14 @@
     "endpointChangesCommittedCoordinate": true,
     "disabledUsesPointerCoordinate": true,
     "realEndpointCoincident": {
-      "id": "constraint_dda73f0b-de21-4413-8c25-efa34b06a736",
+      "id": "constraint_b457e9b1-7633-4a89-97f4-6b731fd4c0b0",
       "refs": [
         {
-          "entityId": "entity_b8daf868-b57d-4da0-9a43-5983646745fb",
+          "entityId": "entity_bf9da916-e797-4fef-8bf3-2479192363ad",
           "point": "b"
         },
         {
-          "entityId": "entity_c2565f6b-8bb7-4512-9bed-a50a0d3d90f3",
+          "entityId": "entity_7804c89c-d0d0-47ff-8c89-289b28bf1828",
           "point": "a"
         }
       ]

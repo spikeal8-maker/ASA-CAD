@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useSyncExternalStore } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useSyncExternalStore } from 'react';
 import type { CadPoint2, CadSketchEntity } from '../../../src/contracts/document';
 import type { SketchDisplayFrame } from '../../../src/web/viewport/SketchViewportGeometry';
 import { liveLineInteraction } from './LiveLineInteraction';
@@ -110,12 +110,12 @@ export function handleLiveLineKey(event: React.KeyboardEvent<HTMLElement>): bool
   if (!field && state.from && !state.committing && !event.ctrlKey && !event.metaKey && !event.altKey
       && /^[0-9.,+\-]$/.test(event.key)) {
     consume();
-    // Focus before replacing the selected measurement. Otherwise the layout
-    // effect selects the first typed digit and the next digit overwrites it.
-    const input = event.currentTarget.querySelector<HTMLInputElement>('[data-testid="fusion-line-length-input"]');
+    // Respect Tab even before the zero-length preview has shown its inputs.
+    const numericField = state.focusedField ?? 'length';
+    const input = event.currentTarget.querySelector<HTMLInputElement>(`[data-line-numeric-field="${numericField}"]`);
     input?.focus({ preventScroll: true });
-    liveLineInteraction.focusNumeric('length');
-    liveLineInteraction.setNumeric('length', event.key);
+    liveLineInteraction.focusNumeric(numericField);
+    liveLineInteraction.setNumeric(numericField, event.key);
     return true;
   }
   return false;
@@ -137,19 +137,30 @@ interface Props {
 export function LiveLineInput({ frame, size, focusStage }: Props) {
   const state = useSyncExternalStore(liveLineInteraction.subscribe, liveLineInteraction.getSnapshot);
   const lengthRef = useRef<HTMLInputElement>(null), angleRef = useRef<HTMLInputElement>(null);
+  const focusedInputs = useRef(new WeakSet<HTMLInputElement>());
   const stageFocus = useRef(focusStage);
   stageFocus.current = focusStage;
   useEffect(() => () => stageFocus.current(), []);
-  const visible = state.active && !!state.from && !!state.to && state.length > EPSILON;
+  const visible = state.active && !!state.from && !!state.to
+    && (state.length > EPSILON || state.lengthEdited || state.angleEdited);
   useEffect(() => {
     if (!visible || state.committing || state.focusedField) return;
     liveLineInteraction.focusNumeric('length');
   }, [visible, state.committing, state.focusedField]);
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!visible || state.committing || !state.focusedField) return;
     const input = state.focusedField === 'length' ? lengthRef.current : angleRef.current;
-    if (input && document.activeElement !== input) { input.focus({ preventScroll: true }); input.select(); }
-  }, [visible, state.committing, state.focusedField]);
+    if (!input) return;
+    const firstFocus = !focusedInputs.current.has(input);
+    focusedInputs.current.add(input);
+    if (document.activeElement === input) return;
+    input.focus({ preventScroll: true });
+    const edited = state.focusedField === 'length' ? state.lengthEdited : state.angleEdited;
+    // The first key can create this input. Keep that key; later Tab visits
+    // still select the complete measurement for replacement.
+    if (firstFocus && edited) input.setSelectionRange(input.value.length, input.value.length);
+    else input.select();
+  }, [visible, state.committing, state.focusedField, state.lengthEdited, state.angleEdited]);
   if (!state.active) return null;
   const screen = (point: CadPoint2) => ({
     x: (point[0] - frame.minX) / frame.width * size.width,

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "behaviorRevision": "FUSION-SKETCH-TOOLS-BEHAVIOR-003",
   "status": "BLOCKED",
-  "startedUTC": "2026-11-07T16:16:17.451Z",
+  "startedUTC": "2026-11-07T17:29:33.751Z",
   "input": "Public UI only; solved SVG and public Save document reads",
   "installedOriginsTouched": false,
   "userProfileUsed": false,
@@ -19,10 +19,10 @@
       "label": "Four continuous Line segments and five real topological points",
       "status": "PASS",
       "ids": [
-        "entity_45933103-1f86-49a8-a9a4-dd802ea23b94",
-        "entity_e36da1d0-68b2-4915-8fbd-0d28b4571dbf",
-        "entity_54f0d559-36e5-45b1-9d3b-1d5c21b038aa",
-        "entity_3789e7f7-51e8-421f-9b04-4a18ad8c015a"
+        "entity_fefbb70f-149a-4859-a4a9-0db7557b3d34",
+        "entity_0367aca2-12fa-4b27-9f9a-9b514c113fce",
+        "entity_16b0394c-8601-456a-8c4b-05b5a35d0aed",
+        "entity_3e7379a0-be5b-4f00-957b-51888e619382"
       ],
       "topology": {
         "lines": 4,
@@ -30,54 +30,54 @@
         "topologicalPoints": 5,
         "joins": [
           {
-            "id": "constraint_2ae5890d-1ca1-4a42-a39c-8beacf106f8b",
+            "id": "constraint_0c52fe4b-728c-43fc-b17d-65393782ddb1",
             "refs": [
               {
-                "entityId": "entity_45933103-1f86-49a8-a9a4-dd802ea23b94",
+                "entityId": "entity_fefbb70f-149a-4859-a4a9-0db7557b3d34",
                 "point": "b"
               },
               {
-                "entityId": "entity_e36da1d0-68b2-4915-8fbd-0d28b4571dbf",
+                "entityId": "entity_0367aca2-12fa-4b27-9f9a-9b514c113fce",
                 "point": "a"
               }
             ],
             "pair": [
-              "entity_45933103-1f86-49a8-a9a4-dd802ea23b94:b",
-              "entity_e36da1d0-68b2-4915-8fbd-0d28b4571dbf:a"
+              "entity_fefbb70f-149a-4859-a4a9-0db7557b3d34:b",
+              "entity_0367aca2-12fa-4b27-9f9a-9b514c113fce:a"
             ]
           },
           {
-            "id": "constraint_13f0bbe4-3c9c-4036-b0be-ba805f1e8be8",
+            "id": "constraint_37f99998-3e0a-488e-977e-b093b35657ee",
             "refs": [
               {
-                "entityId": "entity_e36da1d0-68b2-4915-8fbd-0d28b4571dbf",
+                "entityId": "entity_0367aca2-12fa-4b27-9f9a-9b514c113fce",
                 "point": "b"
               },
               {
-                "entityId": "entity_54f0d559-36e5-45b1-9d3b-1d5c21b038aa",
+                "entityId": "entity_16b0394c-8601-456a-8c4b-05b5a35d0aed",
                 "point": "a"
               }
             ],
             "pair": [
-              "entity_e36da1d0-68b2-4915-8fbd-0d28b4571dbf:b",
-              "entity_54f0d559-36e5-45b1-9d3b-1d5c21b038aa:a"
+              "entity_0367aca2-12fa-4b27-9f9a-9b514c113fce:b",
+              "entity_16b0394c-8601-456a-8c4b-05b5a35d0aed:a"
             ]
           },
           {
-            "id": "constraint_c24481fd-065a-4534-b160-dd7a5908f4d5",
+            "id": "constraint_9b84350f-a408-4094-af3d-60b2b16a2a25",
             "refs": [
               {
-                "entityId": "entity_54f0d559-36e5-45b1-9d3b-1d5c21b038aa",
+                "entityId": "entity_16b0394c-8601-456a-8c4b-05b5a35d0aed",
                 "point": "b"
               },
               {
-                "entityId": "entity_3789e7f7-51e8-421f-9b04-4a18ad8c015a",
+                "entityId": "entity_3e7379a0-be5b-4f00-957b-51888e619382",
                 "point": "a"
               }
             ],
             "pair": [
-              "entity_54f0d559-36e5-45b1-9d3b-1d5c21b038aa:b",
-              "entity_3789e7f7-51e8-421f-9b04-4a18ad8c015a:a"
+              "entity_16b0394c-8601-456a-8c4b-05b5a35d0aed:b",
+              "entity_3e7379a0-be5b-4f00-957b-51888e619382:a"
             ]
           }
         ]
@@ -127,9 +127,9 @@
         "command": "",
         "phase": null
       },
-      "documentSha256": "29f45c2ebbef8aebdd90512e0cb79f135a008a2c5cd163b1d332f9518db24184",
+      "documentSha256": "7e68a6ce66b9cf6dda16b048c13b9aa8e2ad0dfe38f75d5eec21b86e10545451",
       "wasm": [
-        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+        "http://127.0.0.1:50968/wasm/planegcs.d79bb63f.wasm"
       ]
     },
     {
@@ -144,14 +144,14 @@
         10.000002580767703
       ],
       "ids": [
-        "entity_ac94411f-1f2e-4be3-a28a-a8d6f91e7b92"
+        "entity_df91e545-ad7a-44b2-b95f-8e0c2cedf20d"
       ],
       "drivingLength": [
         {
-          "id": "dimension_896d78ab-87ec-4930-8f4f-d622576980f9",
+          "id": "dimension_c94141d0-91b4-4fa9-ac7c-b872bd9e0b8e",
           "type": "linear",
           "entityIds": [
-            "entity_ac94411f-1f2e-4be3-a28a-a8d6f91e7b92"
+            "entity_df91e545-ad7a-44b2-b95f-8e0c2cedf20d"
           ],
           "value": 40,
           "driving": true
@@ -159,10 +159,10 @@
       ],
       "saveReloadOpen": true,
       "reopenedDrivingLength": {
-        "id": "dimension_896d78ab-87ec-4930-8f4f-d622576980f9",
+        "id": "dimension_c94141d0-91b4-4fa9-ac7c-b872bd9e0b8e",
         "type": "linear",
         "entityIds": [
-          "entity_ac94411f-1f2e-4be3-a28a-a8d6f91e7b92"
+          "entity_df91e545-ad7a-44b2-b95f-8e0c2cedf20d"
         ],
         "value": 40,
         "driving": true
@@ -180,7 +180,7 @@
         "phase": null
       },
       "wasm": [
-        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+        "http://127.0.0.1:50968/wasm/planegcs.d79bb63f.wasm"
       ]
     },
     {
@@ -188,10 +188,10 @@
       "label": "Closed Line profile produces a real OCC 10 mm extrusion",
       "status": "PASS",
       "ids": [
-        "entity_2dc406f1-e36d-4ddd-b621-253e545abdfe",
-        "entity_1760c047-e706-42bf-8b03-de53b8d24add",
-        "entity_2971f926-afcb-4500-b7e6-91f4388c3411",
-        "entity_a3873534-ebb7-455f-b261-71b3607b3203"
+        "entity_5b61855b-11c8-46be-96d2-37759d8ec526",
+        "entity_370de0ed-7626-4e37-961a-1884979e56e1",
+        "entity_e4a6f2e7-df31-4ba1-94c4-4cb8e1f143a0",
+        "entity_6f101521-2cdc-48da-8641-ef97ad906553"
       ],
       "topology": {
         "lines": 4,
@@ -199,102 +199,102 @@
         "topologicalPoints": 4,
         "joins": [
           {
-            "id": "constraint_2fe7e6b3-8cbb-4077-9684-8eba22f71ab6",
+            "id": "constraint_995e3b9a-1adb-4ef3-976f-8430a0c73ec1",
             "refs": [
               {
-                "entityId": "entity_2dc406f1-e36d-4ddd-b621-253e545abdfe",
+                "entityId": "entity_5b61855b-11c8-46be-96d2-37759d8ec526",
                 "point": "b"
               },
               {
-                "entityId": "entity_1760c047-e706-42bf-8b03-de53b8d24add",
+                "entityId": "entity_370de0ed-7626-4e37-961a-1884979e56e1",
                 "point": "a"
               }
             ],
             "pair": [
-              "entity_2dc406f1-e36d-4ddd-b621-253e545abdfe:b",
-              "entity_1760c047-e706-42bf-8b03-de53b8d24add:a"
+              "entity_5b61855b-11c8-46be-96d2-37759d8ec526:b",
+              "entity_370de0ed-7626-4e37-961a-1884979e56e1:a"
             ]
           },
           {
-            "id": "constraint_04199cdd-c1f9-4f79-af2c-60dbdd04ea97",
+            "id": "constraint_574e7df9-563d-4bbf-8357-5011687f9cfe",
             "refs": [
               {
-                "entityId": "entity_1760c047-e706-42bf-8b03-de53b8d24add",
+                "entityId": "entity_370de0ed-7626-4e37-961a-1884979e56e1",
                 "point": "b"
               },
               {
-                "entityId": "entity_2971f926-afcb-4500-b7e6-91f4388c3411",
+                "entityId": "entity_e4a6f2e7-df31-4ba1-94c4-4cb8e1f143a0",
                 "point": "a"
               }
             ],
             "pair": [
-              "entity_1760c047-e706-42bf-8b03-de53b8d24add:b",
-              "entity_2971f926-afcb-4500-b7e6-91f4388c3411:a"
+              "entity_370de0ed-7626-4e37-961a-1884979e56e1:b",
+              "entity_e4a6f2e7-df31-4ba1-94c4-4cb8e1f143a0:a"
             ]
           },
           {
-            "id": "constraint_f07160b7-4b88-41fc-8323-cd6ecfad6a3b",
+            "id": "constraint_4be87d0d-96af-4475-a754-52d984bdb665",
             "refs": [
               {
-                "entityId": "entity_2971f926-afcb-4500-b7e6-91f4388c3411",
+                "entityId": "entity_e4a6f2e7-df31-4ba1-94c4-4cb8e1f143a0",
                 "point": "b"
               },
               {
-                "entityId": "entity_a3873534-ebb7-455f-b261-71b3607b3203",
+                "entityId": "entity_6f101521-2cdc-48da-8641-ef97ad906553",
                 "point": "a"
               }
             ],
             "pair": [
-              "entity_2971f926-afcb-4500-b7e6-91f4388c3411:b",
-              "entity_a3873534-ebb7-455f-b261-71b3607b3203:a"
+              "entity_e4a6f2e7-df31-4ba1-94c4-4cb8e1f143a0:b",
+              "entity_6f101521-2cdc-48da-8641-ef97ad906553:a"
             ]
           },
           {
-            "id": "constraint_6cddbf13-1e97-47f0-8c82-4e27fc6d7d0b",
+            "id": "constraint_4396fcec-f80f-41b4-beff-825fb05dd0f0",
             "refs": [
               {
-                "entityId": "entity_a3873534-ebb7-455f-b261-71b3607b3203",
+                "entityId": "entity_6f101521-2cdc-48da-8641-ef97ad906553",
                 "point": "b"
               },
               {
-                "entityId": "entity_2dc406f1-e36d-4ddd-b621-253e545abdfe",
+                "entityId": "entity_5b61855b-11c8-46be-96d2-37759d8ec526",
                 "point": "a"
               }
             ],
             "pair": [
-              "entity_a3873534-ebb7-455f-b261-71b3607b3203:b",
-              "entity_2dc406f1-e36d-4ddd-b621-253e545abdfe:a"
+              "entity_6f101521-2cdc-48da-8641-ef97ad906553:b",
+              "entity_5b61855b-11c8-46be-96d2-37759d8ec526:a"
             ]
           }
         ]
       },
       "orientations": [
         {
-          "id": "constraint_dc4c5059-7b0d-4a7c-b743-e298e7f6e795",
+          "id": "constraint_40c1169e-50a1-4dec-9721-daafb31263c5",
           "type": "horizontal",
           "entityIds": [
-            "entity_2dc406f1-e36d-4ddd-b621-253e545abdfe"
+            "entity_5b61855b-11c8-46be-96d2-37759d8ec526"
           ]
         },
         {
-          "id": "constraint_a91b4559-98e2-442b-b453-1d24938ca47b",
+          "id": "constraint_0b2d786d-350c-4ca2-830e-a78480bd9670",
           "type": "vertical",
           "entityIds": [
-            "entity_1760c047-e706-42bf-8b03-de53b8d24add"
+            "entity_370de0ed-7626-4e37-961a-1884979e56e1"
           ]
         },
         {
-          "id": "constraint_93fc165c-aaf0-4457-8afd-b040cb41e69d",
+          "id": "constraint_13aae9cb-6812-4833-a22e-16384e9bbb60",
           "type": "horizontal",
           "entityIds": [
-            "entity_2971f926-afcb-4500-b7e6-91f4388c3411"
+            "entity_e4a6f2e7-df31-4ba1-94c4-4cb8e1f143a0"
           ]
         },
         {
-          "id": "constraint_0d9e019c-848b-4d73-87d5-54078b60b749",
+          "id": "constraint_88bed9e0-cb62-49f9-80f1-6f6feba582af",
           "type": "vertical",
           "entityIds": [
-            "entity_a3873534-ebb7-455f-b261-71b3607b3203"
+            "entity_6f101521-2cdc-48da-8641-ef97ad906553"
           ]
         }
       ],
@@ -346,10 +346,10 @@
         10
       ],
       "realOpenCascade": true,
-      "solidDocumentSha256": "fd7eb7c01b2f25844acdf9edb1e72a1a63c4038853264bef86573515a32cef72",
+      "solidDocumentSha256": "a53f48cb5c21a1722c89d79bdf8f33c780b0042be1b21369d2aadd4730c29af4",
       "wasm": [
-        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm",
-        "http://127.0.0.1:50729/wasm/opencascade.full.cb905367.wasm"
+        "http://127.0.0.1:50968/wasm/planegcs.d79bb63f.wasm",
+        "http://127.0.0.1:50968/wasm/opencascade.full.cb905367.wasm"
       ]
     },
     {
@@ -357,8 +357,8 @@
       "label": "One Escape cancels a third preview and preserves two committed lines",
       "status": "PASS",
       "ids": [
-        "entity_a2742bd8-6d11-4d2e-aec0-5a8682c397c4",
-        "entity_5ade0e5d-dc36-4273-bba7-f07edbb710c3"
+        "entity_b76f91f3-afe0-45b4-bafd-77cadf37bd72",
+        "entity_d09841eb-2f95-41f6-bb2b-862519a9f0ab"
       ],
       "preview": [
         0,
@@ -372,20 +372,20 @@
         "topologicalPoints": 3,
         "joins": [
           {
-            "id": "constraint_3393e3f1-f743-4447-90d5-e4d33da0a280",
+            "id": "constraint_0a1805b8-6875-4e5c-b540-66005b1450f1",
             "refs": [
               {
-                "entityId": "entity_a2742bd8-6d11-4d2e-aec0-5a8682c397c4",
+                "entityId": "entity_b76f91f3-afe0-45b4-bafd-77cadf37bd72",
                 "point": "b"
               },
               {
-                "entityId": "entity_5ade0e5d-dc36-4273-bba7-f07edbb710c3",
+                "entityId": "entity_d09841eb-2f95-41f6-bb2b-862519a9f0ab",
                 "point": "a"
               }
             ],
             "pair": [
-              "entity_a2742bd8-6d11-4d2e-aec0-5a8682c397c4:b",
-              "entity_5ade0e5d-dc36-4273-bba7-f07edbb710c3:a"
+              "entity_b76f91f3-afe0-45b4-bafd-77cadf37bd72:b",
+              "entity_d09841eb-2f95-41f6-bb2b-862519a9f0ab:a"
             ]
           }
         ]
@@ -410,9 +410,9 @@
         ]
       },
       "escapeCount": 1,
-      "preservedDocumentSha256": "6e12881d9f0e1e960f93400ae21cc0e0fc3272276797ae7e75940d0625a14d8b",
+      "preservedDocumentSha256": "28f1bfcc86fcfbcc21d463753cc7f83d6bf0d492e9d7459b688e7093555812c5",
       "wasm": [
-        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+        "http://127.0.0.1:50968/wasm/planegcs.d79bb63f.wasm"
       ]
     },
     {
@@ -421,12 +421,12 @@
       "status": "PASS",
       "singleSegmentStableIds": "PASS",
       "ids": [
-        "entity_c7ee7c7d-9b6c-4d47-88d2-e2f8d70a62ed"
+        "entity_a59318e2-3698-4a79-907e-c0a4e3f5ca51"
       ],
       "atomicSegmentAndInferenceUndo": "BLOCKED",
       "acceptance": "BLOCKED",
       "wasm": [
-        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+        "http://127.0.0.1:50968/wasm/planegcs.d79bb63f.wasm"
       ]
     },
     {
@@ -434,13 +434,13 @@
       "label": "Five real chain Undo/Redo frames preserve line and constraint IDs without dangling refs",
       "status": "PASS",
       "ids": [
-        "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
-        "entity_29767930-c001-468b-b3d3-588c4b72d6ea",
-        "entity_a275e105-8555-4881-b10f-04758fdf7d1b"
+        "entity_ba2a990a-0e9a-418f-b5a5-11029a22d114",
+        "entity_b52216f7-0b7e-4540-9155-d79175475afa",
+        "entity_c3fe638f-4d07-4b50-b00a-469e23d4f85d"
       ],
       "constraintIds": [
-        "constraint_b4a17146-4c07-4cdf-9ec5-7229bc834c3f",
-        "constraint_d615ab84-b9ad-4433-b728-cd6d0329c9bf"
+        "constraint_0385c4f8-390c-411c-9e71-bdff80da5cde",
+        "constraint_1cea3480-c3dc-43dd-831c-d3d9e20d7d49"
       ],
       "frames": [
         {
@@ -448,94 +448,94 @@
           "frame": 1,
           "command": "constraint.coincident",
           "entityIds": [
-            "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
-            "entity_29767930-c001-468b-b3d3-588c4b72d6ea",
-            "entity_a275e105-8555-4881-b10f-04758fdf7d1b"
+            "entity_ba2a990a-0e9a-418f-b5a5-11029a22d114",
+            "entity_b52216f7-0b7e-4540-9155-d79175475afa",
+            "entity_c3fe638f-4d07-4b50-b00a-469e23d4f85d"
           ],
           "constraintIds": [
-            "constraint_b4a17146-4c07-4cdf-9ec5-7229bc834c3f"
+            "constraint_0385c4f8-390c-411c-9e71-bdff80da5cde"
           ],
           "constraints": [
             {
-              "id": "constraint_b4a17146-4c07-4cdf-9ec5-7229bc834c3f",
+              "id": "constraint_0385c4f8-390c-411c-9e71-bdff80da5cde",
               "type": "coincident",
               "entityIds": [
-                "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
-                "entity_29767930-c001-468b-b3d3-588c4b72d6ea"
+                "entity_ba2a990a-0e9a-418f-b5a5-11029a22d114",
+                "entity_b52216f7-0b7e-4540-9155-d79175475afa"
               ],
               "data": {
                 "refs": [
                   {
-                    "entityId": "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
+                    "entityId": "entity_ba2a990a-0e9a-418f-b5a5-11029a22d114",
                     "point": "b"
                   },
                   {
-                    "entityId": "entity_29767930-c001-468b-b3d3-588c4b72d6ea",
+                    "entityId": "entity_b52216f7-0b7e-4540-9155-d79175475afa",
                     "point": "a"
                   }
                 ]
               }
             }
           ],
-          "documentSha256": "196f0a17bb17fa3e6c0bb13878d1f391566bac1d07db82faf80a4ee04e0a1705"
+          "documentSha256": "a7797b8a4bf713c25c919f53bd9c330f9eef7867a993cda996ee948acec2a457"
         },
         {
           "direction": "undo",
           "frame": 2,
           "command": "sketch.line",
           "entityIds": [
-            "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
-            "entity_29767930-c001-468b-b3d3-588c4b72d6ea"
+            "entity_ba2a990a-0e9a-418f-b5a5-11029a22d114",
+            "entity_b52216f7-0b7e-4540-9155-d79175475afa"
           ],
           "constraintIds": [
-            "constraint_b4a17146-4c07-4cdf-9ec5-7229bc834c3f"
+            "constraint_0385c4f8-390c-411c-9e71-bdff80da5cde"
           ],
           "constraints": [
             {
-              "id": "constraint_b4a17146-4c07-4cdf-9ec5-7229bc834c3f",
+              "id": "constraint_0385c4f8-390c-411c-9e71-bdff80da5cde",
               "type": "coincident",
               "entityIds": [
-                "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
-                "entity_29767930-c001-468b-b3d3-588c4b72d6ea"
+                "entity_ba2a990a-0e9a-418f-b5a5-11029a22d114",
+                "entity_b52216f7-0b7e-4540-9155-d79175475afa"
               ],
               "data": {
                 "refs": [
                   {
-                    "entityId": "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
+                    "entityId": "entity_ba2a990a-0e9a-418f-b5a5-11029a22d114",
                     "point": "b"
                   },
                   {
-                    "entityId": "entity_29767930-c001-468b-b3d3-588c4b72d6ea",
+                    "entityId": "entity_b52216f7-0b7e-4540-9155-d79175475afa",
                     "point": "a"
                   }
                 ]
               }
             }
           ],
-          "documentSha256": "7fc257f495b7605db8e6fb1cfef55ea11fc0df50731c6d671593d697619421ca"
+          "documentSha256": "36fc677905049a03e461b31e0f68b6338e20e120042e1f53b6a4e5c3b7db5bfd"
         },
         {
           "direction": "undo",
           "frame": 3,
           "command": "constraint.coincident",
           "entityIds": [
-            "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
-            "entity_29767930-c001-468b-b3d3-588c4b72d6ea"
+            "entity_ba2a990a-0e9a-418f-b5a5-11029a22d114",
+            "entity_b52216f7-0b7e-4540-9155-d79175475afa"
           ],
           "constraintIds": [],
           "constraints": [],
-          "documentSha256": "e3097b512d9aaa3c865af39550ae2352b30e7dbea03770912833a5504f11c7fd"
+          "documentSha256": "dc343a3e56da12d3aba4ace0b72dba99006037854185029db1285335d0bd5753"
         },
         {
           "direction": "undo",
           "frame": 4,
           "command": "sketch.line",
           "entityIds": [
-            "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637"
+            "entity_ba2a990a-0e9a-418f-b5a5-11029a22d114"
           ],
           "constraintIds": [],
           "constraints": [],
-          "documentSha256": "4ecad99a78fc22acf6e1b56e89fda100954cf0685883d59643608ca8a4986fc2"
+          "documentSha256": "47c8b8fb9f02ff565ac4610dfb693110760d2a7f526546169743072e53adf977"
         },
         {
           "direction": "undo",
@@ -544,158 +544,158 @@
           "entityIds": [],
           "constraintIds": [],
           "constraints": [],
-          "documentSha256": "abff17b1cdb3578084a49dec41da5804100109504215424e10f76fc6e514b2b0"
+          "documentSha256": "637e078f74b285cef2f1d95a1fa67e1757a9e55adf152a442fb184cb64ed9e91"
         },
         {
           "direction": "redo",
           "frame": 1,
           "command": "sketch.line",
           "entityIds": [
-            "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637"
+            "entity_ba2a990a-0e9a-418f-b5a5-11029a22d114"
           ],
           "constraintIds": [],
           "constraints": [],
-          "documentSha256": "4ecad99a78fc22acf6e1b56e89fda100954cf0685883d59643608ca8a4986fc2"
+          "documentSha256": "47c8b8fb9f02ff565ac4610dfb693110760d2a7f526546169743072e53adf977"
         },
         {
           "direction": "redo",
           "frame": 2,
           "command": "sketch.line",
           "entityIds": [
-            "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
-            "entity_29767930-c001-468b-b3d3-588c4b72d6ea"
+            "entity_ba2a990a-0e9a-418f-b5a5-11029a22d114",
+            "entity_b52216f7-0b7e-4540-9155-d79175475afa"
           ],
           "constraintIds": [],
           "constraints": [],
-          "documentSha256": "e3097b512d9aaa3c865af39550ae2352b30e7dbea03770912833a5504f11c7fd"
+          "documentSha256": "dc343a3e56da12d3aba4ace0b72dba99006037854185029db1285335d0bd5753"
         },
         {
           "direction": "redo",
           "frame": 3,
           "command": "constraint.coincident",
           "entityIds": [
-            "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
-            "entity_29767930-c001-468b-b3d3-588c4b72d6ea"
+            "entity_ba2a990a-0e9a-418f-b5a5-11029a22d114",
+            "entity_b52216f7-0b7e-4540-9155-d79175475afa"
           ],
           "constraintIds": [
-            "constraint_b4a17146-4c07-4cdf-9ec5-7229bc834c3f"
+            "constraint_0385c4f8-390c-411c-9e71-bdff80da5cde"
           ],
           "constraints": [
             {
-              "id": "constraint_b4a17146-4c07-4cdf-9ec5-7229bc834c3f",
+              "id": "constraint_0385c4f8-390c-411c-9e71-bdff80da5cde",
               "type": "coincident",
               "entityIds": [
-                "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
-                "entity_29767930-c001-468b-b3d3-588c4b72d6ea"
+                "entity_ba2a990a-0e9a-418f-b5a5-11029a22d114",
+                "entity_b52216f7-0b7e-4540-9155-d79175475afa"
               ],
               "data": {
                 "refs": [
                   {
-                    "entityId": "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
+                    "entityId": "entity_ba2a990a-0e9a-418f-b5a5-11029a22d114",
                     "point": "b"
                   },
                   {
-                    "entityId": "entity_29767930-c001-468b-b3d3-588c4b72d6ea",
+                    "entityId": "entity_b52216f7-0b7e-4540-9155-d79175475afa",
                     "point": "a"
                   }
                 ]
               }
             }
           ],
-          "documentSha256": "7fc257f495b7605db8e6fb1cfef55ea11fc0df50731c6d671593d697619421ca"
+          "documentSha256": "36fc677905049a03e461b31e0f68b6338e20e120042e1f53b6a4e5c3b7db5bfd"
         },
         {
           "direction": "redo",
           "frame": 4,
           "command": "sketch.line",
           "entityIds": [
-            "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
-            "entity_29767930-c001-468b-b3d3-588c4b72d6ea",
-            "entity_a275e105-8555-4881-b10f-04758fdf7d1b"
+            "entity_ba2a990a-0e9a-418f-b5a5-11029a22d114",
+            "entity_b52216f7-0b7e-4540-9155-d79175475afa",
+            "entity_c3fe638f-4d07-4b50-b00a-469e23d4f85d"
           ],
           "constraintIds": [
-            "constraint_b4a17146-4c07-4cdf-9ec5-7229bc834c3f"
+            "constraint_0385c4f8-390c-411c-9e71-bdff80da5cde"
           ],
           "constraints": [
             {
-              "id": "constraint_b4a17146-4c07-4cdf-9ec5-7229bc834c3f",
+              "id": "constraint_0385c4f8-390c-411c-9e71-bdff80da5cde",
               "type": "coincident",
               "entityIds": [
-                "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
-                "entity_29767930-c001-468b-b3d3-588c4b72d6ea"
+                "entity_ba2a990a-0e9a-418f-b5a5-11029a22d114",
+                "entity_b52216f7-0b7e-4540-9155-d79175475afa"
               ],
               "data": {
                 "refs": [
                   {
-                    "entityId": "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
+                    "entityId": "entity_ba2a990a-0e9a-418f-b5a5-11029a22d114",
                     "point": "b"
                   },
                   {
-                    "entityId": "entity_29767930-c001-468b-b3d3-588c4b72d6ea",
+                    "entityId": "entity_b52216f7-0b7e-4540-9155-d79175475afa",
                     "point": "a"
                   }
                 ]
               }
             }
           ],
-          "documentSha256": "196f0a17bb17fa3e6c0bb13878d1f391566bac1d07db82faf80a4ee04e0a1705"
+          "documentSha256": "a7797b8a4bf713c25c919f53bd9c330f9eef7867a993cda996ee948acec2a457"
         },
         {
           "direction": "redo",
           "frame": 5,
           "command": "constraint.coincident",
           "entityIds": [
-            "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
-            "entity_29767930-c001-468b-b3d3-588c4b72d6ea",
-            "entity_a275e105-8555-4881-b10f-04758fdf7d1b"
+            "entity_ba2a990a-0e9a-418f-b5a5-11029a22d114",
+            "entity_b52216f7-0b7e-4540-9155-d79175475afa",
+            "entity_c3fe638f-4d07-4b50-b00a-469e23d4f85d"
           ],
           "constraintIds": [
-            "constraint_b4a17146-4c07-4cdf-9ec5-7229bc834c3f",
-            "constraint_d615ab84-b9ad-4433-b728-cd6d0329c9bf"
+            "constraint_0385c4f8-390c-411c-9e71-bdff80da5cde",
+            "constraint_1cea3480-c3dc-43dd-831c-d3d9e20d7d49"
           ],
           "constraints": [
             {
-              "id": "constraint_b4a17146-4c07-4cdf-9ec5-7229bc834c3f",
+              "id": "constraint_0385c4f8-390c-411c-9e71-bdff80da5cde",
               "type": "coincident",
               "entityIds": [
-                "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
-                "entity_29767930-c001-468b-b3d3-588c4b72d6ea"
+                "entity_ba2a990a-0e9a-418f-b5a5-11029a22d114",
+                "entity_b52216f7-0b7e-4540-9155-d79175475afa"
               ],
               "data": {
                 "refs": [
                   {
-                    "entityId": "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
+                    "entityId": "entity_ba2a990a-0e9a-418f-b5a5-11029a22d114",
                     "point": "b"
                   },
                   {
-                    "entityId": "entity_29767930-c001-468b-b3d3-588c4b72d6ea",
+                    "entityId": "entity_b52216f7-0b7e-4540-9155-d79175475afa",
                     "point": "a"
                   }
                 ]
               }
             },
             {
-              "id": "constraint_d615ab84-b9ad-4433-b728-cd6d0329c9bf",
+              "id": "constraint_1cea3480-c3dc-43dd-831c-d3d9e20d7d49",
               "type": "coincident",
               "entityIds": [
-                "entity_29767930-c001-468b-b3d3-588c4b72d6ea",
-                "entity_a275e105-8555-4881-b10f-04758fdf7d1b"
+                "entity_b52216f7-0b7e-4540-9155-d79175475afa",
+                "entity_c3fe638f-4d07-4b50-b00a-469e23d4f85d"
               ],
               "data": {
                 "refs": [
                   {
-                    "entityId": "entity_29767930-c001-468b-b3d3-588c4b72d6ea",
+                    "entityId": "entity_b52216f7-0b7e-4540-9155-d79175475afa",
                     "point": "b"
                   },
                   {
-                    "entityId": "entity_a275e105-8555-4881-b10f-04758fdf7d1b",
+                    "entityId": "entity_c3fe638f-4d07-4b50-b00a-469e23d4f85d",
                     "point": "a"
                   }
                 ]
               }
             }
           ],
-          "documentSha256": "54489d94fe298be769c12e1bd1dc54242913e9f5ffa121a4f9e503d98b6189ac"
+          "documentSha256": "da46bead0be5523f1953289c8ee3a4114878aed9e6c8ab45ce5104e8146dc2a0"
         }
       ],
       "undoFrameCount": 5,
@@ -708,37 +708,37 @@
         "topologicalPoints": 4,
         "joins": [
           {
-            "id": "constraint_b4a17146-4c07-4cdf-9ec5-7229bc834c3f",
+            "id": "constraint_0385c4f8-390c-411c-9e71-bdff80da5cde",
             "refs": [
               {
-                "entityId": "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637",
+                "entityId": "entity_ba2a990a-0e9a-418f-b5a5-11029a22d114",
                 "point": "b"
               },
               {
-                "entityId": "entity_29767930-c001-468b-b3d3-588c4b72d6ea",
+                "entityId": "entity_b52216f7-0b7e-4540-9155-d79175475afa",
                 "point": "a"
               }
             ],
             "pair": [
-              "entity_00da71df-ba30-4fe2-8a9c-78d6e59e4637:b",
-              "entity_29767930-c001-468b-b3d3-588c4b72d6ea:a"
+              "entity_ba2a990a-0e9a-418f-b5a5-11029a22d114:b",
+              "entity_b52216f7-0b7e-4540-9155-d79175475afa:a"
             ]
           },
           {
-            "id": "constraint_d615ab84-b9ad-4433-b728-cd6d0329c9bf",
+            "id": "constraint_1cea3480-c3dc-43dd-831c-d3d9e20d7d49",
             "refs": [
               {
-                "entityId": "entity_29767930-c001-468b-b3d3-588c4b72d6ea",
+                "entityId": "entity_b52216f7-0b7e-4540-9155-d79175475afa",
                 "point": "b"
               },
               {
-                "entityId": "entity_a275e105-8555-4881-b10f-04758fdf7d1b",
+                "entityId": "entity_c3fe638f-4d07-4b50-b00a-469e23d4f85d",
                 "point": "a"
               }
             ],
             "pair": [
-              "entity_29767930-c001-468b-b3d3-588c4b72d6ea:b",
-              "entity_a275e105-8555-4881-b10f-04758fdf7d1b:a"
+              "entity_b52216f7-0b7e-4540-9155-d79175475afa:b",
+              "entity_c3fe638f-4d07-4b50-b00a-469e23d4f85d:a"
             ]
           }
         ]
@@ -772,7 +772,7 @@
       "atomicSegmentAndInferenceUndo": "BLOCKED",
       "acceptance": "BLOCKED",
       "wasm": [
-        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+        "http://127.0.0.1:50968/wasm/planegcs.d79bb63f.wasm"
       ]
     },
     {
@@ -780,10 +780,10 @@
       "label": "Save/reload/Open preserves chain IDs, refs, and actual solved topology",
       "status": "PASS",
       "ids": [
-        "entity_6717416d-9f56-4bd6-9d2d-d0c753b4baf3",
-        "entity_04fd8cfa-d5a4-41f9-b3e3-380ba0a1f333",
-        "entity_46d8d3bb-0d36-47ed-b441-fecef7e52149",
-        "entity_80106c57-aaa4-48fd-83c6-811cfa0e50a6"
+        "entity_5b5d7a89-7995-4d18-94ad-f49905998e2e",
+        "entity_01684335-9a37-4bc3-9320-a27a847ce57e",
+        "entity_458dbefa-c135-4ae1-93aa-87408f1a8305",
+        "entity_d1fd982a-c9e7-49e4-83ac-05cb4e81d216"
       ],
       "beforeTopology": {
         "lines": 4,
@@ -791,54 +791,54 @@
         "topologicalPoints": 5,
         "joins": [
           {
-            "id": "constraint_ebb39d29-45fb-475b-ad36-fbe10c327b49",
+            "id": "constraint_63b14953-4885-49b1-90ab-d8e2432a52a2",
             "refs": [
               {
-                "entityId": "entity_6717416d-9f56-4bd6-9d2d-d0c753b4baf3",
+                "entityId": "entity_5b5d7a89-7995-4d18-94ad-f49905998e2e",
                 "point": "b"
               },
               {
-                "entityId": "entity_04fd8cfa-d5a4-41f9-b3e3-380ba0a1f333",
+                "entityId": "entity_01684335-9a37-4bc3-9320-a27a847ce57e",
                 "point": "a"
               }
             ],
             "pair": [
-              "entity_6717416d-9f56-4bd6-9d2d-d0c753b4baf3:b",
-              "entity_04fd8cfa-d5a4-41f9-b3e3-380ba0a1f333:a"
+              "entity_5b5d7a89-7995-4d18-94ad-f49905998e2e:b",
+              "entity_01684335-9a37-4bc3-9320-a27a847ce57e:a"
             ]
           },
           {
-            "id": "constraint_c502f5b6-452e-47fa-b32a-524a7021fe95",
+            "id": "constraint_1c82ff71-854d-4c67-92d9-1ba135f40396",
             "refs": [
               {
-                "entityId": "entity_04fd8cfa-d5a4-41f9-b3e3-380ba0a1f333",
+                "entityId": "entity_01684335-9a37-4bc3-9320-a27a847ce57e",
                 "point": "b"
               },
               {
-                "entityId": "entity_46d8d3bb-0d36-47ed-b441-fecef7e52149",
+                "entityId": "entity_458dbefa-c135-4ae1-93aa-87408f1a8305",
                 "point": "a"
               }
             ],
             "pair": [
-              "entity_04fd8cfa-d5a4-41f9-b3e3-380ba0a1f333:b",
-              "entity_46d8d3bb-0d36-47ed-b441-fecef7e52149:a"
+              "entity_01684335-9a37-4bc3-9320-a27a847ce57e:b",
+              "entity_458dbefa-c135-4ae1-93aa-87408f1a8305:a"
             ]
           },
           {
-            "id": "constraint_dd622d8d-fbae-42bc-a9f8-b8fa97d98627",
+            "id": "constraint_87487f31-f250-4d14-b160-9474b25f8204",
             "refs": [
               {
-                "entityId": "entity_46d8d3bb-0d36-47ed-b441-fecef7e52149",
+                "entityId": "entity_458dbefa-c135-4ae1-93aa-87408f1a8305",
                 "point": "b"
               },
               {
-                "entityId": "entity_80106c57-aaa4-48fd-83c6-811cfa0e50a6",
+                "entityId": "entity_d1fd982a-c9e7-49e4-83ac-05cb4e81d216",
                 "point": "a"
               }
             ],
             "pair": [
-              "entity_46d8d3bb-0d36-47ed-b441-fecef7e52149:b",
-              "entity_80106c57-aaa4-48fd-83c6-811cfa0e50a6:a"
+              "entity_458dbefa-c135-4ae1-93aa-87408f1a8305:b",
+              "entity_d1fd982a-c9e7-49e4-83ac-05cb4e81d216:a"
             ]
           }
         ]
@@ -849,54 +849,54 @@
         "topologicalPoints": 5,
         "joins": [
           {
-            "id": "constraint_ebb39d29-45fb-475b-ad36-fbe10c327b49",
+            "id": "constraint_63b14953-4885-49b1-90ab-d8e2432a52a2",
             "refs": [
               {
-                "entityId": "entity_6717416d-9f56-4bd6-9d2d-d0c753b4baf3",
+                "entityId": "entity_5b5d7a89-7995-4d18-94ad-f49905998e2e",
                 "point": "b"
               },
               {
-                "entityId": "entity_04fd8cfa-d5a4-41f9-b3e3-380ba0a1f333",
+                "entityId": "entity_01684335-9a37-4bc3-9320-a27a847ce57e",
                 "point": "a"
               }
             ],
             "pair": [
-              "entity_6717416d-9f56-4bd6-9d2d-d0c753b4baf3:b",
-              "entity_04fd8cfa-d5a4-41f9-b3e3-380ba0a1f333:a"
+              "entity_5b5d7a89-7995-4d18-94ad-f49905998e2e:b",
+              "entity_01684335-9a37-4bc3-9320-a27a847ce57e:a"
             ]
           },
           {
-            "id": "constraint_c502f5b6-452e-47fa-b32a-524a7021fe95",
+            "id": "constraint_1c82ff71-854d-4c67-92d9-1ba135f40396",
             "refs": [
               {
-                "entityId": "entity_04fd8cfa-d5a4-41f9-b3e3-380ba0a1f333",
+                "entityId": "entity_01684335-9a37-4bc3-9320-a27a847ce57e",
                 "point": "b"
               },
               {
-                "entityId": "entity_46d8d3bb-0d36-47ed-b441-fecef7e52149",
+                "entityId": "entity_458dbefa-c135-4ae1-93aa-87408f1a8305",
                 "point": "a"
               }
             ],
             "pair": [
-              "entity_04fd8cfa-d5a4-41f9-b3e3-380ba0a1f333:b",
-              "entity_46d8d3bb-0d36-47ed-b441-fecef7e52149:a"
+              "entity_01684335-9a37-4bc3-9320-a27a847ce57e:b",
+              "entity_458dbefa-c135-4ae1-93aa-87408f1a8305:a"
             ]
           },
           {
-            "id": "constraint_dd622d8d-fbae-42bc-a9f8-b8fa97d98627",
+            "id": "constraint_87487f31-f250-4d14-b160-9474b25f8204",
             "refs": [
               {
-                "entityId": "entity_46d8d3bb-0d36-47ed-b441-fecef7e52149",
+                "entityId": "entity_458dbefa-c135-4ae1-93aa-87408f1a8305",
                 "point": "b"
               },
               {
-                "entityId": "entity_80106c57-aaa4-48fd-83c6-811cfa0e50a6",
+                "entityId": "entity_d1fd982a-c9e7-49e4-83ac-05cb4e81d216",
                 "point": "a"
               }
             ],
             "pair": [
-              "entity_46d8d3bb-0d36-47ed-b441-fecef7e52149:b",
-              "entity_80106c57-aaa4-48fd-83c6-811cfa0e50a6:a"
+              "entity_458dbefa-c135-4ae1-93aa-87408f1a8305:b",
+              "entity_d1fd982a-c9e7-49e4-83ac-05cb4e81d216:a"
             ]
           }
         ]
@@ -934,9 +934,9 @@
           0
         ]
       },
-      "documentSha256": "cc92abc36f705b8b59be5fca170f43ded9b3642bac07fa36795429a5a9a0452d",
+      "documentSha256": "d6e518062c78239bfb3c18219cc15cc63762401b8a2a9256163fbd7adf1d41e3",
       "wasm": [
-        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+        "http://127.0.0.1:50968/wasm/planegcs.d79bb63f.wasm"
       ]
     },
     {
@@ -968,7 +968,7 @@
       "oldCenter": "2.351197413566153,2.8514521824100143",
       "newCenter": "-3.7009655965040356,5.675794920442769",
       "wasm": [
-        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+        "http://127.0.0.1:50968/wasm/planegcs.d79bb63f.wasm"
       ]
     },
     {
@@ -987,8 +987,8 @@
         "phase": "awaiting-start"
       },
       "ids": [
-        "entity_2fe46408-671e-4a56-8944-4a365a7375cc",
-        "entity_efb77f33-6886-4258-8973-0940d998d0c5"
+        "entity_e589fb25-4067-40c5-9a2e-760ee1b37e33",
+        "entity_2f35af66-0c2f-44bc-9c73-836ff18f1b3f"
       ],
       "actual": [
         [
@@ -1010,9 +1010,96 @@
         14.6410148609937,
         10.000002580767703
       ],
+      "immediateTyping": {
+        "expectedText": "40",
+        "keys": [
+          "4",
+          "0"
+        ],
+        "noPointerMove": true,
+        "noProgrammaticFocus": true,
+        "before": {
+          "value": null,
+          "selectionStart": null,
+          "selectionEnd": null,
+          "inputFocused": false,
+          "focusedTestId": "part-model-stage",
+          "focusInStage": true,
+          "previewLength": 0,
+          "inputValid": "true"
+        },
+        "beforeEntityIds": [],
+        "afterFirstKey": {
+          "value": "4",
+          "selectionStart": 1,
+          "selectionEnd": 1,
+          "inputFocused": true,
+          "focusedTestId": "fusion-line-length-input",
+          "focusInStage": true,
+          "previewLength": 4,
+          "inputValid": "true"
+        },
+        "afterSecondKey": {
+          "value": "40",
+          "selectionStart": 2,
+          "selectionEnd": 2,
+          "inputFocused": true,
+          "focusedTestId": "fusion-line-length-input",
+          "focusInStage": true,
+          "previewLength": 40,
+          "inputValid": "true"
+        },
+        "afterEntityIds": [],
+        "status": "PASS"
+      },
+      "tabReplacement": {
+        "expectedReplacement": "45",
+        "expectedRestored": "40",
+        "before": {
+          "value": "40",
+          "selectionStart": 0,
+          "selectionEnd": 2,
+          "inputFocused": true,
+          "focusedTestId": "fusion-line-length-input",
+          "focusInStage": true,
+          "previewLength": 40,
+          "inputValid": "true"
+        },
+        "afterFirstKey": {
+          "value": "4",
+          "selectionStart": 1,
+          "selectionEnd": 1,
+          "inputFocused": true,
+          "focusedTestId": "fusion-line-length-input",
+          "focusInStage": true,
+          "previewLength": 3.999999999999999,
+          "inputValid": "true"
+        },
+        "afterSecondKey": {
+          "value": "45",
+          "selectionStart": 2,
+          "selectionEnd": 2,
+          "inputFocused": true,
+          "focusedTestId": "fusion-line-length-input",
+          "focusInStage": true,
+          "previewLength": 45,
+          "inputValid": "true"
+        },
+        "restored": {
+          "value": "40",
+          "selectionStart": 2,
+          "selectionEnd": 2,
+          "inputFocused": true,
+          "focusedTestId": "fusion-line-length-input",
+          "focusInStage": true,
+          "previewLength": 40,
+          "inputValid": "true"
+        },
+        "status": "PASS"
+      },
       "nativeDoubleClickLifecycle": "PASS",
       "wasm": [
-        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+        "http://127.0.0.1:50968/wasm/planegcs.d79bb63f.wasm"
       ]
     },
     {
@@ -1020,8 +1107,8 @@
       "label": "Numeric pointer commit continues the chain with reset locks and real driving length",
       "status": "PASS",
       "ids": [
-        "entity_a843576c-7440-4758-8fe0-1da4058a4eef",
-        "entity_22f3f5eb-e067-43a3-8478-52ed5d73dbdd"
+        "entity_936234dc-47e6-4c5e-974e-cb907eabc494",
+        "entity_1cfc788d-5261-4e3c-93d9-5d88a9404fa8"
       ],
       "firstLine": [
         -20.00000129038385,
@@ -1037,8 +1124,8 @@
       "nextPreview": [
         14.6410148609937,
         10.000002580767703,
-        34.99999741923229,
-        -15.000002580767706
+        39.899437856133744,
+        -21.016316797884894
       ],
       "actual": [
         [
@@ -1050,8 +1137,8 @@
         [
           14.6410148609937,
           10.000002580767703,
-          34.99999741923229,
-          -15.000002580767706
+          39.899437856133744,
+          -21.016316797884894
         ]
       ],
       "topology": {
@@ -1060,20 +1147,20 @@
         "topologicalPoints": 3,
         "joins": [
           {
-            "id": "constraint_220dcc19-c8dc-4c70-9dc4-e62a2fb87779",
+            "id": "constraint_65fbcbdf-907d-4674-9045-da489c4a518a",
             "refs": [
               {
-                "entityId": "entity_a843576c-7440-4758-8fe0-1da4058a4eef",
+                "entityId": "entity_936234dc-47e6-4c5e-974e-cb907eabc494",
                 "point": "b"
               },
               {
-                "entityId": "entity_22f3f5eb-e067-43a3-8478-52ed5d73dbdd",
+                "entityId": "entity_1cfc788d-5261-4e3c-93d9-5d88a9404fa8",
                 "point": "a"
               }
             ],
             "pair": [
-              "entity_a843576c-7440-4758-8fe0-1da4058a4eef:b",
-              "entity_22f3f5eb-e067-43a3-8478-52ed5d73dbdd:a"
+              "entity_936234dc-47e6-4c5e-974e-cb907eabc494:b",
+              "entity_1cfc788d-5261-4e3c-93d9-5d88a9404fa8:a"
             ]
           }
         ]
@@ -1089,28 +1176,103 @@
           [
             14.6410148609937,
             10.000002580767703,
-            34.99999741923229,
-            -15.000002580767706
+            39.899437856133744,
+            -21.016316797884894
           ]
         ],
         "coincidentResiduals": [
           0
         ]
       },
-      "drivingLength": {
-        "id": "dimension_666f0427-5d84-41de-9338-4b2e108d3abe",
-        "type": "linear",
-        "entityIds": [
-          "entity_a843576c-7440-4758-8fe0-1da4058a4eef"
+      "drivingLengths": [
+        {
+          "id": "dimension_3d069506-6794-4c32-881b-c4673cf4c9d8",
+          "type": "linear",
+          "entityIds": [
+            "entity_936234dc-47e6-4c5e-974e-cb907eabc494"
+          ],
+          "value": 40,
+          "driving": true
+        },
+        {
+          "id": "dimension_5c5ca461-06f4-4616-b417-c59b29d6e904",
+          "type": "linear",
+          "entityIds": [
+            "entity_1cfc788d-5261-4e3c-93d9-5d88a9404fa8"
+          ],
+          "value": 40,
+          "driving": true
+        }
+      ],
+      "immediateTyping": {
+        "expectedText": "40",
+        "keys": [
+          "4",
+          "0"
         ],
-        "value": 40,
-        "driving": true
+        "noPointerMove": true,
+        "noProgrammaticFocus": true,
+        "before": {
+          "value": null,
+          "selectionStart": null,
+          "selectionEnd": null,
+          "inputFocused": false,
+          "focusedTestId": "part-model-stage",
+          "focusInStage": true,
+          "previewLength": 0,
+          "inputValid": "true"
+        },
+        "beforeEntityIds": [
+          "entity_936234dc-47e6-4c5e-974e-cb907eabc494"
+        ],
+        "afterFirstKey": {
+          "value": "4",
+          "selectionStart": 1,
+          "selectionEnd": 1,
+          "inputFocused": true,
+          "focusedTestId": "fusion-line-length-input",
+          "focusInStage": true,
+          "previewLength": 4.000000000000001,
+          "inputValid": "true"
+        },
+        "afterSecondKey": {
+          "value": "40",
+          "selectionStart": 2,
+          "selectionEnd": 2,
+          "inputFocused": true,
+          "focusedTestId": "fusion-line-length-input",
+          "focusInStage": true,
+          "previewLength": 40.00000000000001,
+          "inputValid": "true"
+        },
+        "afterEntityIds": [
+          "entity_936234dc-47e6-4c5e-974e-cb907eabc494"
+        ],
+        "status": "PASS"
+      },
+      "freeContinuation": {
+        "pointer": [
+          -25,
+          25
+        ],
+        "lengthLocked": "false",
+        "angleLocked": "false",
+        "preview": [
+          39.899437856133744,
+          -21.016316797884894,
+          -25,
+          24.999999999999996
+        ],
+        "entityIds": [
+          "entity_936234dc-47e6-4c5e-974e-cb907eabc494",
+          "entity_1cfc788d-5261-4e3c-93d9-5d88a9404fa8"
+        ]
       },
       "numericPointerContinuation": true,
       "escapePreservesDocument": true,
       "absoluteDrivingAngle": "BLOCKED",
       "wasm": [
-        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+        "http://127.0.0.1:50968/wasm/planegcs.d79bb63f.wasm"
       ]
     },
     {
@@ -1118,8 +1280,8 @@
       "label": "A chained 120 degree interior input follows the pointer branch and keeps Line active",
       "status": "PASS",
       "ids": [
-        "entity_64c53ddf-c2a2-4687-a295-4a628ea20854",
-        "entity_b09072f7-dd01-4f91-9974-ce101293dc29"
+        "entity_4213edb6-c695-45f5-b4af-227c4642476a",
+        "entity_925678cc-8ee8-4d7e-a3c5-46143b986c13"
       ],
       "rawPreview": [
         -2,
@@ -1155,20 +1317,20 @@
         "topologicalPoints": 3,
         "joins": [
           {
-            "id": "constraint_2da082bc-2848-434b-9c83-69a9bbf02a7b",
+            "id": "constraint_ea546768-6cfb-4389-bdf2-386604f9a14a",
             "refs": [
               {
-                "entityId": "entity_64c53ddf-c2a2-4687-a295-4a628ea20854",
+                "entityId": "entity_4213edb6-c695-45f5-b4af-227c4642476a",
                 "point": "b"
               },
               {
-                "entityId": "entity_b09072f7-dd01-4f91-9974-ce101293dc29",
+                "entityId": "entity_925678cc-8ee8-4d7e-a3c5-46143b986c13",
                 "point": "a"
               }
             ],
             "pair": [
-              "entity_64c53ddf-c2a2-4687-a295-4a628ea20854:b",
-              "entity_b09072f7-dd01-4f91-9974-ce101293dc29:a"
+              "entity_4213edb6-c695-45f5-b4af-227c4642476a:b",
+              "entity_925678cc-8ee8-4d7e-a3c5-46143b986c13:a"
             ]
           }
         ]
@@ -1194,18 +1356,18 @@
       },
       "orientations": [
         {
-          "id": "constraint_d66de6d7-8f95-4b41-82cc-9ea437642a68",
+          "id": "constraint_47fab0fd-fd2e-46e4-894c-418cc48e2f9e",
           "type": "horizontal",
           "entityIds": [
-            "entity_64c53ddf-c2a2-4687-a295-4a628ea20854"
+            "entity_4213edb6-c695-45f5-b4af-227c4642476a"
           ]
         }
       ],
       "drivingLength": {
-        "id": "dimension_ed0ed5e7-23af-4715-a6a7-c9049bcd7d7a",
+        "id": "dimension_d8e881a0-518b-4432-b0d0-e6a92a430b6d",
         "type": "linear",
         "entityIds": [
-          "entity_b09072f7-dd01-4f91-9974-ce101293dc29"
+          "entity_925678cc-8ee8-4d7e-a3c5-46143b986c13"
         ],
         "value": 30,
         "driving": true
@@ -1213,7 +1375,7 @@
       "angleMode": "chain-interior",
       "relativeDrivingAngle": "NOT_ASSERTED",
       "wasm": [
-        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+        "http://127.0.0.1:50968/wasm/planegcs.d79bb63f.wasm"
       ]
     },
     {
@@ -1221,7 +1383,7 @@
       "label": "A smooth mouse approach can focus, edit and toggle locked numeric input without committing",
       "status": "PASS",
       "baselineIds": [
-        "entity_e5825de6-246b-4550-9e36-3a81be39f102"
+        "entity_04b1aa96-06e3-4269-9d19-d27e157b01e4"
       ],
       "lockedPreview": [
         -20.00000129038385,
@@ -1463,7 +1625,7 @@
       "noAdditionalEntities": true,
       "escapePreservesDocument": true,
       "wasm": [
-        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+        "http://127.0.0.1:50968/wasm/planegcs.d79bb63f.wasm"
       ]
     },
     {
@@ -1485,9 +1647,9 @@
       ],
       "plainEnter": "commit-and-exit",
       "ids": [
-        "entity_04911c7a-8838-4ea9-814d-16e12ad3e8de",
-        "entity_8921d81d-9081-47c3-b8da-32970bc8e995",
-        "entity_71d1a900-1905-4608-bbd5-b318965536d8"
+        "entity_4e2717d9-0c1c-445c-9746-985b98a08608",
+        "entity_ae56813d-c362-4624-b1d0-cac3ac554bcc",
+        "entity_70bf7221-56d6-49b8-b154-9f9093b44162"
       ],
       "topology": {
         "lines": 3,
@@ -1495,37 +1657,37 @@
         "topologicalPoints": 4,
         "joins": [
           {
-            "id": "constraint_d68ea774-ce64-4147-a048-8749016554bd",
+            "id": "constraint_a987c69e-478c-441d-9a0c-088c3c57c4ae",
             "refs": [
               {
-                "entityId": "entity_04911c7a-8838-4ea9-814d-16e12ad3e8de",
+                "entityId": "entity_4e2717d9-0c1c-445c-9746-985b98a08608",
                 "point": "b"
               },
               {
-                "entityId": "entity_8921d81d-9081-47c3-b8da-32970bc8e995",
+                "entityId": "entity_ae56813d-c362-4624-b1d0-cac3ac554bcc",
                 "point": "a"
               }
             ],
             "pair": [
-              "entity_04911c7a-8838-4ea9-814d-16e12ad3e8de:b",
-              "entity_8921d81d-9081-47c3-b8da-32970bc8e995:a"
+              "entity_4e2717d9-0c1c-445c-9746-985b98a08608:b",
+              "entity_ae56813d-c362-4624-b1d0-cac3ac554bcc:a"
             ]
           },
           {
-            "id": "constraint_6625984e-4ce2-4024-bf5e-76ebe69fd89f",
+            "id": "constraint_ac96276b-98d5-4840-94ee-73571a41135e",
             "refs": [
               {
-                "entityId": "entity_8921d81d-9081-47c3-b8da-32970bc8e995",
+                "entityId": "entity_ae56813d-c362-4624-b1d0-cac3ac554bcc",
                 "point": "b"
               },
               {
-                "entityId": "entity_71d1a900-1905-4608-bbd5-b318965536d8",
+                "entityId": "entity_70bf7221-56d6-49b8-b154-9f9093b44162",
                 "point": "a"
               }
             ],
             "pair": [
-              "entity_8921d81d-9081-47c3-b8da-32970bc8e995:b",
-              "entity_71d1a900-1905-4608-bbd5-b318965536d8:a"
+              "entity_ae56813d-c362-4624-b1d0-cac3ac554bcc:b",
+              "entity_70bf7221-56d6-49b8-b154-9f9093b44162:a"
             ]
           }
         ]
@@ -1557,7 +1719,7 @@
         ]
       },
       "wasm": [
-        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+        "http://127.0.0.1:50968/wasm/planegcs.d79bb63f.wasm"
       ]
     },
     {
@@ -1565,9 +1727,9 @@
       "label": "Numeric Enter and Escape restore stage focus; immediate Ctrl+Z reaches real history",
       "status": "PASS",
       "ids": [
-        "entity_52274ebe-3b45-4c97-b617-cd196f94e016"
+        "entity_372b25ff-14b9-49c8-a0fb-b47eca1e3698"
       ],
-      "dimensionId": "dimension_fc7527b5-ede6-4dee-995c-9791772bcdc0",
+      "dimensionId": "dimension_9eef1161-b3ce-4188-a0ac-54b940b36224",
       "enterFocus": {
         "tag": "DIV",
         "testId": "part-model-stage",
@@ -1584,7 +1746,7 @@
       "redoStableDimensionId": true,
       "atomicLineAndDimensionUndo": "BLOCKED",
       "wasm": [
-        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+        "http://127.0.0.1:50968/wasm/planegcs.d79bb63f.wasm"
       ]
     },
     {
@@ -1601,8 +1763,8 @@
         -4.9999987096161504
       ],
       "ids": [
-        "entity_a9d44f94-f245-47a6-a589-55f6d6cfdf02",
-        "entity_c907f66d-2525-4184-9357-173f9dbe7dfb"
+        "entity_dd74412a-d676-4717-b656-1c25fb048eee",
+        "entity_b7f1135b-6430-4be5-b564-9d15d31bda9e"
       ],
       "topology": {
         "lines": 2,
@@ -1610,20 +1772,20 @@
         "topologicalPoints": 3,
         "joins": [
           {
-            "id": "constraint_01c21fc7-7581-4e3c-ab41-a1f50137876c",
+            "id": "constraint_9dda5c03-be53-4661-abb9-341e5d18c1ba",
             "refs": [
               {
-                "entityId": "entity_a9d44f94-f245-47a6-a589-55f6d6cfdf02",
+                "entityId": "entity_dd74412a-d676-4717-b656-1c25fb048eee",
                 "point": "b"
               },
               {
-                "entityId": "entity_c907f66d-2525-4184-9357-173f9dbe7dfb",
+                "entityId": "entity_b7f1135b-6430-4be5-b564-9d15d31bda9e",
                 "point": "a"
               }
             ],
             "pair": [
-              "entity_a9d44f94-f245-47a6-a589-55f6d6cfdf02:b",
-              "entity_c907f66d-2525-4184-9357-173f9dbe7dfb:a"
+              "entity_dd74412a-d676-4717-b656-1c25fb048eee:b",
+              "entity_b7f1135b-6430-4be5-b564-9d15d31bda9e:a"
             ]
           }
         ]
@@ -1649,20 +1811,20 @@
       },
       "constraints": [
         {
-          "id": "constraint_01c21fc7-7581-4e3c-ab41-a1f50137876c",
+          "id": "constraint_9dda5c03-be53-4661-abb9-341e5d18c1ba",
           "type": "coincident",
           "entityIds": [
-            "entity_a9d44f94-f245-47a6-a589-55f6d6cfdf02",
-            "entity_c907f66d-2525-4184-9357-173f9dbe7dfb"
+            "entity_dd74412a-d676-4717-b656-1c25fb048eee",
+            "entity_b7f1135b-6430-4be5-b564-9d15d31bda9e"
           ],
           "data": {
             "refs": [
               {
-                "entityId": "entity_a9d44f94-f245-47a6-a589-55f6d6cfdf02",
+                "entityId": "entity_dd74412a-d676-4717-b656-1c25fb048eee",
                 "point": "b"
               },
               {
-                "entityId": "entity_c907f66d-2525-4184-9357-173f9dbe7dfb",
+                "entityId": "entity_b7f1135b-6430-4be5-b564-9d15d31bda9e",
                 "point": "a"
               }
             ]
@@ -1671,7 +1833,7 @@
       ],
       "chainCoincidencePreserved": true,
       "wasm": [
-        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+        "http://127.0.0.1:50968/wasm/planegcs.d79bb63f.wasm"
       ]
     },
     {
@@ -1679,8 +1841,8 @@
       "label": "Context Escape preserves Line; Repeat Line finishes the current chain",
       "status": "PASS",
       "ids": [
-        "entity_3ee3f793-0428-4b17-9638-413c2c76d8e7",
-        "entity_4adb3a36-552f-4e07-8fdd-cb4ce20cab4d"
+        "entity_2b1ca915-0cd2-4df4-af4d-6fae903e3ffb",
+        "entity_5dba8173-046b-421f-b42c-d01506c9bee0"
       ],
       "preview": [
         0,
@@ -1727,20 +1889,20 @@
         "topologicalPoints": 3,
         "joins": [
           {
-            "id": "constraint_b3c37254-ab2d-4c97-8b94-4d41527137aa",
+            "id": "constraint_e3fec397-bae6-4e39-add7-beac458b888e",
             "refs": [
               {
-                "entityId": "entity_3ee3f793-0428-4b17-9638-413c2c76d8e7",
+                "entityId": "entity_2b1ca915-0cd2-4df4-af4d-6fae903e3ffb",
                 "point": "b"
               },
               {
-                "entityId": "entity_4adb3a36-552f-4e07-8fdd-cb4ce20cab4d",
+                "entityId": "entity_5dba8173-046b-421f-b42c-d01506c9bee0",
                 "point": "a"
               }
             ],
             "pair": [
-              "entity_3ee3f793-0428-4b17-9638-413c2c76d8e7:b",
-              "entity_4adb3a36-552f-4e07-8fdd-cb4ce20cab4d:a"
+              "entity_2b1ca915-0cd2-4df4-af4d-6fae903e3ffb:b",
+              "entity_5dba8173-046b-421f-b42c-d01506c9bee0:a"
             ]
           }
         ]
@@ -1765,7 +1927,7 @@
         ]
       },
       "wasm": [
-        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+        "http://127.0.0.1:50968/wasm/planegcs.d79bb63f.wasm"
       ]
     },
     {
@@ -1774,7 +1936,7 @@
       "status": "PASS",
       "segments": [
         {
-          "id": "entity_622e7d20-2dcb-43e3-8b0b-3e8aed4d8360",
+          "id": "entity_656bfa8c-60f9-40ee-85dc-ca1155833732",
           "lengthText": "40,5",
           "angleText": "30,5",
           "geometry": [
@@ -1785,7 +1947,7 @@
           ]
         },
         {
-          "id": "entity_13ec6e0b-b3c9-4af1-8727-bdfe5e97303e",
+          "id": "entity_5b990162-dcf3-464e-b35b-40014acfbe96",
           "lengthText": "40.5",
           "angleText": "30.5",
           "geometry": [
@@ -1796,13 +1958,64 @@
           ]
         }
       ],
+      "leadingComma": {
+        "keys": [
+          "0",
+          ",",
+          "5"
+        ],
+        "expectedText": "0,5",
+        "noPointerMove": true,
+        "noProgrammaticFocus": true,
+        "before": {
+          "value": null,
+          "selectionStart": null,
+          "selectionEnd": null,
+          "inputFocused": false,
+          "focusedTestId": "part-model-stage",
+          "focusInStage": true,
+          "previewLength": 0,
+          "inputValid": "true"
+        },
+        "afterZero": {
+          "value": "0",
+          "selectionStart": 1,
+          "selectionEnd": 1,
+          "inputFocused": true,
+          "focusedTestId": "fusion-line-length-input",
+          "focusInStage": true,
+          "previewLength": 0,
+          "inputValid": "false"
+        },
+        "afterComma": {
+          "value": "0,",
+          "selectionStart": 2,
+          "selectionEnd": 2,
+          "inputFocused": true,
+          "focusedTestId": "fusion-line-length-input",
+          "focusInStage": true,
+          "previewLength": 0,
+          "inputValid": "false"
+        },
+        "afterFive": {
+          "value": "0,5",
+          "selectionStart": 3,
+          "selectionEnd": 3,
+          "inputFocused": true,
+          "focusedTestId": "fusion-line-length-input",
+          "focusInStage": true,
+          "previewLength": 0.5,
+          "inputValid": "true"
+        },
+        "status": "PASS"
+      },
       "persistedLengths": [
         40.5,
         40.5
       ],
       "absoluteDrivingAngle": "BLOCKED",
       "wasm": [
-        "http://127.0.0.1:50729/wasm/planegcs.d79bb63f.wasm"
+        "http://127.0.0.1:50968/wasm/planegcs.d79bb63f.wasm"
       ]
     }
   ],
@@ -2013,15 +2226,201 @@
   "cleanupErrors": [],
   "ownedServers": [
     {
-      "pid": 6744,
+      "pid": 33452,
       "requestedPort": 0,
       "appRoot": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Sketch-Parity-002-20261106\\dist\\fusion-live",
-      "port": 50729,
-      "origin": "http://127.0.0.1:50729",
-      "startedUTC": "2026-11-07T16:16:17.550Z",
-      "stoppedUTC": "2026-11-07T16:16:58.412Z"
+      "port": 50968,
+      "origin": "http://127.0.0.1:50968",
+      "startedUTC": "2026-11-07T17:29:33.855Z",
+      "stoppedUTC": "2026-11-07T17:30:14.449Z"
     }
   ],
+  "immediateNumericInput": {
+    "afterFirstPoint": {
+      "expectedText": "40",
+      "keys": [
+        "4",
+        "0"
+      ],
+      "noPointerMove": true,
+      "noProgrammaticFocus": true,
+      "before": {
+        "value": null,
+        "selectionStart": null,
+        "selectionEnd": null,
+        "inputFocused": false,
+        "focusedTestId": "part-model-stage",
+        "focusInStage": true,
+        "previewLength": 0,
+        "inputValid": "true"
+      },
+      "beforeEntityIds": [],
+      "afterFirstKey": {
+        "value": "4",
+        "selectionStart": 1,
+        "selectionEnd": 1,
+        "inputFocused": true,
+        "focusedTestId": "fusion-line-length-input",
+        "focusInStage": true,
+        "previewLength": 4,
+        "inputValid": "true"
+      },
+      "afterSecondKey": {
+        "value": "40",
+        "selectionStart": 2,
+        "selectionEnd": 2,
+        "inputFocused": true,
+        "focusedTestId": "fusion-line-length-input",
+        "focusInStage": true,
+        "previewLength": 40,
+        "inputValid": "true"
+      },
+      "afterEntityIds": [],
+      "status": "PASS"
+    },
+    "tabSelectAll": {
+      "expectedReplacement": "45",
+      "expectedRestored": "40",
+      "before": {
+        "value": "40",
+        "selectionStart": 0,
+        "selectionEnd": 2,
+        "inputFocused": true,
+        "focusedTestId": "fusion-line-length-input",
+        "focusInStage": true,
+        "previewLength": 40,
+        "inputValid": "true"
+      },
+      "afterFirstKey": {
+        "value": "4",
+        "selectionStart": 1,
+        "selectionEnd": 1,
+        "inputFocused": true,
+        "focusedTestId": "fusion-line-length-input",
+        "focusInStage": true,
+        "previewLength": 3.999999999999999,
+        "inputValid": "true"
+      },
+      "afterSecondKey": {
+        "value": "45",
+        "selectionStart": 2,
+        "selectionEnd": 2,
+        "inputFocused": true,
+        "focusedTestId": "fusion-line-length-input",
+        "focusInStage": true,
+        "previewLength": 45,
+        "inputValid": "true"
+      },
+      "restored": {
+        "value": "40",
+        "selectionStart": 2,
+        "selectionEnd": 2,
+        "inputFocused": true,
+        "focusedTestId": "fusion-line-length-input",
+        "focusInStage": true,
+        "previewLength": 40,
+        "inputValid": "true"
+      },
+      "status": "PASS"
+    },
+    "afterNumericCommit": {
+      "expectedText": "40",
+      "keys": [
+        "4",
+        "0"
+      ],
+      "noPointerMove": true,
+      "noProgrammaticFocus": true,
+      "before": {
+        "value": null,
+        "selectionStart": null,
+        "selectionEnd": null,
+        "inputFocused": false,
+        "focusedTestId": "part-model-stage",
+        "focusInStage": true,
+        "previewLength": 0,
+        "inputValid": "true"
+      },
+      "beforeEntityIds": [
+        "entity_936234dc-47e6-4c5e-974e-cb907eabc494"
+      ],
+      "afterFirstKey": {
+        "value": "4",
+        "selectionStart": 1,
+        "selectionEnd": 1,
+        "inputFocused": true,
+        "focusedTestId": "fusion-line-length-input",
+        "focusInStage": true,
+        "previewLength": 4.000000000000001,
+        "inputValid": "true"
+      },
+      "afterSecondKey": {
+        "value": "40",
+        "selectionStart": 2,
+        "selectionEnd": 2,
+        "inputFocused": true,
+        "focusedTestId": "fusion-line-length-input",
+        "focusInStage": true,
+        "previewLength": 40.00000000000001,
+        "inputValid": "true"
+      },
+      "afterEntityIds": [
+        "entity_936234dc-47e6-4c5e-974e-cb907eabc494"
+      ],
+      "status": "PASS"
+    },
+    "leadingComma": {
+      "keys": [
+        "0",
+        ",",
+        "5"
+      ],
+      "expectedText": "0,5",
+      "noPointerMove": true,
+      "noProgrammaticFocus": true,
+      "before": {
+        "value": null,
+        "selectionStart": null,
+        "selectionEnd": null,
+        "inputFocused": false,
+        "focusedTestId": "part-model-stage",
+        "focusInStage": true,
+        "previewLength": 0,
+        "inputValid": "true"
+      },
+      "afterZero": {
+        "value": "0",
+        "selectionStart": 1,
+        "selectionEnd": 1,
+        "inputFocused": true,
+        "focusedTestId": "fusion-line-length-input",
+        "focusInStage": true,
+        "previewLength": 0,
+        "inputValid": "false"
+      },
+      "afterComma": {
+        "value": "0,",
+        "selectionStart": 2,
+        "selectionEnd": 2,
+        "inputFocused": true,
+        "focusedTestId": "fusion-line-length-input",
+        "focusInStage": true,
+        "previewLength": 0,
+        "inputValid": "false"
+      },
+      "afterFive": {
+        "value": "0,5",
+        "selectionStart": 3,
+        "selectionEnd": 3,
+        "inputFocused": true,
+        "focusedTestId": "fusion-line-length-input",
+        "focusInStage": true,
+        "previewLength": 0.5,
+        "inputValid": "true"
+      },
+      "status": "PASS"
+    }
+  },
   "nativeLifecycle": {
     "source": "Parent-observed installed Fusion 2706.1.17, captures 11-44",
     "pointerCommit": "continue chain with Line active",
@@ -2053,17 +2452,17 @@
       "reason": "Existing Sketch actions/dimensions/workspace and protected Part regression gates must run separately against the final candidate."
     }
   ],
-  "sourceHead": "c1959b1e84a7c38288022622a9585a38c07d3f7e",
-  "testSourceSha256": "01dedbbdc76fb02aa9934856c77032b15682854596330fa66df666cc7cf6dc08",
+  "sourceHead": "4a007e4fb2806650832c2eb9bae2f508f228ba4d",
+  "testSourceSha256": "a1d3a3acd8273aa5512e0858f9c9b555d92b61bc01b3952a30136266ae1942aa",
   "helperSourceSha256": "6216fa7e0c3b42b91b45ad01dfd8bf418a5da48ecfabc1a4af22e76b2cb89aa7",
   "lineToolSourceSha256": "46a0cd748d639d64b6e611d87bc70b49ece0dd33b082e1b7aa7ca57c76c3f57b",
-  "sourceSnapshotSha256": "d600b707c4a90898cdad30a2123118936cf3bb4ce37f19ee98ad6bc4db0c3b09",
+  "sourceSnapshotSha256": "38bc5a2c67daae5c52eb9bed91659a0a40f211956ab20971b7c58a46e144c812",
   "sourceSnapshotDescriptor": {
     "baseHead": "cb7006efe7a108bc85bcf99d3a3e4a9c2f73568b",
     "delta": [
       {
         "path": "prototypes/fusion/live/LiveLineInput.tsx",
-        "sha256": "1d4cad1996e36f422d8b792a9c4994ce3ceaece05d8493c19596dc1139c1a5c0"
+        "sha256": "c9e167f28853f1ee8b7a1291ab37dac2f293c39a9c75d7f6cf880c76a5834d29"
       },
       {
         "path": "prototypes/fusion/live/LiveLineInteraction.ts",
@@ -2103,14 +2502,10 @@
       }
     ]
   },
-  "nativeCapture": {
-    "path": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Sketch-Parity-002-20261106\\prototypes\\fusion\\evidence\\line-003-native-observed.json",
-    "sha256": "0218cd9a85ddca9ff68e6a8e6579304fd5994d85b7d613bcef067d9ffa9e10ff"
-  },
-  "origin": "http://127.0.0.1:50729",
+  "origin": "http://127.0.0.1:50968",
   "executableChecksStatus": "PASS",
   "acceptanceStatus": "BLOCKED",
   "acceptanceReason": "B absolute driving angle, E atomic segment+inference history, and separate I compatibility gates are not completed by this focused runner.",
   "ownedServersClosed": true,
-  "finishedUTC": "2026-11-07T16:16:58.412Z"
+  "finishedUTC": "2026-11-07T17:30:14.449Z"
 }

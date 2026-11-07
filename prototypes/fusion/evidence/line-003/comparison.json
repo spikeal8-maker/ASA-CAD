@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "task": "FUSION-SKETCH-TOOLS-BEHAVIOR-003",
-  "createdUTC": "2026-11-07T16:17:19.962Z",
+  "createdUTC": "2026-11-07T17:33:11.058Z",
   "acceptance": "BLOCKED_PRODUCT_CONTRACT",
   "pixelParity": "NOT_ACCEPTED",
   "nativeManifestSha256": "0218cd9a85ddca9ff68e6a8e6579304fd5994d85b7d613bcef067d9ffa9e10ff",
-  "candidateReportSha256": "9ec36744f6e79501a57bae1664e11d95aa0745d22a1d6d41956be532be5d35a0",
-  "candidateEvidenceDirectory": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\candidate-mouse-fields-verified",
+  "candidateReportSha256": "b239fe61c9a75f762e1fe50a1d2ce54d06b798d6fdd0a567208d8877088be87a",
+  "candidateEvidenceDirectory": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\resume-immediate-input-fixed-20261107\\focused-canonical",
   "comparisonBoundary": "Semantic lifecycle pairs. Independent documents, coordinates and workplanes; native DPI110 vs browser DPR1. Originals copied byte-for-byte, no resampling or image edits. Screenshots do not prove native constraint IDs.",
   "pairs": [
     {
@@ -191,5 +191,20 @@
       "source": "38-tangent-arc-released.png",
       "sha256": "f3b435701be89a092c524611b019f336daa24c6b19d3838732e4aa47bf7ccba2"
     }
-  ]
+  ],
+  "numericInputRepair": {
+    "defect": "First digit selected on initial input mount at a zero-length anchor; immediate 4 then 0 became 0",
+    "baselineHead": "4a007e4fb2806650832c2eb9bae2f508f228ba4d",
+    "baselineFailureReport": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Captures\\sketch-tools-behavior-003-20261107\\resume-immediate-input-20261107\\fusion-live-line-behavior-checks.json",
+    "baselineFailureReportSha256": "3483f63cf02b57929876e7bf5752dbb785e040b9adf1fe192836cece754f0b11",
+    "baselineFailureCases": [
+      "H.keyboard",
+      "H.numeric-chain"
+    ],
+    "supersededCandidateReportSha256": "9ec36744f6e79501a57bae1664e11d95aa0745d22a1d6d41956be532be5d35a0",
+    "sourceSnapshotSha256": "38bc5a2c67daae5c52eb9bed91659a0a40f211956ab20971b7c58a46e144c812",
+    "fixedInputSha256": "c9e167f28853f1ee8b7a1291ab37dac2f293c39a9c75d7f6cf880c76a5834d29",
+    "canonicalReportSha256": "b239fe61c9a75f762e1fe50a1d2ce54d06b798d6fdd0a567208d8877088be87a",
+    "evidence": "Public ordinary keyboard inputs, pointer continuation, driving dimensions and unchanged Save document after Escape; native acceptance remains BLOCKED"
+  }
 }

@@ -2,13 +2,13 @@
   "schemaVersion": 2,
   "parityRevision": "fusion-sketch-parity-002",
   "status": "PASS",
-  "sourceSnapshotSha256": "d600b707c4a90898cdad30a2123118936cf3bb4ce37f19ee98ad6bc4db0c3b09",
+  "sourceSnapshotSha256": "38bc5a2c67daae5c52eb9bed91659a0a40f211956ab20971b7c58a46e144c812",
   "sourceSnapshotDescriptor": {
     "baseHead": "cb7006efe7a108bc85bcf99d3a3e4a9c2f73568b",
     "delta": [
       {
         "path": "prototypes/fusion/live/LiveLineInput.tsx",
-        "sha256": "1d4cad1996e36f422d8b792a9c4994ce3ceaece05d8493c19596dc1139c1a5c0"
+        "sha256": "c9e167f28853f1ee8b7a1291ab37dac2f293c39a9c75d7f6cf880c76a5834d29"
       },
       {
         "path": "prototypes/fusion/live/LiveLineInteraction.ts",
@@ -53,7 +53,7 @@
   "bindingSourceSha256": "52152eb5e8400a30cc0126a1749fc6dbb7c7d667f4cbd24600c6d40a2040cdb5",
   "referenceCaptureSha256": "18be2710ecd716650df37cf1ecff3ff14ff783ddadbdc5d08c438d8de00a9434",
   "input": "Empty public Fusion route; pointer-built geometry; ribbon/search actions; read-only persisted-document assertions",
-  "origin": "http://127.0.0.1:63732",
+  "origin": "http://127.0.0.1:63915",
   "viewport": {
     "width": 2048,
     "height": 1137,
@@ -76,10 +76,10 @@
       "cancelWithoutMutation": true,
       "solverResidual": 0,
       "entityIds": [
-        "entity_6ac4bdfe-0e38-4abe-bcf0-78539be4625f",
-        "entity_a78da40a-0bc0-4125-a984-54741d64a202"
+        "entity_fa4fec77-3e07-4f7a-89e7-3cbe98aec012",
+        "entity_07be279a-2855-4087-846e-cfa66fd91982"
       ],
-      "constraintId": "constraint_ddbb3808-66e1-4a5f-b25c-fe3b2e414fab",
+      "constraintId": "constraint_4084c937-ac64-4a6d-8fcc-98ce3cdd92bd",
       "pageErrors": []
     },
     {
@@ -95,10 +95,10 @@
       "cancelWithoutMutation": true,
       "solverResidual": 4.1104897263721796e-12,
       "entityIds": [
-        "entity_765111b1-6ec5-45bc-b807-3bff14aa045b",
-        "entity_d8bdc78e-2f02-4b64-a7d9-54fa3399a133"
+        "entity_30e7ccdc-5dde-42fc-9cff-3962c0b02dc4",
+        "entity_a223ea86-7459-4f96-8da0-9a7370739451"
       ],
-      "constraintId": "constraint_b08991e9-325c-458e-b19d-73ed9fffd86e",
+      "constraintId": "constraint_4540da3f-c6f8-4964-8514-72bcbc886274",
       "pageErrors": []
     },
     {
@@ -114,10 +114,10 @@
       "cancelWithoutMutation": true,
       "solverResidual": 4.511946372076636e-13,
       "entityIds": [
-        "entity_4e916b49-2f54-49c3-b5b4-cbbb6390c669",
-        "entity_7b7dc1c8-1cd6-4daf-8164-c78b727526d8"
+        "entity_f8894d51-d14b-4424-832a-29cdee3390fe",
+        "entity_a3e3d541-f057-420d-907f-247e7b99a401"
       ],
-      "constraintId": "constraint_938c4866-4b72-4300-a353-3f44c86c07ab",
+      "constraintId": "constraint_f04669cd-2357-4635-ab86-16b5d6dc2459",
       "pageErrors": []
     },
     {
@@ -133,10 +133,10 @@
       "cancelWithoutMutation": true,
       "solverResidual": 7.1035356242123e-14,
       "entityIds": [
-        "entity_4c4e641f-5311-4e75-8a39-c18755bd596f",
-        "entity_e27702c6-b727-4cc6-9142-bef4b4cb3376"
+        "entity_eb0f5fed-c760-4086-b425-d0de8775f6c7",
+        "entity_cd33da9b-e320-4a28-ba06-fe2ebea7d6d2"
       ],
-      "constraintId": "constraint_9a648350-778c-4146-8792-62350837f2bb",
+      "constraintId": "constraint_a12c710b-5af3-4db2-bd15-759b342a489e",
       "pageErrors": []
     },
     {
@@ -152,10 +152,10 @@
       "cancelWithoutMutation": true,
       "solverResidual": 3.080801819623431e-12,
       "entityIds": [
-        "entity_ac45282b-152b-4bc3-a78a-a1d1fb6d875d",
-        "entity_f1d37b7e-dc38-4aa9-a5e7-b98fed95dfae"
+        "entity_1258fdff-ed33-48ab-b640-6b453c5bf79e",
+        "entity_2fa7dcfd-5bbd-4949-bc3e-0c3e7a653241"
       ],
-      "constraintId": "constraint_69857410-9db7-42fb-a052-1b57fc768eec",
+      "constraintId": "constraint_ce9a0eac-dee1-4443-9256-9e4dd92bed7f",
       "pageErrors": []
     },
     {
@@ -171,10 +171,10 @@
       "cancelWithoutMutation": true,
       "solverResidual": 0,
       "entityIds": [
-        "entity_91ef96ab-a52f-476f-b24c-fe71aff0468e",
-        "entity_d61579cb-ad2a-4ef4-8fbe-f6b5f8cf4424"
+        "entity_f76f40a5-e517-4182-ab2e-18271fb8b1de",
+        "entity_be47e3af-34cc-47e4-b530-03aaeb1a130c"
       ],
-      "constraintId": "constraint_9ff7d6b2-4548-4d71-9fa9-31e85547533a",
+      "constraintId": "constraint_5865fa45-dec6-445e-89b2-d963d5920569",
       "pageErrors": []
     },
     {
@@ -190,11 +190,11 @@
       "cancelWithoutMutation": true,
       "solverResidual": 5.327062245741e-11,
       "entityIds": [
-        "entity_522f2741-62f1-49ff-82eb-52959e26fd8f",
-        "entity_137f7852-33f3-4b8d-8230-c22e2587eb54",
-        "entity_6fba6c90-132b-483d-86ae-3eebabb5766d"
+        "entity_2d8342c3-fd41-4b92-b1af-762a72b7086c",
+        "entity_9edcd510-afaf-4585-ad3d-2f94693dcebb",
+        "entity_de047556-4ba1-42e4-a7a0-d4897d0ad8b8"
       ],
-      "constraintId": "constraint_324cbbc6-7e91-4442-9447-15776a16fb44",
+      "constraintId": "constraint_a330bfc4-8c1c-4b97-b459-f6bb6f462bdb",
       "pageErrors": []
     },
     {
@@ -210,10 +210,10 @@
       "cancelWithoutMutation": true,
       "solverResidual": 5.21646588520831e-15,
       "entityIds": [
-        "entity_afb5fb62-e4b9-46c2-aa56-7030d79ab45f",
-        "entity_b69e8a7d-0d0e-4976-8918-e058139f68e2"
+        "entity_161fb7b2-524c-471b-9cad-ad63b1f6c2f0",
+        "entity_bd9b9951-0bd1-405b-94d1-a6dee1d88c29"
       ],
-      "constraintId": "constraint_ff216a9c-8d6f-41da-baf3-8b2d53f00ff1",
+      "constraintId": "constraint_dbfa6fe9-e481-40e7-bbcf-a199f76d83e8",
       "pageErrors": []
     },
     {
@@ -230,9 +230,9 @@
       "rejectsDrag": true,
       "duplicateDisabled": true,
       "entityIds": [
-        "entity_deb2542e-f447-4b64-8214-657ff0968015"
+        "entity_9b2524b4-4843-4d0e-8636-434f7d61077f"
       ],
-      "constraintId": "constraint_5264a28c-80e5-4a04-8323-90f6d130db07",
+      "constraintId": "constraint_35a0ffa5-b5cb-473d-8831-1b8e536fe6cc",
       "pageErrors": []
     },
     {
@@ -247,9 +247,9 @@
       "invalidValueRejected": true,
       "cancelWithoutMutation": true,
       "entityIds": [
-        "entity_f99dfb12-f7ce-48a5-a477-6700b73cacbb"
+        "entity_414f6f15-97ae-411d-aabb-06a9e2cf8601"
       ],
-      "dimensionId": "dimension_784a1ae4-b424-4065-891f-d23059383583",
+      "dimensionId": "dimension_a92eed7c-32b4-4343-b0a7-888ccc22be73",
       "initial": 20.000001290383864,
       "value": 32,
       "editedValue": 38,
@@ -269,9 +269,9 @@
       "invalidValueRejected": true,
       "cancelWithoutMutation": true,
       "entityIds": [
-        "entity_d4b83f96-922d-4a25-b19d-a66079855bb9"
+        "entity_1483f17e-aeb6-4c04-b8a2-7d6d08ccf96e"
       ],
-      "dimensionId": "dimension_3ce87a32-b257-4968-8560-53bebbaef87d",
+      "dimensionId": "dimension_f792f7b2-981c-4cb6-ac07-f7939577ab36",
       "initial": 5.000001935575774,
       "value": 24,
       "editedValue": 30,
@@ -291,9 +291,9 @@
       "invalidValueRejected": true,
       "cancelWithoutMutation": true,
       "entityIds": [
-        "entity_9ac81ee6-a705-4b0f-9dc3-e4ce2e3ad05a"
+        "entity_1afa175a-c8a8-466b-81c3-0e9325551251"
       ],
-      "dimensionId": "dimension_5edf586f-eb4f-4967-83fe-012b467ffd58",
+      "dimensionId": "dimension_a3d5df31-7d06-47b8-a9ee-7ef1e493b534",
       "initial": 8.000005677688947,
       "value": 12,
       "editedValue": 15,
@@ -313,10 +313,10 @@
       "invalidValueRejected": true,
       "cancelWithoutMutation": true,
       "entityIds": [
-        "entity_5f2bace4-02dc-4f9d-9af2-92b1ae8de681",
-        "entity_21bf3002-6e18-4f18-b0f0-57de3f626a78"
+        "entity_2eed11a2-6026-4773-a545-0e2d03e02abe",
+        "entity_defc8932-3bea-4cd7-b8fa-9d1bfc7ee950"
       ],
-      "dimensionId": "dimension_ee330ccf-de3c-4cb1-90c2-1bed09444ae4",
+      "dimensionId": "dimension_6ecd7deb-4a0b-417c-a9c2-a4566485035a",
       "initial": 37.99874822455656,
       "value": 60,
       "editedValue": 45,
@@ -333,8 +333,8 @@
       "undoRedo": true,
       "saveReopen": true,
       "disabledWithoutGeometry": true,
-      "deletedEntityId": "entity_b409dcc5-75d1-4cbb-a17d-0fa55252e854",
-      "retainedEntityId": "entity_60ec9896-65fb-421b-8855-25d974e15cf0",
+      "deletedEntityId": "entity_b9845aa3-cefc-46ee-874b-b15a8459a436",
+      "retainedEntityId": "entity_66764775-e513-48f3-9519-3621f4bcdf8c",
       "dependentConstraintAndDimensionRemoved": true,
       "undoRestoresAllStableIds": true,
       "pageErrors": []
@@ -352,7 +352,7 @@
     },
     {
       "file": "fusion-live-sketch-actions-symmetric.png",
-      "sha256": "c8d286f4ef19485218eb5c45c107a1d53a0c25fd196ac68aa0b7356c69c43d50",
+      "sha256": "00d06f87ed3aa2425d8d60acd3f568e057aa98384f459212ac4ccfacb8426456",
       "viewport": {
         "width": 2048,
         "height": 1137,

@@ -34,6 +34,7 @@ const report = {
   visualParityAccepted: false, behaviorParityAccepted: false,
   viewport: { ...viewport, dpr: 1 }, cases: [], screenshots: [],
   pageErrors: [], requestFailures: [], cleanupErrors: [], ownedServers: [],
+  immediateNumericInput: {},
   nativeLifecycle: {
     source: 'Parent-observed installed Fusion 2706.1.17, captures 11-44',
     pointerCommit: 'continue chain with Line active',
@@ -360,6 +361,48 @@ async function publicOpen(page, count) {
   await solved(page, count);
 }
 
+async function numericTypingState(page) {
+  return page.evaluate(() => {
+    const input = document.querySelector('[data-testid="fusion-line-length-input"]');
+    const preview = document.querySelector('[data-testid="sketch-line-ghost"]');
+    const point = preview ? ['x1', 'y1', 'x2', 'y2'].map(name => Number(preview.getAttribute(name))) : null;
+    return {
+      value: input?.value ?? null,
+      selectionStart: input?.selectionStart ?? null, selectionEnd: input?.selectionEnd ?? null,
+      inputFocused: !!input && document.activeElement === input,
+      focusedTestId: document.activeElement?.getAttribute('data-testid') ?? null,
+      focusInStage: !!document.activeElement?.closest('[data-testid="part-model-stage"]'),
+      previewLength: point ? Math.hypot(point[2] - point[0], point[3] - point[1]) : 0,
+      inputValid: document.querySelector('[data-testid="fusion-line-dynamic-input"]')?.getAttribute('data-input-valid'),
+    };
+  });
+}
+
+async function immediateLength40(page, slot) {
+  const observation = report.immediateNumericInput[slot] = {
+    expectedText: '40', keys: ['4', '0'], noPointerMove: true, noProgrammaticFocus: true,
+    before: await numericTypingState(page), beforeEntityIds: await entityIds(page),
+  };
+  assert.equal(observation.before.value, null, 'The zero-length draft has no pre-existing numeric input');
+  near(observation.before.previewLength, 0, 'Immediate typing starts at the anchor without pointer preview', 1e-8);
+  assert.equal(observation.before.focusInStage, true, 'The public anchor or commit leaves normal focus in the Sketch stage');
+  await page.keyboard.press('4');
+  await lengthInput(page).waitFor({ state: 'visible' });
+  await page.waitForFunction(() => document.activeElement
+    === document.querySelector('[data-testid="fusion-line-length-input"]'));
+  observation.afterFirstKey = await numericTypingState(page);
+  await page.keyboard.press('0');
+  observation.afterSecondKey = await numericTypingState(page);
+  observation.afterEntityIds = await entityIds(page);
+  assert.equal(observation.afterFirstKey.value, '4', 'The first ordinary key is retained');
+  assert.equal(observation.afterSecondKey.value, '40', 'Immediate ordinary keys 4 then 0 must retain both digits');
+  assert.equal(observation.afterSecondKey.inputFocused, true, 'New numeric input receives normal focus');
+  near(observation.afterSecondKey.previewLength, 40, 'Immediate typing previews the full 40 mm length', 1e-4);
+  assert.deepEqual(observation.afterEntityIds, observation.beforeEntityIds, 'Numeric typing creates no real entity');
+  observation.status = 'PASS';
+  return observation;
+}
+
 async function numericInput(page, length, angle, nativePairPrefix = null) {
   await interaction(page).focus();
   await page.keyboard.type(length);
@@ -655,8 +698,9 @@ try {
 
   await runCase('H.keyboard', 'L, real typing, Tab locks, invalid values, rapid Enter, and pointer double commit', async page => {
     const empty = await save(page);
-    await startLine(page, true); await pointerWorld(page, [-20, -10]); await pointerWorld(page, [0, 10], 'move');
-    await interaction(page).focus(); await page.keyboard.type('0'); await page.keyboard.press('Tab');
+    await startLine(page, true); await pointerWorld(page, [-20, -10]);
+    const immediateTyping = await immediateLength40(page, 'afterFirstPoint');
+    await page.keyboard.press('Control+A'); await page.keyboard.press('0'); await page.keyboard.press('Tab');
     assert.equal(await fields(page).getAttribute('data-input-valid'), 'false', 'Zero length is rejected visibly');
     await page.keyboard.press('Enter');
     await waitLine(page, 'anchored');
@@ -669,6 +713,20 @@ try {
     await page.keyboard.press('Shift+Tab');
     assert.equal(await lengthInput(page).evaluate(node => document.activeElement === node), true, 'Shift+Tab returns to length');
     assert.equal(await fields(page).getAttribute('data-angle-locked'), 'true', 'Leaving the angle field locks it');
+    await page.keyboard.press('Tab'); await page.keyboard.press('Tab');
+    const tabReplacement = report.immediateNumericInput.tabSelectAll = {
+      expectedReplacement: '45', expectedRestored: '40', before: await numericTypingState(page),
+    };
+    assert.equal(tabReplacement.before.inputFocused, true, 'Ordinary Tab returns to the existing edited length field');
+    assert.equal(tabReplacement.before.value, '40');
+    await page.keyboard.press('4'); tabReplacement.afterFirstKey = await numericTypingState(page);
+    await page.keyboard.press('5'); tabReplacement.afterSecondKey = await numericTypingState(page);
+    assert.equal(tabReplacement.afterFirstKey.value, '4', 'Returning with Tab selects the existing edited value');
+    assert.equal(tabReplacement.afterSecondKey.value, '45', 'Ordinary keys replace 40 with 45 instead of appending 4045');
+    await page.keyboard.press('Control+A'); await page.keyboard.press('4'); await page.keyboard.press('0');
+    tabReplacement.restored = await numericTypingState(page);
+    assert.equal(tabReplacement.restored.value, '40', 'Ctrl+A and ordinary keys restore the requested 40 mm');
+    tabReplacement.status = 'PASS';
     await pointerWorld(page, [30, -25], 'move');
     const lockedPreview = await ghost(page);
     near(Math.hypot(lockedPreview[2] - lockedPreview[0], lockedPreview[3] - lockedPreview[1]), 40,
@@ -700,12 +758,12 @@ try {
     await screenshot(page, 'H-no-double-commit');
     return { lShortcut: true, typedFromField: true, tabFocusAndLengthLock: true, shiftTabFocus: true,
       invalidValueNoMutation: true, adjacentEnterEntityCount: 1, doubleClickTotalEntityCount: 2,
-      doubleClickState, ids, actual, lockedPreview, nativeDoubleClickLifecycle: 'PASS' };
+      doubleClickState, ids, actual, lockedPreview, immediateTyping, tabReplacement, nativeDoubleClickLifecycle: 'PASS' };
   });
 
   await runCase('H.numeric-chain', 'Numeric pointer commit continues the chain with reset locks and real driving length', async page => {
     const from = [-20, -10], firstTo = [from[0] + 40 * Math.cos(Math.PI / 6), from[1] + 20];
-    const nextTo = [35, -15];
+    const nextPick = [35, -15];
     await startLine(page); await pointerWorld(page, from); await pointerWorld(page, [0, 5], 'move');
     await numericInput(page, '40', '30');
     await page.keyboard.press('Tab');
@@ -723,13 +781,22 @@ try {
     assert.equal(await fields(page).getAttribute('data-angle-locked'), 'false', 'The next segment has a fresh angle input');
     await screenshot(page, 'H-numeric-click-continues');
 
-    await pointerWorld(page, nextTo, 'move');
+    const immediateTyping = await immediateLength40(page, 'afterNumericCommit');
+    await page.keyboard.press('Tab');
+    assert.equal(await fields(page).getAttribute('data-length-locked'), 'true', 'The second 40 mm value locks normally');
+    assert.equal(await fields(page).getAttribute('data-angle-locked'), 'false', 'The previous angle lock is not inherited');
+    const rawDistance = Math.hypot(nextPick[0] - firstLine[2], nextPick[1] - firstLine[3]);
+    const nextTo = [firstLine[2] + 40 * (nextPick[0] - firstLine[2]) / rawDistance,
+      firstLine[3] + 40 * (nextPick[1] - firstLine[3]) / rawDistance];
+    await pointerWorld(page, nextPick, 'move');
     const nextPreview = await ghost(page);
     near(nextPreview[0], firstLine[2], 'The continued numeric chain uses the solved endpoint X', 1e-4);
     near(nextPreview[1], firstLine[3], 'The continued numeric chain uses the solved endpoint Y', 1e-4);
-    near(nextPreview[2], nextTo[0], 'The reset numeric length does not alter the next pointer endpoint X', 0.02);
-    near(nextPreview[3], nextTo[1], 'The reset numeric angle does not alter the next pointer endpoint Y', 0.02);
-    await pointerWorld(page, nextTo);
+    near(nextPreview[2], nextTo[0], 'Immediate length input preserves the new pointer direction X', 0.02);
+    near(nextPreview[3], nextTo[1], 'Immediate length input preserves the new pointer direction Y', 0.02);
+    near(Math.hypot(nextPreview[2] - nextPreview[0], nextPreview[3] - nextPreview[1]), 40,
+      'The continuation keeps all digits of its newly typed length', 1e-4);
+    await pointerWorld(page, nextPick);
     const ids = await waitCommit(page, 2);
     assert.deepEqual(ids.slice(0, 1), firstIds, 'The numeric segment retains its ID during continuation');
     await numericGeometry(page, firstIds[0], from, 40, 30);
@@ -739,17 +806,36 @@ try {
     assert.equal(topology.topologicalPoints, 3);
     assert.equal(beforeEscape.constraints.length, 1, 'Two segments have exactly one intrinsic chain coincidence');
     assert.equal(beforeEscape.constraints[0].type, 'coincident');
-    assert.equal(beforeEscape.dimensions.length, 1, 'The numeric pointer commit creates one real length dimension');
-    const drivingLength = beforeEscape.dimensions[0];
-    assert.equal(drivingLength.type, 'linear'); assert.equal(drivingLength.driving, true);
-    near(drivingLength.value, 40, 'The first segment keeps its persisted driving length', 1e-8);
-    assert.deepEqual(drivingLength.entityIds, firstIds);
+    assert.equal(beforeEscape.dimensions.length, 2, 'Each numeric pointer commit creates exactly one real length dimension');
+    const drivingLengths = ids.map(id => {
+      const dimensions = beforeEscape.dimensions.filter(value => value.entityIds.includes(id));
+      assert.equal(dimensions.length, 1, 'Each real segment has its own single length dimension');
+      const dimension = dimensions[0];
+      assert.equal(dimension.type, 'linear'); assert.equal(dimension.driving, true);
+      near(dimension.value, 40, 'Both segments persist the full typed driving length', 1e-8);
+      assert.deepEqual(dimension.entityIds, [id]);
+      return dimension;
+    });
     const solver = await solverTopology(page, ids);
-    await interaction(page).focus(); await escapeLine(page);
+    const freeContinuation = {
+      pointer: [-25, 25], lengthLocked: await fields(page).getAttribute('data-length-locked'),
+      angleLocked: await fields(page).getAttribute('data-angle-locked'),
+    };
+    assert.equal(freeContinuation.lengthLocked, 'false', 'The third preview starts with reset length lock');
+    assert.equal(freeContinuation.angleLocked, 'false', 'The third preview starts with reset angle lock');
+    await pointerWorld(page, freeContinuation.pointer, 'move');
+    freeContinuation.preview = await ghost(page);
+    near(freeContinuation.preview[0], actual[1][2], 'Free continuation starts at the second solved endpoint X', 1e-4);
+    near(freeContinuation.preview[1], actual[1][3], 'Free continuation starts at the second solved endpoint Y', 1e-4);
+    near(freeContinuation.preview[2], freeContinuation.pointer[0], 'Reset numeric length follows the free pointer endpoint X', 0.02);
+    near(freeContinuation.preview[3], freeContinuation.pointer[1], 'Reset numeric angle follows the free pointer endpoint Y', 0.02);
+    freeContinuation.entityIds = await entityIds(page);
+    assert.deepEqual(freeContinuation.entityIds, ids, 'Free continuation remains a preview with exactly two real entities');
+    await escapeLine(page);
     assert.deepEqual(await entityIds(page), ids, 'Escape preserves exactly two real committed segments');
     assert.deepEqual(await save(page), beforeEscape, 'Escape changes no geometry, coincidence, or driving length');
     return { ids, firstLine, firstContinuedState, resetNumericLocks: true, nextPreview, actual,
-      topology, solver, drivingLength, numericPointerContinuation: true, escapePreservesDocument: true,
+      topology, solver, drivingLengths, immediateTyping, freeContinuation, numericPointerContinuation: true, escapePreservesDocument: true,
       absoluteDrivingAngle: 'BLOCKED' };
   });
 
@@ -1016,6 +1102,27 @@ try {
   });
 
   await runCase('H.locale', 'Comma and dot numeric entry use the same actual values', async page => {
+    const empty = await save(page);
+    await startLine(page); await pointerWorld(page, [-10, -20]);
+    const leadingComma = report.immediateNumericInput.leadingComma = {
+      keys: ['0', ',', '5'], expectedText: '0,5', noPointerMove: true, noProgrammaticFocus: true,
+      before: await numericTypingState(page),
+    };
+    assert.equal(leadingComma.before.value, null);
+    near(leadingComma.before.previewLength, 0, 'Comma entry starts with no pointer preview', 1e-8);
+    assert.equal(leadingComma.before.focusInStage, true);
+    await page.keyboard.press('0'); leadingComma.afterZero = await numericTypingState(page);
+    await page.keyboard.press(','); leadingComma.afterComma = await numericTypingState(page);
+    await page.keyboard.press('5'); leadingComma.afterFive = await numericTypingState(page);
+    assert.equal(leadingComma.afterZero.value, '0', 'The zero prefix remains editable before a positive length exists');
+    assert.equal(leadingComma.afterComma.value, '0,', 'The decimal separator preserves the initial zero');
+    assert.equal(leadingComma.afterFive.value, '0,5', 'Ordinary zero/comma/five keys retain the complete decimal value');
+    assert.equal(leadingComma.afterFive.inputFocused, true);
+    near(leadingComma.afterFive.previewLength, 0.5, 'Leading-comma input previews half a millimetre', 1e-4);
+    assert.deepEqual(await entityIds(page), [], 'Editing a decimal preview creates no real entity');
+    await escapeLine(page);
+    assert.deepEqual(await save(page), empty, 'Escape cancels the decimal preview without changing the document');
+    leadingComma.status = 'PASS';
     const segments = [];
     for (const [lengthText, angleText, from] of [['40,5', '30,5', [-35, -25]], ['40.5', '30.5', [-35, 5]]]) {
       await startLine(page); await pointerWorld(page, from); await pointerWorld(page, [from[0] + 10, from[1] + 5], 'move');
@@ -1030,7 +1137,7 @@ try {
       const dimensions = document.dimensions.filter(value => value.type === 'linear' && value.driving === true && value.entityIds.includes(id));
       assert.equal(dimensions.length, 1); near(dimensions[0].value, 40.5, 'Locale-independent persisted driving length');
     }
-    return { segments, persistedLengths: document.dimensions.filter(value => value.type === 'linear').map(value => value.value),
+    return { segments, leadingComma, persistedLengths: document.dimensions.filter(value => value.type === 'linear').map(value => value.value),
       absoluteDrivingAngle: 'BLOCKED' };
   });
 
