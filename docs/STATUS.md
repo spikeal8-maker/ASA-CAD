@@ -4,40 +4,36 @@
 
 ## Действующая точка
 
-**Checkpoint = U2, IN_PROGRESS. Full Repository Health Audit = YELLOW_ACCEPTED** после #217, merge `20603c34f277dc9f0cf2696f5bd3971dd7645678`: 4/4 PR и 5/5 post-merge jobs SUCCESS. [Единый отчёт](FULL_REPOSITORY_HEALTH_AUDIT.md) фиксирует audited product `128480e`. Контролёр — ChatGPT `/root`; owner product acceptance PENDING.
+**Следующий checkpoint = Full Repository Health Audit, IN_PROGRESS.** Переключение в этом dependency PR вступает в силу после технической приёмки и merge: #218, #219 и этот repair дают 3/3 accepted slices после #217. До merge приняты 2/3. Новая U2 feature work ждёт повторного GREEN / явно принятого YELLOW.
 
-U2: настоящий Sketch-in-Viewport, Line/Rectangle/Circle/Arc и числовой ввод через существующие product commands. Acceptance: Part → XY → Sketch → Rectangle 60×40 → Undo/Redo → Save/Open → те же intent/IDs. Затем U3 → U4 → U5. Работающие К1/U1 заново не реализуются.
+#217 остаётся историческим YELLOW_ACCEPTED: audited product `128480e1a150253359ce44158d5588f6b08f27b8`, merge `20603c34f277dc9f0cf2696f5bd3971dd7645678`. [Единый отчёт](FULL_REPOSITORY_HEALTH_AUDIT.md) и raw evidence сохранены; текущий повторный аудит PENDING, старое принятие его не заменяет.
+
+После аудита продолжается U2: настоящий Sketch-in-Viewport, Line/Rectangle/Circle/Arc и числовой ввод через product commands. Acceptance: Part → XY → Sketch → Rectangle 60×40 → Undo/Redo → Save/Open → те же intent/IDs. Затем U3 → U4 → U5.
 
 ## Канон и принятая база
 
-- Принятая integration-база: `6efe79c27c497aabd4ec31c8c61c63586fc26011` (#218) — одна продуктовая оболочка `src/web/kompas` для desktop/tablet/phone, без legacy fallback.
-- Main: `1f8d2627da7ddfa63b31876d46347d0b8080c154`, прежняя версия без текущих repairs. Main/production не обновлены.
-- Frozen reference #170: tag `ui-reference-20261004`, SHA `88c535c652dac8b04f0d68fa144cf8486afdc926`; UI/UX reference, не второе CAD-ядро.
-- CadDocument/CadApplication/history → typed actions/ASA adapters → PlaneGCS/solved profile/OpenCascade B-Rep; Three.js отображает результат.
-- six document kinds: Part, Assembly, Drawing, Fragment, Specification, Text. Реальная готовность редакторов различается.
+- Integration: `8684b56aff2a24d46458741249d27dd08f59b292` (#219), одна оболочка `src/web/kompas` для desktop/tablet/phone.
+- Main: `1f8d2627da7ddfa63b31876d46347d0b8080c154`; main/production отдельно.
+- Frozen #170: `ui-reference-20261004`, `88c535c652dac8b04f0d68fa144cf8486afdc926`; UI/UX reference.
+- CadDocument/CadApplication/history → typed actions/ASA adapters → PlaneGCS/OpenCascade B-Rep; Three.js отображает результат.
+- Six kinds: Part, Assembly, Drawing, Fragment, Specification, Text; готовность редакторов различается.
 
-U1A/U1B/U1C объединены в #195/#196; #202 закрепил responsive KOMPAS. Приняты #209 (CI runner), #208 (LEGACY-CLEANUP-202), #210–#216 (refs, async/recovery, topology, solved profiles и Fixed). Подробные результаты и hashes сохранены в canonical audit report.
+U1A/U1B/U1C приняты #195/#196, responsive KOMPAS #202, LEGACY-CLEANUP-202 #208. Repairs #210–#216 и исходные findings сохранены в canonical audit report. Работающие K1/U1 не реализуются повторно.
 
-Repairs приняты после exact CI и независимого review. Final visual/theme parity PENDING; #213 — закрытый предшественник #215.
+## Maintenance и долги
 
-## Аудит и обязательный долг
+- WEB-TYPES закрыт #218: 8 → 0 diagnostics, 183 physical roots/fixtures в постоянном `typecheck:web`; CI 9/9, post-merge 8/8.
+- VENDOR-LIFETIME закрыт #219: один corpus14 на реальном OCC, 451 live owning wrappers → 0; mandatory M1 Protected Part, CI 5/5, post-merge 6/6. Это scoped proof; bounded native heap не заявляется.
+- Этот npm repair закрывает HA-20261107-DEPENDENCIES после CI/review/merge: 16 affected entries / 21 GHSA → audit total 0. Чистая установка и сборки PASS; lint до/после побайтово одинаков: 154 файла, 0 ошибок, 43 предупреждения. Новый CI guard проверяет полный набор файлов; browser/visual jobs запускаются при package/lock delta.
 
-STANDARD measurement на общей базе: 10 phases, 106 samples, 20 warmups, correctness PASS. Raw evidence и воспроизводимый harness сохранены в отчёте. Browser cold-start, SLO и native-heap cleanliness не заявляются.
+Повторный аудит заново привяжет correctness, types, dependencies, native lifetime и STANDARD performance к принятому HEAD. Исторические 10 phases / 106 samples / 20 warmups не объявляются новым измерением. Browser cold-start и SLO не заявляются.
 
-Full-web debt закрыт #218: 8 → 0 diagnostics, все 183 physical roots и fixtures в постоянном `typecheck:web`. Exact CI 9/9 SUCCESS, independent APPROVE; четыре actual PNG пары до/после одинаковы. M2 gate покрывает также vendor source/типы; frozen ceilings понижены.
+Отдельный OPEN finding: `NODE_TOOLCHAIN_EOL_AND_SECURITY_PATCH_GAP`. CI/Docker build используют Node 20.19.0 ([ветка EOL 30.04.2026](https://raw.githubusercontent.com/nodejs/Release/main/schedule.json)); D2 22.23.3 отстаёт от [security patch 22.23.4](https://nodejs.org/en/blog/release/v22.23.4). Ответственный ChatGPT `/root`; классификация и repair gate — в повторном аудите до возобновления U2. ASA-specific exploit reachability не доказана.
 
-Vendor StableRef lifetime закрывается этим repair после exact CI/review/merge: один и тот же corpus14 на реальном OCC, 451 live owning wrappers → 0; успех/ошибки и borrowed solid проверены. Тест включён в обязательный M1 Protected Part. Это scoped lifetime proof, не оценка всего native heap.
-
-Остаётся OPEN долг, ответственный ChatGPT `/root`; устранить до приёмки U2 / следующей milestone boundary:
-
-- Toolchain: 16 affected package entries / 21 GHSA. Static runtime intersection 0 не закрывает High findings.
-
-Frozen owners не растут; новый долг/ответственность сверх pressure policy запрещены. LICENSE/THIRD_PARTY_NOTICE остаётся pre-beta gate. `DETECT_ONLY` / `ADMIN_BRANCH_PROTECTION_NOT_ENFORCED` — `KNOWN_RISK`, не ENFORCED и по действующему разрешению не запрет U2.
-
-Cadence от #217: #218 = 1/3; этот repair станет 2/3 после приёмки. Третий accepted slice требует Full Audit до продолжения feature work.
+Frozen owners не растут. LICENSE/THIRD_PARTY_NOTICE — pre-beta gate. `DETECT_ONLY` / `ADMIN_BRANCH_PROTECTION_NOT_ENFORCED` остаётся KNOWN_RISK.
 
 ## Очередь и полномочия
 
-#177 — reuse после exact review; #179 — отдельный Drawing/schema candidate; #204–#207 — отдельная Fusion Draft очередь. Installer не запускался, пользовательские документы/8099 не изменены.
+Numeric Line draft с ordinary-user и actual before/after evidence сохранён; его feature PR ждёт аудита. #177 — reuse после review; #179 — отдельный Drawing candidate; #204–#207 — отдельная Fusion Draft очередь. Installer не запускался, пользовательские документы и порты 8094/8098/8099 не изменены.
 
-Действует `OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008`: Draft PR в integration, exact CI, ordinary-user proof, независимый review, затем технический merge без повторного разрешения. Integration → main, production, final visual parity и изменение продуктовой цели требуют отдельного решения владельца.
+`OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008`: Draft PR в integration → exact CI/ordinary-user proof/независимый review → технический merge. Во время Full Audit разрешены только подтверждённые P0/RED fixes и essential regression repairs. Integration → main, production, final visual parity и смена продуктовой цели требуют решения владельца; owner acceptance PENDING.

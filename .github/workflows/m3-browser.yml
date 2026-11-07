@@ -4,6 +4,8 @@ on:
   push:
     branches: [main, integration/ui-core-unification]
     paths:
+      - vendor/toubkal/package.json
+      - vendor/toubkal/package-lock.json
       - tests/visual/**
       - src/**
       - build/**
@@ -13,6 +15,8 @@ on:
       - .github/workflows/m3-browser.yml
   pull_request:
     paths:
+      - vendor/toubkal/package.json
+      - vendor/toubkal/package-lock.json
       - tests/visual/**
       - src/**
       - build/**

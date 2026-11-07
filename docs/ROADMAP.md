@@ -69,7 +69,7 @@ Acceptance U1:
 
 PR CI #195 = 9/9 SUCCESS; PR #196 проверен GitHub Actions до merge. Это **code integration**, не независимая финальная архитектурная/визуальная приёмка. Отдельные уникальные части PR #177 и Drawing #179 остаются на рассмотрении. `U1A` больше не активный продуктовый checkpoint.
 
-**Текущий NEXT = U2.** Post-U1 Full Repository Health Audit на `128480e1a150253359ce44158d5588f6b08f27b8` получил техническое решение YELLOW_ACCEPTED контролёра ChatGPT `/root`: [canonical report](FULL_REPOSITORY_HEALTH_AUDIT.md). Переход вступает в силу после технического merge PR отчёта. Три открытых долга устраняются до U2 acceptance / следующей milestone boundary, без роста; vendor lifetime также до расширения paths. Owner product/visual acceptance и перенос в main отдельно. Исторические U1A/U1B/U1C не запускаются повторно.
+**Текущий NEXT после принятия dependency repair = повторный Full Repository Health Audit.** #218 (full-web types), #219 (StableRef lifetime) и этот npm repair составляют 3/3 accepted slices после #217. До его merge приняты 2/3; после merge U2 feature work ждёт нового GREEN / явно принятого YELLOW. Исторический #217 на `128480e1a150253359ce44158d5588f6b08f27b8` остаётся YELLOW_ACCEPTED: [canonical report](FULL_REPOSITORY_HEALTH_AUDIT.md). Повторный аудит проверит новую общую базу и отдельный Node support/patch gap; старое принятие не заменяет новое. После аудита продолжается U2 → U3 → U4 → U5. Owner product/visual acceptance и перенос в main отдельно; U1A/U1B/U1C повторно не запускаются.
 
 ### Обязательный gate после U1
 

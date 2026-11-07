@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "initiative": "UI-CORE-UNIFICATION-001",
   "issue": 184,
-  "currentCheckpoint": "U2",
+  "currentCheckpoint": "FULL_REPOSITORY_HEALTH_AUDIT",
   "baseBranch": "integration/ui-core-unification",
   "baseHeadPolicy": "RESOLVE_LIVE_AND_GUARD",
   "uiReference": {
@@ -11,7 +11,7 @@
     "sha": "88c535c652dac8b04f0d68fa144cf8486afdc926",
     "frozen": true
   },
-  "productCodeStartAllowed": true,
+  "productCodeStartAllowed": false,
   "blocker": null,
   "canonicalDocuments": [
     "docs/DEVELOPMENT_QUALITY_GATES.md",
@@ -19,18 +19,20 @@
     "docs/STATUS.md"
   ],
   "scope": [
-    "U2 real Sketch-in-Viewport through existing product commands",
-    "Line, Rectangle, Circle and Arc with numeric entry derived from frozen reference",
-    "Part -> XY -> Sketch -> Rectangle 60x40 -> Undo/Redo -> Save/Open with stable intent/IDs",
-    "Resolve accepted audit debts before U2 technical acceptance; no debt growth",
-    "Exact-head CI, real ordinary-user flow, independent read-only review and integration PR"
+    "Repeat the Full Repository Health Audit after acceptance of #218, #219 and the dependency repair",
+    "Bind correctness, full-web types, dependencies, native lifetime and STANDARD performance evidence to the exact accepted integration HEAD",
+    "Preserve the accepted #217 report and evidence until the repeated audit is reviewed and accepted",
+    "Classify the confirmed Node toolchain support and security patch gap without assuming ASA-specific exploit reachability",
+    "Repair confirmed P0/RED defects and essential regressions only",
+    "Require exact-head CI, independent read-only review and a focused audit PR"
   ],
   "outOfScope": [
     "Automatic merge of #170 prototype runtime, #177/#179 or Fusion #204-#207 candidates",
     "U3-U5 expansion without the preceding checkpoint technical gates",
-    "Integration-to-main, production deployment and final visual parity without owner decision"
+    "Integration-to-main, production deployment and final visual parity without owner decision",
+    "U2-U5 product feature work before acceptance of the repeated Full Repository Health Audit"
   ],
-  "nextCheckpoint": "U3",
+  "nextCheckpoint": "U2",
   "developmentAuthorization": "OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008",
   "checkpointTechnicalStatus": "IN_PROGRESS",
   "ownerProductAcceptance": "PENDING",
@@ -43,6 +45,13 @@
     "mergeSha": "e37650f08d9e2fa6cf13ceb6a09ecd8e8a568c15"
   },
   "fullRepositoryHealthAudit": {
+    "outcome": "PENDING",
+    "report": "docs/FULL_REPOSITORY_HEALTH_AUDIT.md",
+    "openDebtIds": [
+      "NODE_TOOLCHAIN_EOL_AND_SECURITY_PATCH_GAP"
+    ]
+  },
+  "previousFullRepositoryHealthAudit": {
     "outcome": "YELLOW_ACCEPTED",
     "auditBaseSha": "e37650f08d9e2fa6cf13ceb6a09ecd8e8a568c15",
     "auditedSha": "128480e1a150253359ce44158d5588f6b08f27b8",
@@ -53,5 +62,7 @@
       "HA-20261107-DEPENDENCIES"
     ],
     "debtGate": "BEFORE_U2_TECHNICAL_ACCEPTANCE_OR_NEXT_MILESTONE_BOUNDARY; VENDOR_LIFETIME_BEFORE_PATH_EXPANSION_IF_EARLIER"
-  }
+  },
+  "auditRepairAllowed": true,
+  "auditRepairScope": "CONFIRMED_P0_RED_DEFECTS_AND_ESSENTIAL_REGRESSION_FIXES_ONLY"
 }

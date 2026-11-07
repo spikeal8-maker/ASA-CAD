@@ -5,6 +5,8 @@ on:
     branches:
       - integration/ui-core-unification
     paths:
+      - vendor/toubkal/package.json
+      - vendor/toubkal/package-lock.json
       - src/web/**
       - src/browser/**
       - tests/visual/ui-core-u1-capture.mjs
