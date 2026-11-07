@@ -63,7 +63,7 @@ export function validateCadPartSemantics(part: CadPartSemanticCollections): void
       for (const entityId of constraint.entityIds) {
         assertEntityOwnedBySketch(entityOwner, entityId, sketch.id, `Constraint ${constraint.id}`);
       }
-      if (constraint.type === 'coincident') {
+      if (constraint.type === 'coincident' || constraint.type === 'symmetric') {
         for (const ref of constraint.data.refs) {
           assertEntityOwnedBySketch(entityOwner, ref.entityId, sketch.id, `Constraint ${constraint.id} ref`);
         }
@@ -71,7 +71,13 @@ export function validateCadPartSemantics(part: CadPartSemanticCollections): void
           constraint.data.refs[0].entityId !== constraint.entityIds[0]
           || constraint.data.refs[1].entityId !== constraint.entityIds[1]
         ) {
-          throw new Error(`Constraint ${constraint.id} coincident refs must match entityIds`);
+          throw new Error(`Constraint ${constraint.id} ${constraint.type} refs must match entityIds`);
+        }
+      } else if (constraint.type === 'pointOnCurve') {
+        const sourceId = constraint.data.source.entityId;
+        assertEntityOwnedBySketch(entityOwner, sourceId, sketch.id, `Constraint ${constraint.id} source`);
+        if (sourceId !== constraint.entityIds[0]) {
+          throw new Error(`Constraint ${constraint.id} pointOnCurve source must match entityIds[0]`);
         }
       }
     }
