@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 1,
+  "originalVerification": {
+    "file": "/workspace/scratch/dcfa03aff12f/asa-cad-dependencies-220-artifact-verification.json",
+    "sha256": "7a04d3bd8267222b673e22743dbc8d418ad4a95a10a06f8afb82ade9f2587ba9",
+    "zipSha256": "53ddda4785d0e764843347d5d1987691e0bee7ccda90a83a06d66748f446943b",
+    "imagesVerified": 15,
+    "pairsByteIdentical": 4,
+    "rootViewed": [
+      "/workspace/scratch/dcfa03aff12f/asa-cad-dependencies-220-visual/product-before-after/after/kompas-1600x900.png",
+      "/workspace/scratch/dcfa03aff12f/asa-cad-dependencies-220-visual/product-before-after/after/kompas-360x640.png"
+    ],
+    "visualAcceptance": "OWNER_REQUIRED",
+    "automatedParityClaim": "NONE"
+  },
+  "verification": {
+    "candidate": "dda21b6d57c3907d88fb374032f8ea108de9c453",
+    "base": "8684b56aff2a24d46458741249d27dd08f59b292",
+    "imagesVerified": 15,
+    "state": "new Part, light theme, UI Scale 100%, initial tree/camera",
+    "pairs": [
+      {
+        "before": "b13d0f41b11db6831e8f484c29f961e15fcbb9914b34f649de8b9188c55391eb",
+        "after": "b13d0f41b11db6831e8f484c29f961e15fcbb9914b34f649de8b9188c55391eb",
+        "viewport": "360x640",
+        "byteIdentical": true
+      },
+      {
+        "before": "faf053742a7e95f4fbd5e3b431666040899dec3c3abd4aa5e2e0a114187881be",
+        "after": "faf053742a7e95f4fbd5e3b431666040899dec3c3abd4aa5e2e0a114187881be",
+        "viewport": "768x1024",
+        "byteIdentical": true
+      },
+      {
+        "before": "b4d642e371ce5b08cc1a472e30c3ede111761bf8106196b1d0f680fd4b8e9fe7",
+        "after": "b4d642e371ce5b08cc1a472e30c3ede111761bf8106196b1d0f680fd4b8e9fe7",
+        "viewport": "844x390",
+        "byteIdentical": true
+      },
+      {
+        "before": "05d016041115bce0f5f2cc036e139831e0991ff37f873ef2f5d9bc6d8ae8e1c2",
+        "after": "05d016041115bce0f5f2cc036e139831e0991ff37f873ef2f5d9bc6d8ae8e1c2",
+        "viewport": "1600x900",
+        "byteIdentical": true
+      }
+    ],
+    "images": [
+      {
+        "path": "reference/light-solid-1600x900.png",
+        "sha256": "09d8a78463628a58151175c8f2ebc16cc8af1c67a4a2b573ff140f151d682b13",
+        "dimensions": [
+          1600,
+          900
+        ]
+      },
+      {
+        "path": "candidate/light-solid-1600x900.png",
+        "sha256": "05d016041115bce0f5f2cc036e139831e0991ff37f873ef2f5d9bc6d8ae8e1c2",
+        "dimensions": [
+          1600,
+          900
+        ]
+      },
+      {
+        "path": "reference/light-surfaces-1600x900.png",
+        "sha256": "0ea85d2b4ee4131287bc4cc2515fca31914cbe7bfad2ada4993a40bf2b165d35",
+        "dimensions": [
+          1600,
+          900
+        ]
+      },
+      {
+        "path": "candidate/light-surfaces-1600x900.png",
+        "sha256": "a599b9bce2cc4e1ea5b471ab999e3831ab776e065b25cc56c677c2d9b79b97ed",
+        "dimensions": [
+          1600,
+          900
+        ]
+      },
+      {
+        "path": "reference/light-solid-1366x768.png",
+        "sha256": "f701c2451b6322db8420720ece798117a9a78520418b0b740d82b506ec393b56",
+        "dimensions": [
+          1366,
+          768
+        ]
+      },
+      {
+        "path": "candidate/light-solid-1366x768.png",
+        "sha256": "0d3d7223518f9b749ecc22a07c30db8c8abb45e9b89c1c9d47fffdecbf981367",
+        "dimensions": [
+          1366,
+          768
+        ]
+      },
+      {
+        "path": "reference/dark-solid-1600x900.png",
+        "sha256": "036c8f4b9591bebc4ee89a4c124c5f6b6541c3e22e0e043688c8527a5da2eeac",
+        "dimensions": [
+          1600,
+          900
+        ]
+      },
+      {
+        "path": "product-before-after/before/kompas-360x640.png",
+        "sha256": "b13d0f41b11db6831e8f484c29f961e15fcbb9914b34f649de8b9188c55391eb",
+        "dimensions": [
+          360,
+          640
+        ]
+      },
+      {
+        "path": "product-before-after/before/kompas-768x1024.png",
+        "sha256": "faf053742a7e95f4fbd5e3b431666040899dec3c3abd4aa5e2e0a114187881be",
+        "dimensions": [
+          768,
+          1024
+        ]
+      },
+      {
+        "path": "product-before-after/before/kompas-844x390.png",
+        "sha256": "b4d642e371ce5b08cc1a472e30c3ede111761bf8106196b1d0f680fd4b8e9fe7",
+        "dimensions": [
+          844,
+          390
+        ]
+      },
+      {
+        "path": "product-before-after/before/kompas-1600x900.png",
+        "sha256": "05d016041115bce0f5f2cc036e139831e0991ff37f873ef2f5d9bc6d8ae8e1c2",
+        "dimensions": [
+          1600,
+          900
+        ]
+      },
+      {
+        "path": "product-before-after/after/kompas-360x640.png",
+        "sha256": "b13d0f41b11db6831e8f484c29f961e15fcbb9914b34f649de8b9188c55391eb",
+        "dimensions": [
+          360,
+          640
+        ]
+      },
+      {
+        "path": "product-before-after/after/kompas-768x1024.png",
+        "sha256": "faf053742a7e95f4fbd5e3b431666040899dec3c3abd4aa5e2e0a114187881be",
+        "dimensions": [
+          768,
+          1024
+        ]
+      },
+      {
+        "path": "product-before-after/after/kompas-844x390.png",
+        "sha256": "b4d642e371ce5b08cc1a472e30c3ede111761bf8106196b1d0f680fd4b8e9fe7",
+        "dimensions": [
+          844,
+          390
+        ]
+      },
+      {
+        "path": "product-before-after/after/kompas-1600x900.png",
+        "sha256": "05d016041115bce0f5f2cc036e139831e0991ff37f873ef2f5d9bc6d8ae8e1c2",
+        "dimensions": [
+          1600,
+          900
+        ]
+      }
+    ],
+    "visualAcceptance": "OWNER_REQUIRED",
+    "automatedParityClaim": "NONE",
+    "linuxLintConfigMatch": {
+      "configSha256": "52d0d6f480031d7b678c4e92e01da63d190b51d3d88e227cd7ee194f5cb1f511",
+      "files": [
+        "vendor-lint-coverage.json",
+        "vendor-lint.json"
+      ]
+    }
+  }
+}

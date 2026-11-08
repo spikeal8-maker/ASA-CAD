@@ -1,0 +1,300 @@
+{
+  "schemaVersion": 1,
+  "scope": "StableRef owned wrapper lifetimes; not a whole-vendor native-heap measurement",
+  "cases": [
+    {
+      "name": "capture face releases raw keys and typed face",
+      "fault": "none",
+      "passed": true,
+      "error": null,
+      "observation": {
+        "created": {
+          "TopTools_IndexedMapOfShape_1": 1,
+          "TopExp_Explorer_2": 1,
+          "Current": 6,
+          "FindKey": 1,
+          "cast.Face_1": 1,
+          "GProp_GProps_1": 1,
+          "CentreOfMass": 1,
+          "Surface_2": 1,
+          "GeomAdaptor_Surface_2": 1,
+          "Plane": 1,
+          "Axis": 1,
+          "Direction": 1
+        },
+        "live": {},
+        "totalCreated": 17,
+        "totalLive": 0
+      }
+    },
+    {
+      "name": "capture edge releases raw keys and typed edge",
+      "fault": "none",
+      "passed": true,
+      "error": null,
+      "observation": {
+        "created": {
+          "TopTools_IndexedMapOfShape_1": 1,
+          "TopExp_Explorer_2": 1,
+          "Current": 24,
+          "FindKey": 1,
+          "cast.Edge_1": 1,
+          "GProp_GProps_1": 1,
+          "CentreOfMass": 1,
+          "BRepAdaptor_Curve_2": 1,
+          "Line": 1,
+          "Direction": 1
+        },
+        "live": {},
+        "totalCreated": 33,
+        "totalLive": 0
+      }
+    },
+    {
+      "name": "capture vertex releases raw keys and typed vertex",
+      "fault": "none",
+      "passed": true,
+      "error": null,
+      "observation": {
+        "created": {
+          "TopTools_IndexedMapOfShape_1": 1,
+          "TopExp_Explorer_2": 1,
+          "Current": 48,
+          "FindKey": 1,
+          "cast.Vertex_1": 1,
+          "Pnt": 1
+        },
+        "live": {},
+        "totalCreated": 53,
+        "totalLive": 0
+      }
+    },
+    {
+      "name": "resolve face preserves index and releases all candidates",
+      "fault": "none",
+      "passed": true,
+      "error": null,
+      "observation": {
+        "created": {
+          "TopTools_IndexedMapOfShape_1": 1,
+          "TopExp_Explorer_2": 1,
+          "Current": 6,
+          "FindKey": 6,
+          "cast.Face_1": 6,
+          "GProp_GProps_1": 6,
+          "CentreOfMass": 6,
+          "Surface_2": 6,
+          "GeomAdaptor_Surface_2": 6,
+          "Plane": 6,
+          "Axis": 6,
+          "Direction": 6
+        },
+        "live": {},
+        "totalCreated": 62,
+        "totalLive": 0
+      }
+    },
+    {
+      "name": "resolve edge preserves index and releases all candidates",
+      "fault": "none",
+      "passed": true,
+      "error": null,
+      "observation": {
+        "created": {
+          "TopTools_IndexedMapOfShape_1": 1,
+          "TopExp_Explorer_2": 1,
+          "Current": 24,
+          "FindKey": 12,
+          "cast.Edge_1": 12,
+          "GProp_GProps_1": 12,
+          "CentreOfMass": 12,
+          "BRepAdaptor_Curve_2": 12,
+          "Line": 12,
+          "Direction": 12
+        },
+        "live": {},
+        "totalCreated": 110,
+        "totalLive": 0
+      }
+    },
+    {
+      "name": "resolve vertex releases cloud and candidate handles",
+      "fault": "none",
+      "passed": true,
+      "error": null,
+      "observation": {
+        "created": {
+          "TopTools_IndexedMapOfShape_1": 2,
+          "TopExp_Explorer_2": 2,
+          "Current": 96,
+          "FindKey": 16,
+          "cast.Vertex_1": 16,
+          "Pnt": 16
+        },
+        "live": {},
+        "totalCreated": 148,
+        "totalLive": 0
+      }
+    },
+    {
+      "name": "nearest face releases probe vertex, faces and progress",
+      "fault": "none",
+      "passed": true,
+      "error": null,
+      "observation": {
+        "created": {
+          "TopTools_IndexedMapOfShape_1": 2,
+          "TopExp_Explorer_2": 2,
+          "Current": 12,
+          "gp_Pnt_3": 1,
+          "BRepBuilderAPI_MakeVertex": 1,
+          "Vertex": 1,
+          "FindKey": 7,
+          "cast.Face_1": 7,
+          "BRepExtrema_DistShapeShape_1": 6,
+          "Message_ProgressRange_1": 6,
+          "GProp_GProps_1": 1,
+          "CentreOfMass": 1,
+          "Surface_2": 1,
+          "GeomAdaptor_Surface_2": 1,
+          "Plane": 1,
+          "Axis": 1,
+          "Direction": 1
+        },
+        "live": {},
+        "totalCreated": 52,
+        "totalLive": 0
+      }
+    },
+    {
+      "name": "out-of-range capture releases map and explorer",
+      "fault": "none",
+      "passed": true,
+      "error": null,
+      "observation": {
+        "created": {
+          "TopTools_IndexedMapOfShape_1": 2,
+          "TopExp_Explorer_2": 2,
+          "Current": 30
+        },
+        "live": {},
+        "totalCreated": 34,
+        "totalLive": 0
+      }
+    },
+    {
+      "name": "map Add exception releases Current, explorer and map",
+      "fault": "add",
+      "passed": true,
+      "error": null,
+      "observation": {
+        "created": {
+          "TopTools_IndexedMapOfShape_1": 1,
+          "TopExp_Explorer_2": 1,
+          "Current": 1
+        },
+        "live": {},
+        "totalCreated": 3,
+        "totalLive": 0
+      }
+    },
+    {
+      "name": "cast exception releases FindKey and map",
+      "fault": "cast",
+      "passed": true,
+      "error": null,
+      "observation": {
+        "created": {
+          "TopTools_IndexedMapOfShape_1": 1,
+          "TopExp_Explorer_2": 1,
+          "Current": 24,
+          "FindKey": 1
+        },
+        "live": {},
+        "totalCreated": 27,
+        "totalLive": 0
+      }
+    },
+    {
+      "name": "face signature exception releases all temporaries",
+      "fault": "face-properties",
+      "passed": true,
+      "error": null,
+      "observation": {
+        "created": {
+          "TopTools_IndexedMapOfShape_1": 1,
+          "TopExp_Explorer_2": 1,
+          "Current": 6,
+          "FindKey": 1,
+          "cast.Face_1": 1,
+          "GProp_GProps_1": 1
+        },
+        "live": {},
+        "totalCreated": 11,
+        "totalLive": 0
+      }
+    },
+    {
+      "name": "unscoreable edge candidates still release all temporaries",
+      "fault": "edge-properties",
+      "passed": true,
+      "error": null,
+      "observation": {
+        "created": {
+          "TopTools_IndexedMapOfShape_1": 1,
+          "TopExp_Explorer_2": 1,
+          "Current": 24,
+          "FindKey": 12,
+          "cast.Edge_1": 12,
+          "GProp_GProps_1": 12
+        },
+        "live": {},
+        "totalCreated": 62,
+        "totalLive": 0
+      }
+    },
+    {
+      "name": "vertex cloud exception releases raw key, vertex and map",
+      "fault": "vertex-point",
+      "passed": true,
+      "error": null,
+      "observation": {
+        "created": {
+          "TopTools_IndexedMapOfShape_1": 1,
+          "TopExp_Explorer_2": 1,
+          "Current": 48,
+          "FindKey": 1,
+          "cast.Vertex_1": 1
+        },
+        "live": {},
+        "totalCreated": 52,
+        "totalLive": 0
+      }
+    },
+    {
+      "name": "unmeasurable nearest faces release probe and per-face handles",
+      "fault": "distance",
+      "passed": true,
+      "error": null,
+      "observation": {
+        "created": {
+          "TopTools_IndexedMapOfShape_1": 1,
+          "TopExp_Explorer_2": 1,
+          "Current": 6,
+          "gp_Pnt_3": 1,
+          "BRepBuilderAPI_MakeVertex": 1,
+          "Vertex": 1,
+          "FindKey": 6,
+          "cast.Face_1": 6,
+          "BRepExtrema_DistShapeShape_1": 6,
+          "Message_ProgressRange_1": 6
+        },
+        "live": {},
+        "totalCreated": 35,
+        "totalLive": 0
+      }
+    }
+  ],
+  "passed": 14,
+  "failed": 0
+}

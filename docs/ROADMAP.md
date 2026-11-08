@@ -1,6 +1,6 @@
 # ASA-CAD — UI/core convergence roadmap
 
-Редакция: 2026-11-07.
+Редакция: 2026-11-08.
 Central issue: **#184**.
 Integration branch: **`integration/ui-core-unification`**.
 Frozen UI reference: **`ui-reference-20261004` -> `88c535c652dac8b04f0d68fa144cf8486afdc926`**.
@@ -69,7 +69,7 @@ Acceptance U1:
 
 PR CI #195 = 9/9 SUCCESS; PR #196 проверен GitHub Actions до merge. Это **code integration**, не независимая финальная архитектурная/визуальная приёмка. Отдельные уникальные части PR #177 и Drawing #179 остаются на рассмотрении. `U1A` больше не активный продуктовый checkpoint.
 
-**Текущий NEXT после принятия dependency repair = повторный Full Repository Health Audit.** #218 (full-web types), #219 (StableRef lifetime) и этот npm repair составляют 3/3 accepted slices после #217. До его merge приняты 2/3; после merge U2 feature work ждёт нового GREEN / явно принятого YELLOW. Исторический #217 на `128480e1a150253359ce44158d5588f6b08f27b8` остаётся YELLOW_ACCEPTED: [canonical report](FULL_REPOSITORY_HEALTH_AUDIT.md). Повторный аудит проверит новую общую базу и отдельный Node support/patch gap; старое принятие не заменяет новое. После аудита продолжается U2 → U3 → U4 → U5. Owner product/visual acceptance и перенос в main отдельно; U1A/U1B/U1C повторно не запускаются.
+**Текущий NEXT после приёмки повторного Full Repository Health Audit = U2.** #218, #219 и #220 закрыли три долга #217 и дали cadence 3/3. Новый аудит на `7bf71e2ee8ece045fb69620c657570ce7be9294f` получает YELLOW_ACCEPTED после exact CI, независимого review и merge audit PR: [canonical report](FULL_REPOSITORY_HEALTH_AUDIT.md). Node toolchain debt остаётся OPEN с обязательным reviewed repair до технической приёмки U2 / следующей milestone boundary / beta, без увеличения exposure. Исторический #217 и raw evidence сохранены. Затем U2 → U3 → U4 → U5; owner product/visual acceptance и main/production отдельно. U1A/U1B/U1C повторно не запускаются.
 
 ### Обязательный gate после U1
 

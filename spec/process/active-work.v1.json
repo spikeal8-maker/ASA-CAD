@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "initiative": "UI-CORE-UNIFICATION-001",
   "issue": 184,
-  "currentCheckpoint": "FULL_REPOSITORY_HEALTH_AUDIT",
+  "currentCheckpoint": "U2",
   "baseBranch": "integration/ui-core-unification",
   "baseHeadPolicy": "RESOLVE_LIVE_AND_GUARD",
   "uiReference": {
@@ -11,7 +11,7 @@
     "sha": "88c535c652dac8b04f0d68fa144cf8486afdc926",
     "frozen": true
   },
-  "productCodeStartAllowed": false,
+  "productCodeStartAllowed": true,
   "blocker": null,
   "canonicalDocuments": [
     "docs/DEVELOPMENT_QUALITY_GATES.md",
@@ -19,20 +19,18 @@
     "docs/STATUS.md"
   ],
   "scope": [
-    "Repeat the Full Repository Health Audit after acceptance of #218, #219 and the dependency repair",
-    "Bind correctness, full-web types, dependencies, native lifetime and STANDARD performance evidence to the exact accepted integration HEAD",
-    "Preserve the accepted #217 report and evidence until the repeated audit is reviewed and accepted",
-    "Classify the confirmed Node toolchain support and security patch gap without assuming ASA-specific exploit reachability",
-    "Repair confirmed P0/RED defects and essential regressions only",
-    "Require exact-head CI, independent read-only review and a focused audit PR"
+    "Real Sketch-in-Viewport with Line, Rectangle, Circle and Arc through existing product commands",
+    "Numeric entry UX from frozen #170 without a second document/history/solver model",
+    "Accept Rectangle 60x40 with Undo/Redo and Save/Open preserving intent and IDs",
+    "Close NODE_TOOLCHAIN_EOL_AND_SECURITY_PATCH_GAP before U2 technical acceptance or the next milestone boundary if earlier, and before beta",
+    "Require exact-head CI, ordinary-user evidence and independent read-only review for every accepted slice"
   ],
   "outOfScope": [
     "Automatic merge of #170 prototype runtime, #177/#179 or Fusion #204-#207 candidates",
     "U3-U5 expansion without the preceding checkpoint technical gates",
-    "Integration-to-main, production deployment and final visual parity without owner decision",
-    "U2-U5 product feature work before acceptance of the repeated Full Repository Health Audit"
+    "Integration-to-main, production deployment and final visual parity without owner decision"
   ],
-  "nextCheckpoint": "U2",
+  "nextCheckpoint": "U3",
   "developmentAuthorization": "OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008",
   "checkpointTechnicalStatus": "IN_PROGRESS",
   "ownerProductAcceptance": "PENDING",
@@ -45,11 +43,16 @@
     "mergeSha": "e37650f08d9e2fa6cf13ceb6a09ecd8e8a568c15"
   },
   "fullRepositoryHealthAudit": {
-    "outcome": "PENDING",
+    "outcome": "YELLOW_ACCEPTED",
+    "auditBaseSha": "20603c34f277dc9f0cf2696f5bd3971dd7645678",
+    "auditedSha": "7bf71e2ee8ece045fb69620c657570ce7be9294f",
     "report": "docs/FULL_REPOSITORY_HEALTH_AUDIT.md",
+    "acceptedBy": "ChatGPT technical controller /root under OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008",
+    "acceptanceScope": "TECHNICAL_INTEGRATION_ONLY",
     "openDebtIds": [
       "NODE_TOOLCHAIN_EOL_AND_SECURITY_PATCH_GAP"
-    ]
+    ],
+    "debtGate": "BEFORE_U2_TECHNICAL_ACCEPTANCE_OR_NEXT_MILESTONE_BOUNDARY_IF_EARLIER_AND_PRE_BETA"
   },
   "previousFullRepositoryHealthAudit": {
     "outcome": "YELLOW_ACCEPTED",
@@ -62,7 +65,5 @@
       "HA-20261107-DEPENDENCIES"
     ],
     "debtGate": "BEFORE_U2_TECHNICAL_ACCEPTANCE_OR_NEXT_MILESTONE_BOUNDARY; VENDOR_LIFETIME_BEFORE_PATH_EXPANSION_IF_EARLIER"
-  },
-  "auditRepairAllowed": true,
-  "auditRepairScope": "CONFIRMED_P0_RED_DEFECTS_AND_ESSENTIAL_REGRESSION_FIXES_ONLY"
+  }
 }

@@ -1,0 +1,1523 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-11-08T00:12:19.037Z",
+  "status": "ANALYZED_FINDINGS_REMAIN_OPEN",
+  "repo": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Repeat-20261108",
+  "sourceHead": "7bf71e2ee8ece045fb69620c657570ce7be9294f",
+  "sourceFingerprintBefore": "498dbd75ca26f8468080dca2188e93ed4156b40f6d3fe9475a90c70ec115dd0f",
+  "sourceFingerprintAfter": "498dbd75ca26f8468080dca2188e93ed4156b40f6d3fe9475a90c70ec115dd0f",
+  "checkoutCleanBeforeAndAfter": true,
+  "capturedAudit": {
+    "path": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-repeat-20261108\\checks\\dependency-audit-input.json",
+    "sha256": "c4c3d7cdf6fcde51c4f017fe23e5ddff6a54e3e25f16eb1a18df587463bd5bc2",
+    "bytes": 365,
+    "fileModifiedAt": "2026-11-08T00:12:17.848Z",
+    "auditReportVersion": 2,
+    "metadata": {
+      "vulnerabilities": {
+        "info": 0,
+        "low": 0,
+        "moderate": 0,
+        "high": 0,
+        "critical": 0,
+        "total": 0
+      },
+      "dependencies": {
+        "prod": 20,
+        "dev": 264,
+        "optional": 43,
+        "peer": 60,
+        "peerOptional": 0,
+        "total": 283
+      }
+    }
+  },
+  "lock": {
+    "path": "vendor/toubkal/package-lock.json",
+    "bytes": 143062,
+    "sha256": "f103b7b5e9a91ba50580fa91dfdd734aa989f0368e1584d51f30870b3eccfe79",
+    "lockfileVersion": 3
+  },
+  "counts": {
+    "affectedPackageEntries": 0,
+    "distinctDirectAdvisories": 0,
+    "directAdvisorySeverity": {},
+    "npmAggregatePackageSeverity": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "directAdvisoryLeafPackages": 0
+  },
+  "dependencyGraph": {
+    "lockfileVersion": 3,
+    "lockedEntriesIncludingRoot": 284,
+    "roots": {
+      "production": [
+        "@salusoft89/planegcs",
+        "dockview",
+        "react",
+        "react-dom",
+        "react-draggable",
+        "three",
+        "tweakpane",
+        "zustand"
+      ],
+      "development": [
+        "@rspack/cli",
+        "@rspack/core",
+        "@rspack/dev-server",
+        "@types/react",
+        "@types/react-dom",
+        "@types/three",
+        "eslint",
+        "eslint-plugin-react-hooks",
+        "file-loader",
+        "globals",
+        "opencascade.js",
+        "playwright-core",
+        "rimraf",
+        "tsx",
+        "typescript",
+        "typescript-eslint"
+      ]
+    },
+    "edgeKindsIncluded": [
+      "dependencies",
+      "optionalDependencies",
+      "peerDependencies"
+    ],
+    "pathSemantics": "One shortest discovered installed-lock path per declared root; peers are conservative reachability, not proof of execution"
+  },
+  "affectedPackages": [],
+  "uniqueDirectAdvisories": [],
+  "mainProductImportGraph": {
+    "entry": "src/web/index.tsx",
+    "sourceFileCount": 218,
+    "sourceFiles": [
+      {
+        "path": "spec/ui/command-registry.v1.json",
+        "sha256": "25697d7fd8e77dbcc9a8b159882ac051eb5f79fd9997793d4f294889f6226bc1"
+      },
+      {
+        "path": "src/application/CadApplicationImpl.ts",
+        "sha256": "6f487d3f0f36b182ad0f32333d57283d47b25b788e571f2004b215d2dd9d1254"
+      },
+      {
+        "path": "src/application/CadCommandOutcome.ts",
+        "sha256": "d22f630ead28da6a809e58ee1c0cf98af86e50f4e22979c170e56b51f616722c"
+      },
+      {
+        "path": "src/application/SketchEntityTransform.ts",
+        "sha256": "09d3216cc997205fd57edabf50fea5f7590cd18922ac77cf0fec60dfcd082b6a"
+      },
+      {
+        "path": "src/application/SketchProfile.ts",
+        "sha256": "75c17655b23a105e41dc12348b9315fc8af9dbeae6fa80ad30ff9312a08618cd"
+      },
+      {
+        "path": "src/application/SketchSolveSession.ts",
+        "sha256": "2e80d730455c6c9e099ee18c3cfcbb6b1ae75a28e0d1eeca43a77c6980c4b1bb"
+      },
+      {
+        "path": "src/application/commands/SketchCoincidentConstraintOwner.ts",
+        "sha256": "49ee4b53b6041ec5995fd883913b29adb5c800b5fdcfe06415154f3c73a9b197"
+      },
+      {
+        "path": "src/application/commands/SketchCommandHandlerShared.ts",
+        "sha256": "33e31d73f9e296bb569dbfa54d535314de777e23aef122f42aaffe4ca8cc83cb"
+      },
+      {
+        "path": "src/application/commands/SketchCommandHandlers.ts",
+        "sha256": "510855d7ac5d61df28dc3a160e9abea8030e68bb0fb75bd5ff2b31d2a03bd9d5"
+      },
+      {
+        "path": "src/application/commands/SketchConcentricConstraintOwner.ts",
+        "sha256": "be06d78d1cadb4cab80ac52c8bae7ab1295fd5f7d7e10af1fc687ee126fdc75b"
+      },
+      {
+        "path": "src/application/commands/SketchConstraintCommandHandlers.ts",
+        "sha256": "58b529d643f628fe0b947d1698776060b6a5dbb98fc277f21c68b59bf767d8a6"
+      },
+      {
+        "path": "src/application/commands/SketchDimensionCommandHandlers.ts",
+        "sha256": "51c04ed970848ff85d21a305e7111f9679ec2a3a19c92b7d79c4dd35f8b3ce85"
+      },
+      {
+        "path": "src/application/commands/SketchEditCommandHandlers.ts",
+        "sha256": "d45190a3be08c8bb4c1d30cff029671745b1c24c01766e73b4a3326fbf8680ae"
+      },
+      {
+        "path": "src/application/commands/SketchGeometryCommandHandlers.ts",
+        "sha256": "cfdece79234379ca569a66572635ef959556ddc1b7f383bfbda83a1e7bd7a57b"
+      },
+      {
+        "path": "src/application/commands/SketchLinePairConstraintOwner.ts",
+        "sha256": "1112893d1ecf38ee4951dd71498d86ae920053a5cd0d6635dc3ac0f406cd46c4"
+      },
+      {
+        "path": "src/application/commands/SketchPointOnCurveConstraintOwner.ts",
+        "sha256": "ef4eb74c914a0b7ff607da78153ca5acbf1aebd489beb4ae88513da0b0929362"
+      },
+      {
+        "path": "src/application/commands/SketchSymmetryConstraintOwner.ts",
+        "sha256": "f78e4954a5e5b945eab96d658455e87737ad9c87e518397e852e5e191c82ad0e"
+      },
+      {
+        "path": "src/application/commands/SketchTangentConstraintOwner.ts",
+        "sha256": "1aaca66d1a1e4683013950b65c67bf3c5cea99f7a657a4a5149e085aebe234e8"
+      },
+      {
+        "path": "src/browser/BrowserPartRuntimeAdapter.ts",
+        "sha256": "07e07e8409c4514597198c04096308a58dd36aaa79af353879d5eaaf020ea3f9"
+      },
+      {
+        "path": "src/browser/BrowserSketchSolverAdapter.ts",
+        "sha256": "1a3c09b58a1750da30f7ccd6bdeca5f7c4aa2b91dc433c792a6d3be54ce20df1"
+      },
+      {
+        "path": "src/browser/LazyCadRuntimeLoader.ts",
+        "sha256": "5cfe2a34fae8e9357a32e8454429a928801f65ea8e66a6851fb3c06e1c106ffc"
+      },
+      {
+        "path": "src/browser/SharedBrowserSketchSolver.ts",
+        "sha256": "1cce0395f5bc0a6c44c6c77ea8a1b3c786411b3db1de187938ede3eb6c1b5adf"
+      },
+      {
+        "path": "src/browser/capabilities.ts",
+        "sha256": "8c6d721f2cfba7f164f5a3b3c189a9055ffed096524bd8cb365884d307b53958"
+      },
+      {
+        "path": "src/browser/routes.ts",
+        "sha256": "1979cd457a806bd4d7d076b58185c58d0c2c8fc3bc0d1bd282405a33001a3987"
+      },
+      {
+        "path": "src/contracts/application.ts",
+        "sha256": "c509c51c360a42d88c058b8b1831713cdae9bb3d722efb0890bae575d61bdd5f"
+      },
+      {
+        "path": "src/contracts/assembly.ts",
+        "sha256": "501bfa2e654b7654c187f58ebc62507e79420fd73d25859248c9dd11778dcd00"
+      },
+      {
+        "path": "src/contracts/commandRegistry.ts",
+        "sha256": "8efe63035f050ace419e7c277de02be05ac18efb49289fc9bda4cdf1cb93996b"
+      },
+      {
+        "path": "src/contracts/commands.ts",
+        "sha256": "6cfeec0d94fe33dc70e8503529619091ff3c2d9997251dcf305fa266d2267564"
+      },
+      {
+        "path": "src/contracts/contractValidation.ts",
+        "sha256": "de6cf20b2b7ebe190eddbb24235d5e999233c145f7c3658f04e787af3b7093e7"
+      },
+      {
+        "path": "src/contracts/document.ts",
+        "sha256": "28d69044d75944ccbe0eb9ae1a441561c1aee0934c5ee71b0a51caadf4e8c2f9"
+      },
+      {
+        "path": "src/contracts/ids.ts",
+        "sha256": "f14009ae00e292167bb9fbc84fc8a7a71d0ba1ff8a6f1280245ac7f2fbdec873"
+      },
+      {
+        "path": "src/contracts/index.ts",
+        "sha256": "bfcd5e727d349d84019bbb11cc25e5b5f193dc23b190c5e84efcb54fb44e309e"
+      },
+      {
+        "path": "src/contracts/measurement.ts",
+        "sha256": "7aa9ca88001a4de6252626a9ae7ad83a39d3a80cd4e6b0148e09ba8525e794a8"
+      },
+      {
+        "path": "src/contracts/migrations.ts",
+        "sha256": "fd7867083bc2ee669f6d87cf831a50864900ffd23f72a838d77fac0e83f863a8"
+      },
+      {
+        "path": "src/contracts/partSemantics.ts",
+        "sha256": "b9be3f73b8758414d3d595ee5b1fa1edd7ba3ea8e284cab3ef0e27bdf1ba09c7"
+      },
+      {
+        "path": "src/contracts/render.ts",
+        "sha256": "f65efe1238e82f991a06a5ba5a57bccb11ba44d2c646719b03e0b96c25e877c6"
+      },
+      {
+        "path": "src/contracts/runtime.ts",
+        "sha256": "a9c003103bd6b667d58e6c8094416c0b8b3efb01fad7511c9e918db938ccb0b5"
+      },
+      {
+        "path": "src/contracts/sketch.ts",
+        "sha256": "41bf78fb58e8884463e0c36e20ab2f1b1d2e0131559c727da447b8d1e6092fa2"
+      },
+      {
+        "path": "src/contracts/sketchDimensions.ts",
+        "sha256": "0d0ff5dfd2a5ca17ffef6e546d3934d9a7356888884becf8920260b256d773f4"
+      },
+      {
+        "path": "src/contracts/sketchSolver.ts",
+        "sha256": "bba0539840a18f1881b214959e3dc72a1680e3bac97df02df12d4f098d441c84"
+      },
+      {
+        "path": "src/contracts/sketchWorkplane.ts",
+        "sha256": "b1aecc078ab638f97491b3de4719a9deec1a718af70fdef86eca203f62fb4759"
+      },
+      {
+        "path": "src/host/CadEditorPersistence.ts",
+        "sha256": "0dea61a2ebdb8833f72d21dd46aac15aac0b6fc358fb891a13de278980d2b13d"
+      },
+      {
+        "path": "src/host/CadProjectSession.ts",
+        "sha256": "86ff873796b0aab52ec8d422d39d0dab93af12507adb5190daeaed9525946e70"
+      },
+      {
+        "path": "src/host/CadRecoveryStore.ts",
+        "sha256": "30c8db89a54af0ed808aae2b06eb090e8668743a68409b78b1d1f8bfc7c527af"
+      },
+      {
+        "path": "src/host/LocalStorageCadProjectHost.ts",
+        "sha256": "50193faf4d68c5203d1329fbeffe956ba906e4f9fd0efa34a4ad8c0d5e87a752"
+      },
+      {
+        "path": "src/runtime/OpenCascadePartRenderAdapter.ts",
+        "sha256": "eff3dae0a2e70296c2e2b6bc80075b2bd8cc6c9f03f43d4708c139e46ac64c21"
+      },
+      {
+        "path": "src/runtime/OpenCascadePartRuntime.ts",
+        "sha256": "80e04ef082c7fd5b48bf221fc2e6be2dc61480ada9d906c3e61ae66b1e0fd36c"
+      },
+      {
+        "path": "src/runtime/OpenCascadeProfileSolid.ts",
+        "sha256": "19b37610e3afec72896197a9cdc7f24312092194bf437d967dd5db0673fbc606"
+      },
+      {
+        "path": "src/runtime/OpenCascadeReferenceResolver.ts",
+        "sha256": "0ca5446b555c7b02d53ef7ea0b99ef29f5236ec1956e1c708e953b80951a267c"
+      },
+      {
+        "path": "src/runtime/PlaneGCSSketchSolverRuntime.ts",
+        "sha256": "f172ac4c86d8e5e2f9ec01e4b2e2433d291523d3b0136eb4313c3b9fd6da46ce"
+      },
+      {
+        "path": "src/runtime/SolvedSketchPartRuntimeAdapter.ts",
+        "sha256": "d171830d7f66bb95f9d5cac4b2fba32cf5064612725fbaf7df30a5ecc5b41a94"
+      },
+      {
+        "path": "src/web/App.tsx",
+        "sha256": "11683060517a35a023d2141576af9602e5a66b4a78ee737911d5affc3fccb47f"
+      },
+      {
+        "path": "src/web/CadDocumentPresentation.ts",
+        "sha256": "133739d3dc73a9d9147b312c80a8497575a11ce8f640b887bc2e7f18abe34fd1"
+      },
+      {
+        "path": "src/web/CadIcon.tsx",
+        "sha256": "118556647b9a8cd8ee5a55b350266c3941748df8e9ca6a686674d8247d79812d"
+      },
+      {
+        "path": "src/web/CadShellBottom.tsx",
+        "sha256": "af4e7f0fe28971152e0c21b0a066cad2b30b9db69905dc83abd18751489dbc0e"
+      },
+      {
+        "path": "src/web/CadShellMain.tsx",
+        "sha256": "4c4346b795b972a8ae525f2ec8056c363b3995003668ec1a99a7f6fa0716832c"
+      },
+      {
+        "path": "src/web/CadShellTop.tsx",
+        "sha256": "b3e49b738cf6db2fb9f78a5e2843551922afd81f46e73ade7881aab01565f558"
+      },
+      {
+        "path": "src/web/CadUiAction.ts",
+        "sha256": "e53e43b3380a254a7e88dc308249f5739954009bbc193f440901671e73544605"
+      },
+      {
+        "path": "src/web/CadViewport.tsx",
+        "sha256": "eb929b47547c8ae0c6e103198ca2964d82db944daddb506652431133906b7c69"
+      },
+      {
+        "path": "src/web/CadWorkspaceTypes.ts",
+        "sha256": "50522e476c1fc1e3734afcc9ab9303ed4473eacc033bdcfc1327f2ca53e44dee"
+      },
+      {
+        "path": "src/web/CoincidentPartModelStage.tsx",
+        "sha256": "d5e659e0d6f92f187cabfe3b4ec9e234a37998c8685ba56bb3661ce014ed78ec"
+      },
+      {
+        "path": "src/web/CutExtrudeParameterPanel.tsx",
+        "sha256": "5dfb7b76cf1656a0b490839b1c29410b895b24197380450176d9efbe4dab7eea"
+      },
+      {
+        "path": "src/web/DocumentTree.tsx",
+        "sha256": "1242b86cb2ae4161ce74fde1244bcd5a9461cce6e3a5ae05b7e0d8c24830354c"
+      },
+      {
+        "path": "src/web/ExtrudeParameterPanel.tsx",
+        "sha256": "cc21b12737863370beaf612cca87fd91e92ac205824ad9f3df66b9414c36342f"
+      },
+      {
+        "path": "src/web/M2CadUiActions.ts",
+        "sha256": "52152eb5e8400a30cc0126a1749fc6dbb7c7d667f4cbd24600c6d40a2040cdb5"
+      },
+      {
+        "path": "src/web/MobileToolsPanel.tsx",
+        "sha256": "a7de66e420318cc1627bbdbcf28f2db22e291a56a78ae72d0f0fe37fdf844af4"
+      },
+      {
+        "path": "src/web/NewDocumentDialog.tsx",
+        "sha256": "83e0bec776c3efeb835bdecaca7d7cdad4e55f430dfb5cbefb6fd7c938ab1ac6"
+      },
+      {
+        "path": "src/web/ParameterNumericField.tsx",
+        "sha256": "a1d5fdd1081123442eddb8ae0e3c7b15b7bedb14077e1f286a54c5d96ad23dae"
+      },
+      {
+        "path": "src/web/ParameterPanel.tsx",
+        "sha256": "72dc12bef362305cb0f87f14e5999340c0584f21bb03f4c4c15f2894795e1e8b"
+      },
+      {
+        "path": "src/web/PartFeatureAvailability.ts",
+        "sha256": "c5357438938fb29219cc0dff11aa267e719cff14912988695458beb83d1789a2"
+      },
+      {
+        "path": "src/web/PartFeatureProfile.ts",
+        "sha256": "2ef7149f85c0ea18f27a2496471c358e56103c066523f8ac0c2e1e95387ae597"
+      },
+      {
+        "path": "src/web/PartModelStage.tsx",
+        "sha256": "b044fb12e7c0878f5134403aa38f0d60f0f01347bb53b31a221451882da8cfa7"
+      },
+      {
+        "path": "src/web/PartSketchWorkspaceModel.ts",
+        "sha256": "50eaa56572803a12e0cb60842d8ab372ebd6e29446a6a882268c3b1b902b46ec"
+      },
+      {
+        "path": "src/web/PartSketchWorkspaceTypes.ts",
+        "sha256": "2a6c67ca0091c5191da8649aacbcb50d650d4a240f0480095a5fbbd741c584e3"
+      },
+      {
+        "path": "src/web/PartStageStatus.tsx",
+        "sha256": "0430e2f01bdb55bbcf0becb640a782475bedbe00747b4bb460158a6908385f62"
+      },
+      {
+        "path": "src/web/PlannedDocumentStage.tsx",
+        "sha256": "cf4212be986007642d53d4fc52d0cee7fd8f28ead70a4c9af66af67b0265cdad"
+      },
+      {
+        "path": "src/web/ShortcutRegistry.ts",
+        "sha256": "e0ce13197cc10496bd1253e2a578587f8a127717168eccdcfa17cc4ddaa2aa7e"
+      },
+      {
+        "path": "src/web/SketchDimensionParameterPanel.tsx",
+        "sha256": "d14829ce9b9c4b63d0bab14da07dc20289d807af7f3047c1f653f50084fa60e9"
+      },
+      {
+        "path": "src/web/SketchDimensionPresentation.ts",
+        "sha256": "39d93b7d80accb291b17d1327e2e41faf16a1fbeb6494f39f8b404f624c7c329"
+      },
+      {
+        "path": "src/web/SketchDirectToolLayers.tsx",
+        "sha256": "111e84cfac3704cb9279a0a81a78845985b44cbcfb65e89c9b314a567c1154e6"
+      },
+      {
+        "path": "src/web/SketchEditingStage.tsx",
+        "sha256": "32f744bb7a6222ddd76b94c16de3e1961a3a5a711fbcb420d41682cd0b66319b"
+      },
+      {
+        "path": "src/web/SketchParametricRectangleOwner.ts",
+        "sha256": "3d11665e04ea69e97926e1e11dbfcd97165f40bcf484497f66717bfc26ab0e73"
+      },
+      {
+        "path": "src/web/SketchReadOnlyStage.tsx",
+        "sha256": "ea449efafe2f05f73055b96a728b48986f20a0648b225f30d02e5952f44d1321"
+      },
+      {
+        "path": "src/web/SketchSession.ts",
+        "sha256": "ac7d44245681b6eec92600ee0d2fd145ee0edefb4dfaf4778a08ae150d7f4083"
+      },
+      {
+        "path": "src/web/SketchSolveStatus.tsx",
+        "sha256": "928db9d7ccd7701acc131142de53087be4088bf4005a424102ce790ebe8be0d0"
+      },
+      {
+        "path": "src/web/SketchTreeBranch.tsx",
+        "sha256": "f551c406ec9c0b4d1afbf590b65c780f83010d4a522789d3341b1933b676a248"
+      },
+      {
+        "path": "src/web/UiScale.ts",
+        "sha256": "8c800bdbe24f7c918772ff7a02551c1a429625024e1bdfeb95d77fcdfcd9294c"
+      },
+      {
+        "path": "src/web/UiScaleSettings.tsx",
+        "sha256": "ac714834ba5b4103aac3c795ed107880c57645d4ebcf2b67e97cc0c098b0c9f2"
+      },
+      {
+        "path": "src/web/UnsavedChangesDialog.tsx",
+        "sha256": "c4bfbb5b402abba02f6aa8a0c120338c013ed501d78b3bb83c8efe91fbf6294b"
+      },
+      {
+        "path": "src/web/ViewportTriad.tsx",
+        "sha256": "dd5d0228ec2c0873465b1a98ae9845cf03e72a78f8a5b4c384400cfdb3838bff"
+      },
+      {
+        "path": "src/web/devFixtures.ts",
+        "sha256": "9cd4778a52f38b2688a55f73562bf70e374cc73d0f7d61d0ae731e1f0f0a5bae"
+      },
+      {
+        "path": "src/web/index.tsx",
+        "sha256": "f34658e27e9d04e82c873f418f5777b1a6674fd5600942c3c68ac6069afeafde"
+      },
+      {
+        "path": "src/web/kompas/KompasDialogs.tsx",
+        "sha256": "6a80c2feafa1d98c5236fbf1dc28947c36aa775585402a5107ff95d637ecd1a0"
+      },
+      {
+        "path": "src/web/kompas/KompasDocumentTabs.tsx",
+        "sha256": "85a594a50c4fafdcec6db2e51a328098a3bd9044b748193d84273a56d7925f9e"
+      },
+      {
+        "path": "src/web/kompas/KompasIcon.tsx",
+        "sha256": "071e961570d4bb4393f8d1771cbbb28b7ecbfe85dfbb1826c90a96cf907101a6"
+      },
+      {
+        "path": "src/web/kompas/KompasLegend.tsx",
+        "sha256": "378dc48a102477e30349f5530102be0d44cae77fd5c79c85cdeeea63c6bd0cc6"
+      },
+      {
+        "path": "src/web/kompas/KompasMain.tsx",
+        "sha256": "812794ab53b2721fea9a2e6f4cbb3ba90ca2c93f41accc91bccfb39037985333"
+      },
+      {
+        "path": "src/web/kompas/KompasMenuBar.tsx",
+        "sha256": "fc2b98c63535b0d548c0d0244df157e44e8a6de19343d96d9712816eadefe19f"
+      },
+      {
+        "path": "src/web/kompas/KompasMobileNavigation.tsx",
+        "sha256": "a652655deaa08d75cac7613a1f8f6dc357a6d5953d3a6a29b27b35889ccdd312"
+      },
+      {
+        "path": "src/web/kompas/KompasParameters.tsx",
+        "sha256": "d8a08b17b922da6e0a1bfd23dc45246a35fb5064221d8f36f92bd567e6ea8476"
+      },
+      {
+        "path": "src/web/kompas/KompasPopups.tsx",
+        "sha256": "52123fca2d656435c9476254d33c260379b95971d569439891bcb487f5372c86"
+      },
+      {
+        "path": "src/web/kompas/KompasQuickAccess.tsx",
+        "sha256": "a4d84c3a0b791287c42cbea90ada58b9bd14911e95f7158a5a7e1a1464847507"
+      },
+      {
+        "path": "src/web/kompas/KompasRibbon.tsx",
+        "sha256": "eb81624c1158d010249abe0831d6a6d7b2603d91f981fdff8ce5925faded181c"
+      },
+      {
+        "path": "src/web/kompas/KompasToast.tsx",
+        "sha256": "d1d00f2df5b25df7eba35ea9759fa69ad79ee97616bd071f8c98c4e1714e912f"
+      },
+      {
+        "path": "src/web/kompas/KompasTooltip.tsx",
+        "sha256": "d18e5db05126ea4cbc07bf5a5fa8261c91a99339e883fb608de4c85aafbb91a8"
+      },
+      {
+        "path": "src/web/kompas/KompasTop.tsx",
+        "sha256": "deecbe5ac2dc51d0206ce4e1138f18acdbf70538f2e4bd33f30428b2ae4f9c9a"
+      },
+      {
+        "path": "src/web/kompas/KompasTree.tsx",
+        "sha256": "2caa416be02413ea42ed2304bfc926e4e6996fe1e147ae64601051a1e7d8c85a"
+      },
+      {
+        "path": "src/web/kompas/kompas-integration.css",
+        "sha256": "cf8f7e34388371e0521cd8b917bdd21a748124e74b6848a96a6fcdb5d0af2268"
+      },
+      {
+        "path": "src/web/kompas/kompas-panels.css",
+        "sha256": "a8e08dc2441cfe901e8f760ed99929c21f2389f5c2f40e7a7959d922bdd8503b"
+      },
+      {
+        "path": "src/web/kompas/kompas-responsive.css",
+        "sha256": "3c19170523f380a6c4b30d16ff9b1a31cbd7c71a68c3c106ab6bcfdd4a7cf0d4"
+      },
+      {
+        "path": "src/web/kompas/kompas-theme-dark.css",
+        "sha256": "32ac693574743f09f2fd68a2d3190e15165852f4761ad24d6969a4ac54a23e8f"
+      },
+      {
+        "path": "src/web/kompas/kompas-top.css",
+        "sha256": "794fc03f0e0e78aaaa339274c881f6eb8b7fe937f8adcf0e2df793525048ad14"
+      },
+      {
+        "path": "src/web/kompas/kompas-work.css",
+        "sha256": "947f3d67aacfcc4d0bd5f18f6a4a8c9983f3ba0f8345b1c8c720c3c6d2391ecf"
+      },
+      {
+        "path": "src/web/kompas/kompasLineIcons.ts",
+        "sha256": "bb206a275cd94fa5f86eeb0b4036bf625e668aa41e3a84afd2fb4f4d97715d4a"
+      },
+      {
+        "path": "src/web/kompas/kompasMenuTypes.ts",
+        "sha256": "433073cc7819e83db25a676fa3fe80ccd09198aab153d286756c9c11fb27ac5d"
+      },
+      {
+        "path": "src/web/kompas/kompasMenus.ts",
+        "sha256": "4a189db6827243bef385c2013ca2120930246b6b53287107aac0ced8a8da01ba"
+      },
+      {
+        "path": "src/web/kompas/kompasModelingMenus.ts",
+        "sha256": "97776680b6582def945d6bb66ce567c4fbb7e29c0ab9a6efd2d5cd71fdab4996"
+      },
+      {
+        "path": "src/web/kompas/kompasShellStore.ts",
+        "sha256": "9d08f346598a7cffa2a277ff746bc2cb8a1ef92ab57cac189fd7cb87aa8cc8b3"
+      },
+      {
+        "path": "src/web/kompas/kompasSolidIcons.ts",
+        "sha256": "d1fecd493df5ef0c3c850b70854811a31167b7fb37b52ea18cf32fc3e7d4026d"
+      },
+      {
+        "path": "src/web/kompas/kompasToolsets.ts",
+        "sha256": "e9855b0235bc40d7832105cba156c64a3637e0cdb3e8748b8dc6905554e460f0"
+      },
+      {
+        "path": "src/web/kompas/useKompasDesktop.ts",
+        "sha256": "b89786f8e58612e8b175cac734c591d0a59dbe6fa8d64d148bd9fb12f5ddf3fb"
+      },
+      {
+        "path": "src/web/mobile-settings.css",
+        "sha256": "2e287e2f96f949e247c22fb6429c218bf9ab4c5cbca08f88de21c53239c1fd6a"
+      },
+      {
+        "path": "src/web/mobile-tools.css",
+        "sha256": "46885ad798e45fb626be5166cc7fc21ec9837cdd24f0b1aa83da8ae93e80dd01"
+      },
+      {
+        "path": "src/web/responsive.css",
+        "sha256": "211696cf5295bfa3f3a2b6d7d5af409ad7873cf59dd2b968039b907d338543eb"
+      },
+      {
+        "path": "src/web/runtime.css",
+        "sha256": "0b9a9001bbcca62387af14750c4eca2899f82a30fea3f31073675493fcd62a11"
+      },
+      {
+        "path": "src/web/styles/base.css",
+        "sha256": "7f3571cc3cbddc0f8693de6dfba93e21a52f86289a055a5efb0a89d9f6e76048"
+      },
+      {
+        "path": "src/web/styles/dialogs.css",
+        "sha256": "a6cae80ec2d18d3573513493609f24eb3ce4c94739681f8ea91ab4bef28f93de"
+      },
+      {
+        "path": "src/web/styles/management.css",
+        "sha256": "66c7b3c02234f7ec85a11dab85229d2eea23ab0c2f80c585979c96f1a051f54c"
+      },
+      {
+        "path": "src/web/styles/shell-responsive.css",
+        "sha256": "b634f501acc31c93493da5f690e70e680f80316cf845cf94739c24da4b48cc78"
+      },
+      {
+        "path": "src/web/styles/top-shell.css",
+        "sha256": "7e1c3a626cbaac92696cf299579a1848d9725107f20364a136aacefc7ff50881"
+      },
+      {
+        "path": "src/web/styles/work-area.css",
+        "sha256": "829c2088874f8843f4ad29a99267a4397c5cb56c92c0dd0003e5c62d60388ea6"
+      },
+      {
+        "path": "src/web/ui-scale.css",
+        "sha256": "88ec9bc4de22761c8f4f4be363e34fca8b63c49411901ad07dae2aee22e6e461"
+      },
+      {
+        "path": "src/web/useActiveSketchSolveOverlay.ts",
+        "sha256": "1a2a1cad808d06405489df49f3ce7d04cab75be59f40eef638c2ea3eb8cb0d66"
+      },
+      {
+        "path": "src/web/useCadPersistenceCommands.ts",
+        "sha256": "220865b9339e077063bb05e37c1268b64fe3a2667895fbd0dc652679cc5e0187"
+      },
+      {
+        "path": "src/web/useCadProjectPersistence.ts",
+        "sha256": "55d49394ef2645497646c033ed256f19d89fc004cafd86ac5dd5b4a6d216e750"
+      },
+      {
+        "path": "src/web/useCutOperationController.ts",
+        "sha256": "1c4b981ba86fba8189c5d817793d2bacf918aeabc37a7b9bdb6b0aeeb46415ae"
+      },
+      {
+        "path": "src/web/useDocumentReplacementGuard.tsx",
+        "sha256": "392464dfac297ef53fdfe33a40507cfe3483d1c2676a997923c2c085f13bb29e"
+      },
+      {
+        "path": "src/web/useExtrudeOperationController.ts",
+        "sha256": "41fbdb051ddaff76256d806c037e8a728e547a16830704b52ee0cc21ab2c1dd4"
+      },
+      {
+        "path": "src/web/useM2CadUiActions.ts",
+        "sha256": "c2c8ff40ead36935dc4afcbe34e6891aaee355f86df490fd26f49f776f9e8349"
+      },
+      {
+        "path": "src/web/usePartCadUiActionCatalog.ts",
+        "sha256": "7e97366c33246197cda7f16d19241011105744e70625a0173476d4a77ab740a3"
+      },
+      {
+        "path": "src/web/usePartFeatureController.ts",
+        "sha256": "540c40b10089acbedf2bdc20da65dedea070473a4c333380265a416bb40a14a5"
+      },
+      {
+        "path": "src/web/usePartFeatureProfile.ts",
+        "sha256": "f8621fa76d95ae64b87e36ca25d3bcc6bfb23fc7a5c5a6c26b64921feccc45b3"
+      },
+      {
+        "path": "src/web/usePartSelectionController.ts",
+        "sha256": "31f77ecdd1ab080a5405cbecc2476a8061018875b3768c4fc40bf08c3ed4a12b"
+      },
+      {
+        "path": "src/web/usePartSelectionTargets.ts",
+        "sha256": "0b50aaa8d32e5b673552151bbfb3d3c79bdd3141dc716c459bb32a4662b91e77"
+      },
+      {
+        "path": "src/web/usePartSketchWorkspace.ts",
+        "sha256": "8e545d346679dbe928a3016c83ad6cbf57feeff4ac79c762d038dda81b624feb"
+      },
+      {
+        "path": "src/web/usePartWorkspaceNavigation.ts",
+        "sha256": "83b64f8fb48635f9d418da6b481025a6447c5c6eaf3855173b6c0da9f559e8ec"
+      },
+      {
+        "path": "src/web/useSketchAngularDimensionController.ts",
+        "sha256": "822115a399f6ed24398d45acde9c2af5a42fa391ca0dbb9d0aff63d9a61e0d2d"
+      },
+      {
+        "path": "src/web/useSketchArcTool.ts",
+        "sha256": "cbc1b5e07ed13e8fbce539666b9c5e71d568acdc4b557f1364587dfe56e0d6a4"
+      },
+      {
+        "path": "src/web/useSketchCircleDimensionController.ts",
+        "sha256": "2d0cb4ed1a39d8573a1c5c2c57d85eff0b78e7b7549fdbee0345309569db48b6"
+      },
+      {
+        "path": "src/web/useSketchCircleTool.ts",
+        "sha256": "42e115e737598ed9e1c3b1a98f67053a28751b47d94b15ac094bd7db960fd727"
+      },
+      {
+        "path": "src/web/useSketchConstraintController.ts",
+        "sha256": "b1fc50bc934aa0b3b9e6affac7935bc6f56989c842c309a61a7bbae47df77367"
+      },
+      {
+        "path": "src/web/useSketchConstraintControllers.ts",
+        "sha256": "c7307e93011cd61bc09afc53aeb6d5640ce0b3a59e9e6b9b655e6e7ead3728b4"
+      },
+      {
+        "path": "src/web/useSketchDimensionController.ts",
+        "sha256": "def4b6838d8f09526a36ce62ecd3c68954ca8cea5d00e5b7f8dc14616653367f"
+      },
+      {
+        "path": "src/web/useSketchDimensionCreationControllers.ts",
+        "sha256": "e8da4354041bb66003d5206f6c46093f207357e7f136d6acbe300c899c00f054"
+      },
+      {
+        "path": "src/web/useSketchEditingController.ts",
+        "sha256": "53c1025e4b1738fbcd6f28ba0e0c2cbba201d5939531cc7e16bdb48716e57ab6"
+      },
+      {
+        "path": "src/web/useSketchEntityDrag.ts",
+        "sha256": "1d7c6c7877ec929830143e2cbe1f177410d72cf3eaa6c160ae83f9df18c87953"
+      },
+      {
+        "path": "src/web/useSketchEntityMutationController.ts",
+        "sha256": "17217f8ccd30b4ecb4a563f6803aaa4eac8d7c89703c93d074b4eb2de8fe72a8"
+      },
+      {
+        "path": "src/web/useSketchLineDimensionController.ts",
+        "sha256": "883cdaf644bc0f93c5f4bee47967bbe7bc507c0c02127a115b730cd38706d31f"
+      },
+      {
+        "path": "src/web/useSketchLineTool.ts",
+        "sha256": "5dbbf3a9445984c61522261b173374f31836a0d7f8b420b80a3faaa178291012"
+      },
+      {
+        "path": "src/web/useSketchRadiusDimensionController.ts",
+        "sha256": "6ee4f7d0f6d8132abc95c438a716b64ce6ffc5b47ea0b6f84a0fb5b0572f4ebe"
+      },
+      {
+        "path": "src/web/useSketchRectangleTool.ts",
+        "sha256": "cd50114929a5b1002508b9456860366c43f345c2abf1d4844f9020c5441ca00a"
+      },
+      {
+        "path": "src/web/useSketchSession.ts",
+        "sha256": "1fdd501363fc52127b7f5aa40cac679b8a6960305a9496fde63da66eea836f77"
+      },
+      {
+        "path": "src/web/useViewportViewCommands.ts",
+        "sha256": "98181ce180fc863a502a2c6eca38600a64e2f11f5e40f596facb354648e47ac7"
+      },
+      {
+        "path": "src/web/viewportTokens.ts",
+        "sha256": "681c6ead270edb5587aa9ce0304a727fcbe6a0a264221fb8712f1dc36bbbc625"
+      },
+      {
+        "path": "src/web/viewport/PartReferenceGeometry.ts",
+        "sha256": "00fc3115cf66d527c00e6c93ceff24b33187c070ae76b5db8c5f6e299f5850e8"
+      },
+      {
+        "path": "src/web/viewport/SketchArcGeometry.ts",
+        "sha256": "85daa32a62387b2af69190a7c8f09d96a373df185c6a2bc1cd413cd83e311038"
+      },
+      {
+        "path": "src/web/viewport/SketchArcInteractionLayer.tsx",
+        "sha256": "af2b031a9701095c2371fbab9bb6af19a677150b9e3f293412fdd35423fa0a6d"
+      },
+      {
+        "path": "src/web/viewport/SketchCircleInteractionLayer.tsx",
+        "sha256": "897c97a39184d670de80a99a625dfae3ffd6b23914b77c5070c9ac50657023aa"
+      },
+      {
+        "path": "src/web/viewport/SketchCoincidentInteractionLayer.tsx",
+        "sha256": "21976d9c5ecf4d26dd02dba9e8f87447011318f8c078362942faead383836572"
+      },
+      {
+        "path": "src/web/viewport/SketchConcentricInteractionLayer.tsx",
+        "sha256": "9d1d2a1d7629f060c6f75f23074d962d8e16145bd158c8a86f5d7641856f5c91"
+      },
+      {
+        "path": "src/web/viewport/SketchInteractionSurface.tsx",
+        "sha256": "52bca2d173497078d0d5613c03d71c0a5597fc3eb75fe97c1099627f0b088459"
+      },
+      {
+        "path": "src/web/viewport/SketchLineInteractionLayer.tsx",
+        "sha256": "2fc37e902ce3c7f36bd84548d8669ff37914f103aac0078d45aa51655874172f"
+      },
+      {
+        "path": "src/web/viewport/SketchOverlayLayer.tsx",
+        "sha256": "2fbd8b6996cd377dcd0d87036b8e9d14e3857343f1d27faac4970bf7d55baaf5"
+      },
+      {
+        "path": "src/web/viewport/SketchOverlayModel.ts",
+        "sha256": "7b642f2ea1dd28077ba8410f402a1376fdcf1f9d0b99e83e3bc1d7cadfc8d505"
+      },
+      {
+        "path": "src/web/viewport/SketchPointOnCurveInteractionLayer.tsx",
+        "sha256": "61d45a6e11f6af52a49481897ac7c0440df9ae5c78b1c2c9c508333e79a45fbf"
+      },
+      {
+        "path": "src/web/viewport/SketchRectangleGeometry.ts",
+        "sha256": "ca97267a76e3c60ea87f47f8845eacb609aa0919fa587c63229c763e2101a71e"
+      },
+      {
+        "path": "src/web/viewport/SketchRectangleInteractionLayer.tsx",
+        "sha256": "90c85c76be79a3949e67d473bf2863a5e09158839e97ce2a440f010308826c2e"
+      },
+      {
+        "path": "src/web/viewport/SketchSelectionLayer.tsx",
+        "sha256": "437265d26aed2ccd4bbcb6b8e5c0491b0ace580014c3a6b4235fcd3253b46351"
+      },
+      {
+        "path": "src/web/viewport/SketchSymmetryInteractionLayer.tsx",
+        "sha256": "314e1e62e79f15c3c3b96cb3ae404ae6eb5561b1c36ec81e92df4acc85012972"
+      },
+      {
+        "path": "src/web/viewport/SketchTangentInteractionLayer.tsx",
+        "sha256": "b6318a8b9044a730c019498f456771456def64d0d278d41cdaea85f31590fea1"
+      },
+      {
+        "path": "src/web/viewport/SketchViewportFrameContext.tsx",
+        "sha256": "14800ac2f4158f69094ab08b5a1e9e8d2d53a5693fff8ad2c58d4c8d536985f7"
+      },
+      {
+        "path": "src/web/viewport/SketchViewportGeometry.ts",
+        "sha256": "938a7ba746a01563c86c67e2a05e808e13381f0b8e63d2c4e59769cc2b05ccad"
+      },
+      {
+        "path": "src/web/viewport/SketchWorkplaneProjection.ts",
+        "sha256": "52bab16986c93566e122ef6dac972ad10831099c8c7dd7bfe6b26f61c61416b6"
+      },
+      {
+        "path": "src/web/viewport/ViewportCameraController.ts",
+        "sha256": "1fcb664e29c2c34efbe7aef6c8c6c9feab0c169d83ebe103c5662038c3d99cd9"
+      },
+      {
+        "path": "src/web/viewport/ViewportMeshLayer.ts",
+        "sha256": "10382840c317c637ed9210e85174f89355cb638ffd0df3cd27a769e776ec0995"
+      },
+      {
+        "path": "src/web/viewport/ViewportPicking.ts",
+        "sha256": "311082a3d24987380fb4e1e0749eb440cafa16670627bc0787cc1e51c611f88a"
+      },
+      {
+        "path": "src/web/viewport/ViewportReferenceLayer.ts",
+        "sha256": "bfa9639af239c60189bb1e981a185be9126ed969f6c55b87a1a8af55511ce798"
+      },
+      {
+        "path": "src/web/viewport/ViewportSelectionController.ts",
+        "sha256": "bf5a75efc3d3b701de7d200f9f11f2b7fd2a3d2949883373def3439a18af271b"
+      },
+      {
+        "path": "src/web/viewport/sketch-selection.css",
+        "sha256": "f2c54606c61c9c75581645072b81b7d6811f9a10fedc67514e6ae4cf94f55f0f"
+      },
+      {
+        "path": "vendor/toubkal/src/assembly/AssemblyConstraintSolver.ts",
+        "sha256": "23df8a06cb3c7d83baf5ac4e18df91c332ed2250e1c5d2dfa76718e71ca4abf7"
+      },
+      {
+        "path": "vendor/toubkal/src/assembly/AssemblyReferenceService.ts",
+        "sha256": "4137126ab4a51cb0e4a10f848fb158110d298c6d950754b1e90fea8eff708438"
+      },
+      {
+        "path": "vendor/toubkal/src/assembly/migration.ts",
+        "sha256": "cb31d9b07adefdc5e0b613d43ab1a996b6c138d4b0f8eaeb443d03ca035fea9d"
+      },
+      {
+        "path": "vendor/toubkal/src/assembly/transforms.ts",
+        "sha256": "8af79e6199af7942d33d165cf975b34cb53c9274da7ee92f550091bc4059ddd1"
+      },
+      {
+        "path": "vendor/toubkal/src/assembly/types.ts",
+        "sha256": "b14fc99c4966c930c926a3073313594e4cdf6e6fba72e1e5645ebbd35734fe41"
+      },
+      {
+        "path": "vendor/toubkal/src/services/AssemblyBRepService.ts",
+        "sha256": "4684df998e2f75ace881ab24d7f5ef57ddf4f59a3d475608b609e475efdbcce9"
+      },
+      {
+        "path": "vendor/toubkal/src/services/AssemblyBomService.ts",
+        "sha256": "cddc9c161e0d0367d5b187f9d052df847802efe7d3a4973dd3807eb11f436f6f"
+      },
+      {
+        "path": "vendor/toubkal/src/services/AssemblyInterferenceService.ts",
+        "sha256": "17bfb90b1d1dfb0894ad90a4e5f9bffef1d45ca7262c2ebf9c7e93fb88a17bcc"
+      },
+      {
+        "path": "vendor/toubkal/src/services/CADGeometryRegistry.ts",
+        "sha256": "fdb332c2c21f8fdc86bd4df4718e8113c6628b988b6a01600fd923a1b282b18f"
+      },
+      {
+        "path": "vendor/toubkal/src/services/FeatureGraph.ts",
+        "sha256": "25a97a246663ea5a5cab41fe9934fc45fdeca78699e4f5e6f0f57a26273769cf"
+      },
+      {
+        "path": "vendor/toubkal/src/services/OccAxisService.ts",
+        "sha256": "5833eee1e30fbf38258efecd0100a079a0be9b757f67171bd3f636d4d44aa3ef"
+      },
+      {
+        "path": "vendor/toubkal/src/services/OccConverter.ts",
+        "sha256": "70db6396b341c8cde3da086be51e7acf2a7136406d247b91da4e7fc756eaeef2"
+      },
+      {
+        "path": "vendor/toubkal/src/services/OccEdgeService.ts",
+        "sha256": "9427b8b349c4aff633d4d6ca8453aac2ba9922a2195db5687c60b8a5977bf73c"
+      },
+      {
+        "path": "vendor/toubkal/src/services/OccExchangeService.ts",
+        "sha256": "e114c4896d3e90ff77314b93e8d853cf7eeb64676c1df51014a7521a1be16d8b"
+      },
+      {
+        "path": "vendor/toubkal/src/services/OccFaceService.ts",
+        "sha256": "deb55d0c71d535efbf93ee60331ba38e21471bddd81e8f60b193665383ff374f"
+      },
+      {
+        "path": "vendor/toubkal/src/services/OccMeasureService.ts",
+        "sha256": "ca9d463b1d427eb60ac5a43388c0c9bbd64b2d2638dddec560e61ca87eb891ec"
+      },
+      {
+        "path": "vendor/toubkal/src/services/OccTransformService.ts",
+        "sha256": "7c2dfd1a1596ac684a61ae80fbd7ea26f397848299eae13309ead773518d1582"
+      },
+      {
+        "path": "vendor/toubkal/src/services/ProjectFileService.ts",
+        "sha256": "04ec330693720809055264683f79816f9e13a24997a1b22f6d591d4dfa794af6"
+      },
+      {
+        "path": "vendor/toubkal/src/services/SketchConstraintSolver.ts",
+        "sha256": "5353bc921ef76a4c294b082213e7f336e33de6e98d86fe6efd85f14504a14ec9"
+      },
+      {
+        "path": "vendor/toubkal/src/services/StableRef.ts",
+        "sha256": "4b0c6d0259e7ea9b96554ea4a5a0a803e22167a81bd45a1b9a88c6bb01f53dd0"
+      },
+      {
+        "path": "vendor/toubkal/src/services/solver/ISketchSolver.ts",
+        "sha256": "60a085aab6942d5497e7944f130a122650f9dbc9c101730f73c403ac54a2922f"
+      },
+      {
+        "path": "vendor/toubkal/src/services/solver/PlaneGCSSolverAdapter.ts",
+        "sha256": "11f684614910355694958d04c086d3d43f1143f33629e56b3502aadec118e00b"
+      },
+      {
+        "path": "vendor/toubkal/src/services/solver/model.ts",
+        "sha256": "15252b9c58922045c321029c41a4e60edd19d2ec9b034879b202de07ac57b53f"
+      },
+      {
+        "path": "vendor/toubkal/src/services/solver/planegcs/loadPlaneGcs.ts",
+        "sha256": "a031ceb32327f1cdf7786f064b8dfe06a0b7f823f0d1e020ecb091addf0f331f"
+      },
+      {
+        "path": "vendor/toubkal/src/store/cadStore.ts",
+        "sha256": "228630c33f591f5f8d278e1ac73c242f3ff25f9bb5ff97aa51c967cc92ce6d41"
+      },
+      {
+        "path": "vendor/toubkal/src/store/historyDelta.ts",
+        "sha256": "baf419ad3284f92bb6ee8ff9c159b887280142062cb944d5bafe1d9f3ed55e10"
+      },
+      {
+        "path": "vendor/toubkal/src/utils/WasmScope.ts",
+        "sha256": "27431ff20a20ba47de896139c642e308ca89aaac470752642dfe57a0e5d3308c"
+      },
+      {
+        "path": "vendor/toubkal/src/utils/recomputeDatums.ts",
+        "sha256": "c9d3051c616adc6718010d72f8860d644f4deec49e89749d65131f762bc6e0a3"
+      },
+      {
+        "path": "vendor/toubkal/src/utils/renderQuality.ts",
+        "sha256": "3247c13e21a1fbc591d0419744f67d1c37eb78f31bf223a9dc863940825c8543"
+      }
+    ],
+    "unresolvedLiteralImports": [],
+    "npmRoots": [
+      {
+        "name": "@salusoft89/planegcs",
+        "key": "node_modules/@salusoft89/planegcs",
+        "version": "1.1.7",
+        "importSites": [
+          {
+            "importer": "src/browser/BrowserSketchSolverAdapter.ts",
+            "specifier": "../../vendor/toubkal/node_modules/@salusoft89/planegcs/dist/planegcs_dist/planegcs.wasm"
+          },
+          {
+            "importer": "vendor/toubkal/src/services/solver/PlaneGCSSolverAdapter.ts",
+            "specifier": "@salusoft89/planegcs"
+          },
+          {
+            "importer": "vendor/toubkal/src/services/solver/PlaneGCSSolverAdapter.ts",
+            "specifier": "@salusoft89/planegcs"
+          },
+          {
+            "importer": "vendor/toubkal/src/services/solver/planegcs/loadPlaneGcs.ts",
+            "specifier": "@salusoft89/planegcs"
+          }
+        ],
+        "reachableAffected": []
+      },
+      {
+        "name": "opencascade.js",
+        "key": "node_modules/opencascade.js",
+        "version": "2.0.0-beta.b5ff984",
+        "importSites": [
+          {
+            "importer": "src/browser/BrowserPartRuntimeAdapter.ts",
+            "specifier": "opencascade.js"
+          }
+        ],
+        "reachableAffected": []
+      },
+      {
+        "name": "react",
+        "key": "node_modules/react",
+        "version": "18.3.1",
+        "importSites": [
+          {
+            "importer": "src/web/index.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/App.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/UiScaleSettings.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/useCadProjectPersistence.ts",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/useCadPersistenceCommands.ts",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/useDocumentReplacementGuard.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/DocumentTree.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/ParameterPanel.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/CoincidentPartModelStage.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/CadShellTop.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/CadShellMain.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/CadShellBottom.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/usePartSketchWorkspace.ts",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/useViewportViewCommands.ts",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/useM2CadUiActions.ts",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/CadIcon.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/SketchTreeBranch.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/useExtrudeOperationController.ts",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/SketchDimensionParameterPanel.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/PartModelStage.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/SketchReadOnlyStage.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/kompas/KompasTop.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/kompas/KompasMain.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/kompas/KompasToast.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/kompas/KompasMobileNavigation.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/useSketchSession.ts",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/usePartSelectionController.ts",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/useSketchEditingController.ts",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/useSketchDimensionController.ts",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/usePartFeatureController.ts",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/usePartWorkspaceNavigation.ts",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/useSketchAngularDimensionController.ts",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/useSketchCircleDimensionController.ts",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/useSketchLineDimensionController.ts",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/useSketchRadiusDimensionController.ts",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/CadViewport.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/PartStageStatus.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/ViewportTriad.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/SketchEditingStage.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/useActiveSketchSolveOverlay.ts",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/viewport/SketchViewportFrameContext.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/kompas/KompasDocumentTabs.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/kompas/KompasMenuBar.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/kompas/KompasPopups.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/kompas/KompasRibbon.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/kompas/KompasTooltip.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/kompas/useKompasDesktop.ts",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/kompas/kompasShellStore.ts",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/kompas/KompasParameters.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/kompas/KompasDialogs.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/kompas/KompasIcon.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/kompas/KompasQuickAccess.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/kompas/KompasTree.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/usePartSelectionTargets.ts",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/useSketchLineTool.ts",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/useSketchCircleTool.ts",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/useSketchArcTool.ts",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/useSketchRectangleTool.ts",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/useSketchConstraintController.ts",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/usePartFeatureProfile.ts",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/SketchDirectToolLayers.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/useSketchEntityDrag.ts",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/viewport/SketchSelectionLayer.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/viewport/SketchLineInteractionLayer.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/viewport/SketchCircleInteractionLayer.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/viewport/SketchArcInteractionLayer.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/viewport/SketchRectangleInteractionLayer.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/viewport/SketchCoincidentInteractionLayer.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/viewport/SketchTangentInteractionLayer.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/viewport/SketchConcentricInteractionLayer.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/viewport/SketchSymmetryInteractionLayer.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/viewport/SketchPointOnCurveInteractionLayer.tsx",
+            "specifier": "react"
+          },
+          {
+            "importer": "src/web/viewport/SketchInteractionSurface.tsx",
+            "specifier": "react"
+          }
+        ],
+        "reachableAffected": []
+      },
+      {
+        "name": "react-dom",
+        "key": "node_modules/react-dom",
+        "version": "18.3.1",
+        "importSites": [
+          {
+            "importer": "src/web/index.tsx",
+            "specifier": "react-dom/client"
+          },
+          {
+            "importer": "src/web/kompas/KompasMenuBar.tsx",
+            "specifier": "react-dom"
+          },
+          {
+            "importer": "src/web/kompas/KompasPopups.tsx",
+            "specifier": "react-dom"
+          },
+          {
+            "importer": "src/web/kompas/KompasRibbon.tsx",
+            "specifier": "react-dom"
+          },
+          {
+            "importer": "src/web/kompas/KompasTooltip.tsx",
+            "specifier": "react-dom"
+          },
+          {
+            "importer": "src/web/kompas/KompasDialogs.tsx",
+            "specifier": "react-dom"
+          }
+        ],
+        "reachableAffected": []
+      },
+      {
+        "name": "three",
+        "key": "node_modules/three",
+        "version": "0.170.0",
+        "importSites": [
+          {
+            "importer": "vendor/toubkal/src/services/OccConverter.ts",
+            "specifier": "three"
+          },
+          {
+            "importer": "src/web/CadViewport.tsx",
+            "specifier": "three"
+          },
+          {
+            "importer": "src/web/CadViewport.tsx",
+            "specifier": "three/examples/jsm/controls/OrbitControls.js"
+          },
+          {
+            "importer": "src/web/viewport/ViewportMeshLayer.ts",
+            "specifier": "three"
+          },
+          {
+            "importer": "src/web/viewport/ViewportReferenceLayer.ts",
+            "specifier": "three"
+          },
+          {
+            "importer": "vendor/toubkal/src/utils/recomputeDatums.ts",
+            "specifier": "three"
+          },
+          {
+            "importer": "vendor/toubkal/src/assembly/transforms.ts",
+            "specifier": "three"
+          },
+          {
+            "importer": "vendor/toubkal/src/assembly/AssemblyReferenceService.ts",
+            "specifier": "three"
+          },
+          {
+            "importer": "vendor/toubkal/src/assembly/AssemblyConstraintSolver.ts",
+            "specifier": "three"
+          },
+          {
+            "importer": "vendor/toubkal/src/services/AssemblyBRepService.ts",
+            "specifier": "three"
+          },
+          {
+            "importer": "vendor/toubkal/src/services/OccExchangeService.ts",
+            "specifier": "three"
+          },
+          {
+            "importer": "vendor/toubkal/src/services/OccTransformService.ts",
+            "specifier": "three"
+          }
+        ],
+        "reachableAffected": []
+      },
+      {
+        "name": "zustand",
+        "key": "node_modules/zustand",
+        "version": "5.0.14",
+        "importSites": [
+          {
+            "importer": "vendor/toubkal/src/store/cadStore.ts",
+            "specifier": "zustand"
+          }
+        ],
+        "reachableAffected": []
+      }
+    ],
+    "reachableAffectedNodes": [],
+    "parser": "TypeScript preProcessFile with literal/dynamic literal imports and JS require detection; conservative type-only inclusion"
+  },
+  "packaging": {
+    "dockerfileSha256": "c3497164f014ff8c8d6c5841973c88d71598925bc7c53b7fc28ee507a2931f08",
+    "stages": [
+      "FROM ${NODE_IMAGE} AS build",
+      "FROM ${CADDY_IMAGE} AS runtime"
+    ],
+    "finalStageCopies": [
+      "COPY docker/Caddyfile /etc/caddy/Caddyfile\r",
+      "COPY --from=build /workspace/dist/asa /srv\r",
+      "COPY release/manifest.json /srv/asa-cad-release.json\r"
+    ],
+    "finalStageContainsNodeModulesCopy": false,
+    "asaBuildConfiguration": {
+      "path": "build/rspack.asa.config.cjs",
+      "sha256": "587d87d19fa9522d9dc7cfc65ec070f165f6d0bbd341d88b0257ad7e8519a1e9",
+      "compiler": "Rspack",
+      "entry": "src/web/index.tsx"
+    },
+    "lintConfiguration": {
+      "path": "vendor/toubkal/eslint.config.js",
+      "sha256": "8dfb85e5d3e3b58dfb9abb6da88a37aab013294f778fefc82d09f534f33a4d18"
+    },
+    "note": "opencascade.js is declared dev but actually imported at runtime; classification therefore uses source reachability, not lock.dev alone"
+  },
+  "primaryAdvisoryReviews": [
+    {
+      "ghsa": "GHSA-rgw5-rvv9-x895",
+      "package": "brace-expansion",
+      "url": "https://github.com/advisories/GHSA-rgw5-rvv9-x895",
+      "primarySource": "GitHub Advisory Database, GitHub-reviewed page",
+      "reviewedOn": "2026-11-07",
+      "retrievalReference": "turn3view0",
+      "inputCondition": "Crafted brace expansion can exhaust memory or CPU",
+      "scope": "Confirms advisory input condition, not ASA reachability or exploitation"
+    },
+    {
+      "ghsa": "GHSA-c83g-rgw3-j3cx",
+      "package": "browserslist",
+      "url": "https://github.com/advisories/GHSA-c83g-rgw3-j3cx",
+      "primarySource": "GitHub Advisory Database, GitHub-reviewed page",
+      "reviewedOn": "2026-11-07",
+      "retrievalReference": "turn3view1",
+      "inputCondition": "Unbounded distinct query/context cache can exhaust memory",
+      "scope": "Confirms advisory input condition, not ASA reachability or exploitation"
+    },
+    {
+      "ghsa": "GHSA-qw65-cvwx-89v3",
+      "package": "fast-uri",
+      "url": "https://github.com/advisories/GHSA-qw65-cvwx-89v3",
+      "primarySource": "GitHub Advisory Database, GitHub-reviewed page",
+      "reviewedOn": "2026-11-07",
+      "retrievalReference": "turn3view2",
+      "inputCondition": "Authority injection requires untrusted URI component input, especially port",
+      "scope": "Confirms advisory input condition, not ASA reachability or exploitation"
+    },
+    {
+      "ghsa": "GHSA-mrhx-c7xc-m3w5",
+      "package": "zod",
+      "url": "https://github.com/advisories/GHSA-mrhx-c7xc-m3w5",
+      "primarySource": "GitHub Advisory Database, GitHub-reviewed page",
+      "reviewedOn": "2026-11-07",
+      "retrievalReference": "turn3view3",
+      "inputCondition": "Large failing collection validation can allocate excessive issue objects",
+      "scope": "Confirms advisory input condition, not ASA reachability or exploitation"
+    },
+    {
+      "ghsa": "GHSA-g3hv-75wg-m249",
+      "package": "minimatch",
+      "url": "https://github.com/advisories/GHSA-g3hv-75wg-m249",
+      "primarySource": "GitHub Advisory Database, GitHub-reviewed page",
+      "reviewedOn": "2026-11-07",
+      "retrievalReference": "turn3view4",
+      "inputCondition": "Attacker-controlled patterns amplify work with relevant optimization setting",
+      "scope": "Confirms advisory input condition, not ASA reachability or exploitation"
+    },
+    {
+      "ghsa": "GHSA-3g3m-2fjr-6pw4",
+      "package": "glob",
+      "url": "https://github.com/advisories/GHSA-3g3m-2fjr-6pw4",
+      "primarySource": "GitHub Advisory Database, GitHub-reviewed page",
+      "reviewedOn": "2026-11-07",
+      "retrievalReference": "turn3view5",
+      "inputCondition": "Aborted asynchronous traversal can continue filesystem work",
+      "scope": "Confirms advisory input condition, not ASA reachability or exploitation"
+    },
+    {
+      "ghsa": "GHSA-w5vr-8v7q-w6rv",
+      "package": "baseline-browser-mapping",
+      "url": "https://github.com/advisories/GHSA-w5vr-8v7q-w6rv",
+      "primarySource": "GitHub Advisory Database, GitHub-reviewed page",
+      "reviewedOn": "2026-11-07",
+      "retrievalReference": "turn3view6",
+      "inputCondition": "Invalid/conflicting inputs can terminate the process",
+      "scope": "Confirms advisory input condition, not ASA reachability or exploitation"
+    }
+  ],
+  "fixSuggestionsRequiringCompatibilityReview": [],
+  "limitations": [
+    "Counts/severities are from the captured npm audit report; no new npm audit or npm audit fix was executed",
+    "Seven representative primary advisory pages reviewed; remaining advisory details are attributed to captured report",
+    "No application SSRF, code execution or denial-of-service exploit is claimed from package presence alone",
+    "No built-bundle execution/instrumentation or exploit test performed",
+    "Static graph does not resolve arbitrary nonliteral dynamic imports or externally supplied code",
+    "Installed peer dependency path does not prove that library executes under Rspack",
+    "Toolchain/lint/build/clean exposure remains; dev-only classification does not grant a high-severity exception",
+    "No package/lock/product/workflow edits, install, upgrade, override, audit fix or automatic remediation"
+  ]
+}
