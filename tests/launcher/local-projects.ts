@@ -6,8 +6,10 @@ import { CadApplicationImpl } from '../../src/application/CadApplicationImpl';
 import { createEmptyCadDocument, parseCadDocument, serializeCadDocument, type CadDocument, type CadPartDocument } from '../../src/contracts/document';
 import type { CadRuntimeAdapter } from '../../src/contracts/runtime';
 import type { CadSketchEntityId, CadSketchId } from '../../src/contracts/ids';
-import { LocalCadProjects } from '../../src/host/LocalCadProjects';
+import { LocalCadProjects, localCadProjectRecoveryKey } from '../../src/host/LocalCadProjects';
 import { DEFAULT_STANDALONE_CAD_STORAGE_KEY as LEGACY_KEY, LocalStorageCadProjectHost, LocalStorageCadRevisionConflictError } from '../../src/host/LocalStorageCadProjectHost';
+import { CadProjectSession } from '../../src/host/CadProjectSession';
+import { MemoryCadRecoveryStore } from '../../src/host/CadRecoveryStore';
 import { collectLocalCadBackup, downloadLocalCadBackup } from '../../src/web/launcher/backup';
 import type { CadEditorMode } from '../../src/browser/editorModes';
 
@@ -149,6 +151,42 @@ await test('real sketch commands remain editable after save and reopen in the ot
   assert.equal((await kompas.load()).revision, 2);
   assert.deepEqual(projects.ids(), [id], 'switching shells must not create a second project');
   second.dispose();
+});
+
+await test('both launcher modes reopen the original standalone pending recovery without replaying or clearing it', async () => {
+  const storage = new MemoryStorage(), recovery = new MemoryCadRecoveryStore();
+  const legacy = seedLegacy(storage), catalog = new LocalCadProjects(storage);
+  const original = new CadProjectSession({ projectKey: 'asa-cad:standalone', recovery,
+    host: new LocalStorageCadProjectHost({ storage, initialDocument: legacy.authoritative }),
+    mutationIdFactory: () => 'legacy-failed-save' });
+  const saved = await original.open();
+  const app = new CadApplicationImpl(saved.document, noKernel);
+  assert.equal((await app.execute({ id: 'sketch.create', payload: { support: 'XY' } })).ok, true);
+  const edited = snapshot(app.getDocument()), before = storage.snapshot();
+  const setItem = storage.setItem.bind(storage);
+  storage.setItem = () => { throw new Error('simulated storage quota failure'); };
+  await assert.rejects(original.save(edited), /simulated storage quota failure/);
+  storage.setItem = setItem;
+  const pending = await recovery.load('asa-cad:standalone');
+  assert.ok(pending);
+  assert.deepEqual(pending.document, edited);
+  for (const mode of ['kompas', 'fusion'] as const) {
+    const session = new CadProjectSession({ projectKey: localCadProjectRecoveryKey('legacy'), recovery,
+      host: catalog.host('legacy', mode) });
+    const opened = await session.open();
+    assert.deepEqual(opened.document, legacy.authoritative, 'pending recovery is not silently promoted to authority');
+    assert.deepEqual(opened.recovery, pending, 'the launcher must discover the exact original pending save');
+    assert.equal(opened.recovery?.pendingMutationId, 'legacy-failed-save');
+    assert.equal(opened.recovery?.baseRevision, saved.revision);
+  }
+  assert.deepEqual(storage.snapshot(), before, 'opening cannot replay a save or rewrite either legacy slot');
+  assert.deepEqual(await recovery.load('asa-cad:standalone'), pending, 'opening cannot clear pending recovery');
+  const id = catalog.create('fusion', 'Independent local project');
+  assert.equal(localCadProjectRecoveryKey(id), `asa-cad:local:${id}`);
+  const independent = new CadProjectSession({ projectKey: localCadProjectRecoveryKey(id), recovery,
+    host: catalog.host(id, 'fusion') });
+  assert.equal((await independent.open()).recovery, null, 'new projects cannot inherit standalone recovery');
+  app.dispose();
 });
 
 await test('two hosts reject stale saves and retain idempotency without prototype collisions', async () => {
