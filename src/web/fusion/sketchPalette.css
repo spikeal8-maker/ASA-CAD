@@ -1,8 +1,8 @@
-/* Native palette: x=width-291; y=134+floor((height-153)/6).
-   At 1600x900 and 1375x768 its last border pixel is height-94 (outer gap 93px). */
+/* Compared with native Fusion 2706.1.17 on D2-R2 at 1920x1080 and 1366x768.
+   Keep the native ~15px right gap and align the palette vertically with Sketch mode. */
 .asa-editor-root[data-mode="fusion"] .live-workarea[data-workspace=sketch] .live-sketch-palette{
-  --sketch-palette-top:max(8px,calc((100dvh - 153px)/6));
-  top:var(--sketch-palette-top);right:5px;width:286px;max-width:calc(100% - 10px);
+  --sketch-palette-top:max(8px,calc((100dvh - 153px)/6 - 8px));
+  top:var(--sketch-palette-top);right:15px;width:286px;max-width:calc(100% - 20px);
   max-height:max(70px,calc(100% - var(--sketch-palette-top) - 93px));border:1px solid #dedede;
   background:#f5f5f5;color:#343434;font-size:14px;box-shadow:none;
 }
@@ -120,7 +120,7 @@
 .asa-editor-root[data-mode="fusion"] .live-workarea .live-sketch-palette .live-parameters-embedded .live-param-row{min-height:34.5px;font-size:13px}
 .asa-editor-root[data-mode="fusion"] .live-workarea .live-sketch-palette .live-parameters-embedded>footer{padding:5px 4px 8px;background:transparent;border:0}
 @supports(top:round(down,1.5px,1px)){
-  .asa-editor-root[data-mode="fusion"] .live-workarea[data-workspace=sketch] .live-sketch-palette{--sketch-palette-top:max(8px,round(down,calc((100dvh - 153px)/6),1px))}
+  .asa-editor-root[data-mode="fusion"] .live-workarea[data-workspace=sketch] .live-sketch-palette{--sketch-palette-top:max(8px,calc(round(down,calc((100dvh - 153px)/6),1px) - 8px))}
 }
 @media(max-width:600px){
   .asa-editor-root[data-mode="fusion"] .live-workarea[data-workspace=sketch] .live-sketch-palette{width:270px}
