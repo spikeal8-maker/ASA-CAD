@@ -1,5 +1,5 @@
 export type CadEditorMode = 'kompas' | 'fusion';
-export type CadLaunchMode = CadEditorMode | 'blocks3d';
+export type CadLaunchMode = CadEditorMode | 'vassalite';
 
 export interface CadModeDefinition {
   id: CadLaunchMode;
@@ -7,13 +7,13 @@ export interface CadModeDefinition {
   description: string;
   available: boolean;
   external: boolean;
-  connection: 'local' | 'external-session';
+  connection: 'local' | 'unavailable';
   projectType: 'cad-document' | 'three-d';
-  saving: 'local-revision' | 'asa-lab-project-core';
+  saving: 'local-revision' | 'unavailable';
   operations: readonly string[];
   status: string;
   launch: { kind: 'local'; projectPath(projectId: string): string }
-    | { kind: 'asa-lab'; projectPath(projectId: string): string; projectsUrl(): string };
+    | { kind: 'unavailable' };
   returnHome: 'guarded-home-route' | 'retained-launcher-tab';
 }
 
@@ -28,12 +28,11 @@ export const CAD_MODES: readonly CadModeDefinition[] = [
     saving: 'local-revision', operations: ['sketch', 'dimensions', 'extrude', 'save', 'undo'],
     status: 'Локальные проекты · без регистрации',
     launch: { kind: 'local', projectPath: id => localCadEditorPath('fusion', id) }, returnHome: 'guarded-home-route' },
-  { id: 'blocks3d', title: '3D-конструктор', description: 'Создавайте модели из кубов, цилиндров и других фигур',
-    available: true, external: true, connection: 'external-session', projectType: 'three-d',
-    saving: 'asa-lab-project-core', operations: ['shapes', 'transform', 'save'],
-    status: 'Отдельный редактор ASA Lab · нужен вход',
-    launch: { kind: 'asa-lab', projectPath: asaLabThreeDEditorUrl, projectsUrl: asaLabProjectsUrl },
-    returnHome: 'retained-launcher-tab' },
+  { id: 'vassalite', title: 'Vassalite', description: 'Отдельный CAD-редактор ASA-CAD',
+    available: false, external: false, connection: 'unavailable', projectType: 'cad-document',
+    saving: 'unavailable', operations: [],
+    status: 'Недоступен: исходники Vassalite отсутствуют в ASA-CAD',
+    launch: { kind: 'unavailable' }, returnHome: 'guarded-home-route' },
 ];
 
 export const CAD_LAUNCHER_PATH = '/';
@@ -59,4 +58,3 @@ export function unmountCadPath(pathname: string): string {
   return base && (pathname === base || pathname.startsWith(`${base}/`))
     ? pathname.slice(base.length) || '/' : pathname;
 }
-import { asaLabProjectsUrl, asaLabThreeDEditorUrl } from './asaLabLaunch';

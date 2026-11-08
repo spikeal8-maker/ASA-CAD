@@ -48,7 +48,7 @@ export function LauncherArt({ mode }: { mode: LauncherModeId }) {
         <g stroke="#B38A43" strokeWidth="1" opacity=".55"><path d="M157 54v91M126 117l62-32M223 162h50m-28-15v30" strokeDasharray="4 4" /><path d="m83 108-7-3v66l18 9m-22-70 4-5 4 8m-8 51 4 7 4-4" /></g>
         <text x="67" y="145" fill="#9E7838" fontSize="10" fontFamily="'Segoe UI',sans-serif">40</text>
       </>}
-      {mode === 'blocks3d' && <>
+      {mode === 'vassalite' && <>
         <ellipse cx="212" cy="211" rx="126" ry="22" fill="#43708A" opacity=".08" />
         <path d="m88 136 57 29v55l-57-29Z" fill="#0AA4C8" stroke="#0787AC" />
         <path d="m145 165 57-29v55l-57 29Z" fill="#087FA7" stroke="#08779B" />

@@ -48,7 +48,7 @@ await test('invalid local IDs and malformed encoded routes fail explicitly inste
   for (const pathname of [
     '/cad/kompas/%', '/cad/fusion/%GG', '/cad/fusion/%E0%A4%A',
     '/cad/projects/%', '/cad/view/%E0%A4%A', '/dev/part/%', '/cad/dev/part/%',
-    '/cad/fusion/a%2Fb', '/cad/kompas/..', '/cad/blocks3d/legacy',
+    '/cad/fusion/a%2Fb', '/cad/kompas/..', '/cad/blocks3d/legacy', '/cad/vassalite/legacy',
     '/cad/kompas', '/cad/fusion/legacy/extra', '/unknown',
   ]) {
     assert.doesNotThrow(() => parseCadClientRoute(pathname));
@@ -56,17 +56,21 @@ await test('invalid local IDs and malformed encoded routes fail explicitly inste
   }
 });
 
-await test('the three-mode registry keeps the external editor in its own document and session system', () => {
-  assert.deepEqual(CAD_MODES.map(mode => mode.id), ['kompas', 'fusion', 'blocks3d']);
-  const [kompas, fusion, blocks] = CAD_MODES;
-  assert.equal(kompas.projectType, fusion.projectType);
-  assert.equal(kompas.saving, fusion.saving);
+await test('Vassalite is unavailable until its original source is present', () => {
+  assert.deepEqual(CAD_MODES.map(mode => mode.id), ['kompas', 'fusion', 'vassalite']);
+  const [kompas, fusion, vassalite] = CAD_MODES;
+  assert.equal(kompas.available, true);
+  assert.equal(fusion.available, true);
   assert.equal(kompas.external, false);
   assert.equal(fusion.external, false);
-  assert.equal(blocks.external, true);
-  assert.equal(blocks.projectType, 'three-d');
-  assert.equal(blocks.connection, 'external-session');
-  assert.equal(blocks.saving, 'asa-lab-project-core');
+  assert.equal(kompas.projectType, fusion.projectType);
+  assert.equal(kompas.saving, fusion.saving);
+  assert.equal(vassalite.available, false);
+  assert.equal(vassalite.external, false);
+  assert.equal(vassalite.connection, 'unavailable');
+  assert.equal(vassalite.saving, 'unavailable');
+  assert.equal(vassalite.launch.kind, 'unavailable');
+  assert.deepEqual(vassalite.operations, []);
 });
 
 // Minimal metadata seam for the public mount-path helpers; no app state,

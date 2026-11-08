@@ -1,6 +1,5 @@
 import React, { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { CAD_MODES, localCadEditorPath, type CadEditorMode, type CadLaunchMode } from '../../browser/editorModes';
-import { asaLabAccountUrl, asaLabProjectsUrl } from '../../browser/asaLabLaunch';
 import { parseCadClientRoute, type CadClientRoute } from '../../browser/routes';
 import { LocalCadProjects, localCadProjectRecoveryKey, type LocalCadProject } from '../../host/LocalCadProjects';
 import { AsaLabCadProjectHost } from '../../host/AsaLabCadProjectHost';
@@ -20,7 +19,6 @@ export function LauncherApp() {
   const route = parseCadClientRoute(navigation.pathname);
   const [recent, setRecent] = useState<LocalCadProject[]>([]), [error, setError] = useState('');
   const [dialog, setDialog] = useState<{ kind: 'new' | 'open'; mode: CadEditorMode } | null>(null);
-  const [external, setExternal] = useState<'new' | 'open' | null>(null);
   const refresh = () => {
     try {
       const unreadable: string[] = [];
@@ -40,7 +38,7 @@ export function LauncherApp() {
     return () => { window.removeEventListener('storage', update); window.removeEventListener('focus', update); };
   }, [navigation.pathname]);
   const launch = (kind: 'new' | 'open', mode: CadLaunchMode) => {
-    if (mode === 'blocks3d') { setExternal(kind); return; }
+    if (mode === 'vassalite') { setError('Vassalite недоступен: исходники редактора отсутствуют в ASA-CAD.'); return; }
     refresh(); setDialog({ kind, mode });
   };
   const open = (id: string, mode: CadEditorMode) => {
@@ -56,7 +54,7 @@ export function LauncherApp() {
   return <CadNavigationContext.Provider value={navigation}>
     {route.kind === 'launcher' ? <LauncherPage modes={CAD_MODES} recent={recent} error={error}
       onCreate={mode => launch('new', mode)} onOpen={mode => launch('open', mode)} onContinue={open}
-      onSettings={settings} accountHref={asaLabAccountUrl()} onBackup={() => {
+      onSettings={settings} onBackup={() => {
         void downloadLocalCadBackup(catalog).then(result => setError(result.complete
           ? '' : `Создана частичная резервная копия: ${result.errors.map(error => error.message).join('; ')}`))
           .catch(reason => setError(`Резервная копия не создана: ${String(reason)}`));
@@ -70,19 +68,6 @@ export function LauncherApp() {
       </EditorBoundary>}
     {dialog && <ProjectDialog {...dialog} projects={recent} onCreate={create}
       onOpen={id => open(id, dialog.mode)} onClose={() => setDialog(null)} />}
-    {external && <div className="modal-backdrop" role="presentation">
-      <section className="new-document-dialog launcher-project-dialog" role="dialog" aria-modal="true"
-        aria-labelledby="external-title" onKeyDown={event => { if (event.key === 'Escape') setExternal(null); }}>
-        <h2 id="external-title">3D-конструктор ASA Lab</h2>
-        <p>Редактор откроется в отдельной вкладке. {external === 'new'
-          ? 'В ASA Lab нажмите «Создать» и выберите «3D модель».'
-          : 'Выберите свою 3D-модель в списке проектов.'} Если потребуется, войдите в свой аккаунт.</p>
-        <p>Модели сохраняются в ASA Lab. Главная ASA CAD останется в этой вкладке. Документы Компаса и Fusion автоматически не конвертируются.</p>
-        <footer><button type="button" onClick={() => setExternal(null)}>Отмена</button>
-          <a className="primary" href={asaLabProjectsUrl()} target="_blank" rel="noopener noreferrer"
-            onClick={() => setExternal(null)}>Открыть ASA Lab</a></footer>
-      </section>
-    </div>}
   </CadNavigationContext.Provider>;
 }
 
