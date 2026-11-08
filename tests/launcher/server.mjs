@@ -51,7 +51,13 @@ test('real HTTP delivery keeps deep links, exact health, deferred assets and old
   assert.match(health.manifestSha256, /^[a-f0-9]{64}$/);
   assert.equal(health.verifiedFiles, fixture.manifest.files.length);
   assert.equal(healthResponse.headers['cache-control'], 'no-store');
-  for (const route of ['/', '/cad', '/cad/kompas/project-1', '/cad/fusion/project-1', '/cad/projects/p1.v2', '/cad/view/v1', '/dev/part/empty']) {
+  for (const route of [
+    '/', '/cad', '/cad/kompas/project-1', '/cad/fusion/project-1',
+    '/cad/projects/p1.v2', '/cad/view/v1', '/dev/part/empty',
+    '/cad/projects/class%2Fa', '/cad/view/class%2Fa', '/cad/view/class%2fa/',
+    '/cad/projects/%D0%B4%D0%B5%D1%82%D0%B0%D0%BB%D1%8C%20%E2%84%961',
+    '/cad/projects/a%23b%3Fc?fresh=1', '/cad/projects/literal%252Fid',
+  ]) {
     const response = await rawRequest(address.port, route);
     assert.equal(response.status, 200, route);
     assert.match(response.body.toString(), new RegExp(candidateHead));
@@ -89,7 +95,11 @@ test('real HTTP delivery keeps deep links, exact health, deferred assets and old
     const response = await rawRequest(address.port, missing);
     assert.equal(response.status, 404, missing); assert.equal(response.body.length, 0);
   }
-  for (const unsafe of ['/%2e%2e/delivery-manifest.json', '/__asa_builds/' + candidateHead + '/%2e%2e/main.js', '/%5c..%5cdelivery-manifest.json']) {
+  for (const unsafe of [
+    '/%2e%2e/delivery-manifest.json', '/__asa_builds/' + candidateHead + '/%2e%2e/main.js',
+    '/%5c..%5cdelivery-manifest.json', '/cad/projects/class%2F..%2Fsecret',
+    '/cad/view/%2e%2e', '/cad/view/a%2f%2e%2e', '/cad/projects/a%5Cb',
+  ]) {
     assert.equal((await rawRequest(address.port, unsafe)).status, 403, unsafe);
   }
   assert.equal((await rawRequest(address.port, '/%invalid')).status, 400);

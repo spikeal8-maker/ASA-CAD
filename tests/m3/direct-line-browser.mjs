@@ -29,7 +29,7 @@ async function waitSolvedLine(page) {
 async function desktopDirectLine() {
   const { page, errors } = await newDesktopPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createXYSketch(page);
     await assertNoWasm(page, 'empty Sketch');
 
@@ -95,7 +95,7 @@ async function touchDirectLine() {
   const { context, page, errors } = await newTouchPage(browser);
   const client = await context.newCDPSession(page);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createMobileXYSketch(page);
     await activateMobileTool(page, 'sketch.line', 'Line');
     await page.locator('.k-content.k-collapsed').waitFor();

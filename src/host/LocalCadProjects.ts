@@ -61,14 +61,21 @@ export class LocalCadProjects {
     return [...ids];
   }
 
-  list(): LocalCadProject[] {
+  list(onUnreadable?: (id: string) => void): LocalCadProject[] {
     return this.ids().flatMap(id => {
-      const saved = this.envelope(id);
-      if (!saved) return [];
-      const document = migrateCadDocument(saved.serializedDocument);
-      return [{ id, title: document.title, legacy: id === 'legacy',
-        mode: saved.launcher?.mode === 'fusion' ? 'fusion' as const : 'kompas' as const,
-        updatedAt: saved.launcher?.updatedAt }];
+      try {
+        const saved = this.envelope(id);
+        if (!saved) return [];
+        const document = migrateCadDocument(saved.serializedDocument);
+        return [{ id, title: document.title, legacy: id === 'legacy',
+          mode: saved.launcher?.mode === 'fusion' ? 'fusion' as const : 'kompas' as const,
+          updatedAt: typeof saved.launcher?.updatedAt === 'string'
+            && Number.isFinite(Date.parse(saved.launcher.updatedAt)) ? saved.launcher.updatedAt : undefined }];
+      } catch (reason) {
+        if (!onUnreadable) throw reason;
+        onUnreadable(id);
+        return [];
+      }
     }).sort((a, b) => (b.updatedAt ?? '').localeCompare(a.updatedAt ?? ''));
   }
 

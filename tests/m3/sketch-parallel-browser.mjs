@@ -59,7 +59,7 @@ async function chooseLines(page, first, second, touch) {
 async function desktopParallel() {
   const { page, errors } = await newDesktopPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createXYSketch(page);
     const { first, second } = await createTwoLines(page, false);
     assert.equal(parallel(await lineVector(page, first), await lineVector(page, second)), false, 'Lines must start non-parallel');
@@ -102,7 +102,7 @@ async function desktopParallel() {
 async function touchParallel() {
   const { context, page, errors } = await newTouchPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createMobileXYSketch(page);
     const { first, second } = await createTwoLines(page, true);
     await activateMobileTool(page, 'constraint.parallel', 'Parallel');

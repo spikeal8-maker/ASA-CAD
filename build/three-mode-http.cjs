@@ -25,14 +25,15 @@ function headers(res, active) {
 
 function requestPath(url) {
   if (typeof url !== 'string' || !url.startsWith('/') || url.startsWith('//')) return { status: 400 };
+  const encodedPathname = url.split(/[?#]/)[0];
   let pathname;
-  try { pathname = decodeURIComponent(url.split(/[?#]/)[0]); } catch { return { status: 400 }; }
+  try { pathname = decodeURIComponent(encodedPathname); } catch { return { status: 400 }; }
   if (pathname.includes('\0')) return { status: 400 };
   if (pathname.includes('\\') || pathname.split('/').some(part => part === '.' || part === '..')) return { status: 403 };
-  return { pathname };
+  return { pathname, encodedPathname };
 }
 
-function route(delivery, active, pathname) {
+function route(delivery, active, pathname, encodedPathname) {
   if (pathname.startsWith('/__asa_builds/')) {
     const match = /^\/__asa_builds\/([a-f0-9]{40})\/(.*)$/.exec(pathname);
     const build = match && delivery.builds.get(match[1]);
@@ -43,11 +44,13 @@ function route(delivery, active, pathname) {
   if (['/backup', '/backup/', '/backup/index.html'].includes(pathname)) {
     return { build: active, relative: 'backup/index.html', versioned: false };
   }
-  // Match document routes explicitly: a valid project/version ID may include a dot.
+  // Match document routes before decoding segment boundaries: project/version
+  // IDs may contain encoded slashes. requestPath still validates the fully
+  // decoded path for traversal before any route or asset lookup is allowed.
   // An asset miss must never return HTML or a newer build's similarly named file.
   if (pathname === '/' || pathname === '/index.html'
-    || /^\/cad(?:\/(?:kompas|fusion|projects|view)\/[^/]+|\/dev\/part\/[^/]+)?\/?$/.test(pathname)
-    || /^\/dev\/part\/[^/]+\/?$/.test(pathname)) {
+    || /^\/cad(?:\/(?:kompas|fusion|projects|view)\/[^/]+|\/dev\/part\/[^/]+)?\/?$/.test(encodedPathname)
+    || /^\/dev\/part\/[^/]+\/?$/.test(encodedPathname)) {
     return { build: active, relative: 'index.html', versioned: false };
   }
   return { build: delivery.builds.get(delivery.manifest.assetRouting.unversionedSourceHead),
@@ -76,7 +79,7 @@ function createHandler(delivery, active, getPort) {
       res.setHeader('Content-Type', 'application/json; charset=utf-8');
       res.setHeader('Content-Length', Buffer.byteLength(body)); res.end(req.method === 'HEAD' ? undefined : body); return;
     }
-    const selected = route(delivery, active, decoded.pathname);
+    const selected = route(delivery, active, decoded.pathname, decoded.encodedPathname);
     if (selected.status) { res.writeHead(selected.status); res.end(); return; }
     const relative = selected.build.root + '/' + selected.relative;
     const record = delivery.files.get(relative);

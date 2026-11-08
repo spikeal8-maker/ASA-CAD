@@ -24,7 +24,7 @@ async function measureCase(testCase, scalePreference = testCase.uiScale, expecte
   page.on('pageerror', (error) => pageErrors.push(error.message));
   page.on('requestfailed', (request) => failedRequests.push(`${request.method()} ${request.url()}: ${request.failure()?.errorText ?? 'failed'}`));
 
-  const response = await page.goto(`${baseUrl}/?uiScale=${encodeURIComponent(scalePreference)}`, { waitUntil: 'networkidle', timeout: 30_000 });
+  const response = await page.goto(`${baseUrl}/cad/?uiScale=${encodeURIComponent(scalePreference)}`, { waitUntil: 'networkidle', timeout: 30_000 });
   assert.ok(response?.ok(), `${testCase.id}: navigation failed with ${response?.status()}`);
   await page.locator('.k-main-menu-bar').waitFor();
 

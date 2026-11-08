@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useCadApplicationSession } from './useCadApplicationSession';
 import { EditorNavigation } from './launcher/CadNavigation';
 import { EditorStartup, useEditorStartup } from './launcher/EditorStartup';
-import { parseCadClientRoute } from '../browser/routes';
+import { currentCadClientRoute } from '../browser/routes';
 import { createEmptyCadDocument, type CadDocumentKind } from '../contracts/document';
 import { applyPartDevFixture } from './devFixtures';
 import { useCadProjectPersistence, type CadProjectPersistenceOverrides } from './useCadProjectPersistence';
@@ -25,7 +25,7 @@ import { cadKeyboardHandler } from './CadKeyboardHandler';
 import { useViewportViewCommands } from './useViewportViewCommands';
 import './fusion/live.css';
 export function App(props: CadProjectPersistenceOverrides) {
-  const route = useMemo(()=>parseCadClientRoute(window.location.pathname),[]);
+  const route = useMemo(currentCadClientRoute,[]);
   const devFixture=route.kind==='dev-part'?route.fixture:null;
   const fixtureStartedRef = useRef(false);
   const { initialDocument, runtime, app, revisionToken } = useCadApplicationSession();

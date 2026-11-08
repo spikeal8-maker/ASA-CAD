@@ -106,6 +106,9 @@ export class LocalStorageCadProjectHost implements CadProjectHost {
       ) {
         throw new Error('Stored ASA-CAD standalone project state is invalid');
       }
+      // An already-open editor must not overwrite corrupt/newer persisted intent
+      // merely because the envelope's revision is valid. Validate in memory only.
+      migrateCadDocument(parsed.serializedDocument);
       return {
         serializedDocument: parsed.serializedDocument,
         revision: Number(parsed.revision),
@@ -115,6 +118,7 @@ export class LocalStorageCadProjectHost implements CadProjectHost {
 
     // Backward compatibility with the pre-O3 standalone raw JSON save.
     const legacyDocument = this.storage.getItem(this.storageKey);
+    if (legacyDocument !== null) migrateCadDocument(legacyDocument);
     return {
       serializedDocument: legacyDocument ?? this.initialSerializedDocument,
       revision: 0,

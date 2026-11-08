@@ -71,7 +71,7 @@ async function chooseEndpoints(page, first, second, touch) {
 async function desktopCoincident() {
   const { page, errors } = await newDesktopPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createXYSketch(page);
     const { first, second } = await createTwoLines(page, false);
     assert.equal(coincident(await solvedEndpoint(page, first, 'b'), await solvedEndpoint(page, second, 'a')), false, 'Lines must start separated');
@@ -114,7 +114,7 @@ async function desktopCoincident() {
 async function touchCoincident() {
   const { context, page, errors } = await newTouchPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createMobileXYSketch(page);
     const { first, second } = await createTwoLines(page, true);
     await activateMobileTool(page, 'constraint.coincident', 'Coincident');

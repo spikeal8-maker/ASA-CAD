@@ -40,7 +40,7 @@ async function assertConstruction(page, id, expected) {
 async function desktopConstruction() {
   const { page, errors } = await newDesktopPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createXYSketch(page);
     const id = await createLine(page, false);
     await selectLine(page, id, false);
@@ -69,7 +69,7 @@ async function desktopConstruction() {
 async function touchConstruction() {
   const { context, page, errors } = await newTouchPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createMobileXYSketch(page);
     const id = await createLine(page, true);
     await selectLine(page, id, true);
