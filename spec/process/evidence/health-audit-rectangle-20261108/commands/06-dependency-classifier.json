@@ -1,0 +1,81 @@
+{
+  "name": "dependency-classifier",
+  "startedAt": "2026-11-08T09:18:18.201Z",
+  "command": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node.exe",
+  "argv": [
+    "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\performance-tool-20261107\\dependency-classifier.mjs",
+    "--repo",
+    "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108",
+    "--expected-head",
+    "b8f700bb6e455582db18df8d0ba43a2bfbdcc68b",
+    "--audit",
+    "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\checks\\dependency-audit-input.json",
+    "--out",
+    "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\checks\\dependency-report.json"
+  ],
+  "cwd": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108",
+  "executableSha256": "dccc52de28d8df2ee22d2062424f8c563070d95d8ad70c54c4bf01d590dec14f",
+  "environmentOverrides": {
+    "NO_COLOR": "1",
+    "TSX_DISABLE_CACHE": "1",
+    "npm_config_update_notifier": "false"
+  },
+  "nodeExecutableDirectoryPrependedToPath": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64",
+  "pid": 40036,
+  "exitCode": 0,
+  "signal": null,
+  "elapsedMs": 1431.4349999999977,
+  "timeoutMs": 120000,
+  "timedOut": false,
+  "outputLimit": false,
+  "interrupted": false,
+  "spawnError": null,
+  "closed": true,
+  "cleanup": [],
+  "stdout": {
+    "bytes": 694,
+    "sha256": "bdf1323ba8ae1fefcd167f1a9bc98aae027ccbfddf0bb2a5cc5d296dd6f5b8ae",
+    "encoding": "utf8",
+    "data": "{\n  \"output\": \"C:\\\\Users\\\\spike\\\\Documents\\\\ASA-CAD-Maintenance-Captures\\\\legacy-cleanup-202-20261107\\\\audit-probes\\\\health-audit-rectangle-20261108\\\\checks\\\\dependency-report.json\",\n  \"sha256\": \"c08a19cb009da13d3d96280e70a55502a6de8bea0f624e579c02c2c8ad975ec7\",\n  \"bytes\": 57320,\n  \"counts\": {\n    \"affectedPackageEntries\": 0,\n    \"distinctDirectAdvisories\": 0,\n    \"directAdvisorySeverity\": {},\n    \"npmAggregatePackageSeverity\": {\n      \"info\": 0,\n      \"low\": 0,\n      \"moderate\": 0,\n      \"high\": 0,\n      \"critical\": 0,\n      \"total\": 0\n    },\n    \"directAdvisoryLeafPackages\": 0\n  },\n  \"sourceFileCount\": 223,\n  \"unresolved\": 0,\n  \"runtimeAffectedNodes\": [],\n  \"sourceUnchanged\": true\n}\n"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "encoding": "utf8",
+    "data": ""
+  },
+  "status": "PASS",
+  "validation": {
+    "report": {
+      "path": "checks/dependency-report.json",
+      "bytes": 57320,
+      "sha256": "c08a19cb009da13d3d96280e70a55502a6de8bea0f624e579c02c2c8ad975ec7"
+    },
+    "rawStatus": "ANALYZED_FINDINGS_REMAIN_OPEN",
+    "counts": {
+      "affectedPackageEntries": 0,
+      "distinctDirectAdvisories": 0,
+      "directAdvisorySeverity": {},
+      "npmAggregatePackageSeverity": {
+        "info": 0,
+        "low": 0,
+        "moderate": 0,
+        "high": 0,
+        "critical": 0,
+        "total": 0
+      },
+      "directAdvisoryLeafPackages": 0
+    },
+    "sourceFiles": 223,
+    "unresolvedLiteralImports": 0
+  },
+  "outputs": [
+    {
+      "status": "PRESENT",
+      "path": "checks/dependency-report.json",
+      "bytes": 57320,
+      "sha256": "c08a19cb009da13d3d96280e70a55502a6de8bea0f624e579c02c2c8ad975ec7"
+    }
+  ],
+  "sourceAndToolsUnchanged": true
+}

@@ -1,0 +1,48 @@
+{
+  "name": "historical-archive-verify",
+  "startedAt": "2026-11-08T09:16:58.698Z",
+  "command": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node.exe",
+  "argv": [
+    "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-evidence-archiver-20261107\\evidence-archiver.mjs",
+    "verify",
+    "--archive",
+    "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108\\spec\\process\\evidence\\health-audit-20261107\\measurement",
+    "--manifest-sha",
+    "d6346a4afe203568d0238455a425cbe042fc43351a1d07a632114812bfdbc426"
+  ],
+  "cwd": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108",
+  "executableSha256": "dccc52de28d8df2ee22d2062424f8c563070d95d8ad70c54c4bf01d590dec14f",
+  "environmentOverrides": {
+    "NO_COLOR": "1",
+    "TSX_DISABLE_CACHE": "1",
+    "npm_config_update_notifier": "false"
+  },
+  "nodeExecutableDirectoryPrependedToPath": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64",
+  "pid": 35716,
+  "exitCode": 0,
+  "signal": null,
+  "elapsedMs": 317.83619999999974,
+  "timeoutMs": 60000,
+  "timedOut": false,
+  "outputLimit": false,
+  "interrupted": false,
+  "spawnError": null,
+  "closed": true,
+  "cleanup": [],
+  "stdout": {
+    "bytes": 288,
+    "sha256": "3668a7920e35370f1d5dd659000b91a96d618a8ef64ec772e75849fd63c7d4b9",
+    "encoding": "utf8",
+    "data": "{\n  \"operation\": \"verify\",\n  \"result\": \"LOSSLESS_VERIFIED\",\n  \"acceptedBaseline\": false,\n  \"expectedHead\": \"128480e1a150253359ce44158d5588f6b08f27b8\",\n  \"originalFiles\": 76,\n  \"totalBytes\": 3501851,\n  \"manifestSha256\": \"d6346a4afe203568d0238455a425cbe042fc43351a1d07a632114812bfdbc426\"\n}\n"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "encoding": "utf8",
+    "data": ""
+  },
+  "status": "PASS",
+  "validation": {},
+  "outputs": [],
+  "sourceAndToolsUnchanged": true
+}

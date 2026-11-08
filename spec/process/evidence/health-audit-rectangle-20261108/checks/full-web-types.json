@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "head": "b8f700bb6e455582db18df8d0ba43a2bfbdcc68b",
+  "typescript": "5.9.3",
+  "config": "tsconfig.web.json",
+  "fixtures": [
+    "tests/m2/fixed-constraint-ui-fixture.tsx",
+    "tests/m2/solved-profile-ui-fixture.tsx"
+  ],
+  "rootCount": 190,
+  "configSha256": "22f4c71b31d2a51802caa497c2d153558fcde5b77aee8ad365587d47af2def84",
+  "durationMs": 5655,
+  "diagnostics": [],
+  "errorCount": 0,
+  "sourceUnchanged": true,
+  "status": "PASS",
+  "command": [
+    "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node.exe",
+    "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108\\spec\\process\\evidence\\health-audit-20261107\\full-web-typecheck.cjs",
+    "--repo",
+    "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108",
+    "--expected-head",
+    "b8f700bb6e455582db18df8d0ba43a2bfbdcc68b",
+    "--out",
+    "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\checks\\full-web-types.json"
+  ]
+}

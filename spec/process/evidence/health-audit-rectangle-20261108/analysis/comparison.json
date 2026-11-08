@@ -1,0 +1,4096 @@
+{
+  "schemaVersion": 1,
+  "kind": "ASA full-audit observational cohort comparison",
+  "generatedAt": "2026-11-08T09:28:42.185Z",
+  "derivationOnly": true,
+  "acceptedBaseline": false,
+  "provenance": {
+    "historical": {
+      "file": "../../health-audit-repeat-20261108/measurement/performance-report.json",
+      "bytes": 1509336,
+      "sha256": "a8dc8b321472056f89995213817da8aebab3b9059839cedab32ea66a50708b9f"
+    },
+    "current": {
+      "file": "../measurement/performance-report.json",
+      "bytes": 1508686,
+      "sha256": "b8758b30ed2fa8203a1c0bb9bd264fbc6904a99d35f8df8018adbd7807f50e0d"
+    },
+    "historicalArchive": {
+      "file": "../../health-audit-repeat-20261108/measurement/manifest.json",
+      "bytes": 34410,
+      "sha256": "f7edbe5b7d8418a4d5c3572e1f3a8c7f5612ae0d3848639b7458f2802b27cd22"
+    },
+    "currentArchive": {
+      "file": "../measurement/manifest.json",
+      "bytes": 34419,
+      "sha256": "1b665718dea5953e0bb446a132ed1a9395c12bdcdd7b7ba9907feee81a0cbda7"
+    },
+    "numericSummary": {
+      "file": "numeric-summary.json",
+      "bytes": 81298,
+      "sha256": "d0fff4341d6ba627ce2fcfd06e293fbd57a18905a3438a46f89967bd2f2e222e"
+    }
+  },
+  "comparability": {
+    "controlledPerformanceExperiment": false,
+    "protocolEqual": true,
+    "parametersEqual": true,
+    "frozenToolsEqual": true,
+    "productSourceIdentical": false,
+    "lockIdentical": false,
+    "lockSemanticDelta": {
+      "field": "packages[\"\"].engines.node",
+      "historical": ">=20.19.0",
+      "current": ">=22.23.4",
+      "allOtherFieldsEqual": true
+    },
+    "historical": {
+      "head": "7bf71e2ee8ece045fb69620c657570ce7be9294f",
+      "fingerprint": "498dbd75ca26f8468080dca2188e93ed4156b40f6d3fe9475a90c70ec115dd0f",
+      "sourceFiles": 411,
+      "lock": {
+        "path": "vendor/toubkal/package-lock.json",
+        "bytes": 143062,
+        "sha256": "f103b7b5e9a91ba50580fa91dfdd734aa989f0368e1584d51f30870b3eccfe79",
+        "lockfileVersion": 3
+      },
+      "installed": [
+        {
+          "name": "@salusoft89/planegcs",
+          "version": "1.1.7",
+          "packageJsonSha256": "d0f6a017ff49ad9b369e2258cd32ba82d1ad39d32bcafdf5dbd5f6e11a309831"
+        },
+        {
+          "name": "opencascade.js",
+          "version": "2.0.0-beta.b5ff984",
+          "packageJsonSha256": "2095d5bc427c831b48c02f34fcae5e0690a3f6c616c1bbbd4b1889d1510b26cc"
+        },
+        {
+          "name": "tsx",
+          "version": "4.22.4",
+          "packageJsonSha256": "b0d63b124b9b85b53d09cff256fa7832cb6a774f8b90ae1353e63df5275824b2"
+        },
+        {
+          "name": "esbuild",
+          "version": "0.28.1",
+          "packageJsonSha256": "d55d1d19fcc5b6079e4a71dd4111340c79c682bc36835ac7058a0c364c7db58a"
+        },
+        {
+          "name": "typescript",
+          "version": "5.9.3",
+          "packageJsonSha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"
+        }
+      ],
+      "runtimeAssets": 19
+    },
+    "current": {
+      "head": "b8f700bb6e455582db18df8d0ba43a2bfbdcc68b",
+      "fingerprint": "d0974405971420a2a9ab79d68b544ab3c01a9feacd2b5701a23ae74120424483",
+      "sourceFiles": 416,
+      "lock": {
+        "path": "vendor/toubkal/package-lock.json",
+        "bytes": 143062,
+        "sha256": "dce141fd9c4f85365f1b145260896fbc4d42e4fe09fb81f49ead295a12fe0247",
+        "lockfileVersion": 3
+      },
+      "installed": [
+        {
+          "name": "@salusoft89/planegcs",
+          "version": "1.1.7",
+          "packageJsonSha256": "d0f6a017ff49ad9b369e2258cd32ba82d1ad39d32bcafdf5dbd5f6e11a309831"
+        },
+        {
+          "name": "opencascade.js",
+          "version": "2.0.0-beta.b5ff984",
+          "packageJsonSha256": "2095d5bc427c831b48c02f34fcae5e0690a3f6c616c1bbbd4b1889d1510b26cc"
+        },
+        {
+          "name": "tsx",
+          "version": "4.22.4",
+          "packageJsonSha256": "b0d63b124b9b85b53d09cff256fa7832cb6a774f8b90ae1353e63df5275824b2"
+        },
+        {
+          "name": "esbuild",
+          "version": "0.28.1",
+          "packageJsonSha256": "d55d1d19fcc5b6079e4a71dd4111340c79c682bc36835ac7058a0c364c7db58a"
+        },
+        {
+          "name": "typescript",
+          "version": "5.9.3",
+          "packageJsonSha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"
+        }
+      ],
+      "runtimeAssets": 19
+    },
+    "runtimeAssetMismatches": [],
+    "environment": {
+      "historical": {
+        "capturedAt": "2026-11-08T00:11:16.204Z",
+        "nodeExecutable": "C:\\Users\\spike\\AppData\\Local\\Programs\\nodejs\\node-v22.23.3-win-x64\\node.exe",
+        "node": "v22.23.3",
+        "versions": {
+          "node": "22.23.3",
+          "acorn": "8.16.0",
+          "ada": "2.9.2",
+          "amaro": "1.1.8",
+          "ares": "1.34.8",
+          "brotli": "1.1.0",
+          "cjs_module_lexer": "2.2.0",
+          "cldr": "48.0",
+          "icu": "78.3",
+          "llhttp": "9.4.3",
+          "modules": "127",
+          "napi": "10",
+          "nbytes": "0.1.3",
+          "ncrypto": "0.0.1",
+          "nghttp2": "1.69.0",
+          "openssl": "3.5.8",
+          "simdjson": "4.5.0",
+          "simdutf": "6.4.2",
+          "sqlite": "3.51.3",
+          "tz": "2026c",
+          "undici": "6.28.1",
+          "unicode": "17.0",
+          "uv": "1.51.0",
+          "uvwasi": "0.0.23",
+          "v8": "12.4.254.21-node.57",
+          "zlib": "1.3.1-e00f703",
+          "zstd": "1.5.7"
+        },
+        "platform": "win32",
+        "arch": "x64",
+        "osRelease": "10.0.26300",
+        "cpuModel": "13th Gen Intel(R) Core(TM) i5-13400",
+        "logicalCpuCount": 16,
+        "totalMemoryBytes": 68384935936,
+        "freeMemoryBytes": 24498601984,
+        "notes": [
+          "No CPU affinity or frequency lock",
+          "No forced GC",
+          "No OS page/disk cache reset",
+          "No production latency SLO inferred"
+        ]
+      },
+      "current": {
+        "capturedAt": "2026-11-08T09:17:07.481Z",
+        "nodeExecutable": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node.exe",
+        "node": "v22.23.4",
+        "versions": {
+          "node": "22.23.4",
+          "acorn": "8.16.0",
+          "ada": "2.9.2",
+          "amaro": "1.1.8",
+          "ares": "1.34.9",
+          "brotli": "1.1.0",
+          "cjs_module_lexer": "2.2.0",
+          "cldr": "48.0",
+          "icu": "78.3",
+          "llhttp": "9.4.3",
+          "modules": "127",
+          "napi": "10",
+          "nbytes": "0.1.3",
+          "ncrypto": "0.0.1",
+          "nghttp2": "1.69.0",
+          "openssl": "3.5.9",
+          "simdjson": "4.5.0",
+          "simdutf": "6.4.2",
+          "sqlite": "3.53.4",
+          "tz": "2026e",
+          "undici": "6.29.1",
+          "unicode": "17.0",
+          "uv": "1.51.0",
+          "uvwasi": "0.0.23",
+          "v8": "12.4.254.21-node.57",
+          "zlib": "1.3.1-e00f703",
+          "zstd": "1.5.7"
+        },
+        "platform": "win32",
+        "arch": "x64",
+        "osRelease": "10.0.26300",
+        "cpuModel": "13th Gen Intel(R) Core(TM) i5-13400",
+        "logicalCpuCount": 16,
+        "totalMemoryBytes": 68384935936,
+        "freeMemoryBytes": 22406881280,
+        "notes": [
+          "No CPU affinity or frequency lock",
+          "No forced GC",
+          "No OS page/disk cache reset",
+          "No production latency SLO inferred"
+        ]
+      },
+      "nodeVersionEqual": false,
+      "nodeVersionChanges": [
+        {
+          "component": "node",
+          "historical": "22.23.3",
+          "current": "22.23.4"
+        },
+        {
+          "component": "ares",
+          "historical": "1.34.8",
+          "current": "1.34.9"
+        },
+        {
+          "component": "openssl",
+          "historical": "3.5.8",
+          "current": "3.5.9"
+        },
+        {
+          "component": "sqlite",
+          "historical": "3.51.3",
+          "current": "3.53.4"
+        },
+        {
+          "component": "tz",
+          "historical": "2026c",
+          "current": "2026e"
+        },
+        {
+          "component": "undici",
+          "historical": "6.28.1",
+          "current": "6.29.1"
+        }
+      ],
+      "osReleaseEqual": true,
+      "cpuModelEqual": true,
+      "logicalCpuCountEqual": true,
+      "totalMemoryEqual": true,
+      "elapsedMs": {
+        "historical": 52907.5314,
+        "current": 59611.001,
+        "scope": "performance report internal duration, not outer wrapper/process elapsed"
+      }
+    },
+    "caseRecipe": "Frozen metadata inputs match; fixture IDs/hashes and observed initialAnalysis excluded from recipe equality.",
+    "fixtureComparisons": [
+      {
+        "cohortId": "solve/lines-8",
+        "historical": {
+          "archiveSourceId": "performance/solve/solve-8.json",
+          "sha256": "fe824cd26a60c631e808ce43c512040a23e0a86e225395dca4ec9b66029ba118",
+          "serializedBytes": 4462,
+          "counts": {
+            "sketches": 1,
+            "entities": 8,
+            "constraints": 8,
+            "dimensions": 8,
+            "features": 0,
+            "stableReferences": 0
+          }
+        },
+        "current": {
+          "archiveSourceId": "performance/solve/solve-8.json",
+          "sha256": "7b943c5b47b303348e71f7e4e4d69634e9eb81cca2ed5544fd4193d71f6d5862",
+          "serializedBytes": 4462,
+          "counts": {
+            "sketches": 1,
+            "entities": 8,
+            "constraints": 8,
+            "dimensions": 8,
+            "features": 0,
+            "stableReferences": 0
+          }
+        },
+        "countsAndSerializedBytesEqual": true,
+        "rawBytesSha256Equal": false
+      },
+      {
+        "cohortId": "solve/lines-32",
+        "historical": {
+          "archiveSourceId": "performance/solve/solve-32.json",
+          "sha256": "faab79da3a70b78614fcd01ab599b41f2255d85876b7a5ae717a3ab8fd94a405",
+          "serializedBytes": 16434,
+          "counts": {
+            "sketches": 1,
+            "entities": 32,
+            "constraints": 32,
+            "dimensions": 32,
+            "features": 0,
+            "stableReferences": 0
+          }
+        },
+        "current": {
+          "archiveSourceId": "performance/solve/solve-32.json",
+          "sha256": "32c8521a2014b2f8f5822bbc60134be6881a80f083488503902e2ed31b8cb280",
+          "serializedBytes": 16434,
+          "counts": {
+            "sketches": 1,
+            "entities": 32,
+            "constraints": 32,
+            "dimensions": 32,
+            "features": 0,
+            "stableReferences": 0
+          }
+        },
+        "countsAndSerializedBytesEqual": true,
+        "rawBytesSha256Equal": false
+      },
+      {
+        "cohortId": "solve/lines-128",
+        "historical": {
+          "archiveSourceId": "performance/solve/solve-128.json",
+          "sha256": "654de91046b678a16a75d751af819a2aa1d085b9b6b1b7154ad90a16a501504f",
+          "serializedBytes": 64394,
+          "counts": {
+            "sketches": 1,
+            "entities": 128,
+            "constraints": 128,
+            "dimensions": 128,
+            "features": 0,
+            "stableReferences": 0
+          }
+        },
+        "current": {
+          "archiveSourceId": "performance/solve/solve-128.json",
+          "sha256": "b1e64ff01fdf6b6c6e019925d7b72b3159c9b2549a644ddf3fe68db6abb88cac",
+          "serializedBytes": 64394,
+          "counts": {
+            "sketches": 1,
+            "entities": 128,
+            "constraints": 128,
+            "dimensions": 128,
+            "features": 0,
+            "stableReferences": 0
+          }
+        },
+        "countsAndSerializedBytesEqual": true,
+        "rawBytesSha256Equal": false
+      },
+      {
+        "cohortId": "history/line-frames-8",
+        "historical": {
+          "archiveSourceId": "performance/history/history-8.json",
+          "sha256": "edb8dbce821bb7ebf2225a4cb6bf920f950f85b1449495351f3a9c00e83d82cb",
+          "serializedBytes": 4452,
+          "counts": {
+            "sketches": 1,
+            "entities": 8,
+            "constraints": 8,
+            "dimensions": 8,
+            "features": 0,
+            "stableReferences": 0
+          }
+        },
+        "current": {
+          "archiveSourceId": "performance/history/history-8.json",
+          "sha256": "35b766509f60fe3549ad2828d0682d63f0761f4b96d1b843263c39ff12002a65",
+          "serializedBytes": 4452,
+          "counts": {
+            "sketches": 1,
+            "entities": 8,
+            "constraints": 8,
+            "dimensions": 8,
+            "features": 0,
+            "stableReferences": 0
+          }
+        },
+        "countsAndSerializedBytesEqual": true,
+        "rawBytesSha256Equal": false
+      },
+      {
+        "cohortId": "history/line-frames-32",
+        "historical": {
+          "archiveSourceId": "performance/history/history-32.json",
+          "sha256": "5ed0cd2f266d0663b1791ce1cf54dc15e8aaac907cec93eb7a776a0c71cb5c01",
+          "serializedBytes": 16424,
+          "counts": {
+            "sketches": 1,
+            "entities": 32,
+            "constraints": 32,
+            "dimensions": 32,
+            "features": 0,
+            "stableReferences": 0
+          }
+        },
+        "current": {
+          "archiveSourceId": "performance/history/history-32.json",
+          "sha256": "f9374d81b68e2f1be86a30666d21d515d23d9f600d473318da6531ce09f60324",
+          "serializedBytes": 16424,
+          "counts": {
+            "sketches": 1,
+            "entities": 32,
+            "constraints": 32,
+            "dimensions": 32,
+            "features": 0,
+            "stableReferences": 0
+          }
+        },
+        "countsAndSerializedBytesEqual": true,
+        "rawBytesSha256Equal": false
+      },
+      {
+        "cohortId": "history/line-frames-128",
+        "historical": {
+          "archiveSourceId": "performance/history/history-128.json",
+          "sha256": "9e58d14ba34d6c97801483bec76412af9fc1cd3a2572ab90023e268cbda09d6d",
+          "serializedBytes": 64384,
+          "counts": {
+            "sketches": 1,
+            "entities": 128,
+            "constraints": 128,
+            "dimensions": 128,
+            "features": 0,
+            "stableReferences": 0
+          }
+        },
+        "current": {
+          "archiveSourceId": "performance/history/history-128.json",
+          "sha256": "1d5274654876953ec055388bcb9e029354c5b66268c190f8b8adb505b4a51d34",
+          "serializedBytes": 64384,
+          "counts": {
+            "sketches": 1,
+            "entities": 128,
+            "constraints": 128,
+            "dimensions": 128,
+            "features": 0,
+            "stableReferences": 0
+          }
+        },
+        "countsAndSerializedBytesEqual": true,
+        "rawBytesSha256Equal": false
+      },
+      {
+        "cohortId": "serialization/lines-8",
+        "historical": {
+          "archiveSourceId": "performance/serialization/serialization-8.json",
+          "sha256": "7f98b71154b4932889b65ab7951ef71f22b9a973b9ce055613f6dc28850928ef",
+          "serializedBytes": 4462,
+          "counts": {
+            "sketches": 1,
+            "entities": 8,
+            "constraints": 8,
+            "dimensions": 8,
+            "features": 0,
+            "stableReferences": 0
+          }
+        },
+        "current": {
+          "archiveSourceId": "performance/serialization/serialization-8.json",
+          "sha256": "c84e42c7cfb31a4d2e10f991387b13069a24e0bf00b39ab85da4ef59fc7c066d",
+          "serializedBytes": 4462,
+          "counts": {
+            "sketches": 1,
+            "entities": 8,
+            "constraints": 8,
+            "dimensions": 8,
+            "features": 0,
+            "stableReferences": 0
+          }
+        },
+        "countsAndSerializedBytesEqual": true,
+        "rawBytesSha256Equal": false
+      },
+      {
+        "cohortId": "serialization/lines-32",
+        "historical": {
+          "archiveSourceId": "performance/serialization/serialization-32.json",
+          "sha256": "0a64f4f357863b09de307e79327defd2c8f9ed469a000b4cbaca1a1a2e033eb5",
+          "serializedBytes": 16434,
+          "counts": {
+            "sketches": 1,
+            "entities": 32,
+            "constraints": 32,
+            "dimensions": 32,
+            "features": 0,
+            "stableReferences": 0
+          }
+        },
+        "current": {
+          "archiveSourceId": "performance/serialization/serialization-32.json",
+          "sha256": "1374c860d39bfd9dcf65c5debb78e02d7f578c48444f8349b2c429cd7492798e",
+          "serializedBytes": 16434,
+          "counts": {
+            "sketches": 1,
+            "entities": 32,
+            "constraints": 32,
+            "dimensions": 32,
+            "features": 0,
+            "stableReferences": 0
+          }
+        },
+        "countsAndSerializedBytesEqual": true,
+        "rawBytesSha256Equal": false
+      },
+      {
+        "cohortId": "serialization/lines-128",
+        "historical": {
+          "archiveSourceId": "performance/serialization/serialization-128.json",
+          "sha256": "40a07f2a4c7031b6d9c7ab1f06ed0598a5a6f7599c5cbcca199c0217190f9967",
+          "serializedBytes": 64394,
+          "counts": {
+            "sketches": 1,
+            "entities": 128,
+            "constraints": 128,
+            "dimensions": 128,
+            "features": 0,
+            "stableReferences": 0
+          }
+        },
+        "current": {
+          "archiveSourceId": "performance/serialization/serialization-128.json",
+          "sha256": "b7f825213549b0a86213526b681ffc695d8ce71212f4d166cc943107f3d6fcb2",
+          "serializedBytes": 64394,
+          "counts": {
+            "sketches": 1,
+            "entities": 128,
+            "constraints": 128,
+            "dimensions": 128,
+            "features": 0,
+            "stableReferences": 0
+          }
+        },
+        "countsAndSerializedBytesEqual": true,
+        "rawBytesSha256Equal": false
+      },
+      {
+        "cohortId": "protected-part/protected-60-to-80-save-open",
+        "historical": {
+          "archiveSourceId": "performance/protected-part/protected-input-60.json",
+          "sha256": "31beca3bebb8360d8cf54909ee03f19f22f33d34cc08976016f2156d01834f0a",
+          "serializedBytes": 5607,
+          "counts": {
+            "sketches": 2,
+            "entities": 5,
+            "constraints": 8,
+            "dimensions": 3,
+            "features": 3,
+            "stableReferences": 2
+          }
+        },
+        "current": {
+          "archiveSourceId": "performance/protected-part/protected-input-60.json",
+          "sha256": "fc4d0278e0254e73b9d4817dc555a45a96ec844ae2a8446e4d96cdd481262204",
+          "serializedBytes": 5607,
+          "counts": {
+            "sketches": 2,
+            "entities": 5,
+            "constraints": 8,
+            "dimensions": 3,
+            "features": 3,
+            "stableReferences": 2
+          }
+        },
+        "countsAndSerializedBytesEqual": true,
+        "rawBytesSha256Equal": false
+      },
+      {
+        "cohortId": "cold-planegcs-1/first-init",
+        "historical": {
+          "archiveSourceId": "performance/cold-planegcs-1/cold-plane-input.json",
+          "sha256": "67f450b49ed6df07027102915d35922808f8e930af622b1410fba2e6b8ab4565",
+          "serializedBytes": 983,
+          "counts": {
+            "sketches": 1,
+            "entities": 1,
+            "constraints": 1,
+            "dimensions": 1,
+            "features": 0,
+            "stableReferences": 0
+          }
+        },
+        "current": {
+          "archiveSourceId": "performance/cold-planegcs-1/cold-plane-input.json",
+          "sha256": "9c6a7067c5ec192cea0d1669003f2947bdb3f561585cd4293fb282ec48ba2509",
+          "serializedBytes": 983,
+          "counts": {
+            "sketches": 1,
+            "entities": 1,
+            "constraints": 1,
+            "dimensions": 1,
+            "features": 0,
+            "stableReferences": 0
+          }
+        },
+        "countsAndSerializedBytesEqual": true,
+        "rawBytesSha256Equal": false
+      },
+      {
+        "cohortId": "cold-planegcs-2/first-init",
+        "historical": {
+          "archiveSourceId": "performance/cold-planegcs-2/cold-plane-input.json",
+          "sha256": "e26b9745d9e24053fbc2a8000d64db852dd21f169c0dfa84f9dc50c0845339c3",
+          "serializedBytes": 983,
+          "counts": {
+            "sketches": 1,
+            "entities": 1,
+            "constraints": 1,
+            "dimensions": 1,
+            "features": 0,
+            "stableReferences": 0
+          }
+        },
+        "current": {
+          "archiveSourceId": "performance/cold-planegcs-2/cold-plane-input.json",
+          "sha256": "b18ce6a27d23a25619c37d6e4b62e0eccb3d2c58c4e82b03317fb39310ba00f0",
+          "serializedBytes": 983,
+          "counts": {
+            "sketches": 1,
+            "entities": 1,
+            "constraints": 1,
+            "dimensions": 1,
+            "features": 0,
+            "stableReferences": 0
+          }
+        },
+        "countsAndSerializedBytesEqual": true,
+        "rawBytesSha256Equal": false
+      },
+      {
+        "cohortId": "cold-planegcs-3/first-init",
+        "historical": {
+          "archiveSourceId": "performance/cold-planegcs-3/cold-plane-input.json",
+          "sha256": "784a2d2524f2c0324ab24f6f4517e3a0026d9a362e573cbf56bc43233580f826",
+          "serializedBytes": 983,
+          "counts": {
+            "sketches": 1,
+            "entities": 1,
+            "constraints": 1,
+            "dimensions": 1,
+            "features": 0,
+            "stableReferences": 0
+          }
+        },
+        "current": {
+          "archiveSourceId": "performance/cold-planegcs-3/cold-plane-input.json",
+          "sha256": "611dc2fff43d90e9c298a6001030c9a08b727ec8583d57ac073e41ea97de6332",
+          "serializedBytes": 983,
+          "counts": {
+            "sketches": 1,
+            "entities": 1,
+            "constraints": 1,
+            "dimensions": 1,
+            "features": 0,
+            "stableReferences": 0
+          }
+        },
+        "countsAndSerializedBytesEqual": true,
+        "rawBytesSha256Equal": false
+      },
+      {
+        "cohortId": "cold-occ-1/first-init",
+        "historical": {
+          "archiveSourceId": "performance/cold-occ-1/cold-occ-input.json",
+          "sha256": "a5610abeb2af5da97f4d2f76c5acbb755df0bef3bc8c8f7f85c47bce1d8a5927",
+          "serializedBytes": 1340,
+          "counts": {
+            "sketches": 1,
+            "entities": 4,
+            "constraints": 0,
+            "dimensions": 0,
+            "features": 1,
+            "stableReferences": 0
+          }
+        },
+        "current": {
+          "archiveSourceId": "performance/cold-occ-1/cold-occ-input.json",
+          "sha256": "c9dc844562e183ee05ed86e9d13d3847a6a2c8b6f99c2ddb2fdb9d972065573e",
+          "serializedBytes": 1340,
+          "counts": {
+            "sketches": 1,
+            "entities": 4,
+            "constraints": 0,
+            "dimensions": 0,
+            "features": 1,
+            "stableReferences": 0
+          }
+        },
+        "countsAndSerializedBytesEqual": true,
+        "rawBytesSha256Equal": false
+      },
+      {
+        "cohortId": "cold-occ-2/first-init",
+        "historical": {
+          "archiveSourceId": "performance/cold-occ-2/cold-occ-input.json",
+          "sha256": "c2c4eb5a7497dc83218a9dc1d1e4b82c95ef30ff99a8289877ec2bee80b4a2e9",
+          "serializedBytes": 1340,
+          "counts": {
+            "sketches": 1,
+            "entities": 4,
+            "constraints": 0,
+            "dimensions": 0,
+            "features": 1,
+            "stableReferences": 0
+          }
+        },
+        "current": {
+          "archiveSourceId": "performance/cold-occ-2/cold-occ-input.json",
+          "sha256": "6f517cd8f64540240c8155e8f0cb0e9603c13d3da94d2bd1f246b9d0d1ce41d1",
+          "serializedBytes": 1340,
+          "counts": {
+            "sketches": 1,
+            "entities": 4,
+            "constraints": 0,
+            "dimensions": 0,
+            "features": 1,
+            "stableReferences": 0
+          }
+        },
+        "countsAndSerializedBytesEqual": true,
+        "rawBytesSha256Equal": false
+      },
+      {
+        "cohortId": "cold-occ-3/first-init",
+        "historical": {
+          "archiveSourceId": "performance/cold-occ-3/cold-occ-input.json",
+          "sha256": "c1e8ed55c916c89a54c086fa888f6884d60312833a28cf7dc179e6b210d9b5d5",
+          "serializedBytes": 1340,
+          "counts": {
+            "sketches": 1,
+            "entities": 4,
+            "constraints": 0,
+            "dimensions": 0,
+            "features": 1,
+            "stableReferences": 0
+          }
+        },
+        "current": {
+          "archiveSourceId": "performance/cold-occ-3/cold-occ-input.json",
+          "sha256": "5432d55bd777d64223dd96d05f8f7f6ae966c2caf19bcc35f30e6a089566d91b",
+          "serializedBytes": 1340,
+          "counts": {
+            "sketches": 1,
+            "entities": 4,
+            "constraints": 0,
+            "dimensions": 0,
+            "features": 1,
+            "stableReferences": 0
+          }
+        },
+        "countsAndSerializedBytesEqual": true,
+        "rawBytesSha256Equal": false
+      }
+    ]
+  },
+  "counts": {
+    "historical": {
+      "phases": 10,
+      "cases": 16,
+      "measuredSamples": 106,
+      "warmups": 20,
+      "failedMeasuredSamples": 0,
+      "failedWarmups": 0,
+      "unattemptedSamples": 0,
+      "caseMetricRows": 53,
+      "coldAggregateMetricRows": 4
+    },
+    "current": {
+      "phases": 10,
+      "cases": 16,
+      "measuredSamples": 106,
+      "warmups": 20,
+      "failedMeasuredSamples": 0,
+      "failedWarmups": 0,
+      "unattemptedSamples": 0,
+      "caseMetricRows": 53,
+      "coldAggregateMetricRows": 4
+    }
+  },
+  "derivation": {
+    "algorithmSha256": "c1e86cbe2acd0f8dd18c49e1cb49c095a731d317738c7dff21019435ae7a03b4",
+    "statistics": "Raw attempts summarized independently",
+    "observedMedianDifference": "current - historical",
+    "ratioOfObservedMedians": "current / historical, null if historical median=0 or missing"
+  },
+  "caseMetricComparisons": [
+    {
+      "id": "solve/lines-8/solveMs",
+      "family": "solve",
+      "case": "lines-8",
+      "metric": "solveMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.4975000000000023,
+          "median": 0.615099999999984,
+          "max": 1.337600000000009
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.5007999999999129,
+          "median": 0.7574000000000183,
+          "max": 0.9137999999999806
+        },
+        "observedMedianDifference": 0.1423000000000343,
+        "ratioOfObservedMedians": 1.2313444968298455
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.9618000000000393,
+          "median": 7.491950000000031,
+          "max": 14.022100000000023
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 1.0393000000000256,
+          "median": 8.51460000000003,
+          "max": 15.989900000000034
+        },
+        "observedMedianDifference": 1.0226499999999987,
+        "ratioOfObservedMedians": 1.1364998431649964
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "solve/lines-32/solveMs",
+      "family": "solve",
+      "case": "lines-32",
+      "metric": "solveMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 1.4796999999999798,
+          "median": 1.7185499999999934,
+          "max": 2.484300000000019
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 1.383199999999988,
+          "median": 1.6023500000000013,
+          "max": 2.3010000000000446
+        },
+        "observedMedianDifference": -0.11619999999999209,
+        "ratioOfObservedMedians": 0.9323848593290899
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 1.8138000000000147,
+          "median": 1.942450000000008,
+          "max": 2.0711000000000013
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 1.6141999999999825,
+          "median": 1.7072499999999877,
+          "max": 1.800299999999993
+        },
+        "observedMedianDifference": -0.23520000000002028,
+        "ratioOfObservedMedians": 0.8789158022085412
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "solve/lines-128/solveMs",
+      "family": "solve",
+      "case": "lines-128",
+      "metric": "solveMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 9.08140000000003,
+          "median": 9.979249999999979,
+          "max": 12.603300000000104
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 9.349699999999984,
+          "median": 10.206849999999974,
+          "max": 12.934599999999932
+        },
+        "observedMedianDifference": 0.22759999999999536,
+        "ratioOfObservedMedians": 1.0228073251997891
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 16.397399999999948,
+          "median": 16.879950000000008,
+          "max": 17.362500000000068
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 13.550100000000043,
+          "median": 14.008950000000027,
+          "max": 14.467800000000011
+        },
+        "observedMedianDifference": -2.870999999999981,
+        "ratioOfObservedMedians": 0.8299165578097104
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "history/line-frames-8/executeBatchMs",
+      "family": "history",
+      "case": "line-frames-8",
+      "metric": "executeBatchMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.7656999999990148,
+          "median": 1.4877500000002328,
+          "max": 1.659599999996317
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.9004999999988286,
+          "median": 1.4793999999992593,
+          "max": 2.474499999996624
+        },
+        "observedMedianDifference": -0.008350000000973523,
+        "ratioOfObservedMedians": 0.9943874978988592
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.8531000000002678,
+          "median": 1.7061500000017986,
+          "max": 2.5592000000033295
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 1.1791999999986729,
+          "median": 1.4965499999989333,
+          "max": 1.8138999999991938
+        },
+        "observedMedianDifference": -0.20960000000286527,
+        "ratioOfObservedMedians": 0.8771503091740794
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "history/line-frames-8/executePerCommandMs",
+      "family": "history",
+      "case": "line-frames-8",
+      "metric": "executePerCommandMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.03190416666662562,
+          "median": 0.061989583333343035,
+          "max": 0.06914999999984654
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.03752083333328452,
+          "median": 0.0616416666666358,
+          "max": 0.103104166666526
+        },
+        "observedMedianDifference": -0.00034791666670723476,
+        "ratioOfObservedMedians": 0.9943874978988592
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.03554583333334449,
+          "median": 0.07108958333340828,
+          "max": 0.10663333333347207
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.04913333333327804,
+          "median": 0.06235624999995555,
+          "max": 0.07557916666663307
+        },
+        "observedMedianDifference": -0.008733333333452734,
+        "ratioOfObservedMedians": 0.8771503091740793
+      },
+      "normalization": {
+        "formula": "per-sample batch duration / historyFrames; then summarize sample averages",
+        "historyFrames": 24,
+        "individualLatencyMedian": false
+      },
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "history/line-frames-8/undoBatchMs",
+      "family": "history",
+      "case": "line-frames-8",
+      "metric": "undoBatchMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 2.1190000000005966,
+          "median": 3.085899999998219,
+          "max": 3.4153000000005704
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 1.5323000000007596,
+          "median": 2.989000000001397,
+          "max": 3.6184999999986758
+        },
+        "observedMedianDifference": -0.09689999999682186,
+        "ratioOfObservedMedians": 0.9685991120914879
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 2.2566000000033455,
+          "median": 3.1455500000024585,
+          "max": 4.034500000001572
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 1.8821000000043568,
+          "median": 3.2551000000021304,
+          "max": 4.628099999999904
+        },
+        "observedMedianDifference": 0.10954999999967185,
+        "ratioOfObservedMedians": 1.034826977793895
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "history/line-frames-8/undoPerCommandMs",
+      "family": "history",
+      "case": "line-frames-8",
+      "metric": "undoPerCommandMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.08829166666669153,
+          "median": 0.12857916666659247,
+          "max": 0.14230416666669043
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.06384583333336498,
+          "median": 0.12454166666672487,
+          "max": 0.15077083333327815
+        },
+        "observedMedianDifference": -0.004037499999867605,
+        "ratioOfObservedMedians": 0.9685991120914876
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.0940250000001394,
+          "median": 0.13106458333343576,
+          "max": 0.16810416666673214
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.07842083333351486,
+          "median": 0.13562916666675542,
+          "max": 0.192837499999996
+        },
+        "observedMedianDifference": 0.004564583333319661,
+        "ratioOfObservedMedians": 1.034826977793895
+      },
+      "normalization": {
+        "formula": "per-sample batch duration / historyFrames; then summarize sample averages",
+        "historyFrames": 24,
+        "individualLatencyMedian": false
+      },
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "history/line-frames-8/redoBatchMs",
+      "family": "history",
+      "case": "line-frames-8",
+      "metric": "redoBatchMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 1.9096999999992477,
+          "median": 2.9337500000006003,
+          "max": 3.523399999998219
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 1.522000000000844,
+          "median": 2.5875000000005457,
+          "max": 3.237700000001496
+        },
+        "observedMedianDifference": -0.34625000000005457,
+        "ratioOfObservedMedians": 0.8819769919045646
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 2.205100000001039,
+          "median": 2.3492500000011205,
+          "max": 2.493400000001202
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 1.8246000000035565,
+          "median": 2.680199999999786,
+          "max": 3.5357999999960157
+        },
+        "observedMedianDifference": 0.3309499999986656,
+        "ratioOfObservedMedians": 1.1408747472591285
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "history/line-frames-8/redoPerCommandMs",
+      "family": "history",
+      "case": "line-frames-8",
+      "metric": "redoPerCommandMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.07957083333330199,
+          "median": 0.12223958333335835,
+          "max": 0.14680833333325913
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.06341666666670183,
+          "median": 0.10781250000002274,
+          "max": 0.134904166666729
+        },
+        "observedMedianDifference": -0.014427083333335616,
+        "ratioOfObservedMedians": 0.8819769919045645
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.09187916666670996,
+          "median": 0.09788541666671335,
+          "max": 0.10389166666671674
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.07602500000014818,
+          "median": 0.11167499999999109,
+          "max": 0.14732499999983398
+        },
+        "observedMedianDifference": 0.013789583333277733,
+        "ratioOfObservedMedians": 1.1408747472591285
+      },
+      "normalization": {
+        "formula": "per-sample batch duration / historyFrames; then summarize sample averages",
+        "historyFrames": 24,
+        "individualLatencyMedian": false
+      },
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "history/line-frames-32/executeBatchMs",
+      "family": "history",
+      "case": "line-frames-32",
+      "metric": "executeBatchMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 9.495200000006662,
+          "median": 11.281350000002476,
+          "max": 15.04439999999795
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 10.413900000003196,
+          "median": 13.145599999999376,
+          "max": 14.195600000000013
+        },
+        "observedMedianDifference": 1.8642499999969004,
+        "ratioOfObservedMedians": 1.1652506127366398
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 11.966100000005099,
+          "median": 12.617250000002969,
+          "max": 13.268400000000838
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 11.972399999997833,
+          "median": 12.9533999999976,
+          "max": 13.934399999997368
+        },
+        "observedMedianDifference": 0.3361499999946318,
+        "ratioOfObservedMedians": 1.0266420971284989
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "history/line-frames-32/executePerCommandMs",
+      "family": "history",
+      "case": "line-frames-32",
+      "metric": "executePerCommandMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.09890833333340272,
+          "median": 0.1175140625000258,
+          "max": 0.15671249999997863
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.10847812500003329,
+          "median": 0.13693333333332686,
+          "max": 0.14787083333333348
+        },
+        "observedMedianDifference": 0.019419270833301056,
+        "ratioOfObservedMedians": 1.1652506127366398
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.12464687500005311,
+          "median": 0.13142968750003092,
+          "max": 0.13821250000000873
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.12471249999997742,
+          "median": 0.134931249999975,
+          "max": 0.14514999999997258
+        },
+        "observedMedianDifference": 0.003501562499944072,
+        "ratioOfObservedMedians": 1.0266420971284989
+      },
+      "normalization": {
+        "formula": "per-sample batch duration / historyFrames; then summarize sample averages",
+        "historyFrames": 96,
+        "individualLatencyMedian": false
+      },
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "history/line-frames-32/undoBatchMs",
+      "family": "history",
+      "case": "line-frames-32",
+      "metric": "undoBatchMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 21.19909999999254,
+          "median": 32.08380000000261,
+          "max": 34.90319999999792
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 30.744700000002922,
+          "median": 33.90410000000293,
+          "max": 36.18439999998918
+        },
+        "observedMedianDifference": 1.8203000000003158,
+        "ratioOfObservedMedians": 1.0567357981286558
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 30.639900000005582,
+          "median": 33.165150000005724,
+          "max": 35.690400000005866
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 31.569299999997384,
+          "median": 31.824999999998454,
+          "max": 32.080699999999524
+        },
+        "observedMedianDifference": -1.3401500000072701,
+        "ratioOfObservedMedians": 0.9595916195160571
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "history/line-frames-32/undoPerCommandMs",
+      "family": "history",
+      "case": "line-frames-32",
+      "metric": "undoPerCommandMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.22082395833325563,
+          "median": 0.33420625000002724,
+          "max": 0.3635749999999784
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.3202572916666971,
+          "median": 0.35316770833336386,
+          "max": 0.37692083333322063
+        },
+        "observedMedianDifference": 0.018961458333336623,
+        "ratioOfObservedMedians": 1.0567357981286558
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.31916562500005813,
+          "median": 0.3454703125000596,
+          "max": 0.3717750000000611
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.3288468749999727,
+          "median": 0.33151041666665054,
+          "max": 0.33417395833332836
+        },
+        "observedMedianDifference": -0.013959895833409064,
+        "ratioOfObservedMedians": 0.9595916195160571
+      },
+      "normalization": {
+        "formula": "per-sample batch duration / historyFrames; then summarize sample averages",
+        "historyFrames": 96,
+        "individualLatencyMedian": false
+      },
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "history/line-frames-32/redoBatchMs",
+      "family": "history",
+      "case": "line-frames-32",
+      "metric": "redoBatchMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 19.16700000000492,
+          "median": 32.80260000000089,
+          "max": 35.952100000004066
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 28.31510000000344,
+          "median": 32.684000000002925,
+          "max": 36.795500000001084
+        },
+        "observedMedianDifference": -0.11859999999796855,
+        "ratioOfObservedMedians": 0.9963844329413533
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 29.275399999998626,
+          "median": 30.74644999999782,
+          "max": 32.21749999999702
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 33.88239999999951,
+          "median": 34.458700000002864,
+          "max": 35.03500000000622
+        },
+        "observedMedianDifference": 3.7122500000050422,
+        "ratioOfObservedMedians": 1.1207375160386095
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "history/line-frames-32/redoPerCommandMs",
+      "family": "history",
+      "case": "line-frames-32",
+      "metric": "redoPerCommandMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.19965625000005124,
+          "median": 0.34169375000000934,
+          "max": 0.374501041666709
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.29494895833336915,
+          "median": 0.34045833333336384,
+          "max": 0.3832864583333446
+        },
+        "observedMedianDifference": -0.0012354166666455058,
+        "ratioOfObservedMedians": 0.9963844329413533
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.304952083333319,
+          "median": 0.3202755208333107,
+          "max": 0.3355989583333023
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.35294166666666155,
+          "median": 0.3589447916666965,
+          "max": 0.3649479166667315
+        },
+        "observedMedianDifference": 0.03866927083338584,
+        "ratioOfObservedMedians": 1.1207375160386095
+      },
+      "normalization": {
+        "formula": "per-sample batch duration / historyFrames; then summarize sample averages",
+        "historyFrames": 96,
+        "individualLatencyMedian": false
+      },
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "history/line-frames-128/executeBatchMs",
+      "family": "history",
+      "case": "line-frames-128",
+      "metric": "executeBatchMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 144.62609999999222,
+          "median": 165.25785000000178,
+          "max": 179.16639999999825
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 155.9776999999831,
+          "median": 179.33334999997896,
+          "max": 196.72919999997612
+        },
+        "observedMedianDifference": 14.075499999977183,
+        "ratioOfObservedMedians": 1.0851729585007734
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 162.1701999999823,
+          "median": 164.94204999999192,
+          "max": 167.71390000000156
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 186.55730000001677,
+          "median": 190.92895000001408,
+          "max": 195.3006000000114
+        },
+        "observedMedianDifference": 25.98690000002216,
+        "ratioOfObservedMedians": 1.1575516977024563
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "history/line-frames-128/executePerCommandMs",
+      "family": "history",
+      "case": "line-frames-128",
+      "metric": "executePerCommandMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.37663046874997974,
+          "median": 0.43035898437500464,
+          "max": 0.4665791666666621
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.4061919270832893,
+          "median": 0.46701393229161187,
+          "max": 0.5123156249999378
+        },
+        "observedMedianDifference": 0.03665494791660723,
+        "ratioOfObservedMedians": 1.0851729585007732
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.42231822916662054,
+          "median": 0.42953658854164567,
+          "max": 0.43675494791667074
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.485826302083377,
+          "median": 0.4972108072917033,
+          "max": 0.5085953125000297
+        },
+        "observedMedianDifference": 0.06767421875005764,
+        "ratioOfObservedMedians": 1.157551697702456
+      },
+      "normalization": {
+        "formula": "per-sample batch duration / historyFrames; then summarize sample averages",
+        "historyFrames": 384,
+        "individualLatencyMedian": false
+      },
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "history/line-frames-128/undoBatchMs",
+      "family": "history",
+      "case": "line-frames-128",
+      "metric": "undoBatchMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 399.29520000002594,
+          "median": 415.7741499999902,
+          "max": 489.8840000000182
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 399.39370000000054,
+          "median": 439.80144999998265,
+          "max": 507.18559999996796
+        },
+        "observedMedianDifference": 24.027299999992465,
+        "ratioOfObservedMedians": 1.057789307007165
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 373.2329000000136,
+          "median": 445.06965000000537,
+          "max": 516.9063999999971
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 470.7605000000094,
+          "median": 494.68145000000277,
+          "max": 518.6023999999961
+        },
+        "observedMedianDifference": 49.6117999999974,
+        "ratioOfObservedMedians": 1.1114697441175707
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "history/line-frames-128/undoPerCommandMs",
+      "family": "history",
+      "case": "line-frames-128",
+      "metric": "undoPerCommandMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 1.0398312500000675,
+          "median": 1.082745182291641,
+          "max": 1.2757395833333807
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 1.040087760416668,
+          "median": 1.1453162760416213,
+          "max": 1.32079583333325
+        },
+        "observedMedianDifference": 0.06257109374998038,
+        "ratioOfObservedMedians": 1.057789307007165
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.9719606770833688,
+          "median": 1.159035546875014,
+          "max": 1.346110416666659
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 1.225938802083358,
+          "median": 1.2882329427083405,
+          "max": 1.3505270833333232
+        },
+        "observedMedianDifference": 0.12919739583332657,
+        "ratioOfObservedMedians": 1.1114697441175707
+      },
+      "normalization": {
+        "formula": "per-sample batch duration / historyFrames; then summarize sample averages",
+        "historyFrames": 384,
+        "individualLatencyMedian": false
+      },
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "history/line-frames-128/redoBatchMs",
+      "family": "history",
+      "case": "line-frames-128",
+      "metric": "redoBatchMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 338.00990000001,
+          "median": 397.7203499999814,
+          "max": 482.7505000000274
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 391.6700000000019,
+          "median": 445.7268500000091,
+          "max": 535.7047999999922
+        },
+        "observedMedianDifference": 48.0065000000277,
+        "ratioOfObservedMedians": 1.1207041580850212
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 406.055499999984,
+          "median": 445.7751999999946,
+          "max": 485.49490000000515
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 456.00999999997657,
+          "median": 506.3155499999848,
+          "max": 556.621099999993
+        },
+        "observedMedianDifference": 60.54034999999021,
+        "ratioOfObservedMedians": 1.1358091477497871
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "history/line-frames-128/redoPerCommandMs",
+      "family": "history",
+      "case": "line-frames-128",
+      "metric": "redoPerCommandMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.8802341145833594,
+          "median": 1.0357300781249517,
+          "max": 1.257162760416738
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 1.0199739583333383,
+          "median": 1.160747005208357,
+          "max": 1.395064583333313
+        },
+        "observedMedianDifference": 0.1250169270834054,
+        "ratioOfObservedMedians": 1.120704158085021
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 1.0574361979166251,
+          "median": 1.1608729166666527,
+          "max": 1.26430963541668
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 1.1875260416666056,
+          "median": 1.3185300781249603,
+          "max": 1.4495341145833152
+        },
+        "observedMedianDifference": 0.15765716145830755,
+        "ratioOfObservedMedians": 1.135809147749787
+      },
+      "normalization": {
+        "formula": "per-sample batch duration / historyFrames; then summarize sample averages",
+        "historyFrames": 384,
+        "individualLatencyMedian": false
+      },
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "serialization/lines-8/serializeMs",
+      "family": "serialization",
+      "case": "lines-8",
+      "metric": "serializeMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.05110000000001946,
+          "median": 0.07584999999997422,
+          "max": 0.12770000000000437
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.06740000000002055,
+          "median": 0.09884999999999877,
+          "max": 0.22509999999999764
+        },
+        "observedMedianDifference": 0.023000000000024556,
+        "ratioOfObservedMedians": 1.303230059328047
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.05689999999998463,
+          "median": 0.06194999999999595,
+          "max": 0.06700000000000728
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.0614999999999668,
+          "median": 0.06289999999998486,
+          "max": 0.06430000000000291
+        },
+        "observedMedianDifference": 0.0009499999999889042,
+        "ratioOfObservedMedians": 1.0153349475381592
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "serialization/lines-8/parseMs",
+      "family": "serialization",
+      "case": "lines-8",
+      "metric": "parseMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.052300000000002456,
+          "median": 0.0670000000000357,
+          "max": 0.09299999999996089
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.059199999999975716,
+          "median": 0.08305000000001428,
+          "max": 0.20390000000003283
+        },
+        "observedMedianDifference": 0.01604999999997858,
+        "ratioOfObservedMedians": 1.239552238805523
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.05720000000002301,
+          "median": 0.06320000000002324,
+          "max": 0.06920000000002346
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.06570000000004939,
+          "median": 0.06920000000002346,
+          "max": 0.07269999999999754
+        },
+        "observedMedianDifference": 0.006000000000000227,
+        "ratioOfObservedMedians": 1.0949367088607282
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "serialization/lines-8/hostSaveMs",
+      "family": "serialization",
+      "case": "lines-8",
+      "metric": "hostSaveMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.04050000000000864,
+          "median": 0.050649999999990314,
+          "max": 0.056500000000028194
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.03950000000003229,
+          "median": 0.06215000000000259,
+          "max": 0.7696000000000254
+        },
+        "observedMedianDifference": 0.011500000000012278,
+        "ratioOfObservedMedians": 1.2270483711750144
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.04790000000002692,
+          "median": 0.07570000000001187,
+          "max": 0.10349999999999682
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.05689999999998463,
+          "median": 0.08524999999997362,
+          "max": 0.11359999999996262
+        },
+        "observedMedianDifference": 0.009549999999961756,
+        "ratioOfObservedMedians": 1.1261558784671104
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "serialization/lines-8/hostLoadMs",
+      "family": "serialization",
+      "case": "lines-8",
+      "metric": "hostLoadMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.044899999999984175,
+          "median": 0.04945000000003574,
+          "max": 0.065400000000011
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.04800000000000182,
+          "median": 0.06634999999999991,
+          "max": 0.14999999999997726
+        },
+        "observedMedianDifference": 0.016899999999964166,
+        "ratioOfObservedMedians": 1.341759352880727
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.0524000000000342,
+          "median": 0.08545000000000869,
+          "max": 0.11849999999998317
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.07850000000001955,
+          "median": 0.102800000000002,
+          "max": 0.12709999999998445
+        },
+        "observedMedianDifference": 0.017349999999993315,
+        "ratioOfObservedMedians": 1.203042715037935
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "serialization/lines-8/hostRoundtripMs",
+      "family": "serialization",
+      "case": "lines-8",
+      "metric": "hostRoundtripMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.08809999999999718,
+          "median": 0.10129999999998063,
+          "max": 0.20330000000001291
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.09360000000003765,
+          "median": 0.15389999999999304,
+          "max": 0.8993999999999573
+        },
+        "observedMedianDifference": 0.052600000000012415,
+        "ratioOfObservedMedians": 1.519249753208514
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.10250000000002046,
+          "median": 0.17550000000002797,
+          "max": 0.24850000000003547
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.13810000000000855,
+          "median": 0.2026000000000181,
+          "max": 0.26710000000002765
+        },
+        "observedMedianDifference": 0.027099999999990132,
+        "ratioOfObservedMedians": 1.1544159544158736
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "serialization/lines-32/serializeMs",
+      "family": "serialization",
+      "case": "lines-32",
+      "metric": "serializeMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.12749999999999773,
+          "median": 0.1413000000000011,
+          "max": 0.3632000000000062
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.13900000000001,
+          "median": 0.15084999999993443,
+          "max": 0.3713999999999942
+        },
+        "observedMedianDifference": 0.009549999999933334,
+        "ratioOfObservedMedians": 1.0675866949747577
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.10510000000004993,
+          "median": 0.12135000000003515,
+          "max": 0.13760000000002037
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.11820000000000164,
+          "median": 0.1234500000000196,
+          "max": 0.12870000000003756
+        },
+        "observedMedianDifference": 0.0020999999999844476,
+        "ratioOfObservedMedians": 1.0173053152038223
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "serialization/lines-32/parseMs",
+      "family": "serialization",
+      "case": "lines-32",
+      "metric": "parseMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.14060000000000628,
+          "median": 0.15099999999998204,
+          "max": 0.1560999999999808
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.15239999999994325,
+          "median": 0.16280000000000427,
+          "max": 0.23109999999996944
+        },
+        "observedMedianDifference": 0.011800000000022237,
+        "ratioOfObservedMedians": 1.0781456953643949
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.13920000000001664,
+          "median": 0.14115000000001032,
+          "max": 0.143100000000004
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.1479999999999677,
+          "median": 0.15129999999996357,
+          "max": 0.15459999999995944
+        },
+        "observedMedianDifference": 0.010149999999953252,
+        "ratioOfObservedMedians": 1.0719093163298088
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "serialization/lines-32/hostSaveMs",
+      "family": "serialization",
+      "case": "lines-32",
+      "metric": "hostSaveMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.106899999999996,
+          "median": 0.11170000000001323,
+          "max": 0.16280000000000427
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.11159999999995307,
+          "median": 0.13254999999998063,
+          "max": 0.2075999999999567
+        },
+        "observedMedianDifference": 0.020849999999967395,
+        "ratioOfObservedMedians": 1.1866606982987011
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.11189999999999145,
+          "median": 0.24465000000000714,
+          "max": 0.37740000000002283
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.113900000000001,
+          "median": 0.11494999999999322,
+          "max": 0.11599999999998545
+        },
+        "observedMedianDifference": -0.12970000000001392,
+        "ratioOfObservedMedians": 0.4698548947475572
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "serialization/lines-32/hostLoadMs",
+      "family": "serialization",
+      "case": "lines-32",
+      "metric": "hostLoadMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.1320999999999799,
+          "median": 0.1364499999999964,
+          "max": 0.32089999999999463
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.13679999999999382,
+          "median": 0.15929999999997335,
+          "max": 0.30169999999998254
+        },
+        "observedMedianDifference": 0.022849999999976944,
+        "ratioOfObservedMedians": 1.1674606082812573
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.13949999999999818,
+          "median": 0.1425000000000125,
+          "max": 0.14550000000002683
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.15339999999997644,
+          "median": 0.2718500000000006,
+          "max": 0.39030000000002474
+        },
+        "observedMedianDifference": 0.12934999999998809,
+        "ratioOfObservedMedians": 1.9077192982454507
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "serialization/lines-32/hostRoundtripMs",
+      "family": "serialization",
+      "case": "lines-32",
+      "metric": "hostRoundtripMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.24350000000004002,
+          "median": 0.25619999999997844,
+          "max": 0.42959999999999354
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.25119999999992615,
+          "median": 0.3174499999999796,
+          "max": 0.4577999999999065
+        },
+        "observedMedianDifference": 0.06125000000000114,
+        "ratioOfObservedMedians": 1.2390710382513908
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.2529999999999859,
+          "median": 0.38894999999999413,
+          "max": 0.5249000000000024
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.2692000000000121,
+          "median": 0.38894999999999413,
+          "max": 0.5086999999999762
+        },
+        "observedMedianDifference": 0,
+        "ratioOfObservedMedians": 1
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "serialization/lines-128/serializeMs",
+      "family": "serialization",
+      "case": "lines-128",
+      "metric": "serializeMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.2906000000000404,
+          "median": 0.30459999999999354,
+          "max": 0.5655000000000427
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.3226000000000795,
+          "median": 0.35950000000002547,
+          "max": 0.5751999999999953
+        },
+        "observedMedianDifference": 0.05490000000003192,
+        "ratioOfObservedMedians": 1.1802363755746326
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.40049999999996544,
+          "median": 0.5461999999999421,
+          "max": 0.6918999999999187
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.4035999999999831,
+          "median": 0.46839999999997417,
+          "max": 0.5331999999999653
+        },
+        "observedMedianDifference": -0.0777999999999679,
+        "ratioOfObservedMedians": 0.8575613328451553
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "serialization/lines-128/parseMs",
+      "family": "serialization",
+      "case": "lines-128",
+      "metric": "parseMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.3914999999999509,
+          "median": 0.405749999999955,
+          "max": 0.6129000000000815
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.41219999999998436,
+          "median": 0.43280000000004293,
+          "max": 0.6716000000000122
+        },
+        "observedMedianDifference": 0.027050000000087948,
+        "ratioOfObservedMedians": 1.066666666666891
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.48460000000000036,
+          "median": 0.5186999999999671,
+          "max": 0.5527999999999338
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.48480000000006385,
+          "median": 0.6093000000000188,
+          "max": 0.7337999999999738
+        },
+        "observedMedianDifference": 0.09060000000005175,
+        "ratioOfObservedMedians": 1.1746674378254434
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "serialization/lines-128/hostSaveMs",
+      "family": "serialization",
+      "case": "lines-128",
+      "metric": "hostSaveMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.2761000000000422,
+          "median": 0.2868000000000279,
+          "max": 1.154299999999921
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.28449999999998,
+          "median": 0.302599999999984,
+          "max": 1.308400000000006
+        },
+        "observedMedianDifference": 0.01579999999995607,
+        "ratioOfObservedMedians": 1.055090655508907
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.411200000000008,
+          "median": 0.453550000000007,
+          "max": 0.495900000000006
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.3709999999999809,
+          "median": 0.4486500000000433,
+          "max": 0.5263000000001057
+        },
+        "observedMedianDifference": -0.004899999999963711,
+        "ratioOfObservedMedians": 0.9891963399846464
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "serialization/lines-128/hostLoadMs",
+      "family": "serialization",
+      "case": "lines-128",
+      "metric": "hostLoadMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.3869999999999436,
+          "median": 0.421100000000024,
+          "max": 0.6354000000000042
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.3954000000001088,
+          "median": 0.421100000000024,
+          "max": 0.6757999999999811
+        },
+        "observedMedianDifference": 0,
+        "ratioOfObservedMedians": 1
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.48079999999993106,
+          "median": 0.48980000000000246,
+          "max": 0.49880000000007385
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.47690000000000055,
+          "median": 0.4942500000000223,
+          "max": 0.511600000000044
+        },
+        "observedMedianDifference": 0.004450000000019827,
+        "ratioOfObservedMedians": 1.0090853409555325
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "serialization/lines-128/hostRoundtripMs",
+      "family": "serialization",
+      "case": "lines-128",
+      "metric": "hostRoundtripMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.6672999999999547,
+          "median": 0.7316499999999451,
+          "max": 1.569599999999923
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.6859000000000606,
+          "median": 0.7244500000000471,
+          "max": 1.761700000000019
+        },
+        "observedMedianDifference": -0.007199999999897955,
+        "ratioOfObservedMedians": 0.9901592291397546
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.8944999999999936,
+          "median": 0.9461499999999887,
+          "max": 0.9977999999999838
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.8500999999999976,
+          "median": 0.9455500000000256,
+          "max": 1.0410000000000537
+        },
+        "observedMedianDifference": -0.0005999999999630745,
+        "ratioOfObservedMedians": 0.9993658510807345
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "protected-part/protected-60-to-80-save-open/rebuild60Ms",
+      "family": "protected-part",
+      "case": "protected-60-to-80-save-open",
+      "metric": "rebuild60Ms",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 55.65719999999965,
+          "median": 68.21004999999968,
+          "max": 89.74579999999969
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 75.20150000000012,
+          "median": 92.67599999999948,
+          "max": 115.10909999999967
+        },
+        "observedMedianDifference": 24.465949999999793,
+        "ratioOfObservedMedians": 1.358685413659716
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 65.81129999999939,
+          "median": 82.7788999999998,
+          "max": 99.7465000000002
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 98.1216000000004,
+          "median": 98.69410000000016,
+          "max": 99.26659999999993
+        },
+        "observedMedianDifference": 15.915200000000368,
+        "ratioOfObservedMedians": 1.1922615545749027
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "protected-part/protected-60-to-80-save-open/editWidthMs",
+      "family": "protected-part",
+      "case": "protected-60-to-80-save-open",
+      "metric": "editWidthMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.11570000000028813,
+          "median": 0.12354999999979555,
+          "max": 0.21630000000004657
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.11339999999836436,
+          "median": 0.15304999999989377,
+          "max": 0.20820000000003347
+        },
+        "observedMedianDifference": 0.029500000000098225,
+        "ratioOfObservedMedians": 1.2387697288559048
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.17309999999997672,
+          "median": 0.21439999999984138,
+          "max": 0.25569999999970605
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.21309999999994034,
+          "median": 0.253950000000259,
+          "max": 0.2948000000005777
+        },
+        "observedMedianDifference": 0.03955000000041764,
+        "ratioOfObservedMedians": 1.184468283584174
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "protected-part/protected-60-to-80-save-open/rebuild80Ms",
+      "family": "protected-part",
+      "case": "protected-60-to-80-save-open",
+      "metric": "rebuild80Ms",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 55.135299999999916,
+          "median": 81.68609999999944,
+          "max": 99.69190000000071
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 57.35310000000027,
+          "median": 91.96600000000035,
+          "max": 104.26000000000022
+        },
+        "observedMedianDifference": 10.279900000000907,
+        "ratioOfObservedMedians": 1.1258463802287166
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 61.28490000000056,
+          "median": 80.30125000000044,
+          "max": 99.31760000000031
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 97.51550000000043,
+          "median": 107.77535000000034,
+          "max": 118.03520000000026
+        },
+        "observedMedianDifference": 27.474099999999908,
+        "ratioOfObservedMedians": 1.3421378870191902
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "protected-part/protected-60-to-80-save-open/saveOpenHostMs",
+      "family": "protected-part",
+      "case": "protected-60-to-80-save-open",
+      "metric": "saveOpenHostMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.13559999999961292,
+          "median": 0.19245000000046275,
+          "max": 0.3632000000006883
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.14429999999993015,
+          "median": 0.23905000000013388,
+          "max": 0.32960000000093714
+        },
+        "observedMedianDifference": 0.04659999999967113,
+        "ratioOfObservedMedians": 1.2421408157940197
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.15610000000015134,
+          "median": 0.2613499999997657,
+          "max": 0.3665999999993801
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 0.27440000000024156,
+          "median": 0.3831000000000131,
+          "max": 0.49179999999978463
+        },
+        "observedMedianDifference": 0.12175000000024738,
+        "ratioOfObservedMedians": 1.4658503921957395
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "protected-part/protected-60-to-80-save-open/reopenedRecomputeMs",
+      "family": "protected-part",
+      "case": "protected-60-to-80-save-open",
+      "metric": "reopenedRecomputeMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 51.283400000000256,
+          "median": 74.72440000000006,
+          "max": 94.22440000000006
+        },
+        "current": {
+          "n": 10,
+          "attempted": 10,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 76.19640000000072,
+          "median": 90.1848,
+          "max": 100.64050000000043
+        },
+        "observedMedianDifference": 15.460399999999936,
+        "ratioOfObservedMedians": 1.2068989513465471
+      },
+      "warmups": {
+        "historical": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 65.59589999999935,
+          "median": 69.64854999999943,
+          "max": 73.70119999999952
+        },
+        "current": {
+          "n": 2,
+          "attempted": 2,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 97.12049999999999,
+          "median": 102.53615000000036,
+          "max": 107.95180000000073
+        },
+        "observedMedianDifference": 32.88760000000093,
+        "ratioOfObservedMedians": 1.4721936063277872
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "cold-planegcs-1/first-init/initMs",
+      "family": "cold-planegcs",
+      "case": "first-init",
+      "metric": "initMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 1,
+          "attempted": 1,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 14.157800000000009,
+          "median": 14.157800000000009,
+          "max": 14.157800000000009
+        },
+        "current": {
+          "n": 1,
+          "attempted": 1,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 14.704799999999977,
+          "median": 14.704799999999977,
+          "max": 14.704799999999977
+        },
+        "observedMedianDifference": 0.5469999999999686,
+        "ratioOfObservedMedians": 1.0386359462628352
+      },
+      "warmups": {
+        "historical": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "current": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "observedMedianDifference": null,
+        "ratioOfObservedMedians": null
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "cold-planegcs-1/first-init/firstSolveMs",
+      "family": "cold-planegcs",
+      "case": "first-init",
+      "metric": "firstSolveMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 1,
+          "attempted": 1,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 13.209499999999991,
+          "median": 13.209499999999991,
+          "max": 13.209499999999991
+        },
+        "current": {
+          "n": 1,
+          "attempted": 1,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 12.99720000000002,
+          "median": 12.99720000000002,
+          "max": 12.99720000000002
+        },
+        "observedMedianDifference": -0.21229999999997062,
+        "ratioOfObservedMedians": 0.9839282334683394
+      },
+      "warmups": {
+        "historical": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "current": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "observedMedianDifference": null,
+        "ratioOfObservedMedians": null
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "cold-planegcs-2/first-init/initMs",
+      "family": "cold-planegcs",
+      "case": "first-init",
+      "metric": "initMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 1,
+          "attempted": 1,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 16.354499999999973,
+          "median": 16.354499999999973,
+          "max": 16.354499999999973
+        },
+        "current": {
+          "n": 1,
+          "attempted": 1,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 17.857100000000003,
+          "median": 17.857100000000003,
+          "max": 17.857100000000003
+        },
+        "observedMedianDifference": 1.5026000000000295,
+        "ratioOfObservedMedians": 1.091876853465409
+      },
+      "warmups": {
+        "historical": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "current": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "observedMedianDifference": null,
+        "ratioOfObservedMedians": null
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "cold-planegcs-2/first-init/firstSolveMs",
+      "family": "cold-planegcs",
+      "case": "first-init",
+      "metric": "firstSolveMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 1,
+          "attempted": 1,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 15.975600000000043,
+          "median": 15.975600000000043,
+          "max": 15.975600000000043
+        },
+        "current": {
+          "n": 1,
+          "attempted": 1,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 16.84359999999998,
+          "median": 16.84359999999998,
+          "max": 16.84359999999998
+        },
+        "observedMedianDifference": 0.8679999999999382,
+        "ratioOfObservedMedians": 1.054332857607848
+      },
+      "warmups": {
+        "historical": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "current": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "observedMedianDifference": null,
+        "ratioOfObservedMedians": null
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "cold-planegcs-3/first-init/initMs",
+      "family": "cold-planegcs",
+      "case": "first-init",
+      "metric": "initMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 1,
+          "attempted": 1,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 15.413900000000012,
+          "median": 15.413900000000012,
+          "max": 15.413900000000012
+        },
+        "current": {
+          "n": 1,
+          "attempted": 1,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 13.78449999999998,
+          "median": 13.78449999999998,
+          "max": 13.78449999999998
+        },
+        "observedMedianDifference": -1.6294000000000324,
+        "ratioOfObservedMedians": 0.894290218568952
+      },
+      "warmups": {
+        "historical": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "current": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "observedMedianDifference": null,
+        "ratioOfObservedMedians": null
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "cold-planegcs-3/first-init/firstSolveMs",
+      "family": "cold-planegcs",
+      "case": "first-init",
+      "metric": "firstSolveMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 1,
+          "attempted": 1,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 14.097800000000007,
+          "median": 14.097800000000007,
+          "max": 14.097800000000007
+        },
+        "current": {
+          "n": 1,
+          "attempted": 1,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 12.430200000000013,
+          "median": 12.430200000000013,
+          "max": 12.430200000000013
+        },
+        "observedMedianDifference": -1.667599999999993,
+        "ratioOfObservedMedians": 0.881712040176482
+      },
+      "warmups": {
+        "historical": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "current": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "observedMedianDifference": null,
+        "ratioOfObservedMedians": null
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "cold-occ-1/first-init/initMs",
+      "family": "cold-occ",
+      "case": "first-init",
+      "metric": "initMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 1,
+          "attempted": 1,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 5212.6161999999995,
+          "median": 5212.6161999999995,
+          "max": 5212.6161999999995
+        },
+        "current": {
+          "n": 1,
+          "attempted": 1,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 5922.653,
+          "median": 5922.653,
+          "max": 5922.653
+        },
+        "observedMedianDifference": 710.0368000000008,
+        "ratioOfObservedMedians": 1.136215054544012
+      },
+      "warmups": {
+        "historical": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "current": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "observedMedianDifference": null,
+        "ratioOfObservedMedians": null
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "cold-occ-1/first-init/firstRecomputeMs",
+      "family": "cold-occ",
+      "case": "first-init",
+      "metric": "firstRecomputeMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 1,
+          "attempted": 1,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 31.867199999999684,
+          "median": 31.867199999999684,
+          "max": 31.867199999999684
+        },
+        "current": {
+          "n": 1,
+          "attempted": 1,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 39.016599999999926,
+          "median": 39.016599999999926,
+          "max": 39.016599999999926
+        },
+        "observedMedianDifference": 7.149400000000242,
+        "ratioOfObservedMedians": 1.2243498016769692
+      },
+      "warmups": {
+        "historical": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "current": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "observedMedianDifference": null,
+        "ratioOfObservedMedians": null
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "cold-occ-2/first-init/initMs",
+      "family": "cold-occ",
+      "case": "first-init",
+      "metric": "initMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 1,
+          "attempted": 1,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 4963.0441,
+          "median": 4963.0441,
+          "max": 4963.0441
+        },
+        "current": {
+          "n": 1,
+          "attempted": 1,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 5557.6085,
+          "median": 5557.6085,
+          "max": 5557.6085
+        },
+        "observedMedianDifference": 594.5644000000002,
+        "ratioOfObservedMedians": 1.11979833102833
+      },
+      "warmups": {
+        "historical": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "current": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "observedMedianDifference": null,
+        "ratioOfObservedMedians": null
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "cold-occ-2/first-init/firstRecomputeMs",
+      "family": "cold-occ",
+      "case": "first-init",
+      "metric": "firstRecomputeMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 1,
+          "attempted": 1,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 27.41739999999936,
+          "median": 27.41739999999936,
+          "max": 27.41739999999936
+        },
+        "current": {
+          "n": 1,
+          "attempted": 1,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 35.61710000000039,
+          "median": 35.61710000000039,
+          "max": 35.61710000000039
+        },
+        "observedMedianDifference": 8.19970000000103,
+        "ratioOfObservedMedians": 1.2990692042280165
+      },
+      "warmups": {
+        "historical": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "current": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "observedMedianDifference": null,
+        "ratioOfObservedMedians": null
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "cold-occ-3/first-init/initMs",
+      "family": "cold-occ",
+      "case": "first-init",
+      "metric": "initMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 1,
+          "attempted": 1,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 5151.469800000001,
+          "median": 5151.469800000001,
+          "max": 5151.469800000001
+        },
+        "current": {
+          "n": 1,
+          "attempted": 1,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 5068.9024,
+          "median": 5068.9024,
+          "max": 5068.9024
+        },
+        "observedMedianDifference": -82.56740000000082,
+        "ratioOfObservedMedians": 0.9839720694858775
+      },
+      "warmups": {
+        "historical": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "current": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "observedMedianDifference": null,
+        "ratioOfObservedMedians": null
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "cold-occ-3/first-init/firstRecomputeMs",
+      "family": "cold-occ",
+      "case": "first-init",
+      "metric": "firstRecomputeMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 1,
+          "attempted": 1,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 31.470299999999952,
+          "median": 31.470299999999952,
+          "max": 31.470299999999952
+        },
+        "current": {
+          "n": 1,
+          "attempted": 1,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 32.84240000000045,
+          "median": 32.84240000000045,
+          "max": 32.84240000000045
+        },
+        "observedMedianDifference": 1.3721000000005006,
+        "ratioOfObservedMedians": 1.0435998385779768
+      },
+      "warmups": {
+        "historical": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "current": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "observedMedianDifference": null,
+        "ratioOfObservedMedians": null
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    }
+  ],
+  "coldAggregateComparisons": [
+    {
+      "id": "cold-planegcs/initMs",
+      "family": "cold-planegcs",
+      "case": null,
+      "metric": "initMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 3,
+          "attempted": 3,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 14.157800000000009,
+          "median": 15.413900000000012,
+          "max": 16.354499999999973
+        },
+        "current": {
+          "n": 3,
+          "attempted": 3,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 13.78449999999998,
+          "median": 14.704799999999977,
+          "max": 17.857100000000003
+        },
+        "observedMedianDifference": -0.7091000000000349,
+        "ratioOfObservedMedians": 0.9539960684836392
+      },
+      "warmups": {
+        "historical": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "current": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "observedMedianDifference": null,
+        "ratioOfObservedMedians": null
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "cold-planegcs/firstSolveMs",
+      "family": "cold-planegcs",
+      "case": null,
+      "metric": "firstSolveMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 3,
+          "attempted": 3,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 13.209499999999991,
+          "median": 14.097800000000007,
+          "max": 15.975600000000043
+        },
+        "current": {
+          "n": 3,
+          "attempted": 3,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 12.430200000000013,
+          "median": 12.99720000000002,
+          "max": 16.84359999999998
+        },
+        "observedMedianDifference": -1.1005999999999858,
+        "ratioOfObservedMedians": 0.921931081445333
+      },
+      "warmups": {
+        "historical": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "current": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "observedMedianDifference": null,
+        "ratioOfObservedMedians": null
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "cold-occ/initMs",
+      "family": "cold-occ",
+      "case": null,
+      "metric": "initMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 3,
+          "attempted": 3,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 4963.0441,
+          "median": 5151.469800000001,
+          "max": 5212.6161999999995
+        },
+        "current": {
+          "n": 3,
+          "attempted": 3,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 5068.9024,
+          "median": 5557.6085,
+          "max": 5922.653
+        },
+        "observedMedianDifference": 406.1386999999995,
+        "ratioOfObservedMedians": 1.0788393828883553
+      },
+      "warmups": {
+        "historical": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "current": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "observedMedianDifference": null,
+        "ratioOfObservedMedians": null
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    },
+    {
+      "id": "cold-occ/firstRecomputeMs",
+      "family": "cold-occ",
+      "case": null,
+      "metric": "firstRecomputeMs",
+      "unit": "ms",
+      "measured": {
+        "historical": {
+          "n": 3,
+          "attempted": 3,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 27.41739999999936,
+          "median": 31.470299999999952,
+          "max": 31.867199999999684
+        },
+        "current": {
+          "n": 3,
+          "attempted": 3,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": 32.84240000000045,
+          "median": 35.61710000000039,
+          "max": 39.016599999999926
+        },
+        "observedMedianDifference": 4.1468000000004395,
+        "ratioOfObservedMedians": 1.131768683488891
+      },
+      "warmups": {
+        "historical": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "current": {
+          "n": 0,
+          "attempted": 0,
+          "failedAttempts": 0,
+          "missingOrNonFinite": 0,
+          "includesFailedAttempts": true,
+          "min": null,
+          "median": null,
+          "max": null
+        },
+        "observedMedianDifference": null,
+        "ratioOfObservedMedians": null
+      },
+      "normalization": null,
+      "interpretation": "Descriptive arithmetic only; no speedup/regression/causal verdict"
+    }
+  ],
+  "limitations": [
+    "Derived data only; no benchmark, install, browser, server or product operation was rerun.",
+    "These are separate observational cohorts. Node changed from 22.23.3 to 22.23.4, product source and lock identity changed; no causal timing attribution or performance verdict is justified.",
+    "CPU affinity/frequency, background load, GC, free memory and OS caches were not controlled. No SLO or statistical significance is asserted.",
+    "All finite recorded values are included, even for failed attempts; measured samples and warmups are separate.",
+    "Four cold aggregate rows summarize existing single-process samples; they add zero attempts.",
+    "PerCommandMs summarizes sample averages of batch duration/historyFrames, not individual command latency observations.",
+    "The frozen protocol, tools, fixture counts and serialized sizes match; generated UUIDs make the actual corpora different.",
+    "Direct warm PlaneGCS bypasses the browser LRU. Cache-hit timings, browser cold-start and native heap/RSS were not measured.",
+    "Fresh Node WASM initialization is not OS disk-cache cold. Memory host timings are not browser/disk/network Save/Open timings.",
+    "Original acceptedBaseline:false and acceptance:PENDING states remain unchanged. Controller acceptance is separate.",
+    "Diagnostic bootstrap timings remain in raw reports and are not added to the 53 repeated case-metric rows."
+  ]
+}

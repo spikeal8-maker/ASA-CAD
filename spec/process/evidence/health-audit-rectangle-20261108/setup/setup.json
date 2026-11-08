@@ -1,0 +1,809 @@
+{
+  "schemaVersion": 1,
+  "status": "READY_FOR_SEPARATE_AUDIT_GO",
+  "startedAt": "2026-11-08T09:14:14.581Z",
+  "expectedHead": "b8f700bb6e455582db18df8d0ba43a2bfbdcc68b",
+  "approvedPaths": {
+    "source": "C:\\Users\\spike\\Documents\\ASA-CAD-Node-Toolchain-20261108",
+    "repo": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108",
+    "branch": "audit/full-health-after-rectangle-20261108",
+    "setupOut": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-setup-20261108",
+    "measurementOut": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108",
+    "node": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node.exe",
+    "nodeSha256": "dccc52de28d8df2ee22d2062424f8c563070d95d8ad70c54c4bf01d590dec14f",
+    "runner": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\full-health-audit-runner-20261108.cjs",
+    "runnerSha256": "3144747cb207f7bf0989550c25da0b76d41064d59618e7fb89262716c556e94a"
+  },
+  "sourceBefore": {
+    "head": "69c126befe1db9dc454081981aad87014bcd6cb7",
+    "tree": "121dd2b05096263588dc1807ab5622e14e0b3260",
+    "status": "",
+    "index": {
+      "path": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Reference-20261105\\.git\\worktrees\\ASA-CAD-Node-Toolchain-20261108\\index",
+      "bytes": 91442,
+      "sha256": "18f5bfaea2d39e5acde194b415a004079eba03a8e51ca103b7bf8bd94de64483"
+    }
+  },
+  "runtime": {
+    "node": "v22.23.4",
+    "npm": "10.9.9",
+    "versions": {
+      "node": "22.23.4",
+      "acorn": "8.16.0",
+      "ada": "2.9.2",
+      "amaro": "1.1.8",
+      "ares": "1.34.9",
+      "brotli": "1.1.0",
+      "cjs_module_lexer": "2.2.0",
+      "cldr": "48.0",
+      "icu": "78.3",
+      "llhttp": "9.4.3",
+      "modules": "127",
+      "napi": "10",
+      "nbytes": "0.1.3",
+      "ncrypto": "0.0.1",
+      "nghttp2": "1.69.0",
+      "openssl": "3.5.9",
+      "simdjson": "4.5.0",
+      "simdutf": "6.4.2",
+      "sqlite": "3.53.4",
+      "tz": "2026e",
+      "undici": "6.29.1",
+      "unicode": "17.0",
+      "uv": "1.51.0",
+      "uvwasi": "0.0.23",
+      "v8": "12.4.254.21-node.57",
+      "zlib": "1.3.1-e00f703",
+      "zstd": "1.5.7"
+    },
+    "executable": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node.exe"
+  },
+  "toolsBefore": {
+    "setup": {
+      "path": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\rectangle-audit-setup-20261108.cjs",
+      "bytes": 19212,
+      "sha256": "034ee365fd635fedeccfb8811c851819628bf51fc1b560ad074a77e072ee2910"
+    },
+    "node": {
+      "path": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node.exe",
+      "bytes": 87034184,
+      "sha256": "dccc52de28d8df2ee22d2062424f8c563070d95d8ad70c54c4bf01d590dec14f"
+    },
+    "npmCli": {
+      "path": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node_modules\\npm\\bin\\npm-cli.js",
+      "bytes": 56,
+      "sha256": "3ce7cba6f5128dd5f54c98b6a5036b0f850496878cc2e21044b675fe3c594e3e"
+    },
+    "runner": {
+      "path": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\full-health-audit-runner-20261108.cjs",
+      "bytes": 30854,
+      "sha256": "3144747cb207f7bf0989550c25da0b76d41064d59618e7fb89262716c556e94a"
+    }
+  },
+  "commands": [
+    {
+      "name": "effective-omit",
+      "executable": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node.exe",
+      "argv": [
+        "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node_modules\\npm\\bin\\npm-cli.js",
+        "--prefix",
+        "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108\\vendor\\toubkal",
+        "config",
+        "get",
+        "omit"
+      ],
+      "cwd": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108",
+      "startedAt": "2026-11-08T09:14:17.265Z",
+      "finishedAt": "2026-11-08T09:14:17.454Z",
+      "pid": 31572,
+      "exitCode": 0,
+      "signal": null,
+      "closed": true,
+      "timeoutMs": 30000,
+      "timedOut": false,
+      "interrupted": false,
+      "outputLimit": false,
+      "spawnError": null,
+      "cleanup": [],
+      "stdout": {
+        "relativePath": "commands/effective-omit.stdout.txt",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      "stderr": {
+        "relativePath": "commands/effective-omit.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "effective-global",
+      "executable": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node.exe",
+      "argv": [
+        "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node_modules\\npm\\bin\\npm-cli.js",
+        "--prefix",
+        "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108\\vendor\\toubkal",
+        "config",
+        "get",
+        "global"
+      ],
+      "cwd": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108",
+      "startedAt": "2026-11-08T09:14:17.456Z",
+      "finishedAt": "2026-11-08T09:14:17.622Z",
+      "pid": 29256,
+      "exitCode": 0,
+      "signal": null,
+      "closed": true,
+      "timeoutMs": 30000,
+      "timedOut": false,
+      "interrupted": false,
+      "outputLimit": false,
+      "spawnError": null,
+      "cleanup": [],
+      "stdout": {
+        "relativePath": "commands/effective-global.stdout.txt",
+        "bytes": 6,
+        "sha256": "2ed27c1421e6928dbe13dbfdb5c59e1045b30341fe7ebe05700006bc5ac572c0"
+      },
+      "stderr": {
+        "relativePath": "commands/effective-global.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "clean-install",
+      "executable": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node.exe",
+      "argv": [
+        "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node_modules\\npm\\bin\\npm-cli.js",
+        "--prefix",
+        "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108\\vendor\\toubkal",
+        "ci",
+        "--registry=https://registry.npmjs.org"
+      ],
+      "cwd": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108",
+      "startedAt": "2026-11-08T09:14:17.626Z",
+      "finishedAt": "2026-11-08T09:14:38.062Z",
+      "pid": 38308,
+      "exitCode": 0,
+      "signal": null,
+      "closed": true,
+      "timeoutMs": 240000,
+      "timedOut": false,
+      "interrupted": false,
+      "outputLimit": false,
+      "spawnError": null,
+      "cleanup": [],
+      "stdout": {
+        "relativePath": "commands/clean-install.stdout.txt",
+        "bytes": 144,
+        "sha256": "597cee19299cfef7b80db5b6a3c8a0803b586bcec121acb9c3563c09b75c7644"
+      },
+      "stderr": {
+        "relativePath": "commands/clean-install.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "dependency-tree",
+      "executable": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node.exe",
+      "argv": [
+        "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node_modules\\npm\\bin\\npm-cli.js",
+        "--prefix",
+        "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108\\vendor\\toubkal",
+        "ls",
+        "--all",
+        "--json"
+      ],
+      "cwd": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108",
+      "startedAt": "2026-11-08T09:14:38.082Z",
+      "finishedAt": "2026-11-08T09:14:38.634Z",
+      "pid": 36772,
+      "exitCode": 0,
+      "signal": null,
+      "closed": true,
+      "timeoutMs": 120000,
+      "timedOut": false,
+      "interrupted": false,
+      "outputLimit": false,
+      "spawnError": null,
+      "cleanup": [],
+      "stdout": {
+        "relativePath": "commands/dependency-tree.stdout.txt",
+        "bytes": 73624,
+        "sha256": "34817d919092268bbf57ae4812fa6111e54f78db9557801aecac3f58ba5383ec"
+      },
+      "stderr": {
+        "relativePath": "commands/dependency-tree.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "asa-types",
+      "executable": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node.exe",
+      "argv": [
+        "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "typecheck:asa"
+      ],
+      "cwd": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108",
+      "startedAt": "2026-11-08T09:14:38.637Z",
+      "finishedAt": "2026-11-08T09:14:46.222Z",
+      "pid": 32156,
+      "exitCode": 0,
+      "signal": null,
+      "closed": true,
+      "timeoutMs": 180000,
+      "timedOut": false,
+      "interrupted": false,
+      "outputLimit": false,
+      "spawnError": null,
+      "cleanup": [],
+      "stdout": {
+        "relativePath": "commands/asa-types.stdout.txt",
+        "bytes": 112,
+        "sha256": "54db64d65c6a4f4f878ae42463a5e94173111fe174a1a25d9e5c56aae0aa36c8"
+      },
+      "stderr": {
+        "relativePath": "commands/asa-types.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "gitCommands": [
+    {
+      "repo": "C:\\Users\\spike\\Documents\\ASA-CAD-Node-Toolchain-20261108",
+      "args": [
+        "show-ref",
+        "--verify",
+        "--quiet",
+        "refs/heads/audit/full-health-after-rectangle-20261108"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "repo": "C:\\Users\\spike\\Documents\\ASA-CAD-Node-Toolchain-20261108",
+      "args": [
+        "rev-parse",
+        "--git-path",
+        "index"
+      ],
+      "exitCode": 0,
+      "stdout": "C:/Users/spike/Documents/ASA-CAD-Fusion-Reference-20261105/.git/worktrees/ASA-CAD-Node-Toolchain-20261108/index\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "repo": "C:\\Users\\spike\\Documents\\ASA-CAD-Node-Toolchain-20261108",
+      "args": [
+        "rev-parse",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "stdout": "69c126befe1db9dc454081981aad87014bcd6cb7\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "repo": "C:\\Users\\spike\\Documents\\ASA-CAD-Node-Toolchain-20261108",
+      "args": [
+        "rev-parse",
+        "HEAD^{tree}"
+      ],
+      "exitCode": 0,
+      "stdout": "121dd2b05096263588dc1807ab5622e14e0b3260\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "repo": "C:\\Users\\spike\\Documents\\ASA-CAD-Node-Toolchain-20261108",
+      "args": [
+        "status",
+        "--porcelain=v1",
+        "--untracked-files=all"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "repo": "C:\\Users\\spike\\Documents\\ASA-CAD-Node-Toolchain-20261108",
+      "args": [
+        "ls-remote",
+        "--exit-code",
+        "origin",
+        "refs/heads/integration/ui-core-unification"
+      ],
+      "exitCode": 0,
+      "stdout": "b8f700bb6e455582db18df8d0ba43a2bfbdcc68b\trefs/heads/integration/ui-core-unification\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "repo": "C:\\Users\\spike\\Documents\\ASA-CAD-Node-Toolchain-20261108",
+      "args": [
+        "cat-file",
+        "-e",
+        "b8f700bb6e455582db18df8d0ba43a2bfbdcc68b^{commit}"
+      ],
+      "exitCode": 128,
+      "stdout": "",
+      "stderr": "fatal: Not a valid object name b8f700bb6e455582db18df8d0ba43a2bfbdcc68b^{commit}\n",
+      "error": null
+    },
+    {
+      "repo": "C:\\Users\\spike\\Documents\\ASA-CAD-Node-Toolchain-20261108",
+      "args": [
+        "fetch",
+        "--no-tags",
+        "origin",
+        "refs/heads/integration/ui-core-unification:refs/remotes/origin/integration/ui-core-unification"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "From https://github.com/spikeal8-maker/ASA-CAD\n   5781e39..b8f700b  integration/ui-core-unification -> origin/integration/ui-core-unification\n",
+      "error": null
+    },
+    {
+      "repo": "C:\\Users\\spike\\Documents\\ASA-CAD-Node-Toolchain-20261108",
+      "args": [
+        "rev-parse",
+        "refs/remotes/origin/integration/ui-core-unification"
+      ],
+      "exitCode": 0,
+      "stdout": "b8f700bb6e455582db18df8d0ba43a2bfbdcc68b\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "repo": "C:\\Users\\spike\\Documents\\ASA-CAD-Node-Toolchain-20261108",
+      "args": [
+        "show",
+        "b8f700bb6e455582db18df8d0ba43a2bfbdcc68b:spec/process/active-work.v1.json"
+      ],
+      "exitCode": 0,
+      "stdout": "{\n  \"schemaVersion\": 1,\n  \"initiative\": \"UI-CORE-UNIFICATION-001\",\n  \"issue\": 184,\n  \"currentCheckpoint\": \"FULL_REPOSITORY_HEALTH_AUDIT\",\n  \"baseBranch\": \"integration/ui-core-unification\",\n  \"baseHeadPolicy\": \"RESOLVE_LIVE_AND_GUARD\",\n  \"uiReference\": {\n    \"pr\": 170,\n    \"tag\": \"ui-reference-20261004\",\n    \"sha\": \"88c535c652dac8b04f0d68fa144cf8486afdc926\",\n    \"frozen\": true\n  },\n  \"productCodeStartAllowed\": false,\n  \"blocker\": null,\n  \"canonicalDocuments\": [\n    \"docs/DEVELOPMENT_QUALITY_GATES.md\",\n    \"docs/UI_CORE_UNIFICATION_SPEC.md\",\n    \"docs/STATUS.md\"\n  ],\n  \"scope\": [\n    \"Full Repository Health Audit after technical acceptance of the third permanent slice since #221: #222 Numeric Line, #223 CI/build Node repair, and this Rectangle acceptance regression\",\n    \"Audit the exact accepted integration SHA; review owners/budgets, architecture, duplicates/artifacts, schema/persistence, upstream/dependencies and measured performance with immutable evidence\",\n    \"Reuse still-applicable exact source/CI/browser/runtime evidence; distinguish historical Node22.23.3 measurements from selected Node22.23.4 Windows proof\",\n    \"Only confirmed P0/RED repairs and essential regressions are allowed until GREEN or explicitly accepted YELLOW audit outcome; then resume U2\"\n  ],\n  \"outOfScope\": [\n    \"U2-U5 feature expansion before acceptance of this required Full Repository Health Audit\",\n    \"Automatic merge of #170 prototype runtime, #177/#179 or Fusion #204-#207 candidates\",\n    \"Integration-to-main, production deployment and final visual parity without owner decision\"\n  ],\n  \"nextCheckpoint\": \"U2\",\n  \"developmentAuthorization\": \"OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008\",\n  \"checkpointTechnicalStatus\": \"IN_PROGRESS\",\n  \"ownerProductAcceptance\": \"PENDING\",\n  \"u1MergedIntoIntegration\": {\n    \"pr\": 195,\n    \"mergeSha\": \"cc2ceaa22858f7f885a17b17a16286e0ce65c8e2\"\n  },\n  \"u1MergedIntoMain\": {\n    \"pr\": 196,\n    \"mergeSha\": \"e37650f08d9e2fa6cf13ceb6a09ecd8e8a568c15\"\n  },\n  \"fullRepositoryHealthAudit\": {\n    \"outcome\": \"YELLOW_ACCEPTED\",\n    \"auditBaseSha\": \"20603c34f277dc9f0cf2696f5bd3971dd7645678\",\n    \"auditedSha\": \"7bf71e2ee8ece045fb69620c657570ce7be9294f\",\n    \"report\": \"docs/FULL_REPOSITORY_HEALTH_AUDIT.md\",\n    \"acceptedBy\": \"ChatGPT technical controller /root under OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008\",\n    \"acceptanceScope\": \"TECHNICAL_INTEGRATION_ONLY\",\n    \"openDebtIds\": [\n      \"NODE_TOOLCHAIN_EOL_AND_SECURITY_PATCH_GAP\"\n    ],\n    \"debtGate\": \"BEFORE_U2_TECHNICAL_ACCEPTANCE_OR_NEXT_MILESTONE_BOUNDARY_IF_EARLIER_AND_PRE_BETA\"\n  },\n  \"previousFullRepositoryHealthAudit\": {\n    \"outcome\": \"YELLOW_ACCEPTED\",\n    \"auditBaseSha\": \"e37650f08d9e2fa6cf13ceb6a09ecd8e8a568c15\",\n    \"auditedSha\": \"128480e1a150253359ce44158d5588f6b08f27b8\",\n    \"report\": \"docs/FULL_REPOSITORY_HEALTH_AUDIT.md\",\n    \"acceptedBy\": \"ChatGPT technical controller /root under OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008\",\n    \"acceptanceScope\": \"TECHNICAL_INTEGRATION_ONLY\",\n    \"openDebtIds\": [\n      \"HA-20261107-DEPENDENCIES\"\n    ],\n    \"debtGate\": \"BEFORE_U2_TECHNICAL_ACCEPTANCE_OR_NEXT_MILESTONE_BOUNDARY; VENDOR_LIFETIME_BEFORE_PATH_EXPANSION_IF_EARLIER\"\n  },\n  \"resolvedAuditDebts\": [\n    {\n      \"id\": \"NODE_TOOLCHAIN_EOL_AND_SECURITY_PATCH_GAP\",\n      \"status\": \"CLOSED_FOR_SELECTED_ASA_PROJECT_TOOLCHAIN\",\n      \"acceptedBy\": \"ChatGPT technical controller /root under OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008\",\n      \"scope\": \"Active CI/build plus explicitly selected portable D2 ASA runtime; not global/default Node or existing processes\",\n      \"ciBuild\": {\n        \"pr\": 223,\n        \"mergeSha\": \"5781e3930cd08d9bada0e0b921ddf28e8a83dcbc\",\n        \"node\": \"22.23.4\",\n        \"npm\": \"10.9.9\"\n      },\n      \"windowsProof\": {\n        \"sourceSha\": \"5781e3930cd08d9bada0e0b921ddf28e8a83dcbc\",\n        \"node\": \"22.23.4\",\n        \"npm\": \"10.9.9\",\n        \"executable\": \"C:\\\\Users\\\\spike\\\\IZO-ASA-Docker\\\\toolchains\\\\node-v22.23.4-win-x64\\\\node.exe\",\n        \"evidenceDirectory\": \"C:\\\\Users\\\\spike\\\\Documents\\\\ASA-CAD-Maintenance-Captures\\\\legacy-cleanup-202-20261107\\\\audit-probes\\\\node-windows-22-23-4-20261108\",\n        \"validationSha256\": \"8b6310c8befd63c27729e82be3482706aec37fa6e3f3b82637452fc611f2ff61\",\n        \"finalVerificationSha256\": \"91993377c1c2a66dba0083eb4682cf3f5f91909225f6c8c30daa3b6665f442fd\"\n      },\n      \"historicalAuditSnapshotUnchanged\": true,\n      \"followUpIssue\": 184,\n      \"historicalAudit\": {\n        \"pr\": 221,\n        \"auditedSha\": \"7bf71e2ee8ece045fb69620c657570ce7be9294f\",\n        \"outcome\": \"YELLOW_ACCEPTED\",\n        \"measurementRuntime\": \"22.23.3\"\n      }\n    }\n  ],\n  \"auditRepairAllowed\": true,\n  \"auditRepairScope\": \"CONFIRMED_P0_RED_DEFECTS_AND_ESSENTIAL_REGRESSION_FIXES_ONLY\",\n  \"fullAuditTrigger\": {\n    \"reason\": \"THIRD_ACCEPTED_PERMANENT_SLICE_SINCE_PR221\",\n    \"acceptedSlicesBeforeThisPr\": [\n      222,\n      223\n    ],\n    \"currentSlice\": \"U2-RECTANGLE-ACCEPTANCE-20261108\",\n    \"acceptedCountBeforeThisPr\": 2,\n    \"acceptedCountAfterThisPr\": 3,\n    \"effectiveAt\": \"TECHNICAL_ACCEPTANCE_AND_MERGE_OF_THIS_RECTANGLE_SLICE\",\n    \"u2TechnicalAcceptance\": \"IN_PROGRESS\"\n  }\n}\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "repo": "C:\\Users\\spike\\Documents\\ASA-CAD-Node-Toolchain-20261108",
+      "args": [
+        "ls-remote",
+        "--exit-code",
+        "origin",
+        "refs/heads/integration/ui-core-unification"
+      ],
+      "exitCode": 0,
+      "stdout": "b8f700bb6e455582db18df8d0ba43a2bfbdcc68b\trefs/heads/integration/ui-core-unification\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "repo": "C:\\Users\\spike\\Documents\\ASA-CAD-Node-Toolchain-20261108",
+      "args": [
+        "worktree",
+        "add",
+        "-b",
+        "audit/full-health-after-rectangle-20261108",
+        "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108",
+        "b8f700bb6e455582db18df8d0ba43a2bfbdcc68b"
+      ],
+      "exitCode": 0,
+      "stdout": "HEAD is now at b8f700b Merge PR #224: U2 Rectangle acceptance and mandatory audit gate\n",
+      "stderr": "Preparing worktree (new branch 'audit/full-health-after-rectangle-20261108')\n",
+      "error": null
+    },
+    {
+      "repo": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108",
+      "args": [
+        "rev-parse",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "stdout": "b8f700bb6e455582db18df8d0ba43a2bfbdcc68b\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "repo": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108",
+      "args": [
+        "status",
+        "--porcelain=v1",
+        "--untracked-files=all"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "repo": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108",
+      "args": [
+        "rev-parse",
+        "HEAD^{tree}"
+      ],
+      "exitCode": 0,
+      "stdout": "ccb7c9b0afb8b1c1ad1d40beba8d73d45de3e2e4\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "repo": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108",
+      "args": [
+        "rev-parse",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "stdout": "b8f700bb6e455582db18df8d0ba43a2bfbdcc68b\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "repo": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108",
+      "args": [
+        "status",
+        "--porcelain=v1",
+        "--untracked-files=all"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "repo": "C:\\Users\\spike\\Documents\\ASA-CAD-Node-Toolchain-20261108",
+      "args": [
+        "rev-parse",
+        "--git-path",
+        "index"
+      ],
+      "exitCode": 0,
+      "stdout": "C:/Users/spike/Documents/ASA-CAD-Fusion-Reference-20261105/.git/worktrees/ASA-CAD-Node-Toolchain-20261108/index\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "repo": "C:\\Users\\spike\\Documents\\ASA-CAD-Node-Toolchain-20261108",
+      "args": [
+        "rev-parse",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "stdout": "69c126befe1db9dc454081981aad87014bcd6cb7\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "repo": "C:\\Users\\spike\\Documents\\ASA-CAD-Node-Toolchain-20261108",
+      "args": [
+        "rev-parse",
+        "HEAD^{tree}"
+      ],
+      "exitCode": 0,
+      "stdout": "121dd2b05096263588dc1807ab5622e14e0b3260\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "repo": "C:\\Users\\spike\\Documents\\ASA-CAD-Node-Toolchain-20261108",
+      "args": [
+        "status",
+        "--porcelain=v1",
+        "--untracked-files=all"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "",
+      "error": null
+    }
+  ],
+  "measurements": "NOT_RUN",
+  "acceptedBaseline": false,
+  "controllerPrecondition": "Actual Rectangle merge and post-merge CI must be approved externally before invocation; this script does not adjudicate CI.",
+  "noGlobalChanges": true,
+  "noRuntimeInstallation": true,
+  "noBrowserOrServerStarted": true,
+  "activeWork": {
+    "schemaVersion": 1,
+    "initiative": "UI-CORE-UNIFICATION-001",
+    "issue": 184,
+    "currentCheckpoint": "FULL_REPOSITORY_HEALTH_AUDIT",
+    "baseBranch": "integration/ui-core-unification",
+    "baseHeadPolicy": "RESOLVE_LIVE_AND_GUARD",
+    "uiReference": {
+      "pr": 170,
+      "tag": "ui-reference-20261004",
+      "sha": "88c535c652dac8b04f0d68fa144cf8486afdc926",
+      "frozen": true
+    },
+    "productCodeStartAllowed": false,
+    "blocker": null,
+    "canonicalDocuments": [
+      "docs/DEVELOPMENT_QUALITY_GATES.md",
+      "docs/UI_CORE_UNIFICATION_SPEC.md",
+      "docs/STATUS.md"
+    ],
+    "scope": [
+      "Full Repository Health Audit after technical acceptance of the third permanent slice since #221: #222 Numeric Line, #223 CI/build Node repair, and this Rectangle acceptance regression",
+      "Audit the exact accepted integration SHA; review owners/budgets, architecture, duplicates/artifacts, schema/persistence, upstream/dependencies and measured performance with immutable evidence",
+      "Reuse still-applicable exact source/CI/browser/runtime evidence; distinguish historical Node22.23.3 measurements from selected Node22.23.4 Windows proof",
+      "Only confirmed P0/RED repairs and essential regressions are allowed until GREEN or explicitly accepted YELLOW audit outcome; then resume U2"
+    ],
+    "outOfScope": [
+      "U2-U5 feature expansion before acceptance of this required Full Repository Health Audit",
+      "Automatic merge of #170 prototype runtime, #177/#179 or Fusion #204-#207 candidates",
+      "Integration-to-main, production deployment and final visual parity without owner decision"
+    ],
+    "nextCheckpoint": "U2",
+    "developmentAuthorization": "OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008",
+    "checkpointTechnicalStatus": "IN_PROGRESS",
+    "ownerProductAcceptance": "PENDING",
+    "u1MergedIntoIntegration": {
+      "pr": 195,
+      "mergeSha": "cc2ceaa22858f7f885a17b17a16286e0ce65c8e2"
+    },
+    "u1MergedIntoMain": {
+      "pr": 196,
+      "mergeSha": "e37650f08d9e2fa6cf13ceb6a09ecd8e8a568c15"
+    },
+    "fullRepositoryHealthAudit": {
+      "outcome": "YELLOW_ACCEPTED",
+      "auditBaseSha": "20603c34f277dc9f0cf2696f5bd3971dd7645678",
+      "auditedSha": "7bf71e2ee8ece045fb69620c657570ce7be9294f",
+      "report": "docs/FULL_REPOSITORY_HEALTH_AUDIT.md",
+      "acceptedBy": "ChatGPT technical controller /root under OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008",
+      "acceptanceScope": "TECHNICAL_INTEGRATION_ONLY",
+      "openDebtIds": [
+        "NODE_TOOLCHAIN_EOL_AND_SECURITY_PATCH_GAP"
+      ],
+      "debtGate": "BEFORE_U2_TECHNICAL_ACCEPTANCE_OR_NEXT_MILESTONE_BOUNDARY_IF_EARLIER_AND_PRE_BETA"
+    },
+    "previousFullRepositoryHealthAudit": {
+      "outcome": "YELLOW_ACCEPTED",
+      "auditBaseSha": "e37650f08d9e2fa6cf13ceb6a09ecd8e8a568c15",
+      "auditedSha": "128480e1a150253359ce44158d5588f6b08f27b8",
+      "report": "docs/FULL_REPOSITORY_HEALTH_AUDIT.md",
+      "acceptedBy": "ChatGPT technical controller /root under OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008",
+      "acceptanceScope": "TECHNICAL_INTEGRATION_ONLY",
+      "openDebtIds": [
+        "HA-20261107-DEPENDENCIES"
+      ],
+      "debtGate": "BEFORE_U2_TECHNICAL_ACCEPTANCE_OR_NEXT_MILESTONE_BOUNDARY; VENDOR_LIFETIME_BEFORE_PATH_EXPANSION_IF_EARLIER"
+    },
+    "resolvedAuditDebts": [
+      {
+        "id": "NODE_TOOLCHAIN_EOL_AND_SECURITY_PATCH_GAP",
+        "status": "CLOSED_FOR_SELECTED_ASA_PROJECT_TOOLCHAIN",
+        "acceptedBy": "ChatGPT technical controller /root under OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008",
+        "scope": "Active CI/build plus explicitly selected portable D2 ASA runtime; not global/default Node or existing processes",
+        "ciBuild": {
+          "pr": 223,
+          "mergeSha": "5781e3930cd08d9bada0e0b921ddf28e8a83dcbc",
+          "node": "22.23.4",
+          "npm": "10.9.9"
+        },
+        "windowsProof": {
+          "sourceSha": "5781e3930cd08d9bada0e0b921ddf28e8a83dcbc",
+          "node": "22.23.4",
+          "npm": "10.9.9",
+          "executable": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node.exe",
+          "evidenceDirectory": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\node-windows-22-23-4-20261108",
+          "validationSha256": "8b6310c8befd63c27729e82be3482706aec37fa6e3f3b82637452fc611f2ff61",
+          "finalVerificationSha256": "91993377c1c2a66dba0083eb4682cf3f5f91909225f6c8c30daa3b6665f442fd"
+        },
+        "historicalAuditSnapshotUnchanged": true,
+        "followUpIssue": 184,
+        "historicalAudit": {
+          "pr": 221,
+          "auditedSha": "7bf71e2ee8ece045fb69620c657570ce7be9294f",
+          "outcome": "YELLOW_ACCEPTED",
+          "measurementRuntime": "22.23.3"
+        }
+      }
+    ],
+    "auditRepairAllowed": true,
+    "auditRepairScope": "CONFIRMED_P0_RED_DEFECTS_AND_ESSENTIAL_REGRESSION_FIXES_ONLY",
+    "fullAuditTrigger": {
+      "reason": "THIRD_ACCEPTED_PERMANENT_SLICE_SINCE_PR221",
+      "acceptedSlicesBeforeThisPr": [
+        222,
+        223
+      ],
+      "currentSlice": "U2-RECTANGLE-ACCEPTANCE-20261108",
+      "acceptedCountBeforeThisPr": 2,
+      "acceptedCountAfterThisPr": 3,
+      "effectiveAt": "TECHNICAL_ACCEPTANCE_AND_MERGE_OF_THIS_RECTANGLE_SLICE",
+      "u2TechnicalAcceptance": "IN_PROGRESS"
+    }
+  },
+  "tree": "ccb7c9b0afb8b1c1ad1d40beba8d73d45de3e2e4",
+  "metadataBefore": [
+    {
+      "relative": "package.json",
+      "path": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108\\package.json",
+      "bytes": 10845,
+      "sha256": "b93260548ddbedb324989634173c9551c3c477d6bcea1fb0238fcd9f4a42029b"
+    },
+    {
+      "relative": "vendor/toubkal/package.json",
+      "path": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108\\vendor\\toubkal\\package.json",
+      "bytes": 3749,
+      "sha256": "8bb9ef0e755e0ba2c3e88cb6d95844e889680abaa4354926a47c3b7d7508e158"
+    },
+    {
+      "relative": "vendor/toubkal/package-lock.json",
+      "path": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108\\vendor\\toubkal\\package-lock.json",
+      "bytes": 143062,
+      "sha256": "dce141fd9c4f85365f1b145260896fbc4d42e4fe09fb81f49ead295a12fe0247"
+    }
+  ],
+  "auditScope": {
+    "capturedAt": "2026-11-08T09:14:17.625Z",
+    "NODE_ENV": null,
+    "effectiveOmit": "",
+    "effectiveGlobal": "false",
+    "completeScopeRequired": true,
+    "environmentContract": {
+      "removeCaseInsensitive": [
+        "NODE_ENV",
+        "npm_config_production",
+        "npm_config_only",
+        "npm_config_omit",
+        "npm_config_global",
+        "npm_config_cache",
+        "npm_config_update_notifier"
+      ],
+      "set": {
+        "GIT_OPTIONAL_LOCKS": "0",
+        "npm_config_omit": "",
+        "npm_config_global": "false",
+        "npm_config_cache": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-setup-20261108\\npm-cache",
+        "npm_config_update_notifier": "false"
+      },
+      "prependNodeDirectoryToProcessPath": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64",
+      "scope": "Apply this process-local environment when invoking the frozen audit runner; never change global PATH or npm configuration."
+    }
+  },
+  "dependencies": {
+    "directory": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108\\vendor\\toubkal\\node_modules",
+    "realPath": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108\\vendor\\toubkal\\node_modules",
+    "dev": 3460693658,
+    "ino": 290482175965800200,
+    "packages": [
+      {
+        "name": "@salusoft89/planegcs",
+        "version": "1.1.7",
+        "packageJsonSha256": "d0f6a017ff49ad9b369e2258cd32ba82d1ad39d32bcafdf5dbd5f6e11a309831"
+      },
+      {
+        "name": "opencascade.js",
+        "version": "2.0.0-beta.b5ff984",
+        "packageJsonSha256": "2095d5bc427c831b48c02f34fcae5e0690a3f6c616c1bbbd4b1889d1510b26cc"
+      },
+      {
+        "name": "tsx",
+        "version": "4.22.4",
+        "packageJsonSha256": "b0d63b124b9b85b53d09cff256fa7832cb6a774f8b90ae1353e63df5275824b2"
+      },
+      {
+        "name": "esbuild",
+        "version": "0.28.1",
+        "packageJsonSha256": "d55d1d19fcc5b6079e4a71dd4111340c79c682bc36835ac7058a0c364c7db58a"
+      },
+      {
+        "name": "typescript",
+        "version": "5.9.3",
+        "packageJsonSha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"
+      },
+      {
+        "name": "semver",
+        "version": "6.3.1",
+        "packageJsonSha256": "aa906c5bf8a2fa68683cae07d18553ae2538ed0d5a567911980b2ef25ee8b9ba"
+      }
+    ],
+    "hiddenLock": {
+      "path": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108\\vendor\\toubkal\\node_modules\\.package-lock.json",
+      "bytes": 121808,
+      "sha256": "6cd93b898bc22aca72b454d03a022822f95fdedcc8d27f02b511ba67f566ea7a"
+    }
+  },
+  "metadataAfter": [
+    {
+      "relative": "package.json",
+      "path": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108\\package.json",
+      "bytes": 10845,
+      "sha256": "b93260548ddbedb324989634173c9551c3c477d6bcea1fb0238fcd9f4a42029b"
+    },
+    {
+      "relative": "vendor/toubkal/package.json",
+      "path": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108\\vendor\\toubkal\\package.json",
+      "bytes": 3749,
+      "sha256": "8bb9ef0e755e0ba2c3e88cb6d95844e889680abaa4354926a47c3b7d7508e158"
+    },
+    {
+      "relative": "vendor/toubkal/package-lock.json",
+      "path": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108\\vendor\\toubkal\\package-lock.json",
+      "bytes": 143062,
+      "sha256": "dce141fd9c4f85365f1b145260896fbc4d42e4fe09fb81f49ead295a12fe0247"
+    }
+  ],
+  "auditLaunch": {
+    "executable": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node.exe",
+    "argv": [
+      "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\full-health-audit-runner-20261108.cjs",
+      "--repo",
+      "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108",
+      "--expected-head",
+      "b8f700bb6e455582db18df8d0ba43a2bfbdcc68b",
+      "--out",
+      "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108"
+    ],
+    "runnerSha256": "3144747cb207f7bf0989550c25da0b76d41064d59618e7fb89262716c556e94a",
+    "environmentContract": {
+      "removeCaseInsensitive": [
+        "NODE_ENV",
+        "npm_config_production",
+        "npm_config_only",
+        "npm_config_omit",
+        "npm_config_global",
+        "npm_config_cache",
+        "npm_config_update_notifier"
+      ],
+      "set": {
+        "GIT_OPTIONAL_LOCKS": "0",
+        "npm_config_omit": "",
+        "npm_config_global": "false",
+        "npm_config_cache": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-setup-20261108\\npm-cache",
+        "npm_config_update_notifier": "false"
+      },
+      "prependNodeDirectoryToProcessPath": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64",
+      "scope": "Apply this process-local environment when invoking the frozen audit runner; never change global PATH or npm configuration."
+    },
+    "executed": false
+  },
+  "sourceAfter": {
+    "head": "69c126befe1db9dc454081981aad87014bcd6cb7",
+    "tree": "121dd2b05096263588dc1807ab5622e14e0b3260",
+    "status": "",
+    "index": {
+      "path": "C:\\Users\\spike\\Documents\\ASA-CAD-Fusion-Reference-20261105\\.git\\worktrees\\ASA-CAD-Node-Toolchain-20261108\\index",
+      "bytes": 91442,
+      "sha256": "18f5bfaea2d39e5acde194b415a004079eba03a8e51ca103b7bf8bd94de64483"
+    }
+  },
+  "sourceUnchanged": true,
+  "toolsAfter": {
+    "setup": {
+      "path": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\rectangle-audit-setup-20261108.cjs",
+      "bytes": 19212,
+      "sha256": "034ee365fd635fedeccfb8811c851819628bf51fc1b560ad074a77e072ee2910"
+    },
+    "node": {
+      "path": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node.exe",
+      "bytes": 87034184,
+      "sha256": "dccc52de28d8df2ee22d2062424f8c563070d95d8ad70c54c4bf01d590dec14f"
+    },
+    "npmCli": {
+      "path": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node_modules\\npm\\bin\\npm-cli.js",
+      "bytes": 56,
+      "sha256": "3ce7cba6f5128dd5f54c98b6a5036b0f850496878cc2e21044b675fe3c594e3e"
+    },
+    "runner": {
+      "path": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\full-health-audit-runner-20261108.cjs",
+      "bytes": 30854,
+      "sha256": "3144747cb207f7bf0989550c25da0b76d41064d59618e7fb89262716c556e94a"
+    }
+  },
+  "toolsUnchanged": true,
+  "measurementOutputAbsent": true,
+  "createdOwnedWorktree": true,
+  "finishedAt": "2026-11-08T09:14:46.809Z"
+}

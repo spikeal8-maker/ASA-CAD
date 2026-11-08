@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-11-08T09:26:17.705Z",
+  "reviewer": "/root/line_e2e_003",
+  "recordedBy": "/root",
+  "reviewType": "INDEPENDENT_READ_ONLY_ARCHITECTURE_OWNER_SCHEMA_HYGIENE_REVIEW",
+  "verdict": "APPROVE_WITH_DOCUMENTED_EXISTING_PRESSURE",
+  "auditedSha": "b8f700bb6e455582db18df8d0ba43a2bfbdcc68b",
+  "tree": "ccb7c9b0afb8b1c1ad1d40beba8d73d45de3e2e4",
+  "comparisonAuditedSha": "7bf71e2ee8ece045fb69620c657570ce7be9294f",
+  "comparisonAcceptedAuditMerge": "96083954f0180720e7a51616bc6039bde75fa683",
+  "newBlockingFindings": 0,
+  "delta": {
+    "changedPathsSinceAcceptedAudit": 35,
+    "changedProductWebOwners": 11,
+    "unchangedGroups": [
+      {
+        "prefix": "src/application/",
+        "files": 17
+      },
+      {
+        "prefix": "src/contracts/",
+        "files": 17
+      },
+      {
+        "prefix": "src/host/",
+        "files": 6
+      },
+      {
+        "prefix": "src/runtime/",
+        "files": 7
+      },
+      {
+        "prefix": "src/browser/",
+        "files": 7
+      },
+      {
+        "prefix": "vendor/toubkal/src/",
+        "files": 158
+      }
+    ]
+  },
+  "architecture": {
+    "oneTransientLineOwner": true,
+    "existingCommand": "sketch.line",
+    "singleExistingAppExecute": true,
+    "doubleSubmitFlightGuard": true,
+    "asyncIdentityGuards": [
+      "epoch",
+      "application",
+      "active Sketch",
+      "document identity",
+      "submitted intent"
+    ],
+    "nextAfterCommit": "NEW_FIRST_POINT",
+    "placementLocksPersistent": false,
+    "newDocumentHistoryPersistenceSolver": false,
+    "numericInputOwner": "src/web/SketchLineNumericInput.ts",
+    "frameExtractedWithoutDuplicateImplementation": true,
+    "oneResponsiveKompasShell": true,
+    "legacyParametersPropIsLiveSharedContentNotLegacyShell": true
+  },
+  "newOwners": [
+    {
+      "path": "src/web/SketchLineNumericInput.ts",
+      "bytes": 4354,
+      "responsibility": "Transient text parsing, validation and geometric projection"
+    },
+    {
+      "path": "src/web/kompas/KompasLineParameters.tsx",
+      "bytes": 4118,
+      "responsibility": "Line fields and focus/keyboard lifecycle"
+    },
+    {
+      "path": "src/web/CadKeyboardHandler.ts",
+      "bytes": 2431,
+      "responsibility": "Existing central shortcuts and narrow Line keys"
+    },
+    {
+      "path": "src/web/kompas/KompasParameterFrame.tsx",
+      "bytes": 2799,
+      "responsibility": "Extracted shared parameter presentation"
+    },
+    {
+      "path": "src/web/ParameterPanelTypes.ts",
+      "bytes": 1233,
+      "responsibility": "Shared panel input type, no state"
+    }
+  ],
+  "budgets": {
+    "frozenCount": 14,
+    "allAtCanonicalRatchets": true,
+    "raisedRatchets": 0,
+    "reduced": [
+      {
+        "path": "src/web/App.tsx",
+        "before": 14486,
+        "after": 14427
+      },
+      {
+        "path": "src/web/ParameterPanel.tsx",
+        "before": 9590,
+        "after": 8598
+      },
+      {
+        "path": "src/web/useSketchEditingController.ts",
+        "before": 7632,
+        "after": 7623
+      }
+    ],
+    "grandfatheredCount": 6,
+    "grandfatheredUnchanged": true,
+    "ciFilesChecked": 265,
+    "sourceOwnersAtOrAbove85Percent": 20,
+    "sourceOwnersAboveSoftTarget": 8,
+    "nearTargetCore": {
+      "path": "src/application/CadApplicationImpl.ts",
+      "bytes": 12274,
+      "target": 12288,
+      "headroom": 14
+    },
+    "browserSoftOverages": [
+      {
+        "path": "tests/m3/direct-line-browser.mjs",
+        "bytes": 8478
+      },
+      {
+        "path": "tests/m3/direct-line-numeric-browser.mjs",
+        "bytes": 10357
+      },
+      {
+        "path": "tests/m3/direct-rectangle-browser.mjs",
+        "bytes": 8969
+      }
+    ],
+    "browserHardBytes": 14336,
+    "nextResponsibilityGate": "Focused owner review/extraction before new responsibility on pressured owners; frozen owners may not grow"
+  },
+  "compatibility": {
+    "schemaVersion": 3,
+    "contractsMigrationsFixturesPolicyUnchanged": true,
+    "hostAndTwoWebPersistenceCompositionsUnchanged": true,
+    "registryCommands": 167,
+    "registryDelta": "Line milestone M3.2 to M3.2/U2 only; ID/backend/status/kind/workspace unchanged"
+  },
+  "hygiene": {
+    "firstPartyFiles": 520,
+    "forbiddenPaths": 0,
+    "firstPartyAbove2MiB": 0,
+    "existingFilesAbove512KiB": [
+      {
+        "path": "spec/process/evidence/health-audit-20261107/measurement/performance-report.json",
+        "bytes": 1509008
+      },
+      {
+        "path": "spec/process/evidence/health-audit-repeat-20261108/artifacts/dependencies-220-visual.zip",
+        "bytes": 1673158
+      },
+      {
+        "path": "spec/process/evidence/health-audit-repeat-20261108/ci/dependencies-220-ci.json",
+        "bytes": 721022
+      },
+      {
+        "path": "spec/process/evidence/health-audit-repeat-20261108/measurement/performance-report.json",
+        "bytes": 1509336
+      }
+    ],
+    "exactDuplicateBlobGroups": 14,
+    "duplicatesScope": "Historical frozen harness, equal historical before/after PNGs, audit input/report/source snapshots, one vendor screenshot copy",
+    "currentSrcBuildTestExactDuplicates": 0,
+    "semanticDuplicateAbsenceNotProven": true
+  },
+  "dependencies": {
+    "packageVersionsUnchangedVs7bf": true,
+    "lockDelta": "Root engine >=20.19.0 to >=22.23.4 only; package records unchanged",
+    "lockEntriesIncludingRoot": 284,
+    "npmMetadataTotal": 283,
+    "graphSourceFiles": 223,
+    "runtimeNpmRoots": 6,
+    "unresolvedLiteralImports": 0,
+    "affectedEntries": 0,
+    "directAdvisories": 0,
+    "reachableAffectedNodes": 0,
+    "rawClassifierHistoricalLabel": "ANALYZED_FINDINGS_REMAIN_OPEN",
+    "reportSha256": "c08a19cb009da13d3d96280e70a55502a6de8bea0f624e579c02c2c8ad975ec7"
+  },
+  "openPrCheck": {
+    "observedAt": "2026-11-08T09:23:58Z",
+    "openPrNumbers": [
+      170,
+      177,
+      179,
+      204,
+      205,
+      206,
+      207
+    ],
+    "blockingCurrentMaintenancePrs": 0
+  },
+  "limits": [
+    "This review is not acceptance of the new Full Audit report, future CI or owner visuals.",
+    "Rectangle equality covers the selected ten-field projection plus saved/live IDs and geometry, not every CadPartDocument field.",
+    "Native handle checks are scoped to the tested corpus; Node cold timings are not browser cold-start.",
+    "No code changes, tests, builds, browsers or installations were performed for this review."
+  ]
+}
