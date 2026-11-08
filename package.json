@@ -93,7 +93,7 @@
     "test:m2o:visibility": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m2o/action-visibility.ts"
   },
   "engines": {
-    "node": ">=20.19.0",
+    "node": ">=22.23.4",
     "npm": ">=10.0.0"
   }
 }
