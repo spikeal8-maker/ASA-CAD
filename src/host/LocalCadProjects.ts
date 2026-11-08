@@ -5,6 +5,13 @@ import { isLocalCadProjectId, type CadEditorMode } from '../browser/editorModes'
 import { LocalStorageCadProjectHost, DEFAULT_STANDALONE_CAD_STORAGE_KEY } from './LocalStorageCadProjectHost';
 
 const PREFIX = 'asa-cad-local-project:';
+
+/** The legacy document keeps its original pending-save recovery identity. */
+export function localCadProjectRecoveryKey(id: string): string {
+  if (!isLocalCadProjectId(id)) throw new Error('Некорректный идентификатор проекта');
+  return id === 'legacy' ? 'asa-cad:standalone' : `asa-cad:local:${id}`;
+}
+
 export interface LocalCadProject {
   id: string; title: string; mode: CadEditorMode; updatedAt?: string; legacy: boolean;
 }

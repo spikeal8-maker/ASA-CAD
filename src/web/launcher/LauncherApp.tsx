@@ -2,7 +2,7 @@ import React, { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'rea
 import { CAD_MODES, localCadEditorPath, type CadEditorMode, type CadLaunchMode } from '../../browser/editorModes';
 import { asaLabAccountUrl, asaLabProjectsUrl } from '../../browser/asaLabLaunch';
 import { parseCadClientRoute, type CadClientRoute } from '../../browser/routes';
-import { LocalCadProjects, type LocalCadProject } from '../../host/LocalCadProjects';
+import { LocalCadProjects, localCadProjectRecoveryKey, type LocalCadProject } from '../../host/LocalCadProjects';
 import { AsaLabCadProjectHost } from '../../host/AsaLabCadProjectHost';
 import { EditorModeContext } from '../EditorMode';
 import { useUiScaleSettingsOpen } from '../UiScaleSettings';
@@ -98,7 +98,8 @@ function ProjectEditor({ route, catalog }: { route: CadClientRoute; catalog: Loc
     <EditorModeContext.Provider value={mode}>
       <Suspense fallback={<div className="cad-startup" role="status">Загрузка редактора…</div>}>
         <Editor projectHost={host} autoOpen={!!host}
-          projectKey={projectId ? `asa-cad:${route.kind === 'local-editor' ? 'local:' : ''}${projectId}` : undefined} />
+          projectKey={route.kind === 'local-editor' ? localCadProjectRecoveryKey(route.projectId)
+            : projectId ? `asa-cad:${projectId}` : undefined} />
       </Suspense>
     </EditorModeContext.Provider>
   </div>;
