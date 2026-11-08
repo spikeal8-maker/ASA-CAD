@@ -59,7 +59,8 @@ export class LocalStorageCadProjectHost implements CadProjectHost {
     if (!input.mutationId) throw new Error('mutationId is required');
 
     const state = this.readState();
-    const previouslyApplied = state.mutations[input.mutationId];
+    const previouslyApplied = Object.prototype.hasOwnProperty.call(state.mutations, input.mutationId)
+      ? state.mutations[input.mutationId] : undefined;
     if (previouslyApplied !== undefined) return { revision: previouslyApplied };
 
     if (input.baseRevision !== state.revision) {
@@ -91,14 +92,17 @@ export class LocalStorageCadProjectHost implements CadProjectHost {
 
   private readState(): StoredProjectState {
     const envelope = this.storage.getItem(this.stateKey);
-    if (envelope) {
+    if (envelope !== null) {
       const parsed = JSON.parse(envelope) as Partial<StoredProjectState>;
       if (
-        typeof parsed.serializedDocument !== 'string'
+        !parsed || typeof parsed.serializedDocument !== 'string'
         || !Number.isSafeInteger(parsed.revision)
         || Number(parsed.revision) < 0
         || !parsed.mutations
         || typeof parsed.mutations !== 'object'
+        || Array.isArray(parsed.mutations)
+        || Object.values(parsed.mutations).some(revision => !Number.isSafeInteger(revision)
+          || revision < 0 || revision > Number(parsed.revision))
       ) {
         throw new Error('Stored ASA-CAD standalone project state is invalid');
       }

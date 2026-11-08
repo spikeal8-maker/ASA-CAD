@@ -12,7 +12,7 @@ ASA-CAD должен перестать существовать как два �
 - продуктовый ASA-CAD с настоящими document/application/solver/OpenCascade/persistence слоями.
 
 Цель:
-**один UI + один document model + одна application history + один solver path + один exact-geometry path**.
+**один активный UI + один document model + одна application history + один solver path + один exact-geometry path**.
 
 ## 2. Frozen UI reference
 
@@ -321,3 +321,15 @@ STOP только затронутого направления, если:
 `ONE_SOLVER_PATH = YES`
 `ONE_EXACT_GEOMETRY_PATH = YES`
 `SECOND_CAD_ENGINE = FORBIDDEN`
+
+## THREE-MODE-LAUNCHER-001: согласованное расширение входа
+
+Задание владельца 08.11.2026: главный экран `/`, общий CadDocument в `/cad/kompas/:id` и `/cad/fusion/:id`; прежние standalone/server/fixture routes сохранены. Viewer без установленного API явно недоступен. `editorModes` владеет маршрутами, `LauncherApp` — identity по projectId; mode не пересоздаёт host/application/history. `useCadApplicationSession` владеет общим runtime. Viewport меняет только presentation adapters.
+
+Fusion UI выборочно перенесён с #207 `8721ee1`, без prototype entry/engine. Absolute/interior angles задают координаты, не постоянный driving angle; Line/связи/length имеют отдельные Undo frames. Native parity не принята.
+
+Локальный каталог использует existing canonical host envelopes, UUID slots и прежний legacy key; чтение не мигрирует bytes. Оболочка недоступна до успешного открытия документа. Уход защищён dirty dialog и beforeunload. Компас/Fusion меняют только представление.
+
+3D-конструктор открывает реальный ASA Lab `#/projects?kind=personal&filter=three-d` в новой вкладке; «Создать» → «3D модель» использует native Project Core. Авторизация остаётся в ASA Lab, CAD вкладка сохраняется; передачи token/документа или автоматической конверсии нет. Direct-create URL и внешний returnTo в Lab отсутствуют.
+
+D2 installation и отдельный release PR требуют exact CI, независимого review, реальных сценариев всех режимов, полного browser export сохранённых CAD/recovery данных, сохранения старых assets и rollback. Без этих gates 8099 не переключается.

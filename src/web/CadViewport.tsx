@@ -5,7 +5,8 @@ import type { CadBodyId } from '../contracts/ids';
 import { VIEWPORT_VISUAL_TOKENS } from './viewportTokens';
 import { partReferenceScene } from './viewport/PartReferenceGeometry';
 import { createViewportMeshLayer } from './viewport/ViewportMeshLayer';
-import { createViewportReferenceLayer } from './viewport/ViewportReferenceLayer';
+import { loadViewportPresentation } from './ViewportPresentation';
+import { useEditorMode } from './EditorMode';
 import {
   resolveViewportPickCandidates,
   type ViewportBodyCandidate,
@@ -34,7 +35,7 @@ export interface CadViewportViewCommand {
 
 export interface CadViewportProps {
   model: CadRenderModel | null;
-  /** Separate transient 2D Sketch surface; never merged into B-Rep CadRenderModel. */
+  /** Transient 2D Sketch overlay; separate from B-Rep. */
   sketchOverlay?: SketchOverlayModel | null;
   selectionMode?: ViewportSelectionMode;
   onPick?: (pick: CadViewportPick) => void;
@@ -75,6 +76,7 @@ export function CadViewport({
   selectedPlane = null,
   onPlaneSelect,
 }: CadViewportProps) {
+  const mode = useEditorMode();
   const hostRef = useRef<HTMLDivElement | null>(null);
   const selectionModeRef = useRef(selectionMode);
   const onPickRef = useRef(onPick);
@@ -141,11 +143,8 @@ export function CadViewport({
     let cleanup = () => {};
     setError(null);
 
-    void Promise.all([
-      import('three'),
-      import('three/examples/jsm/controls/OrbitControls.js'),
-    ])
-      .then(([THREE, controlsModule]) => {
+    void loadViewportPresentation(mode)
+      .then(([THREE, controlsModule, createViewportReferenceLayer]) => {
         if (disposed || !hostRef.current) return;
 
         const scene = new THREE.Scene();
@@ -651,7 +650,7 @@ export function CadViewport({
       disposed = true;
       cleanup();
     };
-  }, [model, referenceKey]);
+  }, [model, referenceKey, mode]);
 
   const bounds = model
     ? [model.bounds.minX, model.bounds.minY, model.bounds.minZ, model.bounds.maxX, model.bounds.maxY, model.bounds.maxZ].join(',')
