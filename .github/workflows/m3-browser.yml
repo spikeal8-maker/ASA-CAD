@@ -89,6 +89,17 @@ jobs:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m3/direct-arc-browser.mjs
 
+      - name: Exercise U2 Arc numeric phases, signed sweep, keyboard and persistence
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
+          ASA_U2_ARC_EVIDENCE_DIR: ${{ runner.temp }}/u2-arc-numeric
+        run: node tests/m3/direct-arc-numeric-browser.mjs
+
+      - name: Exercise actual Arc hook delayed-result ownership
+        env:
+          ASA_U2_ARC_EVIDENCE_DIR: ${{ runner.temp }}/u2-arc-numeric
+        run: node tests/m3/arc-numeric-ownership-browser.mjs
+
       - name: Exercise M3 direct Rectangle mouse/touch/persistence
         env:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
@@ -190,6 +201,15 @@ jobs:
         with:
           name: asa-cad-u2-line-numeric
           path: ${{ runner.temp }}/u2-line-numeric
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Upload U2 Arc numeric regression evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: asa-cad-u2-arc-numeric
+          path: ${{ runner.temp }}/u2-arc-numeric
           if-no-files-found: warn
           retention-days: 30
 

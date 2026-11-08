@@ -84,6 +84,8 @@ async function desktopDirectArc() {
 
     await page.mouse.click(end.x, end.y);
     await page.getByText(/Дуга создана: R12(?:\.0)? мм/).waitFor();
+    await page.locator('[data-testid="cad-sketch-interaction"][data-tool="arc"][data-arc-phase="awaiting-center"]').waitFor();
+    await page.keyboard.press('Escape');
     await page.locator('[data-testid="cad-sketch-interaction"]').waitFor({ state: 'detached' });
     const solvedArc = await waitSolvedArc(page);
     assert.match(await solvedArc.getAttribute('d'), /A\s+[^ ]+\s+[^ ]+\s+0\s+0\s+0\s+/, 'direct Arc must render with SVG sweep-flag=0');
