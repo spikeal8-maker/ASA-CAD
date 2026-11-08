@@ -1,0 +1,65 @@
+{
+  "name": "full-web-types",
+  "startedAt": "2026-11-08T00:11:09.843Z",
+  "command": "C:\\Users\\spike\\AppData\\Local\\Programs\\nodejs\\node-v22.23.3-win-x64\\node.exe",
+  "argv": [
+    "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Repeat-20261108\\spec\\process\\evidence\\health-audit-20261107\\full-web-typecheck.cjs",
+    "--repo",
+    "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Repeat-20261108",
+    "--expected-head",
+    "7bf71e2ee8ece045fb69620c657570ce7be9294f",
+    "--out",
+    "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-repeat-20261108\\checks\\full-web-types.json"
+  ],
+  "cwd": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Repeat-20261108",
+  "executableSha256": "9c9245166b4a8e182e0b797da9c20136117ff24368eaff1fec8343a123c8db0e",
+  "environmentOverrides": {
+    "NO_COLOR": "1",
+    "TSX_DISABLE_CACHE": "1",
+    "npm_config_update_notifier": "false"
+  },
+  "nodeExecutableDirectoryPrependedToPath": "C:\\Users\\spike\\AppData\\Local\\Programs\\nodejs\\node-v22.23.3-win-x64",
+  "pid": 41528,
+  "exitCode": 0,
+  "signal": null,
+  "elapsedMs": 5616.0721,
+  "timeoutMs": 180000,
+  "timedOut": false,
+  "outputLimit": false,
+  "interrupted": false,
+  "spawnError": null,
+  "closed": true,
+  "cleanup": [],
+  "stdout": {
+    "bytes": 123,
+    "sha256": "566a8f9abb766626a7b412fd5b2138993420b2eeccc9f293a23dd0b0686bfcbc",
+    "encoding": "utf8",
+    "data": "{\"head\":\"7bf71e2ee8ece045fb69620c657570ce7be9294f\",\"status\":\"PASS\",\"errorCount\":0,\"diagnostics\":[],\"sourceUnchanged\":true}\n"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "encoding": "utf8",
+    "data": ""
+  },
+  "status": "PASS",
+  "validation": {
+    "report": {
+      "path": "checks/full-web-types.json",
+      "bytes": 1069,
+      "sha256": "d7704e521535f34b742cd3b8bfbc21614feef43849087efbe31e880967d76778"
+    },
+    "rootCount": 185,
+    "errorCount": 0,
+    "typescript": "5.9.3"
+  },
+  "outputs": [
+    {
+      "status": "PRESENT",
+      "path": "checks/full-web-types.json",
+      "bytes": 1069,
+      "sha256": "d7704e521535f34b742cd3b8bfbc21614feef43849087efbe31e880967d76778"
+    }
+  ],
+  "sourceAndToolsUnchanged": true
+}
