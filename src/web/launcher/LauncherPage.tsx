@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { LauncherArt } from './LauncherArt';
 import './launcher.css';
 
-export type LauncherModeId = 'kompas' | 'fusion' | 'blocks3d';
+export type LauncherModeId = 'kompas' | 'fusion' | 'vassalite';
 
 export interface LauncherPageProps {
   modes: readonly {
@@ -11,7 +11,6 @@ export interface LauncherPageProps {
     description: string;
     available: boolean;
     status: string;
-    external?: boolean;
   }[];
   recent: readonly {
     id: string;
@@ -25,18 +24,15 @@ export interface LauncherPageProps {
   onContinue(projectId: string, mode: 'kompas' | 'fusion'): void;
   onSettings(): void;
   onBackup?(): void;
-  accountHref: string;
   error?: string;
 }
 
-type GlyphName = 'folder' | 'plus' | 'arrow' | 'external' | 'settings' | 'user' | 'backup';
+type GlyphName = 'folder' | 'plus' | 'arrow' | 'settings' | 'backup';
 const glyphPaths: Record<GlyphName, string> = {
   folder: 'M3 7a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Zm0 4h18',
   plus: 'M12 5v14M5 12h14',
   arrow: 'M4 12h15m-6-6 6 6-6 6',
-  external: 'M14 4h6v6M20 4 10 14M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4',
   settings: 'M4 7h16M4 17h16M9 4v6M15 14v6',
-  user: 'M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0ZM4 21v-2a8 8 0 0 1 16 0v2',
   backup: 'M12 3v12m-4-4 4 4 4-4M5 16v4h14v-4',
 };
 
@@ -69,7 +65,6 @@ export function LauncherPage(props: LauncherPageProps) {
         <nav className="asa-launcher-nav" aria-label="Главная навигация">
           <button type="button" className="asa-launcher-projects-link" aria-label="Мои проекты" onClick={showProjects}><Glyph name="folder" /><span>Мои проекты</span></button>
           <button type="button" className="asa-launcher-settings" aria-label="Настройки интерфейса" title="Настройки интерфейса" aria-haspopup="dialog" onClick={props.onSettings}><Glyph name="settings" /></button>
-          <a className="asa-launcher-account" href={props.accountHref} target="_blank" rel="noopener noreferrer" title="Войти в ASA Lab в новой вкладке"><Glyph name="user" /><span>Войти в ASA Lab</span><Glyph name="external" /></a>
         </nav>
       </header>
 
@@ -98,7 +93,7 @@ export function LauncherPage(props: LauncherPageProps) {
                   <button type="button" className="asa-launcher-create" aria-label={`Создать проект — ${mode.title}`} disabled={!mode.available} onClick={() => props.onCreate(mode.id)}><Glyph name="plus" /><span>Создать проект</span></button>
                   <button type="button" className="asa-launcher-open" aria-label={`Открыть проект — ${mode.title}`} disabled={!mode.available} onClick={() => props.onOpen(mode.id)}><Glyph name="folder" /><span>Открыть проект</span></button>
                 </div>
-                <p className="asa-launcher-location">{mode.external ? <><Glyph name="external" />Откроется отдельный редактор ASA Lab</> : 'Сохранение в этом браузере'}</p>
+                <p className="asa-launcher-location">{mode.available ? 'Сохранение в этом браузере' : 'Редактор не установлен'}</p>
               </div>
             </article>
           ))}
@@ -126,7 +121,7 @@ export function LauncherPage(props: LauncherPageProps) {
             <div className="asa-launcher-empty"><span><Glyph name="folder" /></span><div><h3>Здесь появятся ваши проекты</h3><p>Создайте модель в Компасе или Fusion и сохраните её.</p></div></div>
           )}
         </section>
-        <footer className="asa-launcher-footer"><span>ASA CAD</span><p>Проекты 3D-конструктора доступны в вашем аккаунте ASA Lab.</p></footer>
+        <footer className="asa-launcher-footer"><span>ASA CAD</span><p>Локальные проекты сохраняются в этом браузере.</p></footer>
       </main>
     </div>
   );

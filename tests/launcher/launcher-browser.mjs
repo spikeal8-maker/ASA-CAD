@@ -71,23 +71,21 @@ async function open(mode) {
 }
 
 try {
-  await step('Root offers three real mode entries and explicit ASA Lab handoff', async () => {
+  await step('Launcher shows Kompas, Fusion and unavailable Vassalite without ASA Lab links', async () => {
     const response = await page.goto(home, { waitUntil: 'networkidle' }); assert.ok(response?.ok());
     await atHome(); assert.equal(await page.locator('.asa-launcher-card').count(), 3);
-    for (const name of ['Компас', 'Fusion', '3D-конструктор']) {
+    for (const name of ['Компас', 'Fusion']) {
       await launcher().getByRole('heading', { name, exact: true }).waitFor();
-      for (const verb of ['Создать', 'Открыть']) assert.equal(await launcher().getByRole('button', { name: `${verb} проект — ${name}`, exact: true }).isEnabled(), true);
+      for (const verb of ['Создать', 'Открыть'])
+        assert.equal(await launcher().getByRole('button', { name: `${verb} проект — ${name}`, exact: true }).isEnabled(), true);
     }
+    await launcher().getByRole('heading', { name: 'Vassalite', exact: true }).waitFor();
+    for (const verb of ['Создать', 'Открыть'])
+      assert.equal(await launcher().getByRole('button', { name: `${verb} проект — Vassalite`, exact: true }).isDisabled(), true);
+    await launcher().getByText(/исходники Vassalite отсутствуют/).waitFor();
+    assert.equal(await launcher().locator('a[href*="asa-lab"]').count(), 0, 'external ASA Lab handoff remains');
     assert.equal(await page.locator('iframe').count(), 0);
     await page.screenshot({ path: `${artifacts}/01-home.png`, fullPage: true });
-    await launcher().getByRole('button', { name: 'Создать проект — 3D-конструктор', exact: true }).click();
-    const dialog = page.getByRole('dialog', { name: '3D-конструктор ASA Lab', exact: true });
-    const link = dialog.getByRole('link', { name: 'Открыть ASA Lab', exact: true });
-    assert.equal(await link.getAttribute('href'), 'https://asa-lab.ru/#/projects?kind=personal&filter=three-d');
-    assert.equal(await link.getAttribute('target'), '_blank');
-    assert.deepEqual((await link.getAttribute('rel')).split(/\s+/).sort(), ['noopener', 'noreferrer']);
-    await dialog.getByText(/«Создать».*«3D модель»/).waitFor();
-    await dialog.getByRole('button', { name: 'Отмена', exact: true }).click(); await atHome();
   });
   await step('Create, dirty Stay, mode switch and shared Undo/Redo', async () => {
     projectId = await create('kompas', title);

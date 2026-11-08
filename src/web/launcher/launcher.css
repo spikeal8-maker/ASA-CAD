@@ -33,11 +33,9 @@
 .asa-launcher-brand > span { font-size: clamp(21px, 1.3vw, 28px); line-height: 1.1; font-weight: 750; letter-spacing: -.04em; }
 .asa-launcher-brand strong { color: #0984a2; font-weight: 500; }
 .asa-launcher-nav { display: flex; align-items: center; gap: 12px; }
-.asa-launcher-nav button, .asa-launcher-account { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 42px; padding: 10px 14px; border: 1px solid transparent; border-radius: 8px; background: transparent; line-height: 1.25; white-space: nowrap; }
+.asa-launcher-nav button { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 42px; padding: 10px 14px; border: 1px solid transparent; border-radius: 8px; background: transparent; line-height: 1.25; white-space: nowrap; }
 .asa-launcher-nav button:hover { background: #f0f5f9; }
 .asa-launcher-nav .asa-launcher-settings { padding: 10px; width: 42px; }
-.asa-launcher-account { border-color: #d4e2ed; background: #f8fbfe; font-weight: 600; }
-.asa-launcher-account:hover { border-color: #9fb9cd; background: #edf5fa; }
 .asa-launcher-main { width: min(100%, 2800px); margin: 0 auto; padding: clamp(28px, 3vw, 80px) clamp(20px, 4vw, 112px) 28px; }
 .asa-launcher-intro { margin-bottom: clamp(24px, 2.2vw, 48px); }
 .asa-launcher-eyebrow { margin: 0 0 7px; color: #16809b; font-size: .75em; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
@@ -48,7 +46,8 @@
 .asa-launcher-card { --mode-background: #edf5fa; display: flex; flex-direction: column; min-width: 0; border: 1px solid #dbe5ee; border-radius: 16px; background: #fff; overflow: hidden; box-shadow: 0 4px 16px #163f6010; }
 .asa-launcher-card:is(:hover, :focus-within) { border-color: #9fbbd0; box-shadow: 0 9px 25px #163f6018; }
 .asa-launcher-card-fusion { --mode-background: #fcf7ed; }
-.asa-launcher-card-blocks3d { --mode-background: #eef8f8; }
+.asa-launcher-card-vassalite { --mode-background: #eef8f8; }
+.asa-launcher-card-vassalite .asa-launcher-model-art { opacity: .45; filter: grayscale(1); }
 .asa-launcher-art { display: grid; place-items: center; height: clamp(175px, 17vw, 360px); background: var(--mode-background); border-bottom: 1px solid #e5edf3; }
 .asa-launcher-model-art { display: block; width: 100%; height: 100%; max-width: 590px; color: #4284a2; }
 .asa-launcher-card-fusion .asa-launcher-model-art { color: #aa8648; }
@@ -98,8 +97,6 @@
   .asa-launcher-header { gap: 12px; flex-wrap: wrap; }
   .asa-launcher-nav { gap: 3px; }
    .asa-launcher-projects-link > span { display: none; }
-  .asa-launcher-account { padding: 10px; font-size: 12px; }
-  .asa-launcher-account > .asa-launcher-icon:first-child { display: none; }
   .asa-launcher-modes { grid-template-columns: 1fr; }
   .asa-launcher-card { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1fr); }
   .asa-launcher-art { height: 100%; min-height: 225px; border: 0; border-right: 1px solid #e5edf3; }
