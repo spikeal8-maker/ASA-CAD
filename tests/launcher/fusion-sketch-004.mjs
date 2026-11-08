@@ -1,3 +1,5 @@
+import assert from 'node:assert/strict';
+
 export async function runFusionSketch004({ step, create, page, artifacts, homeButton, leave, atHome, stored }) {
   await step('Fusion Sketch 004: selecting XY/XZ/YZ opens and reopens real sketches', async () => {
     const id = await create('fusion', 'Fusion Sketch 004 — CI support selection');
