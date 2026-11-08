@@ -29,7 +29,7 @@ Matched before/after и numeric evidence — CI, retention 30 дней. **Owner 
 - Main `1f8d2627da7ddfa63b31876d46347d0b8080c154`; main/production отдельно.
 - Frozen #170: `ui-reference-20261004`, `88c535c652dac8b04f0d68fa144cf8486afdc926`.
 - CadDocument/CadApplication → ASA adapters → PlaneGCS/OpenCascade B-Rep; Three.js — отображение.
-- Part, Assembly, Drawing, Fragment, Specification, Text: готовность различается.
+- Six document kinds: Part, Assembly, Drawing, Fragment, Specification, Text: готовность различается.
 
 U1A/U1B/U1C приняты #195/#196, responsive KOMPAS #202, LEGACY-CLEANUP-202 #208. K1/U1 повторно не реализуются.
 
