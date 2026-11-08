@@ -19,11 +19,12 @@
     "docs/STATUS.md"
   ],
   "scope": [
-    "Continue unfinished U2 Line/Rectangle/Circle/Arc numeric-entry UX from frozen #170 through existing product commands",
+    "Implement independent U2-ARC-NUMERIC-20261108 from frozen #170 through the existing sketch.arc command; remaining U2 and owner visual acceptance stay open",
     "Preserve the single CadApplication/CadDocument/history/solver path; Numeric Line and Rectangle acceptance already have separate technical proof",
     "Keep the Numeric Line visual area unchanged while owner visual verdict is pending; independent U2 work remains subject to its own gates",
     "Resolve NODE_SECURITY_RELEASE_20261111_PENDING through published-release/reachability review and applicable reviewed toolchain repair before U2 technical acceptance or the next milestone boundary if earlier, and before beta; no exposure growth or automatic date-based PASS",
-    "Require exact-head CI, ordinary-user proof and independent read-only review for each accepted slice; this audit transition is effective only after its technical acceptance and merge"
+    "Full audit #225 is technically accepted at ae3f713f81d405733b887deaad0050f28f33af0b; require exact-head CI, ordinary-user proof and independent read-only review for every new slice",
+    "Arc uses one transient signed draft and canonical projected endpoints for ghost/payload, temporary radius input and one existing command/history frame; no schema, persistent constraints or solver changes"
   ],
   "outOfScope": [
     "U3-U5 expansion before their canonical prerequisite checkpoints and required audits",

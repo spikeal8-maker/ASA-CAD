@@ -53,7 +53,7 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
   });
   const arcTool = useSketchArcTool({
     app, sketchId: activeSketchId, active: activeCommand === 'sketch.arc',
-    setNotice, onCommitted: onToolCommitted,
+    setNotice,
   });
 
   function beginLine() {
@@ -104,7 +104,7 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
     if (!sketch) return;
     arcTool.reset();
     setActiveCommand('sketch.arc');
-    setPanel('closed');
+    setPanel('parameters');
     clearTransientSelection();
     setNotice('Укажите центр дуги');
   }
@@ -170,7 +170,7 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
     beginCircle, commitCircle,
     circleDraft: circleTool.draft, circleCommitting: circleTool.committing,
     handleSketchCirclePointMove: circleTool.move, handleSketchCirclePoint: circleTool.point,
-    beginArc, arcDraft: arcTool.draft, arcCommitting: arcTool.committing,
+    beginArc, arcInput: arcTool.input, arcDraft: arcTool.draft, arcCommitting: arcTool.committing,
     handleSketchArcPointMove: arcTool.move, handleSketchArcPoint: arcTool.point,
     finishSketch, resetActiveTool,
     commitLinePreview: lineTool.commitPreview,
