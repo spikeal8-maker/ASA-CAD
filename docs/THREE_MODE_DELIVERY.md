@@ -8,7 +8,7 @@
 
 Гостевые проекты хранятся в браузере текущего origin. Старый ключ `asa-cad-m2-shell-document` и его `:state` envelope не переписываются при чтении. Новые UUID slots независимы. Не переносите их заменой всего LocalStorage. Повреждённые данные сохраняются без скрытой миграции и остаются доступны raw backup.
 
-3D-конструктор открывает `https://asa-lab.ru/#/projects?kind=personal&filter=three-d` в отдельной вкладке. Создание выполняется штатным меню «Создать» → «3D модель», сохранение — Project Core ASA Lab. Для возврата используется сохранённая вкладка ASA CAD. Внешнего returnTo или direct-create URL в действующем Lab нет. Не передавайте session token или CadDocument в адресе.
+Третья карточка Vassalite отображается **недоступной**. Исходники существующего редактора Vassalite не обнаружены в 48 ветках и истории ASA-CAD (проверка 2026-11-08). Создавать редактор заново или подменять его внешним приложением запрещено. Действия «Создать проект» и «Открыть проект» для Vassalite отключены; на главной странице нет переходов в ASA Lab. Выпуск трёх работающих редакторов в `main` заблокирован до появления оригинальной реализации Vassalite и прохождения её проверок.
 
 ## Preflight до смены 8099
 
@@ -67,7 +67,7 @@ Builder отклоняет dirty tree и существующий output. Исп
 
 ## Postflight и выпуск
 
-Проверить HTTP 200 и source/package SHA health, главную, оба CAD editors, native ASA Lab flow, Save → Home → Reopen, F5, clean Back/Forward, dirty Back → Back → Stay, Save-and-leave, mode switch с Undo/Redo и responsive widths. Сравнить старые persisted bytes с backup после чтения новым редактором. Реально переключить rollback и вернуть candidate, проверив тот же документ.
+Проверить HTTP 200 и source/package SHA health, главную, Компас, Fusion, недоступность Vassalite и отсутствие внешних ссылок, Save → Home → Reopen, F5, clean Back/Forward, dirty Back → Back → Stay, Save-and-leave, mode switch с Undo/Redo и responsive widths. Сравнить старые persisted bytes с backup после чтения новым редактором. Реально переключить rollback и вернуть candidate, проверив тот же документ.
 
 `npm run test:launcher` включает storage/recovery, typed routes, асинхронную навигацию и настоящий HTTP delivery. Этот gate включён в required shell-build. Native browser tests и real user-profile backup выполняются дополнительно.
 
