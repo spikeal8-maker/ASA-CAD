@@ -34,8 +34,7 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
   };
 
   const lineTool = useSketchLineTool({
-    app, sketchId: activeSketchId, active: activeCommand === 'sketch.line',
-    setNotice, onCommitted: onToolCommitted,
+    app, sketchId: activeSketchId, active: activeCommand === 'sketch.line', setNotice,
   });
   const rectangleTool = useSketchRectangleTool({
     app, sketchId: activeSketchId, active: activeCommand === 'sketch.rectangle', setNotice,
@@ -163,7 +162,7 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
   return {
     rectangleWidth,setRectangleWidth,rectangleHeight,setRectangleHeight,
     circleDiameter,setCircleDiameter,beginLine,
-    lineDraft:lineTool.draft,lineCommitting: lineTool.committing,
+    lineDraft:lineTool.draft,lineCommitting: lineTool.committing,lineInput:lineTool.input,
     handleSketchLinePointMove: lineTool.move, handleSketchLinePoint: lineTool.point,
     beginRectangle,commitRectangle,
     rectangleDraft: rectangleTool.draft, rectangleCommitting: rectangleTool.committing,

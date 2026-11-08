@@ -121,12 +121,12 @@
     }
   ],
   "frozenCeilings": {
-    "src/web/App.tsx": 14486,
+    "src/web/App.tsx": 14427,
     "src/web/CadViewport.tsx": 27374,
-    "src/web/ParameterPanel.tsx": 9590,
+    "src/web/ParameterPanel.tsx": 8598,
     "src/web/usePartSketchWorkspace.ts": 6698,
     "src/web/usePartSelectionController.ts": 3211,
-    "src/web/useSketchEditingController.ts": 7632,
+    "src/web/useSketchEditingController.ts": 7623,
     "src/web/useSketchDimensionController.ts": 3758,
     "src/web/usePartFeatureController.ts": 6922,
     "src/web/PartSketchWorkspaceModel.ts": 1015,

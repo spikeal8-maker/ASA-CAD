@@ -63,10 +63,13 @@ async function desktopDirectLine() {
 
     await page.mouse.click(second.x, second.y);
     await page.getByText(/Отрезок создан:/).waitFor();
-    await page.locator('[data-testid="cad-sketch-interaction"]').waitFor({ state: 'detached' });
+    await page.locator('[data-testid="cad-sketch-interaction"][data-line-phase="awaiting-start"]').waitFor();
+    assert.equal(await page.locator('[data-testid="sketch-line-anchor"]').count(), 0, 'Line must await a new first point after commit');
     await waitSolvedLine(page);
     assert.deepEqual(await sketchViewState(page), { span: 100, center: [0, 0] }, 'geometry commit refit the Sketch viewport');
-    assert.equal(await page.locator('.k-content.k-collapsed').count(), 0, 'Tree panel was not restored after Line commit');
+    await page.keyboard.press('Escape');
+    await page.locator('[data-testid="cad-sketch-interaction"]').waitFor({ state: 'detached' });
+    assert.equal(await page.locator('.k-content.k-collapsed').count(), 0, 'Tree panel was not restored after explicit Line exit');
 
     const persistedLine = page.locator('[data-testid="cad-sketch-overlay"] line[data-sketch-entity-id]').first();
     const x1 = Number(await persistedLine.getAttribute('x1'));

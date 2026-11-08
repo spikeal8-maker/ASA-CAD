@@ -29,6 +29,7 @@ export interface SketchLineInteractionLayerProps {
 export function SketchLineInteractionLayer(props: SketchLineInteractionLayerProps) {
   if (!props.active || !props.model) return null;
   const phase = props.draft.from ? 'anchored' : 'awaiting-start';
+  const previewFrom = props.draft.from ?? props.draft.placementFrom;
 
   return (
     <SketchInteractionSurface
@@ -39,7 +40,7 @@ export function SketchLineInteractionLayer(props: SketchLineInteractionLayerProp
       committing={props.committing}
       tool="line"
       ariaLabel="Построение отрезка"
-      dataAttributes={{ 'data-line-phase': phase }}
+      dataAttributes={{ 'data-line-phase': phase, 'data-line-placement-ready': String(!!props.draft.placementFrom) }}
       onPointMove={props.onPointMove}
       onPoint={props.onPoint}
     >
@@ -53,12 +54,12 @@ export function SketchLineInteractionLayer(props: SketchLineInteractionLayerProp
           vectorEffect="non-scaling-stroke"
         />
       )}
-      {props.draft.from && props.draft.to && (
+      {previewFrom && props.draft.to && (
         <line
           className="cad-sketch-line-ghost"
           data-testid="sketch-line-ghost"
-          x1={props.draft.from[0]}
-          y1={-props.draft.from[1]}
+          x1={previewFrom[0]}
+          y1={-previewFrom[1]}
           x2={props.draft.to[0]}
           y2={-props.draft.to[1]}
           vectorEffect="non-scaling-stroke"

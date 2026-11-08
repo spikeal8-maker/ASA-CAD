@@ -11,6 +11,7 @@ on:
       - src/browser/**
       - tests/visual/ui-core-u1-capture.mjs
       - tests/visual/product-before-after.mjs
+      - tests/visual/u2-line-numeric-before-after.mjs
       - .github/workflows/ui-core-u1-visual.yml
   workflow_dispatch:
 
@@ -126,6 +127,16 @@ jobs:
           ASA_CAD_AFTER_SHA: ${{ env.ASA_CAD_CANDIDATE_SHA }}
           ASA_CAD_PRODUCT_EVIDENCE_ROOT: ui-core-u1-evidence/product-before-after
         run: node tests/visual/product-before-after.mjs
+
+      - name: Capture matched Line numeric-entry previews
+        working-directory: candidate-source
+        env:
+          ASA_CAD_BEFORE_URL: http://127.0.0.1:8092
+          ASA_CAD_AFTER_URL: http://127.0.0.1:8088
+          ASA_CAD_BEFORE_SHA: ${{ env.ASA_CAD_BEFORE_SHA }}
+          ASA_CAD_AFTER_SHA: ${{ env.ASA_CAD_CANDIDATE_SHA }}
+          ASA_CAD_LINE_EVIDENCE_ROOT: ui-core-u1-evidence/u2-line-numeric
+        run: node tests/visual/u2-line-numeric-before-after.mjs
 
       - name: Upload U1 visual evidence
         uses: actions/upload-artifact@v4
