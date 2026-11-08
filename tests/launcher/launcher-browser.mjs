@@ -145,6 +145,43 @@ try {
     assert.equal((await stored(id)).raw, saved.raw);
     await homeButton().click(); await atHome();
   });
+  await step('Fusion Sketch 004: selecting XY/XZ/YZ opens and reopens real sketches', async () => {
+    const id = await create('fusion', 'Fusion Sketch 004 — CI support selection');
+    const sketchIds = [];
+    for (const [index, plane] of ['XY', 'XZ', 'YZ'].entries()) {
+      await page.getByRole('button', { name: /Создать эскиз/i }).click();
+      if (plane === 'XZ') {
+        await page.getByRole('combobox', { name: 'Плоскость эскиза' }).selectOption('XZ');
+      } else {
+        await page.locator('.tree-row[data-plane-id="' + plane + '"]').click();
+      }
+      // The selection itself must commit the real CAD sketch: no parameters OK.
+      await page.locator('.cad-app[data-sketch-count="' + (index + 1) + '"]').waitFor();
+      await page.locator('.live-workarea[data-workspace="sketch"]').waitFor();
+      await page.locator('.live-sketch-field[data-sketch-support="' + plane + '"]').waitFor();
+      const active = await page.locator('.cad-app').getAttribute('data-active-sketch-id');
+      assert.match(active ?? '', /^sketch_/);
+      sketchIds.push(active);
+      await page.locator('.tree-sketch-branch[data-sketch-branch-id="' + active + '"] .tree-sketch-header.selected').waitFor();
+      await page.locator('.live-sketch-palette').waitFor();
+      assert.equal(await page.locator('.live-parameters[data-command="part.sketch.create"]').count(), 0,
+        'support selection must not leave an uncommitted Sketch dialog');
+      await page.locator('.live-sketch-palette [data-palette-command="sketch.finish"]').click();
+      await page.locator('.live-workarea[data-workspace="solid"]').waitFor();
+    }
+    assert.equal(new Set(sketchIds).size, 3);
+    await page.locator('[data-timeline-sketch="' + sketchIds[0] + '"]').click();
+    await page.locator('.live-workarea[data-workspace="sketch"]').waitFor();
+    await page.locator('.live-sketch-field[data-sketch-support="XY"]').waitFor();
+    assert.equal(await page.locator('.cad-app').getAttribute('data-active-sketch-id'), sketchIds[0]);
+    await page.screenshot({ path: artifacts + '/04-fusion-sketch-reopen.png', fullPage: true });
+    await homeButton().click();
+    await leave().getByRole('button', { name: 'Сохранить и выйти', exact: true }).click();
+    await atHome();
+    const saved = await stored(id);
+    assert.equal(saved.document.sketches.length, 3);
+    assert.deepEqual(saved.document.sketches.map(sketch => sketch.id), sketchIds);
+  });
   assert.deepEqual(report.pageErrors, []); assert.deepEqual(report.failedRequests, []);
   report.status = 'PASS';
 } catch (error) {
