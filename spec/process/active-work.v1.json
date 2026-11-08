@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "initiative": "UI-CORE-UNIFICATION-001",
   "issue": 184,
-  "currentCheckpoint": "U2",
+  "currentCheckpoint": "FULL_REPOSITORY_HEALTH_AUDIT",
   "baseBranch": "integration/ui-core-unification",
   "baseHeadPolicy": "RESOLVE_LIVE_AND_GUARD",
   "uiReference": {
@@ -11,7 +11,7 @@
     "sha": "88c535c652dac8b04f0d68fa144cf8486afdc926",
     "frozen": true
   },
-  "productCodeStartAllowed": true,
+  "productCodeStartAllowed": false,
   "blocker": null,
   "canonicalDocuments": [
     "docs/DEVELOPMENT_QUALITY_GATES.md",
@@ -19,18 +19,17 @@
     "docs/STATUS.md"
   ],
   "scope": [
-    "Real Sketch-in-Viewport with Line, Rectangle, Circle and Arc through existing product commands",
-    "Numeric entry UX from frozen #170 without a second document/history/solver model",
-    "Accept Rectangle 60x40 with Undo/Redo and Save/Open preserving intent and IDs",
-    "Close NODE_TOOLCHAIN_EOL_AND_SECURITY_PATCH_GAP before U2 technical acceptance or the next milestone boundary if earlier, and before beta; CI/Docker pins do not close the OPEN D2 project-toolchain portion, which requires separate portable-runtime permission and Windows proof",
-    "Require exact-head CI, ordinary-user evidence and independent read-only review for every accepted slice"
+    "Full Repository Health Audit after technical acceptance of the third permanent slice since #221: #222 Numeric Line, #223 CI/build Node repair, and this Rectangle acceptance regression",
+    "Audit the exact accepted integration SHA; review owners/budgets, architecture, duplicates/artifacts, schema/persistence, upstream/dependencies and measured performance with immutable evidence",
+    "Reuse still-applicable exact source/CI/browser/runtime evidence; distinguish historical Node22.23.3 measurements from selected Node22.23.4 Windows proof",
+    "Only confirmed P0/RED repairs and essential regressions are allowed until GREEN or explicitly accepted YELLOW audit outcome; then resume U2"
   ],
   "outOfScope": [
+    "U2-U5 feature expansion before acceptance of this required Full Repository Health Audit",
     "Automatic merge of #170 prototype runtime, #177/#179 or Fusion #204-#207 candidates",
-    "U3-U5 expansion without the preceding checkpoint technical gates",
     "Integration-to-main, production deployment and final visual parity without owner decision"
   ],
-  "nextCheckpoint": "U3",
+  "nextCheckpoint": "U2",
   "developmentAuthorization": "OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008",
   "checkpointTechnicalStatus": "IN_PROGRESS",
   "ownerProductAcceptance": "PENDING",
@@ -65,5 +64,50 @@
       "HA-20261107-DEPENDENCIES"
     ],
     "debtGate": "BEFORE_U2_TECHNICAL_ACCEPTANCE_OR_NEXT_MILESTONE_BOUNDARY; VENDOR_LIFETIME_BEFORE_PATH_EXPANSION_IF_EARLIER"
+  },
+  "resolvedAuditDebts": [
+    {
+      "id": "NODE_TOOLCHAIN_EOL_AND_SECURITY_PATCH_GAP",
+      "status": "CLOSED_FOR_SELECTED_ASA_PROJECT_TOOLCHAIN",
+      "acceptedBy": "ChatGPT technical controller /root under OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008",
+      "scope": "Active CI/build plus explicitly selected portable D2 ASA runtime; not global/default Node or existing processes",
+      "ciBuild": {
+        "pr": 223,
+        "mergeSha": "5781e3930cd08d9bada0e0b921ddf28e8a83dcbc",
+        "node": "22.23.4",
+        "npm": "10.9.9"
+      },
+      "windowsProof": {
+        "sourceSha": "5781e3930cd08d9bada0e0b921ddf28e8a83dcbc",
+        "node": "22.23.4",
+        "npm": "10.9.9",
+        "executable": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node.exe",
+        "evidenceDirectory": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\node-windows-22-23-4-20261108",
+        "validationSha256": "8b6310c8befd63c27729e82be3482706aec37fa6e3f3b82637452fc611f2ff61",
+        "finalVerificationSha256": "91993377c1c2a66dba0083eb4682cf3f5f91909225f6c8c30daa3b6665f442fd"
+      },
+      "historicalAuditSnapshotUnchanged": true,
+      "followUpIssue": 184,
+      "historicalAudit": {
+        "pr": 221,
+        "auditedSha": "7bf71e2ee8ece045fb69620c657570ce7be9294f",
+        "outcome": "YELLOW_ACCEPTED",
+        "measurementRuntime": "22.23.3"
+      }
+    }
+  ],
+  "auditRepairAllowed": true,
+  "auditRepairScope": "CONFIRMED_P0_RED_DEFECTS_AND_ESSENTIAL_REGRESSION_FIXES_ONLY",
+  "fullAuditTrigger": {
+    "reason": "THIRD_ACCEPTED_PERMANENT_SLICE_SINCE_PR221",
+    "acceptedSlicesBeforeThisPr": [
+      222,
+      223
+    ],
+    "currentSlice": "U2-RECTANGLE-ACCEPTANCE-20261108",
+    "acceptedCountBeforeThisPr": 2,
+    "acceptedCountAfterThisPr": 3,
+    "effectiveAt": "TECHNICAL_ACCEPTANCE_AND_MERGE_OF_THIS_RECTANGLE_SLICE",
+    "u2TechnicalAcceptance": "IN_PROGRESS"
   }
 }
