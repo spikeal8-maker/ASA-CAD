@@ -22,7 +22,7 @@
     "Real Sketch-in-Viewport with Line, Rectangle, Circle and Arc through existing product commands",
     "Numeric entry UX from frozen #170 without a second document/history/solver model",
     "Accept Rectangle 60x40 with Undo/Redo and Save/Open preserving intent and IDs",
-    "Close NODE_TOOLCHAIN_EOL_AND_SECURITY_PATCH_GAP before U2 technical acceptance or the next milestone boundary if earlier, and before beta",
+    "Close NODE_TOOLCHAIN_EOL_AND_SECURITY_PATCH_GAP before U2 technical acceptance or the next milestone boundary if earlier, and before beta; CI/Docker pins do not close the OPEN D2 project-toolchain portion, which requires separate portable-runtime permission and Windows proof",
     "Require exact-head CI, ordinary-user evidence and independent read-only review for every accepted slice"
   ],
   "outOfScope": [
