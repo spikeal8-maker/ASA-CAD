@@ -35,8 +35,10 @@ jobs:
       - name: Typecheck and build vendor baseline
         run: npm run build
 
-      - name: Lint vendor baseline
-        run: npm run lint
+      - name: Lint vendor baseline and verify complete source coverage
+        run: |
+          npm run lint -- --format json --output-file "$RUNNER_TEMP/vendor-lint.json"
+          node ../../tests/m0/vendor-lint-coverage.mjs --report "$RUNNER_TEMP/vendor-lint.json" --out "$RUNNER_TEMP/vendor-lint-coverage.json"
 
       - name: Supported vendor CAD regression suite
         run: npm test
@@ -48,6 +50,17 @@ jobs:
       - name: ASA M0 license and notices regression
         working-directory: .
         run: node tests/m0/license-baseline.mjs
+
+      - name: Upload actual vendor lint and coverage evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: asa-cad-vendor-lint-coverage
+          path: |
+            ${{ runner.temp }}/vendor-lint.json
+            ${{ runner.temp }}/vendor-lint-coverage.json
+          if-no-files-found: warn
+          retention-days: 30
 
   asa-m1:
     runs-on: ubuntu-latest
