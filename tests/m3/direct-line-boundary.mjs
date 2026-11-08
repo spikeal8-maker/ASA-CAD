@@ -62,6 +62,6 @@ assert.match(kompasPanels, /\.k-content\.k-collapsed \.k-management-panel\{displ
 const line = registry.commands.find((command) => command.id === 'sketch.line');
 assert.ok(line, 'command registry must contain sketch.line');
 assert.equal(line.status, 'implemented', 'sketch.line must be implemented only with the M3.2 product path');
-assert.equal(line.milestone, 'M3.2');
+assert.equal(line.milestone, 'M3.2/U2');
 
 console.log('ASA-CAD M3.2 direct Line architecture boundary PASS (focused direct-tool owner + shared input + stable view + shell-owned panel collapse)');

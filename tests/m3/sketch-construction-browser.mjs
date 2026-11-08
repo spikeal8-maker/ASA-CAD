@@ -17,7 +17,10 @@ async function createLine(page, touch) {
   await waitSolvedOverlay(page, 1, 'Construction source Line');
   const visual = page.locator('[data-testid="cad-sketch-overlay"] line[data-sketch-entity-id]').first();
   const id = await visual.getAttribute('data-sketch-entity-id');
-  assert.ok(id); return id;
+  assert.ok(id);
+  await page.keyboard.press('Escape');
+  await page.locator('[data-testid="cad-sketch-interaction"]').waitFor({ state: 'detached' });
+  return id;
 }
 
 async function selectLine(page, id, touch) {
