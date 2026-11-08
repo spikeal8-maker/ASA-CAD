@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "initiative": "UI-CORE-UNIFICATION-001",
   "issue": 184,
-  "currentCheckpoint": "FULL_REPOSITORY_HEALTH_AUDIT",
+  "currentCheckpoint": "U2",
   "baseBranch": "integration/ui-core-unification",
   "baseHeadPolicy": "RESOLVE_LIVE_AND_GUARD",
   "uiReference": {
@@ -11,7 +11,7 @@
     "sha": "88c535c652dac8b04f0d68fa144cf8486afdc926",
     "frozen": true
   },
-  "productCodeStartAllowed": false,
+  "productCodeStartAllowed": true,
   "blocker": null,
   "canonicalDocuments": [
     "docs/DEVELOPMENT_QUALITY_GATES.md",
@@ -19,17 +19,19 @@
     "docs/STATUS.md"
   ],
   "scope": [
-    "Full Repository Health Audit after technical acceptance of the third permanent slice since #221: #222 Numeric Line, #223 CI/build Node repair, and this Rectangle acceptance regression",
-    "Audit the exact accepted integration SHA; review owners/budgets, architecture, duplicates/artifacts, schema/persistence, upstream/dependencies and measured performance with immutable evidence",
-    "Reuse still-applicable exact source/CI/browser/runtime evidence; distinguish historical Node22.23.3 measurements from selected Node22.23.4 Windows proof",
-    "Only confirmed P0/RED repairs and essential regressions are allowed until GREEN or explicitly accepted YELLOW audit outcome; then resume U2"
+    "Continue unfinished U2 Line/Rectangle/Circle/Arc numeric-entry UX from frozen #170 through existing product commands",
+    "Preserve the single CadApplication/CadDocument/history/solver path; Numeric Line and Rectangle acceptance already have separate technical proof",
+    "Keep the Numeric Line visual area unchanged while owner visual verdict is pending; independent U2 work remains subject to its own gates",
+    "Resolve NODE_SECURITY_RELEASE_20261111_PENDING through published-release/reachability review and applicable reviewed toolchain repair before U2 technical acceptance or the next milestone boundary if earlier, and before beta; no exposure growth or automatic date-based PASS",
+    "Require exact-head CI, ordinary-user proof and independent read-only review for each accepted slice; this audit transition is effective only after its technical acceptance and merge"
   ],
   "outOfScope": [
-    "U2-U5 feature expansion before acceptance of this required Full Repository Health Audit",
-    "Automatic merge of #170 prototype runtime, #177/#179 or Fusion #204-#207 candidates",
-    "Integration-to-main, production deployment and final visual parity without owner decision"
+    "U3-U5 expansion before their canonical prerequisite checkpoints and required audits",
+    "Automatic integration of #170 prototype runtime, #177/#179 or Fusion #204-#207 candidates",
+    "Integration-to-main, production deployment and final visual parity without owner decision",
+    "Global/default D2 Node changes or an unapproved installation of a future Node release"
   ],
-  "nextCheckpoint": "U2",
+  "nextCheckpoint": "U3",
   "developmentAuthorization": "OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008",
   "checkpointTechnicalStatus": "IN_PROGRESS",
   "ownerProductAcceptance": "PENDING",
@@ -43,6 +45,19 @@
   },
   "fullRepositoryHealthAudit": {
     "outcome": "YELLOW_ACCEPTED",
+    "auditBaseSha": "96083954f0180720e7a51616bc6039bde75fa683",
+    "auditedSha": "b8f700bb6e455582db18df8d0ba43a2bfbdcc68b",
+    "report": "docs/FULL_REPOSITORY_HEALTH_AUDIT.md",
+    "acceptedBy": "ChatGPT technical controller /root under OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008",
+    "acceptanceScope": "TECHNICAL_INTEGRATION_ONLY",
+    "acceptanceCondition": "EXACT_HEAD_CI_INDEPENDENT_REVIEW_AND_MERGE_OF_THIS_AUDIT_PR",
+    "openDebtIds": [
+      "NODE_SECURITY_RELEASE_20261111_PENDING"
+    ],
+    "debtGate": "BEFORE_U2_TECHNICAL_ACCEPTANCE_OR_NEXT_MILESTONE_BOUNDARY_IF_EARLIER_AND_PRE_BETA"
+  },
+  "previousFullRepositoryHealthAudit": {
+    "outcome": "YELLOW_ACCEPTED",
     "auditBaseSha": "20603c34f277dc9f0cf2696f5bd3971dd7645678",
     "auditedSha": "7bf71e2ee8ece045fb69620c657570ce7be9294f",
     "report": "docs/FULL_REPOSITORY_HEALTH_AUDIT.md",
@@ -51,19 +66,8 @@
     "openDebtIds": [
       "NODE_TOOLCHAIN_EOL_AND_SECURITY_PATCH_GAP"
     ],
-    "debtGate": "BEFORE_U2_TECHNICAL_ACCEPTANCE_OR_NEXT_MILESTONE_BOUNDARY_IF_EARLIER_AND_PRE_BETA"
-  },
-  "previousFullRepositoryHealthAudit": {
-    "outcome": "YELLOW_ACCEPTED",
-    "auditBaseSha": "e37650f08d9e2fa6cf13ceb6a09ecd8e8a568c15",
-    "auditedSha": "128480e1a150253359ce44158d5588f6b08f27b8",
-    "report": "docs/FULL_REPOSITORY_HEALTH_AUDIT.md",
-    "acceptedBy": "ChatGPT technical controller /root under OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008",
-    "acceptanceScope": "TECHNICAL_INTEGRATION_ONLY",
-    "openDebtIds": [
-      "HA-20261107-DEPENDENCIES"
-    ],
-    "debtGate": "BEFORE_U2_TECHNICAL_ACCEPTANCE_OR_NEXT_MILESTONE_BOUNDARY; VENDOR_LIFETIME_BEFORE_PATH_EXPANSION_IF_EARLIER"
+    "debtGate": "BEFORE_U2_TECHNICAL_ACCEPTANCE_OR_NEXT_MILESTONE_BOUNDARY_IF_EARLIER_AND_PRE_BETA",
+    "immutableReport": "https://github.com/spikeal8-maker/ASA-CAD/blob/96083954f0180720e7a51616bc6039bde75fa683/docs/FULL_REPOSITORY_HEALTH_AUDIT.md"
   },
   "resolvedAuditDebts": [
     {
@@ -96,18 +100,43 @@
       }
     }
   ],
-  "auditRepairAllowed": true,
-  "auditRepairScope": "CONFIRMED_P0_RED_DEFECTS_AND_ESSENTIAL_REGRESSION_FIXES_ONLY",
-  "fullAuditTrigger": {
-    "reason": "THIRD_ACCEPTED_PERMANENT_SLICE_SINCE_PR221",
-    "acceptedSlicesBeforeThisPr": [
+  "historicalFullRepositoryHealthAudits": [
+    {
+      "source": "spec/process/active-work.v1.json at b8f700bb6e455582db18df8d0ba43a2bfbdcc68b / previousFullRepositoryHealthAudit",
+      "snapshot": {
+        "outcome": "YELLOW_ACCEPTED",
+        "auditBaseSha": "e37650f08d9e2fa6cf13ceb6a09ecd8e8a568c15",
+        "auditedSha": "128480e1a150253359ce44158d5588f6b08f27b8",
+        "report": "docs/FULL_REPOSITORY_HEALTH_AUDIT.md",
+        "acceptedBy": "ChatGPT technical controller /root under OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008",
+        "acceptanceScope": "TECHNICAL_INTEGRATION_ONLY",
+        "openDebtIds": [
+          "HA-20261107-DEPENDENCIES"
+        ],
+        "debtGate": "BEFORE_U2_TECHNICAL_ACCEPTANCE_OR_NEXT_MILESTONE_BOUNDARY; VENDOR_LIFETIME_BEFORE_PATH_EXPANSION_IF_EARLIER"
+      },
+      "immutableReport": "https://github.com/spikeal8-maker/ASA-CAD/blob/20603c34f277dc9f0cf2696f5bd3971dd7645678/docs/FULL_REPOSITORY_HEALTH_AUDIT.md"
+    }
+  ],
+  "lastFullAuditTrigger": {
+    "sourceSha": "b8f700bb6e455582db18df8d0ba43a2bfbdcc68b",
+    "acceptedSlices": [
       222,
-      223
+      223,
+      224
     ],
-    "currentSlice": "U2-RECTANGLE-ACCEPTANCE-20261108",
-    "acceptedCountBeforeThisPr": 2,
-    "acceptedCountAfterThisPr": 3,
-    "effectiveAt": "TECHNICAL_ACCEPTANCE_AND_MERGE_OF_THIS_RECTANGLE_SLICE",
-    "u2TechnicalAcceptance": "IN_PROGRESS"
+    "snapshot": {
+      "reason": "THIRD_ACCEPTED_PERMANENT_SLICE_SINCE_PR221",
+      "acceptedSlicesBeforeThisPr": [
+        222,
+        223
+      ],
+      "currentSlice": "U2-RECTANGLE-ACCEPTANCE-20261108",
+      "acceptedCountBeforeThisPr": 2,
+      "acceptedCountAfterThisPr": 3,
+      "effectiveAt": "TECHNICAL_ACCEPTANCE_AND_MERGE_OF_THIS_RECTANGLE_SLICE",
+      "u2TechnicalAcceptance": "IN_PROGRESS"
+    },
+    "resolution": "CONDITIONAL_ON_TECHNICAL_ACCEPTANCE_AND_MERGE_OF_THIS_AUDIT_PR"
   }
 }

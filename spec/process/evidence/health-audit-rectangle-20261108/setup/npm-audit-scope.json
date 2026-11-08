@@ -1,0 +1,27 @@
+{
+  "capturedAt": "2026-11-08T09:14:17.625Z",
+  "NODE_ENV": null,
+  "effectiveOmit": "",
+  "effectiveGlobal": "false",
+  "completeScopeRequired": true,
+  "environmentContract": {
+    "removeCaseInsensitive": [
+      "NODE_ENV",
+      "npm_config_production",
+      "npm_config_only",
+      "npm_config_omit",
+      "npm_config_global",
+      "npm_config_cache",
+      "npm_config_update_notifier"
+    ],
+    "set": {
+      "GIT_OPTIONAL_LOCKS": "0",
+      "npm_config_omit": "",
+      "npm_config_global": "false",
+      "npm_config_cache": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-setup-20261108\\npm-cache",
+      "npm_config_update_notifier": "false"
+    },
+    "prependNodeDirectoryToProcessPath": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64",
+    "scope": "Apply this process-local environment when invoking the frozen audit runner; never change global PATH or npm configuration."
+  }
+}
