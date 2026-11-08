@@ -1,3 +1,4 @@
+import { isLocalCadProjectId, unmountCadPath, type CadEditorMode } from './editorModes';
 export const ASA_CAD_MOUNT_PATH = '/cad' as const;
 
 export const CAD_PART_DEV_FIXTURE_NAMES = [
@@ -15,11 +16,18 @@ export const CAD_PART_DEV_FIXTURE_NAMES = [
 export type CadPartDevFixtureName = typeof CAD_PART_DEV_FIXTURE_NAMES[number];
 
 export type CadClientRoute =
+  | { kind: 'launcher' }
+  | { kind: 'local-editor'; mode: CadEditorMode; projectId: string }
   | { kind: 'editor'; projectId: string }
   | { kind: 'viewer'; versionId: string }
   | { kind: 'dev-part'; fixture: CadPartDevFixtureName }
   | { kind: 'standalone' }
   | { kind: 'unknown'; pathname: string };
+
+/** Shared initial route for root deployments and explicitly mounted candidate previews. */
+export function currentCadClientRoute(): CadClientRoute {
+  return parseCadClientRoute(unmountCadPath(window.location.pathname));
+}
 
 export function cadEditorPath(projectId: string): string {
   if (!projectId) throw new Error('projectId is required');
@@ -43,25 +51,39 @@ function partDevFixture(value: string): CadPartDevFixtureName | null {
 
 export function parseCadClientRoute(pathname: string): CadClientRoute {
   const normalized = pathname.split(/[?#]/, 1)[0].replace(/\/+$/, '') || '/';
-  if (normalized === '/' || normalized === ASA_CAD_MOUNT_PATH) return { kind: 'standalone' };
+  if (normalized === '/') return { kind: 'launcher' };
+  if (normalized === ASA_CAD_MOUNT_PATH) return { kind: 'standalone' };
+
+  const local = normalized.match(/^\/cad\/(kompas|fusion)\/([^/]+)$/);
+  if (local) {
+    const projectId = decodeRouteSegment(local[2]);
+    if (projectId && isLocalCadProjectId(projectId)) return {
+      kind: 'local-editor', mode: local[1] as CadEditorMode, projectId,
+    };
+    return { kind: 'unknown', pathname: normalized };
+  }
 
   const devPart = normalized.match(/^\/dev\/part\/([^/]+)$/);
   if (devPart) {
-    const fixture = partDevFixture(decodeURIComponent(devPart[1]));
+    const fixture = partDevFixture(decodeRouteSegment(devPart[1]) ?? '');
     if (fixture) return { kind: 'dev-part', fixture };
   }
 
   const mountedDevPart = normalized.match(/^\/cad\/dev\/part\/([^/]+)$/);
   if (mountedDevPart) {
-    const fixture = partDevFixture(decodeURIComponent(mountedDevPart[1]));
+    const fixture = partDevFixture(decodeRouteSegment(mountedDevPart[1]) ?? '');
     if (fixture) return { kind: 'dev-part', fixture };
   }
 
   const editor = normalized.match(/^\/cad\/projects\/([^/]+)$/);
-  if (editor) return { kind: 'editor', projectId: decodeURIComponent(editor[1]) };
+  if (editor && decodeRouteSegment(editor[1])) return { kind: 'editor', projectId: decodeRouteSegment(editor[1])! };
 
   const viewer = normalized.match(/^\/cad\/view\/([^/]+)$/);
-  if (viewer) return { kind: 'viewer', versionId: decodeURIComponent(viewer[1]) };
+  if (viewer && decodeRouteSegment(viewer[1])) return { kind: 'viewer', versionId: decodeRouteSegment(viewer[1])! };
 
   return { kind: 'unknown', pathname: normalized };
+}
+
+function decodeRouteSegment(value: string): string | null {
+  try { return decodeURIComponent(value); } catch { return null; }
 }

@@ -87,7 +87,7 @@ async function run(id, test) {
   p.setDefaultTimeout(15_000);
   const r = { id, status: 'FAIL' }; report.cases.push(r);
   try {
-    await p.goto(shellUrl, { waitUntil: 'networkidle' });
+    await p.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createXYSketch(p);
     const baseline = await saveLocalDocument(p);
     await start(p);

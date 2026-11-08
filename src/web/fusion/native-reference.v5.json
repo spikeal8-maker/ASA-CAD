@@ -1,0 +1,3973 @@
+{
+  "schemaVersion": 1,
+  "source": "native-api-plus-observed-screens",
+  "applicationVersion": "2706.1.17",
+  "capturedUTC": "2026-11-04T23:21:11.800744+00:00",
+  "privateSourceSha256": "651c01dc6fa0594aead189407c3fe29fb87b75aafefea3ad176b61a6c1617c40",
+  "scope": "visible Design workspace snapshot; not all Fusion workspaces",
+  "tabs": [
+    {
+      "id": "SolidTab",
+      "name": "SOLID",
+      "panels": [
+        "SolidCreatePanel",
+        "SolidModifyPanel",
+        "ConfigurePanel",
+        "ConstructionPanel",
+        "InspectPanel",
+        "InsertPanel",
+        "PartAssemblePanel",
+        "SelectPanel"
+      ]
+    },
+    {
+      "id": "SurfaceTab",
+      "name": "SURFACE",
+      "panels": [
+        "SurfaceCreatePanel",
+        "SurfaceModifyPanel",
+        "ConfigurePanel",
+        "ConstructionPanel",
+        "InspectPanel",
+        "InsertPanel",
+        "PartAssemblePanel",
+        "SelectPanel"
+      ]
+    },
+    {
+      "id": "ParaMeshOuterTab",
+      "name": "Mesh",
+      "panels": [
+        "ParaMeshCreatePanel",
+        "ParaMeshPreparePanel",
+        "ParaMeshModifyPanel",
+        "ConfigurePanel",
+        "ConstructionPanel",
+        "InspectPanel",
+        "InsertPanel",
+        "PartAssemblePanel",
+        "ParaMeshSelectPanel",
+        "ParaMeshExportPanel"
+      ]
+    },
+    {
+      "id": "SheetMetalTab",
+      "name": "SHEET METAL",
+      "panels": [
+        "SheetMetalCreatePanel",
+        "SheetMetalModifyPanel",
+        "ConfigurePanel",
+        "ConstructionPanel",
+        "InspectPanel",
+        "InsertPanel",
+        "PartAssemblePanel",
+        "SelectPanel"
+      ]
+    },
+    {
+      "id": "PlasticTab",
+      "name": "PLASTIC",
+      "panels": [
+        "PlasticPartsSetupPanel",
+        "PlasticPartsCreatePanel",
+        "SolidModifyPanel",
+        "ConfigurePanel",
+        "ConstructionPanel",
+        "PlasticPartsInspectPanel",
+        "InsertPanel",
+        "PartAssemblePanel",
+        "SelectPanel"
+      ]
+    },
+    {
+      "id": "ToolsTab",
+      "name": "UTILITIES",
+      "panels": [
+        "MakePanel",
+        "NESTPanel",
+        "SolidScriptsAddinsPanel",
+        "UtilityPanel",
+        "ToolsInspectPanel",
+        "Annotate3DPanel",
+        "SelectPanel"
+      ]
+    },
+    {
+      "id": "AutomationTab",
+      "name": "AUTOMATION",
+      "panels": [
+        "AutomationScriptsAddinsPanel",
+        "GraphExecutorPanel"
+      ]
+    }
+  ],
+  "panels": {
+    "SolidCreatePanel": {
+      "id": "SolidCreatePanel",
+      "name": "Create",
+      "menu": [
+        {
+          "id": "SketchCreate",
+          "kind": "CommandControl",
+          "commandId": "SketchCreate",
+          "enabled": true
+        },
+        {
+          "id": "TSplineBaseFeatureCreationCommand",
+          "kind": "CommandControl",
+          "commandId": "TSplineBaseFeatureCreationCommand",
+          "enabled": true
+        },
+        {
+          "id": "PushDeriveCommand",
+          "kind": "CommandControl",
+          "commandId": "PushDeriveCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_PushDeriveCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "AutomatedModelingCommand",
+          "kind": "CommandControl",
+          "commandId": "AutomatedModelingCommand",
+          "enabled": true
+        },
+        {
+          "id": "Extrude",
+          "kind": "CommandControl",
+          "commandId": "Extrude",
+          "enabled": true
+        },
+        {
+          "id": "Revolve",
+          "kind": "CommandControl",
+          "commandId": "Revolve",
+          "enabled": true
+        },
+        {
+          "id": "Sweep",
+          "kind": "CommandControl",
+          "commandId": "Sweep",
+          "enabled": true
+        },
+        {
+          "id": "SolidLoft",
+          "kind": "CommandControl",
+          "commandId": "SolidLoft",
+          "enabled": true
+        },
+        {
+          "id": "FusionRibCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionRibCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionWebCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionWebCommand",
+          "enabled": true
+        },
+        {
+          "id": "EmbossCmd",
+          "kind": "CommandControl",
+          "commandId": "EmbossCmd",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_EmbossCmd",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "FusionHoleCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionHoleCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionThreadCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionThreadCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_FusionThreadCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "PrimitiveBox",
+          "kind": "CommandControl",
+          "commandId": "PrimitiveBox",
+          "enabled": true
+        },
+        {
+          "id": "PrimitiveCylinder",
+          "kind": "CommandControl",
+          "commandId": "PrimitiveCylinder",
+          "enabled": true
+        },
+        {
+          "id": "PrimitiveSphere",
+          "kind": "CommandControl",
+          "commandId": "PrimitiveSphere",
+          "enabled": true
+        },
+        {
+          "id": "PrimitiveTorus",
+          "kind": "CommandControl",
+          "commandId": "PrimitiveTorus",
+          "enabled": true
+        },
+        {
+          "id": "PrimitiveCoil",
+          "kind": "CommandControl",
+          "commandId": "PrimitiveCoil",
+          "enabled": true
+        },
+        {
+          "id": "PrimitivePipe",
+          "kind": "CommandControl",
+          "commandId": "PrimitivePipe",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_PrimitivePipe",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "PatternDropDown",
+          "kind": "DropDownControl",
+          "name": "Pattern",
+          "children": [
+            {
+              "id": "PatternRectangular",
+              "kind": "CommandControl",
+              "commandId": "PatternRectangular",
+              "enabled": true
+            },
+            {
+              "id": "PatternCircular",
+              "kind": "CommandControl",
+              "commandId": "PatternCircular",
+              "enabled": true
+            },
+            {
+              "id": "PatternOnPath",
+              "kind": "CommandControl",
+              "commandId": "PatternOnPath",
+              "enabled": true
+            },
+            {
+              "id": "FusionPatternGeometricCommand",
+              "kind": "CommandControl",
+              "commandId": "FusionPatternGeometricCommand",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "id": "MirrorCommand",
+          "kind": "CommandControl",
+          "commandId": "MirrorCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_MirrorCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "FusionSurfaceThickenCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSurfaceThickenCommand",
+          "enabled": true
+        },
+        {
+          "id": "SurfaceSculpt",
+          "kind": "CommandControl",
+          "commandId": "SurfaceSculpt",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_SurfaceSculpt",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "BaseFeatureCreationCommand",
+          "kind": "CommandControl",
+          "commandId": "BaseFeatureCreationCommand",
+          "enabled": true
+        },
+        {
+          "id": "PCBCreateDropDown",
+          "kind": "DropDownControl",
+          "name": "Create PCB",
+          "children": [
+            {
+              "id": "PCBDeriveCmd",
+              "kind": "CommandControl",
+              "commandId": "PCBDeriveCmd",
+              "enabled": true
+            },
+            {
+              "id": "PCBCreateCmd",
+              "kind": "CommandControl",
+              "commandId": "PCBCreateCmd",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "id": "JointOrigin",
+          "kind": "CommandControl",
+          "commandId": "JointOrigin",
+          "enabled": true
+        }
+      ],
+      "promoted": [
+        {
+          "id": "SketchCreate",
+          "kind": "CommandControl",
+          "commandId": "SketchCreate",
+          "enabled": true
+        },
+        {
+          "id": "Extrude",
+          "kind": "CommandControl",
+          "commandId": "Extrude",
+          "enabled": true
+        },
+        {
+          "id": "Revolve",
+          "kind": "CommandControl",
+          "commandId": "Revolve",
+          "enabled": true
+        },
+        {
+          "id": "FusionHoleCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionHoleCommand",
+          "enabled": true
+        },
+        {
+          "id": "PatternRectangular",
+          "kind": "CommandControl",
+          "commandId": "PatternRectangular",
+          "enabled": true
+        },
+        {
+          "id": "TSplineBaseFeatureCreationCommand",
+          "kind": "CommandControl",
+          "commandId": "TSplineBaseFeatureCreationCommand",
+          "enabled": true
+        },
+        {
+          "id": "AutomatedModelingCommand",
+          "kind": "CommandControl",
+          "commandId": "AutomatedModelingCommand",
+          "enabled": true
+        }
+      ]
+    },
+    "SolidModifyPanel": {
+      "id": "SolidModifyPanel",
+      "name": "Modify",
+      "menu": [
+        {
+          "id": "FusionPressPullCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionPressPullCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_EditFaceCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "FusionFilletEdgesCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionFilletEdgesCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionChamferCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionChamferCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_FusionChamferCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "FusionShellBodyCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionShellBodyCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionDraftCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionDraftCommand",
+          "enabled": true
+        },
+        {
+          "id": "ModifyScale",
+          "kind": "CommandControl",
+          "commandId": "ModifyScale",
+          "enabled": true
+        },
+        {
+          "id": "FusionCombineCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionCombineCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionOffsetFacesCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionOffsetFacesCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionReplaceFaceCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionReplaceFaceCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionSplitFaceCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSplitFaceCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionSplitBodyCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSplitBodyCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionPartingLineSplitCmd",
+          "kind": "CommandControl",
+          "commandId": "FusionPartingLineSplitCmd",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_FusionPartingLineSplitCmd",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "FusionMoveCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionMoveCommand",
+          "enabled": true
+        },
+        {
+          "id": "AlignCmd",
+          "kind": "CommandControl",
+          "commandId": "AlignCmd",
+          "enabled": true
+        },
+        {
+          "id": "FusionDeleteCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionDeleteCommand",
+          "enabled": true
+        },
+        {
+          "id": "SoftDeleteCommand",
+          "kind": "CommandControl",
+          "commandId": "SoftDeleteCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_SoftDeleteCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "SimplifyDropDown",
+          "kind": "DropDownControl",
+          "name": "Simplify",
+          "children": [
+            {
+              "id": "FusionRemoveFeaturesCommand",
+              "kind": "CommandControl",
+              "commandId": "FusionRemoveFeaturesCommand",
+              "enabled": true
+            },
+            {
+              "id": "FusionRemoveFacesCommand",
+              "kind": "CommandControl",
+              "commandId": "FusionRemoveFacesCommand",
+              "enabled": true
+            },
+            {
+              "id": "ReplaceWithPrimitivesCommand",
+              "kind": "CommandControl",
+              "commandId": "ReplaceWithPrimitivesCommand",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "id": "SeparatorAfter_SimplifyDropDown",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "VolFieldCreateLatticeCommand",
+          "kind": "CommandControl",
+          "commandId": "VolFieldCreateLatticeCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_VolFieldModifyModelCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "PhysicalMaterialCommand",
+          "kind": "CommandControl",
+          "commandId": "PhysicalMaterialCommand",
+          "enabled": true
+        },
+        {
+          "id": "AppearanceCommand",
+          "kind": "CommandControl",
+          "commandId": "AppearanceCommand",
+          "enabled": true
+        },
+        {
+          "id": "MaterialCommand",
+          "kind": "CommandControl",
+          "commandId": "MaterialCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_MaterialCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "ChangeParameterCommand",
+          "kind": "CommandControl",
+          "commandId": "ChangeParameterCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionComputeAllCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionComputeAllCommand",
+          "enabled": true
+        }
+      ],
+      "promoted": [
+        {
+          "id": "FusionPressPullCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionPressPullCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionFilletEdgesCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionFilletEdgesCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionShellBodyCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionShellBodyCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionCombineCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionCombineCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionSplitBodyCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSplitBodyCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionMoveCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionMoveCommand",
+          "enabled": true
+        }
+      ]
+    },
+    "ConfigurePanel": {
+      "id": "ConfigurePanel",
+      "name": "Configure",
+      "menu": [
+        {
+          "id": "FusionStartDesignConfigModeCmd",
+          "kind": "CommandControl",
+          "commandId": "FusionStartDesignConfigModeCmd",
+          "enabled": false
+        },
+        {
+          "id": "FusionShowDesignConfigPanelCmd",
+          "kind": "CommandControl",
+          "commandId": "FusionShowDesignConfigPanelCmd",
+          "enabled": false
+        },
+        {
+          "id": "FusionConfigurationRulesCmd",
+          "kind": "CommandControl",
+          "commandId": "FusionConfigurationRulesCmd",
+          "enabled": false
+        }
+      ],
+      "promoted": [
+        {
+          "id": "FusionStartDesignConfigModeCmd",
+          "kind": "CommandControl",
+          "commandId": "FusionStartDesignConfigModeCmd",
+          "enabled": false
+        },
+        {
+          "id": "FusionShowDesignConfigPanelCmd",
+          "kind": "CommandControl",
+          "commandId": "FusionShowDesignConfigPanelCmd",
+          "enabled": false
+        },
+        {
+          "id": "FusionConfigurationRulesCmd",
+          "kind": "CommandControl",
+          "commandId": "FusionConfigurationRulesCmd",
+          "enabled": false
+        }
+      ]
+    },
+    "ConstructionPanel": {
+      "id": "ConstructionPanel",
+      "name": "Construct",
+      "menu": [
+        {
+          "id": "CoordinateSystemCommand",
+          "kind": "CommandControl",
+          "commandId": "CoordinateSystemCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_CoordinateSystemCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "ConstructionPlaneOffsetFromPlaneCommand",
+          "kind": "CommandControl",
+          "commandId": "ConstructionPlaneOffsetFromPlaneCommand",
+          "enabled": true
+        },
+        {
+          "id": "ConstructionPlaneAtAngleCommand",
+          "kind": "CommandControl",
+          "commandId": "ConstructionPlaneAtAngleCommand",
+          "enabled": true
+        },
+        {
+          "id": "ConstructionTangentPlaneCommand",
+          "kind": "CommandControl",
+          "commandId": "ConstructionTangentPlaneCommand",
+          "enabled": true
+        },
+        {
+          "id": "ConstructionMidPlaneCommand",
+          "kind": "CommandControl",
+          "commandId": "ConstructionMidPlaneCommand",
+          "enabled": true
+        },
+        {
+          "id": "ConstructionPlanePerpendicularToPlaneCommand",
+          "kind": "CommandControl",
+          "commandId": "ConstructionPlanePerpendicularToPlaneCommand",
+          "enabled": true
+        },
+        {
+          "id": "ConstructionPlaneFromTwoEdgesCommand",
+          "kind": "CommandControl",
+          "commandId": "ConstructionPlaneFromTwoEdgesCommand",
+          "enabled": true
+        },
+        {
+          "id": "ConstructionPlaneFromThreePointsCommand",
+          "kind": "CommandControl",
+          "commandId": "ConstructionPlaneFromThreePointsCommand",
+          "enabled": true
+        },
+        {
+          "id": "ConstructionPlaneAlongPathCommand",
+          "kind": "CommandControl",
+          "commandId": "ConstructionPlaneAlongPathCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_ConstructionPlaneAlongPathCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "ConstructionAxisThroughCylinderCommand",
+          "kind": "CommandControl",
+          "commandId": "ConstructionAxisThroughCylinderCommand",
+          "enabled": true
+        },
+        {
+          "id": "ConstructionAxisNormalToFaceCommand",
+          "kind": "CommandControl",
+          "commandId": "ConstructionAxisNormalToFaceCommand",
+          "enabled": true
+        },
+        {
+          "id": "ConstructionAxisFromTwoPlanesCommand",
+          "kind": "CommandControl",
+          "commandId": "ConstructionAxisFromTwoPlanesCommand",
+          "enabled": true
+        },
+        {
+          "id": "ConstructionAxisThroughTwoPointsCommand",
+          "kind": "CommandControl",
+          "commandId": "ConstructionAxisThroughTwoPointsCommand",
+          "enabled": true
+        },
+        {
+          "id": "ConstructionAxisThroughEdgeCommand",
+          "kind": "CommandControl",
+          "commandId": "ConstructionAxisThroughEdgeCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_ConstructionAxisThroughEdgeCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "ConstructionPointFromPointCommand",
+          "kind": "CommandControl",
+          "commandId": "ConstructionPointFromPointCommand",
+          "enabled": true
+        },
+        {
+          "id": "ConstructionPointThroughTwoEdgesCommand",
+          "kind": "CommandControl",
+          "commandId": "ConstructionPointThroughTwoEdgesCommand",
+          "enabled": true
+        },
+        {
+          "id": "ConstructionPointFromThreePlanesCommand",
+          "kind": "CommandControl",
+          "commandId": "ConstructionPointFromThreePlanesCommand",
+          "enabled": true
+        },
+        {
+          "id": "ConstructionPointFromCircleOrSphereCommand",
+          "kind": "CommandControl",
+          "commandId": "ConstructionPointFromCircleOrSphereCommand",
+          "enabled": true
+        },
+        {
+          "id": "ConstructionPointAtEdgeAndPlaneCommand",
+          "kind": "CommandControl",
+          "commandId": "ConstructionPointAtEdgeAndPlaneCommand",
+          "enabled": true
+        },
+        {
+          "id": "ConstructionPointAlongPathCommand",
+          "kind": "CommandControl",
+          "commandId": "ConstructionPointAlongPathCommand",
+          "enabled": true
+        }
+      ],
+      "promoted": [
+        {
+          "id": "ConstructionPlaneOffsetFromPlaneCommand",
+          "kind": "CommandControl",
+          "commandId": "ConstructionPlaneOffsetFromPlaneCommand",
+          "enabled": true
+        }
+      ]
+    },
+    "InspectPanel": {
+      "id": "InspectPanel",
+      "name": "Inspect",
+      "menu": [
+        {
+          "id": "MeasureCommand",
+          "kind": "CommandControl",
+          "commandId": "MeasureCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionHalfSectionViewCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionHalfSectionViewCommand",
+          "enabled": true
+        },
+        {
+          "id": "InterferenceCheckCommand",
+          "kind": "CommandControl",
+          "commandId": "InterferenceCheckCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionCenterOfMassCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionCenterOfMassCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_FusionCenterOfMassCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "FusionCurvatureCombAnalysisCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionCurvatureCombAnalysisCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionCurvatureMapAnalysisCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionCurvatureMapAnalysisCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionDraftAnalysisCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionDraftAnalysisCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionEnvironmentMapAnalysisCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionEnvironmentMapAnalysisCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionIsoCurveAnalysisCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionIsoCurveAnalysisCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionZebraAnalysisCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionZebraAnalysisCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_FusionSurfaceValidateCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "FusionAccessibilityAnalysisCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionAccessibilityAnalysisCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionMinimumRadiusAnalysisCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionMinimumRadiusAnalysisCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_FusionMinimumRadiusAnalysisCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "FusionViewColorCyclingToggleCmd",
+          "kind": "CommandControl",
+          "commandId": "FusionViewColorCyclingToggleCmd",
+          "enabled": true
+        },
+        {
+          "id": "FacegroupsToggleCmd",
+          "kind": "CommandControl",
+          "commandId": "FacegroupsToggleCmd",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_FacegroupsToggleCmd",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "GravityClimate_ManufacturingSustainabilityInsights_MainDialog",
+          "kind": "CommandControl",
+          "commandId": "GravityClimate_ManufacturingSustainabilityInsights_MainDialog",
+          "enabled": true
+        }
+      ],
+      "promoted": [
+        {
+          "id": "MeasureCommand",
+          "kind": "CommandControl",
+          "commandId": "MeasureCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionHalfSectionViewCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionHalfSectionViewCommand",
+          "enabled": true
+        }
+      ]
+    },
+    "InsertPanel": {
+      "id": "InsertPanel",
+      "name": "Insert",
+      "menu": [
+        {
+          "id": "FusionAddEditDecalCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionAddEditDecalCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionAddCanvasCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionAddCanvasCommand",
+          "enabled": true
+        },
+        {
+          "id": "SketchImportSVG",
+          "kind": "CommandControl",
+          "commandId": "SketchImportSVG",
+          "enabled": true
+        },
+        {
+          "id": "ImportDxfFileCommand",
+          "kind": "CommandControl",
+          "commandId": "ImportDxfFileCommand",
+          "enabled": true
+        },
+        {
+          "id": "ParaMeshInsertAlignCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshInsertAlignCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionImportCommandFromToolbar",
+          "kind": "CommandControl",
+          "commandId": "FusionImportCommandFromToolbar",
+          "enabled": false
+        },
+        {
+          "id": "FusionFastenersCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionFastenersCommand",
+          "enabled": false
+        },
+        {
+          "id": "FusionDuplicateWithJointsCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionDuplicateWithJointsCommand",
+          "enabled": false
+        },
+        {
+          "id": "PullDeriveCommand",
+          "kind": "CommandControl",
+          "commandId": "PullDeriveCommand",
+          "enabled": true
+        },
+        {
+          "id": "InsertMcMasterCarrComponentCommand",
+          "kind": "CommandControl",
+          "commandId": "InsertMcMasterCarrComponentCommand",
+          "enabled": false
+        },
+        {
+          "id": "cadenasparts4cad",
+          "kind": "CommandControl",
+          "commandId": "cadenasparts4cad",
+          "enabled": true
+        },
+        {
+          "id": "traceparts_insert",
+          "kind": "CommandControl",
+          "commandId": "traceparts_insert",
+          "enabled": true
+        }
+      ],
+      "promoted": [
+        {
+          "id": "PullDeriveCommand",
+          "kind": "CommandControl",
+          "commandId": "PullDeriveCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionAddCanvasCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionAddCanvasCommand",
+          "enabled": true
+        },
+        {
+          "id": "ParaMeshInsertAlignCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshInsertAlignCommand",
+          "enabled": true
+        }
+      ]
+    },
+    "PartAssemblePanel": {
+      "id": "PartAssemblePanel",
+      "name": "ASSEMBLE",
+      "menu": [
+        {
+          "id": "NewAssemblyFromPartCommand",
+          "kind": "CommandControl",
+          "commandId": "NewAssemblyFromPartCommand",
+          "enabled": true
+        }
+      ],
+      "promoted": [
+        {
+          "id": "NewAssemblyFromPartCommand",
+          "kind": "CommandControl",
+          "commandId": "NewAssemblyFromPartCommand",
+          "enabled": true
+        }
+      ]
+    },
+    "SelectPanel": {
+      "id": "SelectPanel",
+      "name": "Select",
+      "menu": [
+        {
+          "id": "SelectCommand",
+          "kind": "CommandControl",
+          "commandId": "SelectCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_SelectCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "selectWindow",
+          "kind": "CommandControl",
+          "commandId": "selectWindow",
+          "enabled": true
+        },
+        {
+          "id": "selectFreeForm",
+          "kind": "CommandControl",
+          "commandId": "selectFreeForm",
+          "enabled": true
+        },
+        {
+          "id": "selectPaint",
+          "kind": "CommandControl",
+          "commandId": "selectPaint",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_selectPaint",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "SelectionToolsDropDown",
+          "kind": "DropDownControl",
+          "name": "Selection Tools",
+          "children": [
+            {
+              "id": "SelectByNameCommand",
+              "kind": "CommandControl",
+              "commandId": "SelectByNameCommand",
+              "enabled": true
+            },
+            {
+              "id": "SelectByBoundaryCommand",
+              "kind": "CommandControl",
+              "commandId": "SelectByBoundaryCommand",
+              "enabled": true
+            },
+            {
+              "id": "FusionSelectBodiesBySizeCommand",
+              "kind": "CommandControl",
+              "commandId": "FusionSelectBodiesBySizeCommand",
+              "enabled": true
+            },
+            {
+              "id": "SelectByInvertCommand",
+              "kind": "CommandControl",
+              "commandId": "SelectByInvertCommand",
+              "enabled": true
+            },
+            {
+              "id": "FusionSelectSeedAndBoundaryFacesCommand",
+              "kind": "CommandControl",
+              "commandId": "FusionSelectSeedAndBoundaryFacesCommand",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "id": "SeparatorAfter_SelectionToolsDropDown",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "SelectionPriorityCommandsDropDown",
+          "kind": "DropDownControl",
+          "name": "Selection Priority",
+          "children": [
+            {
+              "id": "SelectBodyPriorityCommand",
+              "kind": "CommandControl",
+              "commandId": "SelectBodyPriorityCommand",
+              "enabled": true
+            },
+            {
+              "id": "SelectFacePriorityCommand",
+              "kind": "CommandControl",
+              "commandId": "SelectFacePriorityCommand",
+              "enabled": true
+            },
+            {
+              "id": "SelectEdgePriorityCommand",
+              "kind": "CommandControl",
+              "commandId": "SelectEdgePriorityCommand",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "id": "SelectionFilterCommand",
+          "kind": "CommandControl",
+          "commandId": "SelectionFilterCommand",
+          "enabled": true
+        }
+      ],
+      "promoted": [
+        {
+          "id": "SelectCommand",
+          "kind": "CommandControl",
+          "commandId": "SelectCommand",
+          "enabled": true
+        }
+      ]
+    },
+    "SurfaceCreatePanel": {
+      "id": "SurfaceCreatePanel",
+      "name": "Create",
+      "menu": [
+        {
+          "id": "SketchCreate",
+          "kind": "CommandControl",
+          "commandId": "SketchCreate",
+          "enabled": true
+        },
+        {
+          "id": "TSplineBaseFeatureCreationCommand",
+          "kind": "CommandControl",
+          "commandId": "TSplineBaseFeatureCreationCommand",
+          "enabled": true
+        },
+        {
+          "id": "PushDeriveCommand",
+          "kind": "CommandControl",
+          "commandId": "PushDeriveCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_PushDeriveCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "SurfaceExtrude",
+          "kind": "CommandControl",
+          "commandId": "SurfaceExtrude",
+          "enabled": true
+        },
+        {
+          "id": "SurfaceRevolve",
+          "kind": "CommandControl",
+          "commandId": "SurfaceRevolve",
+          "enabled": true
+        },
+        {
+          "id": "SurfaceSweep",
+          "kind": "CommandControl",
+          "commandId": "SurfaceSweep",
+          "enabled": true
+        },
+        {
+          "id": "SurfaceLoft",
+          "kind": "CommandControl",
+          "commandId": "SurfaceLoft",
+          "enabled": true
+        },
+        {
+          "id": "FusionSurfacePatchCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSurfacePatchCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionSurfaceRuledCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSurfaceRuledCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionSurfaceOffsetCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSurfaceOffsetCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_FusionSurfaceOffsetCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "PatternDropDown",
+          "kind": "DropDownControl",
+          "name": "Pattern",
+          "children": [
+            {
+              "id": "PatternRectangular",
+              "kind": "CommandControl",
+              "commandId": "PatternRectangular",
+              "enabled": true
+            },
+            {
+              "id": "PatternCircular",
+              "kind": "CommandControl",
+              "commandId": "PatternCircular",
+              "enabled": true
+            },
+            {
+              "id": "PatternOnPath",
+              "kind": "CommandControl",
+              "commandId": "PatternOnPath",
+              "enabled": true
+            },
+            {
+              "id": "FusionPatternGeometricCommand",
+              "kind": "CommandControl",
+              "commandId": "FusionPatternGeometricCommand",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "id": "MirrorCommand",
+          "kind": "CommandControl",
+          "commandId": "MirrorCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_MirrorCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "FusionSurfaceThickenCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSurfaceThickenCommand",
+          "enabled": true
+        },
+        {
+          "id": "SurfaceSculpt",
+          "kind": "CommandControl",
+          "commandId": "SurfaceSculpt",
+          "enabled": true
+        },
+        {
+          "id": "JointOrigin",
+          "kind": "CommandControl",
+          "commandId": "JointOrigin",
+          "enabled": true
+        }
+      ],
+      "promoted": [
+        {
+          "id": "SketchCreate",
+          "kind": "CommandControl",
+          "commandId": "SketchCreate",
+          "enabled": true
+        },
+        {
+          "id": "FusionSurfacePatchCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSurfacePatchCommand",
+          "enabled": true
+        },
+        {
+          "id": "SurfaceExtrude",
+          "kind": "CommandControl",
+          "commandId": "SurfaceExtrude",
+          "enabled": true
+        },
+        {
+          "id": "SurfaceRevolve",
+          "kind": "CommandControl",
+          "commandId": "SurfaceRevolve",
+          "enabled": true
+        },
+        {
+          "id": "SurfaceSweep",
+          "kind": "CommandControl",
+          "commandId": "SurfaceSweep",
+          "enabled": true
+        },
+        {
+          "id": "TSplineBaseFeatureCreationCommand",
+          "kind": "CommandControl",
+          "commandId": "TSplineBaseFeatureCreationCommand",
+          "enabled": true
+        }
+      ]
+    },
+    "SurfaceModifyPanel": {
+      "id": "SurfaceModifyPanel",
+      "name": "Modify",
+      "menu": [
+        {
+          "id": "FusionPressPullCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionPressPullCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_EditFaceCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "FusionFilletEdgesCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionFilletEdgesCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionChamferCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionChamferCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_FusionChamferCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "FusionSurfaceTrimCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSurfaceTrimCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionSurfaceUntrimCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSurfaceUntrimCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionExtendCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionExtendCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionSurfaceStitchCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSurfaceStitchCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionSurfaceUnStitchCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSurfaceUnStitchCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionSurfaceReverseNormalCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSurfaceReverseNormalCommand",
+          "enabled": true
+        },
+        {
+          "id": "ModifyScale",
+          "kind": "CommandControl",
+          "commandId": "ModifyScale",
+          "enabled": true
+        },
+        {
+          "id": "FusionSplitFaceCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSplitFaceCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionSplitBodyCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSplitBodyCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_FusionSplitBodyCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "FusionMoveCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionMoveCommand",
+          "enabled": true
+        },
+        {
+          "id": "AlignCmd",
+          "kind": "CommandControl",
+          "commandId": "AlignCmd",
+          "enabled": true
+        },
+        {
+          "id": "FusionDeleteCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionDeleteCommand",
+          "enabled": true
+        },
+        {
+          "id": "SoftDeleteCommand",
+          "kind": "CommandControl",
+          "commandId": "SoftDeleteCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_TSpline2BRepCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "PhysicalMaterialCommand",
+          "kind": "CommandControl",
+          "commandId": "PhysicalMaterialCommand",
+          "enabled": true
+        },
+        {
+          "id": "AppearanceCommand",
+          "kind": "CommandControl",
+          "commandId": "AppearanceCommand",
+          "enabled": true
+        },
+        {
+          "id": "MaterialCommand",
+          "kind": "CommandControl",
+          "commandId": "MaterialCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_MaterialCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "ChangeParameterCommand",
+          "kind": "CommandControl",
+          "commandId": "ChangeParameterCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionComputeAllCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionComputeAllCommand",
+          "enabled": true
+        }
+      ],
+      "promoted": [
+        {
+          "id": "FusionSurfaceStitchCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSurfaceStitchCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionSurfaceUnStitchCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSurfaceUnStitchCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionSurfaceTrimCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSurfaceTrimCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionExtendCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionExtendCommand",
+          "enabled": true
+        }
+      ]
+    },
+    "ParaMeshCreatePanel": {
+      "id": "ParaMeshCreatePanel",
+      "name": "Create",
+      "menu": [
+        {
+          "id": "ParaMeshInsertAlignCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshInsertAlignCommand",
+          "enabled": true
+        },
+        {
+          "id": "ParaMeshTessellateCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshTessellateCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_ParaMeshTessellateCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "ParaMeshPlanarSectionCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshPlanarSectionCommand",
+          "enabled": true
+        },
+        {
+          "id": "ParaMeshEmptyBaseFeatureCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshEmptyBaseFeatureCommand",
+          "enabled": true
+        }
+      ],
+      "promoted": [
+        {
+          "id": "ParaMeshInsertAlignCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshInsertAlignCommand",
+          "enabled": true
+        },
+        {
+          "id": "ParaMeshTessellateCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshTessellateCommand",
+          "enabled": true
+        },
+        {
+          "id": "ParaMeshPlanarSectionCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshPlanarSectionCommand",
+          "enabled": true
+        }
+      ]
+    },
+    "ParaMeshPreparePanel": {
+      "id": "ParaMeshPreparePanel",
+      "name": "Prepare",
+      "menu": [
+        {
+          "id": "ParaMeshRepairCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshRepairCommand",
+          "enabled": true
+        },
+        {
+          "id": "ParaMeshCalculateFaceGroupsCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshCalculateFaceGroupsCommand",
+          "enabled": true
+        },
+        {
+          "id": "ParaMeshMergeFaceGroupsCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshMergeFaceGroupsCommand",
+          "enabled": true
+        }
+      ],
+      "promoted": [
+        {
+          "id": "ParaMeshRepairCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshRepairCommand",
+          "enabled": true
+        },
+        {
+          "id": "ParaMeshCalculateFaceGroupsCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshCalculateFaceGroupsCommand",
+          "enabled": true
+        },
+        {
+          "id": "ParaMeshMergeFaceGroupsCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshMergeFaceGroupsCommand",
+          "enabled": true
+        }
+      ]
+    },
+    "ParaMeshModifyPanel": {
+      "id": "ParaMeshModifyPanel",
+      "name": "Modify",
+      "menu": [
+        {
+          "id": "ParaMeshBaseFeatureCreateCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshBaseFeatureCreateCommand",
+          "enabled": true
+        },
+        {
+          "id": "ParaMeshRemeshCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshRemeshCommand",
+          "enabled": true
+        },
+        {
+          "id": "ParaMeshReduceCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshReduceCommand",
+          "enabled": true
+        },
+        {
+          "id": "ParaMeshPlaneCutCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshPlaneCutCommand",
+          "enabled": true
+        },
+        {
+          "id": "ParaMeshHollowCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshHollowCommand",
+          "enabled": true
+        },
+        {
+          "id": "ParaMeshCombineCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshCombineCommand",
+          "enabled": true
+        },
+        {
+          "id": "ParaMeshSmoothCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshSmoothCommand",
+          "enabled": true
+        },
+        {
+          "id": "ParaMeshReverseNormalsCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshReverseNormalsCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_ParaMeshTextureCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "ParaMeshExtractCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshExtractCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_ParaMeshExtractCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "FusionMoveCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionMoveCommand",
+          "enabled": true
+        },
+        {
+          "id": "ParaMeshScaleCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshScaleCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionDeleteCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionDeleteCommand",
+          "enabled": true
+        },
+        {
+          "id": "ParaMeshRemoveCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshRemoveCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_ParaMeshRemoveCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "ParaMeshConvertCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshConvertCommand",
+          "enabled": true
+        },
+        {
+          "id": "VolFieldCreateLatticeCommand",
+          "kind": "CommandControl",
+          "commandId": "VolFieldCreateLatticeCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_VolFieldModifyModelCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "PhysicalMaterialCommand",
+          "kind": "CommandControl",
+          "commandId": "PhysicalMaterialCommand",
+          "enabled": true
+        },
+        {
+          "id": "AppearanceCommand",
+          "kind": "CommandControl",
+          "commandId": "AppearanceCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_AppearanceCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "ChangeParameterCommand",
+          "kind": "CommandControl",
+          "commandId": "ChangeParameterCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionComputeAllCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionComputeAllCommand",
+          "enabled": true
+        }
+      ],
+      "promoted": [
+        {
+          "id": "ParaMeshRemeshCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshRemeshCommand",
+          "enabled": true
+        },
+        {
+          "id": "ParaMeshReduceCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshReduceCommand",
+          "enabled": true
+        },
+        {
+          "id": "ParaMeshPlaneCutCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshPlaneCutCommand",
+          "enabled": true
+        },
+        {
+          "id": "ParaMeshHollowCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshHollowCommand",
+          "enabled": true
+        },
+        {
+          "id": "ParaMeshCombineCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshCombineCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionMoveCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionMoveCommand",
+          "enabled": true
+        },
+        {
+          "id": "ParaMeshScaleCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshScaleCommand",
+          "enabled": true
+        },
+        {
+          "id": "ParaMeshBaseFeatureCreateCommand",
+          "kind": "CommandControl",
+          "commandId": "ParaMeshBaseFeatureCreateCommand",
+          "enabled": true
+        }
+      ]
+    },
+    "ParaMeshSelectPanel": {
+      "id": "ParaMeshSelectPanel",
+      "name": "Select",
+      "menu": [
+        {
+          "id": "SelectCommand",
+          "kind": "CommandControl",
+          "commandId": "SelectCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_SelectCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "selectWindow",
+          "kind": "CommandControl",
+          "commandId": "selectWindow",
+          "enabled": true
+        },
+        {
+          "id": "selectFreeForm",
+          "kind": "CommandControl",
+          "commandId": "selectFreeForm",
+          "enabled": true
+        },
+        {
+          "id": "selectPaint",
+          "kind": "CommandControl",
+          "commandId": "selectPaint",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_selectPaint",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "SelectionPriorityCommandsDropDown",
+          "kind": "DropDownControl",
+          "name": "Selection Priority",
+          "children": [
+            {
+              "id": "SelectBodyPriorityCommand",
+              "kind": "CommandControl",
+              "commandId": "SelectBodyPriorityCommand",
+              "enabled": true
+            },
+            {
+              "id": "SelectFacePriorityCommand",
+              "kind": "CommandControl",
+              "commandId": "SelectFacePriorityCommand",
+              "enabled": true
+            },
+            {
+              "id": "SelectEdgePriorityCommand",
+              "kind": "CommandControl",
+              "commandId": "SelectEdgePriorityCommand",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "id": "SelectionFilterCommand",
+          "kind": "CommandControl",
+          "commandId": "SelectionFilterCommand",
+          "enabled": true
+        }
+      ],
+      "promoted": [
+        {
+          "id": "SelectCommand",
+          "kind": "CommandControl",
+          "commandId": "SelectCommand",
+          "enabled": true
+        }
+      ]
+    },
+    "ParaMeshExportPanel": {
+      "id": "ParaMeshExportPanel",
+      "name": "Export",
+      "menu": [
+        {
+          "id": "ThreeDprintCmdDef",
+          "kind": "CommandControl",
+          "commandId": "ThreeDprintCmdDef",
+          "enabled": true
+        }
+      ],
+      "promoted": [
+        {
+          "id": "ThreeDprintCmdDef",
+          "kind": "CommandControl",
+          "commandId": "ThreeDprintCmdDef",
+          "enabled": true
+        }
+      ]
+    },
+    "SheetMetalCreatePanel": {
+      "id": "SheetMetalCreatePanel",
+      "name": "Create",
+      "menu": [
+        {
+          "id": "SketchCreate",
+          "kind": "CommandControl",
+          "commandId": "SketchCreate",
+          "enabled": true
+        },
+        {
+          "id": "FusionSheetMetalFlangeCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSheetMetalFlangeCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionSheetMetalHemFlangeCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSheetMetalHemFlangeCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionSheetMetalLoftCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSheetMetalLoftCommand",
+          "enabled": true
+        },
+        {
+          "id": "SheetMetalFoldCmd",
+          "kind": "CommandControl",
+          "commandId": "SheetMetalFoldCmd",
+          "enabled": true
+        },
+        {
+          "id": "ConvertToSheetMetalCmd",
+          "kind": "CommandControl",
+          "commandId": "ConvertToSheetMetalCmd",
+          "enabled": true
+        },
+        {
+          "id": "PushDeriveCommand",
+          "kind": "CommandControl",
+          "commandId": "PushDeriveCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_PushDeriveCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "Extrude",
+          "kind": "CommandControl",
+          "commandId": "Extrude",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_Extrude",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "FusionHoleCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionHoleCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionThreadCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionThreadCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_FusionThreadCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "PatternDropDown",
+          "kind": "DropDownControl",
+          "name": "Pattern",
+          "children": [
+            {
+              "id": "PatternRectangular",
+              "kind": "CommandControl",
+              "commandId": "PatternRectangular",
+              "enabled": true
+            },
+            {
+              "id": "PatternCircular",
+              "kind": "CommandControl",
+              "commandId": "PatternCircular",
+              "enabled": true
+            },
+            {
+              "id": "PatternOnPath",
+              "kind": "CommandControl",
+              "commandId": "PatternOnPath",
+              "enabled": true
+            },
+            {
+              "id": "FusionPatternGeometricCommand",
+              "kind": "CommandControl",
+              "commandId": "FusionPatternGeometricCommand",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "id": "MirrorCommand",
+          "kind": "CommandControl",
+          "commandId": "MirrorCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_MirrorCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "FusionSheetMetalFlatPatternCmd",
+          "kind": "CommandControl",
+          "commandId": "FusionSheetMetalFlatPatternCmd",
+          "enabled": true
+        },
+        {
+          "id": "JointOrigin",
+          "kind": "CommandControl",
+          "commandId": "JointOrigin",
+          "enabled": true
+        }
+      ],
+      "promoted": [
+        {
+          "id": "SketchCreate",
+          "kind": "CommandControl",
+          "commandId": "SketchCreate",
+          "enabled": true
+        },
+        {
+          "id": "FusionSheetMetalFlangeCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSheetMetalFlangeCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionSheetMetalFlatPatternCmd",
+          "kind": "CommandControl",
+          "commandId": "FusionSheetMetalFlatPatternCmd",
+          "enabled": true
+        },
+        {
+          "id": "Extrude",
+          "kind": "CommandControl",
+          "commandId": "Extrude",
+          "enabled": true
+        }
+      ]
+    },
+    "SheetMetalModifyPanel": {
+      "id": "SheetMetalModifyPanel",
+      "name": "Modify",
+      "menu": [
+        {
+          "id": "FusionSheetmetalUnfoldCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSheetmetalUnfoldCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionSheetMetalRulesLibraryCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSheetMetalRulesLibraryCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionSheetMetalCornerCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSheetMetalCornerCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionJoinByBendCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionJoinByBendCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionSheetMetalRipCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSheetMetalRipCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_FusionSheetMetalJogCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "FusionSheetMetalFilletCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSheetMetalFilletCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionSheetMetalChamferCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSheetMetalChamferCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionFilletEdgesCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionFilletEdgesCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionChamferCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionChamferCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_FusionChamferCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "FusionMoveCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionMoveCommand",
+          "enabled": true
+        },
+        {
+          "id": "AlignCmd",
+          "kind": "CommandControl",
+          "commandId": "AlignCmd",
+          "enabled": true
+        },
+        {
+          "id": "FusionDeleteCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionDeleteCommand",
+          "enabled": true
+        },
+        {
+          "id": "SoftDeleteCommand",
+          "kind": "CommandControl",
+          "commandId": "SoftDeleteCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_SoftDeleteCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "PhysicalMaterialCommand",
+          "kind": "CommandControl",
+          "commandId": "PhysicalMaterialCommand",
+          "enabled": true
+        },
+        {
+          "id": "AppearanceCommand",
+          "kind": "CommandControl",
+          "commandId": "AppearanceCommand",
+          "enabled": true
+        },
+        {
+          "id": "MaterialCommand",
+          "kind": "CommandControl",
+          "commandId": "MaterialCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_MaterialCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "ChangeParameterCommand",
+          "kind": "CommandControl",
+          "commandId": "ChangeParameterCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionComputeAllCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionComputeAllCommand",
+          "enabled": true
+        }
+      ],
+      "promoted": [
+        {
+          "id": "FusionSheetMetalRulesLibraryCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSheetMetalRulesLibraryCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionSheetMetalFilletCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSheetMetalFilletCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionSheetMetalChamferCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSheetMetalChamferCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionFilletEdgesCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionFilletEdgesCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionChamferCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionChamferCommand",
+          "enabled": true
+        }
+      ]
+    },
+    "PlasticPartsSetupPanel": {
+      "id": "PlasticPartsSetupPanel",
+      "name": "Setup",
+      "menu": [
+        {
+          "id": "FusionAssignPlasticRuleCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionAssignPlasticRuleCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionManagePlasticRuleCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionManagePlasticRuleCommand",
+          "enabled": true
+        }
+      ],
+      "promoted": [
+        {
+          "id": "FusionAssignPlasticRuleCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionAssignPlasticRuleCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionManagePlasticRuleCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionManagePlasticRuleCommand",
+          "enabled": true
+        }
+      ]
+    },
+    "PlasticPartsCreatePanel": {
+      "id": "PlasticPartsCreatePanel",
+      "name": "Create",
+      "menu": [
+        {
+          "id": "SketchCreate",
+          "kind": "CommandControl",
+          "commandId": "SketchCreate",
+          "enabled": true
+        },
+        {
+          "id": "TSplineBaseFeatureCreationCommand",
+          "kind": "CommandControl",
+          "commandId": "TSplineBaseFeatureCreationCommand",
+          "enabled": true
+        },
+        {
+          "id": "PushDeriveCommand",
+          "kind": "CommandControl",
+          "commandId": "PushDeriveCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_PushDeriveCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "Extrude",
+          "kind": "CommandControl",
+          "commandId": "Extrude",
+          "enabled": true
+        },
+        {
+          "id": "Revolve",
+          "kind": "CommandControl",
+          "commandId": "Revolve",
+          "enabled": true
+        },
+        {
+          "id": "Sweep",
+          "kind": "CommandControl",
+          "commandId": "Sweep",
+          "enabled": true
+        },
+        {
+          "id": "SolidLoft",
+          "kind": "CommandControl",
+          "commandId": "SolidLoft",
+          "enabled": true
+        },
+        {
+          "id": "FusionRibCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionRibCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionWebCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionWebCommand",
+          "enabled": true
+        },
+        {
+          "id": "EmbossCmd",
+          "kind": "CommandControl",
+          "commandId": "EmbossCmd",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_EmbossCmd",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "FusionBossCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionBossCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionSnapFitCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSnapFitCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionLipCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionLipCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionRestCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionRestCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_FusionRestCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "FusionHoleCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionHoleCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionThreadCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionThreadCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_FusionThreadCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "PrimitiveBox",
+          "kind": "CommandControl",
+          "commandId": "PrimitiveBox",
+          "enabled": true
+        },
+        {
+          "id": "PrimitiveCylinder",
+          "kind": "CommandControl",
+          "commandId": "PrimitiveCylinder",
+          "enabled": true
+        },
+        {
+          "id": "PrimitiveSphere",
+          "kind": "CommandControl",
+          "commandId": "PrimitiveSphere",
+          "enabled": true
+        },
+        {
+          "id": "PrimitiveTorus",
+          "kind": "CommandControl",
+          "commandId": "PrimitiveTorus",
+          "enabled": true
+        },
+        {
+          "id": "PrimitiveCoil",
+          "kind": "CommandControl",
+          "commandId": "PrimitiveCoil",
+          "enabled": true
+        },
+        {
+          "id": "PrimitivePipe",
+          "kind": "CommandControl",
+          "commandId": "PrimitivePipe",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_PrimitivePipe",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "PatternDropDown",
+          "kind": "DropDownControl",
+          "name": "Pattern",
+          "children": [
+            {
+              "id": "PatternRectangular",
+              "kind": "CommandControl",
+              "commandId": "PatternRectangular",
+              "enabled": true
+            },
+            {
+              "id": "PatternCircular",
+              "kind": "CommandControl",
+              "commandId": "PatternCircular",
+              "enabled": true
+            },
+            {
+              "id": "PatternOnPath",
+              "kind": "CommandControl",
+              "commandId": "PatternOnPath",
+              "enabled": true
+            },
+            {
+              "id": "FusionPatternGeometricCommand",
+              "kind": "CommandControl",
+              "commandId": "FusionPatternGeometricCommand",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "id": "MirrorCommand",
+          "kind": "CommandControl",
+          "commandId": "MirrorCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_MirrorCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "FusionSurfaceThickenCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSurfaceThickenCommand",
+          "enabled": true
+        },
+        {
+          "id": "SurfaceSculpt",
+          "kind": "CommandControl",
+          "commandId": "SurfaceSculpt",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_SurfaceSculpt",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "BaseFeatureCreationCommand",
+          "kind": "CommandControl",
+          "commandId": "BaseFeatureCreationCommand",
+          "enabled": true
+        },
+        {
+          "id": "PCBCreateDropDown",
+          "kind": "DropDownControl",
+          "name": "Create PCB",
+          "children": [
+            {
+              "id": "PCBDeriveCmd",
+              "kind": "CommandControl",
+              "commandId": "PCBDeriveCmd",
+              "enabled": true
+            },
+            {
+              "id": "PCBCreateCmd",
+              "kind": "CommandControl",
+              "commandId": "PCBCreateCmd",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "id": "JointOrigin",
+          "kind": "CommandControl",
+          "commandId": "JointOrigin",
+          "enabled": true
+        }
+      ],
+      "promoted": [
+        {
+          "id": "SketchCreate",
+          "kind": "CommandControl",
+          "commandId": "SketchCreate",
+          "enabled": true
+        },
+        {
+          "id": "Extrude",
+          "kind": "CommandControl",
+          "commandId": "Extrude",
+          "enabled": true
+        },
+        {
+          "id": "Revolve",
+          "kind": "CommandControl",
+          "commandId": "Revolve",
+          "enabled": true
+        },
+        {
+          "id": "FusionHoleCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionHoleCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionWebCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionWebCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionRibCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionRibCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionBossCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionBossCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionSnapFitCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionSnapFitCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionLipCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionLipCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionRestCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionRestCommand",
+          "enabled": true
+        },
+        {
+          "id": "PatternRectangular",
+          "kind": "CommandControl",
+          "commandId": "PatternRectangular",
+          "enabled": true
+        },
+        {
+          "id": "FusionPatternGeometricCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionPatternGeometricCommand",
+          "enabled": true
+        },
+        {
+          "id": "TSplineBaseFeatureCreationCommand",
+          "kind": "CommandControl",
+          "commandId": "TSplineBaseFeatureCreationCommand",
+          "enabled": true
+        }
+      ]
+    },
+    "PlasticPartsInspectPanel": {
+      "id": "PlasticPartsInspectPanel",
+      "name": "Inspect",
+      "menu": [
+        {
+          "id": "MeasureCommand",
+          "kind": "CommandControl",
+          "commandId": "MeasureCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionHalfSectionViewCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionHalfSectionViewCommand",
+          "enabled": true
+        },
+        {
+          "id": "InterferenceCheckCommand",
+          "kind": "CommandControl",
+          "commandId": "InterferenceCheckCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionCenterOfMassCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionCenterOfMassCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_FusionCenterOfMassCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "FusionCurvatureCombAnalysisCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionCurvatureCombAnalysisCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionCurvatureMapAnalysisCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionCurvatureMapAnalysisCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionDraftAnalysisCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionDraftAnalysisCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionEnvironmentMapAnalysisCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionEnvironmentMapAnalysisCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionIsoCurveAnalysisCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionIsoCurveAnalysisCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionZebraAnalysisCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionZebraAnalysisCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_FusionSurfaceValidateCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "FusionAccessibilityAnalysisCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionAccessibilityAnalysisCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionMinimumRadiusAnalysisCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionMinimumRadiusAnalysisCommand",
+          "enabled": true
+        },
+        {
+          "id": "DesignAdviceCmd",
+          "kind": "CommandControl",
+          "commandId": "DesignAdviceCmd",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_DesignAdviceCmd",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "FusionViewColorCyclingToggleCmd",
+          "kind": "CommandControl",
+          "commandId": "FusionViewColorCyclingToggleCmd",
+          "enabled": true
+        },
+        {
+          "id": "FacegroupsToggleCmd",
+          "kind": "CommandControl",
+          "commandId": "FacegroupsToggleCmd",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_FacegroupsToggleCmd",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "GravityClimate_ManufacturingSustainabilityInsights_MainDialog",
+          "kind": "CommandControl",
+          "commandId": "GravityClimate_ManufacturingSustainabilityInsights_MainDialog",
+          "enabled": true
+        }
+      ],
+      "promoted": [
+        {
+          "id": "MeasureCommand",
+          "kind": "CommandControl",
+          "commandId": "MeasureCommand",
+          "enabled": true
+        },
+        {
+          "id": "DesignAdviceCmd",
+          "kind": "CommandControl",
+          "commandId": "DesignAdviceCmd",
+          "enabled": true
+        },
+        {
+          "id": "FusionHalfSectionViewCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionHalfSectionViewCommand",
+          "enabled": true
+        }
+      ]
+    },
+    "MakePanel": {
+      "id": "MakePanel",
+      "name": "Make",
+      "menu": [
+        {
+          "id": "ThreeDprintCmdDef",
+          "kind": "CommandControl",
+          "commandId": "ThreeDprintCmdDef",
+          "enabled": true
+        }
+      ],
+      "promoted": [
+        {
+          "id": "ThreeDprintCmdDef",
+          "kind": "CommandControl",
+          "commandId": "ThreeDprintCmdDef",
+          "enabled": true
+        }
+      ]
+    },
+    "NESTPanel": {
+      "id": "NESTPanel",
+      "name": "Nest",
+      "menu": [
+        {
+          "id": "MSFNestAuthoringCmd",
+          "kind": "CommandControl",
+          "commandId": "MSFNestAuthoringCmd",
+          "enabled": true
+        }
+      ],
+      "promoted": [
+        {
+          "id": "MSFNestAuthoringCmd",
+          "kind": "CommandControl",
+          "commandId": "MSFNestAuthoringCmd",
+          "enabled": true
+        }
+      ]
+    },
+    "SolidScriptsAddinsPanel": {
+      "id": "SolidScriptsAddinsPanel",
+      "name": "Add-ins",
+      "menu": [
+        {
+          "id": "ScriptsManagerCommand",
+          "kind": "CommandControl",
+          "commandId": "ScriptsManagerCommand",
+          "enabled": true
+        },
+        {
+          "id": "ExchangeAppStoreCommand",
+          "kind": "CommandControl",
+          "commandId": "ExchangeAppStoreCommand",
+          "enabled": true
+        },
+        {
+          "id": "APIHelpCommand",
+          "kind": "CommandControl",
+          "commandId": "APIHelpCommand",
+          "enabled": true
+        }
+      ],
+      "promoted": [
+        {
+          "id": "ScriptsManagerCommand",
+          "kind": "CommandControl",
+          "commandId": "ScriptsManagerCommand",
+          "enabled": true
+        }
+      ]
+    },
+    "UtilityPanel": {
+      "id": "UtilityPanel",
+      "name": "Utility",
+      "menu": [
+        {
+          "id": "MaterialCommand",
+          "kind": "CommandControl",
+          "commandId": "MaterialCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionManageThreadsLibraryCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionManageThreadsLibraryCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionComputeAllCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionComputeAllCommand",
+          "enabled": true
+        }
+      ],
+      "promoted": [
+        {
+          "id": "FusionComputeAllCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionComputeAllCommand",
+          "enabled": true
+        },
+        {
+          "id": "MaterialCommand",
+          "kind": "CommandControl",
+          "commandId": "MaterialCommand",
+          "enabled": true
+        }
+      ]
+    },
+    "ToolsInspectPanel": {
+      "id": "ToolsInspectPanel",
+      "name": "Inspect",
+      "menu": [
+        {
+          "id": "MeasureCommand",
+          "kind": "CommandControl",
+          "commandId": "MeasureCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionHalfSectionViewCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionHalfSectionViewCommand",
+          "enabled": true
+        },
+        {
+          "id": "InterferenceCheckCommand",
+          "kind": "CommandControl",
+          "commandId": "InterferenceCheckCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionCenterOfMassCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionCenterOfMassCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_FusionCenterOfMassCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "FusionCurvatureCombAnalysisCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionCurvatureCombAnalysisCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionCurvatureMapAnalysisCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionCurvatureMapAnalysisCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionDraftAnalysisCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionDraftAnalysisCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionIsoCurveAnalysisCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionIsoCurveAnalysisCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionZebraAnalysisCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionZebraAnalysisCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_FusionSurfaceValidateCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "FusionAccessibilityAnalysisCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionAccessibilityAnalysisCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionMinimumRadiusAnalysisCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionMinimumRadiusAnalysisCommand",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_FusionMinimumRadiusAnalysisCommand",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "FusionViewColorCyclingToggleCmd",
+          "kind": "CommandControl",
+          "commandId": "FusionViewColorCyclingToggleCmd",
+          "enabled": true
+        },
+        {
+          "id": "FacegroupsToggleCmd",
+          "kind": "CommandControl",
+          "commandId": "FacegroupsToggleCmd",
+          "enabled": true
+        },
+        {
+          "id": "SeparatorAfter_FacegroupsToggleCmd",
+          "kind": "SeparatorControl"
+        },
+        {
+          "id": "GravityClimate_ManufacturingSustainabilityInsights_MainDialog",
+          "kind": "CommandControl",
+          "commandId": "GravityClimate_ManufacturingSustainabilityInsights_MainDialog",
+          "enabled": true
+        }
+      ],
+      "promoted": [
+        {
+          "id": "MeasureCommand",
+          "kind": "CommandControl",
+          "commandId": "MeasureCommand",
+          "enabled": true
+        },
+        {
+          "id": "InterferenceCheckCommand",
+          "kind": "CommandControl",
+          "commandId": "InterferenceCheckCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionDraftAnalysisCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionDraftAnalysisCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionAccessibilityAnalysisCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionAccessibilityAnalysisCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionHalfSectionViewCommand",
+          "kind": "CommandControl",
+          "commandId": "FusionHalfSectionViewCommand",
+          "enabled": true
+        },
+        {
+          "id": "FusionViewColorCyclingToggleCmd",
+          "kind": "CommandControl",
+          "commandId": "FusionViewColorCyclingToggleCmd",
+          "enabled": true
+        },
+        {
+          "id": "GravityClimate_ManufacturingSustainabilityInsights_MainDialog",
+          "kind": "CommandControl",
+          "commandId": "GravityClimate_ManufacturingSustainabilityInsights_MainDialog",
+          "enabled": true
+        }
+      ]
+    },
+    "Annotate3DPanel": {
+      "id": "Annotate3DPanel",
+      "name": "Create PMI",
+      "menu": [
+        {
+          "id": "HoleThreadNoteCommand",
+          "kind": "CommandControl",
+          "commandId": "HoleThreadNoteCommand",
+          "enabled": true
+        },
+        {
+          "id": "LeaderLineNoteCommand",
+          "kind": "CommandControl",
+          "commandId": "LeaderLineNoteCommand",
+          "enabled": true
+        }
+      ],
+      "promoted": [
+        {
+          "id": "HoleThreadNoteCommand",
+          "kind": "CommandControl",
+          "commandId": "HoleThreadNoteCommand",
+          "enabled": true
+        },
+        {
+          "id": "LeaderLineNoteCommand",
+          "kind": "CommandControl",
+          "commandId": "LeaderLineNoteCommand",
+          "enabled": true
+        }
+      ]
+    },
+    "AutomationScriptsAddinsPanel": {
+      "id": "AutomationScriptsAddinsPanel",
+      "name": "Add-ins",
+      "menu": [
+        {
+          "id": "ScriptsManagerCommand",
+          "kind": "CommandControl",
+          "commandId": "ScriptsManagerCommand",
+          "enabled": true
+        },
+        {
+          "id": "ExchangeAppStoreCommand",
+          "kind": "CommandControl",
+          "commandId": "ExchangeAppStoreCommand",
+          "enabled": true
+        },
+        {
+          "id": "APIHelpCommand",
+          "kind": "CommandControl",
+          "commandId": "APIHelpCommand",
+          "enabled": true
+        }
+      ],
+      "promoted": [
+        {
+          "id": "ScriptsManagerCommand",
+          "kind": "CommandControl",
+          "commandId": "ScriptsManagerCommand",
+          "enabled": true
+        }
+      ]
+    },
+    "GraphExecutorPanel": {
+      "id": "GraphExecutorPanel",
+      "name": "System Modeler",
+      "menu": [
+        {
+          "id": "FusionGraphExecutorAddinPaletteCmd",
+          "kind": "CommandControl",
+          "commandId": "FusionGraphExecutorAddinPaletteCmd",
+          "enabled": true
+        },
+        {
+          "id": "SystemModelerAutomationDocsCmd",
+          "kind": "CommandControl",
+          "commandId": "SystemModelerAutomationDocsCmd",
+          "enabled": true
+        }
+      ],
+      "promoted": [
+        {
+          "id": "FusionGraphExecutorAddinPaletteCmd",
+          "kind": "CommandControl",
+          "commandId": "FusionGraphExecutorAddinPaletteCmd",
+          "enabled": true
+        },
+        {
+          "id": "SystemModelerAutomationDocsCmd",
+          "kind": "CommandControl",
+          "commandId": "SystemModelerAutomationDocsCmd",
+          "enabled": true
+        }
+      ]
+    }
+  },
+  "commands": {
+    "SketchCreate": {
+      "id": "SketchCreate",
+      "name": "Create Sketch",
+      "enabled": true
+    },
+    "TSplineBaseFeatureCreationCommand": {
+      "id": "TSplineBaseFeatureCreationCommand",
+      "name": "Create Form",
+      "enabled": true
+    },
+    "PushDeriveCommand": {
+      "id": "PushDeriveCommand",
+      "name": "Derive",
+      "enabled": true
+    },
+    "AutomatedModelingCommand": {
+      "id": "AutomatedModelingCommand",
+      "name": "Automated Modeling",
+      "enabled": true
+    },
+    "Extrude": {
+      "id": "Extrude",
+      "name": "Extrude",
+      "enabled": true
+    },
+    "Revolve": {
+      "id": "Revolve",
+      "name": "Revolve",
+      "enabled": true
+    },
+    "Sweep": {
+      "id": "Sweep",
+      "name": "Sweep",
+      "enabled": true
+    },
+    "SolidLoft": {
+      "id": "SolidLoft",
+      "name": "Loft",
+      "enabled": true
+    },
+    "FusionRibCommand": {
+      "id": "FusionRibCommand",
+      "name": "Rib",
+      "enabled": true
+    },
+    "FusionWebCommand": {
+      "id": "FusionWebCommand",
+      "name": "Web",
+      "enabled": true
+    },
+    "EmbossCmd": {
+      "id": "EmbossCmd",
+      "name": "Emboss",
+      "enabled": true
+    },
+    "FusionHoleCommand": {
+      "id": "FusionHoleCommand",
+      "name": "Hole",
+      "enabled": true
+    },
+    "FusionThreadCommand": {
+      "id": "FusionThreadCommand",
+      "name": "Thread",
+      "enabled": true
+    },
+    "PrimitiveBox": {
+      "id": "PrimitiveBox",
+      "name": "Box",
+      "enabled": true
+    },
+    "PrimitiveCylinder": {
+      "id": "PrimitiveCylinder",
+      "name": "Cylinder",
+      "enabled": true
+    },
+    "PrimitiveSphere": {
+      "id": "PrimitiveSphere",
+      "name": "Sphere",
+      "enabled": true
+    },
+    "PrimitiveTorus": {
+      "id": "PrimitiveTorus",
+      "name": "Torus",
+      "enabled": true
+    },
+    "PrimitiveCoil": {
+      "id": "PrimitiveCoil",
+      "name": "Coil",
+      "enabled": true
+    },
+    "PrimitivePipe": {
+      "id": "PrimitivePipe",
+      "name": "Pipe",
+      "enabled": true
+    },
+    "PatternRectangular": {
+      "id": "PatternRectangular",
+      "name": "Rectangular Pattern",
+      "enabled": true
+    },
+    "PatternCircular": {
+      "id": "PatternCircular",
+      "name": "Circular Pattern",
+      "enabled": true
+    },
+    "PatternOnPath": {
+      "id": "PatternOnPath",
+      "name": "Pattern on Path",
+      "enabled": true
+    },
+    "FusionPatternGeometricCommand": {
+      "id": "FusionPatternGeometricCommand",
+      "name": "Geometric Pattern",
+      "enabled": true
+    },
+    "MirrorCommand": {
+      "id": "MirrorCommand",
+      "name": "Mirror",
+      "enabled": true
+    },
+    "FusionSurfaceThickenCommand": {
+      "id": "FusionSurfaceThickenCommand",
+      "name": "Thicken",
+      "enabled": true
+    },
+    "SurfaceSculpt": {
+      "id": "SurfaceSculpt",
+      "name": "Boundary Fill",
+      "enabled": true
+    },
+    "BaseFeatureCreationCommand": {
+      "id": "BaseFeatureCreationCommand",
+      "name": "Create Base Feature",
+      "enabled": true
+    },
+    "PCBDeriveCmd": {
+      "id": "PCBDeriveCmd",
+      "name": "Derive PCB",
+      "enabled": true
+    },
+    "PCBCreateCmd": {
+      "id": "PCBCreateCmd",
+      "name": "Create Unlinked PCB",
+      "enabled": true
+    },
+    "JointOrigin": {
+      "id": "JointOrigin",
+      "name": "Joint Origin",
+      "enabled": true
+    },
+    "FusionPressPullCommand": {
+      "id": "FusionPressPullCommand",
+      "name": "Press Pull",
+      "enabled": true
+    },
+    "FusionFilletEdgesCommand": {
+      "id": "FusionFilletEdgesCommand",
+      "name": "Fillet",
+      "enabled": true
+    },
+    "FusionChamferCommand": {
+      "id": "FusionChamferCommand",
+      "name": "Chamfer",
+      "enabled": true
+    },
+    "FusionShellBodyCommand": {
+      "id": "FusionShellBodyCommand",
+      "name": "Shell",
+      "enabled": true
+    },
+    "FusionDraftCommand": {
+      "id": "FusionDraftCommand",
+      "name": "Draft",
+      "enabled": true
+    },
+    "ModifyScale": {
+      "id": "ModifyScale",
+      "name": "Scale",
+      "enabled": true
+    },
+    "FusionCombineCommand": {
+      "id": "FusionCombineCommand",
+      "name": "Combine",
+      "enabled": true
+    },
+    "FusionOffsetFacesCommand": {
+      "id": "FusionOffsetFacesCommand",
+      "name": "Offset Face",
+      "enabled": true
+    },
+    "FusionReplaceFaceCommand": {
+      "id": "FusionReplaceFaceCommand",
+      "name": "Replace Face",
+      "enabled": true
+    },
+    "FusionSplitFaceCommand": {
+      "id": "FusionSplitFaceCommand",
+      "name": "Split Face",
+      "enabled": true
+    },
+    "FusionSplitBodyCommand": {
+      "id": "FusionSplitBodyCommand",
+      "name": "Split Body",
+      "enabled": true
+    },
+    "FusionPartingLineSplitCmd": {
+      "id": "FusionPartingLineSplitCmd",
+      "name": "Silhouette Split",
+      "enabled": true
+    },
+    "FusionMoveCommand": {
+      "id": "FusionMoveCommand",
+      "name": "Move/Copy",
+      "enabled": true
+    },
+    "AlignCmd": {
+      "id": "AlignCmd",
+      "name": "Align",
+      "enabled": true
+    },
+    "FusionDeleteCommand": {
+      "id": "FusionDeleteCommand",
+      "name": "Delete",
+      "enabled": true
+    },
+    "SoftDeleteCommand": {
+      "id": "SoftDeleteCommand",
+      "name": "Remove",
+      "enabled": true
+    },
+    "FusionRemoveFeaturesCommand": {
+      "id": "FusionRemoveFeaturesCommand",
+      "name": "Remove Features",
+      "enabled": true
+    },
+    "FusionRemoveFacesCommand": {
+      "id": "FusionRemoveFacesCommand",
+      "name": "Remove Faces",
+      "enabled": true
+    },
+    "ReplaceWithPrimitivesCommand": {
+      "id": "ReplaceWithPrimitivesCommand",
+      "name": "Replace with Primitives",
+      "enabled": true
+    },
+    "VolFieldCreateLatticeCommand": {
+      "id": "VolFieldCreateLatticeCommand",
+      "name": "Volumetric Lattice",
+      "enabled": true
+    },
+    "PhysicalMaterialCommand": {
+      "id": "PhysicalMaterialCommand",
+      "name": "Physical Material",
+      "enabled": true
+    },
+    "AppearanceCommand": {
+      "id": "AppearanceCommand",
+      "name": "Appearance",
+      "enabled": true
+    },
+    "MaterialCommand": {
+      "id": "MaterialCommand",
+      "name": "Manage Materials",
+      "enabled": true
+    },
+    "ChangeParameterCommand": {
+      "id": "ChangeParameterCommand",
+      "name": "Change Parameters",
+      "enabled": true
+    },
+    "FusionComputeAllCommand": {
+      "id": "FusionComputeAllCommand",
+      "name": "Compute All",
+      "enabled": true
+    },
+    "FusionStartDesignConfigModeCmd": {
+      "id": "FusionStartDesignConfigModeCmd",
+      "name": "Configure",
+      "enabled": false
+    },
+    "FusionShowDesignConfigPanelCmd": {
+      "id": "FusionShowDesignConfigPanelCmd",
+      "name": "Display Configuration Table",
+      "enabled": false
+    },
+    "FusionConfigurationRulesCmd": {
+      "id": "FusionConfigurationRulesCmd",
+      "name": "Create Configuration Rules",
+      "enabled": false
+    },
+    "CoordinateSystemCommand": {
+      "id": "CoordinateSystemCommand",
+      "name": "User Coordinate System (UCS)",
+      "enabled": true
+    },
+    "ConstructionPlaneOffsetFromPlaneCommand": {
+      "id": "ConstructionPlaneOffsetFromPlaneCommand",
+      "name": "Offset Plane",
+      "enabled": true
+    },
+    "ConstructionPlaneAtAngleCommand": {
+      "id": "ConstructionPlaneAtAngleCommand",
+      "name": "Plane at Angle",
+      "enabled": true
+    },
+    "ConstructionTangentPlaneCommand": {
+      "id": "ConstructionTangentPlaneCommand",
+      "name": "Tangent Plane",
+      "enabled": true
+    },
+    "ConstructionMidPlaneCommand": {
+      "id": "ConstructionMidPlaneCommand",
+      "name": "Midplane",
+      "enabled": true
+    },
+    "ConstructionPlanePerpendicularToPlaneCommand": {
+      "id": "ConstructionPlanePerpendicularToPlaneCommand",
+      "name": "Perpendicular Plane",
+      "enabled": true
+    },
+    "ConstructionPlaneFromTwoEdgesCommand": {
+      "id": "ConstructionPlaneFromTwoEdgesCommand",
+      "name": "Plane Through Two Edges",
+      "enabled": true
+    },
+    "ConstructionPlaneFromThreePointsCommand": {
+      "id": "ConstructionPlaneFromThreePointsCommand",
+      "name": "Plane Through Three Points",
+      "enabled": true
+    },
+    "ConstructionPlaneAlongPathCommand": {
+      "id": "ConstructionPlaneAlongPathCommand",
+      "name": "Plane Along Path",
+      "enabled": true
+    },
+    "ConstructionAxisThroughCylinderCommand": {
+      "id": "ConstructionAxisThroughCylinderCommand",
+      "name": "Axis Through Cylinder/Cone/Torus",
+      "enabled": true
+    },
+    "ConstructionAxisNormalToFaceCommand": {
+      "id": "ConstructionAxisNormalToFaceCommand",
+      "name": "Axis Perpendicular To Face",
+      "enabled": true
+    },
+    "ConstructionAxisFromTwoPlanesCommand": {
+      "id": "ConstructionAxisFromTwoPlanesCommand",
+      "name": "Axis Through Two Planes",
+      "enabled": true
+    },
+    "ConstructionAxisThroughTwoPointsCommand": {
+      "id": "ConstructionAxisThroughTwoPointsCommand",
+      "name": "Axis Through Two Points",
+      "enabled": true
+    },
+    "ConstructionAxisThroughEdgeCommand": {
+      "id": "ConstructionAxisThroughEdgeCommand",
+      "name": "Axis Through Edge",
+      "enabled": true
+    },
+    "ConstructionPointFromPointCommand": {
+      "id": "ConstructionPointFromPointCommand",
+      "name": "Point At Vertex",
+      "enabled": true
+    },
+    "ConstructionPointThroughTwoEdgesCommand": {
+      "id": "ConstructionPointThroughTwoEdgesCommand",
+      "name": "Point Through Two Edges",
+      "enabled": true
+    },
+    "ConstructionPointFromThreePlanesCommand": {
+      "id": "ConstructionPointFromThreePlanesCommand",
+      "name": "Point Through Three Planes",
+      "enabled": true
+    },
+    "ConstructionPointFromCircleOrSphereCommand": {
+      "id": "ConstructionPointFromCircleOrSphereCommand",
+      "name": "Point At Center Of Circle/Sphere/Torus",
+      "enabled": true
+    },
+    "ConstructionPointAtEdgeAndPlaneCommand": {
+      "id": "ConstructionPointAtEdgeAndPlaneCommand",
+      "name": "Point At Edge And Plane",
+      "enabled": true
+    },
+    "ConstructionPointAlongPathCommand": {
+      "id": "ConstructionPointAlongPathCommand",
+      "name": "Point Along Path",
+      "enabled": true
+    },
+    "MeasureCommand": {
+      "id": "MeasureCommand",
+      "name": "Measure",
+      "enabled": true
+    },
+    "FusionHalfSectionViewCommand": {
+      "id": "FusionHalfSectionViewCommand",
+      "name": "Section Analysis",
+      "enabled": true
+    },
+    "InterferenceCheckCommand": {
+      "id": "InterferenceCheckCommand",
+      "name": "Interference",
+      "enabled": true
+    },
+    "FusionCenterOfMassCommand": {
+      "id": "FusionCenterOfMassCommand",
+      "name": "Center of Mass",
+      "enabled": true
+    },
+    "FusionCurvatureCombAnalysisCommand": {
+      "id": "FusionCurvatureCombAnalysisCommand",
+      "name": "Curvature Comb Analysis",
+      "enabled": true
+    },
+    "FusionCurvatureMapAnalysisCommand": {
+      "id": "FusionCurvatureMapAnalysisCommand",
+      "name": "Curvature Map Analysis",
+      "enabled": true
+    },
+    "FusionDraftAnalysisCommand": {
+      "id": "FusionDraftAnalysisCommand",
+      "name": "Draft Analysis",
+      "enabled": true
+    },
+    "FusionEnvironmentMapAnalysisCommand": {
+      "id": "FusionEnvironmentMapAnalysisCommand",
+      "name": "Environment Map Analysis",
+      "enabled": true
+    },
+    "FusionIsoCurveAnalysisCommand": {
+      "id": "FusionIsoCurveAnalysisCommand",
+      "name": "Isocurve Analysis",
+      "enabled": true
+    },
+    "FusionZebraAnalysisCommand": {
+      "id": "FusionZebraAnalysisCommand",
+      "name": "Zebra Analysis",
+      "enabled": true
+    },
+    "FusionAccessibilityAnalysisCommand": {
+      "id": "FusionAccessibilityAnalysisCommand",
+      "name": "Accessibility Analysis",
+      "enabled": true
+    },
+    "FusionMinimumRadiusAnalysisCommand": {
+      "id": "FusionMinimumRadiusAnalysisCommand",
+      "name": "Minimum Radius Analysis",
+      "enabled": true
+    },
+    "FusionViewColorCyclingToggleCmd": {
+      "id": "FusionViewColorCyclingToggleCmd",
+      "name": "Display Component Colors",
+      "enabled": true
+    },
+    "FacegroupsToggleCmd": {
+      "id": "FacegroupsToggleCmd",
+      "name": "Display Mesh Face Groups",
+      "enabled": true
+    },
+    "GravityClimate_ManufacturingSustainabilityInsights_MainDialog": {
+      "id": "GravityClimate_ManufacturingSustainabilityInsights_MainDialog",
+      "name": "Sustainability Insights",
+      "enabled": true
+    },
+    "FusionAddEditDecalCommand": {
+      "id": "FusionAddEditDecalCommand",
+      "name": "Decal",
+      "enabled": true
+    },
+    "FusionAddCanvasCommand": {
+      "id": "FusionAddCanvasCommand",
+      "name": "Canvas",
+      "enabled": true
+    },
+    "SketchImportSVG": {
+      "id": "SketchImportSVG",
+      "name": "Insert SVG",
+      "enabled": true
+    },
+    "ImportDxfFileCommand": {
+      "id": "ImportDxfFileCommand",
+      "name": "Insert DXF",
+      "enabled": true
+    },
+    "ParaMeshInsertAlignCommand": {
+      "id": "ParaMeshInsertAlignCommand",
+      "name": "Insert Mesh",
+      "enabled": true
+    },
+    "FusionImportCommandFromToolbar": {
+      "id": "FusionImportCommandFromToolbar",
+      "name": "Insert Component",
+      "enabled": false
+    },
+    "FusionFastenersCommand": {
+      "id": "FusionFastenersCommand",
+      "name": "Insert Fastener",
+      "enabled": false
+    },
+    "FusionDuplicateWithJointsCommand": {
+      "id": "FusionDuplicateWithJointsCommand",
+      "name": "Duplicate With Joints",
+      "enabled": false
+    },
+    "PullDeriveCommand": {
+      "id": "PullDeriveCommand",
+      "name": "Insert Derive",
+      "enabled": true
+    },
+    "InsertMcMasterCarrComponentCommand": {
+      "id": "InsertMcMasterCarrComponentCommand",
+      "name": "Insert McMaster-Carr Component",
+      "enabled": false
+    },
+    "cadenasparts4cad": {
+      "id": "cadenasparts4cad",
+      "name": "Insert a manufacturer part",
+      "enabled": true
+    },
+    "traceparts_insert": {
+      "id": "traceparts_insert",
+      "name": "Insert TraceParts Supplier Components",
+      "enabled": true
+    },
+    "NewAssemblyFromPartCommand": {
+      "id": "NewAssemblyFromPartCommand",
+      "name": "Add To Assembly",
+      "enabled": true
+    },
+    "SelectCommand": {
+      "id": "SelectCommand",
+      "name": "Select",
+      "enabled": true
+    },
+    "selectWindow": {
+      "id": "selectWindow",
+      "name": "Window Selection",
+      "enabled": true
+    },
+    "selectFreeForm": {
+      "id": "selectFreeForm",
+      "name": "Freeform Selection",
+      "enabled": true
+    },
+    "selectPaint": {
+      "id": "selectPaint",
+      "name": "Paint Selection",
+      "enabled": true
+    },
+    "SelectByNameCommand": {
+      "id": "SelectByNameCommand",
+      "name": "Select By Name",
+      "enabled": true
+    },
+    "SelectByBoundaryCommand": {
+      "id": "SelectByBoundaryCommand",
+      "name": "Select By Boundary",
+      "enabled": true
+    },
+    "FusionSelectBodiesBySizeCommand": {
+      "id": "FusionSelectBodiesBySizeCommand",
+      "name": "Select By Size",
+      "enabled": true
+    },
+    "SelectByInvertCommand": {
+      "id": "SelectByInvertCommand",
+      "name": "Invert Selection",
+      "enabled": true
+    },
+    "FusionSelectSeedAndBoundaryFacesCommand": {
+      "id": "FusionSelectSeedAndBoundaryFacesCommand",
+      "name": "Seed And Boundary",
+      "enabled": true
+    },
+    "SelectBodyPriorityCommand": {
+      "id": "SelectBodyPriorityCommand",
+      "name": "Select Body Priority",
+      "enabled": true
+    },
+    "SelectFacePriorityCommand": {
+      "id": "SelectFacePriorityCommand",
+      "name": "Select Face Priority",
+      "enabled": true
+    },
+    "SelectEdgePriorityCommand": {
+      "id": "SelectEdgePriorityCommand",
+      "name": "Select Edge Priority",
+      "enabled": true
+    },
+    "SelectionFilterCommand": {
+      "id": "SelectionFilterCommand",
+      "name": "Selection Filters",
+      "enabled": true
+    },
+    "SurfaceExtrude": {
+      "id": "SurfaceExtrude",
+      "name": "Extrude",
+      "enabled": true
+    },
+    "SurfaceRevolve": {
+      "id": "SurfaceRevolve",
+      "name": "Revolve",
+      "enabled": true
+    },
+    "SurfaceSweep": {
+      "id": "SurfaceSweep",
+      "name": "Sweep",
+      "enabled": true
+    },
+    "SurfaceLoft": {
+      "id": "SurfaceLoft",
+      "name": "Loft",
+      "enabled": true
+    },
+    "FusionSurfacePatchCommand": {
+      "id": "FusionSurfacePatchCommand",
+      "name": "Patch",
+      "enabled": true
+    },
+    "FusionSurfaceRuledCommand": {
+      "id": "FusionSurfaceRuledCommand",
+      "name": "Ruled",
+      "enabled": true
+    },
+    "FusionSurfaceOffsetCommand": {
+      "id": "FusionSurfaceOffsetCommand",
+      "name": "Offset",
+      "enabled": true
+    },
+    "FusionSurfaceTrimCommand": {
+      "id": "FusionSurfaceTrimCommand",
+      "name": "Trim",
+      "enabled": true
+    },
+    "FusionSurfaceUntrimCommand": {
+      "id": "FusionSurfaceUntrimCommand",
+      "name": "Untrim",
+      "enabled": true
+    },
+    "FusionExtendCommand": {
+      "id": "FusionExtendCommand",
+      "name": "Extend",
+      "enabled": true
+    },
+    "FusionSurfaceStitchCommand": {
+      "id": "FusionSurfaceStitchCommand",
+      "name": "Stitch",
+      "enabled": true
+    },
+    "FusionSurfaceUnStitchCommand": {
+      "id": "FusionSurfaceUnStitchCommand",
+      "name": "Unstitch",
+      "enabled": true
+    },
+    "FusionSurfaceReverseNormalCommand": {
+      "id": "FusionSurfaceReverseNormalCommand",
+      "name": "Reverse Normal",
+      "enabled": true
+    },
+    "ParaMeshTessellateCommand": {
+      "id": "ParaMeshTessellateCommand",
+      "name": "Tessellate",
+      "enabled": true
+    },
+    "ParaMeshPlanarSectionCommand": {
+      "id": "ParaMeshPlanarSectionCommand",
+      "name": "Create Mesh Section Sketch",
+      "enabled": true
+    },
+    "ParaMeshEmptyBaseFeatureCommand": {
+      "id": "ParaMeshEmptyBaseFeatureCommand",
+      "name": "Create Base Mesh Feature",
+      "enabled": true
+    },
+    "ParaMeshRepairCommand": {
+      "id": "ParaMeshRepairCommand",
+      "name": "Repair",
+      "enabled": true
+    },
+    "ParaMeshCalculateFaceGroupsCommand": {
+      "id": "ParaMeshCalculateFaceGroupsCommand",
+      "name": "Generate Face Groups",
+      "enabled": true
+    },
+    "ParaMeshMergeFaceGroupsCommand": {
+      "id": "ParaMeshMergeFaceGroupsCommand",
+      "name": "Combine Face Groups",
+      "enabled": true
+    },
+    "ParaMeshBaseFeatureCreateCommand": {
+      "id": "ParaMeshBaseFeatureCreateCommand",
+      "name": "Direct Edit",
+      "enabled": true
+    },
+    "ParaMeshRemeshCommand": {
+      "id": "ParaMeshRemeshCommand",
+      "name": "Remesh",
+      "enabled": true
+    },
+    "ParaMeshReduceCommand": {
+      "id": "ParaMeshReduceCommand",
+      "name": "Reduce",
+      "enabled": true
+    },
+    "ParaMeshPlaneCutCommand": {
+      "id": "ParaMeshPlaneCutCommand",
+      "name": "Plane Cut",
+      "enabled": true
+    },
+    "ParaMeshHollowCommand": {
+      "id": "ParaMeshHollowCommand",
+      "name": "Shell",
+      "enabled": true
+    },
+    "ParaMeshCombineCommand": {
+      "id": "ParaMeshCombineCommand",
+      "name": "Combine",
+      "enabled": true
+    },
+    "ParaMeshSmoothCommand": {
+      "id": "ParaMeshSmoothCommand",
+      "name": "Smooth",
+      "enabled": true
+    },
+    "ParaMeshReverseNormalsCommand": {
+      "id": "ParaMeshReverseNormalsCommand",
+      "name": "Reverse Normal",
+      "enabled": true
+    },
+    "ParaMeshExtractCommand": {
+      "id": "ParaMeshExtractCommand",
+      "name": "Separate",
+      "enabled": true
+    },
+    "ParaMeshScaleCommand": {
+      "id": "ParaMeshScaleCommand",
+      "name": "Scale Mesh",
+      "enabled": true
+    },
+    "ParaMeshRemoveCommand": {
+      "id": "ParaMeshRemoveCommand",
+      "name": "Remove",
+      "enabled": true
+    },
+    "ParaMeshConvertCommand": {
+      "id": "ParaMeshConvertCommand",
+      "name": "Convert Mesh",
+      "enabled": true
+    },
+    "ThreeDprintCmdDef": {
+      "id": "ThreeDprintCmdDef",
+      "name": "3D Print",
+      "enabled": true
+    },
+    "FusionSheetMetalFlangeCommand": {
+      "id": "FusionSheetMetalFlangeCommand",
+      "name": "Flange (Base/Edge/Contour)",
+      "enabled": true
+    },
+    "FusionSheetMetalHemFlangeCommand": {
+      "id": "FusionSheetMetalHemFlangeCommand",
+      "name": "Hem",
+      "enabled": true
+    },
+    "FusionSheetMetalLoftCommand": {
+      "id": "FusionSheetMetalLoftCommand",
+      "name": "Lofted Flange",
+      "enabled": true
+    },
+    "SheetMetalFoldCmd": {
+      "id": "SheetMetalFoldCmd",
+      "name": "Fold",
+      "enabled": true
+    },
+    "ConvertToSheetMetalCmd": {
+      "id": "ConvertToSheetMetalCmd",
+      "name": "Convert to Sheet Metal",
+      "enabled": true
+    },
+    "FusionSheetMetalFlatPatternCmd": {
+      "id": "FusionSheetMetalFlatPatternCmd",
+      "name": "Create Flat Pattern",
+      "enabled": true
+    },
+    "FusionSheetmetalUnfoldCommand": {
+      "id": "FusionSheetmetalUnfoldCommand",
+      "name": "Unfold",
+      "enabled": true
+    },
+    "FusionSheetMetalRulesLibraryCommand": {
+      "id": "FusionSheetMetalRulesLibraryCommand",
+      "name": "Sheet Metal Rules Library",
+      "enabled": true
+    },
+    "FusionSheetMetalCornerCommand": {
+      "id": "FusionSheetMetalCornerCommand",
+      "name": "Corner Closure",
+      "enabled": true
+    },
+    "FusionJoinByBendCommand": {
+      "id": "FusionJoinByBendCommand",
+      "name": "Join by Bend",
+      "enabled": true
+    },
+    "FusionSheetMetalRipCommand": {
+      "id": "FusionSheetMetalRipCommand",
+      "name": "Rip",
+      "enabled": true
+    },
+    "FusionSheetMetalFilletCommand": {
+      "id": "FusionSheetMetalFilletCommand",
+      "name": "Sheet Metal Fillet",
+      "enabled": true
+    },
+    "FusionSheetMetalChamferCommand": {
+      "id": "FusionSheetMetalChamferCommand",
+      "name": "Sheet Metal Chamfer",
+      "enabled": true
+    },
+    "FusionAssignPlasticRuleCommand": {
+      "id": "FusionAssignPlasticRuleCommand",
+      "name": "Assign Plastic Rule",
+      "enabled": true
+    },
+    "FusionManagePlasticRuleCommand": {
+      "id": "FusionManagePlasticRuleCommand",
+      "name": "Manage Plastic Rules",
+      "enabled": true
+    },
+    "FusionBossCommand": {
+      "id": "FusionBossCommand",
+      "name": "Boss",
+      "enabled": true
+    },
+    "FusionSnapFitCommand": {
+      "id": "FusionSnapFitCommand",
+      "name": "Snap Fit",
+      "enabled": true
+    },
+    "FusionLipCommand": {
+      "id": "FusionLipCommand",
+      "name": "Lip",
+      "enabled": true
+    },
+    "FusionRestCommand": {
+      "id": "FusionRestCommand",
+      "name": "Rest",
+      "enabled": true
+    },
+    "DesignAdviceCmd": {
+      "id": "DesignAdviceCmd",
+      "name": "Design Advice",
+      "enabled": true
+    },
+    "MSFNestAuthoringCmd": {
+      "id": "MSFNestAuthoringCmd",
+      "name": "Nest Preparation",
+      "enabled": true
+    },
+    "ScriptsManagerCommand": {
+      "id": "ScriptsManagerCommand",
+      "name": "Scripts and Add-Ins...",
+      "enabled": true
+    },
+    "ExchangeAppStoreCommand": {
+      "id": "ExchangeAppStoreCommand",
+      "name": "Design and Make Marketplace",
+      "enabled": true
+    },
+    "APIHelpCommand": {
+      "id": "APIHelpCommand",
+      "name": "Fusion API",
+      "enabled": true
+    },
+    "FusionManageThreadsLibraryCommand": {
+      "id": "FusionManageThreadsLibraryCommand",
+      "name": "Manage Threads Library",
+      "enabled": true
+    },
+    "HoleThreadNoteCommand": {
+      "id": "HoleThreadNoteCommand",
+      "name": "Hole/Thread Note",
+      "enabled": true
+    },
+    "LeaderLineNoteCommand": {
+      "id": "LeaderLineNoteCommand",
+      "name": "Note",
+      "enabled": true
+    },
+    "FusionGraphExecutorAddinPaletteCmd": {
+      "id": "FusionGraphExecutorAddinPaletteCmd",
+      "name": "System Modeler",
+      "enabled": true
+    },
+    "SystemModelerAutomationDocsCmd": {
+      "id": "SystemModelerAutomationDocsCmd",
+      "name": "System Modeler Documentation",
+      "enabled": true
+    }
+  },
+  "verifiedNativeMenuCounts": {
+    "SolidCreatePanel": 26,
+    "SolidModifyPanel": 23,
+    "ConstructionPanel": 20,
+    "InspectPanel": 15,
+    "InsertPanel": 12,
+    "PartAssemblePanel": 1,
+    "SelectPanel": 7
+  },
+  "copyrightAssetsIncluded": false,
+  "kernelConnected": false
+}

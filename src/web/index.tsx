@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { App } from './App';
+import { LauncherApp } from './launcher/LauncherApp';
 import { installUiScaleController } from './UiScale';
 import { UiScaleSettings } from './UiScaleSettings';
 import './styles/base.css';
@@ -34,6 +34,6 @@ window.__ASA_CAD_UI_SCALE__ = installUiScaleController();
 // OpenCascade/fixture initialization and is not representative of production.
 createRoot(root).render(
   <UiScaleSettings>
-    <App />
+    <LauncherApp />
   </UiScaleSettings>,
 );

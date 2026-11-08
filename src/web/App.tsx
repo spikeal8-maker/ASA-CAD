@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { CadApplicationImpl } from '../application/CadApplicationImpl';
-import { BrowserPartRuntimeAdapter } from '../browser/BrowserPartRuntimeAdapter';
-import { parseCadClientRoute } from '../browser/routes';
+import { useCadApplicationSession } from './useCadApplicationSession';
+import { EditorNavigation } from './launcher/CadNavigation';
+import { EditorStartup, useEditorStartup } from './launcher/EditorStartup';
+import { currentCadClientRoute } from '../browser/routes';
 import { createEmptyCadDocument, type CadDocumentKind } from '../contracts/document';
 import { applyPartDevFixture } from './devFixtures';
 import { useCadProjectPersistence, type CadProjectPersistenceOverrides } from './useCadProjectPersistence';
@@ -22,22 +23,19 @@ import { cadUiActionIdForShortcut } from './M2CadUiActions';
 import { ShortcutRegistry, type ShortcutActionId } from './ShortcutRegistry';
 import { cadKeyboardHandler } from './CadKeyboardHandler';
 import { useViewportViewCommands } from './useViewportViewCommands';
+import './fusion/live.css';
 export function App(props: CadProjectPersistenceOverrides) {
-  const route = useMemo(()=>parseCadClientRoute(window.location.pathname),[]);
+  const route = useMemo(currentCadClientRoute,[]);
   const devFixture=route.kind==='dev-part'?route.fixture:null;
   const fixtureStartedRef = useRef(false);
-  const initialDocument = useMemo(() => createEmptyCadDocument('part', { title: 'Деталь 1' }), []);
-  const runtime = useMemo(() => new BrowserPartRuntimeAdapter(), []);
-  const app = useMemo(() => new CadApplicationImpl(initialDocument, runtime), [initialDocument, runtime]);
+  const { initialDocument, runtime, app, revisionToken } = useCadApplicationSession();
   const persistence = useCadProjectPersistence(app, initialDocument, route, props);
   const shortcutRegistry = useMemo(() => new ShortcutRegistry(), []);
-  const [revisionToken, setRevisionToken] = useState(0);
   const [activePanel, setActivePanel] = useState<'tree' | 'parameters' | 'tools' | 'closed'>('tree');
   const [notice, setNotice] = useState(devFixture ? `Fixture ${devFixture}: загрузка…` : 'Готово');
   const [fixtureStatus, setFixtureStatus] = useState<'none' | 'loading' | 'ready' | 'error'>(devFixture ? 'loading' : 'none');
   const { viewName, viewCommand, requestView, requestViewportCommand } = useViewportViewCommands();
   const [search,setSearch]=useState('');
-  useEffect(() => { const unsubscribe = app.subscribe(() => setRevisionToken((value) => value + 1)); return () => { unsubscribe(); app.dispose(); }; }, [app]);
   const document = app.getDocument();
   const state = app.getState();
   const renderModel = runtime.getRenderModel(document);
@@ -48,6 +46,7 @@ const{ activeWorkspace,setActiveWorkspace,activeCommand,activeSketchId,selectedS
   async function createDocument(kind: CadDocumentKind) { await app.replaceDocument(createEmptyCadDocument(kind, { title: `${documentNames[kind]} 1` })); setActivePanel('tree'); resetForDocument(kind); setNotice(`Создан документ «${documentNames[kind]}»`); }
   const resetAfterOpen = useCallback((kind: CadDocumentKind) => { setActivePanel('tree'); resetForDocument(kind); }, [resetForDocument]);
   const {save: saveLocal, open: openLocal}=useCadPersistenceCommands({ persistence, remoteHost: !!props.projectHost, setNotice, onOpened: resetAfterOpen });
+  const startup = useEditorStartup(props.autoOpen, openLocal);
   const r=useDocumentReplacementGuard({dirty:state.dirty,document,save:saveLocal,open:openLocal,onCreate:createDocument});
   async function undo() { clearTransientSelection(); const result = await app.undo(); setNotice(result.changed ? 'Отменено' : 'Нечего отменять'); }
   async function redo() { clearTransientSelection(); const result = await app.redo(); setNotice(result.changed ? 'Повторено' : 'Нечего повторять'); }
@@ -71,10 +70,12 @@ async function dispatchShortcutAction(action: ShortcutActionId) { const sharedAc
     lineInput: workspace.lineInput, showLineParameters: () => setActivePanel('parameters'),
     arcInput: workspace.arcInput, showArcParameters: () => setActivePanel('parameters') });
   const fixtureError = state.recompute.status === 'error' ? state.recompute.message : undefined;
+  if (startup !== 'ready') return <EditorStartup status={startup} />;
   return (
       <div className="cad-app" data-document-kind={document.kind} data-runtime-status={runtimeState.status} data-recompute-status={state.recompute.status} data-dev-fixture={devFixture ?? ''} data-fixture-status={fixtureStatus} data-sketch-count={part?.sketches.length ?? 0} data-feature-count={part?.features.length ?? 0} data-stable-reference-count={part?.stableReferences.length ?? 0} data-selected-kind={selectedPick?.kind ?? ''} data-selected-point={selectedPointText} data-selected-body-id={selectedBodyId ?? ''} data-active-sketch-id={activeSketchId ?? ''} data-selected-sketch-entity-id={selectedSketchEntityId ?? ''} data-shortcuts="central" tabIndex={-1} onKeyDown={handleKeyDown}>
       <CadShellTop documentKind={document.kind} documentTitle={document.title} dirty={r.dirty} activeWorkspace={activeWorkspace} setActiveWorkspace={setActiveWorkspace} search={search} setSearch={setSearch} searchableActions={searchableActions} getAction={uiAction} showRoadmapCommands={devFixture !== null} rectangleReady={rectangleReady} rectangleWidth={rectangleWidth} rectangleHeight={rectangleHeight} circleReady={circleReady} circleDiameter={circleDiameter} viewName={viewName} />
       <CadShellMain activePanel={activePanel} setActivePanel={setActivePanel} requestView={requestView} viewName={viewName} selectionMode={selectionMode} selectedBodyName={selectedBody?.name} selectedSketchEntityId={selectedSketchEntityId} activeCommand={activeCommand} commitActiveCommand={commitActiveCommand} cancelCommand={cancelCommand} treeContent={<DocumentTree document={document} selectedBodyId={selectedBodyId} selectedPlane={selectedPlane} onSelectPlane={selectBasePlane} activeSketchId={activeSketchId} onSelectBody={handleBodySelect} onEditSketch={enterSketch} onEditDimension={beginDimensionEdit} />} parametersContent={ <ParameterPanel activeCommand={activeCommand} lineInput={workspace.lineInput} arcInput={workspace.arcInput} requiresFaceSelection={hasSolid && !selectedPlane && activeCommand === 'part.sketch.create'} selectedPick={selectedPick} sketchPlane={sketchPlane} setSketchPlane={setSketchPlane} rectangleWidth={rectangleWidth} rectangleHeight={rectangleHeight} setRectangleWidth={setRectangleWidth} setRectangleHeight={setRectangleHeight} circleDiameter={circleDiameter} setCircleDiameter={setCircleDiameter} extrude={extrude} filletRadius={filletRadius} setFilletRadius={setFilletRadius} dimensionEditValue={dimensionEditValue} setDimensionEditValue={setDimensionEditValue} dimensionCreation={workspace.dimensionCreation} onCreateSketch={commitCreateSketch} onCreateRectangle={commitRectangle} onCreateCircle={commitCircle} onCut={commitCut} onFillet={commitFillet} onDimensionEdit={commitDimensionEdit} onCancel={cancelCommand} /> } toolsContent={<MobileToolsPanel documentKind={document.kind} workspace={activeWorkspace} getAction={uiAction} />} modelContent={document.kind === 'part' ? (<CoincidentPartStage document={document} activeSketch={sketch} activeWorkspace={activeWorkspace} activeCommand={activeCommand} revisionToken={revisionToken} renderModel={renderModel} runtimeStatus={runtimeState.status} fixtureError={fixtureError} selectionMode={selectionMode} onPick={handleViewportPick} selectedPlane={selectedPlane} onPlaneSelect={selectBasePlane} viewCommand={viewCommand} selectedBodyId={selectedBodyId} onBodySelect={handleBodySelect} selectedSketchEntityId={selectedSketchEntityId} onSketchEntitySelect={handleSketchEntitySelect} onSketchEntityTranslate={translateSketchEntity} onSketchDragRejected={setNotice} lineDraft={lineDraft} lineCommitting={lineCommitting} onSketchLinePointMove={handleSketchLinePointMove} onSketchLinePoint={handleSketchLinePoint} rectangleDraft={rectangleDraft} rectangleCommitting={rectangleCommitting} onSketchRectanglePointMove={handleSketchRectanglePointMove} onSketchRectanglePoint={handleSketchRectanglePoint} circleDraft={circleDraft} circleCommitting={circleCommitting} onSketchCirclePointMove={handleSketchCirclePointMove} onSketchCirclePoint={handleSketchCirclePoint} arcDraft={arcDraft} arcCommitting={arcCommitting} onSketchArcPointMove={handleSketchArcPointMove} onSketchArcPoint={handleSketchArcPoint} commit={workspace.applyCoincidentConstraint} parallelCommit={workspace.applyParallelConstraint} perpendicularCommit={workspace.applyPerpendicularConstraint} tangentCommit={workspace.applyTangentConstraint} concentricCommit={workspace.applyConcentricConstraint} equalCommit={workspace.applyEqualConstraint} symmetryCommit={workspace.applySymmetryConstraint} pointOnCurveCommit={workspace.applyPointOnCurveConstraint} angularPair={workspace.selectAngularDimensionLines}/> ) : <PlannedDocumentStage kind={document.kind} />} /> <CadShellBottom recomputeStatus={state.recompute.status} notice={notice} devFixture={devFixture} selectedPickKind={selectedPick?.kind} selectedPointText={selectedPointText} selectedBodyName={selectedBody?.name} selectedSketchEntityId={selectedSketchEntityId} documentKind={document.kind} runtimeStatus={runtimeState.status} activePanel={activePanel} setActivePanel={setActivePanel} />
+      <EditorNavigation dirty={r.dirty} save={r.saveDocument} cancelCommand={cancelCommand} />
       {r.dialogs}
     </div>
   );

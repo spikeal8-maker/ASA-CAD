@@ -19,6 +19,7 @@
     "docs/STATUS.md"
   ],
   "scope": [
+    "Implement owner-requested THREE-MODE-LAUNCHER-001 with selective Fusion presentation reuse, one shared CAD application/history, real ASA Lab three-d integration, and separately gated D2/main release",
     "Implement independent U2-ARC-NUMERIC-20261108 from frozen #170 through the existing sketch.arc command; remaining U2 and owner visual acceptance stay open",
     "Preserve the single CadApplication/CadDocument/history/solver path; Numeric Line and Rectangle acceptance already have separate technical proof",
     "Keep the Numeric Line visual area unchanged while owner visual verdict is pending; independent U2 work remains subject to its own gates",
@@ -29,7 +30,7 @@
   "outOfScope": [
     "U3-U5 expansion before their canonical prerequisite checkpoints and required audits",
     "Automatic integration of #170 prototype runtime, #177/#179 or Fusion #204-#207 candidates",
-    "Integration-to-main, production deployment and final visual parity without owner decision",
+    "Integration-to-main or D2 deployment without required release/preflight gates; unrelated production deployment and final visual parity without owner decision",
     "Global/default D2 Node changes or an unapproved installation of a future Node release"
   ],
   "nextCheckpoint": "U3",
@@ -139,5 +140,15 @@
       "u2TechnicalAcceptance": "IN_PROGRESS"
     },
     "resolution": "CONDITIONAL_ON_TECHNICAL_ACCEPTANCE_AND_MERGE_OF_THIS_AUDIT_PR"
+  },
+  "launcherWork": {
+    "id": "THREE-MODE-LAUNCHER-001",
+    "authorization": "OWNER_TASK_20261108_THREE_MODE_LAUNCHER",
+    "status": "IN_PROGRESS",
+    "integrationBase": "6a2159f25efd5203f83a385461c4aaae92f2fabd",
+    "installedBefore": "c1959b1e84a7c38288022622a9585a38c07d3f7e",
+    "releaseAuthorization": "SEPARATE_RELEASE_PR_AFTER_ALL_REQUIRED_GATES",
+    "originSwitchGate": "REAL_BROWSER_BACKUP_OLD_PROJECTS_ROLLBACK_AND_POSTFLIGHT",
+    "ownerVisualParity": "PENDING"
   }
 }

@@ -90,7 +90,8 @@
     "test:m3:rectangle-direct": "node tests/m3/direct-rectangle-boundary.mjs",
     "test:m3:selection-delete": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m3/sketch-entity-delete.ts && node tests/m3/sketch-selection-delete-boundary.mjs",
     "test:m3:fixed-freeze": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m3/sketch-fixed-freeze.ts && node tests/m3/sketch-fixed-freeze-boundary.mjs",
-    "test:m2o:visibility": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m2o/action-visibility.ts"
+    "test:m2o:visibility": "node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m2o/action-visibility.ts",
+    "test:launcher": "node --import ./vendor/toubkal/node_modules/tsx/dist/loader.mjs tests/launcher/local-projects.ts && node --import ./vendor/toubkal/node_modules/tsx/dist/loader.mjs tests/launcher/routes.ts && node --import ./vendor/toubkal/node_modules/tsx/dist/loader.mjs tests/launcher/navigation.ts && node --test tests/launcher/server.mjs"
   },
   "engines": {
     "node": ">=22.23.4",

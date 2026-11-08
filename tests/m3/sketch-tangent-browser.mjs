@@ -69,7 +69,7 @@ async function chooseLineCircle(page, lineId, circleId, touch) {
 async function desktopTangent() {
   const { page, errors } = await newDesktopPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createXYSketch(page);
     const lineId = await createLine(page, false), circleId = await createCircle(page, false);
     assert.equal(await tangentGeometry(page, lineId, circleId), false, 'Line/Circle must start non-tangent');
@@ -112,7 +112,7 @@ async function desktopTangent() {
 async function touchTangent() {
   const { context, page, errors } = await newTouchPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createMobileXYSketch(page);
     const lineId = await createLine(page, true), circleId = await createCircle(page, true);
     await activateMobileTool(page, 'constraint.tangent', 'Tangent');

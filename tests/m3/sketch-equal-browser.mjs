@@ -58,7 +58,7 @@ async function chooseLines(page, first, second, touch) {
 async function desktopEqual() {
   const { page, errors } = await newDesktopPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createXYSketch(page);
     const { first, second } = await createTwoLines(page, false);
     assert.equal(equal(await lineVector(page, first), await lineVector(page, second)), false, 'Lines must start with different lengths');
@@ -101,7 +101,7 @@ async function desktopEqual() {
 async function touchEqual() {
   const { context, page, errors } = await newTouchPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createMobileXYSketch(page);
     const { first, second } = await createTwoLines(page, true);
     await activateMobileTool(page, 'constraint.equal', 'Equal');

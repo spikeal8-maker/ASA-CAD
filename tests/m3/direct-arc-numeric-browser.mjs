@@ -90,7 +90,7 @@ async function run(id, body) {
   const { page: p, errors } = await newDesktopPage(browser);
   p.setDefaultTimeout(15_000); const r = { id, status: 'FAIL' }; report.cases.push(r);
   try {
-    await p.goto(shellUrl, { waitUntil: 'networkidle' }); await createXYSketch(p);
+    await p.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' }); await createXYSketch(p);
     const baseline = await saveLocalDocument(p);
     await p.locator('.k-command-ribbon [data-command-id="sketch.arc"]').click();
     await p.locator('.k-management-panel ' + P).waitFor(); await resetState(p, 0);

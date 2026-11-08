@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { chromium } from '../../vendor/toubkal/node_modules/playwright-core/index.mjs';
 
-const url = process.env.ASA_CAD_SHELL_URL ?? 'http://127.0.0.1:8090/';
+const url = new URL('cad/', process.env.ASA_CAD_SHELL_URL ?? 'http://127.0.0.1:8090/').href;
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
 const pageErrors = [];
