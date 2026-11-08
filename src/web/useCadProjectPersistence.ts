@@ -15,6 +15,7 @@ export interface CadProjectPersistenceOverrides {
   projectHost?: CadProjectHost;
   recoveryStore?: CadRecoveryStore;
   projectKey?: string;
+  autoOpen?: boolean;
 }
 
 export function useCadProjectPersistence(

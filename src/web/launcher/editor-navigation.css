@@ -1,0 +1,63 @@
+.asa-editor-root { width: 100%; height: 100%; }
+.cad-launcher-nav {
+  order: -1; grid-row: 1; display: flex; align-items: center; gap: 16px;
+  min-width: 0; padding: 4px 12px; background: #fff; color: #31516b;
+  border-bottom: 1px solid #dbe4eb; font: 12px/1.25 'Segoe UI', sans-serif;
+}
+.cad-launcher-nav button { background: #f1f6f9; border: 1px solid #d9e3eb; border-radius: 6px; padding: 5px 10px; cursor: pointer; white-space: nowrap; }
+.cad-launcher-nav label { display: flex; align-items: center; gap: 7px; }
+.cad-launcher-nav select { background: #fff; border: 1px solid #d5e0e8; border-radius: 5px; padding: 3px; }
+.cad-launcher-nav > span { margin-left: auto; color: #718191; }
+.cad-app:has(> .cad-launcher-nav):has(> .k-main-menu-bar) {
+  grid-template-rows: 36px calc(28px * var(--k-zoom)) calc(27px * var(--k-zoom)) calc(93px * var(--k-zoom)) minmax(0, 1fr) 3px;
+}
+.cad-app:has(> .cad-launcher-nav) > .k-main-menu-bar { grid-row: 2; }
+.cad-app:has(> .cad-launcher-nav) > .k-document-tabs { grid-row: 3; }
+.cad-app:has(> .cad-launcher-nav) > .k-instrument-area { grid-row: 4; }
+.cad-app:has(> .cad-launcher-nav) > .k-content { grid-row: 5; }
+.cad-app:has(> .cad-launcher-nav) > .k-mobile-navigation { grid-row: 6; }
+.asa-editor-root[data-mode="fusion"] .cad-app:has(> .cad-launcher-nav) {
+  grid-template-rows: 36px 30px 88px minmax(0, 1fr) 27px !important;
+}
+.asa-editor-root[data-mode="fusion"] .cad-app:has(> .cad-launcher-nav):has(.live-top[data-sketch-active="true"]) {
+  grid-template-rows: 36px 37px 97px minmax(0, 1fr) 27px !important;
+}
+.asa-editor-root[data-mode="fusion"] .cad-app:has(> .cad-launcher-nav):has(main.live-workarea[data-workspace="sketch"]) {
+  grid-template-rows: 36px 37px 97px minmax(0, 1fr) 0 !important;
+}
+.asa-editor-root[data-mode="fusion"] .cad-app:has(> .cad-launcher-nav) .live-quickbar { grid-row: 2; }
+.asa-editor-root[data-mode="fusion"] .cad-app:has(> .cad-launcher-nav) .live-ribbon { grid-row: 3; }
+.asa-editor-root[data-mode="fusion"] .cad-app:has(> .cad-launcher-nav) > .live-workarea { grid-row: 4; }
+.asa-editor-root[data-mode="fusion"] .cad-app:has(> .cad-launcher-nav) > .live-status { grid-row: 5; }
+.cad-startup { position: absolute; inset: 0; z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f7fafc; color: #0b3558; }
+.launcher-project-dialog { max-width: min(580px, calc(100vw - 24px)); padding: 24px; }
+.launcher-project-dialog header { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.launcher-project-dialog h2 { margin: 0 0 16px; }
+.launcher-project-dialog input { width: 100%; display: block; padding: 12px; margin: 8px 0 16px; border: 1px solid #bccfdd; border-radius: 6px; }
+.launcher-project-dialog p { color: #526a7c; line-height: 1.5; }
+.launcher-project-dialog footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+.launcher-project-dialog button { padding: 8px 12px; border: 1px solid #c9d7e1; border-radius: 6px; background: #fff; cursor: pointer; }
+.launcher-project-dialog .primary { background: #0b3558; color: #fff; }
+.launcher-project-picker { max-height: 60vh; overflow: auto; display: grid; gap: 10px; }
+.launcher-project-picker > button { display: flex; justify-content: space-between; gap: 16px; text-align: left; }
+.launcher-project-picker > button span { color: #61788a; }
+body:has(.asa-launcher) > #root .mobile-ui-settings-launcher,
+body:has(.asa-launcher) > #root .ui-scale-status { display: none; }
+@media(max-width: 899px) {
+  .cad-app:has(> .cad-launcher-nav):has(> .k-main-menu-bar) {
+    grid-template-rows: 36px calc(36px * var(--k-zoom)) calc(28px * var(--k-zoom)) calc(102px * var(--k-zoom)) minmax(0, 1fr) 50px;
+  }
+}
+@media(max-width: 600px) {
+  .cad-launcher-nav { gap: 8px; padding: 4px 6px; }
+  .cad-launcher-nav > span, .cad-launcher-nav > strong { display: none; }
+  .launcher-project-dialog { padding: 16px; }
+  .cad-app:has(> .cad-launcher-nav):has(> .k-main-menu-bar) {
+    grid-template-rows: 36px calc(34px * var(--k-zoom)) calc(28px * var(--k-zoom)) calc(102px * var(--k-zoom)) minmax(0, 1fr) calc(58px + env(safe-area-inset-bottom, 0px));
+  }
+}
+@media(max-width: 899px) and (max-height: 440px) {
+  .cad-app:has(> .cad-launcher-nav):has(> .k-main-menu-bar) {
+    grid-template-rows: 36px calc(29px * var(--k-zoom)) calc(24px * var(--k-zoom)) calc(93px * var(--k-zoom)) minmax(0, 1fr) 44px;
+  }
+}

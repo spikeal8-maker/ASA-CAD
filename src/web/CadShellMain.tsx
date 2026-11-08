@@ -1,5 +1,7 @@
 import React from 'react';
 import { KompasMain } from './kompas/KompasMain';
+import { CadShellMain as FusionMain } from './fusion/LiveMain';
+import { useEditorMode } from './EditorMode';
 
 export type CadShellPanel = 'tree' | 'parameters' | 'tools' | 'closed';
 
@@ -22,5 +24,5 @@ export interface CadShellMainProps {
 
 /** The KOMPAS #170 composition is canonical on desktop, tablet and phone. */
 export function CadShellMain(props: CadShellMainProps) {
-  return <KompasMain {...props} />;
+  return useEditorMode() === 'fusion' ? <FusionMain {...props} /> : <KompasMain {...props} />;
 }

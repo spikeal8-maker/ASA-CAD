@@ -4,7 +4,7 @@ import type {CadSketch} from '../contracts/document';
 import type {CadSketchEntityId,CadSketchId} from '../contracts/ids';
 import type {CadWorkspacePanel, SetWorkspace} from './PartSketchWorkspaceTypes';
 import {findSketch,partDocument} from './PartSketchWorkspaceModel';
-import {useSketchLineTool} from './useSketchLineTool';
+import {useSketchLineTool} from './EditorLine';
 import {useSketchCircleTool} from './useSketchCircleTool';
 import {useSketchArcTool} from './useSketchArcTool';
 import {useSketchRectangleTool} from './useSketchRectangleTool';
@@ -34,7 +34,7 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
   };
 
   const lineTool = useSketchLineTool({
-    app, sketchId: activeSketchId, active: activeCommand === 'sketch.line', setNotice,
+    app, sketchId: activeSketchId, active: activeCommand === 'sketch.line', setNotice, onCommitted: onToolCommitted,
   });
   const rectangleTool = useSketchRectangleTool({
     app, sketchId: activeSketchId, active: activeCommand === 'sketch.rectangle', setNotice,
@@ -153,10 +153,8 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
   }
 
   function resetActiveTool(command: string | null) {
-    if (command === 'sketch.line') lineTool.reset();
-    if (command === 'sketch.rectangle') rectangleTool.reset();
-    if (command === 'sketch.circle') circleTool.reset();
-    if (command === 'sketch.arc') arcTool.reset();
+    const tools = { 'sketch.line': lineTool, 'sketch.rectangle': rectangleTool, 'sketch.circle': circleTool, 'sketch.arc': arcTool };
+    tools[command as keyof typeof tools]?.reset();
   }
 
   return {

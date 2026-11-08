@@ -1,0 +1,131 @@
+.asa-launcher {
+  --launcher-navy: #0b3558;
+  --launcher-muted: #617488;
+  --launcher-line: #dfe7ef;
+  width: 100%;
+  height: 100dvh;
+  overflow: auto;
+  color: var(--launcher-navy);
+  background: #f7fafc;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  font-size: clamp(14px, .85vw, 19px);
+  line-height: 1.5;
+  scrollbar-gutter: stable;
+}
+.asa-launcher *, .asa-launcher *::before, .asa-launcher *::after { box-sizing: border-box; }
+.asa-launcher button { cursor: pointer; }
+.asa-launcher a { color: inherit; text-decoration: none; }
+.asa-launcher :is(button, a):focus-visible { outline: 3px solid #0aa4c8; outline-offset: 4px; }
+.asa-launcher button:disabled { cursor: not-allowed; opacity: .5; }
+.asa-launcher-icon { width: 20px; height: 20px; flex: 0 0 20px; }
+.asa-launcher-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 84px;
+  padding: 16px clamp(20px, 4vw, 112px);
+  border-bottom: 1px solid var(--launcher-line);
+  background: #fff;
+}
+.asa-launcher-brand { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+.asa-launcher-logo { width: 44px; height: 44px; flex: 0 0 44px; }
+.asa-launcher-brand > span { font-size: clamp(21px, 1.3vw, 28px); line-height: 1.1; font-weight: 750; letter-spacing: -.04em; }
+.asa-launcher-brand strong { color: #0984a2; font-weight: 500; }
+.asa-launcher-nav { display: flex; align-items: center; gap: 12px; }
+.asa-launcher-nav button, .asa-launcher-account { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 42px; padding: 10px 14px; border: 1px solid transparent; border-radius: 8px; background: transparent; line-height: 1.25; white-space: nowrap; }
+.asa-launcher-nav button:hover { background: #f0f5f9; }
+.asa-launcher-nav .asa-launcher-settings { padding: 10px; width: 42px; }
+.asa-launcher-account { border-color: #d4e2ed; background: #f8fbfe; font-weight: 600; }
+.asa-launcher-account:hover { border-color: #9fb9cd; background: #edf5fa; }
+.asa-launcher-main { width: min(100%, 2800px); margin: 0 auto; padding: clamp(28px, 3vw, 80px) clamp(20px, 4vw, 112px) 28px; }
+.asa-launcher-intro { margin-bottom: clamp(24px, 2.2vw, 48px); }
+.asa-launcher-eyebrow { margin: 0 0 7px; color: #16809b; font-size: .75em; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
+.asa-launcher-intro h1 { margin: 0; font-size: clamp(30px, 2.4vw, 56px); line-height: 1.2; font-weight: 700; letter-spacing: -.04em; }
+.asa-launcher-intro > p:last-child { max-width: 780px; margin: 12px 0 0; color: var(--launcher-muted); font-size: 1em; }
+.asa-launcher-error { margin-bottom: 22px; padding: 13px 18px; border: 1px solid #eccca8; border-radius: 10px; color: #7d4d1c; background: #fff7ed; overflow-wrap: anywhere; }
+.asa-launcher-modes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 1.6vw, 36px); }
+.asa-launcher-card { --mode-background: #edf5fa; display: flex; flex-direction: column; min-width: 0; border: 1px solid #dbe5ee; border-radius: 16px; background: #fff; overflow: hidden; box-shadow: 0 4px 16px #163f6010; }
+.asa-launcher-card:is(:hover, :focus-within) { border-color: #9fbbd0; box-shadow: 0 9px 25px #163f6018; }
+.asa-launcher-card-fusion { --mode-background: #fcf7ed; }
+.asa-launcher-card-blocks3d { --mode-background: #eef8f8; }
+.asa-launcher-art { display: grid; place-items: center; height: clamp(175px, 17vw, 360px); background: var(--mode-background); border-bottom: 1px solid #e5edf3; }
+.asa-launcher-model-art { display: block; width: 100%; height: 100%; max-width: 590px; color: #4284a2; }
+.asa-launcher-card-fusion .asa-launcher-model-art { color: #aa8648; }
+.asa-launcher-card-body { display: flex; flex: 1; flex-direction: column; padding: clamp(18px, 1.6vw, 34px); }
+.asa-launcher-card-body h2 { margin: 0 0 8px; color: #143d5b; font-size: clamp(22px, 1.55vw, 34px); line-height: 1.25; font-weight: 650; letter-spacing: -.025em; overflow-wrap: anywhere; }
+.asa-launcher-description { min-height: 3em; margin: 0 0 18px; color: var(--launcher-muted); font-size: .93em; }
+.asa-launcher-connection { display: flex; align-items: flex-start; gap: 7px; margin: auto 0 16px; color: #527162; font-size: .76em; line-height: 1.45; overflow-wrap: anywhere; }
+.asa-launcher-status-dot { width: 6px; height: 6px; flex: 0 0 6px; margin-top: .42em; border-radius: 50%; background: #72a18b; }
+.asa-launcher-unavailable { color: #8a6630; }
+.asa-launcher-unavailable .asa-launcher-status-dot { background: #c9953e; }
+.asa-launcher-card-actions { display: grid; grid-template-columns: 1fr; gap: 8px; }
+.asa-launcher-card-actions button { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 43px; padding: 10px 12px; border: 1px solid #dce6ee; border-radius: 8px; text-align: center; font-size: .89em; font-weight: 600; line-height: 1.3; }
+.asa-launcher-create { background: #0b3558; color: #fff; }
+.asa-launcher-card-actions .asa-launcher-create { border-color: #0b3558; }
+.asa-launcher-create:not(:disabled):hover { background: #164e76; }
+.asa-launcher-open { background: #fff; color: #254d69; }
+.asa-launcher-open:not(:disabled):hover { background: #f1f7fb; }
+.asa-launcher-location { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 2.8em; margin: 11px 0 -4px; color: #748696; text-align: center; font-size: .7em; line-height: 1.4; }
+.asa-launcher-location .asa-launcher-icon { width: 13px; height: 13px; flex-basis: 13px; }
+.asa-launcher-recent { margin-top: clamp(32px, 2.8vw, 60px); scroll-margin-top: 22px; outline: none; }
+.asa-launcher-recent:focus-visible { outline: 2px solid #0aa4c8; outline-offset: 7px; border-radius: 8px; }
+.asa-launcher-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 17px; }
+.asa-launcher-section-heading h2 { margin: 0; font-size: clamp(19px, 1.3vw, 28px); font-weight: 650; letter-spacing: -.02em; }
+.asa-launcher-section-heading p { margin: 4px 0 0; color: var(--launcher-muted); font-size: .82em; }
+.asa-launcher-backup { display: inline-flex; align-items: center; gap: 7px; min-height: 40px; padding: 8px 12px; border: 1px solid #dce6ee; border-radius: 8px; color: #49687e; background: #fff; font-size: .8em; }
+.asa-launcher-project-list { margin: 0; padding: 0; list-style: none; border: 1px solid var(--launcher-line); border-radius: 12px; background: #fff; overflow: hidden; }
+.asa-launcher-project-list li + li { border-top: 1px solid #e9eff4; }
+.asa-launcher-project { display: flex; align-items: center; gap: 16px; width: 100%; min-height: 83px; padding: 16px 22px; border: 0; background: #fff; text-align: left; }
+.asa-launcher-project:hover { background: #f5f9fc; }
+.asa-launcher-project-icon { display: grid; place-items: center; width: 43px; height: 43px; flex: 0 0 43px; border-radius: 10px; color: #397396; }
+.asa-launcher-project-name { display: flex; flex: 1; flex-direction: column; min-width: 0; gap: 3px; }
+.asa-launcher-project-name strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .92em; font-weight: 600; }
+.asa-launcher-project-name > span { color: var(--launcher-muted); font-size: .76em; }
+.asa-launcher-project time { flex-shrink: 0; color: var(--launcher-muted); font-size: .76em; }
+.asa-launcher-continue { display: flex; align-items: center; gap: 9px; margin-left: clamp(6px, 2vw, 48px); color: #207896; font-size: .8em; font-weight: 600; }
+.asa-launcher-empty { display: flex; align-items: center; justify-content: flex-start; gap: 16px; min-height: 100px; padding: 22px 26px; border: 1px dashed #cfdee9; border-radius: 12px; background: #ffffff78; }
+.asa-launcher-empty > span { display: grid; place-items: center; flex: 0 0 44px; color: #7b9bb0; }
+.asa-launcher-empty h3 { margin: 0 0 4px; font-size: .93em; font-weight: 600; }
+.asa-launcher-empty p { margin: 0; color: var(--launcher-muted); font-size: .82em; }
+.asa-launcher-footer { display: flex; align-items: center; gap: 16px; margin-top: 28px; color: #8393a1; font-size: .72em; }
+.asa-launcher-footer p { margin: 0; }
+@media (min-width: 1800px) {
+  .asa-launcher-card-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .asa-launcher-card-actions button { min-height: 48px; }
+}
+@media (max-width: 760px) {
+  .asa-launcher-header { gap: 12px; flex-wrap: wrap; }
+  .asa-launcher-nav { gap: 3px; }
+   .asa-launcher-projects-link > span { display: none; }
+  .asa-launcher-account { padding: 10px; font-size: 12px; }
+  .asa-launcher-account > .asa-launcher-icon:first-child { display: none; }
+  .asa-launcher-modes { grid-template-columns: 1fr; }
+  .asa-launcher-card { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1fr); }
+  .asa-launcher-art { height: 100%; min-height: 225px; border: 0; border-right: 1px solid #e5edf3; }
+  .asa-launcher-card-body { padding: 20px; }
+  .asa-launcher-description { min-height: 0; margin-bottom: 14px; }
+  .asa-launcher-connection { margin-bottom: 12px; }
+  .asa-launcher-section-heading { align-items: flex-start; flex-wrap: wrap; }
+  .asa-launcher-project { gap: 11px; flex-wrap: wrap; padding: 15px; }
+  .asa-launcher-project-name { flex-basis: calc(100% - 65px); }
+  .asa-launcher-project time { margin-left: 54px; }
+  .asa-launcher-continue { margin-left: auto; }
+  .asa-launcher-empty { padding: 20px; }
+}
+@media (max-width: 480px) {
+  .asa-launcher-header { padding: 14px 16px; gap: 14px; }
+  .asa-launcher-logo { width: 36px; height: 36px; flex-basis: 36px; }
+  .asa-launcher-brand { gap: 9px; }
+  .asa-launcher-brand > span { font-size: 20px; }
+  .asa-launcher-nav { width: 100%; justify-content: flex-end; }
+  .asa-launcher-nav .asa-launcher-projects-link { margin-right: auto; padding-left: 0; }
+  .asa-launcher-projects-link > span { display: inline; }
+  .asa-launcher-main { padding: 25px 16px 28px; }
+  .asa-launcher-intro > p:last-child { font-size: 13px; }
+  .asa-launcher-card { display: flex; }
+  .asa-launcher-art { height: 180px; min-height: 180px; border-right: 0; border-bottom: 1px solid #e5edf3; }
+  .asa-launcher-card-body { padding: 21px; }
+  .asa-launcher-location { min-height: 1.4em; }
+  .asa-launcher-footer { align-items: flex-start; gap: 12px; }
+}

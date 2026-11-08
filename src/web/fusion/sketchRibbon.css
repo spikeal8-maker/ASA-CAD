@@ -1,0 +1,72 @@
+/* Measured from the active native Sketch capture: 2048 × 1137, 110 DPI (110/96 scale).
+   Native geometry is used at the reference viewport. Russian text may widen menus. */
+.asa-editor-root[data-mode="fusion"].cad-app:has(.live-top[data-sketch-active="true"]),.asa-editor-root[data-mode="fusion"] .cad-app:has(.live-top[data-sketch-active="true"]){grid-template-rows:37px 97px minmax(0,1fr) 27px!important}
+.asa-editor-root[data-mode="fusion"] .live-top[data-sketch-active="true"] .live-quickbar{height:37px;box-sizing:border-box;background:#d9d9d9;border-bottom:0;font-family:"Segoe UI",Arial,sans-serif}
+.asa-editor-root[data-mode="fusion"] .live-top[data-sketch-active="true"] .live-ribbon{height:97px;box-sizing:border-box;border-bottom:0;background:#f5f5f5}
+.asa-editor-root[data-mode="fusion"] .live-top[data-sketch-active="true"] .live-workspace{box-sizing:border-box;width:126px;min-width:126px;height:70px;margin:12px 9px 15px 13px;border-color:#bcbcbc;border-radius:4px;font-size:13px;font-family:"Segoe UI",Arial,sans-serif}
+.asa-editor-root[data-mode="fusion"] .live-top[data-sketch-active="true"] .live-tabs{box-sizing:border-box;flex:0 0 27px;height:27px;gap:8px;align-items:flex-start}
+.asa-editor-root[data-mode="fusion"] .live-top[data-sketch-active="true"] .live-tabs button{box-sizing:border-box;height:25px;flex-shrink:0;padding:0 21px;border-bottom:3px solid transparent;font:12px "Segoe UI",Arial,sans-serif;letter-spacing:.65px;color:#272727}
+.asa-editor-root[data-mode="fusion"] .live-top[data-sketch-active="true"] .live-tabs button[aria-selected="true"]{border-bottom-color:#545454;font-weight:400}
+.asa-editor-root[data-mode="fusion"] .live-top[data-sketch-active="true"] .live-groups{overflow:hidden;min-height:70px}
+.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon{height:70px;flex:none;font-family:"Segoe UI",Arial,sans-serif;color:#252525}
+.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-scroll{height:70px;flex:0 0 auto;overflow:visible;scrollbar-width:none}
+.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-group{position:relative;box-sizing:border-box;flex-shrink:0;min-width:0;height:70px;padding:0;border:0;background:transparent}
+.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-group::after{content:"";position:absolute;right:0;top:4px;bottom:10px;width:1px;background:#cecece;pointer-events:none}
+.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-create{width:304px}
+.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-modify{width:210px}
+.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-constraints{width:604px}
+.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-configure{width:160px}
+.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-inspect{width:111px}
+.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-insert{width:161px}
+.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-assemble{width:113px}
+.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-select{width:93px}
+.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-finish{width:144px;min-width:144px;border:0;background:transparent}
+.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-select::after,.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-finish::after{display:none}
+.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-group .live-sketch-tools{display:flex;box-sizing:border-box;flex:none;grid-template:none;grid-auto-flow:initial;grid-auto-columns:initial;align-items:center;justify-content:center;height:44px;gap:0;padding:0}
+.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-create .live-sketch-tools{transform:translateX(-2px)}
+.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-group .live-sketch-tool-slot{box-sizing:border-box;display:flex;flex:none;align-items:center;justify-content:center;width:49.5px;height:44px}
+.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-group .live-sketch-tool{box-sizing:border-box;width:46px;min-width:0;height:44px;padding:0;border:1px solid transparent;border-radius:0;background:transparent;opacity:1}
+.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-group .live-sketch-tool:disabled{opacity:1;cursor:default}
+.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-group .live-sketch-tool:hover:not(:disabled){background:#e9e9e9;border-color:transparent}
+.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-group .live-sketch-tool.is-active{background:#ddeef6;border-color:#75bfd6}
+.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-group .live-sketch-tool[data-native-command="SelectCommand"]{background:#e0eff5;border-color:#7ec3db}
+.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-group .live-sketch-tool:focus-visible{outline:2px solid #2397c3;outline-offset:-2px}
+.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-group .live-sketch-group-title{box-sizing:border-box;display:flex;flex:none;align-items:center;justify-content:center;gap:5px;width:100%;min-width:0;height:22px;padding:0 4px;border:1px solid transparent;color:#252525;font:12.5px/20px "Segoe UI",Arial,sans-serif;letter-spacing:.15px;text-transform:uppercase;white-space:nowrap;background:transparent}
+.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-group .live-sketch-group-title:hover,.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-group .live-sketch-group-title[aria-expanded="true"]{background:#ddeef6;border-color:transparent}
+.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-group .live-sketch-group-title .live-sketch-chevron{display:inline-block;flex:none;width:0;height:0;border-left:3.5px solid transparent;border-right:3.5px solid transparent;border-top:4px solid #787878}
+.asa-editor-root[data-mode="fusion"] .live-menu.live-sketch-menu{box-sizing:border-box;min-width:0;max-width:none;padding:1px 0 0;margin:0;border:1px solid #bdbdbd;border-radius:1px;background:#f5f5f5;box-shadow:1px 1px 2px #00000024;overflow-x:hidden;overflow-y:auto;color:#242424;font-family:"Segoe UI",Arial,sans-serif;scrollbar-width:thin}
+.asa-editor-root[data-mode="fusion"] .live-menu.live-sketch-menu .live-sketch-menu-item{box-sizing:border-box;display:flex;align-items:center;gap:5px;min-height:23px;height:23px;width:100%;padding:0 10px 0 4px;border:0;border-radius:0;background:transparent;color:#242424;font:13px/23px "Segoe UI",Arial,sans-serif;white-space:nowrap;opacity:1;text-align:left}
+.asa-editor-root[data-mode="fusion"] .live-menu.live-sketch-menu .live-sketch-menu-item:disabled{opacity:1;color:#898989;cursor:default}
+.asa-editor-root[data-mode="fusion"] .live-menu.live-sketch-menu .live-sketch-menu-item:hover:not(:disabled),.asa-editor-root[data-mode="fusion"] .live-menu.live-sketch-menu .live-sketch-menu-item:focus-visible,.asa-editor-root[data-mode="fusion"] .live-menu.live-sketch-menu .live-sketch-menu-item[aria-expanded="true"]{background:#d7eafa;color:#242424;outline:0}
+.asa-editor-root[data-mode="fusion"] .live-menu.live-sketch-menu .live-sketch-menu-item.is-active{background:#e0edf4}
+.asa-editor-root[data-mode="fusion"] .live-menu.live-sketch-menu .live-sketch-menu-icon{display:flex;align-items:center;justify-content:center;width:21px;flex:0 0 21px;height:23px}
+.asa-editor-root[data-mode="fusion"] .live-menu.live-sketch-menu .live-sketch-menu-label{display:block;flex:1;overflow:visible;text-overflow:clip;white-space:nowrap}
+.asa-editor-root[data-mode="fusion"] .live-menu.live-sketch-menu .live-sketch-keycap{display:block;flex:0 0 20px;width:20px;font:13px/23px "Segoe UI",Arial,sans-serif;color:inherit;text-align:center}
+.asa-editor-root[data-mode="fusion"] .live-menu.live-sketch-menu .live-sketch-menu-arrow{flex:none;width:0;height:0;margin-left:9px;border-top:4px solid transparent;border-bottom:4px solid transparent;border-left:4px solid #777}
+.asa-editor-root[data-mode="fusion"] .live-menu.live-sketch-menu hr{box-sizing:border-box;height:2px;min-height:2px;margin:0 9px 0 27px;border:0;border-top:1px solid #929292;background:transparent}
+.asa-editor-root[data-mode="fusion"] .live-sketch-tooltip{position:fixed;z-index:1100;box-sizing:border-box;max-width:385px;min-height:28px;padding:6px 12px;border:0;border-radius:12px;background:#535353;color:#fff;font:600 13px/16px "Segoe UI",Arial,sans-serif;pointer-events:none;box-shadow:none}
+.asa-editor-root[data-mode="fusion"] .live-sketch-tooltip strong{font-weight:600}
+.asa-editor-root[data-mode="fusion"] .live-sketch-tooltip .live-sketch-tooltip-reason{display:block;font-weight:400;padding-top:4px;max-width:340px}
+.asa-editor-root[data-mode="fusion"] .live-sketch-tooltip.is-expanded{width:385px;height:418px;padding:9px 18px 13px;border-radius:14px}
+.asa-editor-root[data-mode="fusion"] .live-sketch-tooltip.is-expanded p{margin:12px 0 17px;font-size:13px;line-height:18px;font-weight:600}
+.asa-editor-root[data-mode="fusion"] .live-sketch-tooltip.is-expanded p+p{margin-top:16px;margin-bottom:24px}
+.asa-editor-root[data-mode="fusion"] .live-sketch-tooltip .live-sketch-line-illustration{position:absolute;left:13px;top:152px;display:block;width:349px;height:216px;border:0;background:#fff}
+.asa-editor-root[data-mode="fusion"] .live-sketch-tooltip .live-sketch-tooltip-footer{position:absolute;left:18px;bottom:6px;font-size:13px;line-height:18px}
+
+/* The native snapshots establish three physical layouts, not a scrollbar.
+   Breakpoints use each observed layout's required width; intermediate native
+   transition thresholds have not been sampled. Hidden tools remain in menus. */
+@media(max-width:2047px){
+ .asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-create{width:254px}
+ .asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-constraints{width:210px}
+ .asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-finish{width:140px;min-width:140px}
+ .asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-create .live-sketch-tool-slot:nth-child(n+6),.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-constraints .live-sketch-tool-slot:nth-child(n+5){display:none}
+}
+@media(max-width:1599px){
+ .asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-create{width:156px}
+ .asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-modify{width:160px}
+ .asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-constraints{width:161px}
+ .asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-insert{width:112px}
+ .asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-finish{width:136px;min-width:136px}
+ .asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-create .live-sketch-tool-slot:nth-child(n+4),.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-modify .live-sketch-tool-slot:nth-child(n+4),.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-constraints .live-sketch-tool-slot:nth-child(n+4),.asa-editor-root[data-mode="fusion"] .live-sketch-ribbon .live-sketch-insert .live-sketch-tool-slot:nth-child(n+3){display:none}
+}

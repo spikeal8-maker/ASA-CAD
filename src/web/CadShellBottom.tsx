@@ -3,6 +3,8 @@ import type { CadDocumentKind } from '../contracts/document';
 import type { CadShellPanel } from './CadShellMain';
 import { KompasToast } from './kompas/KompasToast';
 import { KompasMobileNavigation } from './kompas/KompasMobileNavigation';
+import { CadShellBottom as FusionBottom } from './fusion/LiveBottom';
+import { useEditorMode } from './EditorMode';
 
 interface CadShellBottomProps {
   recomputeStatus: string;
@@ -20,6 +22,7 @@ interface CadShellBottomProps {
 
 /** New KOMPAS status/toast and its compact command-navigation controls. */
 export function CadShellBottom(props: CadShellBottomProps) {
+  if (useEditorMode() === 'fusion') return <FusionBottom {...props} />;
   return (
     <>
       <KompasToast notice={props.notice} />
