@@ -1,12 +1,13 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { CadApplicationImpl } from '../../src/application/CadApplicationImpl';
 import { createEmptyCadDocument, parseCadDocument, serializeCadDocument, type CadDocument, type CadPartDocument } from '../../src/contracts/document';
 import type { CadRuntimeAdapter } from '../../src/contracts/runtime';
 import type { CadSketchEntityId, CadSketchId } from '../../src/contracts/ids';
 import { LocalCadProjects } from '../../src/host/LocalCadProjects';
-import { DEFAULT_STANDALONE_CAD_STORAGE_KEY as LEGACY_KEY, LocalStorageCadRevisionConflictError } from '../../src/host/LocalStorageCadProjectHost';
+import { DEFAULT_STANDALONE_CAD_STORAGE_KEY as LEGACY_KEY, LocalStorageCadProjectHost, LocalStorageCadRevisionConflictError } from '../../src/host/LocalStorageCadProjectHost';
 import { collectLocalCadBackup, downloadLocalCadBackup } from '../../src/web/launcher/backup';
 import type { CadEditorMode } from '../../src/browser/editorModes';
 
@@ -73,6 +74,35 @@ await test('new projects in both modes cannot overwrite either legacy document s
   assert.equal(projects.list().find(project => project.id === 'legacy')?.updatedAt, undefined,
     'historical projects without metadata must not acquire an invented date');
   assert.deepEqual(storage.snapshot(), beforeRead, 'opening/listing cannot migrate storage silently');
+});
+
+await test('an unreadable project cannot hide healthy projects and catalog reads retain all raw bytes', async () => {
+  const storage = new MemoryStorage();
+  const projects = new LocalCadProjects(storage);
+  const healthy = projects.create('fusion', 'Доступная модель');
+  const broken = projects.create('kompas', 'Повреждённая модель');
+  storage.setItem(`asa-cad-local-project:${broken}:state`, '{broken envelope');
+  storage.setItem(LEGACY_KEY, '{broken legacy');
+  const before = storage.snapshot();
+  assert.throws(() => projects.list(), 'strict callers must not silently ignore corruption');
+  const unreadable: string[] = [];
+  assert.deepEqual(projects.list(id => unreadable.push(id)).map(project => project.id), [healthy]);
+  assert.deepEqual(unreadable.sort(), [broken, 'legacy'].sort());
+  assert.equal((await projects.host(healthy, 'fusion').load()).document.title, 'Доступная модель');
+  assert.throws(() => projects.host(broken, 'kompas'));
+  assert.deepEqual(storage.snapshot(), before);
+  assert.equal(projects.backup().entries[`asa-cad-local-project:${broken}:state`], '{broken envelope');
+  const metadataOnly = projects.create('kompas', 'Модель с повреждённой датой');
+  const metadataKey = `asa-cad-local-project:${metadataOnly}:state`;
+  const envelope = JSON.parse(storage.getItem(metadataKey)!);
+  for (const updatedAt of [42, null, [], {}, 'not a date']) {
+    const raw = JSON.stringify({ ...envelope, launcher: { mode: 'kompas', updatedAt } });
+    storage.setItem(metadataKey, raw);
+    const listed = projects.list(() => {});
+    assert.equal(listed.length, 2);
+    assert.equal(listed.find(project => project.id === metadataOnly)?.updatedAt, undefined);
+    assert.equal(storage.getItem(metadataKey), raw);
+  }
 });
 
 await test('real sketch commands remain editable after save and reopen in the other shell', async () => {
@@ -180,6 +210,77 @@ await test('an existing host cannot fall back to a mirror after its envelope is 
       : host.save({ document: legacy.authoritative, baseRevision: 0, mutationId: 'must-not-repair' }));
     assert.deepEqual(storage.snapshot(), before, 'corruption is preserved, never silently repaired by Save');
   });
+});
+
+await test('existing hosts preserve corrupt document bytes before save and acknowledged retries', async context => {
+  const valid = createEmptyCadDocument('part');
+  const danglingSupport = JSON.stringify({ ...valid, sketches: [{
+    id: 'sketch_corrupt', name: 'Dangling support', support: 'ref_missing', entities: [], constraintIds: [], dimensionIds: [],
+  }] });
+  assert.throws(() => parseCadDocument(danglingSupport), /support reference ref_missing does not exist/);
+  const contents = { invalidJson: '{', missingFields: '{}', null: 'null', danglingSupport,
+    futureSchema: JSON.stringify({ ...valid, schemaVersion: valid.schemaVersion + 1 }) };
+  for (const source of ['envelope', 'raw'] as const) for (const [name, bytes] of Object.entries(contents)) {
+    await context.test(`${source}: ${name}`, async () => {
+      const storage = new MemoryStorage();
+      seedLegacy(storage);
+      if (source === 'raw') storage.removeItem(`${LEGACY_KEY}:state`);
+      const catalog = new LocalCadProjects(storage), host = catalog.host('legacy', 'kompas');
+      const opened = await host.load();
+      const key = source === 'envelope' ? `${LEGACY_KEY}:state` : LEGACY_KEY;
+      storage.setItem(key, source === 'envelope' ? JSON.stringify({
+        ...JSON.parse(storage.getItem(key)!), serializedDocument: bytes,
+      }) : bytes);
+      const before = storage.snapshot();
+      await assert.rejects(() => host.load());
+      await assert.rejects(() => host.save({ document: opened.document,
+        baseRevision: opened.revision, mutationId: 'must-not-replace-corruption' }));
+      if (source === 'envelope') await assert.rejects(() => host.save({
+        document: opened.document, baseRevision: opened.revision, mutationId: 'old-save',
+      }), 'an old acknowledgement cannot hide corruption in the current canonical document');
+      assert.deepEqual(storage.snapshot(), before, 'rejection must preserve every original slot byte for backup');
+      assert.equal(catalog.backup().entries[key], before.find(([name]) => name === key)![1]);
+    });
+  }
+});
+
+await test('valid older schemas remain readable without storage migration and save through the same host', async context => {
+  for (const [schema, fixture] of [[1, 'v1-part-dimensions.json'], [2, 'v2-part-radius.json']] as const) {
+    const raw = readFileSync(new URL(`../fixtures/schema/${fixture}`, import.meta.url), 'utf8');
+    for (const source of ['raw', 'envelope'] as const) await context.test(`v${schema} ${source}`, async () => {
+      const storage = new MemoryStorage();
+      storage.setItem(LEGACY_KEY, raw);
+      if (source === 'envelope') storage.setItem(`${LEGACY_KEY}:state`, JSON.stringify({
+        serializedDocument: raw, revision: 4, mutations: { acknowledged: 4 },
+      }, null, 2));
+      const before = storage.snapshot();
+      const host = new LocalCadProjects(storage).host('legacy', 'fusion');
+      const loaded = await host.load();
+      assert.equal(loaded.document.documentId, JSON.parse(raw).documentId);
+      assert.equal(loaded.document.schemaVersion, createEmptyCadDocument('part').schemaVersion);
+      assert.deepEqual(storage.snapshot(), before, 'validation/load cannot rewrite the older serialized format');
+      const saved = await host.save({ document: loaded.document, baseRevision: loaded.revision, mutationId: 'explicit-save' });
+      assert.equal(saved.revision, loaded.revision + 1);
+      assert.deepEqual((await host.load()).document, loaded.document);
+    });
+  }
+});
+
+await test('a legitimate empty initial document can save and a corrupt mirror cannot defeat its valid envelope', async () => {
+  const storage = new MemoryStorage(), initialDocument = createEmptyCadDocument('part');
+  const host = new LocalStorageCadProjectHost({ storage, initialDocument });
+  const opened = await host.load();
+  assert.deepEqual(opened.document, initialDocument);
+  assert.equal(opened.revision, 0);
+  assert.equal(storage.length, 0, 'opening a fresh host must not write an envelope');
+  assert.deepEqual(await host.save({ document: opened.document, baseRevision: 0, mutationId: 'first-empty-save' }), { revision: 1 });
+  storage.setItem(LEGACY_KEY, 'broken non-authoritative mirror');
+  assert.deepEqual((await host.load()).document, initialDocument);
+  assert.deepEqual(await host.save({ document: initialDocument, baseRevision: 1, mutationId: 'second-empty-save' }), { revision: 2 });
+  const beforeConflict = storage.snapshot();
+  await assert.rejects(() => host.save({ document: initialDocument, baseRevision: 0, mutationId: 'stale-empty-save' }),
+    (error: unknown) => error instanceof LocalStorageCadRevisionConflictError && error.currentRevision === 2);
+  assert.deepEqual(storage.snapshot(), beforeConflict);
 });
 
 await test('backup exports only document slots and import restores into a fresh project', async () => {

@@ -10,6 +10,7 @@ const page = await browser.newPage({ viewport: { width: 1366, height: 768 } });
 const pageErrors = [];
 const failedRequests = [];
 const wasmRequests = [];
+const projectResponses = [];
 
 page.on('pageerror', (error) => pageErrors.push(error.message));
 page.on('requestfailed', (request) => {
@@ -18,11 +19,58 @@ page.on('requestfailed', (request) => {
 page.on('request', (request) => {
   if (/\.wasm(?:\?|$)/i.test(request.url())) wasmRequests.push(request.url());
 });
+page.on('response', (response) => {
+  if (new URL(response.url()).pathname.startsWith('/api/projects/')) {
+    projectResponses.push({
+      url: response.url(), method: response.request().method(), status: response.status(),
+      contentType: response.headers()['content-type'] ?? '',
+    });
+  }
+});
 
 try {
   const response = await page.goto(url, { waitUntil: 'networkidle', timeout: 30_000 });
   assert.ok(response, 'browser navigation returned no response');
   assert.ok(response.ok(), `browser navigation failed: HTTP ${response.status()}`);
+
+  const initialUrl = new URL(url);
+  const projectRoute = initialUrl.pathname.match(/^\/cad\/projects\/([^/]+)\/?$/);
+  let entry = { kind: 'standalone' };
+  if (initialUrl.pathname === '/' || projectRoute) {
+    if (projectRoute) {
+      await page.locator('.cad-startup[role="alert"]').getByRole('heading', {
+        name: 'Не удалось открыть проект', exact: true,
+      }).waitFor();
+      const projectUrl = new URL(`/api/projects/${encodeURIComponent(decodeURIComponent(projectRoute[1]))}`, initialUrl).href;
+      const loads = projectResponses.filter(item => item.url === projectUrl && item.method === 'GET');
+      assert.ok(loads.length >= 1, 'server project route did not attempt to load its real host');
+      assert.ok(loads.every(item => item.status >= 400 || !/\bapplication\/(?:[^;\s]+\+)?json\b/i.test(item.contentType)),
+        'static Docker smoke unexpectedly received a successful JSON project response');
+      entry = { kind: 'server-unavailable', loads };
+    } else {
+      await page.getByTestId('three-mode-launcher').waitFor();
+      assert.equal(await page.locator('.asa-launcher-card').count(), 3, 'root must offer all three editor modes');
+      entry = { kind: 'launcher' };
+    }
+    const entryState = await page.evaluate(() => ({
+      crossOriginIsolated: window.crossOriginIsolated,
+      sharedArrayBuffer: typeof SharedArrayBuffer !== 'undefined',
+      editorCount: document.querySelectorAll('.cad-app').length,
+      canvasCount: document.querySelectorAll('[data-testid="cad-viewport"] canvas').length,
+    }));
+    assert.equal(entryState.crossOriginIsolated, true, 'entry route is not cross-origin isolated');
+    assert.equal(entryState.sharedArrayBuffer, true, 'entry route has no SharedArrayBuffer');
+    assert.equal(entryState.editorCount, 0, 'entry route unexpectedly opened an editable local document');
+    assert.equal(entryState.canvasCount, 0, 'entry route unexpectedly mounted a CAD scene');
+    assert.deepEqual(wasmRequests, [], 'entry route eagerly requested WASM');
+    entry = { ...entry, ...entryState };
+
+    // The static image has no ASA Lab project backend. Exercise the real standalone
+    // shell separately after proving the launcher or honest project-load failure.
+    const editorResponse = await page.goto(new URL('/cad/', initialUrl).href, { waitUntil: 'networkidle', timeout: 30_000 });
+    assert.ok(editorResponse, 'standalone editor navigation returned no response');
+    assert.ok(editorResponse.ok(), `standalone editor navigation failed: HTTP ${editorResponse.status()}`);
+  }
 
   await page.locator('.cad-app :is(.k-main-menu-bar, .brand-button)').first().waitFor();
   await page.getByText('Твердотельное моделирование', { exact: true }).waitFor();
@@ -61,6 +109,7 @@ try {
   assert.deepEqual(pageErrors, [], `browser page errors:\n${pageErrors.join('\n')}`);
 
   console.log('ASA-CAD M0D lazy ASA shell boot PASS');
+  console.log(JSON.stringify({ entry }, null, 2));
   console.log(JSON.stringify(state, null, 2));
 } finally {
   await browser.close();

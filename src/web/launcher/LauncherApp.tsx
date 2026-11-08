@@ -22,7 +22,12 @@ export function LauncherApp() {
   const [dialog, setDialog] = useState<{ kind: 'new' | 'open'; mode: CadEditorMode } | null>(null);
   const [external, setExternal] = useState<'new' | 'open' | null>(null);
   const refresh = () => {
-    try { setRecent(catalog.list()); setError(''); }
+    try {
+      const unreadable: string[] = [];
+      setRecent(catalog.list(id => unreadable.push(id)));
+      setError(unreadable.length
+        ? `Не удалось прочитать проектов: ${unreadable.length}. Остальные доступны. Скачайте резервную копию, чтобы сохранить исходные данные.` : '');
+    }
     catch (reason) { setError(reason instanceof Error ? reason.message : String(reason)); }
   };
   useEffect(() => {

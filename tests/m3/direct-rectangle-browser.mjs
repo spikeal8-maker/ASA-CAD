@@ -63,7 +63,7 @@ async function deterministicRectangleFixture() {
 async function desktopDirectRectangle() {
   const { page, errors } = await newDesktopPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createXYSketch(page);
     await assertNoWasm(page, 'empty Sketch');
 
@@ -148,7 +148,7 @@ async function desktopDirectRectangle() {
 async function touchDirectRectangle() {
   const { context, page, errors } = await newTouchPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createMobileXYSketch(page);
     await activateMobileTool(page, 'sketch.rectangle', 'Rectangle');
 

@@ -90,10 +90,11 @@ export function SketchRibbon({getAction}:{getAction:SketchActionGetter}){
   else if(e.key==='ArrowRight'){e.preventDefault();e.stopPropagation();}
   else if(e.key==='Tab')close();
  };
+ const overlayHost=root.current?.closest<HTMLElement>('.asa-editor-root[data-mode="fusion"]');
  return <div className="live-sketch-ribbon" ref={root} data-native-tab="SketchTab">
   <div className="live-sketch-scroll" onScroll={()=>{close();clearHover();}}>{sketchPanels.slice(0,-1).map(panel)}</div>
   {panel(sketchPanels[sketchPanels.length-1])}
-  {createPortal(<>
+  {overlayHost&&createPortal(<>
    {menus.map((menu,level)=><div className="live-menu live-sketch-menu" role="menu" aria-label={menu.label} key={level} data-menu-level={level} data-menu-id={menu.id}
     style={{position:'fixed',left:menu.left,top:menu.top,maxHeight:innerHeight-menu.top-8,width:menu.width,zIndex:1000+level}} onKeyDown={e=>menuKeyboard(e,level)}>
     {menu.items.map((item,index)=>{
@@ -121,6 +122,6 @@ export function SketchRibbon({getAction}:{getAction:SketchActionGetter}){
      <span className="live-sketch-tooltip-footer">L — команда «Линия»</span>
     </>:unavailableReason(hover.item)&&<span className="live-sketch-tooltip-reason">{unavailableReason(hover.item)}</span>}
    </div>}
-  </>,document.body)}
+  </>,overlayHost)}
  </div>;
 }

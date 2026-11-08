@@ -1,4 +1,4 @@
-import { isLocalCadProjectId, type CadEditorMode } from './editorModes';
+import { isLocalCadProjectId, unmountCadPath, type CadEditorMode } from './editorModes';
 export const ASA_CAD_MOUNT_PATH = '/cad' as const;
 
 export const CAD_PART_DEV_FIXTURE_NAMES = [
@@ -23,6 +23,11 @@ export type CadClientRoute =
   | { kind: 'dev-part'; fixture: CadPartDevFixtureName }
   | { kind: 'standalone' }
   | { kind: 'unknown'; pathname: string };
+
+/** Shared initial route for root deployments and explicitly mounted candidate previews. */
+export function currentCadClientRoute(): CadClientRoute {
+  return parseCadClientRoute(unmountCadPath(window.location.pathname));
+}
 
 export function cadEditorPath(projectId: string): string {
   if (!projectId) throw new Error('projectId is required');
