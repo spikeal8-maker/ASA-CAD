@@ -9,6 +9,7 @@ import {ViewCube} from './ViewCube';
 import {MarkingMenu} from './MarkingMenu';
 import {HoleWizardPanel} from './HoleWizardPanel';
 import {SketchPalette} from './SketchPalette';
+import {FusionBrowserTree} from './FusionBrowserTree';
 import {SketchPlaneCube} from './SketchPlaneCube';
 import {useSketchView,toggleSketchDisplay,requestSketchView,setSketchPanMode,registerSketchDimensionEditor,requestSketchWorkspaceExit} from './sketchView';
 import {holeWizard} from './HoleWizard';
@@ -17,6 +18,7 @@ import {action,run,repeat,lastAction,reason} from './liveActions';
 import type {CadDimensionId} from '../../contracts/ids';
 import {acceptLiveLine,focusLineStage,handleLiveLineKey} from './LiveLineInput';
 import {liveLineInteraction} from './LiveLineInteraction';
+import {useFusionSketchAutoCreate} from './useFusionSketchAutoCreate';
 export function CadShellMain(p:CadShellMainProps){
  const [treeOpen,setTreeOpen]=useState(true),[context,setContext]=useState<{x:number;y:number;selectionContext:boolean}|null>(null);
  const contextFrame=useRef<number|null>(null);
@@ -35,14 +37,28 @@ export function CadShellMain(p:CadShellMainProps){
  const params=React.isValidElement<ParameterPanelProps>(p.parametersContent)?p.parametersContent.props:null;
  const part=tree?.document.kind==='part'?tree.document:null;
  const modelProps=React.isValidElement<PartModelStageProps>(p.modelContent)?p.modelContent.props:null;
- const renderModel=modelProps?.renderModel||null;
+ const autoSketch=useFusionSketchAutoCreate({
+    activeCommand:p.activeCommand??null,selectedPlane:tree?.selectedPlane??null,
+    selectedPick:params?.selectedPick??null,commitCreateSketch:params?.onCreateSketch,
+  });
+  const renderModel=modelProps?.renderModel||null;
  const activeSketch=part?.sketches.find(s=>s.id===tree?.activeSketchId);
  const sketchMode=modelProps?.activeWorkspace==='sketch'&&!!activeSketch;
  const selectedEntity=activeSketch?.entities.find(e=>e.id===p.selectedSketchEntityId);
  const editingDimension=part?.dimensions.find(d=>d.id===editingDimensionId);
  const dimensionEditUnit=editingDimension?(editingDimension.type==='angular'?'°':'мм'):'';
  const editDimension=useCallback((id:CadDimensionId)=>{if(tree){setEditingDimensionId(id);tree.onEditDimension(id);}},[tree?.onEditDimension]);
- const treeContent=tree?React.cloneElement(p.treeContent as React.ReactElement<DocumentTreeProps>,{onEditDimension:editDimension}):p.treeContent;
+ const treeContent=tree?.document.kind==='part'
+    ? <FusionBrowserTree {...tree} onEditDimension={editDimension}
+        onSelectPlane={plane=>{tree.onSelectPlane?.(plane);autoSketch.planeSelected(plane);}}/>
+    : tree?React.cloneElement(p.treeContent as React.ReactElement<DocumentTreeProps>,{
+        onEditDimension:editDimension,
+        onSelectPlane:plane=>{tree.onSelectPlane?.(plane);autoSketch.planeSelected(plane);},
+      }):p.treeContent;
+  const modelContent=modelProps?React.cloneElement(p.modelContent as React.ReactElement<PartModelStageProps>,{
+    onPlaneSelect:plane=>{modelProps.onPlaneSelect(plane);autoSketch.planeSelected(plane);},
+    onPick:pick=>{modelProps.onPick(pick);autoSketch.faceSelected(pick);},
+  }):p.modelContent;
  const orphanedSketchTool=!!part&&!activeSketch&&/^(sketch|constraint)\./.test(p.activeCommand||'');
  useEffect(()=>{if(orphanedSketchTool){p.cancelCommand();requestSketchWorkspaceExit();}},[orphanedSketchTool,p.cancelCommand]);
  function cancel(){
@@ -56,7 +72,9 @@ export function CadShellMain(p:CadShellMainProps){
  const missingEditedDimension=p.activeCommand==='dimension.edit'&&!!editingDimensionId&&!editingDimension;
  useEffect(()=>{if(missingDimensionTarget)dimensionCreation?.cancel();},[missingDimensionTarget,dimensionCreation?.cancel]);
  useEffect(()=>{if(missingEditedDimension)cancel();},[missingEditedDimension]);
- const liveParams=params?{...params,onCancel:cancel}:null;
+ const liveParams=params?{...params,onCancel:cancel,
+    setSketchPlane:(plane:typeof params.sketchPlane)=>{params.setSketchPlane(plane);autoSketch.planeSelected(plane);},
+  }:null;
  useEffect(()=>tree?registerSketchDimensionEditor(editDimension):undefined,[editDimension,!!tree]);
  useEffect(()=>{if(p.activeCommand!=='dimension.edit')setEditingDimensionId(null);},[p.activeCommand]);
  useEffect(()=>{navigation.setBounds(renderModel?.bounds||null);},[renderModel]);
@@ -106,7 +124,7 @@ export function CadShellMain(p:CadShellMainProps){
  }
  return <main className="live-workarea" data-workspace={sketchMode?'sketch':'solid'} data-active-command={p.activeCommand||''}
   onKeyDown={sketchKeys} onKeyDownCapture={event=>{if(sketchMode&&p.activeCommand==='sketch.line')handleLiveLineKey(event);}}>
-  <section className="live-scene" aria-label="Область моделирования" onContextMenu={openContext}>{p.modelContent}</section>
+  <section className="live-scene" aria-label="Область моделирования" onContextMenu={openContext}>{modelContent}</section>
   <aside className={'live-tree '+(!treeOpen?'collapsed':'')}><header><button type="button" aria-label={treeOpen?'Свернуть обозреватель':'Развернуть обозреватель'} onClick={()=>setTreeOpen(v=>!v)}>{treeOpen?'«':'»'}</button><span>ОБОЗРЕВАТЕЛЬ</span><button type="button" aria-label="Скрыть дерево" onClick={()=>setTreeOpen(false)}>−</button></header>{treeOpen&&treeContent}</aside>
   {sketchMode?<SketchPlaneCube view={sketchView}/>:<ViewCube/>}
   {holeState.stage!=='idle'&&<HoleWizardPanel state={holeState} activeCommand={p.activeCommand||null} cancelActive={p.cancelCommand}/>}
