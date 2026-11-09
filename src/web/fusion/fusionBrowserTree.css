@@ -1,0 +1,162 @@
+/* FUSION-SKETCH-005: Fusion-only Browser/ribbon presentation.
+   Reference: native Autodesk Fusion 2706.1.17 on D2-R2.
+   No styles or commands are changed for Kompas, Vassalite or the launcher. */
+.asa-editor-root[data-mode="fusion"] .live-workarea .live-tree:has(.fusion-browser-tree){
+  background:rgba(247,247,247,.92);
+  overflow-y:auto;
+  overflow-x:hidden;
+  overscroll-behavior:contain;
+  scrollbar-width:thin;
+  border:0;
+}
+.asa-editor-root[data-mode="fusion"] .live-tree .fusion-browser-tree{
+  min-width:0;
+  font:12.5px/1.25 "Segoe UI",Arial,sans-serif;
+}
+.asa-editor-root[data-mode="fusion"] .live-tree .fusion-browser-tree .tree-root{
+  padding:2px 0 6px;
+}
+.asa-editor-root[data-mode="fusion"] .live-tree .fusion-browser-tree .tree-row,
+.asa-editor-root[data-mode="fusion"] .live-workarea[data-workspace="sketch"] .live-tree .fusion-browser-tree .tree-row{
+  display:flex;
+  align-items:center;
+  width:100%;
+  height:24px;
+  min-height:24px;
+  max-width:100%;
+  margin:0;
+  gap:4px;
+  padding-top:0;
+  padding-bottom:0;
+  padding-right:4px;
+  font:12.5px/24px "Segoe UI",Arial,sans-serif;
+  border:0;
+  border-radius:0;
+  color:#3e474f;
+  background:transparent;
+  text-align:left;
+}
+.asa-editor-root[data-mode="fusion"] .live-tree .fusion-browser-tree .tree-row.bold{
+  font-weight:600;
+}
+.asa-editor-root[data-mode="fusion"] .live-tree .fusion-browser-tree .tree-row.muted{
+  color:#8d9499;
+}
+.asa-editor-root[data-mode="fusion"] .live-tree .fusion-browser-tree .tree-icon{
+  display:flex;
+  flex:0 0 16px;
+  align-items:center;
+  justify-content:center;
+  width:16px;
+  color:#808b92;
+}
+.asa-editor-root[data-mode="fusion"] .live-tree .fusion-browser-tree .tree-chevron{
+  flex:0 0 15px;
+  width:15px;
+}
+.asa-editor-root[data-mode="fusion"] .live-tree .fusion-browser-tree .tree-disclosure{
+  display:flex;
+  flex:0 0 15px;
+  width:15px;
+  height:23px;
+  min-height:23px;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+  border:0;
+  background:transparent;
+  color:#68757c;
+}
+.asa-editor-root[data-mode="fusion"] .live-tree .fusion-browser-tree .tree-disclosure[aria-expanded="false"] .cad-icon{
+  transform:rotate(-90deg);
+}
+.asa-editor-root[data-mode="fusion"] .live-tree .fusion-browser-tree .tree-label{
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  min-width:0;
+}
+.asa-editor-root[data-mode="fusion"] .live-tree .fusion-browser-tree .tree-row.interactive:hover,
+.asa-editor-root[data-mode="fusion"] .live-tree .fusion-browser-tree .tree-branch-row:hover{
+  background:#e9edef;
+}
+.asa-editor-root[data-mode="fusion"] .live-tree .fusion-browser-tree .tree-row.selected,
+.asa-editor-root[data-mode="fusion"] .live-tree .fusion-browser-tree .tree-sketch-header.selected{
+  background:#dce8ee;
+}
+.asa-editor-root[data-mode="fusion"] .live-tree .fusion-browser-tree .tree-sketch-header.selected{
+  box-shadow:inset 3px 0 #438eb9;
+}
+.asa-editor-root[data-mode="fusion"] .live-tree .fusion-browser-tree .tree-sketch-header{
+  padding-left:45px!important;
+}
+.asa-editor-root[data-mode="fusion"] .live-tree .fusion-browser-tree .tree-sketch-header .tree-sketch-select{
+  min-width:0;
+  flex:1;
+  display:flex;
+  align-items:center;
+  gap:4px;
+  height:23px;
+  min-height:23px;
+  padding:0;
+  border:0;
+  background:transparent;
+  text-align:left;
+  font:inherit;
+}
+.asa-editor-root[data-mode="fusion"] .live-tree .fusion-browser-tree .tree-sketch-header .tree-sketch-edit{
+  flex:0 0 auto;
+  max-width:76px;
+  padding:1px 3px;
+  border:0;
+  font-size:10px;
+  opacity:.25;
+}
+.asa-editor-root[data-mode="fusion"] .live-tree .fusion-browser-tree .tree-sketch-header:hover .tree-sketch-edit,
+.asa-editor-root[data-mode="fusion"] .live-tree .fusion-browser-tree .tree-sketch-header:focus-within .tree-sketch-edit{
+  opacity:1;
+}
+.asa-editor-root[data-mode="fusion"] .live-tree .fusion-browser-tree .tree-sketch-children .tree-row{
+  padding-left:64px!important;
+}
+.asa-editor-root[data-mode="fusion"] .live-tree .fusion-browser-tree .fusion-browser-sketch{
+  min-width:0;
+}
+/* Keep the Finish Sketch action visible while narrower ribbons scroll.
+   Hidden promoted commands remain available in their native group menus. */
+.asa-editor-root[data-mode="fusion"] .live-top[data-sketch-active="true"] .live-sketch-ribbon{
+  display:flex;
+  width:100%;
+  min-width:0;
+  overflow:hidden;
+}
+.asa-editor-root[data-mode="fusion"] .live-top[data-sketch-active="true"] .live-sketch-ribbon .live-sketch-scroll{
+  display:flex;
+  flex:1 1 auto;
+  min-width:0;
+  max-width:100%;
+  overflow-x:auto;
+  overflow-y:hidden;
+  scrollbar-width:none;
+  overscroll-behavior-x:contain;
+}
+.asa-editor-root[data-mode="fusion"] .live-top[data-sketch-active="true"] .live-sketch-ribbon .live-sketch-scroll::-webkit-scrollbar{
+  display:none;
+}
+.asa-editor-root[data-mode="fusion"] .live-top[data-sketch-active="true"] .live-sketch-ribbon .live-sketch-finish{
+  flex:none;
+  z-index:1;
+  background:#f5f5f5;
+}
+/* Sketch Palette must always scroll independently, retaining the footer at 768px. */
+.asa-editor-root[data-mode="fusion"] .live-workarea[data-workspace="sketch"] .live-sketch-palette .sketch-palette-content{
+  display:flex;
+  flex:1 1 auto;
+  min-height:0;
+}
+.asa-editor-root[data-mode="fusion"] .live-workarea[data-workspace="sketch"] .live-sketch-palette .sketch-palette-scroll{
+  flex:1 1 auto;
+  overflow-y:auto;
+  overflow-x:hidden;
+  overscroll-behavior:contain;
+}

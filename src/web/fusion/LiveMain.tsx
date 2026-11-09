@@ -9,6 +9,7 @@ import {ViewCube} from './ViewCube';
 import {MarkingMenu} from './MarkingMenu';
 import {HoleWizardPanel} from './HoleWizardPanel';
 import {SketchPalette} from './SketchPalette';
+import {FusionBrowserTree} from './FusionBrowserTree';
 import {SketchPlaneCube} from './SketchPlaneCube';
 import {useSketchView,toggleSketchDisplay,requestSketchView,setSketchPanMode,registerSketchDimensionEditor,requestSketchWorkspaceExit} from './sketchView';
 import {holeWizard} from './HoleWizard';
@@ -47,10 +48,13 @@ export function CadShellMain(p:CadShellMainProps){
  const editingDimension=part?.dimensions.find(d=>d.id===editingDimensionId);
  const dimensionEditUnit=editingDimension?(editingDimension.type==='angular'?'°':'мм'):'';
  const editDimension=useCallback((id:CadDimensionId)=>{if(tree){setEditingDimensionId(id);tree.onEditDimension(id);}},[tree?.onEditDimension]);
- const treeContent=tree?React.cloneElement(p.treeContent as React.ReactElement<DocumentTreeProps>,{
-    onEditDimension:editDimension,
-    onSelectPlane:plane=>{tree.onSelectPlane?.(plane);autoSketch.planeSelected(plane);},
-  }):p.treeContent;
+ const treeContent=tree?.document.kind==='part'
+    ? <FusionBrowserTree {...tree} onEditDimension={editDimension}
+        onSelectPlane={plane=>{tree.onSelectPlane?.(plane);autoSketch.planeSelected(plane);}}/>
+    : tree?React.cloneElement(p.treeContent as React.ReactElement<DocumentTreeProps>,{
+        onEditDimension:editDimension,
+        onSelectPlane:plane=>{tree.onSelectPlane?.(plane);autoSketch.planeSelected(plane);},
+      }):p.treeContent;
   const modelContent=modelProps?React.cloneElement(p.modelContent as React.ReactElement<PartModelStageProps>,{
     onPlaneSelect:plane=>{modelProps.onPlaneSelect(plane);autoSketch.planeSelected(plane);},
     onPick:pick=>{modelProps.onPick(pick);autoSketch.faceSelected(pick);},

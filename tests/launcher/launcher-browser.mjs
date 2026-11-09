@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { chromium } from '../../vendor/toubkal/node_modules/playwright-core/index.mjs';
 import { runFusionSketch004 } from './fusion-sketch-004.mjs';
+import { runFusionSketch005 } from './fusion-sketch-005.mjs';
 
 const home = new URL(process.env.ASA_CAD_SHELL_URL ?? 'http://127.0.0.1:8090/').href;
 assert.ok(![8094, 8098, 8099].includes(Number(new URL(home).port)), 'Use the isolated CI origin, never an installed D2 origin');
@@ -147,6 +148,7 @@ try {
     await homeButton().click(); await atHome();
   });
   await runFusionSketch004({ step, create, page, artifacts, homeButton, leave, atHome, stored });
+  await runFusionSketch005({ step, create, page, artifacts, homeButton, leave, atHome, stored });
   assert.deepEqual(report.pageErrors, []); assert.deepEqual(report.failedRequests, []);
   report.status = 'PASS';
 } catch (error) {
