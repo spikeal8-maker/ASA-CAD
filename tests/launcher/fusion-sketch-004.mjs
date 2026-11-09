@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { runFusionSketchTools } from './fusion-sketch-004-tools.mjs';
 
 export async function runFusionSketch004({ step, create, page, artifacts, homeButton, leave, atHome, stored }) {
   await step('Fusion Sketch 004: selecting XY/XZ/YZ opens and reopens real sketches', async () => {
@@ -56,4 +57,5 @@ export async function runFusionSketch004({ step, create, page, artifacts, homeBu
     assert.equal(saved.document.sketches.length, 3);
     assert.deepEqual(saved.document.sketches.map(sketch => sketch.id), sketchIds);
   });
+  await runFusionSketchTools({ step, create, page, artifacts, homeButton, leave, atHome, stored });
 }
