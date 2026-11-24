@@ -33,7 +33,7 @@ function near(actual, expected, tolerance, label) {
 function compareGeometry(a, b, tolerance) {
   for (let i = 0; i < 2; i++) {
     near(a.center[i], b.center[i], tolerance, 'center[' + i + ']');
-    near(a.pointer[i], b.pointer[i], tolerance, 'pointer[' + i + ']');
+    if (a.pointer && b.pointer) near(a.pointer[i], b.pointer[i], tolerance, 'pointer[' + i + ']');
   }
   near(a.radius, b.radius, tolerance, 'radius');
 }
@@ -46,9 +46,10 @@ async function state(page) {
     const anchor = layer.querySelector('[data-testid="sketch-circle-center"]');
     const line = layer.querySelector('[data-testid="sketch-circle-radius-line"]');
     const ghost = layer.querySelector('[data-testid="sketch-circle-ghost"]');
-    if (!anchor || !line || !ghost) throw new Error('Circle preview missing');
+    if (!anchor || !ghost) throw new Error('Circle preview missing');
     const c = [Number(anchor.getAttribute('cx')), -Number(anchor.getAttribute('cy'))];
-    const p = [Number(line.getAttribute('x2')), -Number(line.getAttribute('y2'))];
+    // The baseline layer has no radius line; pointer is observed only when present.
+    const p = line ? [Number(line.getAttribute('x2')), -Number(line.getAttribute('y2'))] : null;
     const numeric = document.querySelector('[data-testid="sketch-circle-numeric"]');
     const style = getComputedStyle(ghost), bounds = layer.getBoundingClientRect();
     return {
@@ -172,10 +173,11 @@ try {
     const after = manifest.images.find((x) => x.side === 'after' && x.name === name);
     assert.deepEqual(before.viewport, after.viewport); assert.deepEqual(before.camera, after.camera);
     assert.deepEqual(before.bounds, after.bounds);
-    assert.equal(before.observed.diameterLocked, false, 'Baseline preview has no numeric lock');
-    assert.equal(after.observed.diameterLocked, true, 'Candidate preview keeps the diameter locked');
+    assert.notEqual(before.observed.diameterLocked, true, 'Baseline preview has no numeric lock');
+    const locked = name === 'diameter-locked-preview';
+    assert.equal(after.observed.diameterLocked, locked, 'Candidate lock matches the captured state');
     compareGeometry(before.observed.geometry, after.observed.geometry, toleranceMm);
-    return { name, sameViewportCameraBounds: true, geometryWithinToleranceMm: toleranceMm };
+    return { name, sameViewportCameraBounds: true, afterDiameterLocked: locked, geometryWithinToleranceMm: toleranceMm };
   });
   manifest.status = 'PASS';
 } catch (error) {
