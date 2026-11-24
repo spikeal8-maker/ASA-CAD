@@ -4,6 +4,7 @@ import { KIcon } from './KompasIcon';
 import { KompasParameterFrame as Frame, KompasParameterHead as PanelHead, parameterNotYet as NOT_YET } from './KompasParameterFrame';
 import { KompasLineParameters } from './KompasLineParameters';
 import { KompasArcParameters } from './KompasArcParameters';
+import { KompasCircleParameters } from './KompasCircleParameters';
 import { NumberField, SketchToolPanel } from './KompasSketchToolPanel';
 
 /** Parameters panel of the KOMPAS shell for the running product command (KOMPAS markup of #170). */
@@ -26,10 +27,7 @@ export function KompasParameters(props: { panel: ParameterPanelProps | null; leg
       <SketchToolPanel p={p} title="Прямоугольник" icon="rectangle" onCommit={p.onCreateRectangle} hint="Ширина"
         rows={[['Ширина', p.rectangleWidth, p.setRectangleWidth], ['Высота', p.rectangleHeight, p.setRectangleHeight]]} />
     );
-    case 'sketch.circle': return (
-      <SketchToolPanel p={p} title="Окружность" icon="circle" onCommit={p.onCreateCircle} hint="Диаметр"
-        rows={[['Диаметр', p.circleDiameter, p.setCircleDiameter]]} />
-    );
+    case 'sketch.circle': return <KompasCircleParameters input={p.circleInput} onCancel={p.onCancel} />;
     default: return (
       <div className="k-params-panel">
         <PanelHead />
