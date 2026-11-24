@@ -13,6 +13,7 @@ on:
       - tests/visual/product-before-after.mjs
       - tests/visual/u2-line-numeric-before-after.mjs
       - tests/visual/u2-arc-numeric-before-after.mjs
+      - tests/visual/u2-circle-numeric-before-after.mjs
       - .github/workflows/ui-core-u1-visual.yml
   workflow_dispatch:
 
@@ -148,6 +149,16 @@ jobs:
           ASA_CAD_AFTER_SHA: ${{ env.ASA_CAD_CANDIDATE_SHA }}
           ASA_CAD_ARC_EVIDENCE_ROOT: ui-core-u1-evidence/u2-arc-numeric
         run: node tests/visual/u2-arc-numeric-before-after.mjs
+
+      - name: Capture matched Circle diameter previews
+        working-directory: candidate-source
+        env:
+          ASA_CAD_BEFORE_URL: http://127.0.0.1:8092
+          ASA_CAD_AFTER_URL: http://127.0.0.1:8088
+          ASA_CAD_BEFORE_SHA: ${{ env.ASA_CAD_BEFORE_SHA }}
+          ASA_CAD_AFTER_SHA: ${{ env.ASA_CAD_CANDIDATE_SHA }}
+          ASA_CAD_CIRCLE_EVIDENCE_ROOT: ui-core-u1-evidence/u2-circle-numeric
+        run: node tests/visual/u2-circle-numeric-before-after.mjs
 
       - name: Upload U1 visual evidence
         uses: actions/upload-artifact@v4

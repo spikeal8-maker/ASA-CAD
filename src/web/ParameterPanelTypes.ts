@@ -3,11 +3,13 @@ import type { ExtrudeOperationController } from './useExtrudeOperationController
 import type { SketchDimensionCreationState } from './useSketchDimensionCreationControllers';
 import type { SketchLineNumericInput } from './SketchLineNumericInput';
 import type { SketchArcNumericInput } from './SketchArcNumericInput';
+import type { SketchCircleNumericInput } from './SketchCircleNumericInput';
 
 export interface ParameterPanelProps {
   activeCommand: string | null;
   lineInput: SketchLineNumericInput;
   arcInput: SketchArcNumericInput;
+  circleInput: SketchCircleNumericInput;
   requiresFaceSelection: boolean;
   selectedPick: CadViewportPick | null;
   sketchPlane: 'XY' | 'XZ' | 'YZ';

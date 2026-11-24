@@ -61,7 +61,7 @@ async function desktopDirectCircle() {
     const edge = squarePoint(box, 0.62, 0.50);
 
     await page.mouse.click(center.x, center.y);
-    await page.locator('[data-testid="cad-sketch-interaction"][data-circle-phase="radius"]').waitFor();
+    await page.locator('[data-testid="cad-sketch-interaction"][data-circle-phase="awaiting-point"]').waitFor();
     await page.locator('[data-testid="sketch-circle-center"]').waitFor();
     assert.equal(await page.locator('[data-testid="cad-sketch-overlay"]').getAttribute('data-entity-count'), '0', 'Circle center mutated persisted Sketch');
 

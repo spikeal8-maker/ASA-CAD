@@ -45,11 +45,13 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
     },
   });
   const circleTool = useSketchCircleTool({
-    app, sketchId: activeSketchId, active: activeCommand === 'sketch.circle', setNotice,
+    app, sketchId: activeSketchId, active: activeCommand === 'sketch.circle',
+    defaultDiameter: circleDiameter, setNotice,
     onCommitted: (diameter) => {
       setCircleDiameter(diameter);
       onToolCommitted();
     },
+    onParametric: (diameter) => commitCircle(diameter),
   });
   const arcTool = useSketchArcTool({
     app, sketchId: activeSketchId, active: activeCommand === 'sketch.arc',
@@ -95,7 +97,7 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
     if (!sketch) return;
     circleTool.reset();
     setActiveCommand('sketch.circle');
-    setPanel('closed');
+    setPanel('parameters');
     clearTransientSelection();
     setNotice('Укажите центр окружности');
   }
@@ -109,34 +111,37 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
     setNotice('Укажите центр дуги');
   }
 
-  async function commitCircle() {
+  async function commitCircle(diameterOverride?: number) {
     const currentSketch = findSketch(partDocument(app.getDocument()), activeSketchId);
-    if (!currentSketch) { setNotice('Сначала создайте эскиз'); return; }
-    if (!(circleDiameter > 0)) { setNotice('Диаметр должен быть больше нуля'); return; }
+    if (!currentSketch) { setNotice('Сначала создайте эскиз'); return false; }
+    const value = diameterOverride ?? circleDiameter;
+    if (!(value > 0)) { setNotice('Диаметр должен быть больше нуля'); return false; }
     const circle = await app.execute({
       id: 'sketch.circle',
-      payload: { sketchId: currentSketch.id, center: [0, 0], diameter: circleDiameter },
+      payload: { sketchId: currentSketch.id, center: [0, 0], diameter: value },
     });
     if (!circle.ok || !circle.createdIds?.[0]) {
       setNotice(circle.error?.message ?? 'Не удалось создать окружность');
-      return;
+      return false;
     }
     const diameter = await app.execute({
       id: 'dimension.diameter',
       payload: {
         sketchId: currentSketch.id,
         entityId: circle.createdIds[0] as CadSketchEntityId,
-        value: circleDiameter,
+        value,
         name: 'diameter',
       },
     });
     if (!diameter.ok) {
       setNotice(diameter.error?.message ?? 'Не удалось создать диаметральный размер');
-      return;
+      return false;
     }
+    setCircleDiameter(value);
     setActiveCommand(null);
     setPanel('tree');
-    setNotice(`Окружность Ø${circleDiameter} мм создана`);
+    setNotice(`Окружность Ø${value} мм создана`);
+    return true;
   }
 
   async function finishSketch() {
@@ -168,6 +173,7 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
     rectangleDraft: rectangleTool.draft, rectangleCommitting: rectangleTool.committing,
     handleSketchRectanglePointMove: rectangleTool.move, handleSketchRectanglePoint: rectangleTool.point,
     beginCircle, commitCircle,
+    circleInput: circleTool.input,
     circleDraft: circleTool.draft, circleCommitting: circleTool.committing,
     handleSketchCirclePointMove: circleTool.move, handleSketchCirclePoint: circleTool.point,
     beginArc, arcInput: arcTool.input, arcDraft: arcTool.draft, arcCommitting: arcTool.committing,

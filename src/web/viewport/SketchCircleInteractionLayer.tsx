@@ -1,6 +1,6 @@
 import React from 'react';
 import type { CadPoint2 } from '../../contracts/document';
-import type { SketchCircleDraft } from '../useSketchCircleTool';
+import type { SketchCircleDraft } from '../SketchCircleNumericInput';
 import type { SketchOverlayModel } from './SketchOverlayModel';
 import { SketchInteractionSurface } from './SketchInteractionSurface';
 import type {
@@ -23,13 +23,11 @@ export interface SketchCircleInteractionLayerProps {
 /** Circle-specific draft/ghost layer on the shared Sketch input substrate. */
 export function SketchCircleInteractionLayer(props: SketchCircleInteractionLayerProps) {
   if (!props.active || !props.model) return null;
-  const phase = props.draft.center ? 'radius' : 'awaiting-center';
-  const radius = props.draft.center && props.draft.edge
-    ? Math.hypot(
-      props.draft.edge[0] - props.draft.center[0],
-      props.draft.edge[1] - props.draft.center[1],
-    )
-    : 0;
+  const { center, hover, canonical } = props.draft;
+  const phase = center ? 'awaiting-point' : 'awaiting-center';
+  const radius = canonical
+    ? canonical.radius
+    : center && hover ? Math.hypot(hover[0] - center[0], hover[1] - center[1]) : 0;
 
   return (
     <SketchInteractionSurface
@@ -44,21 +42,33 @@ export function SketchCircleInteractionLayer(props: SketchCircleInteractionLayer
       onPointMove={props.onPointMove}
       onPoint={props.onPoint}
     >
-      {props.draft.center && (
+      {center && (
         <circle
           data-testid="sketch-circle-center"
-          cx={props.draft.center[0]}
-          cy={-props.draft.center[1]}
+          cx={center[0]}
+          cy={-center[1]}
           r={0.9}
           fill="currentColor"
           vectorEffect="non-scaling-stroke"
         />
       )}
-      {props.draft.center && props.draft.edge && radius > 0 && (
+      {center && hover && radius > 0 && (
+        <line
+          data-testid="sketch-circle-radius-line"
+          x1={center[0]}
+          y1={-center[1]}
+          x2={hover[0]}
+          y2={-hover[1]}
+          stroke="currentColor"
+          strokeWidth={0.25}
+          vectorEffect="non-scaling-stroke"
+        />
+      )}
+      {center && radius > 0 && (
         <circle
           data-testid="sketch-circle-ghost"
-          cx={props.draft.center[0]}
-          cy={-props.draft.center[1]}
+          cx={center[0]}
+          cy={-center[1]}
           r={radius}
           fill="none"
           stroke="currentColor"

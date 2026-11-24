@@ -3,6 +3,7 @@ import type { CadDocumentKind } from '../contracts/document';
 import { ShortcutRegistry, shortcutInputKind, type ShortcutActionId } from './ShortcutRegistry';
 import type { SketchLineNumericInput } from './SketchLineNumericInput';
 import type { SketchArcNumericInput } from './SketchArcNumericInput';
+import type { SketchCircleNumericInput } from './SketchCircleNumericInput';
 
 interface CadKeyboardOptions {
   registry: ShortcutRegistry;
@@ -14,6 +15,8 @@ interface CadKeyboardOptions {
   showLineParameters(): void;
   arcInput: SketchArcNumericInput;
   showArcParameters(): void;
+  circleInput: SketchCircleNumericInput;
+  showCircleParameters(): void;
 }
 
 export function focusCadEditor(node: Element | null): void {
@@ -69,6 +72,29 @@ export function cadKeyboardHandler(options: CadKeyboardOptions) {
         event.preventDefault();
         options.showArcParameters();
         arc.beginEntry(event.key);
+        return;
+      }
+    }
+    const circle = options.activeCommand === 'sketch.circle' ? options.circleInput : null;
+    if (circle && !isolated && !event.defaultPrevented && !event.nativeEvent.isComposing) {
+      if (event.key === 'Escape') {
+        focusCadEditor(event.currentTarget);
+        if (circle.cancelDraft()) { event.preventDefault(); return; }
+      }
+      if (event.key === 'Enter' && !event.altKey) {
+        if (event.ctrlKey || event.metaKey) focusCadEditor(event.currentTarget);
+        else if (inputKind === 'none' && !target?.closest('button, a')) {
+          event.preventDefault();
+          focusCadEditor(event.currentTarget);
+          void circle.enter();
+          return;
+        }
+      }
+      if (inputKind === 'none' && !target?.closest('button, a')
+        && !event.ctrlKey && !event.metaKey && !event.altKey && /^[0-9.,-]$/.test(event.key)) {
+        event.preventDefault();
+        options.showCircleParameters();
+        circle.beginEntry(event.key);
         return;
       }
     }
