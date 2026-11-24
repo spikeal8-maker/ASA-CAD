@@ -1,14 +1,16 @@
 # ASA-CAD — актуальное состояние
 
-Снимок: 2026-11-08 UTC. Live GitHub и machine pointer имеют приоритет.
+Снимок: 2026-11-25 UTC. Live GitHub и machine pointer имеют приоритет.
 
 ## Действующая точка
 
 **U2 IN_PROGRESS.** Full Repository Health Audit #225 технически принят как **YELLOW_ACCEPTED**: audited b8f700b, merge `ae3f713f81d405733b887deaad0050f28f33af0b`. Exact PR CI — 2 workflows/4 jobs, post-merge — 3 workflows/5 jobs SUCCESS; независимый review APPROVE. [Отчёт](FULL_REPOSITORY_HEALTH_AUDIT.md), raw false/PENDING и история #217/#221 сохранены. U2 целиком не принят.
 
-#222 Numeric Line, #223 CI/build Node и #224 Rectangle завершили cadence 3/3 после #221; #225 закрыл обязательный аудит. До текущего Arc slice счёт после #225 — 0/3, после его CI/review/merge — 1/3. Milestone boundary также требует Full Repository Health Audit.
+#222 Numeric Line, #223 CI/build Node и #224 Rectangle завершили cadence 3/3 после #221; #225 закрыл обязательный аудит. После #225: #226 Arc numeric = 1/3, #230 Node 22.23.5 security pin — operational maintenance, текущий Circle slice = 2/3 permanent slices. Третий permanent slice или milestone boundary требуют Full Repository Health Audit.
 
 ## Текущий срез и продуктовый proof
+
+**U2-CIRCLE-NUMERIC-20261125:** левая Parameters связывает X/Y и временный Диаметр с одним Circle draft. Диаметр задаётся до или после центра («объект поедет за курсором»); Enter в X/Y сначала выбирает центр, затем точку; Enter/✓ без центра — прежний controller parametric fallback: окружность в [0,0] + управляющий dimension.diameter (tool коммитит только sketch.circle). Ghost — окружность + линия центр→указатель, как в #170; фиксация диаметра — transient input, не persistent constraint. Invalid X/Y/диаметр блокируют numeric Enter/✓; pointer заменяет X/Y, диаметр сохраняется. Commit — одна команда/history frame, затем новый центр. Осознанное отклонение от #170: поле «Диаметр» (product model `sketch.circle.diameter`, protected Part flow), в прототипе — «Радиус». Exact CI, ordinary proof и matched before/after — в PR/#184; technical merge не равен visual approval.
 
 **U2-ARC-NUMERIC-20261108:** левая Parameters связывает X/Y и временный радиус с одним Arc draft. Радиус доступен между центром и началом; Enter в нём не выбирает точку, Enter в X/Y продвигает построение. Readonly sweep, CW/CCW, большие дуги и wrap используют одну canonical pair для ghost и прежней команды sketch.arc. UI отвергает abs(sweep)<0.001 rad и ограничивает накопление ±(2π−0.01); core/сохранённые дуги неизменны. Commit — одна команда/history frame, затем новый центр; persistent constraints не добавлены. Exact CI, ordinary proof и matched before/after — в PR/#184; technical merge не равен visual approval.
 
