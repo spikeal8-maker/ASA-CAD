@@ -45,6 +45,6 @@ assert.match(protectedPart, /getByTitle\('Параметры'\)|openParams\(page
 const circle = registry.commands.find((command) => command.id === 'sketch.circle');
 assert.ok(circle, 'command registry must contain sketch.circle');
 assert.equal(circle.status, 'implemented');
-assert.equal(circle.milestone, 'M3.3');
+assert.equal(circle.milestone, 'M3.3/U2');
 
 console.log('ASA-CAD M3.3 direct Circle boundary PASS (focused direct-tool owner + shared input + one geometry commit + numeric dimension fallback)');
