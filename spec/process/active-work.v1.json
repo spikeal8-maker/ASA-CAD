@@ -99,6 +99,32 @@
         "outcome": "YELLOW_ACCEPTED",
         "measurementRuntime": "22.23.3"
       }
+    },
+    {
+      "id": "NODE_SECURITY_RELEASE_20261111_PENDING",
+      "status": "CLOSED_FOR_SELECTED_ASA_PROJECT_TOOLCHAIN",
+      "acceptedBy": "ASA-CAD technical controller (OpenCode agent session 2026-11-25) under OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008",
+      "acceptanceCondition": "EXACT_HEAD_CI_AND_MERGE_OF_THIS_REPAIR_PR",
+      "scope": "CI setup-node pins, Dockerfile and visual-build NODE_IMAGE digests, own engines; selected D2 ASA portable runtime install remains separately authorized per quality gates section 5",
+      "publishedRelease": {
+        "version": "v22.23.5",
+        "published": "2026-11-11",
+        "highestSeverity22x": "HIGH",
+        "url": "https://nodejs.org/en/blog/vulnerability/november-2026-security-releases"
+      },
+      "dockerImage": {
+        "tag": "node:22.23.5-bookworm-slim",
+        "indexDigest": "sha256:be979e5523c76fa4d5ca4ebd3099078f220aa47ec39c48ad5b5df9314debd6eb"
+      },
+      "windowsProof": {
+        "zipSha256": "4a191082e9706866830379d577d2cc8a50c776fcd9436a8d061b063ed0d9a0e3",
+        "nodeExeSha256": "247e9693d316da9857e44990e5e11709f596f18112251b8026ec6eed80bdf38a",
+        "installationStatus": "PENDING_SEPARATE_OWNER_AUTHORIZATION_PER_QUALITY_GATES_SECTION_5"
+      },
+      "reachability": "ASA local servers use plaintext HTTP/1.1 on loopback; affected HTTP/2/TLS server surfaces not used; browser WASM runtime independent of Node; exploit reachability in standard configuration NOT_ESTABLISHED; no exposure growth",
+      "historicalAuditSnapshotUnchanged": true,
+      "followUpIssue": 184,
+      "evidence": "spec/process/evidence/node-security-release-20261125/upstream-release.json"
     }
   ],
   "historicalFullRepositoryHealthAudits": [

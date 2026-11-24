@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "debtId": "NODE_SECURITY_RELEASE_20261111_PENDING",
+  "recordedAt": "2026-11-25",
+  "recordedBy": "ASA-CAD technical controller (OpenCode agent session) under OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008",
+  "publishedRelease": {
+    "version": "v22.23.5",
+    "published": "2026-11-11",
+    "announcementUrl": "https://nodejs.org/en/blog/vulnerability/november-2026-security-releases",
+    "releaseUrl": "https://nodejs.org/en/blog/release/v22.23.5/",
+    "highestSeverity22x": "HIGH",
+    "cvesAffecting22x": {
+      "high": ["CVE-2026-123864", "CVE-2026-123865", "CVE-2026-123866", "CVE-2026-123872"],
+      "medium": ["CVE-2026-123867", "CVE-2026-123871", "CVE-2026-123877", "CVE-2026-123875"],
+      "low": ["CVE-2026-123829", "CVE-2026-123862", "CVE-2026-106071"]
+    },
+    "dependencyUpdates22x": ["llhttp", "sqlite"]
+  },
+  "dockerImage": {
+    "tag": "node:22.23.5-bookworm-slim",
+    "indexDigest": "sha256:be979e5523c76fa4d5ca4ebd3099078f220aa47ec39c48ad5b5df9314debd6eb",
+    "amd64Digest": "sha256:d20a7b8b4184bf74fe77499b5460a3d69e582bc733d50287e40c3fe791764851",
+    "previousPin": "node:22.23.4-bookworm-slim@sha256:5ec23b7c622b00547753bc6ffd78085dd868a68aeb41c8e0a1418f033e13d96d",
+    "digestConvention": "multi-arch index digest, identical convention to the 22.23.4 pin",
+    "source": "https://hub.docker.com/v2/repositories/library/node/tags/22.23.5-bookworm-slim"
+  },
+  "windowsArtifacts": {
+    "zipSha256": "4a191082e9706866830379d577d2cc8a50c776fcd9436a8d061b063ed0d9a0e3",
+    "nodeExeSha256": "247e9693d316da9857e44990e5e11709f596f18112251b8026ec6eed80bdf38a",
+    "source": "https://nodejs.org/dist/v22.23.5/SHASUMS256.txt",
+    "d2Installation": "PENDING_SEPARATE_OWNER_AUTHORIZATION_PER_QUALITY_GATES_SECTION_5; no D2 runtime was installed or modified by this slice"
+  },
+  "reachabilityReview": {
+    "ciBuild": "setup-node build runners; affected HTTP/2 and TLS server CVEs are not reachable in a normal build/CI flow; pin updated to patched release",
+    "localDevAndDeliveryServer": "ASA local dev/delivery servers (vite preview, 127.0.0.1:8099) serve plaintext HTTP/1.1 on loopback; affected surfaces are HTTP/2 and TLS server paths; exploit reachability in the standard local configuration NOT_ESTABLISHED",
+    "browserRuntime": "OpenCascade/PlaneGCS WASM runs in the browser and is independent of the Node runtime; unaffected",
+    "conclusion": "No established ASA exploit path in the standard configuration; pin update applied per the debt gate without exposure growth"
+  },
+  "changedOperationalPins": [
+    ".github/workflows/baseline.yml",
+    ".github/workflows/docker.yml",
+    ".github/workflows/m2-browser.yml",
+    ".github/workflows/m2-shell.yml",
+    ".github/workflows/m3-browser.yml",
+    ".github/workflows/owner-screenshot-capture.yml",
+    ".github/workflows/ui-core-u1-visual.yml",
+    "Dockerfile",
+    "package.json"
+  ],
+  "untouchedImmutableRecords": [
+    "spec/process/evidence/health-audit-rectangle-20261108/**",
+    "spec/process/evidence/health-audit-repeat-20261108/**",
+    "docs/FULL_REPOSITORY_HEALTH_AUDIT.md",
+    "resolvedAuditDebts[0] (NODE_TOOLCHAIN_EOL_AND_SECURITY_PATCH_GAP historical record)"
+  ]
+}
