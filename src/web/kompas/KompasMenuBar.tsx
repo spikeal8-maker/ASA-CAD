@@ -4,6 +4,7 @@ import { KIcon } from './KompasIcon';
 import type { KompasMenuLists } from './kompasMenus';
 import { KOMPAS_TOOLSETS, type KompasCommand } from './kompasToolsets';
 import { anchorOf, kompasShell, useKompasShell } from './kompasShellStore';
+import { useCadGoHome } from '../launcher/CadNavigation';
 
 interface SearchHit extends KompasCommand { toolset: string }
 
@@ -37,6 +38,10 @@ export function KompasMenuBar(props: { names: readonly string[]; lists: KompasMe
   const nav = React.useRef<HTMLElement>(null);
   const names = props.names;
   const lists = props.lists;
+  const goHome = useCadGoHome();
+  const appMark = (
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1.5" y="1.5" width="21" height="21" rx="3" fill="#1f6fd1" /><path d="M7 18 12 5.5 17 18M8.9 13.5h6.2" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+  );
 
   const open = React.useCallback((name: string) => {
     const button = nav.current?.querySelector(`[data-menu="${name}"]`);
@@ -60,9 +65,11 @@ export function KompasMenuBar(props: { names: readonly string[]; lists: KompasMe
 
   return (
     <header className="k-ui k-main-menu-bar">
-      <div className="k-app-mark" title="ASA-CAD">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1.5" y="1.5" width="21" height="21" rx="3" fill="#1f6fd1" /><path d="M7 18 12 5.5 17 18M8.9 13.5h6.2" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-      </div>
+      {goHome
+        ? <button type="button" className="k-app-mark" title="ASA CAD — на главную" aria-label="ASA CAD — на главную" onClick={goHome}>
+            {appMark}<span className="k-app-name">ASA CAD</span>
+          </button>
+        : <div className="k-app-mark" title="ASA-CAD">{appMark}</div>}
       <nav className="k-main-menu-items" ref={nav} aria-label="Главное меню">
         {names.map((name) => (
           <button

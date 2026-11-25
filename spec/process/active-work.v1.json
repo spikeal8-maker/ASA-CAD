@@ -170,11 +170,25 @@
   "launcherWork": {
     "id": "THREE-MODE-LAUNCHER-001",
     "authorization": "OWNER_TASK_20261108_THREE_MODE_LAUNCHER",
-    "status": "IN_PROGRESS",
+    "status": "RELEASED_TO_MAIN",
     "integrationBase": "6a2159f25efd5203f83a385461c4aaae92f2fabd",
     "installedBefore": "c1959b1e84a7c38288022622a9585a38c07d3f7e",
     "releaseAuthorization": "SEPARATE_RELEASE_PR_AFTER_ALL_REQUIRED_GATES",
     "originSwitchGate": "REAL_BROWSER_BACKUP_OLD_PROJECTS_ROLLBACK_AND_POSTFLIGHT",
-    "ownerVisualParity": "PENDING"
+    "ownerVisualParity": "PENDING",
+    "integrationMerge": {
+      "pr": 228,
+      "mergeSha": "db1256c0fd34397b5f50b425e2b4fdd2ca4c2434"
+    },
+    "mainRelease": {
+      "pr": 233,
+      "mergeSha": "38b2d1add7c085c8b7ba593a50bab36295cc7fa5"
+    },
+    "editorTopBarFix": {
+      "directive": "OWNER_20261125_REMOVE_NAV_STRIP_AND_IN_EDITOR_SWITCHER",
+      "pr": 234,
+      "status": "IN_REVIEW",
+      "homeButton": "ASA CAD mark in the KOMPAS and Fusion top bars, routed through the existing leave guard"
+    }
   }
 }

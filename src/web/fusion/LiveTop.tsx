@@ -6,12 +6,14 @@ import {holeWizard} from './HoleWizard';
 import {SketchRibbon} from './SketchRibbon';
 import {registerSketchWorkspaceExit} from './sketchView';
 import {contextualDimension,itemAction,sketchSearchItems} from './sketchCommands';
+import {useCadGoHome} from '../launcher/CadNavigation';
 type Item={id:string;kind:string;name?:string;commandId?:string;enabled?:boolean;children?:Item[]};
 type Menu={items:Item[];left:number;top:number};
 export function CadShellTop(p:CadShellTopProps){
  useLayoutEffect(()=>registerSketchWorkspaceExit(()=>p.setActiveWorkspace('solid')),[p.setActiveWorkspace]);
  const [tab,setTab]=useState('SolidTab'),[menus,setMenus]=useState<Menu[]>([]),[search,setSearch]=useState('');
  const holeState=useSyncExternalStore(holeWizard.subscribe,holeWizard.snapshot);
+ const goHome=useCadGoHome();
  const root=useRef<HTMLDivElement>(null);
  const hasSketch=p.getAction('sketch.finish').enabled;
  const sketchWorkspace=p.activeWorkspace==='sketch'&&hasSketch;
@@ -45,7 +47,7 @@ export function CadShellTop(p:CadShellTopProps){
  const sketchResults=search&&sketchWorkspace?sketchSearchItems.filter(item=>item.label.toLocaleLowerCase('ru').includes(search.toLocaleLowerCase('ru'))&&(!item.children||itemAction(item,p.getAction))).slice(0,15):[];
  const results=search?Object.entries(ref.commands).filter(([id])=>nativeLabel(id).toLocaleLowerCase('ru').includes(search.toLocaleLowerCase('ru'))).slice(0,15):[];
  return <div className="live-top" ref={root} data-sketch-active={sketchWorkspace}>
-  <div className="live-quickbar"><div className="live-quickbuttons">{['system.new','system.open','system.save','system.undo','system.redo'].map(id=>{const a=p.getAction(id);return <button key={id} type="button" disabled={!a.enabled} data-command-id={id} title={a.label} aria-label={a.label} onClick={()=>invoke(id)}><LiveIcon id={id} size={17}/></button>;})}</div><div className="live-document"><span className="live-document-cube">⬢</span>{p.documentTitle}{p.dirty?' *':''}</div><input className="live-search" aria-label="Поиск команд" placeholder="Поиск команд (S)" value={search} onChange={e=>setSearch(e.target.value)}/><span className="live-brand">ASA CAD</span></div>
+  <div className="live-quickbar"><div className="live-quickbuttons">{['system.new','system.open','system.save','system.undo','system.redo'].map(id=>{const a=p.getAction(id);return <button key={id} type="button" disabled={!a.enabled} data-command-id={id} title={a.label} aria-label={a.label} onClick={()=>invoke(id)}><LiveIcon id={id} size={17}/></button>;})}</div><div className="live-document"><span className="live-document-cube">⬢</span>{p.documentTitle}{p.dirty?' *':''}</div><input className="live-search" aria-label="Поиск команд" placeholder="Поиск команд (S)" value={search} onChange={e=>setSearch(e.target.value)}/>{goHome?<button type="button" className="live-brand" title="ASA CAD — на главную" aria-label="ASA CAD — на главную" onClick={goHome}>ASA CAD</button>:<span className="live-brand">ASA CAD</span>}</div>
   <section className="live-ribbon" aria-label="Лента инструментов"><div className="live-workspace">МОДЕЛЬ <span>⌄</span></div><div className="live-ribbon-content">
    <div className="live-tabs" role="tablist">{ref.tabs.map(t=><button key={t.id} type="button" role="tab" data-native-tab={t.id} aria-selected={tab===t.id} onClick={()=>{setTab(t.id);setMenus([]);}}>{tr(t.name).toLocaleUpperCase('ru')}</button>)}{sketchWorkspace&&<button type="button" role="tab" data-native-tab="SketchTab" aria-selected={tab==='SketchTab'} onClick={()=>{setTab('SketchTab');setMenus([]);}}>ЭСКИЗ</button>}</div>
    <div className="live-groups">{sketchWorkspace&&tab==='SketchTab'?<SketchRibbon getAction={p.getAction}/>:active.panels.map(id=><section className="live-group" data-native-panel={id} key={id}><div className="live-tools">{panel[id].promoted.map(c=>nativeButton(c.commandId!))}</div><button className="live-group-title" data-native-group={id} type="button" aria-haspopup="menu" onClick={e=>menus.length?setMenus([]):group(panel[id].menu,e.currentTarget)}>{tr(panel[id].name)} <span>⌄</span></button></section>)}
