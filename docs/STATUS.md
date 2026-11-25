@@ -4,39 +4,24 @@
 
 ## Действующая точка
 
-**U2 IN_PROGRESS.** Full Repository Health Audit #225 технически принят как **YELLOW_ACCEPTED**: audited b8f700b, merge `ae3f713f81d405733b887deaad0050f28f33af0b`. Exact PR CI — 2 workflows/4 jobs, post-merge — 3 workflows/5 jobs SUCCESS; независимый review APPROVE. [Отчёт](FULL_REPOSITORY_HEALTH_AUDIT.md), raw false/PENDING и история #217/#221 сохранены. U2 целиком не принят.
+**Full Repository Health Audit — IN_REVIEW; U2 IN_PROGRESS, новые функции BLOCKED до приёмки аудита.** Измерен integration `a08b17c99bf8b3343008810ab5f9f398bd7a139d`. Предложен YELLOW; обязательны exact-head CI, независимый review и merge audit PR. [Отчёт](FULL_REPOSITORY_HEALTH_AUDIT.md) и [evidence](../spec/process/evidence/health-audit-fusion-20261125/summary.json). Measurement PASS не является технической приёмкой.
 
-#222 Numeric Line, #223 CI/build Node и #224 Rectangle завершили cadence 3/3 после #221; #225 закрыл обязательный аудит. После #225: #226 Arc numeric = 1/3, #230 Node 22.23.5 security pin — operational maintenance, текущий Circle slice = 2/3 permanent slices. Третий permanent slice или milestone boundary требуют Full Repository Health Audit.
+После принятого #225 (`ae3f713`) приняты #226 Arc, #231 Circle, #228 launcher, #234 top bar: **4 permanent slices**. #230 — operational maintenance. Прежнее 2/3 устарело; триггеры cadence/integration/release закрывает этот аудит. Счёт станет **0 только после технической приёмки и merge**, затем NEXT=U2/Fusion Sketch/navigation.
 
-## Текущий срез и продуктовый proof
+## Выпущено и проверено
 
-**THREE-MODE-LAUNCHER-001 — RELEASED в main** (integration #228 `db1256c`, main #233 `38b2d1a`, Docker 8088), по заданию владельца 08.11.2026. Главная `/` — карточки Kompas/Fusion/Vassalite (disabled-заглушка, без исходников); локальные проекты `/cad/{kompas|fusion}/{id}`; общий App/document/history/persistence. Решение владельца 2026-11-25 (после visual-проверки): в редакторе нет nav-полосы и селектора «Редактор»; выход на главную — по метке ASA CAD в топ-баре обоих шеллов (PR #234); смена оболочки — только через лаунчер (открытие того же проекта в другом редакторе). Draft/CI не означают готовность.
+**THREE-MODE-LAUNCHER-001 RELEASED_TO_MAIN:** #228/#233; top bar #234/#235. Actual main **`9ea217f253b3348d34638841936fa79b75f95fa2`**, integration **`a08b17c`**. Главная — KOMPAS/Fusion/Vassalite; Vassalite явно недоступен без исходников. Выход через метку ASA CAD и dirty guard, смена оболочки через лаунчер. Релиз владельца не равен полной visual parity.
 
-Launcher-проверка: 5 browser-сценариев (создание/открытие, dirty-guard через метку ASA CAD, save-and-leave, общий проект между шеллами, Back/Forward) — PASS; KOMPAS/Fusion shell, Protected Part regression — PASS.
+Аудит a08b17c: process/architecture/schema/budgets PASS; web types 0 diagnostics; launcher 65 PASS; Protected Part/runtime/lifetime PASS (699 wrappers, 0 live); STANDARD 10 phases/106 samples/20 warmups PASS; fresh npm audit 0, imports 288/0 unresolved. Среда измерения отличается от прошлой; сравнение скорости не заявлено.
 
-**U2-CIRCLE-NUMERIC-20261125** (#231 merged, `6d11158`): X/Y + Диаметр одним Circle draft, диаметр до/после центра, fallback [0,0]+`dimension.diameter` (только контроллер), commit = одна `sketch.circle`; exact CI 9/9, review APPROVE. Детали — PR/#184.
+U2 Arc #226, Circle #231 и Rectangle #224 технически доказаны отдельно. Numeric Line/Arc/Circle visual acceptance **PENDING**. Fusion Circle numeric draft — известное UX-расхождение, не закрыто аудитом. Полный Sketch, ViewCube/marking-menu parity и U2 целиком не приняты.
 
-**U2-ARC-NUMERIC-20261108:** левая Parameters связывает X/Y и временный радиус с одним Arc draft. Радиус доступен между центром и началом; Enter в нём не выбирает точку, Enter в X/Y продвигает построение. Readonly sweep, CW/CCW, большие дуги и wrap используют одну canonical pair для ghost и прежней команды sketch.arc. UI отвергает abs(sweep)<0.001 rad и ограничивает накопление ±(2π−0.01); core/сохранённые дуги неизменны. Commit — одна команда/history frame, затем новый центр; persistent constraints не добавлены. Exact CI, ordinary proof и matched before/after — в PR/#184; technical merge не равен visual approval.
+## Канон и ограничения
 
-Numeric Line #222: прежний sketch.line, один CadDocument/history, X/Y и временные length/absolute-angle locks, repeat с новой первой точкой. Keyboard/invalid/comma/Undo/Redo/Save/Open/IDs проверены; IME proof — synthetic DOM flag, не OS IME. **Owner visual verdict Numeric области PENDING; Line/общие Frame/CSS в Arc slice не меняются.**
+KOMPAS `src/web/kompas`, Fusion `src/web/fusion`; **один владелец состояния**, CadApplication/CadDocument/history/persistence; typed actions → ASA adapters → PlaneGCS/OpenCascade B-Rep; Three.js — отображение. Six document kinds: Part, Assembly, Drawing, Fragment, Specification, Text; готовность различается. U1A/U1B/U1C приняты #195/#196; legacy cleanup #208. Frozen #170: `ui-reference-20261004`.
 
-Rectangle #224: обычный Part → XY → Sketch → 60×40 → Undo/Redo → Save/Open сохраняет выбранную проекцию из десяти intent-полей, live Sketch/support/entity IDs и solved bounds; DOM counts 0/4/4. Это не сравнение всего CadPartDocument. Arc и весь U2 требуют отдельной приёмки; полная parity не заявлена.
+**FUSION_OWNER_PRESSURE_20261125:** 41 source owner ≥85% target, 20 выше target. Owner /root; до новой ответственности — focused extraction/review, frozen owners не растут; применимый долг закрыть до следующей milestone boundary. Лимиты не повышать.
 
-## Канон и границы
+WEB-TYPES/VENDOR-LIFETIME/DEPENDENCIES закрыты #218–#220. NODE_SECURITY_RELEASE_20261111_PENDING закрыт #230 для CI/build Node22.23.5; остальные runtime отдельно. LICENSE/THIRD_PARTY_NOTICE — pre-beta. DETECT_ONLY / ADMIN_BRANCH_PROTECTION_NOT_ENFORCED — KNOWN_RISK.
 
-- Компас: каноническая оболочка src/web/kompas; Fusion: выборочно адаптированная src/web/fusion. В активном редакторе один владелец состояния; typed actions → CadApplication/CadDocument → ASA adapters → PlaneGCS/OpenCascade B-Rep; Three.js — отображение.
-- Six document kinds: Part, Assembly, Drawing, Fragment, Specification, Text: готовность различается.
-- Main `38b2d1a` (launcher #233); main/production отдельно.
-- Frozen #170: ui-reference-20261004, `88c535c652dac8b04f0d68fa144cf8486afdc926`.
-
-U1A/U1B/U1C приняты #195/#196, responsive KOMPAS #202, LEGACY-CLEANUP-202 #208. K1/U1 повторно не реализуются. #177 — reuse после exact review; #179/Fusion #204–#207 отдельно.
-
-## Долги
-
-WEB-TYPES, VENDOR-LIFETIME, DEPENDENCIES закрыты #218–#220. NODE_TOOLCHAIN_EOL_AND_SECURITY_PATCH_GAP закрыт только для CI/build #223 и выбранного D2 ASA runtime Node22.23.4/npm10.9.9 с Windows proof. Global/default Node и прежние процессы не объявляются обновлёнными.
-
-**NODE_SECURITY_RELEASE_20261111_PENDING — CLOSED (repair PR):** security release **v22.23.5** опубликован 2026-11-11 (22.x highest HIGH: CVE-2026-123864/-123865/-123866/-123872 и др.). Operational pins 22.23.4 → **22.23.5**: CI setup-node, Dockerfile и NODE_IMAGE visual builds (index digest `be979e55…`), own engines. Win-x64 zip SHA256 `4a191082…` сверен с SHASUMS256.txt. Reachability: локальные серверы — HTTP/1.1 loopback, затронутые HTTP/2/TLS-поверхности не используются; браузерный WASM-рантайм независим от Node; exploit path NOT_ESTABLISHED, exposure не растёт. Portable D2 установка 22.23.5 — по отдельному разрешению §5, не выполнена этим срезом. Npm audit=0 этот follow-up не закрывает; evidence — `spec/process/evidence/node-security-release-20261125/upstream-release.json`.
-
-Frozen ceilings не растут; App/editing ratchets снижены до actual bytes. LICENSE/THIRD_PARTY_NOTICE — pre-beta. DETECT_ONLY / ADMIN_BRANCH_PROTECTION_NOT_ENFORCED — KNOWN_RISK.
-
-OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008: Draft PR → exact CI/ordinary proof/independent review → technical integration merge. THREE-MODE-LAUNCHER-001 выпущен в main (Docker 8088) после обязательных gates; топ-бар редактора приведён по решению владельца 2026-11-25 (PR #234); final visual parity остаётся решением владельца. Пользовательские документы и порты 8094/8098/8099 сохранены.
+OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008: PR → exact CI/ordinary proof/independent review → technical integration merge. Main/production/final visual parity требуют решения владельца. Пользовательские документы и установленное приложение не меняются этим audit PR.
