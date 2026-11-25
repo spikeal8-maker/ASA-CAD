@@ -1,5 +1,5 @@
 import type { CadProjectHost } from '../contracts/application';
-import type { CadDocument } from '../contracts/document';
+import { parseCadDocument, serializeCadDocument, type CadDocument } from '../contracts/document';
 import type { CadRecoveryRecord, CadRecoveryStore } from './CadRecoveryStore';
 
 export interface CadProjectSessionOptions {
@@ -23,6 +23,7 @@ export interface CadProjectSessionOpenResult {
  */
 export class CadProjectSession {
   private revision: number | null = null;
+  private revisionEpoch = 0;
 
   constructor(private readonly options: CadProjectSessionOptions) {
     if (!options.projectKey) throw new Error('projectKey is required');
@@ -37,16 +38,18 @@ export class CadProjectSession {
       this.options.host.load(),
       this.options.recovery.load(this.options.projectKey),
     ]);
+    this.revisionEpoch += 1;
     this.revision = remote.revision;
     return { document: remote.document, revision: remote.revision, recovery };
   }
 
   async save(document: CadDocument): Promise<{ revision: number }> {
     if (this.revision === null) throw new Error('CadProjectSession.open() must run before save()');
+    const epoch = this.revisionEpoch;
     const mutationId = this.createMutationId();
     const record: CadRecoveryRecord = {
       projectKey: this.options.projectKey,
-      document,
+      document: parseCadDocument(serializeCadDocument(document)),
       baseRevision: this.revision,
       savedAt: (this.options.now ?? (() => new Date()))().toISOString(),
       pendingMutationId: mutationId,
@@ -54,16 +57,17 @@ export class CadProjectSession {
 
     await this.options.recovery.save(record);
     const result = await this.options.host.save({
-      document,
+      document: record.document,
       baseRevision: record.baseRevision,
       mutationId,
     });
-    this.revision = result.revision;
-    await this.options.recovery.clear(this.options.projectKey);
+    this.acknowledgeRevision(result.revision, epoch);
+    await this.options.recovery.clearAcknowledged(this.options.projectKey, mutationId);
     return result;
   }
 
   async retryRecovery(): Promise<{ revision: number } | null> {
+    const epoch = this.revisionEpoch;
     const record = await this.options.recovery.load(this.options.projectKey);
     if (!record) return null;
     if (!record.pendingMutationId) throw new Error('Recovery record has no mutationId');
@@ -73,13 +77,18 @@ export class CadProjectSession {
       baseRevision: record.baseRevision,
       mutationId: record.pendingMutationId,
     });
-    this.revision = result.revision;
-    await this.options.recovery.clear(this.options.projectKey);
+    this.acknowledgeRevision(result.revision, epoch);
+    await this.options.recovery.clearAcknowledged(this.options.projectKey, record.pendingMutationId);
     return result;
   }
 
   async discardRecovery(): Promise<void> {
     await this.options.recovery.clear(this.options.projectKey);
+  }
+
+  private acknowledgeRevision(revision: number, epoch: number): void {
+    // A completed open owns a new optimistic base; older ACKs cannot replace it.
+    if (epoch === this.revisionEpoch) this.revision = Math.max(this.revision ?? 0, revision);
   }
 
   private createMutationId(): string {

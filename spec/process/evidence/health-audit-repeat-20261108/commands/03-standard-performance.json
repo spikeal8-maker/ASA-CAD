@@ -1,0 +1,67 @@
+{
+  "name": "standard-performance",
+  "startedAt": "2026-11-08T00:11:15.772Z",
+  "command": "C:\\Users\\spike\\AppData\\Local\\Programs\\nodejs\\node-v22.23.3-win-x64\\node.exe",
+  "argv": [
+    "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\performance-tool-20261107\\performance-runner.mjs",
+    "--repo",
+    "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Repeat-20261108",
+    "--expected-head",
+    "7bf71e2ee8ece045fb69620c657570ce7be9294f",
+    "--out",
+    "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-repeat-20261108\\performance"
+  ],
+  "cwd": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Repeat-20261108",
+  "executableSha256": "9c9245166b4a8e182e0b797da9c20136117ff24368eaff1fec8343a123c8db0e",
+  "environmentOverrides": {
+    "NO_COLOR": "1",
+    "TSX_DISABLE_CACHE": "1",
+    "npm_config_update_notifier": "false"
+  },
+  "nodeExecutableDirectoryPrependedToPath": "C:\\Users\\spike\\AppData\\Local\\Programs\\nodejs\\node-v22.23.3-win-x64",
+  "pid": 1716,
+  "exitCode": 0,
+  "signal": null,
+  "elapsedMs": 53281.9298,
+  "timeoutMs": 720000,
+  "timedOut": false,
+  "outputLimit": false,
+  "interrupted": false,
+  "spawnError": null,
+  "closed": true,
+  "cleanup": [],
+  "stdout": {
+    "bytes": 2328,
+    "sha256": "5d5ba7d6437866224aa25b90b0ce221d524dc0af086ff329d5da5413cd8b7c3d",
+    "encoding": "utf8",
+    "data": "START solve\nEND solve PASS 966.0 ms\nSTART history\nEND history PASS 23382.5 ms\nSTART serialization\nEND serialization PASS 739.0 ms\nSTART protected-part\nEND protected-part PASS 8375.8 ms\nSTART cold-planegcs-1\nEND cold-planegcs-1 PASS 436.1 ms\nSTART cold-planegcs-2\nEND cold-planegcs-2 PASS 448.2 ms\nSTART cold-planegcs-3\nEND cold-planegcs-3 PASS 426.4 ms\nSTART cold-occ-1\nEND cold-occ-1 PASS 5714.6 ms\nSTART cold-occ-2\nEND cold-occ-2 PASS 5441.1 ms\nSTART cold-occ-3\nEND cold-occ-3 PASS 5622.2 ms\n{\n  \"status\": \"PASS\",\n  \"mode\": \"measurement-awaiting-audit-acceptance\",\n  \"acceptedBaseline\": false,\n  \"reportPath\": \"C:\\\\Users\\\\spike\\\\Documents\\\\ASA-CAD-Maintenance-Captures\\\\legacy-cleanup-202-20261107\\\\audit-probes\\\\health-audit-repeat-20261108\\\\performance\\\\performance-report.json\",\n  \"reportSha256\": \"a8dc8b321472056f89995213817da8aebab3b9059839cedab32ea66a50708b9f\",\n  \"guards\": {\n    \"sourceUnchanged\": true,\n    \"checkoutClean\": true,\n    \"toolUnchanged\": true,\n    \"sixDistinctFreshColdProcesses\": true,\n    \"allOwnedWorkersExitedSuccessfully\": true,\n    \"noOwnedBrowserOrServer\": true\n  },\n  \"phases\": [\n    {\n      \"name\": \"solve\",\n      \"status\": \"PASS\",\n      \"pid\": 25532,\n      \"elapsedMs\": 966.0301\n    },\n    {\n      \"name\": \"history\",\n      \"status\": \"PASS\",\n      \"pid\": 36668,\n      \"elapsedMs\": 23382.5133\n    },\n    {\n      \"name\": \"serialization\",\n      \"status\": \"PASS\",\n      \"pid\": 38228,\n      \"elapsedMs\": 739.0087999999996\n    },\n    {\n      \"name\": \"protected-part\",\n      \"status\": \"PASS\",\n      \"pid\": 23708,\n      \"elapsedMs\": 8375.807799999999\n    },\n    {\n      \"name\": \"cold-planegcs-1\",\n      \"status\": \"PASS\",\n      \"pid\": 10620,\n      \"elapsedMs\": 436.08690000000206\n    },\n    {\n      \"name\": \"cold-planegcs-2\",\n      \"status\": \"PASS\",\n      \"pid\": 18232,\n      \"elapsedMs\": 448.15729999999894\n    },\n    {\n      \"name\": \"cold-planegcs-3\",\n      \"status\": \"PASS\",\n      \"pid\": 42500,\n      \"elapsedMs\": 426.3784999999989\n    },\n    {\n      \"name\": \"cold-occ-1\",\n      \"status\": \"PASS\",\n      \"pid\": 20124,\n      \"elapsedMs\": 5714.614199999996\n    },\n    {\n      \"name\": \"cold-occ-2\",\n      \"status\": \"PASS\",\n      \"pid\": 38564,\n      \"elapsedMs\": 5441.097099999999\n    },\n    {\n      \"name\": \"cold-occ-3\",\n      \"status\": \"PASS\",\n      \"pid\": 24180,\n      \"elapsedMs\": 5622.1855\n    }\n  ]\n}\n"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "encoding": "utf8",
+    "data": ""
+  },
+  "status": "PASS",
+  "validation": {
+    "report": {
+      "path": "performance/performance-report.json",
+      "bytes": 1509336,
+      "sha256": "a8dc8b321472056f89995213817da8aebab3b9059839cedab32ea66a50708b9f"
+    },
+    "phases": 10,
+    "cases": 16,
+    "measuredSamples": 106,
+    "warmups": 20,
+    "acceptedBaseline": false
+  },
+  "outputs": [
+    {
+      "status": "PRESENT",
+      "path": "performance/performance-report.json",
+      "bytes": 1509336,
+      "sha256": "a8dc8b321472056f89995213817da8aebab3b9059839cedab32ea66a50708b9f"
+    }
+  ],
+  "sourceAndToolsUnchanged": true
+}

@@ -30,9 +30,9 @@ export function SketchArcInteractionLayer(props: SketchArcInteractionLayerProps)
       ? 'awaiting-start'
       : 'awaiting-end';
   const startCandidate = props.draft.start ?? props.draft.hover;
-  const endCandidate = props.draft.end ?? props.draft.hover;
-  const arcGhost = props.draft.center && props.draft.start && endCandidate
-    ? sketchArcGeometryFromConstruction(props.draft.center, props.draft.start, endCandidate)
+  const canonical = props.draft.canonical;
+  const arcGhost = canonical
+    ? sketchArcGeometryFromConstruction(canonical.center, canonical.start, canonical.end)
     : null;
 
   return (

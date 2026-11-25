@@ -29,7 +29,7 @@ async function waitSolvedLine(page) {
 async function desktopDirectLine() {
   const { page, errors } = await newDesktopPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createXYSketch(page);
     await assertNoWasm(page, 'empty Sketch');
 
@@ -43,8 +43,8 @@ async function desktopDirectLine() {
     const lineButton = page.locator('[data-command-id="sketch.line"]').first();
     assert.equal(await lineButton.isEnabled(), true, 'Line action must be enabled in active Sketch');
     await lineButton.click();
-    await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
-    assert.equal(await page.locator('.management-panel').isVisible(), false, 'direct drawing must collapse panel');
+    await page.locator('.k-content[data-panel-tab="params"]').waitFor();
+    assert.equal(await page.locator('.k-management-panel').isVisible(), true, 'desktop drawing retains parameters');
 
     const { layer, box } = await interactionBox(page, 'line', 'Line');
     assert.equal(await layer.getAttribute('data-line-phase'), 'awaiting-start');
@@ -63,10 +63,13 @@ async function desktopDirectLine() {
 
     await page.mouse.click(second.x, second.y);
     await page.getByText(/Отрезок создан:/).waitFor();
-    await page.locator('[data-testid="cad-sketch-interaction"]').waitFor({ state: 'detached' });
+    await page.locator('[data-testid="cad-sketch-interaction"][data-line-phase="awaiting-start"]').waitFor();
+    assert.equal(await page.locator('[data-testid="sketch-line-anchor"]').count(), 0, 'Line must await a new first point after commit');
     await waitSolvedLine(page);
     assert.deepEqual(await sketchViewState(page), { span: 100, center: [0, 0] }, 'geometry commit refit the Sketch viewport');
-    assert.equal(await page.locator('.k-content.k-collapsed').count(), 0, 'Tree panel was not restored after Line commit');
+    await page.keyboard.press('Escape');
+    await page.locator('[data-testid="cad-sketch-interaction"]').waitFor({ state: 'detached' });
+    assert.equal(await page.locator('.k-content.k-collapsed').count(), 0, 'Tree panel was not restored after explicit Line exit');
 
     const persistedLine = page.locator('[data-testid="cad-sketch-overlay"] line[data-sketch-entity-id]').first();
     const x1 = Number(await persistedLine.getAttribute('x1'));
@@ -92,11 +95,11 @@ async function touchDirectLine() {
   const { context, page, errors } = await newTouchPage(browser);
   const client = await context.newCDPSession(page);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createMobileXYSketch(page);
     await activateMobileTool(page, 'sketch.line', 'Line');
-    await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
-    assert.equal(await page.locator('.management-panel').isVisible(), false, 'mobile drawing must collapse bottom sheet');
+    await page.locator('.k-content.k-collapsed').waitFor();
+    assert.equal(await page.locator('.k-management-panel').isVisible(), false, 'mobile drawing must collapse bottom sheet');
 
     const { box } = await interactionBox(page, 'line', 'Line');
     const lowerWorkplane = squarePoint(box, 0.50, 0.78);

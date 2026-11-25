@@ -1,0 +1,64 @@
+/* Native active-Sketch root menu. Solid retains the original marking-menu styles. */
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch] .marking-center{display:none}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch] .marking-slot{
+  min-height:25px;height:25px;max-width:198px;padding:2px 7px;gap:6px;
+  border:1px solid #bcbcbc;border-radius:2px;background:linear-gradient(#fafafa,#f2f2f2);
+  box-shadow:0 1px 1px #0002;font-size:13px;line-height:18px;white-space:nowrap;
+  color:#353535;
+}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch] .marking-slot>span:not(.live-icon){
+  min-width:0;max-width:none;overflow:hidden;text-overflow:ellipsis;
+}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch][data-marking-level=root] .marking-slot[data-marking-slot="0"]{max-width:240px}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch][data-marking-level=root] .marking-slot[data-marking-slot="4"]{min-width:80px;justify-content:center}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch][data-marking-level=root] .marking-slot[data-marking-slot="4"] .live-icon{display:none}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch][data-marking-level=root] .marking-slot[data-marking-slot="4"] b{margin-left:3px;color:#666;font-size:11px;font-weight:400}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch] .marking-slot:is([data-marking-slot="5"],[data-marking-slot="6"],[data-marking-slot="7"]) .live-icon{order:2}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch][data-marking-level=root] .marking-slot[data-marking-slot="7"] .live-icon{display:none}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch][data-marking-level=root] .marking-slot[data-marking-slot="7"]:after{content:'×';font-size:20px;line-height:17px;font-weight:600;color:#f04f4f}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch] .marking-slot:disabled{color:#a9adb0;background:#f9f9f9}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch] .marking-slot:disabled .live-icon,.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch][data-marking-level=root] .marking-slot:disabled:after{opacity:.4}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch] .marking-slot:hover:not(:disabled),.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch] .marking-slot:focus-visible{background:#e0eff8;border-color:#77b8db}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch] :is(.marking-list,.sketch-context-authored){
+  position:absolute;left:-103px;width:207px;min-width:207px;max-width:207px;max-height:calc(100vh - 194px);
+  padding:3.5px 0;background:#fff;border:1px solid #c4c4c4;border-radius:2px;
+  box-shadow:0 1px 2px #0000000a;overflow-x:hidden;overflow-y:auto;scrollbar-width:thin;
+  font-size:13px;line-height:18px;
+}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch][data-marking-context=empty][data-marking-level=root] :is(.marking-list,.sketch-context-authored){padding:4px 0}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch] :is(.marking-list,.sketch-context-authored) button{
+  display:flex;align-items:center;gap:6px;height:25px;min-height:25px;padding:0 4px;
+  font-size:13px;line-height:18px;color:#343434;white-space:nowrap;
+}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch] :is(.marking-list,.sketch-context-authored) button>span:not(.marking-symbol):not(.live-icon){
+  min-width:0;overflow:hidden;text-overflow:ellipsis;
+}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch] :is(.marking-list,.sketch-context-authored) button>small{font-size:12px;line-height:18px;color:#9e9e9e;white-space:nowrap}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch] :is(.marking-list,.sketch-context-authored) button:disabled{color:#aaaeb1}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch] :is(.marking-list,.sketch-context-authored) button:disabled .sketch-context-icon{opacity:.5}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch] :is(.marking-list,.sketch-context-authored) button:hover:not(:disabled),.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch] :is(.marking-list,.sketch-context-authored) button:focus-visible{background:#e0edf6;outline:0}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch] :is(.marking-list,.sketch-context-authored) hr{height:1px;border:0;background:#e6e6e6;margin:2px 0}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch] .sketch-context-icon,.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch] :is(.marking-list,.sketch-context-authored) .marking-symbol{display:block;width:19px;min-width:19px;flex-shrink:0;pointer-events:none}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch] :is(.marking-list,.sketch-context-authored) .sketch-context-section{font-weight:500}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch] [data-context-authored=true]{border-top:1px solid #e6e6e6;padding-top:2px}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch] .sketch-marking-home{
+  position:absolute;left:0;top:-37px;transform:translate(-50%,-50%);
+  display:grid;place-items:center;width:30px;height:30px;padding:0;border:3px solid #c2c2c2;
+  border-radius:50%;background:#fafafa;box-shadow:0 0 1px #aaa;
+}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch] .sketch-marking-home:hover{border-color:#87b9d3;background:#e7f4fb}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch] .sketch-context-authored{
+  top:172px;padding:0;border-color:#cbd4da;background:#f8fafb;
+}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch] .sketch-context-authored .sketch-context-section>small{
+  color:#71818a;font-size:9px;letter-spacing:0;
+}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch][data-marking-level=sketch] .marking-slot[data-marking-slot="0"] .live-icon{
+  border-radius:50%;background:#29ae5e;padding:2px;
+}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch][data-marking-level=sketch] .marking-slot[data-marking-slot="0"] .live-icon path{stroke:#fff}
+.asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch][data-marking-level=sketch] .marking-slot[data-marking-slot="7"]{max-width:220px}
+@media(max-width:450px){
+  .asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch] .marking-slot{max-width:150px;font-size:12px;padding:2px 4px;gap:3px}
+  .asa-editor-root[data-mode="fusion"] .live-marking[data-marking-workspace=sketch][data-marking-level=root] .marking-slot[data-marking-slot="0"]{max-width:220px}
+}

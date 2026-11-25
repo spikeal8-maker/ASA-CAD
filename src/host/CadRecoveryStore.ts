@@ -12,6 +12,7 @@ export interface CadRecoveryRecord {
 export interface CadRecoveryStore {
   load(projectKey: string): Promise<CadRecoveryRecord | null>;
   save(record: CadRecoveryRecord): Promise<void>;
+  clearAcknowledged(projectKey: string, mutationId: string): Promise<void>;
   clear(projectKey: string): Promise<void>;
 }
 
@@ -57,16 +58,17 @@ export class IndexedDbCadRecoveryStore implements CadRecoveryStore {
     if (!Number.isSafeInteger(record.baseRevision) || record.baseRevision < 0) {
       throw new Error('baseRevision must be a non-negative integer');
     }
+    const stored: StoredRecoveryRecord = {
+      projectKey: record.projectKey,
+      serializedDocument: serializeCadDocument(record.document),
+      baseRevision: record.baseRevision,
+      savedAt: record.savedAt,
+      pendingMutationId: record.pendingMutationId,
+    };
     const db = await this.open();
     try {
       const tx = db.transaction(this.storeName, 'readwrite');
-      tx.objectStore(this.storeName).put({
-        projectKey: record.projectKey,
-        serializedDocument: serializeCadDocument(record.document),
-        baseRevision: record.baseRevision,
-        savedAt: record.savedAt,
-        pendingMutationId: record.pendingMutationId,
-      } satisfies StoredRecoveryRecord);
+      tx.objectStore(this.storeName).put(stored);
       await this.transaction(tx);
     } finally {
       db.close();
@@ -78,6 +80,23 @@ export class IndexedDbCadRecoveryStore implements CadRecoveryStore {
     try {
       const tx = db.transaction(this.storeName, 'readwrite');
       tx.objectStore(this.storeName).delete(projectKey);
+      await this.transaction(tx);
+    } finally {
+      db.close();
+    }
+  }
+
+  async clearAcknowledged(projectKey: string, mutationId: string): Promise<void> {
+    if (!mutationId) throw new Error('mutationId is required');
+    const db = await this.open();
+    try {
+      const tx = db.transaction(this.storeName, 'readwrite');
+      const store = tx.objectStore(this.storeName);
+      const request = store.get(projectKey);
+      request.onsuccess = () => {
+        // Compare and delete in the same transaction, before another writer can replace the record.
+        if (request.result?.pendingMutationId === mutationId) store.delete(projectKey);
+      };
       await this.transaction(tx);
     } finally {
       db.close();
@@ -137,6 +156,11 @@ export class MemoryCadRecoveryStore implements CadRecoveryStore {
       savedAt: record.savedAt,
       pendingMutationId: record.pendingMutationId,
     });
+  }
+
+  async clearAcknowledged(projectKey: string, mutationId: string): Promise<void> {
+    if (!mutationId) throw new Error('mutationId is required');
+    if (this.records.get(projectKey)?.pendingMutationId === mutationId) this.records.delete(projectKey);
   }
 
   async clear(projectKey: string): Promise<void> {

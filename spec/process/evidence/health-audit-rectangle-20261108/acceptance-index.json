@@ -1,0 +1,1455 @@
+{
+  "schemaVersion": 1,
+  "kind": "ASA Full Audit exact-source evidence index",
+  "generatedAt": "2026-11-08T09:32:21.104Z",
+  "auditedSha": "b8f700bb6e455582db18df8d0ba43a2bfbdcc68b",
+  "auditedTree": "ccb7c9b0afb8b1c1ad1d40beba8d73d45de3e2e4",
+  "sourceMeasurementStatus": "PASS",
+  "acceptedBaseline": false,
+  "technicalAcceptance": "PENDING",
+  "ownerProductAcceptance": "PENDING",
+  "acceptance": "Prospective controller YELLOW_ACCEPTED is conditional on exact-head CI, independent review and merge; raw tools do not grant acceptance.",
+  "run": {
+    "file": "run.json",
+    "sha256": "924db21c98962047ee2d0b78f31de949a4b9797c10e6b8bc543115ec77fd140a"
+  },
+  "measurement": {
+    "manifest": "measurement/manifest.json",
+    "manifestSha256": "1b665718dea5953e0bb446a132ed1a9395c12bdcdd7b7ba9907feee81a0cbda7",
+    "verbatimFiles": 11,
+    "originalFiles": 73,
+    "originalBytes": 3427072,
+    "rawStatusPreserved": true,
+    "fullSourceInventory": "measurement/manifest.json#/sources"
+  },
+  "sources": [
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-20261108/run.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\run.json",
+      "physicalByteLength": 50381,
+      "sha256": "924db21c98962047ee2d0b78f31de949a4b9797c10e6b8bc543115ec77fd140a",
+      "recordedExpectedSha256": "924db21c98962047ee2d0b78f31de949a4b9797c10e6b8bc543115ec77fd140a",
+      "storage": {
+        "kind": "verbatim",
+        "file": "run.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-20261108/commands/01-historical-archive-verify.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\commands\\01-historical-archive-verify.json",
+      "physicalByteLength": 2004,
+      "sha256": "719e3b75bb0f05fc61042cdea52b8c3a7ed2ee937ddb7a1ff843a5d19ff7f4ae",
+      "recordedExpectedSha256": "719e3b75bb0f05fc61042cdea52b8c3a7ed2ee937ddb7a1ff843a5d19ff7f4ae",
+      "storage": {
+        "kind": "verbatim",
+        "file": "commands/01-historical-archive-verify.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-20261108/commands/02-full-web-types.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\commands\\02-full-web-types.json",
+      "physicalByteLength": 2315,
+      "sha256": "f89786c92ebedb30a579e725bbe0b7b794a144ba61fce9dc9f0f18dc50df27b2",
+      "recordedExpectedSha256": "f89786c92ebedb30a579e725bbe0b7b794a144ba61fce9dc9f0f18dc50df27b2",
+      "storage": {
+        "kind": "verbatim",
+        "file": "commands/02-full-web-types.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-20261108/commands/03-standard-performance.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\commands\\03-standard-performance.json",
+      "physicalByteLength": 4849,
+      "sha256": "20468cc70d423c5a6143528ab855617ae70b6d50c4fbdf03441c8e01207620bc",
+      "recordedExpectedSha256": "20468cc70d423c5a6143528ab855617ae70b6d50c4fbdf03441c8e01207620bc",
+      "storage": {
+        "kind": "verbatim",
+        "file": "commands/03-standard-performance.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-20261108/commands/04-m1-runtime-lifetime.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\commands\\04-m1-runtime-lifetime.json",
+      "physicalByteLength": 8088,
+      "sha256": "6dfb763b412a6a96ed5577e3a4dcd130bfff163163302eee58509cadbeba1252",
+      "recordedExpectedSha256": "6dfb763b412a6a96ed5577e3a4dcd130bfff163163302eee58509cadbeba1252",
+      "storage": {
+        "kind": "verbatim",
+        "file": "commands/04-m1-runtime-lifetime.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-20261108/commands/05-npm-audit-capture.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\commands\\05-npm-audit-capture.json",
+      "physicalByteLength": 2804,
+      "sha256": "7177435d31a3752579823c0beea68dccd4ebab24bb4c755cc42078e0229615d7",
+      "recordedExpectedSha256": "7177435d31a3752579823c0beea68dccd4ebab24bb4c755cc42078e0229615d7",
+      "storage": {
+        "kind": "verbatim",
+        "file": "commands/05-npm-audit-capture.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-20261108/commands/06-dependency-classifier.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\commands\\06-dependency-classifier.json",
+      "physicalByteLength": 3551,
+      "sha256": "3e3998b4f9660cbd880b135726d78fa52ce10cf96f32e2560f68fa72fb49f1a5",
+      "recordedExpectedSha256": "3e3998b4f9660cbd880b135726d78fa52ce10cf96f32e2560f68fa72fb49f1a5",
+      "storage": {
+        "kind": "verbatim",
+        "file": "commands/06-dependency-classifier.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-20261108/commands/07-archive-pack.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\commands\\07-archive-pack.json",
+      "physicalByteLength": 3351,
+      "sha256": "ecd295b6599a3a890935807d941147a8773046f845283cd3ff0af1922cfd0b4a",
+      "recordedExpectedSha256": "ecd295b6599a3a890935807d941147a8773046f845283cd3ff0af1922cfd0b4a",
+      "storage": {
+        "kind": "verbatim",
+        "file": "commands/07-archive-pack.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-20261108/commands/08-archive-verify.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\commands\\08-archive-verify.json",
+      "physicalByteLength": 2006,
+      "sha256": "20b0e9897fa3d58f8eb111df89fda8c6c87507c7210d48ca37507e29470eb22c",
+      "recordedExpectedSha256": "20b0e9897fa3d58f8eb111df89fda8c6c87507c7210d48ca37507e29470eb22c",
+      "storage": {
+        "kind": "verbatim",
+        "file": "commands/08-archive-verify.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-20261108/commands/09-archive-roundtrip.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\commands\\09-archive-roundtrip.json",
+      "physicalByteLength": 2759,
+      "sha256": "8b3749a327d5e781e0501585b0e6385e606774e754b6b22357579269b5d1b711",
+      "recordedExpectedSha256": "8b3749a327d5e781e0501585b0e6385e606774e754b6b22357579269b5d1b711",
+      "storage": {
+        "kind": "verbatim",
+        "file": "commands/09-archive-roundtrip.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-20261108/checks/dependency-audit-input.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\checks\\dependency-audit-input.json",
+      "physicalByteLength": 365,
+      "sha256": "c4c3d7cdf6fcde51c4f017fe23e5ddff6a54e3e25f16eb1a18df587463bd5bc2",
+      "recordedExpectedSha256": "c4c3d7cdf6fcde51c4f017fe23e5ddff6a54e3e25f16eb1a18df587463bd5bc2",
+      "storage": {
+        "kind": "verbatim",
+        "file": "checks/dependency-audit-input.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-20261108/checks/dependency-report.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\checks\\dependency-report.json",
+      "physicalByteLength": 57320,
+      "sha256": "c08a19cb009da13d3d96280e70a55502a6de8bea0f624e579c02c2c8ad975ec7",
+      "recordedExpectedSha256": "c08a19cb009da13d3d96280e70a55502a6de8bea0f624e579c02c2c8ad975ec7",
+      "storage": {
+        "kind": "verbatim",
+        "file": "checks/dependency-report.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-20261108/checks/full-web-types.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\checks\\full-web-types.json",
+      "physicalByteLength": 1072,
+      "sha256": "a7a46b25b593beb4fbd8272b07a21a0f6164b84f1df6104ae1bca00df68ed4b2",
+      "recordedExpectedSha256": "a7a46b25b593beb4fbd8272b07a21a0f6164b84f1df6104ae1bca00df68ed4b2",
+      "storage": {
+        "kind": "verbatim",
+        "file": "checks/full-web-types.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-20261108/checks/native-lifetime.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\checks\\native-lifetime.json",
+      "physicalByteLength": 7517,
+      "sha256": "d8eacae82ebf2680afcbc86d6b3bade4216b630bd483b1d96e4e6cd843773db9",
+      "recordedExpectedSha256": "d8eacae82ebf2680afcbc86d6b3bade4216b630bd483b1d96e4e6cd843773db9",
+      "storage": {
+        "kind": "verbatim",
+        "file": "checks/native-lifetime.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-20261108/checks/source-after.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\checks\\source-after.json",
+      "physicalByteLength": 77780,
+      "sha256": "2653cf70fd05cca852fd77555a3e57486547606a4fe99097b55e99513e1c978e",
+      "recordedExpectedSha256": "2653cf70fd05cca852fd77555a3e57486547606a4fe99097b55e99513e1c978e",
+      "storage": {
+        "kind": "verbatim",
+        "file": "checks/source-after.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-20261108/checks/source-before.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\checks\\source-before.json",
+      "physicalByteLength": 77780,
+      "sha256": "2653cf70fd05cca852fd77555a3e57486547606a4fe99097b55e99513e1c978e",
+      "recordedExpectedSha256": "2653cf70fd05cca852fd77555a3e57486547606a4fe99097b55e99513e1c978e",
+      "storage": {
+        "kind": "verbatim",
+        "file": "checks/source-before.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-20261108/measurement/manifest.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\measurement\\manifest.json",
+      "physicalByteLength": 34419,
+      "sha256": "1b665718dea5953e0bb446a132ed1a9395c12bdcdd7b7ba9907feee81a0cbda7",
+      "recordedExpectedSha256": "1b665718dea5953e0bb446a132ed1a9395c12bdcdd7b7ba9907feee81a0cbda7",
+      "storage": {
+        "kind": "verbatim",
+        "file": "measurement/manifest.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-20261108/measurement/dependency-audit-input.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\measurement\\dependency-audit-input.json",
+      "physicalByteLength": 365,
+      "sha256": "c4c3d7cdf6fcde51c4f017fe23e5ddff6a54e3e25f16eb1a18df587463bd5bc2",
+      "recordedExpectedSha256": "c4c3d7cdf6fcde51c4f017fe23e5ddff6a54e3e25f16eb1a18df587463bd5bc2",
+      "storage": {
+        "kind": "verbatim",
+        "file": "measurement/dependency-audit-input.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-20261108/measurement/dependency-report.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\measurement\\dependency-report.json",
+      "physicalByteLength": 57320,
+      "sha256": "c08a19cb009da13d3d96280e70a55502a6de8bea0f624e579c02c2c8ad975ec7",
+      "recordedExpectedSha256": "c08a19cb009da13d3d96280e70a55502a6de8bea0f624e579c02c2c8ad975ec7",
+      "storage": {
+        "kind": "verbatim",
+        "file": "measurement/dependency-report.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-20261108/measurement/harness/dependency-classifier.mjs",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\measurement\\harness\\dependency-classifier.mjs",
+      "physicalByteLength": 13411,
+      "sha256": "9b8f10b02a82d90086f6ee2378d2b57b714d09631e6c6bd6bb58e0068c8806fe",
+      "recordedExpectedSha256": "9b8f10b02a82d90086f6ee2378d2b57b714d09631e6c6bd6bb58e0068c8806fe",
+      "storage": {
+        "kind": "verbatim",
+        "file": "measurement/harness/dependency-classifier.mjs"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-20261108/measurement/harness/evidence-archiver.mjs",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\measurement\\harness\\evidence-archiver.mjs",
+      "physicalByteLength": 23481,
+      "sha256": "cece38c0d93c54852f4c0aaa32c1a6004dbcca308117c54dcce8c84d5289dbdc",
+      "recordedExpectedSha256": "cece38c0d93c54852f4c0aaa32c1a6004dbcca308117c54dcce8c84d5289dbdc",
+      "storage": {
+        "kind": "verbatim",
+        "file": "measurement/harness/evidence-archiver.mjs"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-20261108/measurement/harness/performance-common.mjs",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\measurement\\harness\\performance-common.mjs",
+      "physicalByteLength": 6463,
+      "sha256": "8870a27525937d03fd4f1bad79ca7869d2b4ad27985988e9b6e40e5bf0c49ba9",
+      "recordedExpectedSha256": "8870a27525937d03fd4f1bad79ca7869d2b4ad27985988e9b6e40e5bf0c49ba9",
+      "storage": {
+        "kind": "verbatim",
+        "file": "measurement/harness/performance-common.mjs"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-20261108/measurement/harness/performance-fixtures.mjs",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\measurement\\harness\\performance-fixtures.mjs",
+      "physicalByteLength": 7191,
+      "sha256": "3d16d60df721021fe803493ad2f4e3da4eb007286fd0a0374698a60a9eb83967",
+      "recordedExpectedSha256": "3d16d60df721021fe803493ad2f4e3da4eb007286fd0a0374698a60a9eb83967",
+      "storage": {
+        "kind": "verbatim",
+        "file": "measurement/harness/performance-fixtures.mjs"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-20261108/measurement/harness/performance-runner.mjs",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\measurement\\harness\\performance-runner.mjs",
+      "physicalByteLength": 10383,
+      "sha256": "53224b6ec0fcfb835650890fdea12e2a5216182c4288047ea5a7960e025e2add",
+      "recordedExpectedSha256": "53224b6ec0fcfb835650890fdea12e2a5216182c4288047ea5a7960e025e2add",
+      "storage": {
+        "kind": "verbatim",
+        "file": "measurement/harness/performance-runner.mjs"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-20261108/measurement/harness/performance-worker.mjs",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\measurement\\harness\\performance-worker.mjs",
+      "physicalByteLength": 17277,
+      "sha256": "44bf82d8151885ee3d8fcb700562837e0a1075327a2fc6a888c1cdb39ac08254",
+      "recordedExpectedSha256": "44bf82d8151885ee3d8fcb700562837e0a1075327a2fc6a888c1cdb39ac08254",
+      "storage": {
+        "kind": "verbatim",
+        "file": "measurement/harness/performance-worker.mjs"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-20261108/measurement/performance-report.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\measurement\\performance-report.json",
+      "physicalByteLength": 1508686,
+      "sha256": "b8758b30ed2fa8203a1c0bb9bd264fbc6904a99d35f8df8018adbd7807f50e0d",
+      "recordedExpectedSha256": "b8758b30ed2fa8203a1c0bb9bd264fbc6904a99d35f8df8018adbd7807f50e0d",
+      "storage": {
+        "kind": "verbatim",
+        "file": "measurement/performance-report.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-20261108/measurement/raw-receipts.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\measurement\\raw-receipts.json",
+      "physicalByteLength": 414278,
+      "sha256": "ffc06bbe672b321ca5ead37af2d1586f0940df06f89ae525f0ce8aa1d3d87113",
+      "recordedExpectedSha256": "ffc06bbe672b321ca5ead37af2d1586f0940df06f89ae525f0ce8aa1d3d87113",
+      "storage": {
+        "kind": "verbatim",
+        "file": "measurement/raw-receipts.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-analysis-20261108/numeric-summary.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-analysis-20261108\\numeric-summary.json",
+      "physicalByteLength": 81298,
+      "sha256": "d0fff4341d6ba627ce2fcfd06e293fbd57a18905a3438a46f89967bd2f2e222e",
+      "recordedExpectedSha256": "d0fff4341d6ba627ce2fcfd06e293fbd57a18905a3438a46f89967bd2f2e222e",
+      "storage": {
+        "kind": "verbatim",
+        "file": "analysis/numeric-summary.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-analysis-20261108/comparison.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-analysis-20261108\\comparison.json",
+      "physicalByteLength": 127962,
+      "sha256": "9793cb743b4ce60bbbf736985106709554bf75d9b0ad2b94112e5e321caf7348",
+      "recordedExpectedSha256": "9793cb743b4ce60bbbf736985106709554bf75d9b0ad2b94112e5e321caf7348",
+      "storage": {
+        "kind": "verbatim",
+        "file": "analysis/comparison.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-analysis-20261108/physical-roots.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-analysis-20261108\\physical-roots.json",
+      "physicalByteLength": 9990,
+      "sha256": "bbf109c5533fbb37bb965972873ffc3f923ee567177a9c2920bc14ea5e608c8b",
+      "recordedExpectedSha256": "bbf109c5533fbb37bb965972873ffc3f923ee567177a9c2920bc14ea5e608c8b",
+      "storage": {
+        "kind": "verbatim",
+        "file": "analysis/physical-roots.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-setup-20261108/setup.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-setup-20261108\\setup.json",
+      "physicalByteLength": 35897,
+      "sha256": "a1c9a38d7affb0dbb6f047e91b51f3029a0b48de7b98f0c5920ad13caa8bf534",
+      "recordedExpectedSha256": "a1c9a38d7affb0dbb6f047e91b51f3029a0b48de7b98f0c5920ad13caa8bf534",
+      "storage": {
+        "kind": "verbatim",
+        "file": "setup/setup.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-setup-20261108/npm-audit-scope.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-setup-20261108\\npm-audit-scope.json",
+      "physicalByteLength": 1002,
+      "sha256": "3dcd1b1a4f74eaf6c9efa6c6940af155391dc5683f908ddc5df991f5a5ccbd62",
+      "recordedExpectedSha256": "3dcd1b1a4f74eaf6c9efa6c6940af155391dc5683f908ddc5df991f5a5ccbd62",
+      "storage": {
+        "kind": "verbatim",
+        "file": "setup/npm-audit-scope.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-setup-20261108/audit-launch.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-setup-20261108\\audit-launch.json",
+      "physicalByteLength": 1539,
+      "sha256": "b9e159cb60dcb85f26106ec5a3fd1885d40b360a495a93ee94370db412c1d71a",
+      "recordedExpectedSha256": "b9e159cb60dcb85f26106ec5a3fd1885d40b360a495a93ee94370db412c1d71a",
+      "storage": {
+        "kind": "verbatim",
+        "file": "setup/audit-launch.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-setup-20261108/measurement-invocation.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-setup-20261108\\measurement-invocation.json",
+      "physicalByteLength": 2559,
+      "sha256": "0bd17fae12c9657d9ee9cfdbfcd79467125429b88861793417c01621bbaa5f43",
+      "recordedExpectedSha256": "0bd17fae12c9657d9ee9cfdbfcd79467125429b88861793417c01621bbaa5f43",
+      "storage": {
+        "kind": "verbatim",
+        "file": "setup/measurement-invocation.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-setup-20261108/upstream-source-review.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-setup-20261108\\upstream-source-review.json",
+      "physicalByteLength": 3445,
+      "sha256": "02f6d8f79aab5a2d09ae0d19006b78fa9ca33bf96d9320fb89b2a17eabccbced",
+      "recordedExpectedSha256": null,
+      "storage": {
+        "kind": "verbatim",
+        "file": "reviews/upstream-source-review.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/health-audit-rectangle-setup-20261108/independent-architecture-review.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-setup-20261108\\independent-architecture-review.json",
+      "physicalByteLength": 6382,
+      "sha256": "395070eff66f19252879d7fcc266deba3106bb7d8bf0ce58ddd4dca6801aab3a",
+      "recordedExpectedSha256": "395070eff66f19252879d7fcc266deba3106bb7d8bf0ce58ddd4dca6801aab3a",
+      "storage": {
+        "kind": "verbatim",
+        "file": "reviews/independent-architecture-review.json"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "setup/commands/effective-omit.stdout.txt",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-setup-20261108\\commands\\effective-omit.stdout.txt",
+      "physicalByteLength": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "recordedExpectedSha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "storage": {
+        "kind": "container",
+        "file": "setup/raw-streams.json",
+        "pointer": "/sources/0",
+        "encoding": "base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "setup/commands/effective-omit.stderr.txt",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-setup-20261108\\commands\\effective-omit.stderr.txt",
+      "physicalByteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "recordedExpectedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": {
+        "kind": "container",
+        "file": "setup/raw-streams.json",
+        "pointer": "/sources/1",
+        "encoding": "base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "setup/commands/effective-global.stdout.txt",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-setup-20261108\\commands\\effective-global.stdout.txt",
+      "physicalByteLength": 6,
+      "sha256": "2ed27c1421e6928dbe13dbfdb5c59e1045b30341fe7ebe05700006bc5ac572c0",
+      "recordedExpectedSha256": "2ed27c1421e6928dbe13dbfdb5c59e1045b30341fe7ebe05700006bc5ac572c0",
+      "storage": {
+        "kind": "container",
+        "file": "setup/raw-streams.json",
+        "pointer": "/sources/2",
+        "encoding": "base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "setup/commands/effective-global.stderr.txt",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-setup-20261108\\commands\\effective-global.stderr.txt",
+      "physicalByteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "recordedExpectedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": {
+        "kind": "container",
+        "file": "setup/raw-streams.json",
+        "pointer": "/sources/3",
+        "encoding": "base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "setup/commands/clean-install.stdout.txt",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-setup-20261108\\commands\\clean-install.stdout.txt",
+      "physicalByteLength": 144,
+      "sha256": "597cee19299cfef7b80db5b6a3c8a0803b586bcec121acb9c3563c09b75c7644",
+      "recordedExpectedSha256": "597cee19299cfef7b80db5b6a3c8a0803b586bcec121acb9c3563c09b75c7644",
+      "storage": {
+        "kind": "container",
+        "file": "setup/raw-streams.json",
+        "pointer": "/sources/4",
+        "encoding": "base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "setup/commands/clean-install.stderr.txt",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-setup-20261108\\commands\\clean-install.stderr.txt",
+      "physicalByteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "recordedExpectedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": {
+        "kind": "container",
+        "file": "setup/raw-streams.json",
+        "pointer": "/sources/5",
+        "encoding": "base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "setup/commands/dependency-tree.stdout.txt",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-setup-20261108\\commands\\dependency-tree.stdout.txt",
+      "physicalByteLength": 73624,
+      "sha256": "34817d919092268bbf57ae4812fa6111e54f78db9557801aecac3f58ba5383ec",
+      "recordedExpectedSha256": "34817d919092268bbf57ae4812fa6111e54f78db9557801aecac3f58ba5383ec",
+      "storage": {
+        "kind": "container",
+        "file": "setup/raw-streams.json",
+        "pointer": "/sources/6",
+        "encoding": "base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "setup/commands/dependency-tree.stderr.txt",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-setup-20261108\\commands\\dependency-tree.stderr.txt",
+      "physicalByteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "recordedExpectedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": {
+        "kind": "container",
+        "file": "setup/raw-streams.json",
+        "pointer": "/sources/7",
+        "encoding": "base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "setup/commands/asa-types.stdout.txt",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-setup-20261108\\commands\\asa-types.stdout.txt",
+      "physicalByteLength": 112,
+      "sha256": "54db64d65c6a4f4f878ae42463a5e94173111fe174a1a25d9e5c56aae0aa36c8",
+      "recordedExpectedSha256": "54db64d65c6a4f4f878ae42463a5e94173111fe174a1a25d9e5c56aae0aa36c8",
+      "storage": {
+        "kind": "container",
+        "file": "setup/raw-streams.json",
+        "pointer": "/sources/8",
+        "encoding": "base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "setup/commands/asa-types.stderr.txt",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-setup-20261108\\commands\\asa-types.stderr.txt",
+      "physicalByteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "recordedExpectedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": {
+        "kind": "container",
+        "file": "setup/raw-streams.json",
+        "pointer": "/sources/9",
+        "encoding": "base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/rectangle-audit-setup-20261108.cjs",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\rectangle-audit-setup-20261108.cjs",
+      "physicalByteLength": 19212,
+      "sha256": "034ee365fd635fedeccfb8811c851819628bf51fc1b560ad074a77e072ee2910",
+      "recordedExpectedSha256": "034ee365fd635fedeccfb8811c851819628bf51fc1b560ad074a77e072ee2910",
+      "storage": {
+        "kind": "container",
+        "file": "setup/harness-sources.json",
+        "pointer": "/sources/0",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/rectangle-audit-setup-preparation-20261108.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\rectangle-audit-setup-preparation-20261108.json",
+      "physicalByteLength": 1453,
+      "sha256": "ef6f172ec28f5b9304cea67abe28d7a725e3da99a71e968546b74fd1f6b61bf0",
+      "recordedExpectedSha256": "ef6f172ec28f5b9304cea67abe28d7a725e3da99a71e968546b74fd1f6b61bf0",
+      "storage": {
+        "kind": "container",
+        "file": "setup/harness-sources.json",
+        "pointer": "/sources/1",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/rectangle-audit-derive-20261108.cjs",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\rectangle-audit-derive-20261108.cjs",
+      "physicalByteLength": 18585,
+      "sha256": "37d8aef6c81e0ef05d53a0abab843473355f3e06f2ad4c1719b167d70fb5ff99",
+      "recordedExpectedSha256": "37d8aef6c81e0ef05d53a0abab843473355f3e06f2ad4c1719b167d70fb5ff99",
+      "storage": {
+        "kind": "container",
+        "file": "setup/harness-sources.json",
+        "pointer": "/sources/2",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "u2-numeric-line/alignment-221-9608395-20261108/pr-222-ci.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\u2-numeric-line\\alignment-221-9608395-20261108\\pr-222-ci.json",
+      "physicalByteLength": 881373,
+      "sha256": "b6eb1de18d372110f825fd33510d3a21bed4aa258078690e480ec22afe7082ce",
+      "recordedExpectedSha256": "b6eb1de18d372110f825fd33510d3a21bed4aa258078690e480ec22afe7082ce",
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/pr222.json",
+        "pointer": "/sources/0",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "u2-numeric-line/alignment-221-9608395-20261108/pr-222-postmerge-a62a5b5.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\u2-numeric-line\\alignment-221-9608395-20261108\\pr-222-postmerge-a62a5b5.json",
+      "physicalByteLength": 572905,
+      "sha256": "38d26f4dbde1ea0216df9ab4c791d3d2dfaa4068e39efb89b729a3cdc10bbe58",
+      "recordedExpectedSha256": "38d26f4dbde1ea0216df9ab4c791d3d2dfaa4068e39efb89b729a3cdc10bbe58",
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/pr222.json",
+        "pointer": "/sources/1",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/node-toolchain-22-23-4-20261108/pr-223-ci.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\node-toolchain-22-23-4-20261108\\pr-223-ci.json",
+      "physicalByteLength": 915543,
+      "sha256": "ee5de21e04497dcac13d11cd7411be50c737a959fcb67fd4bf1808211418303d",
+      "recordedExpectedSha256": "ee5de21e04497dcac13d11cd7411be50c737a959fcb67fd4bf1808211418303d",
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/pr223.json",
+        "pointer": "/sources/0",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/node-toolchain-22-23-4-20261108/pr-223-postmerge-5781e39.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\node-toolchain-22-23-4-20261108\\pr-223-postmerge-5781e39.json",
+      "physicalByteLength": 573596,
+      "sha256": "8cac65f7bc3e95f2d72bf48f01d54ac8f8af232cd6486b7c48b11b7b8d09c9b9",
+      "recordedExpectedSha256": "8cac65f7bc3e95f2d72bf48f01d54ac8f8af232cd6486b7c48b11b7b8d09c9b9",
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/pr223.json",
+        "pointer": "/sources/1",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/node-toolchain-22-23-4-20261108/ci-artifacts/node20-node22-visual-comparison.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\node-toolchain-22-23-4-20261108\\ci-artifacts\\node20-node22-visual-comparison.json",
+      "physicalByteLength": 28575,
+      "sha256": "65a92df49e9babb11cc26593188eed17c3a97bd4909920df425db8687dd72386",
+      "recordedExpectedSha256": "65a92df49e9babb11cc26593188eed17c3a97bd4909920df425db8687dd72386",
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/pr223.json",
+        "pointer": "/sources/2",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "u2-rectangle-acceptance-20261108/pr-224-ci.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\u2-rectangle-acceptance-20261108\\pr-224-ci.json",
+      "physicalByteLength": 344289,
+      "sha256": "4f0ef1ddb0897ef9b28b0b9ef33c9f6f05b78f1dc59120804b41db72c20bdb4d",
+      "recordedExpectedSha256": "4f0ef1ddb0897ef9b28b0b9ef33c9f6f05b78f1dc59120804b41db72c20bdb4d",
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/pr224.json",
+        "pointer": "/sources/0",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "u2-rectangle-acceptance-20261108/pr-224-ci-summary.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\u2-rectangle-acceptance-20261108\\pr-224-ci-summary.json",
+      "physicalByteLength": 11393,
+      "sha256": "85c95d1902e24e02ad7d131d89717f18451d76b08acdc623306438b1e9e4cdb8",
+      "recordedExpectedSha256": "85c95d1902e24e02ad7d131d89717f18451d76b08acdc623306438b1e9e4cdb8",
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/pr224.json",
+        "pointer": "/sources/1",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "u2-rectangle-acceptance-20261108/pr-224-postmerge-b8f700b.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\u2-rectangle-acceptance-20261108\\pr-224-postmerge-b8f700b.json",
+      "physicalByteLength": 503865,
+      "sha256": "ed131631dd69b89cda9319c4f3a255194c3813310297d90fe308ac07acecc7dd",
+      "recordedExpectedSha256": "ed131631dd69b89cda9319c4f3a255194c3813310297d90fe308ac07acecc7dd",
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/pr224.json",
+        "pointer": "/sources/2",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "u2-rectangle-acceptance-20261108/pr-224-postmerge-b8f700b-summary.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\u2-rectangle-acceptance-20261108\\pr-224-postmerge-b8f700b-summary.json",
+      "physicalByteLength": 14909,
+      "sha256": "05f88b4a53bd4ebeeddbc23b59dc8f3129f740f02fc414afee37ca95706e07d5",
+      "recordedExpectedSha256": "05f88b4a53bd4ebeeddbc23b59dc8f3129f740f02fc414afee37ca95706e07d5",
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/pr224.json",
+        "pointer": "/sources/3",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "u2-rectangle-acceptance-20261108/controller-acceptance.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\u2-rectangle-acceptance-20261108\\controller-acceptance.json",
+      "physicalByteLength": 3453,
+      "sha256": "7c95e90ccea2fa2126fd4e1c96d4c8ebbd7b882d313f7ebc1eb571fa7e3dd461",
+      "recordedExpectedSha256": null,
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/pr224.json",
+        "pointer": "/sources/4",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "u2-rectangle-acceptance-20261108/pr-224-initial-shell-failure.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\u2-rectangle-acceptance-20261108\\pr-224-initial-shell-failure.json",
+      "physicalByteLength": 40481,
+      "sha256": "30d720aa0ba71c2114af0a7e6378c0ff6141668d44643b2c6734cd58fb2aad30",
+      "recordedExpectedSha256": "30d720aa0ba71c2114af0a7e6378c0ff6141668d44643b2c6734cd58fb2aad30",
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/pr224.json",
+        "pointer": "/sources/5",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "u2-rectangle-acceptance-20261108/candidate-browser/run.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\u2-rectangle-acceptance-20261108\\candidate-browser\\run.json",
+      "physicalByteLength": 329664,
+      "sha256": "e2a062e49f18ac6a8272c1ec6cc6ce7d1fd7017e900e22cbf26509657b738f72",
+      "recordedExpectedSha256": "e2a062e49f18ac6a8272c1ec6cc6ce7d1fd7017e900e22cbf26509657b738f72",
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/pr224.json",
+        "pointer": "/sources/6",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "u2-rectangle-acceptance-20261108/candidate-browser/direct-rectangle-browser.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\u2-rectangle-acceptance-20261108\\candidate-browser\\direct-rectangle-browser.json",
+      "physicalByteLength": 6265,
+      "sha256": "ff49b0dbf22a2dc45e0f8a178ef3d443f0168095f806059df10dc55c231c76e8",
+      "recordedExpectedSha256": null,
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/pr224.json",
+        "pointer": "/sources/7",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "u2-rectangle-acceptance-20261108/candidate-browser/verification.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\u2-rectangle-acceptance-20261108\\candidate-browser\\verification.json",
+      "physicalByteLength": 4051,
+      "sha256": "97daa3bea4c4b5962c76d3818cab58385eca5ab121278fc8c66a044ae1086a28",
+      "recordedExpectedSha256": "97daa3bea4c4b5962c76d3818cab58385eca5ab121278fc8c66a044ae1086a28",
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/pr224.json",
+        "pointer": "/sources/8",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/node-windows-22-23-4-20261108/installation.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\node-windows-22-23-4-20261108\\installation.json",
+      "physicalByteLength": 7020,
+      "sha256": "1a6220154cfd2178b36a6544d813e56f9311d7d41e40503a684a991091b5e42b",
+      "recordedExpectedSha256": null,
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/windows.json",
+        "pointer": "/sources/0",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/node-windows-22-23-4-20261108/validation.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\node-windows-22-23-4-20261108\\validation.json",
+      "physicalByteLength": 318115,
+      "sha256": "8b6310c8befd63c27729e82be3482706aec37fa6e3f3b82637452fc611f2ff61",
+      "recordedExpectedSha256": "8b6310c8befd63c27729e82be3482706aec37fa6e3f3b82637452fc611f2ff61",
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/windows.json",
+        "pointer": "/sources/1",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/node-windows-22-23-4-20261108/final-verification.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\node-windows-22-23-4-20261108\\final-verification.json",
+      "physicalByteLength": 16058,
+      "sha256": "91993377c1c2a66dba0083eb4682cf3f5f91909225f6c8c30daa3b6665f442fd",
+      "recordedExpectedSha256": "91993377c1c2a66dba0083eb4682cf3f5f91909225f6c8c30daa3b6665f442fd",
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/windows.json",
+        "pointer": "/sources/2",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/node-windows-22-23-4-20261108/browser/run.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\node-windows-22-23-4-20261108\\browser\\run.json",
+      "physicalByteLength": 170240,
+      "sha256": "533877dca98b438a15b9b707876a978a6872c9a63de0ab1ef913a06c364a9af1",
+      "recordedExpectedSha256": null,
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/windows.json",
+        "pointer": "/sources/3",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/node-windows-22-23-4-20261108/browser/numeric-evidence/numeric-line-checks.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\node-windows-22-23-4-20261108\\browser\\numeric-evidence\\numeric-line-checks.json",
+      "physicalByteLength": 5335,
+      "sha256": "0cb2e3e821bf76853c0e55a4cdfb2aaf1805039114a37a48848bd422282c1191",
+      "recordedExpectedSha256": null,
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/windows.json",
+        "pointer": "/sources/4",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/node-windows-22-23-4-20261108/npm-check.stdout.txt",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\node-windows-22-23-4-20261108\\npm-check.stdout.txt",
+      "physicalByteLength": 59673,
+      "sha256": "c8ebd9c4d521dd19a820f25547b9db37385323160ede46b0d5f8ae14ae1244ad",
+      "recordedExpectedSha256": null,
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/windows.json",
+        "pointer": "/sources/5",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/node-windows-22-23-4-20261108/controller-acceptance.json",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\node-windows-22-23-4-20261108\\controller-acceptance.json",
+      "physicalByteLength": 1841,
+      "sha256": "40c9f313949c19080f41562d5a9f289e18ec8f75a92c7e6244f9284993cd5330",
+      "recordedExpectedSha256": null,
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/windows.json",
+        "pointer": "/sources/6",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/node-windows-22-23-4-20261108/fetch-integration.stdout.txt",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\node-windows-22-23-4-20261108\\fetch-integration.stdout.txt",
+      "physicalByteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "recordedExpectedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/windows.json",
+        "pointer": "/sources/7",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/node-windows-22-23-4-20261108/fetch-integration.stderr.txt",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\node-windows-22-23-4-20261108\\fetch-integration.stderr.txt",
+      "physicalByteLength": 142,
+      "sha256": "85eaee70cc3551fdd9fdd409ac18dcc1eb71c6b178e11ecff3b5290b49115126",
+      "recordedExpectedSha256": "85eaee70cc3551fdd9fdd409ac18dcc1eb71c6b178e11ecff3b5290b49115126",
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/windows.json",
+        "pointer": "/sources/8",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/node-windows-22-23-4-20261108/create-worktree.stdout.txt",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\node-windows-22-23-4-20261108\\create-worktree.stdout.txt",
+      "physicalByteLength": 75,
+      "sha256": "d326008af347891fd93caa75676fd3e42f79f0d2f435001548bc256a3715d0b4",
+      "recordedExpectedSha256": "d326008af347891fd93caa75676fd3e42f79f0d2f435001548bc256a3715d0b4",
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/windows.json",
+        "pointer": "/sources/9",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/node-windows-22-23-4-20261108/create-worktree.stderr.txt",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\node-windows-22-23-4-20261108\\create-worktree.stderr.txt",
+      "physicalByteLength": 79,
+      "sha256": "043fee16c9d78cbcd0ac4ea53c3e92a3b39fc49e39f3ed9f18e2d4920a19dc56",
+      "recordedExpectedSha256": "043fee16c9d78cbcd0ac4ea53c3e92a3b39fc49e39f3ed9f18e2d4920a19dc56",
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/windows.json",
+        "pointer": "/sources/10",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/node-windows-22-23-4-20261108/npm-ci.stdout.txt",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\node-windows-22-23-4-20261108\\npm-ci.stdout.txt",
+      "physicalByteLength": 78,
+      "sha256": "a5108f2d4c3dc9cf243406f493a8f36fc9f26d569415eff6a15af7eb715926f5",
+      "recordedExpectedSha256": "a5108f2d4c3dc9cf243406f493a8f36fc9f26d569415eff6a15af7eb715926f5",
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/windows.json",
+        "pointer": "/sources/11",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/node-windows-22-23-4-20261108/npm-ci.stderr.txt",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\node-windows-22-23-4-20261108\\npm-ci.stderr.txt",
+      "physicalByteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "recordedExpectedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/windows.json",
+        "pointer": "/sources/12",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/node-windows-22-23-4-20261108/npm-ls.stdout.txt",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\node-windows-22-23-4-20261108\\npm-ls.stdout.txt",
+      "physicalByteLength": 73624,
+      "sha256": "34817d919092268bbf57ae4812fa6111e54f78db9557801aecac3f58ba5383ec",
+      "recordedExpectedSha256": "34817d919092268bbf57ae4812fa6111e54f78db9557801aecac3f58ba5383ec",
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/windows.json",
+        "pointer": "/sources/13",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/node-windows-22-23-4-20261108/npm-ls.stderr.txt",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\node-windows-22-23-4-20261108\\npm-ls.stderr.txt",
+      "physicalByteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "recordedExpectedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/windows.json",
+        "pointer": "/sources/14",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/node-windows-22-23-4-20261108/npm-check.stderr.txt",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\node-windows-22-23-4-20261108\\npm-check.stderr.txt",
+      "physicalByteLength": 11302,
+      "sha256": "72387a661f3740548313aa2c82b6562eb19deab4276d2482c59b362d3c0f2baa",
+      "recordedExpectedSha256": "72387a661f3740548313aa2c82b6562eb19deab4276d2482c59b362d3c0f2baa",
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/windows.json",
+        "pointer": "/sources/15",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/node-windows-22-23-4-20261108/checkpoint-policy.stdout.txt",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\node-windows-22-23-4-20261108\\checkpoint-policy.stdout.txt",
+      "physicalByteLength": 177,
+      "sha256": "bb43da6e3357d68787f849a44468f11b23d9db4150371f3eae934ce75c5c58d8",
+      "recordedExpectedSha256": "bb43da6e3357d68787f849a44468f11b23d9db4150371f3eae934ce75c5c58d8",
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/windows.json",
+        "pointer": "/sources/16",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/node-windows-22-23-4-20261108/checkpoint-policy.stderr.txt",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\node-windows-22-23-4-20261108\\checkpoint-policy.stderr.txt",
+      "physicalByteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "recordedExpectedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/windows.json",
+        "pointer": "/sources/17",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/node-windows-22-23-4-20261108/canonical-shell-policy.stdout.txt",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\node-windows-22-23-4-20261108\\canonical-shell-policy.stdout.txt",
+      "physicalByteLength": 97,
+      "sha256": "c52a617ac34e7b628d379aeb5c27a6a9fc1e7f23ba439bfda617c0709cf9b922",
+      "recordedExpectedSha256": "c52a617ac34e7b628d379aeb5c27a6a9fc1e7f23ba439bfda617c0709cf9b922",
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/windows.json",
+        "pointer": "/sources/18",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/node-windows-22-23-4-20261108/canonical-shell-policy.stderr.txt",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\node-windows-22-23-4-20261108\\canonical-shell-policy.stderr.txt",
+      "physicalByteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "recordedExpectedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/windows.json",
+        "pointer": "/sources/19",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/node-windows-22-23-4-20261108/ordinary-numeric-browser.stdout.txt",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\node-windows-22-23-4-20261108\\ordinary-numeric-browser.stdout.txt",
+      "physicalByteLength": 306,
+      "sha256": "687a970272d4e18ca22467dc59312d40bc5aaccc36a60b099bc30d6e7c2b171c",
+      "recordedExpectedSha256": "687a970272d4e18ca22467dc59312d40bc5aaccc36a60b099bc30d6e7c2b171c",
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/windows.json",
+        "pointer": "/sources/20",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    },
+    {
+      "sourceId": "audit-probes/node-windows-22-23-4-20261108/ordinary-numeric-browser.stderr.txt",
+      "originalProvenancePath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\node-windows-22-23-4-20261108\\ordinary-numeric-browser.stderr.txt",
+      "physicalByteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "recordedExpectedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "storage": {
+        "kind": "container",
+        "file": "acceptance/windows.json",
+        "pointer": "/sources/21",
+        "encoding": "gzip+base64"
+      },
+      "directByteEquality": true
+    }
+  ],
+  "files": [
+    {
+      "file": ".gitattributes",
+      "bytes": 9,
+      "sha256": "48747480eddba024928d03be9bf83dc579e5515768647507a767e8187a85c9ab",
+      "kind": "GENERATED_BYTE_PRESERVATION_RULES"
+    },
+    {
+      "file": "acceptance/pr222.json",
+      "bytes": 340413,
+      "sha256": "bdfb8e937585fe1f159795523f1925c2d026eca95152f4dc8e82a1aeec0117ca",
+      "kind": "LOSSLESS_CONTAINER"
+    },
+    {
+      "file": "acceptance/pr223.json",
+      "bytes": 351747,
+      "sha256": "d2d8bb0d790289fbfafd576d894cd4973e74e7401214a440339663cbbaef1fb8",
+      "kind": "LOSSLESS_CONTAINER"
+    },
+    {
+      "file": "acceptance/pr224.json",
+      "bytes": 356086,
+      "sha256": "3c911309e0660c7158f4e58a724783f64fc9b70e81f856ce7d0113e45a45d411",
+      "kind": "LOSSLESS_CONTAINER"
+    },
+    {
+      "file": "acceptance/windows.json",
+      "bytes": 236762,
+      "sha256": "2c470c79bf9f4142f2cf16edcf62bf1c33dda430226c5e541b61807221ad399c",
+      "kind": "LOSSLESS_CONTAINER"
+    },
+    {
+      "file": "analysis/comparison.json",
+      "bytes": 127962,
+      "sha256": "9793cb743b4ce60bbbf736985106709554bf75d9b0ad2b94112e5e321caf7348",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "analysis/numeric-summary.json",
+      "bytes": 81298,
+      "sha256": "d0fff4341d6ba627ce2fcfd06e293fbd57a18905a3438a46f89967bd2f2e222e",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "analysis/physical-roots.json",
+      "bytes": 9990,
+      "sha256": "bbf109c5533fbb37bb965972873ffc3f923ee567177a9c2920bc14ea5e608c8b",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "checks/dependency-audit-input.json",
+      "bytes": 365,
+      "sha256": "c4c3d7cdf6fcde51c4f017fe23e5ddff6a54e3e25f16eb1a18df587463bd5bc2",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "checks/dependency-report.json",
+      "bytes": 57320,
+      "sha256": "c08a19cb009da13d3d96280e70a55502a6de8bea0f624e579c02c2c8ad975ec7",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "checks/full-web-types.json",
+      "bytes": 1072,
+      "sha256": "a7a46b25b593beb4fbd8272b07a21a0f6164b84f1df6104ae1bca00df68ed4b2",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "checks/native-lifetime.json",
+      "bytes": 7517,
+      "sha256": "d8eacae82ebf2680afcbc86d6b3bade4216b630bd483b1d96e4e6cd843773db9",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "checks/source-after.json",
+      "bytes": 77780,
+      "sha256": "2653cf70fd05cca852fd77555a3e57486547606a4fe99097b55e99513e1c978e",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "checks/source-before.json",
+      "bytes": 77780,
+      "sha256": "2653cf70fd05cca852fd77555a3e57486547606a4fe99097b55e99513e1c978e",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "commands/01-historical-archive-verify.json",
+      "bytes": 2004,
+      "sha256": "719e3b75bb0f05fc61042cdea52b8c3a7ed2ee937ddb7a1ff843a5d19ff7f4ae",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "commands/02-full-web-types.json",
+      "bytes": 2315,
+      "sha256": "f89786c92ebedb30a579e725bbe0b7b794a144ba61fce9dc9f0f18dc50df27b2",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "commands/03-standard-performance.json",
+      "bytes": 4849,
+      "sha256": "20468cc70d423c5a6143528ab855617ae70b6d50c4fbdf03441c8e01207620bc",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "commands/04-m1-runtime-lifetime.json",
+      "bytes": 8088,
+      "sha256": "6dfb763b412a6a96ed5577e3a4dcd130bfff163163302eee58509cadbeba1252",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "commands/05-npm-audit-capture.json",
+      "bytes": 2804,
+      "sha256": "7177435d31a3752579823c0beea68dccd4ebab24bb4c755cc42078e0229615d7",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "commands/06-dependency-classifier.json",
+      "bytes": 3551,
+      "sha256": "3e3998b4f9660cbd880b135726d78fa52ce10cf96f32e2560f68fa72fb49f1a5",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "commands/07-archive-pack.json",
+      "bytes": 3351,
+      "sha256": "ecd295b6599a3a890935807d941147a8773046f845283cd3ff0af1922cfd0b4a",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "commands/08-archive-verify.json",
+      "bytes": 2006,
+      "sha256": "20b0e9897fa3d58f8eb111df89fda8c6c87507c7210d48ca37507e29470eb22c",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "commands/09-archive-roundtrip.json",
+      "bytes": 2759,
+      "sha256": "8b3749a327d5e781e0501585b0e6385e606774e754b6b22357579269b5d1b711",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "measurement/dependency-audit-input.json",
+      "bytes": 365,
+      "sha256": "c4c3d7cdf6fcde51c4f017fe23e5ddff6a54e3e25f16eb1a18df587463bd5bc2",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "measurement/dependency-report.json",
+      "bytes": 57320,
+      "sha256": "c08a19cb009da13d3d96280e70a55502a6de8bea0f624e579c02c2c8ad975ec7",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "measurement/harness/dependency-classifier.mjs",
+      "bytes": 13411,
+      "sha256": "9b8f10b02a82d90086f6ee2378d2b57b714d09631e6c6bd6bb58e0068c8806fe",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "measurement/harness/evidence-archiver.mjs",
+      "bytes": 23481,
+      "sha256": "cece38c0d93c54852f4c0aaa32c1a6004dbcca308117c54dcce8c84d5289dbdc",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "measurement/harness/performance-common.mjs",
+      "bytes": 6463,
+      "sha256": "8870a27525937d03fd4f1bad79ca7869d2b4ad27985988e9b6e40e5bf0c49ba9",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "measurement/harness/performance-fixtures.mjs",
+      "bytes": 7191,
+      "sha256": "3d16d60df721021fe803493ad2f4e3da4eb007286fd0a0374698a60a9eb83967",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "measurement/harness/performance-runner.mjs",
+      "bytes": 10383,
+      "sha256": "53224b6ec0fcfb835650890fdea12e2a5216182c4288047ea5a7960e025e2add",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "measurement/harness/performance-worker.mjs",
+      "bytes": 17277,
+      "sha256": "44bf82d8151885ee3d8fcb700562837e0a1075327a2fc6a888c1cdb39ac08254",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "measurement/manifest.json",
+      "bytes": 34419,
+      "sha256": "1b665718dea5953e0bb446a132ed1a9395c12bdcdd7b7ba9907feee81a0cbda7",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "measurement/performance-report.json",
+      "bytes": 1508686,
+      "sha256": "b8758b30ed2fa8203a1c0bb9bd264fbc6904a99d35f8df8018adbd7807f50e0d",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "measurement/raw-receipts.json",
+      "bytes": 414278,
+      "sha256": "ffc06bbe672b321ca5ead37af2d1586f0940df06f89ae525f0ce8aa1d3d87113",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "reviews/independent-architecture-review.json",
+      "bytes": 6382,
+      "sha256": "395070eff66f19252879d7fcc266deba3106bb7d8bf0ce58ddd4dca6801aab3a",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "reviews/upstream-source-review.json",
+      "bytes": 3445,
+      "sha256": "02f6d8f79aab5a2d09ae0d19006b78fa9ca33bf96d9320fb89b2a17eabccbced",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "run.json",
+      "bytes": 50381,
+      "sha256": "924db21c98962047ee2d0b78f31de949a4b9797c10e6b8bc543115ec77fd140a",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "setup/audit-launch.json",
+      "bytes": 1539,
+      "sha256": "b9e159cb60dcb85f26106ec5a3fd1885d40b360a495a93ee94370db412c1d71a",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "setup/harness-sources.json",
+      "bytes": 19699,
+      "sha256": "0cdd2e2d5b03d6014c241890b4d9646baeb57719cc0241b128e66a58ff347f7e",
+      "kind": "LOSSLESS_CONTAINER"
+    },
+    {
+      "file": "setup/measurement-invocation.json",
+      "bytes": 2559,
+      "sha256": "0bd17fae12c9657d9ee9cfdbfcd79467125429b88861793417c01621bbaa5f43",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "setup/npm-audit-scope.json",
+      "bytes": 1002,
+      "sha256": "3dcd1b1a4f74eaf6c9efa6c6940af155391dc5683f908ddc5df991f5a5ccbd62",
+      "kind": "VERBATIM"
+    },
+    {
+      "file": "setup/raw-streams.json",
+      "bytes": 105452,
+      "sha256": "dc82681386afe078217f9e69c844079e25a05b8a9457d6b3e87bb4555e75c0ef",
+      "kind": "LOSSLESS_CONTAINER"
+    },
+    {
+      "file": "setup/setup.json",
+      "bytes": 35897,
+      "sha256": "a1c9a38d7affb0dbb6f047e91b51f3029a0b48de7b98f0c5920ad13caa8bf534",
+      "kind": "VERBATIM"
+    }
+  ],
+  "links": {
+    "canonicalReport": "../../../../docs/FULL_REPOSITORY_HEALTH_AUDIT.md",
+    "historical217": "https://github.com/spikeal8-maker/ASA-CAD/blob/20603c34f277dc9f0cf2696f5bd3971dd7645678/docs/FULL_REPOSITORY_HEALTH_AUDIT.md",
+    "historical221": "https://github.com/spikeal8-maker/ASA-CAD/blob/96083954f0180720e7a51616bc6039bde75fa683/docs/FULL_REPOSITORY_HEALTH_AUDIT.md",
+    "historical221Evidence": "../health-audit-repeat-20261108/acceptance-index.json",
+    "pullRequests": [
+      {
+        "pr": 222,
+        "url": "https://github.com/spikeal8-maker/ASA-CAD/pull/222",
+        "receiptContainer": "acceptance/pr222.json"
+      },
+      {
+        "pr": 223,
+        "url": "https://github.com/spikeal8-maker/ASA-CAD/pull/223",
+        "receiptContainer": "acceptance/pr223.json"
+      },
+      {
+        "pr": 224,
+        "url": "https://github.com/spikeal8-maker/ASA-CAD/pull/224",
+        "receiptContainer": "acceptance/pr224.json"
+      }
+    ],
+    "architecture": "reviews/independent-architecture-review.json",
+    "upstream": "reviews/upstream-source-review.json"
+  },
+  "scope": [
+    "Measurement archive is copied byte-for-byte. Every explicit receipt original is embedded reversibly or copied verbatim; length/SHA and direct byte equality verified.",
+    "Nested source/build/binary/ZIP inventories are provenance references, not recursively embedded payloads. CI artifact ZIPs and Node binaries are deliberately not copied.",
+    "Setup npm cache, raw performance directory and roundtrip tree are not duplicated; measurement/ already preserves every measurement original.",
+    "Upstream source-review is a structured paraphrase of official sources, not raw webpage HTML.",
+    "The old archive and current raw acceptedBaseline/PENDING/classifier labels remain unchanged.",
+    "Data in setup/harness-sources.json is archival source evidence, not a new repository entrypoint.",
+    "Index inventories all sibling files except itself; its physical hash is recorded in the external publication proof and later commit review.",
+    "All 16 external stdout/stderr streams referenced by the historical Windows validation phases are embedded, including empty streams; original receipts and results are unchanged."
+  ],
+  "encoding": {
+    "base64": "Buffer.from(payload,base64)",
+    "gzipBase64": "gunzipSync(Buffer.from(payload,base64))",
+    "afterDecode": "Compare decoded byte length, SHA256 and exact bytes to the identified original.",
+    "crlfPaths": [],
+    "attributes": "Local ** -text; whitespace=cr-at-eol only on listed originals with physical CRLF."
+  },
+  "verification": {
+    "explicitSourceCount": 85,
+    "allExplicitDecodedBytesEqual": true,
+    "sourceHashMismatches": 0,
+    "missingExplicitSources": 0,
+    "maxPhysicalArtifactBytes": 1508686,
+    "historicalEvidenceUnchanged": true
+  }
+}

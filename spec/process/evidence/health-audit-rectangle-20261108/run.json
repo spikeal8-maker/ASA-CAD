@@ -1,0 +1,578 @@
+{
+  "schemaVersion": 1,
+  "tool": "ASA repeated full audit wrapper",
+  "status": "PASS",
+  "acceptedBaseline": false,
+  "technicalAcceptance": "PENDING",
+  "ownerProductAcceptance": "PENDING",
+  "repo": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108",
+  "expectedHead": "b8f700bb6e455582db18df8d0ba43a2bfbdcc68b",
+  "startedAt": "2026-11-08T09:16:54.229Z",
+  "runner": {
+    "path": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\full-health-audit-runner-20261108.cjs",
+    "bytes": 30854,
+    "sha256": "3144747cb207f7bf0989550c25da0b76d41064d59618e7fb89262716c556e94a",
+    "source": "#!/usr/bin/env node\n'use strict';\n// Preparation only: execution requires an explicitly supplied accepted HEAD.\n// This wrapper neither installs dependencies nor starts a browser/server.\nconst assert = require('node:assert/strict');\nconst fs = require('node:fs');\nconst path = require('node:path');\nconst crypto = require('node:crypto');\nconst os = require('node:os');\nconst { spawn, spawnSync } = require('node:child_process');\nconst { pathToFileURL } = require('node:url');\nconst { createRequire } = require('node:module');\nconst { performance } = require('node:perf_hooks');\n\nconst HISTORY = 'spec/process/evidence/health-audit-20261107';\nconst MANIFEST_SHA = 'd6346a4afe203568d0238455a425cbe042fc43351a1d07a632114812bfdbc426';\nconst ARCHIVER_SHA = 'cece38c0d93c54852f4c0aaa32c1a6004dbcca308117c54dcce8c84d5289dbdc';\nconst CHECKER_SHA = '3c53f53f105c7edf6b57669ce61680707670624160d1b41b3e63af86b89fef23';\nconst TOOLS = {\n  'performance-runner.mjs': '53224b6ec0fcfb835650890fdea12e2a5216182c4288047ea5a7960e025e2add',\n  'performance-worker.mjs': '44bf82d8151885ee3d8fcb700562837e0a1075327a2fc6a888c1cdb39ac08254',\n  'performance-fixtures.mjs': '3d16d60df721021fe803493ad2f4e3da4eb007286fd0a0374698a60a9eb83967',\n  'performance-common.mjs': '8870a27525937d03fd4f1bad79ca7869d2b4ad27985988e9b6e40e5bf0c49ba9',\n  'dependency-classifier.mjs': '9b8f10b02a82d90086f6ee2378d2b57b714d09631e6c6bd6bb58e0068c8806fe',\n};\nconst hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');\nconst hashFile = file => hash(fs.readFileSync(file));\nconst key = file => process.platform === 'win32' ? path.resolve(file).toLowerCase() : path.resolve(file);\nconst errorData = error => ({ name: error?.name ?? 'Error', message: error?.message ?? String(error), stack: error?.stack ?? null });\nconst readJson = file => JSON.parse(fs.readFileSync(file, 'utf8'));\nconst jsonBytes = value => Buffer.from(JSON.stringify(value, null, 2) + '\\n');\nfunction argsOf(argv) {\n  const result = {};\n  for (let index = 0; index < argv.length; index += 2) {\n    const name = argv[index], value = argv[index + 1];\n    assert.ok(['--repo', '--expected-head', '--out'].includes(name), 'Unknown argument: ' + name);\n    assert.ok(!Object.hasOwn(result, name) && value && !value.startsWith('--'), 'Duplicate or missing argument: ' + name);\n    result[name] = value;\n  }\n  for (const name of ['--repo', '--expected-head', '--out']) assert.ok(result[name], 'Required ' + name);\n  assert.match(result['--expected-head'], /^[0-9a-f]{40}$/, 'Expected an exact lowercase 40-character SHA');\n  return result;\n}\nfunction git(repo, ...args) {\n  const result = spawnSync('git', ['-C', repo, ...args], { encoding: 'utf8', windowsHide: true, timeout: 30000, maxBuffer: 16 * 1024 * 1024 });\n  assert.equal(result.status, 0, 'git ' + args.join(' ') + ': ' + (result.stderr || result.error?.message));\n  return result.stdout;\n}\nfunction inside(root, target) {\n  const relative = path.relative(root, target);\n  return relative === '' || (!relative.startsWith('..' + path.sep) && relative !== '..' && !path.isAbsolute(relative));\n}\nfunction canonicalNew(target) {\n  const resolved = path.resolve(target);\n  assert.equal(fs.existsSync(resolved), false, 'Output must be fresh; no prior receipt may be overwritten');\n  const parent = fs.realpathSync(path.dirname(resolved));\n  return path.join(parent, path.basename(resolved));\n}\nfunction outsideGit(target) {\n  for (let current = fs.existsSync(target) && fs.statSync(target).isDirectory() ? target : path.dirname(target); ; current = path.dirname(current)) {\n    assert.equal(fs.existsSync(path.join(current, '.git')), false, 'External tool/evidence must not be inside a Git worktree: ' + target);\n    if (path.dirname(current) === current) return;\n  }\n}\nfunction regular(file) {\n  const stat = fs.lstatSync(file);\n  assert.ok(stat.isFile() && !stat.isSymbolicLink(), 'Expected a regular, unlinked file: ' + file);\n  return { path: file, bytes: stat.size, sha256: hashFile(file) };\n}\nfunction fileSet(root) {\n  const result = [];\n  function visit(directory) {\n    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {\n      assert.equal(entry.isSymbolicLink(), false, 'Symlink in evidence/tool inventory');\n      const file = path.join(directory, entry.name);\n      if (entry.isDirectory()) visit(file);\n      else { assert.ok(entry.isFile()); result.push(path.relative(root, file).replaceAll('\\\\', '/')); }\n    }\n  }\n  visit(root);\n  return result.sort();\n}\nfunction ownedDependencies(repo) {\n  const directory = path.join(repo, 'vendor/toubkal/node_modules');\n  const stat = fs.lstatSync(directory);\n  assert.ok(stat.isDirectory() && !stat.isSymbolicLink(), 'vendor node_modules must be a physical directory, not a junction/symlink');\n  assert.equal(key(fs.realpathSync(directory)), key(directory), 'vendor node_modules resolves outside its owning worktree');\n  const rootModules = path.join(repo, 'node_modules');\n  if (fs.existsSync(rootModules)) {\n    assert.ok(fs.lstatSync(rootModules).isDirectory() && !fs.lstatSync(rootModules).isSymbolicLink());\n    assert.equal(key(fs.realpathSync(rootModules)), key(rootModules), 'Root node_modules is shared through a link');\n  }\n  const lock = readJson(path.join(repo, 'vendor/toubkal/package-lock.json'));\n  const names = ['@salusoft89/planegcs', 'opencascade.js', 'tsx', 'esbuild', 'typescript', 'semver'];\n  const packages = names.map(name => {\n    const folder = path.join(directory, name);\n    assert.equal(key(fs.realpathSync(folder)), key(folder), 'Installed package is redirected: ' + name);\n    const info = regular(path.join(folder, 'package.json')), pkg = readJson(info.path);\n    assert.equal(pkg.version, lock.packages['node_modules/' + name]?.version, 'Installed version does not match the accepted lock: ' + name);\n    return { name, version: pkg.version, packageJsonSha256: info.sha256 };\n  });\n  return { directory, realPath: fs.realpathSync(directory), dev: stat.dev, ino: stat.ino, packages, hiddenLock: regular(path.join(directory, '.package-lock.json')) };\n}\nfunction encoded(bytes) {\n  const utf8 = bytes.toString('utf8');\n  return { bytes: bytes.length, sha256: hash(bytes), encoding: Buffer.from(utf8).equals(bytes) ? 'utf8' : 'base64', data: Buffer.from(utf8).equals(bytes) ? utf8 : bytes.toString('base64') };\n}\nasync function execute(command, argv, options) {\n  const started = performance.now(), stdout = [], stderr = [];\n  let child, timer, cleanupTimer, settled = false, outputBytes = 0;\n  let timedOut = false, outputLimit = false, interrupted = false, spawnError = null;\n  const cleanup = [];\n  return await new Promise(resolve => {\n    const onInterrupt = () => { interrupted = true; stopOwned('WRAPPER_INTERRUPTED'); };\n    function finish(exitCode, signal, closed) {\n      if (settled) return;\n      settled = true;\n      clearTimeout(timer); clearTimeout(cleanupTimer);\n      process.off('SIGINT', onInterrupt); process.off('SIGTERM', onInterrupt);\n      if (!closed) { child.stdout.destroy(); child.stderr.destroy(); child.unref(); }\n      resolve({ pid: child.pid ?? null, exitCode, signal, elapsedMs: performance.now() - started, timeoutMs: options.timeoutMs,\n        timedOut, outputLimit, interrupted, spawnError, closed, cleanup, stdout: Buffer.concat(stdout), stderr: Buffer.concat(stderr) });\n    }\n    function stopOwned(reason) {\n      if (!child?.pid || settled || cleanup.length) return;\n      if (child.exitCode !== null || child.signalCode !== null) {\n        cleanup.push({ reason, action: 'Process exited; waiting for owned output pipes to close' });\n      } else if (process.platform === 'win32') {\n        const taskkill = path.join(process.env.SystemRoot || 'C:\\\\Windows', 'System32/taskkill.exe');\n        const stop = spawnSync(taskkill, ['/PID', String(child.pid), '/T', '/F'], { encoding: 'utf8', windowsHide: true, timeout: 15000, maxBuffer: 1024 * 1024 });\n        cleanup.push({ reason, command: [taskkill, '/PID', String(child.pid), '/T', '/F'], exitCode: stop.status,\n          stdout: stop.stdout ?? '', stderr: stop.stderr ?? '', error: stop.error ? errorData(stop.error) : null });\n      } else {\n        try { process.kill(-child.pid, 'SIGKILL'); cleanup.push({ reason, ownedProcessGroup: child.pid, signal: 'SIGKILL', error: null }); }\n        catch (error) { cleanup.push({ reason, ownedProcessGroup: child.pid, error: errorData(error) }); }\n      }\n      cleanupTimer = setTimeout(() => {\n        try { child.kill('SIGKILL'); } catch (error) { cleanup.push({ reason: 'Owned handle fallback', error: errorData(error) }); }\n        finish(child.exitCode, child.signalCode, false);\n      }, 10000);\n    }\n    child = spawn(command, argv, { cwd: options.cwd, env: options.env, windowsHide: true, detached: process.platform !== 'win32', stdio: ['ignore', 'pipe', 'pipe'] });\n    for (const [stream, chunks] of [[child.stdout, stdout], [child.stderr, stderr]]) stream.on('data', bytes => {\n      chunks.push(bytes); outputBytes += bytes.length;\n      if (outputBytes > 32 * 1024 * 1024 && !outputLimit) { outputLimit = true; stopOwned('OUTPUT_BUDGET_EXCEEDED'); }\n    });\n    child.on('error', error => { spawnError = errorData(error); });\n    timer = setTimeout(() => { timedOut = true; stopOwned('TIME_BUDGET_EXCEEDED'); }, options.timeoutMs);\n    process.on('SIGINT', onInterrupt); process.on('SIGTERM', onInterrupt);\n    child.on('close', (exitCode, signal) => finish(exitCode, signal, true));\n  });\n}\n\nasync function main() {\n  const args = argsOf(process.argv.slice(2));\n  const repo = fs.realpathSync(args['--repo']), expectedHead = args['--expected-head'], out = canonicalNew(args['--out']);\n  outsideGit(out); outsideGit(fs.realpathSync(__filename));\n  assert.ok(!inside(repo, out) && !inside(out, repo), 'Evidence and repository must be disjoint');\n  fs.mkdirSync(out);\n  const runFile = path.join(out, 'run.json');\n  const report = {\n    schemaVersion: 1, tool: 'ASA repeated full audit wrapper', status: 'RUNNING', acceptedBaseline: false,\n    technicalAcceptance: 'PENDING', ownerProductAcceptance: 'PENDING', repo, expectedHead, startedAt: new Date().toISOString(),\n    runner: { ...regular(__filename), source: fs.readFileSync(__filename, 'utf8') },\n    environment: { node: process.version, executable: process.execPath, platform: process.platform, arch: process.arch, osRelease: os.release() },\n    phases: [], artifacts: [], guards: {}, ci: { status: 'NOT_COLLECTED', receipts: [] },\n    limitations: [\n      'This wrapper never installs, upgrades, fixes dependencies, starts a browser/server, or grants audit acceptance.',\n      'STANDARD retains 106 measured samples and 20 warmups; failures are never filtered.',\n      'Fresh Node WASM initialization is neither browser cold-start nor OS disk-cache cold; browser cold-start NOT_RUN.',\n      'Frozen classifier and archiver contain historical status/limitation strings. Current counts and the actual lifetime receipt are reported separately without rewriting those tools.',\n      'Native lifetime regression checks scoped owned handles before cleanup; it is not a whole-vendor native/WASM heap-clean proof.',\n      'Exact-head CI and independent review remain separate required evidence; this runner is not the complete acceptance decision.',\n    ],\n  };\n  const flush = () => fs.writeFileSync(runFile, jsonBytes(report));\n  let common, archiveApi, toolsDirectory, archiver, checker, npmCli, before, dependenciesBefore, toolBefore, manifestFile, historicalManifest;\n  const expectedOutputs = {\n    'full-web-types': ['checks/full-web-types.json'], 'standard-performance': ['performance/performance-report.json'],\n    'm1-runtime-lifetime': ['checks/native-lifetime.json'], 'npm-audit-capture': ['checks/dependency-audit-input.json'],\n    'dependency-classifier': ['checks/dependency-report.json'], 'archive-pack': ['measurement/manifest.json'],\n  };\n  const recordFile = file => ({ path: path.relative(out, file).replaceAll('\\\\', '/'), ...Object.fromEntries(Object.entries(regular(file)).filter(([name]) => name !== 'path')) });\n  const savePayload = (name, value) => {\n    const artifacts = [], descriptor = archiveApi.storePayload(out, name, jsonBytes(value), artifacts);\n    report.artifacts.push(...artifacts);\n    return descriptor;\n  };\n  const checkTools = () => {\n    assert.equal(hashFile(manifestFile), MANIFEST_SHA);\n    assert.equal(hashFile(checker), CHECKER_SHA);\n    assert.equal(hashFile(archiver), ARCHIVER_SHA);\n    assert.equal(hashFile(__filename), report.runner.sha256);\n    const sources = historicalManifest.sources.filter(item => item.id.startsWith('tools/'));\n    assert.deepEqual(fileSet(toolsDirectory), sources.map(item => item.id.slice(6)).sort(), 'Frozen external tool inventory changed');\n    const files = sources.map(item => {\n      const info = regular(path.join(toolsDirectory, item.id.slice(6)));\n      assert.equal(info.sha256, item.sha256); assert.equal(info.bytes, item.bytes);\n      return { name: item.id.slice(6), bytes: info.bytes, sha256: info.sha256 };\n    });\n    for (const [name, digest] of Object.entries(TOOLS)) assert.equal(hashFile(path.join(toolsDirectory, name)), digest);\n    return files;\n  };\n  const lightGuard = () => {\n    assert.equal(git(repo, 'rev-parse', 'HEAD').trim(), expectedHead, 'HEAD changed');\n    assert.equal(git(repo, 'status', '--porcelain=v1', '--untracked-files=all').trim(), '', 'Tracked or untracked source changed');\n    assert.deepEqual(ownedDependencies(repo), dependenciesBefore, 'Installed dependency identity/ownership changed');\n    assert.deepEqual(checkTools(), toolBefore, 'Frozen tool bytes changed');\n  };\n  const phase = async (name, command, argv, timeoutMs, validate, extraEnv = {}, acceptedExits = [0]) => {\n    lightGuard();\n    console.log('START ' + name);\n    const meta = { name, startedAt: new Date().toISOString(), command, argv, cwd: repo, executableSha256: hashFile(command), environmentOverrides: { NO_COLOR: '1', TSX_DISABLE_CACHE: '1', npm_config_update_notifier: 'false', ...extraEnv } };\n    const childEnv = { ...process.env, ...meta.environmentOverrides };\n    const inheritedPath = Object.entries(process.env).find(([name]) => name.toLowerCase() === 'path')?.[1] ?? '';\n    for (const name of Object.keys(childEnv)) if (name.toLowerCase() === 'path') delete childEnv[name];\n    childEnv.PATH = path.dirname(process.execPath) + path.delimiter + inheritedPath;\n    meta.nodeExecutableDirectoryPrependedToPath = path.dirname(process.execPath);\n    const result = await execute(command, argv, { cwd: repo, timeoutMs, env: childEnv });\n    const receipt = { ...meta, ...result, stdout: encoded(result.stdout), stderr: encoded(result.stderr), status: 'FAIL' };\n    try {\n      assert.ok(acceptedExits.includes(result.exitCode), 'Unexpected exit code ' + result.exitCode);\n      assert.equal(result.signal, null); assert.equal(result.spawnError, null);\n      assert.equal(result.timedOut, false); assert.equal(result.outputLimit, false); assert.equal(result.interrupted, false); assert.equal(result.closed, true);\n      receipt.validation = validate ? await validate(result) : {};\n      receipt.status = 'PASS';\n    } catch (error) { receipt.validationError = errorData(error); }\n    receipt.outputs = (expectedOutputs[name] ?? []).map(relative => {\n      const file = path.join(out, relative);\n      if (!fs.existsSync(file)) return { path: relative, status: 'MISSING' };\n      try { return { status: 'PRESENT', ...recordFile(file) }; }\n      catch (error) { receipt.status = 'FAIL'; return { path: relative, status: 'INVALID', error: errorData(error) }; }\n    });\n    let guardError;\n    try { lightGuard(); receipt.sourceAndToolsUnchanged = true; }\n    catch (error) { guardError = error; receipt.sourceAndToolsUnchanged = false; receipt.guardError = errorData(error); receipt.status = 'FAIL'; }\n    const descriptor = savePayload('commands/' + String(report.phases.length + 1).padStart(2, '0') + '-' + name + '.json', receipt);\n    report.phases.push({ name, status: receipt.status, exitCode: result.exitCode, pid: result.pid, closed: result.closed, timedOut: result.timedOut, outputLimit: result.outputLimit, interrupted: result.interrupted, elapsedMs: result.elapsedMs, receipt: descriptor, outputs: receipt.outputs, validation: receipt.validation ?? null, validationError: receipt.validationError ?? null });\n    flush();\n    console.log('END ' + name + ' ' + receipt.status);\n    if (guardError) throw guardError;\n    assert.equal(result.closed, true, 'Owned process cleanup is incomplete; stop further execution');\n    assert.equal(result.interrupted, false, 'Wrapper was interrupted; stop further execution');\n    return { receipt, result };\n  };\n  flush();\n  try {\n    assert.equal(git(repo, 'rev-parse', 'HEAD').trim(), expectedHead);\n    assert.equal(git(repo, 'status', '--porcelain=v1', '--untracked-files=all').trim(), '', 'Expected a fresh clean checkout');\n    const active = readJson(path.join(repo, 'spec/process/active-work.v1.json'));\n    assert.equal(active.currentCheckpoint, 'FULL_REPOSITORY_HEALTH_AUDIT', 'The repeated audit checkpoint must be activated on the accepted base');\n    assert.equal(active.productCodeStartAllowed, false); assert.equal(active.auditRepairAllowed, true);\n    const packageJson = readJson(path.join(repo, 'package.json'));\n    assert.equal(packageJson.scripts['test:m1:runtime'], 'node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m1/protected-part-runtime.ts', 'Public M1 entrypoint changed; review the wrapper before execution');\n    manifestFile = path.join(repo, HISTORY, 'measurement/manifest.json');\n    assert.equal(hashFile(manifestFile), MANIFEST_SHA, 'Historical archive trust binding changed');\n    historicalManifest = readJson(manifestFile);\n    toolsDirectory = fs.realpathSync(historicalManifest.originals.roots.tools);\n    archiver = path.join(fs.realpathSync(historicalManifest.originals.roots.archiver), 'evidence-archiver.mjs');\n    checker = path.join(repo, HISTORY, 'full-web-typecheck.cjs');\n    outsideGit(toolsDirectory); outsideGit(archiver);\n    assert.ok(!inside(toolsDirectory, out) && !inside(out, toolsDirectory) && !inside(path.dirname(archiver), out) && !inside(out, path.dirname(archiver)), 'Output must not overlap frozen tools');\n    toolBefore = checkTools();\n    dependenciesBefore = ownedDependencies(repo);\n    common = await import(pathToFileURL(path.join(toolsDirectory, 'performance-common.mjs')).href);\n    archiveApi = await import(pathToFileURL(archiver).href);\n    before = common.sourceIdentity(repo, expectedHead);\n    report.sourceBefore = savePayload('checks/source-before.json', before);\n    report.source = { head: expectedHead, tree: git(repo, 'rev-parse', 'HEAD^{tree}').trim(), fingerprint: before.fingerprint, lock: before.lock, branch: before.branch };\n    report.dependenciesBefore = dependenciesBefore;\n    report.tools = { historicalManifestSha256: MANIFEST_SHA, directory: toolsDirectory, files: toolBefore, archiver: regular(archiver), checker: regular(checker) };\n    npmCli = path.join(path.dirname(process.execPath), 'node_modules/npm/bin/npm-cli.js');\n    const npmPackage = readJson(path.join(path.dirname(process.execPath), 'node_modules/npm/package.json'));\n    const semver = createRequire(path.join(repo, 'vendor/toubkal/package.json'))('semver');\n    for (const pkg of [packageJson, readJson(path.join(repo, 'vendor/toubkal/package.json'))]) {\n      if (pkg.engines?.node) assert.ok(semver.satisfies(process.versions.node, pkg.engines.node), 'Node does not satisfy ' + pkg.engines.node);\n      if (pkg.engines?.npm) assert.ok(semver.satisfies(npmPackage.version, pkg.engines.npm), 'npm does not satisfy ' + pkg.engines.npm);\n    }\n    report.environment.npm = npmPackage.version; report.environment.npmCli = regular(npmCli);\n    report.environment.nodeExecutable = regular(process.execPath);\n    fs.mkdirSync(path.join(out, 'checks'), { recursive: true });\n    flush();\n    await phase('historical-archive-verify', process.execPath, [archiver, 'verify', '--archive', path.join(repo, HISTORY, 'measurement'), '--manifest-sha', MANIFEST_SHA], 60000);\n    const webFile = path.join(out, 'checks/full-web-types.json');\n    await phase('full-web-types', process.execPath, [checker, '--repo', repo, '--expected-head', expectedHead, '--out', webFile], 180000, () => {\n      const value = readJson(webFile);\n      assert.equal(value.head, expectedHead); assert.equal(value.status, 'PASS'); assert.equal(value.errorCount, 0); assert.equal(value.sourceUnchanged, true);\n      return { report: recordFile(webFile), rootCount: value.rootCount, errorCount: value.errorCount, typescript: value.typescript };\n    });\n    const perfDirectory = path.join(out, 'performance'), perfFile = path.join(perfDirectory, 'performance-report.json');\n    await phase('standard-performance', process.execPath, [path.join(toolsDirectory, 'performance-runner.mjs'), '--repo', repo, '--expected-head', expectedHead, '--out', perfDirectory], 720000, () => {\n      const value = readJson(perfFile), cases = value.phases.flatMap(item => item.worker?.cases ?? []);\n      const samples = cases.flatMap(item => item.samples ?? []), warmups = cases.flatMap(item => item.warmups ?? []);\n      assert.equal(value.expectedHead, expectedHead); assert.equal(value.status, 'PASS'); assert.equal(value.acceptedBaseline, false);\n      assert.equal(value.mode, 'measurement-awaiting-audit-acceptance');\n      assert.deepEqual(value.parameters, { samples: 10, warmups: 2, sizes: [8, 32, 128], coldFreshProcessesPerBackend: 3 });\n      assert.equal(value.phases.length, 10); assert.equal(cases.length, 16); assert.equal(samples.length, 106); assert.equal(warmups.length, 20);\n      assert.ok([...samples, ...warmups].every(item => item.status === 'PASS'));\n      assert.ok(Object.values(value.guards).every(item => item === true));\n      return { report: recordFile(perfFile), phases: 10, cases: 16, measuredSamples: 106, warmups: 20, acceptedBaseline: false };\n    });\n    const lifetimeFile = path.join(out, 'checks/native-lifetime.json');\n    await phase('m1-runtime-lifetime', process.execPath, [npmCli, 'run', 'test:m1:runtime'], 240000, () => {\n      const value = readJson(lifetimeFile);\n      assert.equal(value.cases.length, 14); assert.equal(value.passed, 14); assert.equal(value.failed, 0);\n      assert.ok(value.cases.every(item => item.passed && item.error === null && item.observation.totalCreated > 0 && item.observation.totalLive === 0));\n      return { report: recordFile(lifetimeFile), passed: value.passed, failed: value.failed, observedCreated: value.cases.reduce((sum, item) => sum + item.observation.totalCreated, 0), observedLiveBeforeCleanup: value.cases.reduce((sum, item) => sum + item.observation.totalLive, 0), scope: value.scope };\n    }, { ASA_STABLEREF_LIFETIME_REPORT: lifetimeFile, npm_config_cache: path.join(out, 'npm-cache') });\n    const auditFile = path.join(out, 'checks/dependency-audit-input.json');\n    let auditReady = false;\n    await phase('npm-audit-capture', process.execPath, [npmCli, '--prefix', path.join(repo, 'vendor/toubkal'), 'audit', '--json', '--registry=https://registry.npmjs.org'], 180000, result => {\n      const value = JSON.parse(result.stdout.toString('utf8'));\n      assert.equal(value.auditReportVersion, 2); assert.equal(value.error, undefined);\n      assert.ok(value.vulnerabilities && typeof value.vulnerabilities === 'object' && !Array.isArray(value.vulnerabilities));\n      const counts = value.metadata?.vulnerabilities;\n      assert.ok(counts && Number.isInteger(counts.total) && counts.total >= 0);\n      assert.ok(['info', 'low', 'moderate', 'high', 'critical'].every(name => Number.isInteger(counts[name]) && counts[name] >= 0));\n      assert.equal(['info', 'low', 'moderate', 'high', 'critical'].reduce((sum, name) => sum + counts[name], 0), counts.total);\n      assert.equal(Object.keys(value.vulnerabilities).length, counts.total);\n      assert.equal(result.exitCode, counts.total > 0 ? 1 : 0, 'npm exit does not match vulnerability metadata');\n      fs.writeFileSync(auditFile, result.stdout, { flag: 'wx' }); auditReady = true;\n      report.currentDependencyFindings = { npmExitCode: result.exitCode, counts, capturedAt: new Date().toISOString(), input: recordFile(auditFile), network: 'Fresh npm audit against explicitly named registry; no audit fix or install' };\n      return report.currentDependencyFindings;\n    }, { npm_config_cache: path.join(out, 'npm-cache') }, [0, 1]);\n    const dependencyFile = path.join(out, 'checks/dependency-report.json');\n    let dependencyReady = false;\n    if (auditReady) await phase('dependency-classifier', process.execPath, [path.join(toolsDirectory, 'dependency-classifier.mjs'), '--repo', repo, '--expected-head', expectedHead, '--audit', auditFile, '--out', dependencyFile], 120000, () => {\n      const value = readJson(dependencyFile);\n      assert.equal(value.sourceHead, expectedHead); assert.equal(value.checkoutCleanBeforeAndAfter, true);\n      assert.equal(value.sourceFingerprintBefore, before.fingerprint); assert.equal(value.sourceFingerprintAfter, before.fingerprint);\n      assert.equal(value.lock.sha256, before.lock.sha256); assert.equal(value.capturedAudit.sha256, hashFile(auditFile));\n      dependencyReady = true;\n      return { report: recordFile(dependencyFile), rawStatus: value.status, counts: value.counts, sourceFiles: value.mainProductImportGraph.sourceFileCount, unresolvedLiteralImports: value.mainProductImportGraph.unresolvedLiteralImports.length };\n    });\n    else report.blocked = [...(report.blocked ?? []), 'dependency-classifier: no authentic complete npm audit input'];\n    if (dependencyReady && fs.existsSync(perfFile) && ['PASS', 'FAIL'].includes(readJson(perfFile).status) && readJson(perfFile).endedAt) {\n      const archiveDirectory = path.join(out, 'measurement'), restoredDirectory = path.join(out, 'roundtrip');\n      const packed = await phase('archive-pack', process.execPath, [archiver, 'pack', '--performance', perfDirectory, '--dependency', dependencyFile, '--audit', auditFile, '--tools', toolsDirectory, '--expected-head', expectedHead, '--out', archiveDirectory], 120000);\n      if (packed.receipt.status === 'PASS') {\n        const manifest = path.join(archiveDirectory, 'manifest.json'), digest = hashFile(manifest), value = readJson(manifest);\n        report.measurementArchive = { directory: 'measurement', manifest: recordFile(manifest), manifestSha256: digest, sourceOutcome: value.sourceOutcome, eligibility: value.archiveEligibility };\n        const verified = await phase('archive-verify', process.execPath, [archiver, 'verify', '--archive', archiveDirectory, '--manifest-sha', digest], 120000);\n        if (verified.receipt.status === 'PASS') await phase('archive-roundtrip', process.execPath, [archiver, 'unpack', '--archive', archiveDirectory, '--manifest-sha', digest, '--out', restoredDirectory], 120000, () => {\n          const roots = { performance: perfDirectory, tools: toolsDirectory, dependency: path.dirname(dependencyFile), audit: path.dirname(auditFile), archiver: path.dirname(archiver) };\n          for (const source of value.sources) {\n            const [root, ...parts] = source.id.split('/');\n            assert.ok(Object.hasOwn(roots, root) && parts.length && parts.every(part => part && part !== '.' && part !== '..'));\n            const original = fs.readFileSync(path.join(roots[root], ...parts)), restored = fs.readFileSync(path.join(restoredDirectory, source.id));\n            assert.equal(original.length, source.bytes); assert.equal(hash(original), source.sha256);\n            assert.ok(original.equals(restored), 'Roundtrip differs from the actual original bytes: ' + source.id);\n          }\n          assert.deepEqual(fileSet(restoredDirectory), value.sources.map(item => item.id).sort());\n          assert.equal(hashFile(manifest), digest);\n          return { manifestSha256: digest, originalFiles: value.sources.length, originalBytes: value.originals.totalBytes, allOriginalBytesEqual: true, archiveFiles: value.artifacts.length + 1, largestArchiveFileBytes: Math.max(fs.statSync(manifest).size, ...value.artifacts.map(item => item.bytes)), rawCounts: value.rawCounts };\n        });\n      }\n    } else report.blocked = [...(report.blocked ?? []), 'archive: completed performance and matching dependency inputs are required'];\n  } catch (error) { report.executionError = errorData(error); }\n  finally {\n    if (before && common) {\n      try {\n        lightGuard();\n        const after = common.sourceIdentity(repo, expectedHead);\n        report.sourceAfter = savePayload('checks/source-after.json', after);\n        report.guards.sourceUnchanged = after.fingerprint === before.fingerprint;\n        report.guards.checkoutClean = after.checkoutClean;\n        report.guards.nodeAndNpmUnchanged = hashFile(process.execPath) === report.environment.nodeExecutable.sha256 && hashFile(npmCli) === report.environment.npmCli.sha256;\n        report.guards.toolsUnchanged = JSON.stringify(checkTools()) === JSON.stringify(toolBefore);\n        report.guards.physicalOwnedDependenciesUnchanged = JSON.stringify(ownedDependencies(repo)) === JSON.stringify(dependenciesBefore);\n      } catch (error) { report.postflightError = errorData(error); }\n    }\n    report.guards.noBrowserOrServerStarted = true;\n    report.guards.allInvokedCommandsClosed = report.phases.length > 0 && report.phases.every(item => item.closed === true && item.pid !== null);\n    report.guards.noTimeoutOrInterruption = report.phases.every(item => !item.timedOut && !item.outputLimit && !item.interrupted);\n    const required = ['historical-archive-verify', 'full-web-types', 'standard-performance', 'm1-runtime-lifetime', 'npm-audit-capture', 'dependency-classifier', 'archive-pack', 'archive-verify', 'archive-roundtrip'];\n    report.guards.everyRequiredPhasePassed = required.every(name => report.phases.some(item => item.name === name && item.status === 'PASS'));\n    report.guards.noCurrentDependencyFindings = report.currentDependencyFindings?.counts?.total === 0;\n    report.guards.archiveEligible = report.measurementArchive?.eligibility?.status === 'IDENTITY_CHECKS_PASS_ACCEPTANCE_NOT_GRANTED';\n    report.status = !report.executionError && !report.postflightError && !report.blocked?.length && Object.values(report.guards).every(value => value === true) ? 'PASS' : 'FAIL';\n    report.endedAt = new Date().toISOString();\n    flush();\n  }\n  console.log(JSON.stringify({ status: report.status, acceptedBaseline: false, technicalAcceptance: 'PENDING', expectedHead, report: runFile, reportSha256: hashFile(runFile), phases: report.phases.map(({ name, status, exitCode }) => ({ name, status, exitCode })), guards: report.guards }, null, 2));\n  process.exitCode = report.status === 'PASS' ? 0 : 1;\n}\nmain().catch(error => { console.error(error.stack ?? error); process.exitCode = 1; });\n"
+  },
+  "environment": {
+    "node": "v22.23.4",
+    "executable": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node.exe",
+    "platform": "win32",
+    "arch": "x64",
+    "osRelease": "10.0.26300",
+    "npm": "10.9.9",
+    "npmCli": {
+      "path": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node_modules\\npm\\bin\\npm-cli.js",
+      "bytes": 56,
+      "sha256": "3ce7cba6f5128dd5f54c98b6a5036b0f850496878cc2e21044b675fe3c594e3e"
+    },
+    "nodeExecutable": {
+      "path": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node.exe",
+      "bytes": 87034184,
+      "sha256": "dccc52de28d8df2ee22d2062424f8c563070d95d8ad70c54c4bf01d590dec14f"
+    }
+  },
+  "phases": [
+    {
+      "name": "historical-archive-verify",
+      "status": "PASS",
+      "exitCode": 0,
+      "pid": 35716,
+      "closed": true,
+      "timedOut": false,
+      "outputLimit": false,
+      "interrupted": false,
+      "elapsedMs": 317.83619999999974,
+      "receipt": {
+        "kind": "file",
+        "file": "commands/01-historical-archive-verify.json",
+        "bytes": 2004,
+        "sha256": "719e3b75bb0f05fc61042cdea52b8c3a7ed2ee937ddb7a1ff843a5d19ff7f4ae"
+      },
+      "outputs": [],
+      "validation": {},
+      "validationError": null
+    },
+    {
+      "name": "full-web-types",
+      "status": "PASS",
+      "exitCode": 0,
+      "pid": 42352,
+      "closed": true,
+      "timedOut": false,
+      "outputLimit": false,
+      "interrupted": false,
+      "elapsedMs": 6469.8769999999995,
+      "receipt": {
+        "kind": "file",
+        "file": "commands/02-full-web-types.json",
+        "bytes": 2315,
+        "sha256": "f89786c92ebedb30a579e725bbe0b7b794a144ba61fce9dc9f0f18dc50df27b2"
+      },
+      "outputs": [
+        {
+          "status": "PRESENT",
+          "path": "checks/full-web-types.json",
+          "bytes": 1072,
+          "sha256": "a7a46b25b593beb4fbd8272b07a21a0f6164b84f1df6104ae1bca00df68ed4b2"
+        }
+      ],
+      "validation": {
+        "report": {
+          "path": "checks/full-web-types.json",
+          "bytes": 1072,
+          "sha256": "a7a46b25b593beb4fbd8272b07a21a0f6164b84f1df6104ae1bca00df68ed4b2"
+        },
+        "rootCount": 190,
+        "errorCount": 0,
+        "typescript": "5.9.3"
+      },
+      "validationError": null
+    },
+    {
+      "name": "standard-performance",
+      "status": "PASS",
+      "exitCode": 0,
+      "pid": 40540,
+      "closed": true,
+      "timedOut": false,
+      "outputLimit": false,
+      "interrupted": false,
+      "elapsedMs": 60163.8211,
+      "receipt": {
+        "kind": "file",
+        "file": "commands/03-standard-performance.json",
+        "bytes": 4849,
+        "sha256": "20468cc70d423c5a6143528ab855617ae70b6d50c4fbdf03441c8e01207620bc"
+      },
+      "outputs": [
+        {
+          "status": "PRESENT",
+          "path": "performance/performance-report.json",
+          "bytes": 1508686,
+          "sha256": "b8758b30ed2fa8203a1c0bb9bd264fbc6904a99d35f8df8018adbd7807f50e0d"
+        }
+      ],
+      "validation": {
+        "report": {
+          "path": "performance/performance-report.json",
+          "bytes": 1508686,
+          "sha256": "b8758b30ed2fa8203a1c0bb9bd264fbc6904a99d35f8df8018adbd7807f50e0d"
+        },
+        "phases": 10,
+        "cases": 16,
+        "measuredSamples": 106,
+        "warmups": 20,
+        "acceptedBaseline": false
+      },
+      "validationError": null
+    },
+    {
+      "name": "m1-runtime-lifetime",
+      "status": "PASS",
+      "exitCode": 0,
+      "pid": 37520,
+      "closed": true,
+      "timedOut": false,
+      "outputLimit": false,
+      "interrupted": false,
+      "elapsedMs": 8330.751300000004,
+      "receipt": {
+        "kind": "file",
+        "file": "commands/04-m1-runtime-lifetime.json",
+        "bytes": 8088,
+        "sha256": "6dfb763b412a6a96ed5577e3a4dcd130bfff163163302eee58509cadbeba1252"
+      },
+      "outputs": [
+        {
+          "status": "PRESENT",
+          "path": "checks/native-lifetime.json",
+          "bytes": 7517,
+          "sha256": "d8eacae82ebf2680afcbc86d6b3bade4216b630bd483b1d96e4e6cd843773db9"
+        }
+      ],
+      "validation": {
+        "report": {
+          "path": "checks/native-lifetime.json",
+          "bytes": 7517,
+          "sha256": "d8eacae82ebf2680afcbc86d6b3bade4216b630bd483b1d96e4e6cd843773db9"
+        },
+        "passed": 14,
+        "failed": 0,
+        "observedCreated": 699,
+        "observedLiveBeforeCleanup": 0,
+        "scope": "StableRef owned wrapper lifetimes; not a whole-vendor native-heap measurement"
+      },
+      "validationError": null
+    },
+    {
+      "name": "npm-audit-capture",
+      "status": "PASS",
+      "exitCode": 0,
+      "pid": 36348,
+      "closed": true,
+      "timedOut": false,
+      "outputLimit": false,
+      "interrupted": false,
+      "elapsedMs": 1131.3730000000069,
+      "receipt": {
+        "kind": "file",
+        "file": "commands/05-npm-audit-capture.json",
+        "bytes": 2804,
+        "sha256": "7177435d31a3752579823c0beea68dccd4ebab24bb4c755cc42078e0229615d7"
+      },
+      "outputs": [
+        {
+          "status": "PRESENT",
+          "path": "checks/dependency-audit-input.json",
+          "bytes": 365,
+          "sha256": "c4c3d7cdf6fcde51c4f017fe23e5ddff6a54e3e25f16eb1a18df587463bd5bc2"
+        }
+      ],
+      "validation": {
+        "npmExitCode": 0,
+        "counts": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        },
+        "capturedAt": "2026-11-08T09:18:17.691Z",
+        "input": {
+          "path": "checks/dependency-audit-input.json",
+          "bytes": 365,
+          "sha256": "c4c3d7cdf6fcde51c4f017fe23e5ddff6a54e3e25f16eb1a18df587463bd5bc2"
+        },
+        "network": "Fresh npm audit against explicitly named registry; no audit fix or install"
+      },
+      "validationError": null
+    },
+    {
+      "name": "dependency-classifier",
+      "status": "PASS",
+      "exitCode": 0,
+      "pid": 40036,
+      "closed": true,
+      "timedOut": false,
+      "outputLimit": false,
+      "interrupted": false,
+      "elapsedMs": 1431.4349999999977,
+      "receipt": {
+        "kind": "file",
+        "file": "commands/06-dependency-classifier.json",
+        "bytes": 3551,
+        "sha256": "3e3998b4f9660cbd880b135726d78fa52ce10cf96f32e2560f68fa72fb49f1a5"
+      },
+      "outputs": [
+        {
+          "status": "PRESENT",
+          "path": "checks/dependency-report.json",
+          "bytes": 57320,
+          "sha256": "c08a19cb009da13d3d96280e70a55502a6de8bea0f624e579c02c2c8ad975ec7"
+        }
+      ],
+      "validation": {
+        "report": {
+          "path": "checks/dependency-report.json",
+          "bytes": 57320,
+          "sha256": "c08a19cb009da13d3d96280e70a55502a6de8bea0f624e579c02c2c8ad975ec7"
+        },
+        "rawStatus": "ANALYZED_FINDINGS_REMAIN_OPEN",
+        "counts": {
+          "affectedPackageEntries": 0,
+          "distinctDirectAdvisories": 0,
+          "directAdvisorySeverity": {},
+          "npmAggregatePackageSeverity": {
+            "info": 0,
+            "low": 0,
+            "moderate": 0,
+            "high": 0,
+            "critical": 0,
+            "total": 0
+          },
+          "directAdvisoryLeafPackages": 0
+        },
+        "sourceFiles": 223,
+        "unresolvedLiteralImports": 0
+      },
+      "validationError": null
+    },
+    {
+      "name": "archive-pack",
+      "status": "PASS",
+      "exitCode": 0,
+      "pid": 37824,
+      "closed": true,
+      "timedOut": false,
+      "outputLimit": false,
+      "interrupted": false,
+      "elapsedMs": 224.9375,
+      "receipt": {
+        "kind": "file",
+        "file": "commands/07-archive-pack.json",
+        "bytes": 3351,
+        "sha256": "ecd295b6599a3a890935807d941147a8773046f845283cd3ff0af1922cfd0b4a"
+      },
+      "outputs": [
+        {
+          "status": "PRESENT",
+          "path": "measurement/manifest.json",
+          "bytes": 34419,
+          "sha256": "1b665718dea5953e0bb446a132ed1a9395c12bdcdd7b7ba9907feee81a0cbda7"
+        }
+      ],
+      "validation": {},
+      "validationError": null
+    },
+    {
+      "name": "archive-verify",
+      "status": "PASS",
+      "exitCode": 0,
+      "pid": 37436,
+      "closed": true,
+      "timedOut": false,
+      "outputLimit": false,
+      "interrupted": false,
+      "elapsedMs": 141.39719999999215,
+      "receipt": {
+        "kind": "file",
+        "file": "commands/08-archive-verify.json",
+        "bytes": 2006,
+        "sha256": "20b0e9897fa3d58f8eb111df89fda8c6c87507c7210d48ca37507e29470eb22c"
+      },
+      "outputs": [],
+      "validation": {},
+      "validationError": null
+    },
+    {
+      "name": "archive-roundtrip",
+      "status": "PASS",
+      "exitCode": 0,
+      "pid": 42764,
+      "closed": true,
+      "timedOut": false,
+      "outputLimit": false,
+      "interrupted": false,
+      "elapsedMs": 502.1733999999997,
+      "receipt": {
+        "kind": "file",
+        "file": "commands/09-archive-roundtrip.json",
+        "bytes": 2759,
+        "sha256": "8b3749a327d5e781e0501585b0e6385e606774e754b6b22357579269b5d1b711"
+      },
+      "outputs": [],
+      "validation": {
+        "manifestSha256": "1b665718dea5953e0bb446a132ed1a9395c12bdcdd7b7ba9907feee81a0cbda7",
+        "originalFiles": 73,
+        "originalBytes": 3427072,
+        "allOriginalBytesEqual": true,
+        "archiveFiles": 11,
+        "largestArchiveFileBytes": 1508686,
+        "rawCounts": {
+          "phases": 10,
+          "cases": 16,
+          "samples": 106,
+          "warmups": 20,
+          "failedSamples": 0,
+          "failedWarmups": 0
+        }
+      },
+      "validationError": null
+    }
+  ],
+  "artifacts": [
+    {
+      "file": "checks/source-before.json",
+      "bytes": 77780,
+      "sha256": "2653cf70fd05cca852fd77555a3e57486547606a4fe99097b55e99513e1c978e"
+    },
+    {
+      "file": "commands/01-historical-archive-verify.json",
+      "bytes": 2004,
+      "sha256": "719e3b75bb0f05fc61042cdea52b8c3a7ed2ee937ddb7a1ff843a5d19ff7f4ae"
+    },
+    {
+      "file": "commands/02-full-web-types.json",
+      "bytes": 2315,
+      "sha256": "f89786c92ebedb30a579e725bbe0b7b794a144ba61fce9dc9f0f18dc50df27b2"
+    },
+    {
+      "file": "commands/03-standard-performance.json",
+      "bytes": 4849,
+      "sha256": "20468cc70d423c5a6143528ab855617ae70b6d50c4fbdf03441c8e01207620bc"
+    },
+    {
+      "file": "commands/04-m1-runtime-lifetime.json",
+      "bytes": 8088,
+      "sha256": "6dfb763b412a6a96ed5577e3a4dcd130bfff163163302eee58509cadbeba1252"
+    },
+    {
+      "file": "commands/05-npm-audit-capture.json",
+      "bytes": 2804,
+      "sha256": "7177435d31a3752579823c0beea68dccd4ebab24bb4c755cc42078e0229615d7"
+    },
+    {
+      "file": "commands/06-dependency-classifier.json",
+      "bytes": 3551,
+      "sha256": "3e3998b4f9660cbd880b135726d78fa52ce10cf96f32e2560f68fa72fb49f1a5"
+    },
+    {
+      "file": "commands/07-archive-pack.json",
+      "bytes": 3351,
+      "sha256": "ecd295b6599a3a890935807d941147a8773046f845283cd3ff0af1922cfd0b4a"
+    },
+    {
+      "file": "commands/08-archive-verify.json",
+      "bytes": 2006,
+      "sha256": "20b0e9897fa3d58f8eb111df89fda8c6c87507c7210d48ca37507e29470eb22c"
+    },
+    {
+      "file": "commands/09-archive-roundtrip.json",
+      "bytes": 2759,
+      "sha256": "8b3749a327d5e781e0501585b0e6385e606774e754b6b22357579269b5d1b711"
+    },
+    {
+      "file": "checks/source-after.json",
+      "bytes": 77780,
+      "sha256": "2653cf70fd05cca852fd77555a3e57486547606a4fe99097b55e99513e1c978e"
+    }
+  ],
+  "guards": {
+    "sourceUnchanged": true,
+    "checkoutClean": true,
+    "nodeAndNpmUnchanged": true,
+    "toolsUnchanged": true,
+    "physicalOwnedDependenciesUnchanged": true,
+    "noBrowserOrServerStarted": true,
+    "allInvokedCommandsClosed": true,
+    "noTimeoutOrInterruption": true,
+    "everyRequiredPhasePassed": true,
+    "noCurrentDependencyFindings": true,
+    "archiveEligible": true
+  },
+  "ci": {
+    "status": "NOT_COLLECTED",
+    "receipts": []
+  },
+  "limitations": [
+    "This wrapper never installs, upgrades, fixes dependencies, starts a browser/server, or grants audit acceptance.",
+    "STANDARD retains 106 measured samples and 20 warmups; failures are never filtered.",
+    "Fresh Node WASM initialization is neither browser cold-start nor OS disk-cache cold; browser cold-start NOT_RUN.",
+    "Frozen classifier and archiver contain historical status/limitation strings. Current counts and the actual lifetime receipt are reported separately without rewriting those tools.",
+    "Native lifetime regression checks scoped owned handles before cleanup; it is not a whole-vendor native/WASM heap-clean proof.",
+    "Exact-head CI and independent review remain separate required evidence; this runner is not the complete acceptance decision."
+  ],
+  "sourceBefore": {
+    "kind": "file",
+    "file": "checks/source-before.json",
+    "bytes": 77780,
+    "sha256": "2653cf70fd05cca852fd77555a3e57486547606a4fe99097b55e99513e1c978e"
+  },
+  "source": {
+    "head": "b8f700bb6e455582db18df8d0ba43a2bfbdcc68b",
+    "tree": "ccb7c9b0afb8b1c1ad1d40beba8d73d45de3e2e4",
+    "fingerprint": "d0974405971420a2a9ab79d68b544ab3c01a9feacd2b5701a23ae74120424483",
+    "lock": {
+      "path": "vendor/toubkal/package-lock.json",
+      "bytes": 143062,
+      "sha256": "dce141fd9c4f85365f1b145260896fbc4d42e4fe09fb81f49ead295a12fe0247",
+      "lockfileVersion": 3
+    },
+    "branch": "audit/full-health-after-rectangle-20261108"
+  },
+  "dependenciesBefore": {
+    "directory": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108\\vendor\\toubkal\\node_modules",
+    "realPath": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108\\vendor\\toubkal\\node_modules",
+    "dev": 3460693658,
+    "ino": 290482175965800200,
+    "packages": [
+      {
+        "name": "@salusoft89/planegcs",
+        "version": "1.1.7",
+        "packageJsonSha256": "d0f6a017ff49ad9b369e2258cd32ba82d1ad39d32bcafdf5dbd5f6e11a309831"
+      },
+      {
+        "name": "opencascade.js",
+        "version": "2.0.0-beta.b5ff984",
+        "packageJsonSha256": "2095d5bc427c831b48c02f34fcae5e0690a3f6c616c1bbbd4b1889d1510b26cc"
+      },
+      {
+        "name": "tsx",
+        "version": "4.22.4",
+        "packageJsonSha256": "b0d63b124b9b85b53d09cff256fa7832cb6a774f8b90ae1353e63df5275824b2"
+      },
+      {
+        "name": "esbuild",
+        "version": "0.28.1",
+        "packageJsonSha256": "d55d1d19fcc5b6079e4a71dd4111340c79c682bc36835ac7058a0c364c7db58a"
+      },
+      {
+        "name": "typescript",
+        "version": "5.9.3",
+        "packageJsonSha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"
+      },
+      {
+        "name": "semver",
+        "version": "6.3.1",
+        "packageJsonSha256": "aa906c5bf8a2fa68683cae07d18553ae2538ed0d5a567911980b2ef25ee8b9ba"
+      }
+    ],
+    "hiddenLock": {
+      "path": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108\\vendor\\toubkal\\node_modules\\.package-lock.json",
+      "bytes": 121808,
+      "sha256": "6cd93b898bc22aca72b454d03a022822f95fdedcc8d27f02b511ba67f566ea7a"
+    }
+  },
+  "tools": {
+    "historicalManifestSha256": "d6346a4afe203568d0238455a425cbe042fc43351a1d07a632114812bfdbc426",
+    "directory": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\performance-tool-20261107",
+    "files": [
+      {
+        "name": "browser-cold-start-plan.json",
+        "bytes": 3484,
+        "sha256": "7611f3a3b20c6f9a50b8fc9ed4d9c09bce5aa99e488c20a535955b54ac3d7824"
+      },
+      {
+        "name": "dependency-classifier.mjs",
+        "bytes": 13411,
+        "sha256": "9b8f10b02a82d90086f6ee2378d2b57b714d09631e6c6bd6bb58e0068c8806fe"
+      },
+      {
+        "name": "performance-common.mjs",
+        "bytes": 6463,
+        "sha256": "8870a27525937d03fd4f1bad79ca7869d2b4ad27985988e9b6e40e5bf0c49ba9"
+      },
+      {
+        "name": "performance-fixtures.mjs",
+        "bytes": 7191,
+        "sha256": "3d16d60df721021fe803493ad2f4e3da4eb007286fd0a0374698a60a9eb83967"
+      },
+      {
+        "name": "performance-runner.mjs",
+        "bytes": 10383,
+        "sha256": "53224b6ec0fcfb835650890fdea12e2a5216182c4288047ea5a7960e025e2add"
+      },
+      {
+        "name": "performance-worker.mjs",
+        "bytes": 17277,
+        "sha256": "44bf82d8151885ee3d8fcb700562837e0a1075327a2fc6a888c1cdb39ac08254"
+      },
+      {
+        "name": "tool-manifest.json",
+        "bytes": 4575,
+        "sha256": "7f56bbe87393560cb8b718cb0f6725067e1c2f92440924adbfc21a040c46f47f"
+      }
+    ],
+    "archiver": {
+      "path": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-evidence-archiver-20261107\\evidence-archiver.mjs",
+      "bytes": 23481,
+      "sha256": "cece38c0d93c54852f4c0aaa32c1a6004dbcca308117c54dcce8c84d5289dbdc"
+    },
+    "checker": {
+      "path": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108\\spec\\process\\evidence\\health-audit-20261107\\full-web-typecheck.cjs",
+      "bytes": 2341,
+      "sha256": "3c53f53f105c7edf6b57669ce61680707670624160d1b41b3e63af86b89fef23"
+    }
+  },
+  "currentDependencyFindings": {
+    "npmExitCode": 0,
+    "counts": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "capturedAt": "2026-11-08T09:18:17.691Z",
+    "input": {
+      "path": "checks/dependency-audit-input.json",
+      "bytes": 365,
+      "sha256": "c4c3d7cdf6fcde51c4f017fe23e5ddff6a54e3e25f16eb1a18df587463bd5bc2"
+    },
+    "network": "Fresh npm audit against explicitly named registry; no audit fix or install"
+  },
+  "measurementArchive": {
+    "directory": "measurement",
+    "manifest": {
+      "path": "measurement/manifest.json",
+      "bytes": 34419,
+      "sha256": "1b665718dea5953e0bb446a132ed1a9395c12bdcdd7b7ba9907feee81a0cbda7"
+    },
+    "manifestSha256": "1b665718dea5953e0bb446a132ed1a9395c12bdcdd7b7ba9907feee81a0cbda7",
+    "sourceOutcome": "PASS",
+    "eligibility": {
+      "status": "IDENTITY_CHECKS_PASS_ACCEPTANCE_NOT_GRANTED",
+      "issues": []
+    }
+  },
+  "sourceAfter": {
+    "kind": "file",
+    "file": "checks/source-after.json",
+    "bytes": 77780,
+    "sha256": "2653cf70fd05cca852fd77555a3e57486547606a4fe99097b55e99513e1c978e"
+  },
+  "endedAt": "2026-11-08T09:18:23.490Z"
+}

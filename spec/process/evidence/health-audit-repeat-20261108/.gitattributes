@@ -1,0 +1,3 @@
+# Preserve immutable audit evidence and harness bytes across checkouts.
+** -text
+setup/npm-audit-scope.json whitespace=cr-at-eol

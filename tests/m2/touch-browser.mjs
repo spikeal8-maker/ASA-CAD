@@ -178,7 +178,7 @@ try {
   await page.locator('.cad-app[data-selected-body-id]:not([data-selected-body-id=""])').waitFor({ timeout: 5_000 });
   const bodyId = await page.locator('.cad-app').getAttribute('data-selected-body-id');
   assert.ok(bodyId, 'touch tap did not select ASA body');
-  assert.equal(await page.locator(`.tree-row[data-body-id="${bodyId}"]`).getAttribute('aria-pressed'), 'true', 'touch-selected body did not synchronize Tree');
+  assert.equal(await page.locator(`.k-tree-row[data-body-id="${bodyId}"]`).getAttribute('aria-selected'), 'true', 'touch-selected body did not synchronize KOMPAS Tree');
   assert.equal((await state()).revision, initial.revision, 'touch selection triggered CAD recompute');
   console.log(`  ✓ touch tap selects ${bodyId} and synchronizes Tree`);
 

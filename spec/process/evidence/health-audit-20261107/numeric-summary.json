@@ -1,0 +1,697 @@
+{
+  "schema": "asa.health-final-numeric-summary.v1",
+  "source": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-final-128480e-20261107\\performance\\performance-report.json",
+  "sourceSha256": "8185f5be5575e0dc1069a0e4c0a019550ee30cd0ac66b7484db0990b53ef5335",
+  "sourceHead": "128480e1a150253359ce44158d5588f6b08f27b8",
+  "status": "PASS",
+  "acceptedBaseline": false,
+  "units": "milliseconds for all *Ms metrics",
+  "environment": {
+    "cpu": "13th Gen Intel(R) Core(TM) i5-13400",
+    "node": "v22.23.3",
+    "platform": "win32",
+    "arch": "x64"
+  },
+  "parameters": {
+    "samples": 10,
+    "warmups": 2,
+    "sizes": [
+      8,
+      32,
+      128
+    ],
+    "coldFreshProcessesPerBackend": 3
+  },
+  "elapsedMs": 55371.3731,
+  "phaseCount": 10,
+  "caseCount": 16,
+  "sampleCount": 106,
+  "warmupCount": 20,
+  "failedSamples": 0,
+  "failedWarmups": 0,
+  "rows": [
+    {
+      "phase": "solve",
+      "case": "lines-8",
+      "metadata": {
+        "fixture": {
+          "counts": {
+            "sketches": 1,
+            "entities": 8,
+            "constraints": 8,
+            "dimensions": 8,
+            "features": 0,
+            "stableReferences": 0
+          },
+          "serializedBytes": 4462,
+          "sha256": "090b56d160f98fb6bf6bc18835364969ee7d745cff4032327aeddaaef7fb0dff"
+        },
+        "backend": "actual PlaneGCSSketchSolverRuntime",
+        "kernelState": "initialized/warm",
+        "resultCache": "none; BrowserSketchSolverAdapter LRU bypassed",
+        "cacheHitMeasurement": "not performed by this Node harness"
+      },
+      "status": "PASS",
+      "samples": 10,
+      "warmups": 2,
+      "unattemptedSamples": 0,
+      "summary": {
+        "solveMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 0.5418000000000234,
+          "max": 0.9844999999999686,
+          "median": 0.712600000000009
+        }
+      }
+    },
+    {
+      "phase": "solve",
+      "case": "lines-32",
+      "metadata": {
+        "fixture": {
+          "counts": {
+            "sketches": 1,
+            "entities": 32,
+            "constraints": 32,
+            "dimensions": 32,
+            "features": 0,
+            "stableReferences": 0
+          },
+          "serializedBytes": 16434,
+          "sha256": "8795b24296c199bda20c7158ad2b057dc8fb75159f519f4c1d1361c01e66632d"
+        },
+        "backend": "actual PlaneGCSSketchSolverRuntime",
+        "kernelState": "initialized/warm",
+        "resultCache": "none; BrowserSketchSolverAdapter LRU bypassed",
+        "cacheHitMeasurement": "not performed by this Node harness"
+      },
+      "status": "PASS",
+      "samples": 10,
+      "warmups": 2,
+      "unattemptedSamples": 0,
+      "summary": {
+        "solveMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 1.3935000000000173,
+          "max": 2.8204000000000065,
+          "median": 1.7445500000000038
+        }
+      }
+    },
+    {
+      "phase": "solve",
+      "case": "lines-128",
+      "metadata": {
+        "fixture": {
+          "counts": {
+            "sketches": 1,
+            "entities": 128,
+            "constraints": 128,
+            "dimensions": 128,
+            "features": 0,
+            "stableReferences": 0
+          },
+          "serializedBytes": 64394,
+          "sha256": "d144352abe09c36243a9fd933c1306f1311fcf661b7f293eadb10586ded3581f"
+        },
+        "backend": "actual PlaneGCSSketchSolverRuntime",
+        "kernelState": "initialized/warm",
+        "resultCache": "none; BrowserSketchSolverAdapter LRU bypassed",
+        "cacheHitMeasurement": "not performed by this Node harness"
+      },
+      "status": "PASS",
+      "samples": 10,
+      "warmups": 2,
+      "unattemptedSamples": 0,
+      "summary": {
+        "solveMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 8.978999999999928,
+          "max": 11.452499999999986,
+          "median": 9.772800000000018
+        }
+      }
+    },
+    {
+      "phase": "history",
+      "case": "line-frames-8",
+      "metadata": {
+        "entities": 8,
+        "commandsPerEntity": 3,
+        "historyFrames": 24,
+        "application": "actual CadApplicationImpl",
+        "runtime": "actual OpenCascadePartRuntime with zero features",
+        "includes": "public execute/undo/redo and their no-feature recompute; startup excluded",
+        "validation": "every intermediate serialized snapshot including IDs/constraint refs",
+        "fixture": {}
+      },
+      "status": "PASS",
+      "samples": 10,
+      "warmups": 2,
+      "unattemptedSamples": 0,
+      "summary": {
+        "executeBatchMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 0.7218000000020766,
+          "max": 2.1871000000001004,
+          "median": 1.4488499999988562
+        },
+        "executePerCommandMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 0.030075000000086522,
+          "max": 0.09112916666667085,
+          "median": 0.06036874999995234
+        },
+        "undoBatchMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 1.8684999999977663,
+          "max": 3.6054999999996653,
+          "median": 2.9222000000008848
+        },
+        "undoPerCommandMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 0.07785416666657359,
+          "max": 0.15022916666665273,
+          "median": 0.1217583333333702
+        },
+        "redoBatchMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 2.317800000000716,
+          "max": 3.3408999999992375,
+          "median": 2.91144999999824
+        },
+        "redoPerCommandMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 0.09657500000002983,
+          "max": 0.1392041666666349,
+          "median": 0.12131041666659334
+        }
+      }
+    },
+    {
+      "phase": "history",
+      "case": "line-frames-32",
+      "metadata": {
+        "entities": 32,
+        "commandsPerEntity": 3,
+        "historyFrames": 96,
+        "application": "actual CadApplicationImpl",
+        "runtime": "actual OpenCascadePartRuntime with zero features",
+        "includes": "public execute/undo/redo and their no-feature recompute; startup excluded",
+        "validation": "every intermediate serialized snapshot including IDs/constraint refs",
+        "fixture": {}
+      },
+      "status": "PASS",
+      "samples": 10,
+      "warmups": 2,
+      "unattemptedSamples": 0,
+      "summary": {
+        "executeBatchMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 10.610899999998765,
+          "max": 14.192500000003747,
+          "median": 13.158999999995558
+        },
+        "executePerCommandMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 0.11053020833332046,
+          "max": 0.1478385416667057,
+          "median": 0.13707291666662041
+        },
+        "undoBatchMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 31.13749999999709,
+          "max": 36.13630000000285,
+          "median": 33.6179500000012
+        },
+        "undoPerCommandMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 0.324348958333303,
+          "max": 0.3764197916666963,
+          "median": 0.3501869791666792
+        },
+        "redoBatchMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 26.424800000001596,
+          "max": 36.53280000000268,
+          "median": 32.23390000000063
+        },
+        "redoPerCommandMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 0.27525833333335,
+          "max": 0.3805500000000279,
+          "median": 0.3357697916666732
+        }
+      }
+    },
+    {
+      "phase": "history",
+      "case": "line-frames-128",
+      "metadata": {
+        "entities": 128,
+        "commandsPerEntity": 3,
+        "historyFrames": 384,
+        "application": "actual CadApplicationImpl",
+        "runtime": "actual OpenCascadePartRuntime with zero features",
+        "includes": "public execute/undo/redo and their no-feature recompute; startup excluded",
+        "validation": "every intermediate serialized snapshot including IDs/constraint refs",
+        "fixture": {}
+      },
+      "status": "PASS",
+      "samples": 10,
+      "warmups": 2,
+      "unattemptedSamples": 0,
+      "summary": {
+        "executeBatchMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 139.7506999999805,
+          "max": 208.65720000002693,
+          "median": 181.87890000001153
+        },
+        "executePerCommandMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 0.36393411458328256,
+          "max": 0.5433781250000701,
+          "median": 0.47364296875003
+        },
+        "undoBatchMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 415.8133999999918,
+          "max": 507.9524999999594,
+          "median": 456.84725000000435
+        },
+        "undoPerCommandMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 1.082847395833312,
+          "max": 1.3227929687498943,
+          "median": 1.1897063802083447
+        },
+        "redoBatchMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 407.31740000000536,
+          "max": 507.15440000002127,
+          "median": 466.15365000000656
+        },
+        "redoPerCommandMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 1.0607223958333474,
+          "max": 1.3207145833333886,
+          "median": 1.2139417968750172
+        }
+      }
+    },
+    {
+      "phase": "serialization",
+      "case": "lines-8",
+      "metadata": {
+        "fixture": {
+          "counts": {
+            "sketches": 1,
+            "entities": 8,
+            "constraints": 8,
+            "dimensions": 8,
+            "features": 0,
+            "stableReferences": 0
+          },
+          "serializedBytes": 4462,
+          "sha256": "9c6a655664ef7ce9266c00fbc57fff01cc4a9caeac39a0f147f30b75088ec846"
+        },
+        "host": "actual MemoryCadProjectHost",
+        "storageMedium": "in-memory serialized string; no disk/network/browser durability claim",
+        "serialization": "public validate+serialize / parse+validate; host save/load measured separately"
+      },
+      "status": "PASS",
+      "samples": 10,
+      "warmups": 2,
+      "unattemptedSamples": 0,
+      "summary": {
+        "serializeMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 0.07339999999999236,
+          "max": 0.1310999999999467,
+          "median": 0.08430000000001314
+        },
+        "parseMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 0.060000000000002274,
+          "max": 0.08709999999996398,
+          "median": 0.06539999999998258
+        },
+        "hostSaveMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 0.04239999999998645,
+          "max": 0.0625,
+          "median": 0.050549999999986994
+        },
+        "hostLoadMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 0.04779999999999518,
+          "max": 0.06999999999999318,
+          "median": 0.054049999999989495
+        },
+        "hostRoundtripMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 0.09850000000000136,
+          "max": 0.20650000000000546,
+          "median": 0.10734999999999673
+        }
+      }
+    },
+    {
+      "phase": "serialization",
+      "case": "lines-32",
+      "metadata": {
+        "fixture": {
+          "counts": {
+            "sketches": 1,
+            "entities": 32,
+            "constraints": 32,
+            "dimensions": 32,
+            "features": 0,
+            "stableReferences": 0
+          },
+          "serializedBytes": 16434,
+          "sha256": "73a16d9ee1f5c43f8dbb459abc5539f985f00b14e254a4a5377eeb4b7583c582"
+        },
+        "host": "actual MemoryCadProjectHost",
+        "storageMedium": "in-memory serialized string; no disk/network/browser durability claim",
+        "serialization": "public validate+serialize / parse+validate; host save/load measured separately"
+      },
+      "status": "PASS",
+      "samples": 10,
+      "warmups": 2,
+      "unattemptedSamples": 0,
+      "summary": {
+        "serializeMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 0.14690000000001646,
+          "max": 0.18880000000001473,
+          "median": 0.15510000000000446
+        },
+        "parseMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 0.14990000000000236,
+          "max": 0.36529999999999063,
+          "median": 0.15860000000000696
+        },
+        "hostSaveMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 0.109800000000007,
+          "max": 0.18770000000000664,
+          "median": 0.11990000000000123
+        },
+        "hostLoadMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 0.13339999999999463,
+          "max": 0.2928999999999178,
+          "median": 0.14500000000001023
+        },
+        "hostRoundtripMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 0.2447999999999979,
+          "max": 0.41020000000003165,
+          "median": 0.27600000000001046
+        }
+      }
+    },
+    {
+      "phase": "serialization",
+      "case": "lines-128",
+      "metadata": {
+        "fixture": {
+          "counts": {
+            "sketches": 1,
+            "entities": 128,
+            "constraints": 128,
+            "dimensions": 128,
+            "features": 0,
+            "stableReferences": 0
+          },
+          "serializedBytes": 64394,
+          "sha256": "8d34c5d2ade6ab722eea81ccb926a35f74075c617356ab94e338ce7a44d202d4"
+        },
+        "host": "actual MemoryCadProjectHost",
+        "storageMedium": "in-memory serialized string; no disk/network/browser durability claim",
+        "serialization": "public validate+serialize / parse+validate; host save/load measured separately"
+      },
+      "status": "PASS",
+      "samples": 10,
+      "warmups": 2,
+      "unattemptedSamples": 0,
+      "summary": {
+        "serializeMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 0.31739999999990687,
+          "max": 0.6875999999999749,
+          "median": 0.3906999999999812
+        },
+        "parseMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 0.4007000000000289,
+          "max": 0.847699999999918,
+          "median": 0.5092999999999392
+        },
+        "hostSaveMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 0.2840999999999667,
+          "max": 1.469000000000051,
+          "median": 0.4752000000000294
+        },
+        "hostLoadMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 0.3988999999999123,
+          "max": 0.7975999999999885,
+          "median": 0.45179999999999154
+        },
+        "hostRoundtripMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 0.6865999999999985,
+          "max": 1.9057000000000244,
+          "median": 1.075400000000002
+        }
+      }
+    },
+    {
+      "phase": "protected-part",
+      "case": "protected-60-to-80-save-open",
+      "metadata": {
+        "fixture": {
+          "counts": {
+            "sketches": 2,
+            "entities": 5,
+            "constraints": 8,
+            "dimensions": 3,
+            "features": 3,
+            "stableReferences": 2
+          },
+          "serializedBytes": 5607,
+          "sha256": "0d67b82217d8e2d2601849ac042a74b5c33d1e089ef81a19602023ea0fec9ca8"
+        },
+        "widthEdit": [
+          60,
+          80
+        ],
+        "features": "extrude10 + through cut diameter12 + filletR1",
+        "backend": "actual PlaneGCS -> SolvedSketchPartRuntimeAdapter -> OpenCascadePartRuntime",
+        "cache": "no browser LRU; OCC module initialized; reopened adapter includes its own PlaneGCS initialization",
+        "initialAnalysis": {
+          "bounds": {
+            "minX": -30,
+            "minY": -20,
+            "minZ": -2.220446049250313e-16,
+            "maxX": 30,
+            "maxY": 20,
+            "maxZ": 10
+          },
+          "volume": 22856.150534511522,
+          "featureCount": 3,
+          "runtimeRevision": 5
+        }
+      },
+      "status": "PASS",
+      "samples": 10,
+      "warmups": 2,
+      "unattemptedSamples": 0,
+      "summary": {
+        "rebuild60Ms": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 64.46659999999974,
+          "max": 106.74689999999828,
+          "median": 80.0923499999999
+        },
+        "editWidthMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 0.11449999999967986,
+          "max": 0.19239999999990687,
+          "median": 0.17229999999972279
+        },
+        "rebuild80Ms": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 57.43419999999969,
+          "max": 101.59149999999863,
+          "median": 86.96304999999984
+        },
+        "saveOpenHostMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 0.13760000000002037,
+          "max": 0.3297000000002299,
+          "median": 0.23590000000058353
+        },
+        "reopenedRecomputeMs": {
+          "recorded": 10,
+          "attempted": 10,
+          "includesFailedAttempts": true,
+          "min": 61.15129999999954,
+          "max": 105.52579999999944,
+          "median": 90.59645
+        }
+      }
+    }
+  ],
+  "cold": {
+    "cold-planegcs": {
+      "processes": 3,
+      "samples": 3,
+      "warmups": 0,
+      "summary": {
+        "initMs": {
+          "recorded": 3,
+          "attempted": 3,
+          "includesFailedAttempts": true,
+          "min": 13.196600000000046,
+          "max": 14.830100000000016,
+          "median": 13.477199999999982
+        },
+        "firstSolveMs": {
+          "recorded": 3,
+          "attempted": 3,
+          "includesFailedAttempts": true,
+          "min": 12.24939999999998,
+          "max": 14.895800000000008,
+          "median": 13.60269999999997
+        }
+      }
+    },
+    "cold-occ": {
+      "processes": 3,
+      "samples": 3,
+      "warmups": 0,
+      "summary": {
+        "initMs": {
+          "recorded": 3,
+          "attempted": 3,
+          "includesFailedAttempts": true,
+          "min": 4987.860000000001,
+          "max": 5193.4977,
+          "median": 5066.686
+        },
+        "firstRecomputeMs": {
+          "recorded": 3,
+          "attempted": 3,
+          "includesFailedAttempts": true,
+          "min": 31.970299999999952,
+          "max": 39.588700000000244,
+          "median": 36.8757999999998
+        }
+      }
+    }
+  },
+  "guards": {
+    "sourceUnchanged": true,
+    "checkoutClean": true,
+    "toolUnchanged": true,
+    "sixDistinctFreshColdProcesses": true,
+    "allOwnedWorkersExitedSuccessfully": true,
+    "noOwnedBrowserOrServer": true
+  },
+  "limitations": {
+    "clock": "node:perf_hooks performance.now, milliseconds",
+    "warmupPolicy": "Explicit, bounded, recorded separately; correctness checked",
+    "failures": "Failed attempts retained; statistics include every finite recorded metric, including failures",
+    "startup": "Fresh Node processes, not browser startup and not OS disk-cache cold",
+    "solveCache": "Direct PlaneGCSSketchSolverRuntime; no BrowserSketchSolverAdapter LRU",
+    "scope": "No browser, network, server, product changes or installation",
+    "thresholds": "No performance SLO or pass/fail latency threshold; only correctness/identity/cleanup gates",
+    "sampling": "Sequential workers; CPU/memory/OS cache state uncontrolled and recorded as limitations"
+  }
+}

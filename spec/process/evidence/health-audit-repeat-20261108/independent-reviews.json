@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "kind": "controller-transcribed-independent-agent-findings",
+  "formalGithubApproval": false,
+  "reviews": [
+    {
+      "reviewer": "line_contract_003",
+      "verdict": "APPROVE",
+      "scope": "Fresh repeat audit evidence on exact 7bf71e2; read-only",
+      "blockingFindings": 0,
+      "runSha256": "f5fcce90b848a9c8f19e6d5b76f6bcc5b34c48e5df7bbc56631d3fd3981eb22b",
+      "measurementManifestSha256": "f7edbe5b7d8418a4d5c3572e1f3a8c7f5612ae0d3848639b7458f2802b27cd22",
+      "originals": 73,
+      "originalBytes": 3425509,
+      "independentDecode": true,
+      "byteComparisonWithOriginalAndRoundtrip": true,
+      "missing": 0,
+      "extra": 0,
+      "mismatches": 0,
+      "resolvedReferences": 42,
+      "sourceRuntimeToolRecordsVerified": 470,
+      "importGraphSourceHashesVerified": 218,
+      "fullWebPhysicalRoots": 183,
+      "fullWebRawRootPaths": 185,
+      "nativeCases": 14,
+      "nativeCreated": 699,
+      "nativeLiveBeforeCleanup": 0,
+      "fullNpmAuditScopeVerified": true,
+      "archiveInventoryExplanation": "Historical76 to current73: three orchestration/preflight receipts moved outside performance into run/commands/setup; two dependency payloads renamed with fresh results; no case/config/worker payload missing."
+    },
+    {
+      "reviewer": "health_audit_review",
+      "verdict": "APPROVE",
+      "scope": "Raw and derived numeric evidence; read-only",
+      "blockingFindings": 0,
+      "summarySha256": "3dbcbd91c6e1223ee29279c95b76b4f13162bc15a5076bc66cd1ef679b34b903",
+      "comparisonSha256": "66dbe76b28617b7a636038b62e304f3bc1701a8c338befb00d50af04d182358d",
+      "caseMetricRows": 53,
+      "coldAggregateRows": 4,
+      "statObjects": 342,
+      "differencesAndRatios": 228,
+      "rawPointers": 118,
+      "perCommandNormalizations": 108,
+      "mismatches": 0,
+      "fixturePairs": 16,
+      "byteIdenticalFixtures": false,
+      "causalPerformanceClaim": false
+    },
+    {
+      "reviewer": "line_contract_003",
+      "verdict": "APPROVE",
+      "blockingFindings": 0,
+      "head": "dda21b6d57c3907d88fb374032f8ea108de9c453",
+      "tree": "899f3a888a0c14173b6117cf8ea52ab4d6f4b40c",
+      "parent": "f91e08b3c089a571ba106a9165e2995a4807eaaa",
+      "base": "8684b56aff2a24d46458741249d27dd08f59b292",
+      "blobsSha256": "0a7ce31e6ea37e35b37dc4c049bab4d716178a99e3995cc507fc8f5b324e44f1",
+      "scope": "Complete 12-file review plus exact one-word STATUS follow-up binding",
+      "clean": true
+    }
+  ],
+  "limitations": [
+    "These reviews do not provide owner product/visual acceptance.",
+    "Canonical report, machine state, complete final footprint and exact PR CI require their separate final gate."
+  ]
+}

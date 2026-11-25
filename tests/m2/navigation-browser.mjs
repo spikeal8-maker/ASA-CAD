@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { chromium } from '../../vendor/toubkal/node_modules/playwright-core/index.mjs';
 
-const url = process.env.ASA_CAD_SHELL_URL ?? 'http://127.0.0.1:8090/';
+const url = new URL('cad/', process.env.ASA_CAD_SHELL_URL ?? 'http://127.0.0.1:8090/').href;
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
 const pageErrors = [];
@@ -46,7 +46,7 @@ async function createExtrudedPart() {
   await page.getByText('Эскиз 1', { exact: true }).waitFor();
 
   await page.getByRole('button', { name: /Прямоугольник/i }).click();
-  await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
+  await page.locator('.k-content.k-collapsed, .k-content[data-panel-tab="params"]').waitFor();
   if (await page.locator('.k-content').count() === 0) await page.getByTitle('Параметры').click(); else if (await page.locator('.k-content[data-panel-tab="params"]').count() === 0) await page.getByRole('tab', { name: 'Параметры' }).click();
   await page.locator(':is(.parameter-panel, .k-pp)').waitFor();
   await page.locator('.parameter-actions button.primary, .k-pp-ok').click();

@@ -65,7 +65,7 @@ async function chooseCircles(page, first, second, touch) {
 async function desktopConcentric() {
   const { page, errors } = await newDesktopPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createXYSketch(page);
     const { first, second } = await createPair(page, false);
     assert.equal(await centersCoincident(page, first, second), false, 'Circles must start non-concentric');
@@ -113,12 +113,12 @@ async function desktopConcentric() {
 async function touchConcentric() {
   const { context, page, errors } = await newTouchPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createMobileXYSketch(page);
     const { first, second } = await createPair(page, true);
     await activateMobileTool(page, 'constraint.concentric', 'Concentric');
-    await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
-    assert.equal(await page.locator('.management-panel').isVisible(), false, 'Tools panel still covers Sketch');
+    await page.locator('.k-content.k-collapsed').waitFor();
+    assert.equal(await page.locator('.k-management-panel').isVisible(), false, 'Tools panel still covers Sketch');
     await chooseCircles(page, first, second, true);
     const saved = await saveLocalDocument(page);
     assert.ok(saved.constraints.some((item) => item.type === 'concentric'), 'touch Concentric not persisted');

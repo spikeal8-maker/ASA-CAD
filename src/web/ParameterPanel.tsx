@@ -1,12 +1,11 @@
 import React from 'react';
+import type { ParameterPanelProps } from './ParameterPanelTypes';
+export type { ParameterPanelProps } from './ParameterPanelTypes';
 import commandRegistryJson from '../../spec/ui/command-registry.v1.json';
-import type { CadViewportPick } from '../contracts/render';
 import { ParameterNumericField } from './ParameterNumericField';
 import { ExtrudeParameterPanel } from './ExtrudeParameterPanel';
 import { CutExtrudeParameterPanel } from './CutExtrudeParameterPanel';
-import type { ExtrudeOperationController } from './useExtrudeOperationController';
 import { SketchDimensionParameterPanel } from './SketchDimensionParameterPanel';
-import type { SketchDimensionCreationState } from './useSketchDimensionCreationControllers';
 
 interface RegistryCommand {
   id: string;
@@ -16,34 +15,6 @@ interface RegistryCommand {
 const commandById = new Map(
   (commandRegistryJson as { commands: RegistryCommand[] }).commands.map((command) => [command.id, command]),
 );
-
-export interface ParameterPanelProps {
-  activeCommand: string | null;
-  requiresFaceSelection: boolean;
-  selectedPick: CadViewportPick | null;
-  sketchPlane: 'XY' | 'XZ' | 'YZ';
-  setSketchPlane: (plane: 'XY' | 'XZ' | 'YZ') => void;
-  rectangleWidth: number;
-  rectangleHeight: number;
-  setRectangleWidth: (value: number) => void;
-  setRectangleHeight: (value: number) => void;
-  circleDiameter: number;
-  setCircleDiameter: (value: number) => void;
-  extrude: ExtrudeOperationController;
-  filletRadius: number;
-  setFilletRadius: (value: number) => void;
-  dimensionEditValue: number;
-  setDimensionEditValue: (value: number) => void;
-  dimensionCreation: SketchDimensionCreationState;
-  onCreateSketch: () => void;
-  onCreateRectangle: () => void;
-  onCreateCircle: () => void;
-  onCut: () => void;
-  onFillet: () => void;
-  onDimensionEdit: () => void;
-
-  onCancel: () => void;
-}
 
 /**
  * Presentation-only parameters surface. Command execution and application

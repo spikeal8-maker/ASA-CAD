@@ -3,13 +3,12 @@ import type { CadApplication } from '../contracts/application';
 import type { CadDocumentKind } from '../contracts/document';
 import type { CadSketchId } from '../contracts/ids';
 import { findSketch, partDocument } from './PartSketchWorkspaceModel';
-import type { CadWorkspacePanel } from './PartSketchWorkspaceTypes';
+import type { CadWorkspacePanel, Workspace, SetWorkspace } from './PartSketchWorkspaceTypes';
 
 interface PartWorkspaceNavigationOptions {
   app: CadApplication;
-  documentKind: CadDocumentKind;
   setActiveCommand(command: string | null): void;
-  setActiveWorkspace(workspace: string): void;
+  setActiveWorkspace: SetWorkspace;
   setPanel(panel: CadWorkspacePanel): void;
   setNotice(message: string): void;
   activateSketch(sketchId: CadSketchId): void;
@@ -30,7 +29,7 @@ export function usePartWorkspaceNavigation(options: PartWorkspaceNavigationOptio
     clearTransientSelection();
   }, [clearDimensionEdit, clearTransientSelection, setActiveCommand]);
 
-  const resetToWorkspace = useCallback((workspace: string) => {
+  const resetToWorkspace = useCallback((workspace: Workspace) => {
     setActiveWorkspace(workspace);
     setActiveCommand(null);
     clearDimensionEdit();

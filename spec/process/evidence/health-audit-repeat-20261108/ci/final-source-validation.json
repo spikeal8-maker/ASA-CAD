@@ -1,0 +1,220 @@
+{
+  "head": "8684b56aff2a24d46458741249d27dd08f59b292",
+  "kind": "WORKING_TREE_VALIDATION",
+  "sourceUnchanged": true,
+  "before": [
+    {
+      "path": ".github/workflows/baseline.yml",
+      "bytes": 4127,
+      "sha256": "01392d024d8b90b57bc5150327f5abade4c5914f941864e5c242a59c52015d73",
+      "canonicalSha256": "01392d024d8b90b57bc5150327f5abade4c5914f941864e5c242a59c52015d73"
+    },
+    {
+      "path": ".github/workflows/m2-browser.yml",
+      "bytes": 7060,
+      "sha256": "d19aec55f6034446ee6a7cc2556037f0619a479c52d666fea20850d7a7dc6d00",
+      "canonicalSha256": "d19aec55f6034446ee6a7cc2556037f0619a479c52d666fea20850d7a7dc6d00"
+    },
+    {
+      "path": ".github/workflows/m3-browser.yml",
+      "bytes": 6331,
+      "sha256": "7e27a024419e1eb0200ab84e727f4b4215c22e27a10748cc52062b787cfd5604",
+      "canonicalSha256": "7e27a024419e1eb0200ab84e727f4b4215c22e27a10748cc52062b787cfd5604"
+    },
+    {
+      "path": ".github/workflows/owner-screenshot-capture.yml",
+      "bytes": 4344,
+      "sha256": "2ccb1d4f43c8b74d357e40eb0a7d601163c25abcfad56e802d046aea394bbf5b",
+      "canonicalSha256": "2ccb1d4f43c8b74d357e40eb0a7d601163c25abcfad56e802d046aea394bbf5b"
+    },
+    {
+      "path": ".github/workflows/ui-core-u1-visual.yml",
+      "bytes": 5379,
+      "sha256": "6222f7fc6d951085bfe9a2fc952745e7ff8428510d9c42e0e019f53a1f1f2252",
+      "canonicalSha256": "6222f7fc6d951085bfe9a2fc952745e7ff8428510d9c42e0e019f53a1f1f2252"
+    },
+    {
+      "path": "docs/ROADMAP.md",
+      "bytes": 7931,
+      "sha256": "377a69924ee94cb2348d42b921a05736ca6a73399d7767afde918d82dcbe68a6",
+      "canonicalSha256": "377a69924ee94cb2348d42b921a05736ca6a73399d7767afde918d82dcbe68a6"
+    },
+    {
+      "path": "docs/STATUS.md",
+      "bytes": 5088,
+      "sha256": "21c65f3b3c6eebf5769f8f22ab36b00dcefddb5a3e5d2e2b33ec259ca39c8148",
+      "canonicalSha256": "21c65f3b3c6eebf5769f8f22ab36b00dcefddb5a3e5d2e2b33ec259ca39c8148"
+    },
+    {
+      "path": "docs/UI_CORE_UNIFICATION_SPEC.md",
+      "bytes": 17058,
+      "sha256": "4bc83da5d3f615b4674e4c7c2b937c51dd3088aba369fca7e75aacb0c2674824",
+      "canonicalSha256": "4bc83da5d3f615b4674e4c7c2b937c51dd3088aba369fca7e75aacb0c2674824"
+    },
+    {
+      "path": "spec/process/active-work.v1.json",
+      "bytes": 2916,
+      "sha256": "ee6b3ee1d6b211656c051d738c664cc77999b539f9eebcf69048878e19c3d3b8",
+      "canonicalSha256": "ee6b3ee1d6b211656c051d738c664cc77999b539f9eebcf69048878e19c3d3b8"
+    },
+    {
+      "path": "tests/m0/vendor-lint-coverage.mjs",
+      "bytes": 4261,
+      "sha256": "aa7e40ec39d3d783c351f3ca15108adc6afa733766d3ea1af7a18ead93c75d76",
+      "canonicalSha256": "aa7e40ec39d3d783c351f3ca15108adc6afa733766d3ea1af7a18ead93c75d76"
+    },
+    {
+      "path": "vendor/toubkal/package-lock.json",
+      "bytes": 139093,
+      "sha256": "255dd1b5d36290b7a225dd5fed967bed63bda388ab2da10e7c2e1e732cb7ed8e",
+      "canonicalSha256": "255dd1b5d36290b7a225dd5fed967bed63bda388ab2da10e7c2e1e732cb7ed8e"
+    },
+    {
+      "path": "vendor/toubkal/package.json",
+      "bytes": 3658,
+      "sha256": "c3daf73f8016da881834b791eef8d7b647b694102985f042d70dce8d68b2a484",
+      "canonicalSha256": "c3daf73f8016da881834b791eef8d7b647b694102985f042d70dce8d68b2a484"
+    }
+  ],
+  "after": [
+    {
+      "path": ".github/workflows/baseline.yml",
+      "bytes": 4127,
+      "sha256": "01392d024d8b90b57bc5150327f5abade4c5914f941864e5c242a59c52015d73",
+      "canonicalSha256": "01392d024d8b90b57bc5150327f5abade4c5914f941864e5c242a59c52015d73"
+    },
+    {
+      "path": ".github/workflows/m2-browser.yml",
+      "bytes": 7060,
+      "sha256": "d19aec55f6034446ee6a7cc2556037f0619a479c52d666fea20850d7a7dc6d00",
+      "canonicalSha256": "d19aec55f6034446ee6a7cc2556037f0619a479c52d666fea20850d7a7dc6d00"
+    },
+    {
+      "path": ".github/workflows/m3-browser.yml",
+      "bytes": 6331,
+      "sha256": "7e27a024419e1eb0200ab84e727f4b4215c22e27a10748cc52062b787cfd5604",
+      "canonicalSha256": "7e27a024419e1eb0200ab84e727f4b4215c22e27a10748cc52062b787cfd5604"
+    },
+    {
+      "path": ".github/workflows/owner-screenshot-capture.yml",
+      "bytes": 4344,
+      "sha256": "2ccb1d4f43c8b74d357e40eb0a7d601163c25abcfad56e802d046aea394bbf5b",
+      "canonicalSha256": "2ccb1d4f43c8b74d357e40eb0a7d601163c25abcfad56e802d046aea394bbf5b"
+    },
+    {
+      "path": ".github/workflows/ui-core-u1-visual.yml",
+      "bytes": 5379,
+      "sha256": "6222f7fc6d951085bfe9a2fc952745e7ff8428510d9c42e0e019f53a1f1f2252",
+      "canonicalSha256": "6222f7fc6d951085bfe9a2fc952745e7ff8428510d9c42e0e019f53a1f1f2252"
+    },
+    {
+      "path": "docs/ROADMAP.md",
+      "bytes": 7931,
+      "sha256": "377a69924ee94cb2348d42b921a05736ca6a73399d7767afde918d82dcbe68a6",
+      "canonicalSha256": "377a69924ee94cb2348d42b921a05736ca6a73399d7767afde918d82dcbe68a6"
+    },
+    {
+      "path": "docs/STATUS.md",
+      "bytes": 5088,
+      "sha256": "21c65f3b3c6eebf5769f8f22ab36b00dcefddb5a3e5d2e2b33ec259ca39c8148",
+      "canonicalSha256": "21c65f3b3c6eebf5769f8f22ab36b00dcefddb5a3e5d2e2b33ec259ca39c8148"
+    },
+    {
+      "path": "docs/UI_CORE_UNIFICATION_SPEC.md",
+      "bytes": 17058,
+      "sha256": "4bc83da5d3f615b4674e4c7c2b937c51dd3088aba369fca7e75aacb0c2674824",
+      "canonicalSha256": "4bc83da5d3f615b4674e4c7c2b937c51dd3088aba369fca7e75aacb0c2674824"
+    },
+    {
+      "path": "spec/process/active-work.v1.json",
+      "bytes": 2916,
+      "sha256": "ee6b3ee1d6b211656c051d738c664cc77999b539f9eebcf69048878e19c3d3b8",
+      "canonicalSha256": "ee6b3ee1d6b211656c051d738c664cc77999b539f9eebcf69048878e19c3d3b8"
+    },
+    {
+      "path": "tests/m0/vendor-lint-coverage.mjs",
+      "bytes": 4261,
+      "sha256": "aa7e40ec39d3d783c351f3ca15108adc6afa733766d3ea1af7a18ead93c75d76",
+      "canonicalSha256": "aa7e40ec39d3d783c351f3ca15108adc6afa733766d3ea1af7a18ead93c75d76"
+    },
+    {
+      "path": "vendor/toubkal/package-lock.json",
+      "bytes": 139093,
+      "sha256": "255dd1b5d36290b7a225dd5fed967bed63bda388ab2da10e7c2e1e732cb7ed8e",
+      "canonicalSha256": "255dd1b5d36290b7a225dd5fed967bed63bda388ab2da10e7c2e1e732cb7ed8e"
+    },
+    {
+      "path": "vendor/toubkal/package.json",
+      "bytes": 3658,
+      "sha256": "c3daf73f8016da881834b791eef8d7b647b694102985f042d70dce8d68b2a484",
+      "canonicalSha256": "c3daf73f8016da881834b791eef8d7b647b694102985f042d70dce8d68b2a484"
+    }
+  ],
+  "priorReceipt": {
+    "path": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\dependency-root-integration-8684b56-20261107\\final-gates\\gates.json",
+    "sha256": "acaf30727ab2a0f714b075ca9028c6e82cf0de69ed0835d1c8408ca78110f9a5",
+    "firstProcessExit": 1
+  },
+  "reason": "STATUS retains U1A/U1B/U1C historical checkpoint names and the human-readable Full Repository Health Audit title required by the unchanged policy guard",
+  "processRetry": {
+    "command": [
+      "C:\\Users\\spike\\AppData\\Local\\Programs\\nodejs\\node-v22.23.3-win-x64\\node.exe",
+      "C:\\Users\\spike\\AppData\\Local\\Programs\\nodejs\\node-v22.23.3-win-x64\\node_modules\\npm\\bin\\npm-cli.js",
+      "run",
+      "test:process"
+    ],
+    "exitCode": 0,
+    "elapsedMs": 3433,
+    "stdoutSha256": "996571c177fad62b14fbf0db48c3ab8fef88a3b389b01106712a2adfb48e3580",
+    "stderrSha256": "870923f80f76c2853911adfd8fe301e3879737626841a3ed8d8aacd9b55598d0"
+  },
+  "reusedSuccessfulRuns": [
+    {
+      "name": "checkpoint-ready",
+      "command": [
+        "C:\\Users\\spike\\AppData\\Local\\Programs\\nodejs\\node-v22.23.3-win-x64\\node.exe",
+        "C:\\Users\\spike\\AppData\\Local\\Programs\\nodejs\\node-v22.23.3-win-x64\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "test:process:ui-core-u1a-ready"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 228,
+      "stdoutSha256": "f4df7afa1065111e94599400093590ef74323fa983b898c5abb8aff556b1f85c",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "full-web",
+      "command": [
+        "C:\\Users\\spike\\AppData\\Local\\Programs\\nodejs\\node-v22.23.3-win-x64\\node.exe",
+        "C:\\Users\\spike\\AppData\\Local\\Programs\\nodejs\\node-v22.23.3-win-x64\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "typecheck:web"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 5153,
+      "stdoutSha256": "0b1a24333ae1c0340303542290c41929d80f5f4bafda152c8156d967a28a641e",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "native-lifetime",
+      "command": [
+        "C:\\Users\\spike\\AppData\\Local\\Programs\\nodejs\\node-v22.23.3-win-x64\\node.exe",
+        "C:\\Users\\spike\\AppData\\Local\\Programs\\nodejs\\node-v22.23.3-win-x64\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "test:m1:runtime"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 7056,
+      "stdoutSha256": "8fcac009ace1aacae814427f357976ee430fd1fcd54a4337aa32959c68ef5f02",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "reuseScope": "Only docs/STATUS.md changed; compiler/runtime/checkpoint inputs and all other 11 candidate paths are byte-identical",
+  "pass": true
+}

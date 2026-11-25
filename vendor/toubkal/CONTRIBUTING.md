@@ -13,7 +13,7 @@ Thank you for helping improve ToubkalCAD.
 ## Development setup
 
 1. Fork and clone the repository.
-2. Install Node.js 20.19 or newer and npm 10 or newer.
+2. Install Node.js 22.23.4 or newer and npm 10 or newer.
 3. Run `npm ci`.
 4. Run `npm run dev` and open <http://localhost:8080>.
 

@@ -1,0 +1,76 @@
+{
+  "head": "dda21b6d57c3907d88fb374032f8ea108de9c453",
+  "tree": "899f3a888a0c14173b6117cf8ea52ab4d6f4b40c",
+  "parent": "f91e08b3c089a571ba106a9165e2995a4807eaaa",
+  "base": "8684b56aff2a24d46458741249d27dd08f59b292",
+  "branch": "maintenance/audit-dependencies-20261107",
+  "clean": true,
+  "commits": 2,
+  "changedPaths": 12,
+  "onlyFollowupChange": "docs/STATUS.md",
+  "blobs": [
+    {
+      "path": ".github/workflows/baseline.yml",
+      "bytes": 4127,
+      "sha256": "01392d024d8b90b57bc5150327f5abade4c5914f941864e5c242a59c52015d73"
+    },
+    {
+      "path": ".github/workflows/m2-browser.yml",
+      "bytes": 7060,
+      "sha256": "d19aec55f6034446ee6a7cc2556037f0619a479c52d666fea20850d7a7dc6d00"
+    },
+    {
+      "path": ".github/workflows/m3-browser.yml",
+      "bytes": 6331,
+      "sha256": "7e27a024419e1eb0200ab84e727f4b4215c22e27a10748cc52062b787cfd5604"
+    },
+    {
+      "path": ".github/workflows/owner-screenshot-capture.yml",
+      "bytes": 4344,
+      "sha256": "2ccb1d4f43c8b74d357e40eb0a7d601163c25abcfad56e802d046aea394bbf5b"
+    },
+    {
+      "path": ".github/workflows/ui-core-u1-visual.yml",
+      "bytes": 5379,
+      "sha256": "6222f7fc6d951085bfe9a2fc952745e7ff8428510d9c42e0e019f53a1f1f2252"
+    },
+    {
+      "path": "docs/ROADMAP.md",
+      "bytes": 7931,
+      "sha256": "377a69924ee94cb2348d42b921a05736ca6a73399d7767afde918d82dcbe68a6"
+    },
+    {
+      "path": "docs/STATUS.md",
+      "bytes": 5111,
+      "sha256": "e2bb62fe318cc2411d1f834c2d30f6581b5797e4a671bcd0fc90b63f407791bf"
+    },
+    {
+      "path": "docs/UI_CORE_UNIFICATION_SPEC.md",
+      "bytes": 17058,
+      "sha256": "4bc83da5d3f615b4674e4c7c2b937c51dd3088aba369fca7e75aacb0c2674824"
+    },
+    {
+      "path": "spec/process/active-work.v1.json",
+      "bytes": 2916,
+      "sha256": "ee6b3ee1d6b211656c051d738c664cc77999b539f9eebcf69048878e19c3d3b8"
+    },
+    {
+      "path": "tests/m0/vendor-lint-coverage.mjs",
+      "bytes": 4261,
+      "sha256": "aa7e40ec39d3d783c351f3ca15108adc6afa733766d3ea1af7a18ead93c75d76"
+    },
+    {
+      "path": "vendor/toubkal/package-lock.json",
+      "bytes": 139093,
+      "sha256": "255dd1b5d36290b7a225dd5fed967bed63bda388ab2da10e7c2e1e732cb7ed8e"
+    },
+    {
+      "path": "vendor/toubkal/package.json",
+      "bytes": 3658,
+      "sha256": "c3daf73f8016da881834b791eef8d7b647b694102985f042d70dce8d68b2a484"
+    }
+  ],
+  "blobsSha256": "0a7ce31e6ea37e35b37dc4c049bab4d716178a99e3995cc507fc8f5b324e44f1",
+  "localFixSha256": "c2991fe4c309659bae7cb5bdf3bc7440b97704af3671d446eb9f5a4b66bc671b",
+  "diff": "diff --git a/docs/STATUS.md b/docs/STATUS.md\nindex a1fdaad..69ac310 100644\n--- a/docs/STATUS.md\n+++ b/docs/STATUS.md\n@@ -12,7 +12,7 @@\n \n ## Канон и принятая база\n \n-- Integration: `8684b56aff2a24d46458741249d27dd08f59b292` (#219), одна оболочка `src/web/kompas` для desktop/tablet/phone.\n+- Integration: `8684b56aff2a24d46458741249d27dd08f59b292` (#219), одна продуктовая оболочка `src/web/kompas` для desktop/tablet/phone.\n - Main: `1f8d2627da7ddfa63b31876d46347d0b8080c154`; main/production отдельно.\n - Frozen #170: `ui-reference-20261004`, `88c535c652dac8b04f0d68fa144cf8486afdc926`; UI/UX reference.\n - CadDocument/CadApplication/history → typed actions/ASA adapters → PlaneGCS/OpenCascade B-Rep; Three.js отображает результат.\n"
+}

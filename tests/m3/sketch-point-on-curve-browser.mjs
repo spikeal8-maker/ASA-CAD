@@ -66,7 +66,7 @@ async function choosePointOnCurve(page, source, target, touch) {
 async function desktopPointOnCurve() {
   const { page, errors } = await newDesktopPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createXYSketch(page);
     const { source, target } = await createTwoLines(page, false);
     assert.equal(await onTarget(page, source, target), false);
@@ -110,12 +110,12 @@ async function desktopPointOnCurve() {
 async function touchPointOnCurve() {
   const { context, page, errors } = await newTouchPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createMobileXYSketch(page);
     const { source, target } = await createTwoLines(page, true);
     await activateMobileTool(page, 'constraint.pointOnCurve', 'Point-on-curve');
-    await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
-    assert.equal(await page.locator('.management-panel').isVisible(), false);
+    await page.locator('.k-content.k-collapsed').waitFor();
+    assert.equal(await page.locator('.k-management-panel').isVisible(), false);
     await choosePointOnCurve(page, source, target, true);
     const saved = await saveLocalDocument(page);
     const constraint = saved.constraints.find((item) => item.type === 'pointOnCurve');

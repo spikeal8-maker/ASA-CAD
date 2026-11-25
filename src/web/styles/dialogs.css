@@ -43,4 +43,3 @@
 .kind-card-text { min-width: 0; display: grid; gap: 4px; }
 .kind-card-text strong { font-size: 14px; }
 .kind-card-text small { color: var(--text-muted); line-height: 1.35; }
-.mobile-bottom-bar { display: none; }

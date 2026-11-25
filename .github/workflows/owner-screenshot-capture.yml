@@ -4,6 +4,8 @@ on:
   pull_request:
     branches: [main, integration/ui-core-unification]
     paths:
+      - vendor/toubkal/package.json
+      - vendor/toubkal/package-lock.json
       - src/web/**
       - tests/visual/**
       - .github/workflows/owner-screenshot-capture.yml
@@ -15,7 +17,7 @@ permissions:
 jobs:
   owner-screenshot-capture:
     name: CAD-VIS-006B
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # Pinned Playwright 1.60.0 does not support Ubuntu 26.04.
     steps:
       - name: Checkout exact V6B head
         uses: actions/checkout@v4
@@ -41,7 +43,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20.19.0'
+          node-version: '22.23.5'
           cache: npm
           cache-dependency-path: after-source/vendor/toubkal/package-lock.json
 
@@ -53,10 +55,10 @@ jobs:
         run: npx --yes playwright@1.60.0 install --with-deps chromium
 
       - name: Build source product image
-        run: docker build -t asa-cad:cad-vis-006b-source before-source
+        run: docker build --build-arg NODE_IMAGE=node:22.23.5-bookworm-slim@sha256:be979e5523c76fa4d5ca4ebd3099078f220aa47ec39c48ad5b5df9314debd6eb -t asa-cad:cad-vis-006b-source before-source
 
       - name: Build V6B product image
-        run: docker build -t asa-cad:cad-vis-006b-result after-source
+        run: docker build --build-arg NODE_IMAGE=node:22.23.5-bookworm-slim@sha256:be979e5523c76fa4d5ca4ebd3099078f220aa47ec39c48ad5b5df9314debd6eb -t asa-cad:cad-vis-006b-result after-source
 
       - name: Record local image identities
         shell: bash

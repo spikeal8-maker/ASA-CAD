@@ -1,10 +1,11 @@
 # syntax=docker/dockerfile:1.7
 
-ARG NODE_IMAGE=node:20.19.0-bookworm-slim
+ARG NODE_IMAGE=node:22.23.5-bookworm-slim@sha256:be979e5523c76fa4d5ca4ebd3099078f220aa47ec39c48ad5b5df9314debd6eb
 ARG CADDY_IMAGE=caddy:2.10.2-alpine
 
 FROM ${NODE_IMAGE} AS build
 WORKDIR /workspace
+RUN node --version && npm --version
 
 # Keep the pinned Toubkal toolchain/dependencies vendored in one place. The
 # product build resolves Rspack, Three and OpenCascade from this installation.

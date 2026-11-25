@@ -45,15 +45,15 @@ async function deterministicCircleFixture() {
 async function desktopDirectCircle() {
   const { page, errors } = await newDesktopPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createXYSketch(page);
     await assertNoWasm(page, 'empty Sketch');
 
     const circleButton = page.locator('[data-command-id="sketch.circle"]').first();
     assert.equal(await circleButton.isEnabled(), true, 'Circle action must be enabled in active Sketch');
     await circleButton.click();
-    await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
-    assert.equal(await page.locator('.management-panel').isVisible(), false, 'direct Circle must collapse management panel');
+    await page.locator('.k-content[data-panel-tab="params"]').waitFor();
+    assert.equal(await page.locator('.k-management-panel').isVisible(), true, 'desktop Circle retains parameters');
 
     const { layer, box } = await interactionBox(page, 'circle', 'Circle');
     assert.equal(await layer.getAttribute('data-circle-phase'), 'awaiting-center');
@@ -61,7 +61,7 @@ async function desktopDirectCircle() {
     const edge = squarePoint(box, 0.62, 0.50);
 
     await page.mouse.click(center.x, center.y);
-    await page.locator('[data-testid="cad-sketch-interaction"][data-circle-phase="radius"]').waitFor();
+    await page.locator('[data-testid="cad-sketch-interaction"][data-circle-phase="awaiting-point"]').waitFor();
     await page.locator('[data-testid="sketch-circle-center"]').waitFor();
     assert.equal(await page.locator('[data-testid="cad-sketch-overlay"]').getAttribute('data-entity-count'), '0', 'Circle center mutated persisted Sketch');
 
@@ -102,10 +102,10 @@ async function desktopDirectCircle() {
 async function touchDirectCircle() {
   const { context, page, errors } = await newTouchPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createMobileXYSketch(page);
     await activateMobileTool(page, 'sketch.circle', 'Circle');
-    await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
+    await page.locator('.k-content.k-collapsed, .k-content[data-panel-tab="params"]').waitFor();
 
     const { box } = await interactionBox(page, 'circle', 'Circle');
     const center = squarePoint(box, 0.44, 0.46);

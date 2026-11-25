@@ -5,10 +5,10 @@ Keep task context narrow. This repository previously accumulated overlapping spe
 ## Minimum ordinary context
 
 Before a localized code change read:
-1. `STATUS.md` — current gate and immediate next work;
-2. the active GitHub issue;
-3. `AGENTS.md` — concise invariant/process rules;
-4. only the focused source/spec required below.
+1. `../spec/process/active-work.v1.json` — machine execution pointer and active gate;
+2. `STATUS.md` — confirmed state; verify against live GitHub HEAD;
+3. the active GitHub issue (#184 for UI/core), retaining historical notes only as evidence;
+4. `AGENTS.md` — agent invariants, and only the focused source/spec required below.
 
 Open `SYSTEM_SPEC.md` when the task may change product/document behavior or end-state semantics. Open `ARCHITECTURE.md` when it may change dependency direction, runtime, persistence, ownership or public application boundaries. They are authoritative contracts, **not mandatory full-file context for every localized edit**.
 
@@ -58,7 +58,7 @@ Read only what is touched:
 ## Precedence
 
 When statements conflict:
-1. `STATUS.md` + active issue — current accepted state/execution gate;
+1. `../spec/process/active-work.v1.json` + verified live HEAD — active execution pointer and allowed work; `STATUS.md` + active issue must agree;
 2. `SYSTEM_SPEC.md` — product/end-state contract;
 3. `ARCHITECTURE.md` — technical boundary;
 4. `DEVELOPMENT_QUALITY_GATES.md` + machine repository-health policy;

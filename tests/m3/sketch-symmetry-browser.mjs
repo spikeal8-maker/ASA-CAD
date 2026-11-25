@@ -84,7 +84,7 @@ function endpointKeys(constraint) {
 async function desktopSymmetry() {
   const { page, errors } = await newDesktopPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createXYSketch(page);
     const { first, second, axis } = await createThreeLines(page, false);
     assert.equal(await symmetric(page, first, second, axis), false);
@@ -129,12 +129,12 @@ async function desktopSymmetry() {
 async function touchSymmetry() {
   const { context, page, errors } = await newTouchPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createMobileXYSketch(page);
     const { first, second, axis } = await createThreeLines(page, true);
     await activateMobileTool(page, 'constraint.symmetric', 'Symmetry');
-    await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
-    assert.equal(await page.locator('.management-panel').isVisible(), false);
+    await page.locator('.k-content.k-collapsed').waitFor();
+    assert.equal(await page.locator('.k-management-panel').isVisible(), false);
     await chooseSymmetry(page, first, second, axis, true);
     const saved = await saveLocalDocument(page);
     const constraint = saved.constraints.find((item) => item.type === 'symmetric');

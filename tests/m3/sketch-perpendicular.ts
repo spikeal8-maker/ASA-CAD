@@ -105,7 +105,7 @@ const layer = fs.readFileSync('src/web/viewport/SketchCoincidentInteractionLayer
 const bridge = fs.readFileSync('src/web/CoincidentPartModelStage.tsx', 'utf8');
 const appSource = fs.readFileSync('src/web/App.tsx', 'utf8');
 const mobile = fs.readFileSync('src/web/MobileToolsPanel.tsx', 'utf8');
-const commandGroups = fs.readFileSync('src/web/CadShellCommandGroups.tsx', 'utf8');
+const toolsets = fs.readFileSync('src/web/kompas/kompasToolsets.ts', 'utf8');
 const registry = JSON.parse(fs.readFileSync('spec/ui/command-registry.v1.json', 'utf8'));
 assert.match(handler, /'constraint\.perpendicular'/, 'constraint handler map must register Perpendicular');
 assert.match(handler, /addLinePairConstraint/, 'constraint handler map must delegate pair semantics to the focused owner');
@@ -122,7 +122,7 @@ assert.doesNotMatch(layer, /CadApplication|app\.execute|OpenCascade|PlaneGCS/, '
 assert.match(bridge, /useSketchPerpendicularCommit/, 'stage bridge must expose focused Perpendicular commit context');
 assert.match(appSource, /perpendicularCommit=\{workspace\.applyPerpendicularConstraint\}/, 'App must wire Perpendicular through focused workspace ownership');
 assert.match(mobile, /id: 'constraint\.perpendicular'/, 'mobile Tools must expose Perpendicular');
-assert.match(commandGroups, /getAction\('constraint\.perpendicular'\)/, 'desktop ribbon must consume the same action through focused command groups');
+assert.match(toolsets, /I\([^)]*,'constraint\.perpendicular'\)/, 'canonical KOMPAS ribbon must consume the same Perpendicular action');
 const command = registry.commands.find((item: { id: string }) => item.id === 'constraint.perpendicular');
 assert.ok(command, 'constraint.perpendicular must exist in registry');
 assert.equal(command.milestone, 'M3.7E');

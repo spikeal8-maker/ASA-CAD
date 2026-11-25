@@ -54,7 +54,7 @@ information.
 
 ## Requirements
 
-- Node.js 20.19 or newer
+- Node.js 22.23.4 or newer
 - npm 10 or newer
 - A modern browser with WebAssembly and `SharedArrayBuffer` support
 

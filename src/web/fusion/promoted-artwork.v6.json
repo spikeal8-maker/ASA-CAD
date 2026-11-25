@@ -1,0 +1,70 @@
+{
+  "ParaMeshPlanarSectionCommand": {
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\" width=\"40\" height=\"40\" aria-hidden=\"true\"><path d=\"m7 15 17-9 19 11-18 9Z\" fill=\"#a2d8ea\" stroke=\"#659aae\" stroke-width=\"1.3\"/><path d=\"m7 15 18 11v18L7 33Z\" fill=\"#7db9d6\" stroke=\"#638da1\"/><path d=\"M25 26 43 17v17L25 44Z\" fill=\"#d5e8ed\" stroke=\"#839ba8\"/><path d=\"M3 8h44v33H3Z\" fill=\"none\" stroke=\"#54a6ce\" stroke-width=\"2\" stroke-dasharray=\"4 3\"/><path d=\"M3 35 46 13\" stroke=\"#f2a15f\" stroke-width=\"2.6\"/></svg>",
+    "status": "independent-redraw-awaiting-review"
+  },
+  "ParaMeshCalculateFaceGroupsCommand": {
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\" width=\"40\" height=\"40\" aria-hidden=\"true\"><path d=\"m6 17 16-9 21 11v24L22 32 6 41Z\" fill=\"#e4edf2\" stroke=\"#80919b\" stroke-width=\"1.4\"/><path d=\"m6 17 16 15 21-13M22 8v24m-16 9 16-9v-9l21 20\" stroke=\"#9ba9b2\" stroke-width=\"1.2\" fill=\"none\"/><path d=\"m7 17 15-9v24Z\" fill=\"#7eb8e0\" stroke=\"#568bb2\"/><path d=\"m22 8 20 11-20 13Z\" fill=\"#89c5ad\" stroke=\"#539879\"/><path d=\"m22 32 20-13v23Z\" fill=\"#e9c278\" stroke=\"#ae9255\"/></svg>",
+    "status": "independent-redraw-awaiting-review"
+  },
+  "ParaMeshMergeFaceGroupsCommand": {
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\" width=\"40\" height=\"40\" aria-hidden=\"true\"><path d=\"M5 8h17l2 17-18 2Z\" fill=\"#81bfe1\" stroke=\"#6094aa\" stroke-width=\"1.4\"/><path d=\"m29 6 17 5-4 17-17-4Z\" fill=\"#8dcba8\" stroke=\"#659a79\" stroke-width=\"1.4\"/><path d=\"M9 35h31v10H9Z\" fill=\"#6facd1\" stroke=\"#638da4\"/><path d=\"m15 28 9 7 10-8M18 30l-3-2m19-1 3-3\" fill=\"none\" stroke=\"#e6a457\" stroke-width=\"3\" stroke-linejoin=\"round\"/><path d=\"M24 27v14\" stroke=\"#f8ffff\" stroke-width=\"2.2\"/></svg>",
+    "status": "independent-redraw-awaiting-review"
+  },
+  "ParaMeshScaleCommand": {
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\" width=\"40\" height=\"40\" aria-hidden=\"true\"><path d=\"m14 16 11-7 11 7v16l-11 7-11-7Z\" fill=\"#b9dfe9\" stroke=\"#759aaa\" stroke-width=\"1.5\"/><path d=\"m14 16 11 7 11-7M25 23v16\" stroke=\"#668eab\" fill=\"none\" stroke-width=\"1.2\"/><path d=\"M7 12 2 4M7 12H1m6 0V6M40 12l7-8m-7 8h7m-7 0V5M12 41l-8 7m8-7-7 1m7-1v7m26-7 8 7m-8-7 7 1m-7-1v7\" fill=\"none\" stroke=\"#4099c1\" stroke-width=\"2.5\" stroke-linecap=\"round\"/></svg>",
+    "status": "independent-redraw-awaiting-review"
+  },
+  "FusionSheetMetalRulesLibraryCommand": {
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\" width=\"40\" height=\"40\" aria-hidden=\"true\"><path d=\"M7 8h28l8 8v28H7Z\" fill=\"#f4f5f6\" stroke=\"#8c9da7\" stroke-width=\"1.7\"/><path d=\"M35 8v9h8M13 21h21M13 27h21M13 34h14\" stroke=\"#a6b7c1\" fill=\"none\" stroke-width=\"2\"/><path d=\"M11 31h11v10H11Z\" fill=\"#a0cbe6\" stroke=\"#538eaf\"/><path d=\"M25 38h16l-8 6-8-6Z\" fill=\"#63a9d4\" stroke=\"#7197ab\"/></svg>",
+    "status": "independent-redraw-awaiting-review"
+  },
+  "FusionAssignPlasticRuleCommand": {
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\" width=\"40\" height=\"40\" aria-hidden=\"true\"><path d=\"M8 20q2-13 16-13t17 13v11Q34 43 24 43T7 31Z\" fill=\"#b699db\" stroke=\"#846aab\" stroke-width=\"1.7\"/><path d=\"M13 16q10-8 21 0\" fill=\"none\" stroke=\"#e2d5f2\" stroke-width=\"2\"/><path d=\"m20 30 6 6 15-16\" fill=\"none\" stroke=\"#50a86c\" stroke-width=\"4\" stroke-linejoin=\"round\"/><circle cx=\"23\" cy=\"18\" r=\"6\" fill=\"#d5c1e9\" stroke=\"#a18cbe\"/></svg>",
+    "status": "independent-redraw-awaiting-review"
+  },
+  "FusionManagePlasticRuleCommand": {
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\" width=\"40\" height=\"40\" aria-hidden=\"true\"><path d=\"M8 11h27v27H8Z\" fill=\"#d3bbed\" stroke=\"#8870aa\" stroke-width=\"1.7\"/><path d=\"M8 11 16 5h27l-8 6M35 11l8-6v27l-8 6\" fill=\"#b898df\" stroke=\"#8b76af\" stroke-width=\"1.4\"/><circle cx=\"33\" cy=\"34\" r=\"11\" fill=\"#e9f0f3\" stroke=\"#738d9e\" stroke-width=\"1.8\"/><path d=\"M33 24v20m-10-10h20\" stroke=\"#759cb5\" stroke-width=\"2.2\"/><circle cx=\"33\" cy=\"34\" r=\"4\" fill=\"#76b7d9\" stroke=\"#7a95a6\"/></svg>",
+    "status": "independent-redraw-awaiting-review"
+  },
+  "DesignAdviceCmd": {
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\" width=\"40\" height=\"40\" aria-hidden=\"true\"><path d=\"M12 12q0-8 12-8 13 0 13 11 0 7-6 12l-2 8H19l-2-8q-5-6-5-15Z\" fill=\"#f5d07e\" stroke=\"#ba9759\" stroke-width=\"1.7\"/><path d=\"M20 27h10m-12 5h14M20 36h9\" stroke=\"#9c8249\" stroke-width=\"2\"/><path d=\"M18 41h12l-3 5h-7Z\" fill=\"#829ba8\"/><path d=\"M8 12 3 8m40 4 4-4M24 1v3\" stroke=\"#e4ab4d\" stroke-width=\"2.5\"/></svg>",
+    "status": "independent-redraw-awaiting-review"
+  },
+  "MSFNestAuthoringCmd": {
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\" width=\"40\" height=\"40\" aria-hidden=\"true\"><path d=\"M5 5h40v40H5Z\" fill=\"#f1f3f3\" stroke=\"#9caab0\" stroke-width=\"1.5\"/><path d=\"M10 11h13v15H10Zm18-2h12v11H28Zm-2 16h14v15H26ZM10 31h12v9H10Z\" fill=\"#87bedf\" stroke=\"#6396b7\" stroke-width=\"1.6\"/><path d=\"m25 6 0 37M8 28h14\" stroke=\"#9dacb5\" stroke-dasharray=\"3 2\" fill=\"none\"/></svg>",
+    "status": "independent-redraw-awaiting-review"
+  },
+  "FusionComputeAllCommand": {
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\" width=\"40\" height=\"40\" aria-hidden=\"true\"><path d=\"M13 17q4-9 16-9 13 0 18 13\" fill=\"none\" stroke=\"#509fc8\" stroke-width=\"4\" stroke-linecap=\"round\"/><path d=\"m43 11 4 11-12-1\" fill=\"#4ca1d0\" stroke=\"#428db7\"/><path d=\"M37 34q-4 9-17 9Q7 42 3 30\" fill=\"none\" stroke=\"#7faebc\" stroke-width=\"4\" stroke-linecap=\"round\"/><path d=\"M7 39 3 28l12 2\" fill=\"#8bb6c9\" stroke=\"#6c9cae\"/><circle cx=\"25\" cy=\"26\" r=\"9\" fill=\"#d4e4eb\" stroke=\"#7598ab\"/><circle cx=\"25\" cy=\"26\" r=\"4\" fill=\"#7db7d5\"/></svg>",
+    "status": "independent-redraw-awaiting-review"
+  },
+  "MaterialCommand": {
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\" width=\"40\" height=\"40\" aria-hidden=\"true\"><circle cx=\"24\" cy=\"23\" r=\"18\" fill=\"#96c5e6\" stroke=\"#7093ab\" stroke-width=\"1.7\"/><path d=\"M7 21Q9 11 20 7q-10 14 2 25 8 7 17-5Q36 43 24 41 8 42 7 21Z\" fill=\"#6f8eac\"/><circle cx=\"17\" cy=\"14\" r=\"7\" fill=\"#eff9fd\" opacity=\".83\"/><path d=\"M11 43h30\" stroke=\"#aaa\" stroke-width=\"2\"/><path d=\"M17 46h18\" stroke=\"#b1b4b7\" stroke-width=\"1.5\"/></svg>",
+    "status": "independent-redraw-awaiting-review"
+  },
+  "FusionDraftAnalysisCommand": {
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\" width=\"40\" height=\"40\" aria-hidden=\"true\"><path d=\"M7 37h30V13H7Z\" fill=\"#c4d4dd\" stroke=\"#7a9baa\" stroke-width=\"1.7\"/><path d=\"M37 13 44 6v30l-7 1M7 13 15 6h29\" stroke=\"#93a9b5\" fill=\"#e4ecef\" stroke-width=\"1.6\"/><path d=\"M10 12 20 12l-6 26H4Z\" fill=\"#7dccaa\" opacity=\".85\"/><path d=\"m25 8 9 6M25 8h7m-7 0v7\" stroke=\"#e99c4f\" stroke-width=\"2.2\" fill=\"none\"/><path d=\"M12 30q7 5 12-1\" fill=\"none\" stroke=\"#d89054\" stroke-width=\"2\"/></svg>",
+    "status": "independent-redraw-awaiting-review"
+  },
+  "FusionAccessibilityAnalysisCommand": {
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\" width=\"40\" height=\"40\" aria-hidden=\"true\"><path d=\"m9 13 15-8 15 9-15 8Z\" fill=\"#c5e5f1\" stroke=\"#7099aa\"/><path d=\"M9 13v23l15 9V22Z\" fill=\"#7fbcd9\" stroke=\"#678ca2\"/><path d=\"M24 22 39 14v23l-15 8Z\" fill=\"#a8d1e3\" stroke=\"#6690a3\"/><path d=\"M25 3v17m-5-6 5 6 5-6\" fill=\"none\" stroke=\"#2ca16f\" stroke-width=\"3.4\"/><path d=\"m40 5 7-4m-7 4 5 3m-5-3-3 5\" stroke=\"#e5a259\" fill=\"none\" stroke-width=\"2\"/></svg>",
+    "status": "independent-redraw-awaiting-review"
+  },
+  "GravityClimate_ManufacturingSustainabilityInsights_MainDialog": {
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\" width=\"40\" height=\"40\" aria-hidden=\"true\"><circle cx=\"24\" cy=\"25\" r=\"19\" fill=\"#cce9e8\" stroke=\"#6e9d9a\" stroke-width=\"1.7\"/><path d=\"M7 20q12-6 14-14 7 1 12 6 0 7-10 11l2 9Q13 31 7 20Z\" fill=\"#80c5a2\"/><path d=\"M30 18q9 1 13 11-9 1-14 14l-8-5q0-12 9-20Z\" fill=\"#5fab86\"/><path d=\"M7 25h34M24 6v38\" fill=\"none\" stroke=\"#f5fbf9\" stroke-width=\"1\" opacity=\".65\"/><path d=\"m32 32 3-4 4 4 6-7\" fill=\"none\" stroke=\"#417cbb\" stroke-width=\"2.2\"/></svg>",
+    "status": "independent-redraw-awaiting-review"
+  },
+  "HoleThreadNoteCommand": {
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\" width=\"40\" height=\"40\" aria-hidden=\"true\"><path d=\"M7 13h30v27H7Z\" fill=\"#edf0f1\" stroke=\"#9199a0\" stroke-width=\"1.6\"/><path d=\"M17 12v30m10-30v30\" stroke=\"#5a9dbe\" stroke-width=\"3\" stroke-dasharray=\"3 2\"/><path d=\"M9 18h9m9 0h8M9 24h9m9 0h8M9 30h9m9 0h8M9 36h9m9 0h8\" stroke=\"#788d9b\"/><path d=\"m36 7 7-4m-7 4 6 2\" stroke=\"#558bae\" stroke-width=\"2\"/><text x=\"37\" y=\"47\" font-size=\"11\" fill=\"#486f90\" font-weight=\"bold\">M</text></svg>",
+    "status": "independent-redraw-awaiting-review"
+  },
+  "LeaderLineNoteCommand": {
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\" width=\"40\" height=\"40\" aria-hidden=\"true\"><path d=\"M12 10h32v18H12Z\" fill=\"#eef6f9\" stroke=\"#8ca2ac\" stroke-width=\"1.6\"/><path d=\"M18 16h20M18 22h14\" stroke=\"#7a9dae\" stroke-width=\"2\"/><path d=\"M12 26 4 42h11\" fill=\"none\" stroke=\"#559cc3\" stroke-width=\"2.5\"/><path d=\"m4 42 8-3-3-6\" fill=\"#559cc3\"/><circle cx=\"4\" cy=\"42\" r=\"2.5\" fill=\"#e6a85b\"/></svg>",
+    "status": "independent-redraw-awaiting-review"
+  },
+  "SystemModelerAutomationDocsCmd": {
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\" width=\"40\" height=\"40\" aria-hidden=\"true\"><path d=\"M8 7h21l11 10v27H8Z\" fill=\"#f2f6f8\" stroke=\"#849eac\" stroke-width=\"1.7\"/><path d=\"M29 7v10h11M13 21h20M13 28h20M13 35h12\" fill=\"none\" stroke=\"#a2becb\" stroke-width=\"2\"/><circle cx=\"35\" cy=\"37\" r=\"10\" fill=\"#e6ecef\" stroke=\"#6797b4\"/><path d=\"M35 29v16m-8-8h16\" stroke=\"#5697c0\" stroke-width=\"2\"/><circle cx=\"35\" cy=\"37\" r=\"4\" fill=\"#7db4ce\" stroke=\"#648faf\"/></svg>",
+    "status": "independent-redraw-awaiting-review"
+  }
+}

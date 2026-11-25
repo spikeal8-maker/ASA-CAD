@@ -13,6 +13,8 @@ const sketchStage = fs.readFileSync('src/web/SketchEditingStage.tsx', 'utf8');
 const directTools = fs.readFileSync('src/web/SketchDirectToolLayers.tsx', 'utf8');
 const app = fs.readFileSync('src/web/App.tsx', 'utf8');
 const shellMain = fs.readFileSync('src/web/CadShellMain.tsx', 'utf8');
+const kompasMain = fs.readFileSync('src/web/kompas/KompasMain.tsx', 'utf8');
+const kompasPanels = fs.readFileSync('src/web/kompas/kompas-panels.css', 'utf8');
 const styles = fs.readFileSync('src/web/styles/management.css', 'utf8');
 const bindings = fs.readFileSync('src/web/M2CadUiActions.ts', 'utf8');
 const registry = JSON.parse(fs.readFileSync('spec/ui/command-registry.v1.json', 'utf8'));
@@ -53,12 +55,13 @@ assert.match(workspace, /useSketchEditingController/, 'Part/Sketch facade must c
 assert.match(editing, /setPanel\('closed'\)/, 'direct Line must collapse management UI before drawing');
 assert.match(editing, /setActiveCommand\('sketch\.line'\)/, 'Line activation must stay in the Sketch editing owner');
 assert.match(app, /<CadShellMain\b/, 'App must delegate work-area shell presentation to CadShellMain');
-assert.match(shellMain, /props\.activePanel === 'closed' \? ' panel-closed'/, 'shell presentation must expose explicit closed management state');
-assert.match(styles, /\.content-area\.panel-closed \.management-panel \{ display: none; \}/, 'closed panel must not cover the workplane');
+assert.match(shellMain, /<KompasMain/, 'shell wrapper must mount the canonical #170 management owner');
+assert.match(kompasMain, /k-collapsed/, 'canonical management owner must expose an explicit closed state');
+assert.match(kompasPanels, /\.k-content\.k-collapsed \.k-management-panel\{display:none\}/, 'closed KOMPAS panel must not cover the Sketch workplane');
 
 const line = registry.commands.find((command) => command.id === 'sketch.line');
 assert.ok(line, 'command registry must contain sketch.line');
 assert.equal(line.status, 'implemented', 'sketch.line must be implemented only with the M3.2 product path');
-assert.equal(line.milestone, 'M3.2');
+assert.equal(line.milestone, 'M3.2/U2');
 
 console.log('ASA-CAD M3.2 direct Line architecture boundary PASS (focused direct-tool owner + shared input + stable view + shell-owned panel collapse)');

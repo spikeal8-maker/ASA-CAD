@@ -2,9 +2,9 @@ import {useState,type Dispatch,type SetStateAction} from 'react';
 import type {CadApplication} from '../contracts/application';
 import type {CadSketch} from '../contracts/document';
 import type {CadSketchEntityId,CadSketchId} from '../contracts/ids';
-import type {CadWorkspacePanel} from './PartSketchWorkspaceTypes';
+import type {CadWorkspacePanel, SetWorkspace} from './PartSketchWorkspaceTypes';
 import {findSketch,partDocument} from './PartSketchWorkspaceModel';
-import {useSketchLineTool} from './useSketchLineTool';
+import {useSketchLineTool} from './EditorLine';
 import {useSketchCircleTool} from './useSketchCircleTool';
 import {useSketchArcTool} from './useSketchArcTool';
 import {useSketchRectangleTool} from './useSketchRectangleTool';
@@ -13,7 +13,7 @@ import {commitParametricRectangle} from './SketchParametricRectangleOwner';
 export interface SketchEditingControllerOptions {
   app: CadApplication; activeSketchId: CadSketchId | null; sketch: Readonly<CadSketch> | null;
   activeCommand: string | null; setActiveCommand: Dispatch<SetStateAction<string | null>>;
-  setActiveWorkspace: Dispatch<SetStateAction<string>>; setPanel(panel: CadWorkspacePanel): void;
+  setActiveWorkspace: SetWorkspace; setPanel(panel: CadWorkspacePanel): void;
   setNotice(message: string): void; clearTransientSelection(): void; finishSession(): void;
 }
 
@@ -34,8 +34,7 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
   };
 
   const lineTool = useSketchLineTool({
-    app, sketchId: activeSketchId, active: activeCommand === 'sketch.line',
-    setNotice, onCommitted: onToolCommitted,
+    app, sketchId: activeSketchId, active: activeCommand === 'sketch.line', setNotice, onCommitted: onToolCommitted,
   });
   const rectangleTool = useSketchRectangleTool({
     app, sketchId: activeSketchId, active: activeCommand === 'sketch.rectangle', setNotice,
@@ -46,15 +45,17 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
     },
   });
   const circleTool = useSketchCircleTool({
-    app, sketchId: activeSketchId, active: activeCommand === 'sketch.circle', setNotice,
+    app, sketchId: activeSketchId, active: activeCommand === 'sketch.circle',
+    defaultDiameter: circleDiameter, setNotice,
     onCommitted: (diameter) => {
       setCircleDiameter(diameter);
       onToolCommitted();
     },
+    onParametric: (diameter) => commitCircle(diameter),
   });
   const arcTool = useSketchArcTool({
     app, sketchId: activeSketchId, active: activeCommand === 'sketch.arc',
-    setNotice, onCommitted: onToolCommitted,
+    setNotice,
   });
 
   function beginLine() {
@@ -96,7 +97,7 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
     if (!sketch) return;
     circleTool.reset();
     setActiveCommand('sketch.circle');
-    setPanel('closed');
+    setPanel('parameters');
     clearTransientSelection();
     setNotice('Укажите центр окружности');
   }
@@ -105,39 +106,42 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
     if (!sketch) return;
     arcTool.reset();
     setActiveCommand('sketch.arc');
-    setPanel('closed');
+    setPanel('parameters');
     clearTransientSelection();
     setNotice('Укажите центр дуги');
   }
 
-  async function commitCircle() {
+  async function commitCircle(diameterOverride?: number) {
     const currentSketch = findSketch(partDocument(app.getDocument()), activeSketchId);
-    if (!currentSketch) { setNotice('Сначала создайте эскиз'); return; }
-    if (!(circleDiameter > 0)) { setNotice('Диаметр должен быть больше нуля'); return; }
+    if (!currentSketch) { setNotice('Сначала создайте эскиз'); return false; }
+    const value = diameterOverride ?? circleDiameter;
+    if (!(value > 0)) { setNotice('Диаметр должен быть больше нуля'); return false; }
     const circle = await app.execute({
       id: 'sketch.circle',
-      payload: { sketchId: currentSketch.id, center: [0, 0], diameter: circleDiameter },
+      payload: { sketchId: currentSketch.id, center: [0, 0], diameter: value },
     });
     if (!circle.ok || !circle.createdIds?.[0]) {
       setNotice(circle.error?.message ?? 'Не удалось создать окружность');
-      return;
+      return false;
     }
     const diameter = await app.execute({
       id: 'dimension.diameter',
       payload: {
         sketchId: currentSketch.id,
         entityId: circle.createdIds[0] as CadSketchEntityId,
-        value: circleDiameter,
+        value,
         name: 'diameter',
       },
     });
     if (!diameter.ok) {
       setNotice(diameter.error?.message ?? 'Не удалось создать диаметральный размер');
-      return;
+      return false;
     }
+    setCircleDiameter(value);
     setActiveCommand(null);
     setPanel('tree');
-    setNotice(`Окружность Ø${circleDiameter} мм создана`);
+    setNotice(`Окружность Ø${value} мм создана`);
+    return true;
   }
 
   async function finishSketch() {
@@ -154,24 +158,23 @@ export function useSketchEditingController(options: SketchEditingControllerOptio
   }
 
   function resetActiveTool(command: string | null) {
-    if (command === 'sketch.line') lineTool.reset();
-    if (command === 'sketch.rectangle') rectangleTool.reset();
-    if (command === 'sketch.circle') circleTool.reset();
-    if (command === 'sketch.arc') arcTool.reset();
+    const tools = { 'sketch.line': lineTool, 'sketch.rectangle': rectangleTool, 'sketch.circle': circleTool, 'sketch.arc': arcTool };
+    tools[command as keyof typeof tools]?.reset();
   }
 
   return {
     rectangleWidth,setRectangleWidth,rectangleHeight,setRectangleHeight,
     circleDiameter,setCircleDiameter,beginLine,
-    lineDraft:lineTool.draft,lineCommitting: lineTool.committing,
+    lineDraft:lineTool.draft,lineCommitting: lineTool.committing,lineInput:lineTool.input,
     handleSketchLinePointMove: lineTool.move, handleSketchLinePoint: lineTool.point,
     beginRectangle,commitRectangle,
     rectangleDraft: rectangleTool.draft, rectangleCommitting: rectangleTool.committing,
     handleSketchRectanglePointMove: rectangleTool.move, handleSketchRectanglePoint: rectangleTool.point,
     beginCircle, commitCircle,
+    circleInput: circleTool.input,
     circleDraft: circleTool.draft, circleCommitting: circleTool.committing,
     handleSketchCirclePointMove: circleTool.move, handleSketchCirclePoint: circleTool.point,
-    beginArc, arcDraft: arcTool.draft, arcCommitting: arcTool.committing,
+    beginArc, arcInput: arcTool.input, arcDraft: arcTool.draft, arcCommitting: arcTool.committing,
     handleSketchArcPointMove: arcTool.move, handleSketchArcPoint: arcTool.point,
     finishSketch, resetActiveTool,
     commitLinePreview: lineTool.commitPreview,

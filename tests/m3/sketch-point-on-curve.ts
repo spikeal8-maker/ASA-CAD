@@ -170,7 +170,7 @@ const bridge = source('src/web/CoincidentPartModelStage.tsx');
 const appSource = source('src/web/App.tsx');
 const actions = source('src/web/M2CadUiActions.ts');
 const mobile = source('src/web/MobileToolsPanel.tsx');
-const groups = source('src/web/CadShellCommandGroups.tsx');
+const toolsets = source('src/web/kompas/kompasToolsets.ts');
 assert.match(controller, /setActiveCommand\('constraint\.pointOnCurve'\)/);
 assert.match(controller, /id: 'constraint\.pointOnCurve'/);
 assert.match(layer, /tool="constraint\.pointOnCurve"/);
@@ -182,7 +182,7 @@ assert.match(appSource, /pointOnCurveConstraint: workspace\.beginPointOnCurveCon
 assert.match(appSource, /pointOnCurveCommit=\{workspace\.applyPointOnCurveConstraint\}/);
 assert.match(actions, /pointOnCurveConstraint/);
 assert.match(mobile, /id: 'constraint\.pointOnCurve'/);
-assert.match(groups, /getAction\('constraint\.pointOnCurve'\)/);
+assert.match(toolsets, /I\([^)]*,'constraint\.pointOnCurve'\)/);
 const registry = JSON.parse(source('spec/ui/command-registry.v1.json'));
 const product = registry.commands.find((item: { id: string }) => item.id === 'constraint.pointOnCurve');
 assert.equal(product?.milestone, 'M3');

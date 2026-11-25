@@ -12,7 +12,7 @@ const app = fs.readFileSync('src/web/App.tsx', 'utf8');
 const workspace = fs.readFileSync('src/web/usePartSketchWorkspace.ts', 'utf8');
 const actions = fs.readFileSync('src/web/M2CadUiActions.ts', 'utf8');
 const mobile = fs.readFileSync('src/web/MobileToolsPanel.tsx', 'utf8');
-const commandGroups = fs.readFileSync('src/web/CadShellCommandGroups.tsx', 'utf8');
+const toolsets = fs.readFileSync('src/web/kompas/kompasToolsets.ts', 'utf8');
 const registry = JSON.parse(fs.readFileSync('spec/ui/command-registry.v1.json', 'utf8'));
 
 assert.match(coincidentOwner, /requireLineEndpointReference/, 'application owner must validate Coincident point refs');
@@ -52,7 +52,7 @@ assert.match(workspace, /activeCommand === 'constraint\.coincident'/, 'cancel mu
 assert.match(actions, /coincidentConstraint/, 'shared CadUiAction binding must expose Coincident');
 assert.match(actions, /'constraint\.coincident'/, 'Coincident must use the shared action id');
 assert.match(mobile, /id: 'constraint\.coincident'/, 'mobile Sketch tools must use the same Coincident action');
-assert.match(commandGroups, /getAction\('constraint\.coincident'\)/, 'desktop ribbon command-group owner must use the same Coincident action');
+assert.match(toolsets, /I\([^)]*,'constraint\.coincident'\)/, 'canonical KOMPAS ribbon must use the same Coincident action');
 
 const command = registry.commands.find((item) => item.id === 'constraint.coincident');
 assert.ok(command, 'constraint.coincident must exist in command registry');

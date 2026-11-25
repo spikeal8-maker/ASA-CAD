@@ -4,6 +4,8 @@ on:
   push:
     branches: [main, integration/ui-core-unification]
     paths:
+      - vendor/toubkal/package.json
+      - vendor/toubkal/package-lock.json
       - tests/visual/**
       - src/**
       - build/**
@@ -13,6 +15,8 @@ on:
       - .github/workflows/m3-browser.yml
   pull_request:
     paths:
+      - vendor/toubkal/package.json
+      - vendor/toubkal/package-lock.json
       - tests/visual/**
       - src/**
       - build/**
@@ -26,14 +30,14 @@ permissions:
 
 jobs:
   m3-browser:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # Pinned Playwright 1.60.0 does not support Ubuntu 26.04.
     steps:
       - uses: actions/checkout@v4
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20.19.0'
+          node-version: '22.23.5'
           cache: npm
           cache-dependency-path: vendor/toubkal/package-lock.json
 
@@ -69,15 +73,38 @@ jobs:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m3/direct-line-browser.mjs
 
+      - name: Exercise U2 Line numeric placement, keyboard, IME guard and persistence
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
+          ASA_U2_LINE_EVIDENCE_DIR: ${{ runner.temp }}/u2-line-numeric
+        run: node tests/m3/direct-line-numeric-browser.mjs
+
       - name: Exercise M3 direct Circle mouse/touch/persistence
         env:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m3/direct-circle-browser.mjs
 
+      - name: Exercise U2 Circle numeric diameter, keyboard and persistence
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
+          ASA_U2_CIRCLE_EVIDENCE_DIR: ${{ runner.temp }}/u2-circle-numeric
+        run: node tests/m3/direct-circle-numeric-browser.mjs
+
       - name: Exercise M3 direct Arc mouse/touch/persistence
         env:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m3/direct-arc-browser.mjs
+
+      - name: Exercise U2 Arc numeric phases, signed sweep, keyboard and persistence
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
+          ASA_U2_ARC_EVIDENCE_DIR: ${{ runner.temp }}/u2-arc-numeric
+        run: node tests/m3/direct-arc-numeric-browser.mjs
+
+      - name: Exercise actual Arc hook delayed-result ownership
+        env:
+          ASA_U2_ARC_EVIDENCE_DIR: ${{ runner.temp }}/u2-arc-numeric
+        run: node tests/m3/arc-numeric-ownership-browser.mjs
 
       - name: Exercise M3 direct Rectangle mouse/touch/persistence
         env:
@@ -173,6 +200,33 @@ jobs:
         env:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m3/sketch-construction-browser.mjs
+
+      - name: Upload U2 Line numeric regression evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: asa-cad-u2-line-numeric
+          path: ${{ runner.temp }}/u2-line-numeric
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Upload U2 Arc numeric regression evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: asa-cad-u2-arc-numeric
+          path: ${{ runner.temp }}/u2-arc-numeric
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Upload U2 Circle numeric regression evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: asa-cad-u2-circle-numeric
+          path: ${{ runner.temp }}/u2-circle-numeric
+          if-no-files-found: warn
+          retention-days: 30
 
       - name: Show server log on failure
         if: failure()

@@ -1,0 +1,151 @@
+/* Measured from the native empty Sketch reference; scoped to the Fusion 2D editor. */
+.asa-editor-root[data-mode="fusion"].cad-app:has(main.live-workarea[data-workspace="sketch"]),.asa-editor-root[data-mode="fusion"] .cad-app:has(main.live-workarea[data-workspace="sketch"]){
+  grid-template-rows: 37px 97px minmax(0, 1fr) 0 !important;
+}
+
+.asa-editor-root[data-mode="fusion"] .live-workarea[data-workspace="sketch"] .live-scene{
+  bottom: 57px;
+}
+
+.asa-editor-root[data-mode="fusion"] .live-workarea[data-workspace="sketch"] .live-timeline{
+  height: 57px;
+}
+
+.asa-editor-root[data-mode="fusion"] .live-workarea[data-workspace="sketch"] .live-navigation{
+  bottom: 62px;
+}
+
+.asa-editor-root[data-mode="fusion"].cad-app:has(main.live-workarea[data-workspace="sketch"]) .live-status,.asa-editor-root[data-mode="fusion"] .cad-app:has(main.live-workarea[data-workspace="sketch"]) .live-status{
+  position: absolute;
+  bottom: 0;
+  left: 220px;
+  right: 80px;
+  height: 57px;
+  background: transparent;
+  border: 0;
+  pointer-events: none;
+}
+
+.asa-editor-root[data-mode="fusion"] .live-workarea[data-workspace="sketch"] .live-tree{
+  left: 5px;
+  top: 5px;
+  width: 343px;
+  font-size: 14px;
+}
+
+.asa-editor-root[data-mode="fusion"] .live-workarea[data-workspace="sketch"] .live-tree > header{
+  height: 28px;
+  font-size: 12px;
+}
+
+.asa-editor-root[data-mode="fusion"] .live-workarea[data-workspace="sketch"] .live-tree .tree-row,.asa-editor-root[data-mode="fusion"] .live-workarea[data-workspace="sketch"] .live-tree .tree-row button{
+  min-height: 27px;
+  font-size: 14px;
+}
+
+.asa-editor-root[data-mode="fusion"] .live-scene .live-sketch-field{
+  background: #fff;
+}
+
+.asa-editor-root[data-mode="fusion"] .live-sketch-grid-lines [data-grid-kind="minor"]{
+  stroke: #e9e9e9;
+}
+
+.asa-editor-root[data-mode="fusion"] .live-sketch-grid-lines [data-grid-kind="major"]{
+  stroke: #d5d5d5;
+}
+
+.asa-editor-root[data-mode="fusion"] .live-sketch-grid-labels{
+  fill: #494949;
+  stroke: #fff;
+  paint-order: stroke;
+  font-family: Arial, sans-serif;
+  font-weight: 400;
+}
+
+.asa-editor-root[data-mode="fusion"] .live-sketch-field .cad-sketch-overlay-entity{
+  stroke: #00a5e8;
+}
+
+/* Only an actual fully constrained solve colors the whole sketch; no per-entity DoF is inferred. */
+.asa-editor-root[data-mode="fusion"] .live-sketch-field .cad-sketch-overlay[data-solve-status="solved"][data-constraint-state="fully-constrained"] .cad-sketch-overlay-entity{
+  stroke: #000;
+}
+
+.asa-editor-root[data-mode="fusion"] .live-sketch-field .cad-sketch-selection-highlight.selected{
+  stroke: #557fff;
+  stroke-width: 3px;
+}
+
+.asa-editor-root[data-mode="fusion"] .live-sketch-field .cad-sketch-line-ghost,.asa-editor-root[data-mode="fusion"] .live-sketch-field .cad-sketch-rectangle-ghost,.asa-editor-root[data-mode="fusion"] .live-sketch-field [data-testid="sketch-circle-ghost"]{
+  stroke: #4d4d4d;
+  stroke-width: 1px;
+  stroke-dasharray: none;
+  opacity: 1;
+}
+
+/* The same actual solve snapshot is shown in Sketch Palette. Keep existing diagnostics hooks. */
+.asa-editor-root[data-mode="fusion"] .live-sketch-field .sketch-solve-hud{
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.asa-editor-root[data-mode="fusion"] .live-viewcube.live-sketch-cube{
+  /* Native face/offsets scale with scene height: 70 px at the 946 px reference. */
+  top: calc(28 * var(--sketch-cube-unit, 1px));
+  right: calc(32 * var(--sketch-cube-unit, 1px));
+  width: calc(110 * var(--sketch-cube-unit, 1px));
+  height: calc(116 * var(--sketch-cube-unit, 1px));
+}
+
+.asa-editor-root[data-mode="fusion"] .live-sketch-cube .live-sketch-plane-face text{
+  font-family: 'Arial Narrow', 'Segoe UI', Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  fill: #969ba0;
+}
+
+.asa-editor-root[data-mode="fusion"] .live-sketch-cube .live-sketch-plane-face[data-origin-plane="false"] text{
+  font-size: 10px;
+}
+
+.asa-editor-root[data-mode="fusion"] .live-sketch-cube[data-sketch-plane="XZ"] .live-sketch-plane-face text{
+  font-size: 14px;
+}
+
+.asa-editor-root[data-mode="fusion"] .live-viewcube.live-sketch-cube.menu-open{
+  z-index: 40;
+}
+
+.asa-editor-root[data-mode="fusion"] .live-sketch-cube .cube-home{
+  top: -10px;
+  left: -7px;
+}
+
+.asa-editor-root[data-mode="fusion"] .live-sketch-cube .cube-roll{
+  top: -9px;
+  right: -12px;
+}
+
+.asa-editor-root[data-mode="fusion"] .live-sketch-cube .cube-menu-button{
+  bottom: 1px;
+  right: -9px;
+}
+
+.asa-editor-root[data-mode="fusion"] .live-sketch-cube .cube-home,.asa-editor-root[data-mode="fusion"] .live-sketch-cube .cube-roll,.asa-editor-root[data-mode="fusion"] .live-sketch-cube .cube-menu-button{
+  opacity: 0;
+}
+
+.asa-editor-root[data-mode="fusion"] .live-sketch-cube:hover .cube-home,.asa-editor-root[data-mode="fusion"] .live-sketch-cube:focus-within .cube-home,.asa-editor-root[data-mode="fusion"] .live-sketch-cube:hover .cube-roll,.asa-editor-root[data-mode="fusion"] .live-sketch-cube:focus-within .cube-roll,.asa-editor-root[data-mode="fusion"] .live-sketch-cube:hover .cube-menu-button,.asa-editor-root[data-mode="fusion"] .live-sketch-cube:focus-within .cube-menu-button{
+  opacity: 1;
+}
+
+.asa-editor-root[data-mode="fusion"] .live-sketch-cube-caption{
+  display: none;
+}

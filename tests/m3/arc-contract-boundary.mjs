@@ -36,7 +36,7 @@ assert.ok(['planned', 'implemented'].includes(arc.status), 'Arc status must rema
 if (arc.status === 'implemented') {
   const directBoundary = fs.readFileSync('tests/m3/direct-arc-boundary.mjs', 'utf8');
   const browserWorkflow = fs.readFileSync('.github/workflows/m3-browser.yml', 'utf8');
-  assert.equal(arc.milestone, 'M3.4B', 'implemented Arc must be promoted only by the direct M3.4B slice');
+  assert.equal(arc.milestone, 'M3.4B/U2', 'implemented Arc numeric input must retain its accepted M3.4B/U2 milestone');
   assert.equal(arc.backendCommand, 'sketch.arc', 'implemented Arc must route to the typed backend command');
   assert.match(directBoundary, /SketchInteractionSurface/, 'implemented Arc requires direct shared-interaction acceptance');
   assert.match(directBoundary, /sketch\.arc/, 'implemented Arc requires direct typed-mutation acceptance');
