@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { cadPath, localCadEditorPath, unmountCadPath, type CadEditorMode } from '../../browser/editorModes';
+import { cadPath, unmountCadPath } from '../../browser/editorModes';
 import { parseCadClientRoute } from '../../browser/routes';
 import { CadHistoryNavigation, CadHistoryStepper, type CadHistoryEntry, type CadLeaveGuard } from './CadHistoryNavigation';
 
@@ -62,7 +62,17 @@ export function useCadNavigation(): Navigation {
   };
 }
 
-export function EditorNavigation(props: { dirty: boolean; save(): Promise<boolean>; cancelCommand(): void }) {
+/** The ASA CAD mark in the shell top bar returns to the launcher through the guarded navigation. */
+export function useCadGoHome(): (() => void) | null {
+  const navigation = useContext(CadNavigationContext);
+  if (!navigation) return null;
+  const route = parseCadClientRoute(navigation.pathname);
+  if (route.kind === 'dev-part' || route.kind === 'standalone') return null;
+  return () => void navigation.go('/');
+}
+
+/** Leave guard for the editor: the ASA CAD mark and browser Back/Forward route through one save/discard decision. */
+export function EditorNavigation(props: { dirty: boolean; save(): Promise<boolean> }) {
   const navigation = useContext(CadNavigationContext);
   const pending = useRef<{ resolve(allowed: boolean): void; decided: boolean } | null>(null);
   const busy = useRef(false), alive = useRef(false), state = useRef(props); state.current = props;
@@ -96,12 +106,6 @@ export function EditorNavigation(props: { dirty: boolean; save(): Promise<boolea
     };
   }, []);
   if (!navigation) return null;
-  const route = parseCadClientRoute(navigation.pathname), mode = route.kind === 'local-editor' ? route.mode : 'kompas';
-  if (route.kind === 'dev-part' || route.kind === 'standalone') return null;
-  const changeMode = (next: CadEditorMode) => {
-    if (route.kind !== 'local-editor') return;
-    props.cancelCommand(); void navigation.go(localCadEditorPath(next, route.projectId));
-  };
   const save = async () => {
     if (busy.current || !pending.current) return;
     const request = pending.current;
@@ -117,17 +121,8 @@ export function EditorNavigation(props: { dirty: boolean; save(): Promise<boolea
     }
     busy.current = false; setSaving(false);
   };
-  return <>
-    <nav className="cad-launcher-nav" aria-label="Навигация ASA CAD">
-      <button type="button" onClick={() => void navigation.go('/')}>← На главную</button><strong>ASA CAD</strong>
-      {route.kind === 'local-editor' && <label>Редактор <select aria-label="Редактор" value={mode}
-        onChange={event => changeMode(event.target.value as CadEditorMode)}>
-        <option value="kompas">Компас</option><option value="fusion">Fusion</option></select></label>}
-      <span>{route.kind === 'editor' ? 'Проект ASA Lab' : 'Сохраняется в этом браузере'}</span>
-    </nav>
-    {prompt && <LeaveDialog busy={saving} error={error} onSave={save}
-      onDiscard={() => { if (!busy.current) decide(true); }} onStay={() => { if (!busy.current) decide(false); }} />}
-  </>;
+  return prompt ? <LeaveDialog busy={saving} error={error} onSave={save}
+    onDiscard={() => { if (!busy.current) decide(true); }} onStay={() => { if (!busy.current) decide(false); }} /> : null;
 }
 
 function LeaveDialog(props: { busy: boolean; error: string; onSave(): void; onDiscard(): void; onStay(): void }) {
