@@ -4,7 +4,7 @@
 
 ## Границы проекта
 
-`/` открывает выбор редактора. `/cad/kompas/:projectId` и `/cad/fusion/:projectId` используют один CadDocument, application, history и persistence session. Смена mode того же projectId меняет представление. `/cad` остаётся самостоятельным редактором. Server-project и viewer routes распознаются; серверный CAD требует своего API, published viewer пока сообщает недоступность. Локальный delivery server не является API proxy.
+`/` открывает выбор редактора. `/cad/kompas/:projectId` и `/cad/fusion/:projectId` используют один CadDocument, application, history и persistence session. Открытие того же projectId в другом режиме меняет только представление; внутри редактора переключателя режимов нет. Выход на главную — по метке ASA CAD в верхней панели. `/cad` остаётся самостоятельным редактором. Server-project и viewer routes распознаются; серверный CAD требует своего API, published viewer пока сообщает недоступность. Локальный delivery server не является API proxy.
 
 Гостевые проекты хранятся в браузере текущего origin. Старый ключ `asa-cad-m2-shell-document` и его `:state` envelope не переписываются при чтении. Новые UUID slots независимы. Не переносите их заменой всего LocalStorage. Повреждённые данные сохраняются без скрытой миграции и остаются доступны raw backup.
 
@@ -67,7 +67,7 @@ Builder отклоняет dirty tree и существующий output. Исп
 
 ## Postflight и выпуск
 
-Проверить HTTP 200 и source/package SHA health, главную, Компас, Fusion, недоступность Vassalite и отсутствие внешних ссылок, Save → Home → Reopen, F5, clean Back/Forward, dirty Back → Back → Stay, Save-and-leave, mode switch с Undo/Redo и responsive widths. Сравнить старые persisted bytes с backup после чтения новым редактором. Реально переключить rollback и вернуть candidate, проверив тот же документ.
+Проверить HTTP 200 и source/package SHA health, главную, Компас, Fusion, недоступность Vassalite и отсутствие внешних ссылок, Save → Home → Reopen, F5, clean Back/Forward, dirty Back → Back → Stay, Save-and-leave, открытие того же проекта в другом редакторе и responsive widths. Сравнить старые persisted bytes с backup после чтения новым редактором. Реально переключить rollback и вернуть candidate, проверив тот же документ.
 
 `npm run test:launcher` включает storage/recovery, typed routes, асинхронную навигацию и настоящий HTTP delivery. Этот gate включён в required shell-build. Native browser tests и real user-profile backup выполняются дополнительно.
 

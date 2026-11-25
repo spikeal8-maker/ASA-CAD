@@ -10,9 +10,9 @@
 
 ## Текущий срез и продуктовый proof
 
-**THREE-MODE-LAUNCHER-001 — IN_PROGRESS**, по отдельному заданию владельца 08.11.2026. Главная `/`, локальные проекты `/cad/{kompas|fusion}/{id}`, общий App/document/history, внешняя сессия ASA Lab `three-d`. Selective reuse UI #207; его неподтверждённые angle-driving/atomic-line/native-parity возможности не заявлены. Исходный integration `6a2159f25efd5203f83a385461c4aaae92f2fabd`, installed D2 8099 `c1959b1e84a7c38288022622a9585a38c07d3f7e`. Установка только после реального browser backup, проверки прежних проектов и rollback. Draft/CI не означают готовность; release в main требует отдельного полного dependency/security audit.
+**THREE-MODE-LAUNCHER-001 — RELEASED в main** (integration #228 `db1256c`, main #233 `38b2d1a`, Docker 8088), по заданию владельца 08.11.2026. Главная `/` — карточки Kompas/Fusion/Vassalite (disabled-заглушка, без исходников); локальные проекты `/cad/{kompas|fusion}/{id}`; общий App/document/history/persistence. Решение владельца 2026-11-25 (после visual-проверки): в редакторе нет nav-полосы и селектора «Редактор»; выход на главную — по метке ASA CAD в топ-баре обоих шеллов (PR #234); смена оболочки — только через лаунчер (открытие того же проекта в другом редакторе). Draft/CI не означают готовность.
 
-Третий редактор проверен через штатную сессию: новый проект `three-d`, параллелепипед 40×20×12, autosave, список → reopen → F5. Launcher-to-Lab переход и CAD-сценарии в этой сборке ещё требуют browser proof. Локальная сборка, typecheck, storage/route и M1B/M2O checks пройдены; independent review нашёл startup/keyboard/history риски, исправления должны пройти повторную проверку.
+Launcher-проверка: 5 browser-сценариев (создание/открытие, dirty-guard через метку ASA CAD, save-and-leave, общий проект между шеллами, Back/Forward) — PASS; KOMPAS/Fusion shell, Protected Part regression — PASS.
 
 **U2-CIRCLE-NUMERIC-20261125** (#231 merged, `6d11158`): X/Y + Диаметр одним Circle draft, диаметр до/после центра, fallback [0,0]+`dimension.diameter` (только контроллер), commit = одна `sketch.circle`; exact CI 9/9, review APPROVE. Детали — PR/#184.
 
@@ -26,7 +26,7 @@ Rectangle #224: обычный Part → XY → Sketch → 60×40 → Undo/Redo �
 
 - Компас: каноническая оболочка src/web/kompas; Fusion: выборочно адаптированная src/web/fusion. В активном редакторе один владелец состояния; typed actions → CadApplication/CadDocument → ASA adapters → PlaneGCS/OpenCascade B-Rep; Three.js — отображение.
 - Six document kinds: Part, Assembly, Drawing, Fragment, Specification, Text: готовность различается.
-- Main `1f8d2627da7ddfa63b31876d46347d0b8080c154`; main/production отдельно.
+- Main `38b2d1a` (launcher #233); main/production отдельно.
 - Frozen #170: ui-reference-20261004, `88c535c652dac8b04f0d68fa144cf8486afdc926`.
 
 U1A/U1B/U1C приняты #195/#196, responsive KOMPAS #202, LEGACY-CLEANUP-202 #208. K1/U1 повторно не реализуются. #177 — reuse после exact review; #179/Fusion #204–#207 отдельно.
@@ -39,4 +39,4 @@ WEB-TYPES, VENDOR-LIFETIME, DEPENDENCIES закрыты #218–#220. NODE_TOOLCH
 
 Frozen ceilings не растут; App/editing ratchets снижены до actual bytes. LICENSE/THIRD_PARTY_NOTICE — pre-beta. DETECT_ONLY / ADMIN_BRANCH_PROTECTION_NOT_ENFORCED — KNOWN_RISK.
 
-OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008: Draft PR → exact CI/ordinary proof/independent review → technical integration merge. THREE-MODE-LAUNCHER-001 разрешает отдельный проверенный release в main и D2 8099 после обязательных gates; final visual parity остаётся решением владельца. Пользовательские документы и порты 8094/8098/8099 сохранены.
+OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008: Draft PR → exact CI/ordinary proof/independent review → technical integration merge. THREE-MODE-LAUNCHER-001 выпущен в main (Docker 8088) после обязательных gates; топ-бар редактора приведён по решению владельца 2026-11-25 (PR #234); final visual parity остаётся решением владельца. Пользовательские документы и порты 8094/8098/8099 сохранены.
