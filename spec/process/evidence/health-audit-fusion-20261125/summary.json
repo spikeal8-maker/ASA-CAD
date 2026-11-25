@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "id": "HEALTH-AUDIT-FUSION-20261125",
+  "auditedSourceSha": "a08b17c99bf8b3343008810ab5f9f398bd7a139d",
+  "observedMainSha": "9ea217f253b3348d34638841936fa79b75f95fa2",
+  "measurementStatus": "PASS",
+  "technicalAcceptance": "PENDING_EXACT_HEAD_CI_INDEPENDENT_REVIEW_AND_MERGE",
+  "ownerProductAcceptance": "PENDING",
+  "proposedOutcome": "YELLOW_ACCEPTED",
+  "cadence": {
+    "previousAuditPr": 225,
+    "acceptedPermanentSlices": [
+      226,
+      231,
+      228,
+      234
+    ],
+    "operationalMaintenanceExcluded": [
+      230
+    ],
+    "currentCount": 4,
+    "projectedCountAfterAcceptance": 0,
+    "resetCondition": "EXACT_HEAD_CI_INDEPENDENT_REVIEW_AND_MERGE"
+  },
+  "checks": {
+    "process": "PASS",
+    "architecture": "PASS",
+    "schemaVersion": 3,
+    "schemaCompatibility": "PASS",
+    "webTypeDiagnostics": 0,
+    "repositoryHygiene": {
+      "status": "PASS",
+      "firstPartyFiles": 726
+    },
+    "fileBudgets": {
+      "status": "PASS",
+      "coveredFiles": 337,
+      "exactFrozenRatchets": 14,
+      "grandfatheredExceptions": 6
+    },
+    "launcherUnitIntegration": {
+      "passed": 65,
+      "failed": 0
+    },
+    "protectedPartRuntime": "PASS",
+    "asyncOwnership": {
+      "passed": 10,
+      "failed": 0
+    },
+    "stableTopology": {
+      "passed": 18,
+      "failed": 0
+    },
+    "nativeWrapperLifetime": {
+      "passed": 14,
+      "failed": 0,
+      "created": 699,
+      "liveBeforeCleanup": 0
+    },
+    "standardMeasurement": {
+      "phases": 10,
+      "cases": 16,
+      "measuredSamples": 106,
+      "warmups": 20,
+      "failedPhases": 0,
+      "sourceUnchanged": true,
+      "toolsUnchanged": true,
+      "cleanCheckout": true,
+      "ownedProcessesClosed": true,
+      "acceptedBaseline": false
+    },
+    "dependencyAudit": {
+      "vulnerabilities": 0,
+      "devScopeIncluded": true
+    },
+    "dependencyImportAnalysis": {
+      "sourceFiles": 288,
+      "unresolvedLiteralImports": 0,
+      "affectedRuntimeNodes": 0
+    },
+    "ordinaryBrowser": {
+      "launcherScenariosPassed": 5,
+      "protectedPart": "PASS",
+      "userProfileUsed": false,
+      "existingDeploymentChanged": false,
+      "temporaryServerClosed": true
+    }
+  },
+  "ownershipDebt": {
+    "id": "FUSION_OWNER_PRESSURE_20261125",
+    "owner": "Current Fusion slice technical controller",
+    "ownersAtOrAbovePressure": 41,
+    "ownersAboveTarget": 20,
+    "pressureRatio": 0.85,
+    "gate": "Focused review/extraction before new responsibility on pressured owners; frozen owners cannot grow; applicable debt resolved before next milestone boundary."
+  },
+  "privateEvidence": {
+    "publication": "ORIGINALS_RETAINED_PRIVATELY; PUBLIC_SUMMARY_USES_EXPLICIT_AGGREGATE_FIELDS_ONLY",
+    "originalCount": 84,
+    "totalOriginalBytes": 3408301,
+    "archiveBytes": 1198175,
+    "archiveSha256": "d7ad7999508fb6746acc0047c2e3fdff8271e588a1010b3d3fb6a0f4029065ea"
+  },
+  "limitations": [
+    "This public summary omits original execution streams, local environment identities and local paths; originals are retained privately for authorized review.",
+    "The first runtime invocation was blocked before tests by a runner IPC limitation; the unchanged test source passed through the standard loader. The original failure remains in private evidence.",
+    "The measurement environment differs from earlier measurements; no causal speed comparison or production latency SLO is claimed.",
+    "Native lifetime coverage concerns scoped owned wrappers, not the entire vendor/WASM heap.",
+    "Fresh package audit does not certify the whole runtime or operating environment.",
+    "Full Fusion functionality, Sketch/ViewCube/marking-menu parity and owner visual acceptance remain open.",
+    "Measurement PASS alone cannot reset cadence or allow feature work before audit PR acceptance."
+  ]
+}

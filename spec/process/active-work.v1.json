@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "initiative": "UI-CORE-UNIFICATION-001",
   "issue": 184,
-  "currentCheckpoint": "U2",
+  "currentCheckpoint": "FULL_REPOSITORY_HEALTH_AUDIT",
   "baseBranch": "integration/ui-core-unification",
   "baseHeadPolicy": "RESOLVE_LIVE_AND_GUARD",
   "uiReference": {
@@ -11,7 +11,7 @@
     "sha": "88c535c652dac8b04f0d68fa144cf8486afdc926",
     "frozen": true
   },
-  "productCodeStartAllowed": true,
+  "productCodeStartAllowed": false,
   "blocker": null,
   "canonicalDocuments": [
     "docs/DEVELOPMENT_QUALITY_GATES.md",
@@ -19,13 +19,10 @@
     "docs/STATUS.md"
   ],
   "scope": [
-    "Implement owner-requested THREE-MODE-LAUNCHER-001 with selective Fusion presentation reuse, one shared CAD application/history, Vassalite card disabled as owner-accepted stub (no source), no ASA Lab handoff, and separately gated D2/main release",
-    "Implement independent U2-CIRCLE-NUMERIC-20261125 from frozen #170 through the existing sketch.circle command; remaining U2 and owner visual acceptance stay open",
-    "Preserve the single CadApplication/CadDocument/history/solver path; Numeric Line and Rectangle acceptance already have separate technical proof",
-    "Keep the Numeric Line visual area unchanged while owner visual verdict is pending; independent U2 work remains subject to its own gates",
-    "Resolve NODE_SECURITY_RELEASE_20261111_PENDING through published-release/reachability review and applicable reviewed toolchain repair before U2 technical acceptance or the next milestone boundary if earlier, and before beta; no exposure growth or automatic date-based PASS",
-    "Full audit #225 is technically accepted at ae3f713f81d405733b887deaad0050f28f33af0b; require exact-head CI, ordinary-user proof and independent read-only review for every new slice",
-    "Circle uses one transient center/diameter draft and one existing sketch.circle commit per circle; diameter lock is transient U2 input, the origin plus driving-diameter fallback remains a separate controller path; no schema, persistent constraints or solver changes"
+    "Complete the overdue Full Repository Health Audit after accepted permanent slices #226, #231, #228 and #234; #230 is operational maintenance and does not count.",
+    "Publish unchanged measurements of a08b17c99bf8b3343008810ab5f9f398bd7a139d, reconcile cadence/release pointers and obtain exact-head CI plus independent review before technical integration merge.",
+    "Preserve one CadApplication/CadDocument/history/solver and all existing user projects; no product/runtime/schema/dependency changes in this audit.",
+    "After audit technical acceptance, resume the owner-requested Fusion Sketch/navigation work through narrowly owned existing typed commands; owner visual acceptance and broader U3-U5 remain separately gated."
   ],
   "outOfScope": [
     "U3-U5 expansion before their canonical prerequisite checkpoints and required audits",
@@ -33,9 +30,9 @@
     "Integration-to-main or D2 deployment without required release/preflight gates; unrelated production deployment and final visual parity without owner decision",
     "Global/default D2 Node changes or an unapproved installation of a future Node release"
   ],
-  "nextCheckpoint": "U3",
+  "nextCheckpoint": "U2",
   "developmentAuthorization": "OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008",
-  "checkpointTechnicalStatus": "IN_PROGRESS",
+  "checkpointTechnicalStatus": "PENDING_EXACT_HEAD_CI_INDEPENDENT_REVIEW_AND_MERGE",
   "ownerProductAcceptance": "PENDING",
   "u1MergedIntoIntegration": {
     "pr": 195,
@@ -46,6 +43,24 @@
     "mergeSha": "e37650f08d9e2fa6cf13ceb6a09ecd8e8a568c15"
   },
   "fullRepositoryHealthAudit": {
+    "outcome": "YELLOW_PENDING_ACCEPTANCE",
+    "proposedOutcome": "YELLOW_ACCEPTED",
+    "auditBaseSha": "ae3f713f81d405733b887deaad0050f28f33af0b",
+    "auditedSha": "a08b17c99bf8b3343008810ab5f9f398bd7a139d",
+    "report": "docs/FULL_REPOSITORY_HEALTH_AUDIT.md",
+    "proposedAcceptedBy": "ChatGPT technical controller /root under OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008",
+    "acceptanceScope": "TECHNICAL_INTEGRATION_ONLY",
+    "acceptanceCondition": "EXACT_HEAD_CI_INDEPENDENT_REVIEW_AND_MERGE_OF_THIS_AUDIT_PR",
+    "evidenceManifest": "spec/process/evidence/health-audit-fusion-20261125/summary.json",
+    "openDebtIds": [
+      "FUSION_OWNER_PRESSURE_20261125"
+    ],
+    "debtOwner": "Current Fusion slice technical controller /root",
+    "debtGate": "EXTRACT_BEFORE_NEW_RESPONSIBILITY_ON_PRESSURED_OWNER; NO_FROZEN_GROWTH; BEFORE_NEXT_MILESTONE_BOUNDARY",
+    "nextTransition": "After verified audit merge, advance to U2 in the next implementation PR and record the actual merge SHA; never infer acceptance from measurements alone.",
+    "evidencePublication": "PUBLIC_AGGREGATES_ONLY; ORIGINAL_EVIDENCE_RETAINED_PRIVATELY"
+  },
+  "previousFullRepositoryHealthAudit": {
     "outcome": "YELLOW_ACCEPTED",
     "auditBaseSha": "96083954f0180720e7a51616bc6039bde75fa683",
     "auditedSha": "b8f700bb6e455582db18df8d0ba43a2bfbdcc68b",
@@ -56,20 +71,10 @@
     "openDebtIds": [
       "NODE_SECURITY_RELEASE_20261111_PENDING"
     ],
-    "debtGate": "BEFORE_U2_TECHNICAL_ACCEPTANCE_OR_NEXT_MILESTONE_BOUNDARY_IF_EARLIER_AND_PRE_BETA"
-  },
-  "previousFullRepositoryHealthAudit": {
-    "outcome": "YELLOW_ACCEPTED",
-    "auditBaseSha": "20603c34f277dc9f0cf2696f5bd3971dd7645678",
-    "auditedSha": "7bf71e2ee8ece045fb69620c657570ce7be9294f",
-    "report": "docs/FULL_REPOSITORY_HEALTH_AUDIT.md",
-    "acceptedBy": "ChatGPT technical controller /root under OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008",
-    "acceptanceScope": "TECHNICAL_INTEGRATION_ONLY",
-    "openDebtIds": [
-      "NODE_TOOLCHAIN_EOL_AND_SECURITY_PATCH_GAP"
-    ],
     "debtGate": "BEFORE_U2_TECHNICAL_ACCEPTANCE_OR_NEXT_MILESTONE_BOUNDARY_IF_EARLIER_AND_PRE_BETA",
-    "immutableReport": "https://github.com/spikeal8-maker/ASA-CAD/blob/96083954f0180720e7a51616bc6039bde75fa683/docs/FULL_REPOSITORY_HEALTH_AUDIT.md"
+    "immutableReport": "https://github.com/spikeal8-maker/ASA-CAD/blob/ae3f713f81d405733b887deaad0050f28f33af0b/docs/FULL_REPOSITORY_HEALTH_AUDIT.md",
+    "pr": 225,
+    "mergeSha": "ae3f713f81d405733b887deaad0050f28f33af0b"
   },
   "resolvedAuditDebts": [
     {
@@ -144,28 +149,42 @@
         "debtGate": "BEFORE_U2_TECHNICAL_ACCEPTANCE_OR_NEXT_MILESTONE_BOUNDARY; VENDOR_LIFETIME_BEFORE_PATH_EXPANSION_IF_EARLIER"
       },
       "immutableReport": "https://github.com/spikeal8-maker/ASA-CAD/blob/20603c34f277dc9f0cf2696f5bd3971dd7645678/docs/FULL_REPOSITORY_HEALTH_AUDIT.md"
+    },
+    {
+      "source": "spec/process/active-work.v1.json at a08b17c99bf8b3343008810ab5f9f398bd7a139d / previousFullRepositoryHealthAudit",
+      "snapshot": {
+        "outcome": "YELLOW_ACCEPTED",
+        "auditBaseSha": "20603c34f277dc9f0cf2696f5bd3971dd7645678",
+        "auditedSha": "7bf71e2ee8ece045fb69620c657570ce7be9294f",
+        "report": "docs/FULL_REPOSITORY_HEALTH_AUDIT.md",
+        "acceptedBy": "ChatGPT technical controller /root under OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008",
+        "acceptanceScope": "TECHNICAL_INTEGRATION_ONLY",
+        "openDebtIds": [
+          "NODE_TOOLCHAIN_EOL_AND_SECURITY_PATCH_GAP"
+        ],
+        "debtGate": "BEFORE_U2_TECHNICAL_ACCEPTANCE_OR_NEXT_MILESTONE_BOUNDARY_IF_EARLIER_AND_PRE_BETA",
+        "immutableReport": "https://github.com/spikeal8-maker/ASA-CAD/blob/96083954f0180720e7a51616bc6039bde75fa683/docs/FULL_REPOSITORY_HEALTH_AUDIT.md"
+      },
+      "immutableReport": "https://github.com/spikeal8-maker/ASA-CAD/blob/96083954f0180720e7a51616bc6039bde75fa683/docs/FULL_REPOSITORY_HEALTH_AUDIT.md"
     }
   ],
   "lastFullAuditTrigger": {
-    "sourceSha": "b8f700bb6e455582db18df8d0ba43a2bfbdcc68b",
+    "sourceSha": "a08b17c99bf8b3343008810ab5f9f398bd7a139d",
+    "reason": "OVERDUE_THREE_ACCEPTED_SLICES_AND_INTEGRATION_RELEASE_BOUNDARIES",
     "acceptedSlices": [
-      222,
-      223,
-      224
+      226,
+      231,
+      228,
+      234
     ],
-    "snapshot": {
-      "reason": "THIRD_ACCEPTED_PERMANENT_SLICE_SINCE_PR221",
-      "acceptedSlicesBeforeThisPr": [
-        222,
-        223
-      ],
-      "currentSlice": "U2-RECTANGLE-ACCEPTANCE-20261108",
-      "acceptedCountBeforeThisPr": 2,
-      "acceptedCountAfterThisPr": 3,
-      "effectiveAt": "TECHNICAL_ACCEPTANCE_AND_MERGE_OF_THIS_RECTANGLE_SLICE",
-      "u2TechnicalAcceptance": "IN_PROGRESS"
-    },
-    "resolution": "CONDITIONAL_ON_TECHNICAL_ACCEPTANCE_AND_MERGE_OF_THIS_AUDIT_PR"
+    "excludedOperationalMaintenance": [
+      230
+    ],
+    "acceptedCountBeforeThisAudit": 4,
+    "projectedAcceptedCountAfterThisAudit": 0,
+    "effectiveAt": "TECHNICAL_ACCEPTANCE_AND_MERGE_OF_THIS_AUDIT_PR",
+    "resolution": "PENDING_EXACT_HEAD_CI_INDEPENDENT_REVIEW_AND_MERGE",
+    "u2TechnicalAcceptance": "IN_PROGRESS"
   },
   "launcherWork": {
     "id": "THREE-MODE-LAUNCHER-001",
@@ -187,8 +206,60 @@
     "editorTopBarFix": {
       "directive": "OWNER_20261125_REMOVE_NAV_STRIP_AND_IN_EDITOR_SWITCHER",
       "pr": 234,
-      "status": "IN_REVIEW",
-      "homeButton": "ASA CAD mark in the KOMPAS and Fusion top bars, routed through the existing leave guard"
+      "status": "RELEASED_TO_MAIN",
+      "homeButton": "ASA CAD mark in the KOMPAS and Fusion top bars, routed through the existing leave guard",
+      "integrationMerge": {
+        "pr": 234,
+        "mergeSha": "a08b17c99bf8b3343008810ab5f9f398bd7a139d"
+      },
+      "mainRelease": {
+        "pr": 235,
+        "mergeSha": "9ea217f253b3348d34638841936fa79b75f95fa2"
+      }
     }
+  },
+  "auditRepairAllowed": true,
+  "auditRepairScope": "CONFIRMED_P0_RED_DEFECTS_AND_ESSENTIAL_REGRESSION_FIXES_ONLY",
+  "historicalFullAuditTriggers": [
+    {
+      "sourceSha": "b8f700bb6e455582db18df8d0ba43a2bfbdcc68b",
+      "acceptedSlices": [
+        222,
+        223,
+        224
+      ],
+      "snapshot": {
+        "reason": "THIRD_ACCEPTED_PERMANENT_SLICE_SINCE_PR221",
+        "acceptedSlicesBeforeThisPr": [
+          222,
+          223
+        ],
+        "currentSlice": "U2-RECTANGLE-ACCEPTANCE-20261108",
+        "acceptedCountBeforeThisPr": 2,
+        "acceptedCountAfterThisPr": 3,
+        "effectiveAt": "TECHNICAL_ACCEPTANCE_AND_MERGE_OF_THIS_RECTANGLE_SLICE",
+        "u2TechnicalAcceptance": "IN_PROGRESS"
+      },
+      "resolution": "CONDITIONAL_ON_TECHNICAL_ACCEPTANCE_AND_MERGE_OF_THIS_AUDIT_PR"
+    }
+  ],
+  "acceptedSliceCadence": {
+    "sinceAcceptedAuditPr": 225,
+    "acceptedPermanentSlices": [
+      226,
+      231,
+      228,
+      234
+    ],
+    "currentCount": 4,
+    "auditRequired": true,
+    "countAfterAuditAcceptance": 0,
+    "resetCondition": "EXACT_HEAD_CI_INDEPENDENT_REVIEW_AND_MERGE_OF_THIS_AUDIT_PR"
+  },
+  "observedRepositoryState": {
+    "integrationHead": "a08b17c99bf8b3343008810ab5f9f398bd7a139d",
+    "mainHead": "9ea217f253b3348d34638841936fa79b75f95fa2",
+    "verifiedOn": "2026-11-25",
+    "headPolicy": "RESOLVE_LIVE_AND_GUARD_BEFORE_MERGE"
   }
 }
