@@ -53,6 +53,9 @@
 .k-main-menu-bar{display:flex;align-items:center;gap:6px;background:var(--k-menubar);border-top:5px solid var(--k-frame);min-width:0;padding-right:6px}
 .k-app-mark{width:20px;height:19px;margin-left:3px;display:grid;place-items:center;flex:none}
 .k-app-mark svg{width:19px;height:19px}
+button.k-app-mark{width:auto;display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 8px 0 3px;border-radius:3px}
+button.k-app-mark:hover,button.k-app-mark:focus-visible{background:var(--k-menubar-hover)}
+.k-app-name{font-size:12px;font-weight:600;letter-spacing:.2px;white-space:nowrap}
 .k-main-menu-items{display:flex;align-items:stretch;height:22px;min-width:0;overflow-x:auto;scrollbar-width:none;position:relative}
 .k-main-menu-items::-webkit-scrollbar{display:none}
 .k-menu-item{padding:0 6px;height:22px;white-space:nowrap;font-size:12px;border-radius:0}

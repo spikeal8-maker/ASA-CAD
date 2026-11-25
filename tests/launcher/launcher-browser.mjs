@@ -16,7 +16,7 @@ page.on('pageerror', error => report.pageErrors.push(error.message));
 page.on('requestfailed', request => report.failedRequests.push(`${request.method()} ${request.url()}: ${request.failure()?.errorText}`));
 const launcher = () => page.getByTestId('three-mode-launcher');
 const leave = () => page.getByRole('dialog', { name: 'Сохранить изменения перед выходом?', exact: true });
-const homeButton = () => page.getByRole('button', { name: '← На главную', exact: true });
+const homeButton = () => page.getByRole('button', { name: 'ASA CAD — на главную', exact: true });
 const editorUrl = (mode, id) => new URL(`cad/${mode}/${id}`, home).href;
 const title = 'Launcher CI — общий проект';
 let projectId, documentId, sketchId, savedDocument;
@@ -35,7 +35,8 @@ async function atEditor(mode, id, sketches = 0) {
   await page.locator(`.asa-editor-root[data-mode="${mode}"] .cad-app[data-sketch-count="${sketches}"]`).waitFor();
   await page.locator(mode === 'fusion' ? '.live-top' : '.k-main-menu-bar').waitFor();
   assert.equal(await launcher().count(), 0);
-  assert.equal(await page.getByRole('combobox', { name: 'Редактор', exact: true }).inputValue(), mode);
+  assert.equal(await page.locator('.cad-launcher-nav').count(), 0, 'removed launcher nav strip is present');
+  assert.equal(await homeButton().count(), 1, 'ASA CAD home mark is missing');
 }
 async function create(mode, name) {
   await launcher().getByRole('button', { name: `Создать проект — ${mode === 'kompas' ? 'Компас' : 'Fusion'}`, exact: true }).click();
@@ -87,11 +88,10 @@ try {
     assert.equal(await page.locator('iframe').count(), 0);
     await page.screenshot({ path: `${artifacts}/01-home.png`, fullPage: true });
   });
-  await step('Create, dirty Stay, mode switch and shared Undo/Redo', async () => {
+  await step('Create, dirty Stay via the ASA CAD mark, Save-and-leave, and the same project in Fusion', async () => {
     projectId = await create('kompas', title);
     const initial = await stored(projectId); documentId = initial.document.documentId;
     assert.ok(documentId); assert.equal(initial.document.title, title); assert.equal(initial.document.sketches.length, 0);
-    const app = await page.locator('.cad-app').elementHandle();
     sketchId = await createSketch(1); assert.ok(sketchId);
     await homeButton().click(); await leave().waitFor();
     await page.keyboard.press('Control+z'); await page.keyboard.press('Control+s');
@@ -100,19 +100,21 @@ try {
     assert.equal((await stored(projectId)).raw, initial.raw, 'dialog allowed background Save');
     await leave().getByRole('button', { name: 'Остаться', exact: true }).click();
     await leave().waitFor({ state: 'detached' }); await atEditor('kompas', projectId, 1);
-    await page.getByRole('combobox', { name: 'Редактор', exact: true }).selectOption('fusion');
-    await atEditor('fusion', projectId, 1);
-    assert.equal(await app.evaluate(node => node === document.querySelector('.cad-app')), true, 'mode switch replaced the shared App');
-    await page.locator('.live-quickbuttons [data-command-id="system.undo"]').click();
-    await page.locator('.cad-app[data-sketch-count="0"]').waitFor();
-    await page.locator('.live-quickbuttons [data-command-id="system.redo"]').click();
-    await page.locator('.cad-app[data-sketch-count="1"]').waitFor();
-    await page.screenshot({ path: `${artifacts}/03-fusion.png` });
-    await app.dispose();
-  });
-  await step('Save and leave, recent Open, reload, and mode-independent project picker', async () => {
     await homeButton().click(); await leave().waitFor();
     await leave().getByRole('button', { name: 'Сохранить и выйти', exact: true }).click(); await atHome();
+    const saved = await stored(projectId); savedDocument = saved.document;
+    assert.equal(saved.mode, 'kompas'); assert.equal(saved.document.documentId, documentId);
+    assert.equal(saved.document.sketches.length, 1); assert.equal(saved.document.sketches[0].id, sketchId);
+    await open('fusion');
+    await atEditor('fusion', projectId, 1);
+    assert.deepEqual((await stored(projectId)).document, savedDocument, 'opening in the other shell rewrote the saved intent');
+    await page.screenshot({ path: `${artifacts}/03-fusion.png` });
+  });
+  await step('Save in Fusion, recent continue, reload, back/forward and KOMPAS open', async () => {
+    await page.locator('.live-quickbuttons [data-command-id="system.save"]').click();
+    await page.waitForFunction(id => JSON.parse(localStorage.getItem(`asa-cad-local-project:${id}:state`))?.launcher?.mode === 'fusion', projectId, { timeout: 15000 });
+    await homeButton().click(); await atHome();
+    assert.equal(await leave().count(), 0, 'clean save acquired a dirty guard');
     const saved = await stored(projectId); savedDocument = saved.document;
     assert.equal(saved.mode, 'fusion'); assert.equal(saved.document.documentId, documentId);
     assert.equal(saved.document.sketches.length, 1); assert.equal(saved.document.sketches[0].id, sketchId);
