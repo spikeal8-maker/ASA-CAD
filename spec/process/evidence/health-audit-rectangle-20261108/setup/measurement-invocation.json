@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "status": "RUNNER_COMPLETED_ZERO",
+  "startedAt": "2026-11-08T09:16:54.181Z",
+  "head": "b8f700bb6e455582db18df8d0ba43a2bfbdcc68b",
+  "setupSha256": "a1c9a38d7affb0dbb6f047e91b51f3029a0b48de7b98f0c5920ad13caa8bf534",
+  "auditLaunchSha256": "b9e159cb60dcb85f26106ec5a3fd1885d40b360a495a93ee94370db412c1d71a",
+  "executable": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node.exe",
+  "nodeVersion": "v22.23.4",
+  "nodeSha256": "dccc52de28d8df2ee22d2062424f8c563070d95d8ad70c54c4bf01d590dec14f",
+  "argv": [
+    "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\full-health-audit-runner-20261108.cjs",
+    "--repo",
+    "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108",
+    "--expected-head",
+    "b8f700bb6e455582db18df8d0ba43a2bfbdcc68b",
+    "--out",
+    "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108"
+  ],
+  "runnerSha256": "3144747cb207f7bf0989550c25da0b76d41064d59618e7fb89262716c556e94a",
+  "appliedEnvironmentContract": {
+    "removeCaseInsensitive": [
+      "NODE_ENV",
+      "npm_config_production",
+      "npm_config_only",
+      "npm_config_omit",
+      "npm_config_global",
+      "npm_config_cache",
+      "npm_config_update_notifier"
+    ],
+    "set": {
+      "GIT_OPTIONAL_LOCKS": "0",
+      "npm_config_omit": "",
+      "npm_config_global": "false",
+      "npm_config_cache": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-setup-20261108\\npm-cache",
+      "npm_config_update_notifier": "false"
+    },
+    "prependNodeDirectoryToProcessPath": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64",
+    "scope": "Apply this process-local environment when invoking the frozen audit runner; never change global PATH or npm configuration."
+  },
+  "observedScope": {
+    "NODE_ENV": null,
+    "npm_config_omit": "",
+    "npm_config_global": "false",
+    "npm_config_cache": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-setup-20261108\\npm-cache",
+    "processPathFirst": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64"
+  },
+  "measurementsPreviouslyRun": false,
+  "technicalAcceptance": "PENDING",
+  "ownerProductAcceptance": "PENDING",
+  "pid": 41708,
+  "finishedAt": "2026-11-08T09:18:23.510Z",
+  "exitCode": 0,
+  "signal": null
+}

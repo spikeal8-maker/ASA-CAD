@@ -6,7 +6,7 @@ export const PANEL = ':is(.parameter-panel, .k-pp)';
 export const PANEL_TITLE = ':is(.parameter-panel .panel-title-row strong, .k-pp-cmd strong)';
 export const FIELD = ':is(.numeric-field, .k-pp-row)';
 export const DIRTY = ':is(.dirty-dot, [data-document-dirty="true"])';
-export const PARAMS_READY = '.content-area.panel-closed, .k-content[data-panel-tab="params"]';
+export const PARAMS_READY = '.k-content.k-collapsed, .k-content[data-panel-tab="params"]';
 
 /** Runs a standard view command: KOMPAS orientation grid / quick access, or the compact shell button. */
 export async function runView(page, id) {

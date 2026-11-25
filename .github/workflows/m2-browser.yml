@@ -4,28 +4,38 @@ on:
   push:
     branches: [main, integration/ui-core-unification]
     paths:
+      - vendor/toubkal/package.json
+      - vendor/toubkal/package-lock.json
       - tests/visual/**
       - src/web/**
       - src/browser/**
       - src/runtime/**
       - src/application/**
       - src/contracts/**
+      - src/host/**
+      - tests/m1b/recovery-indexeddb-browser.mjs
       - build/**
       - tests/m2/**
+      - tests/launcher/**
       - spec/ui/command-registry.v1.json
       - spec/ui/viewport-matrix.v1.json
       - package.json
       - .github/workflows/m2-browser.yml
   pull_request:
     paths:
+      - vendor/toubkal/package.json
+      - vendor/toubkal/package-lock.json
       - tests/visual/**
       - src/web/**
       - src/browser/**
       - src/runtime/**
       - src/application/**
       - src/contracts/**
+      - src/host/**
+      - tests/m1b/recovery-indexeddb-browser.mjs
       - build/**
       - tests/m2/**
+      - tests/launcher/**
       - spec/ui/command-registry.v1.json
       - spec/ui/viewport-matrix.v1.json
       - package.json
@@ -36,14 +46,14 @@ permissions:
 
 jobs:
   browser-smoke:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # Pinned Playwright 1.60.0 does not support Ubuntu 26.04.
     steps:
       - uses: actions/checkout@v4
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20.19.0'
+          node-version: '22.23.5'
           cache: npm
           cache-dependency-path: vendor/toubkal/package-lock.json
 
@@ -74,6 +84,20 @@ jobs:
           cat /tmp/asa-m2-http.log
           exit 1
 
+      - name: Exercise three-mode launcher, project persistence and guarded navigation
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
+        run: node tests/launcher/launcher-browser.mjs
+
+      - name: Upload launcher browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: asa-cad-launcher-browser
+          path: artifacts/launcher-browser/
+          if-no-files-found: warn
+          retention-days: 30
+
       - name: Exercise desktop and phone ASA shell
         env:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
@@ -83,6 +107,11 @@ jobs:
         env:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m2/kompas-shell-browser.mjs
+
+      - name: Reject legacy shell across desktop, tablet and phone
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
+        run: node tests/m2/kompas-responsive-browser.mjs
 
       - name: Exercise shared mobile action tools
         env:
@@ -98,6 +127,12 @@ jobs:
         env:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m2/extrude-parameters-browser.mjs
+
+      - name: Verify current solved-profile actions and shared solver lifecycle
+        run: node tests/m2/solved-profile-eligibility-browser.mjs
+
+      - name: Verify Fixed command document and shared solver ownership
+        run: node tests/m2/fixed-constraint-ownership-browser.mjs
 
       - name: Exercise V5 ordinary Part lesson sequence
         env:
@@ -133,6 +168,9 @@ jobs:
         env:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m2/file-menu-browser.mjs
+
+      - name: Verify atomic IndexedDB recovery acknowledgement
+        run: node tests/m1b/recovery-indexeddb-browser.mjs
 
       - name: Exercise viewport mouse navigation
         env:
@@ -183,6 +221,11 @@ jobs:
         env:
           ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
         run: node tests/m2/browser-zoom-equivalence.mjs
+
+      - name: Exercise KOMPAS menu, tree, parameters and toolset usability
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
+        run: node tests/m2/kompas-usability-browser.mjs
 
       - name: Show server log on failure
         if: failure()

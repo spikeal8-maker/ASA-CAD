@@ -71,7 +71,7 @@ async function chooseEndpoints(page, first, second, touch) {
 async function desktopCoincident() {
   const { page, errors } = await newDesktopPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createXYSketch(page);
     const { first, second } = await createTwoLines(page, false);
     assert.equal(coincident(await solvedEndpoint(page, first, 'b'), await solvedEndpoint(page, second, 'a')), false, 'Lines must start separated');
@@ -114,12 +114,12 @@ async function desktopCoincident() {
 async function touchCoincident() {
   const { context, page, errors } = await newTouchPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createMobileXYSketch(page);
     const { first, second } = await createTwoLines(page, true);
     await activateMobileTool(page, 'constraint.coincident', 'Coincident');
-    await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
-    assert.equal(await page.locator('.management-panel').isVisible(), false, 'Tools panel still covers Sketch');
+    await page.locator('.k-content.k-collapsed, .k-content[data-panel-tab="params"]').waitFor();
+    assert.equal(await page.locator('.k-management-panel').isVisible(), false, 'Tools panel still covers Sketch');
     await chooseEndpoints(page, first, second, true);
     const saved = await saveLocalDocument(page);
     assert.ok(saved.constraints.some((item) => item.type === 'coincident'), 'touch Coincident not persisted');

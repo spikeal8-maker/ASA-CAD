@@ -1,6 +1,6 @@
 # ASA-CAD — UI/core convergence roadmap
 
-Редакция: 2026-10-13.
+Редакция: 2026-11-08.
 Central issue: **#184**.
 Integration branch: **`integration/ui-core-unification`**.
 Frozen UI reference: **`ui-reference-20261004` -> `88c535c652dac8b04f0d68fa144cf8486afdc926`**.
@@ -69,7 +69,7 @@ Acceptance U1:
 
 PR CI #195 = 9/9 SUCCESS; PR #196 проверен GitHub Actions до merge. Это **code integration**, не независимая финальная архитектурная/визуальная приёмка. Отдельные уникальные части PR #177 и Drawing #179 остаются на рассмотрении. `U1A` больше не активный продуктовый checkpoint.
 
-**Текущий NEXT = Full Repository Health Audit после U1.** После принятия допустимого результата запускается U2. Исторические ограничения отдельных U1A/U1B/U1C не должны запускать повторную работу.
+**Текущий NEXT — независимый U2-CIRCLE-NUMERIC-20261125 после принятого Full Repository Health Audit #225** (merge ae3f713f81d405733b887deaad0050f28f33af0b). #226 Arc numeric и #230 Node 22.23.5 security pin приняты; [canonical report](FULL_REPOSITORY_HEALTH_AUDIT.md) принят YELLOW_ACCEPTED. Circle numeric-entry использует прежний sketch.circle, один transient center/diameter draft и один existing commit; диаметр — transient input, origin + driving-diameter fallback остаётся отдельным controller path; protected Part circle flow, Numeric Line/Arc и общие Frame/CSS не меняются, ожидающий owner visual verdict Numeric области остаётся PENDING. Этот срез не завершает весь U2 и не добавляет U3 constraints. Cadence: #226 Arc = 1/3, текущий срез = 2/3 permanent slices после #225 (#230 — operational maintenance); третий permanent slice или milestone boundary требует Full Repository Health Audit. NODE_SECURITY_RELEASE_20261111_PENDING закрыт #230 (operational pins; portable D2 install — отдельно). [Исторический #221](https://github.com/spikeal8-maker/ASA-CAD/blob/96083954f0180720e7a51616bc6039bde75fa683/docs/FULL_REPOSITORY_HEALTH_AUDIT.md), #217 и raw evidence сохранены. Далее U2 → U3 → U4 → U5 по gates; owner product/visual acceptance, main/production отдельно. U1A/U1B/U1C повторно не запускаются.
 
 ### Обязательный gate после U1
 

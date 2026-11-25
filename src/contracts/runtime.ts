@@ -39,11 +39,17 @@ export interface CadRuntimeReferenceCaptureResult {
  * Toubkal/OpenCascade/PlaneGCS internally, but native kernel objects must not
  * cross this boundary.
  */
+/** Transient ownership check. Never serialize it or retain a stale request as document state. */
+export interface CadRuntimeRequest {
+  readonly isCurrent: () => boolean;
+}
+
 export interface CadRuntimeAdapter {
-  recompute(document: Readonly<CadDocument>): Promise<CadRuntimeRecomputeResult>;
+  recompute(document: Readonly<CadDocument>, request?: CadRuntimeRequest): Promise<CadRuntimeRecomputeResult>;
   captureReference(
     document: Readonly<CadDocument>,
     request: CadReferenceCaptureRequest,
+    ownership?: CadRuntimeRequest,
   ): Promise<CadRuntimeReferenceCaptureResult>;
   dispose(): void;
 }

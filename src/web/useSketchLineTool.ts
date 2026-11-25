@@ -1,106 +1,167 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { CadApplication } from '../contracts/application';
 import type { CadPoint2 } from '../contracts/document';
 import type { CadSketchId } from '../contracts/ids';
-
-export interface SketchLineDraft {
-  from: CadPoint2 | null;
-  to: CadPoint2 | null;
-}
+import {
+  emptyLineInput, lineInputView, moveLineInput,
+  type SketchLineField, type SketchLineNumericInput, type SketchLineNumericState,
+} from './SketchLineNumericInput';
+export type { SketchLineDraft } from './SketchLineNumericInput';
 
 export interface UseSketchLineToolOptions {
   app: CadApplication;
   sketchId: CadSketchId | null;
   active: boolean;
   setNotice(message: string): void;
-  onCommitted(): void;
 }
 
-const EMPTY_DRAFT: SketchLineDraft = { from: null, to: null };
-const MIN_LINE_LENGTH = 1e-6;
-
-/**
- * Transient M3 Line interaction owner.
- *
- * Pointer/ghost state never mutates CadDocument. The second accepted point
- * commits exactly one normal `sketch.line` CadApplication command, keeping
- * Undo/Redo atomic and solver preview downstream of the persisted mutation.
- */
+/** One transient Line owner; every accepted object is one normal sketch.line. */
 export function useSketchLineTool(options: UseSketchLineToolOptions) {
-  const { app, sketchId, active, setNotice, onCommitted } = options;
-  const [draft, setDraft] = useState<SketchLineDraft>(EMPTY_DRAFT);
+  const { app, sketchId, active } = options;
+  const [state, setState] = useState(emptyLineInput);
   const [committing, setCommitting] = useState(false);
+  const [focusRevision, setFocusRevision] = useState(0);
+  const current = useRef(state);
+  const latest = useRef(options);
+  latest.current = options;
+  const mounted = useRef(false);
+  const epoch = useRef(0);
+  const flight = useRef(false);
+  const document = app.getDocument();
+  const observedDocument = useRef(document);
+
+  const publish = useCallback((next: SketchLineNumericState) => {
+    current.current = next;
+    setState(next);
+  }, []);
+  const reset = useCallback(() => {
+    epoch.current += 1;
+    publish(emptyLineInput(current.current.pointer));
+    setFocusRevision(0);
+  }, [publish]);
 
   useEffect(() => {
-    if (!active) {
-      setDraft(EMPTY_DRAFT);
-      setCommitting(false);
-    }
-  }, [active, sketchId]);
+    mounted.current = true;
+    reset();
+    return () => { mounted.current = false; epoch.current += 1; };
+  }, [active, app, sketchId, reset]);
+  useEffect(() => {
+    if (observedDocument.current === document) return;
+    observedDocument.current = document;
+    reset();
+  }, [document, reset]);
 
-  const reset = useCallback(() => {
-    setDraft(EMPTY_DRAFT);
-    setCommitting(false);
-  }, []);
+  const available = () => latest.current.active && !!latest.current.sketchId && !flight.current;
 
-  const move = useCallback((point: CadPoint2) => {
-    if (!active || !draft.from || committing) return;
-    setDraft((current) => current.from ? { from: current.from, to: point } : current);
-  }, [active, committing, draft.from]);
+  const move = useCallback((pointer: CadPoint2) => {
+    if (!latest.current.active || flight.current || !pointer.every(Number.isFinite)) return;
+    publish(moveLineInput(current.current, pointer));
+  }, [publish]);
 
-  const commitFromDraft = useCallback(async (to: CadPoint2) => {
-    if (!active || !sketchId || !draft.from || committing) return false;
-    if (distance(draft.from, to) <= MIN_LINE_LENGTH) {
-      setNotice('Конечная точка должна отличаться от начальной');
+  const commit = useCallback(async (input: SketchLineNumericState): Promise<boolean> => {
+    const owner = latest.current;
+    if (!mounted.current || !owner.active || !owner.sketchId || flight.current) return false;
+    const view = lineInputView(input);
+    if (!view.canCommit || !view.from || !view.to) {
+      owner.setNotice(view.error ?? (input.anchor
+        ? 'Конечная точка должна отличаться от начальной'
+        : 'Укажите первую точку либо задайте длину и угол'));
       return false;
     }
 
+    flight.current = true;
     setCommitting(true);
-    const from = draft.from;
-    const result = await app.execute({
-      id: 'sketch.line',
-      payload: { sketchId, from, to },
-    });
-    setCommitting(false);
-
-    if (!result.ok) {
-      setNotice(result.error?.message ?? 'Не удалось создать отрезок');
+    const request = ++epoch.current;
+    const ownsContext = () => mounted.current && epoch.current === request
+      && latest.current.app === owner.app && latest.current.active
+      && latest.current.sketchId === owner.sketchId;
+    let submittedDocument = owner.app.getDocument();
+    let submittedIntent = JSON.stringify(submittedDocument);
+    const ownsResult = () => ownsContext() && owner.app.getDocument() === submittedDocument
+      && JSON.stringify(submittedDocument) === submittedIntent;
+    try {
+      const pending = owner.app.execute({
+        id: 'sketch.line',
+        payload: { sketchId: owner.sketchId, from: view.from, to: view.to },
+      });
+      // The existing geometry command applies synchronously. Its error rollback
+      // can replace the document with an equivalent clone: bind to that outcome.
+      submittedDocument = owner.app.getDocument();
+      submittedIntent = JSON.stringify(submittedDocument);
+      observedDocument.current = submittedDocument;
+      const result = await pending;
+      if (!ownsResult()) {
+        if (ownsContext()) reset();
+        return false;
+      }
+      if (!result.ok) {
+        owner.setNotice(result.error?.message ?? 'Не удалось создать отрезок');
+        return false;
+      }
+      publish(emptyLineInput(input.pointer));
+      setFocusRevision(0);
+      owner.setNotice(`Отрезок создан: ${formatPoint(view.from)} → ${formatPoint(view.to)}. Укажите новую первую точку`);
+      return true;
+    } catch (error) {
+      if (ownsResult()) owner.setNotice(error instanceof Error ? error.message : 'Не удалось создать отрезок');
       return false;
+    } finally {
+      flight.current = false;
+      if (mounted.current) setCommitting(false);
     }
+  }, [publish, reset]);
 
-    setDraft(EMPTY_DRAFT);
-    setNotice(`Отрезок создан: ${formatPoint(from)} → ${formatPoint(to)}`);
-    onCommitted();
+  const choosePoint = useCallback(async (pointer: CadPoint2): Promise<boolean> => {
+    if (!latest.current.active || !latest.current.sketchId || flight.current
+      || !pointer.every(Number.isFinite)) return false;
+    const next = moveLineInput(current.current, pointer);
+    const view = lineInputView(next);
+    if (next.anchor || view.placementReady) return commit(next);
+    publish({ ...next, anchor: pointer });
+    latest.current.setNotice('Укажите конечную точку отрезка');
     return true;
-  }, [active, app, committing, draft.from, onCommitted, setNotice, sketchId]);
+  }, [commit, publish]);
 
-  const point = useCallback(async (value: CadPoint2) => {
-    if (!active || committing) return;
-    if (!draft.from) {
-      setDraft({ from: value, to: value });
-      setNotice('Укажите конечную точку отрезка');
-      return;
-    }
-    await commitFromDraft(value);
-  }, [active, commitFromDraft, committing, draft.from, setNotice]);
-
-  const commitPreview = useCallback(async () => {
-    if (!draft.to) return false;
-    return commitFromDraft(draft.to);
-  }, [commitFromDraft, draft.to]);
-
-  return {
-    draft,
-    committing,
-    move,
-    point,
-    reset,
-    commitPreview,
+  const point = useCallback(async (pointer: CadPoint2) => {
+    await choosePoint(pointer);
+  }, [choosePoint]);
+  const commitPreview = useCallback(() => commit(current.current), [commit]);
+  const change = useCallback((field: SketchLineField, text: string) => {
+    if (!latest.current.active || flight.current) return;
+    publish({ ...current.current, edited: { ...current.current.edited, [field]: text } });
+  }, [publish]);
+  const unlock = useCallback((field: 'length' | 'angle') => {
+    if (!latest.current.active || flight.current) return;
+    const edited = { ...current.current.edited };
+    delete edited[field];
+    publish({ ...current.current, edited });
+  }, [publish]);
+  const beginEntry = (text: string) => {
+    if (!available()) return;
+    change('length', text);
+    setFocusRevision((value) => value + 1);
   };
-}
+  const enter = async (field?: SketchLineField): Promise<boolean> => {
+    if (field === 'x' || field === 'y') {
+      const view = lineInputView(current.current);
+      if (view.fields.x.invalid || view.fields.y.invalid) return false;
+      return choosePoint(view.point);
+    }
+    return commitPreview();
+  };
+  const cancelDraft = () => {
+    if (!current.current.anchor) return false;
+    reset();
+    latest.current.setNotice('Укажите новую первую точку отрезка');
+    return true;
+  };
+  const view = lineInputView(state);
+  const input: SketchLineNumericInput = {
+    anchored: !!state.anchor, fields: view.fields, canCommit: view.canCommit && !committing,
+    committing, error: view.error, focusRevision, change, unlock, beginEntry, enter, cancelDraft,
+  };
 
-function distance(a: CadPoint2, b: CadPoint2): number {
-  return Math.hypot(b[0] - a[0], b[1] - a[1]);
+  return { draft: view.draft, input, committing, move, point, reset, commitPreview };
 }
 
 function formatPoint(point: CadPoint2): string {

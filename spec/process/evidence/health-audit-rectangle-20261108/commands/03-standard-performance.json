@@ -1,0 +1,67 @@
+{
+  "name": "standard-performance",
+  "startedAt": "2026-11-08T09:17:06.873Z",
+  "command": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node.exe",
+  "argv": [
+    "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\performance-tool-20261107\\performance-runner.mjs",
+    "--repo",
+    "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108",
+    "--expected-head",
+    "b8f700bb6e455582db18df8d0ba43a2bfbdcc68b",
+    "--out",
+    "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\performance"
+  ],
+  "cwd": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108",
+  "executableSha256": "dccc52de28d8df2ee22d2062424f8c563070d95d8ad70c54c4bf01d590dec14f",
+  "environmentOverrides": {
+    "NO_COLOR": "1",
+    "TSX_DISABLE_CACHE": "1",
+    "npm_config_update_notifier": "false"
+  },
+  "nodeExecutableDirectoryPrependedToPath": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64",
+  "pid": 40540,
+  "exitCode": 0,
+  "signal": null,
+  "elapsedMs": 60163.8211,
+  "timeoutMs": 720000,
+  "timedOut": false,
+  "outputLimit": false,
+  "interrupted": false,
+  "spawnError": null,
+  "closed": true,
+  "cleanup": [],
+  "stdout": {
+    "bytes": 2347,
+    "sha256": "98d16965b119c8313c003db8557ca2f3e60b9fab4311d82fa88a92b89c3e95d3",
+    "encoding": "utf8",
+    "data": "START solve\nEND solve PASS 993.9 ms\nSTART history\nEND history PASS 25575.8 ms\nSTART serialization\nEND serialization PASS 903.5 ms\nSTART protected-part\nEND protected-part PASS 9603.5 ms\nSTART cold-planegcs-1\nEND cold-planegcs-1 PASS 478.4 ms\nSTART cold-planegcs-2\nEND cold-planegcs-2 PASS 450.4 ms\nSTART cold-planegcs-3\nEND cold-planegcs-3 PASS 412.9 ms\nSTART cold-occ-1\nEND cold-occ-1 PASS 6418.5 ms\nSTART cold-occ-2\nEND cold-occ-2 PASS 6080.1 ms\nSTART cold-occ-3\nEND cold-occ-3 PASS 5569.4 ms\n{\n  \"status\": \"PASS\",\n  \"mode\": \"measurement-awaiting-audit-acceptance\",\n  \"acceptedBaseline\": false,\n  \"reportPath\": \"C:\\\\Users\\\\spike\\\\Documents\\\\ASA-CAD-Maintenance-Captures\\\\legacy-cleanup-202-20261107\\\\audit-probes\\\\health-audit-rectangle-20261108\\\\performance\\\\performance-report.json\",\n  \"reportSha256\": \"b8758b30ed2fa8203a1c0bb9bd264fbc6904a99d35f8df8018adbd7807f50e0d\",\n  \"guards\": {\n    \"sourceUnchanged\": true,\n    \"checkoutClean\": true,\n    \"toolUnchanged\": true,\n    \"sixDistinctFreshColdProcesses\": true,\n    \"allOwnedWorkersExitedSuccessfully\": true,\n    \"noOwnedBrowserOrServer\": true\n  },\n  \"phases\": [\n    {\n      \"name\": \"solve\",\n      \"status\": \"PASS\",\n      \"pid\": 36612,\n      \"elapsedMs\": 993.9494999999998\n    },\n    {\n      \"name\": \"history\",\n      \"status\": \"PASS\",\n      \"pid\": 42576,\n      \"elapsedMs\": 25575.8056\n    },\n    {\n      \"name\": \"serialization\",\n      \"status\": \"PASS\",\n      \"pid\": 28004,\n      \"elapsedMs\": 903.4811000000009\n    },\n    {\n      \"name\": \"protected-part\",\n      \"status\": \"PASS\",\n      \"pid\": 13972,\n      \"elapsedMs\": 9603.536599999996\n    },\n    {\n      \"name\": \"cold-planegcs-1\",\n      \"status\": \"PASS\",\n      \"pid\": 31544,\n      \"elapsedMs\": 478.4426999999996\n    },\n    {\n      \"name\": \"cold-planegcs-2\",\n      \"status\": \"PASS\",\n      \"pid\": 40700,\n      \"elapsedMs\": 450.4178000000029\n    },\n    {\n      \"name\": \"cold-planegcs-3\",\n      \"status\": \"PASS\",\n      \"pid\": 38680,\n      \"elapsedMs\": 412.90200000000186\n    },\n    {\n      \"name\": \"cold-occ-1\",\n      \"status\": \"PASS\",\n      \"pid\": 42784,\n      \"elapsedMs\": 6418.508600000001\n    },\n    {\n      \"name\": \"cold-occ-2\",\n      \"status\": \"PASS\",\n      \"pid\": 39840,\n      \"elapsedMs\": 6080.098700000002\n    },\n    {\n      \"name\": \"cold-occ-3\",\n      \"status\": \"PASS\",\n      \"pid\": 15256,\n      \"elapsedMs\": 5569.445800000001\n    }\n  ]\n}\n"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "encoding": "utf8",
+    "data": ""
+  },
+  "status": "PASS",
+  "validation": {
+    "report": {
+      "path": "performance/performance-report.json",
+      "bytes": 1508686,
+      "sha256": "b8758b30ed2fa8203a1c0bb9bd264fbc6904a99d35f8df8018adbd7807f50e0d"
+    },
+    "phases": 10,
+    "cases": 16,
+    "measuredSamples": 106,
+    "warmups": 20,
+    "acceptedBaseline": false
+  },
+  "outputs": [
+    {
+      "status": "PRESENT",
+      "path": "performance/performance-report.json",
+      "bytes": 1508686,
+      "sha256": "b8758b30ed2fa8203a1c0bb9bd264fbc6904a99d35f8df8018adbd7807f50e0d"
+    }
+  ],
+  "sourceAndToolsUnchanged": true
+}

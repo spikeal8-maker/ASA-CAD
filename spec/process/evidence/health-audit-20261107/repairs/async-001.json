@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "kind": "asa-cad-repair-evidence-payloads",
+  "concern": "async",
+  "auditAccepted": false,
+  "sources": [
+    {
+      "sourceId": "maintenance/audit-async/candidate-focused-final/application.log",
+      "originalPath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-async\\candidate-focused-final\\application.log",
+      "physicalByteLength": 1027,
+      "sha256": "661d97563a8a52954d655a8973b145906021924ee7d799a6eba0e001eb151f49",
+      "encoding": "utf8",
+      "payload": "ASA-CAD M1 CadApplication behavior PASS\n  PASS replace different ID / late success\n  PASS replace different ID / late diagnostic\n  PASS replace different ID / late throw\n  PASS replace same ID / late success\n  PASS replace same ID / late diagnostic\n  PASS replace same ID / late throw\n  PASS pending rebuild invalidated by edit\n  PASS pending rebuild invalidated by undo\n  PASS pending rebuild invalidated by redo\n  PASS pending rebuild invalidated by dispose\n  PASS latest rebuild owns status even for identical document\n  PASS reference capture invalidated by replace\n  PASS reference capture invalidated by same-id replace\n  PASS reference capture invalidated by edit\n  PASS reference capture invalidated by undo\n  PASS reference capture invalidated by dispose\n  PASS replacement during prerequisite rebuild never starts capture\n  PASS capture waits for a current rebuild when another rebuild is running\n  PASS two captures cannot commit against one outdated history snapshot\nCadApplication async ownership: 19 PASS, 0 FAIL\n",
+      "segment": {
+        "index": 0,
+        "count": 1,
+        "offset": 0,
+        "byteLength": 1027,
+        "sha256": "661d97563a8a52954d655a8973b145906021924ee7d799a6eba0e001eb151f49"
+      }
+    },
+    {
+      "sourceId": "maintenance/audit-async/candidate-focused-final/architecture.log",
+      "originalPath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-async\\candidate-focused-final\\architecture.log",
+      "physicalByteLength": 138,
+      "sha256": "77a8ccc362d64541cb46e02095857de826e152544ab6f9f4c7ab3614446825d4",
+      "encoding": "utf8",
+      "payload": "M2O O6 application handler architecture PASS (focused geometry/edit/constraint/Line-pair/dimension owners + centralized history/rollback)\n",
+      "segment": {
+        "index": 0,
+        "count": 1,
+        "offset": 0,
+        "byteLength": 138,
+        "sha256": "77a8ccc362d64541cb46e02095857de826e152544ab6f9f4c7ab3614446825d4"
+      }
+    },
+    {
+      "sourceId": "maintenance/audit-async/candidate-focused-final/browser.log",
+      "originalPath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-async\\candidate-focused-final\\browser.log",
+      "physicalByteLength": 764,
+      "sha256": "9b85546b55abd2de7e87777913c2653badd9cb6155510343d72032d33d51a5b9",
+      "encoding": "utf8",
+      "payload": "ASA-CAD M1B capability/lazy-loader/routes PASS\n  PASS empty/non-Part/suppressed documents stay lazy\n  PASS new request wins while one lazy load is shared\n  PASS parent generation invalidates loaded work\n  PASS late success cannot replace B render\n  PASS late diagnostic cannot replace B render\n  PASS late throw cannot replace B render\n  PASS same-document rebuild keeps an immutable last valid model\n  PASS no-BRep replacement invalidates older loaded requests\n  PASS dispose during shared lazy load releases exactly one instance\n  PASS dispose during runtime wait cannot republish render\n  PASS reference completion from A cannot publish over B\n  PASS capture snapshots inputs and does not cancel its own rebuild\nBrowser runtime async ownership: 12 PASS, 0 FAIL\n",
+      "segment": {
+        "index": 0,
+        "count": 1,
+        "offset": 0,
+        "byteLength": 764,
+        "sha256": "9b85546b55abd2de7e87777913c2653badd9cb6155510343d72032d33d51a5b9"
+      }
+    },
+    {
+      "sourceId": "maintenance/audit-async/candidate-focused-final/budgets.log",
+      "originalPath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-async\\candidate-focused-final\\budgets.log",
+      "physicalByteLength": 5031,
+      "sha256": "2fedc96ec186971a70450fae122ae279ca8952ce1d9bdcca5b40188571107402",
+      "encoding": "utf8",
+      "payload": "ASA-CAD file budgets PASS (259 files checked; 14 exact ratchets frozen; 6 hard-limit exceptions).\nFile budget warning: AGENTS.md: 7230 canonical UTF-8 bytes > 5120-byte Agent entry/status document target\nFile budget warning: docs/ARCHITECTURE.md: 13363 canonical UTF-8 bytes > 12288-byte Focused narrative specification target\nFile budget warning: docs/DOCUMENT_TYPES.md: 14249 canonical UTF-8 bytes > 12288-byte Focused narrative specification target\nFile budget warning: docs/DOCUMENT_TYPES.md: 577 logical lines > 450-line Focused narrative specification review target\nFile budget warning: docs/STATUS.md: 6912 canonical UTF-8 bytes > 5120-byte Agent entry/status document target\nFile budget warning: docs/SYSTEM_SPEC.md: 17283 canonical UTF-8 bytes > 12288-byte Focused narrative specification target\nFile budget warning: docs/SYSTEM_SPEC.md: 520 logical lines > 450-line Focused narrative specification review target\nFile budget warning: docs/UI_COMMAND_SPEC.md: 31166 canonical UTF-8 bytes > 12288-byte Focused narrative specification target\nFile budget warning: docs/UI_COMMAND_SPEC.md: 782 logical lines > 450-line Focused narrative specification review target\nFile budget warning: docs/UI_CORE_UNIFICATION_SPEC.md: 16222 canonical UTF-8 bytes > 12288-byte Focused narrative specification target\nFile budget warning: docs/VISUAL_REFERENCE_SPEC.md: 16502 canonical UTF-8 bytes > 12288-byte Focused narrative specification target\nFile budget warning: src/web/App.tsx: 14486 canonical UTF-8 bytes > 10240-byte UI/controller target\nFile budget warning: src/web/CadViewport.tsx: 27374 canonical UTF-8 bytes > 10240-byte UI/controller target\nFile budget warning: src/web/CadViewport.tsx: 677 logical lines > 350-line UI/controller review target\nFile budget warning: src/web/kompas/kompas-top.css: 17992 canonical UTF-8 bytes > 10240-byte Domain CSS target\nFile budget warning: src/web/kompas/kompasLineIcons.ts: 10677 canonical UTF-8 bytes > 10240-byte UI/controller target\nFile budget warning: src/web/kompas/kompasMenus.ts: 16815 canonical UTF-8 bytes > 10240-byte UI/controller target\nFile budget warning: src/web/kompas/KompasParameters.tsx: 14958 canonical UTF-8 bytes > 10240-byte UI/controller target\nFile budget warning: src/web/kompas/KompasRibbon.tsx: 10357 canonical UTF-8 bytes > 10240-byte UI/controller target\nFile budget warning: src/web/kompas/kompasToolsets.ts: 14704 canonical UTF-8 bytes > 10240-byte UI/controller target\nFile budget warning: src/web/responsive.css: 11694 canonical UTF-8 bytes > 10240-byte Domain CSS target\nFile budget warning: src/runtime/OpenCascadePartRuntime.ts: 15119 canonical UTF-8 bytes > 14336-byte Runtime/adapter target\nFile budget warning: tests/m2/cut-extrude-parameters-browser.mjs: 10805 canonical UTF-8 bytes > 8192-byte Focused browser regression target\nFile budget warning: tests/m2/extrude-parameters-browser.mjs: 10502 canonical UTF-8 bytes > 8192-byte Focused browser regression target\nFile budget warning: tests/m2/file-menu-browser.mjs: 12204 canonical UTF-8 bytes > 8192-byte Focused browser regression target\nFile budget warning: tests/m2/fixtures-browser.mjs: 8602 canonical UTF-8 bytes > 8192-byte Focused browser regression target\nFile budget warning: tests/m2/kompas-shell-browser.mjs: 12988 canonical UTF-8 bytes > 8192-byte Focused browser regression target\nFile budget warning: tests/m2/live-sketch-browser.mjs: 12012 canonical UTF-8 bytes > 8192-byte Focused browser regression target\nFile budget warning: tests/m2/ordinary-selection-browser.mjs: 8462 canonical UTF-8 bytes > 8192-byte Focused browser regression target\nFile budget warning: tests/m2/part-browser.mjs: 18733 canonical UTF-8 bytes > 8192-byte Focused browser regression target\nFile budget warning: tests/m2/part-browser.mjs: 355 logical lines > 300-line Focused browser regression review target\nFile budget warning: tests/m2/part-lesson-browser.mjs: 10806 canonical UTF-8 bytes > 8192-byte Focused browser regression target\nFile budget warning: tests/m2/part-viewport-browser.mjs: 12694 canonical UTF-8 bytes > 8192-byte Focused browser regression target\nFile budget warning: tests/m2/responsive-browser.mjs: 10654 canonical UTF-8 bytes > 8192-byte Focused browser regression target\nFile budget warning: tests/m2/shell-browser.mjs: 10077 canonical UTF-8 bytes > 8192-byte Focused browser regression target\nFile budget warning: tests/m2/shortcuts-browser.mjs: 8445 canonical UTF-8 bytes > 8192-byte Focused browser regression target\nFile budget warning: tests/m2/sketch-hierarchy-browser.mjs: 8330 canonical UTF-8 bytes > 8192-byte Focused browser regression target\nFile budget warning: tests/m3/sketch-diameter-dimension-browser.mjs: 8237 canonical UTF-8 bytes > 8192-byte Focused browser regression target\nFile budget warning: tests/m3/sketch-directional-dimensions-browser.mjs: 8368 canonical UTF-8 bytes > 8192-byte Focused browser regression target\nFile budget warning: tests/m3/sketch-linear-dimension-browser.mjs: 8240 canonical UTF-8 bytes > 8192-byte Focused browser regression target\n",
+      "segment": {
+        "index": 0,
+        "count": 1,
+        "offset": 0,
+        "byteLength": 5031,
+        "sha256": "2fedc96ec186971a70450fae122ae279ca8952ce1d9bdcca5b40188571107402"
+      }
+    },
+    {
+      "sourceId": "maintenance/audit-async/candidate-focused-final/results.json",
+      "originalPath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-async\\candidate-focused-final\\results.json",
+      "physicalByteLength": 2819,
+      "sha256": "a54ff6968aa822cc178074d3f9b600108609720b5ce25e0334ee95839e572cf6",
+      "encoding": "utf8",
+      "payload": "{\n  \"schema\": \"asa-audit-async-focused-v1\",\n  \"base\": \"1be7bdb3b351fb0caee9c040abb43fd690bed687\",\n  \"branch\": \"maintenance/audit-async-consistency-20261107\",\n  \"sourceManifestSha256\": \"f5d897a263a6aa7481a29682eb4fa85c83e7958acb5bf9923d734f86a96a9d2b\",\n  \"sourceUnchanged\": true,\n  \"status\": \"PASS\",\n  \"reports\": [\n    {\n      \"name\": \"application\",\n      \"startedAt\": \"2026-11-07T20:12:40.265Z\",\n      \"finishedAt\": \"2026-11-07T20:12:40.691Z\",\n      \"exitCode\": 0,\n      \"signal\": null,\n      \"log\": \"C:\\\\Users\\\\spike\\\\Documents\\\\ASA-CAD-Maintenance-Captures\\\\legacy-cleanup-202-20261107\\\\audit-async\\\\candidate-focused-final\\\\application.log\",\n      \"sha256\": \"661d97563a8a52954d655a8973b145906021924ee7d799a6eba0e001eb151f49\"\n    },\n    {\n      \"name\": \"browser\",\n      \"startedAt\": \"2026-11-07T20:12:40.692Z\",\n      \"finishedAt\": \"2026-11-07T20:12:41.055Z\",\n      \"exitCode\": 0,\n      \"signal\": null,\n      \"log\": \"C:\\\\Users\\\\spike\\\\Documents\\\\ASA-CAD-Maintenance-Captures\\\\legacy-cleanup-202-20261107\\\\audit-async\\\\candidate-focused-final\\\\browser.log\",\n      \"sha256\": \"9b85546b55abd2de7e87777913c2653badd9cb6155510343d72032d33d51a5b9\"\n    },\n    {\n      \"name\": \"runtime\",\n      \"startedAt\": \"2026-11-07T20:12:41.055Z\",\n      \"finishedAt\": \"2026-11-07T20:12:48.077Z\",\n      \"exitCode\": 0,\n      \"signal\": null,\n      \"log\": \"C:\\\\Users\\\\spike\\\\Documents\\\\ASA-CAD-Maintenance-Captures\\\\legacy-cleanup-202-20261107\\\\audit-async\\\\candidate-focused-final\\\\runtime.log\",\n      \"sha256\": \"546cea17f4c62cd68df3049bdcebae776eecbd16f3e07a91b77ccd9c3ebcd52c\"\n    },\n    {\n      \"name\": \"typecheck\",\n      \"startedAt\": \"2026-11-07T20:12:48.077Z\",\n      \"finishedAt\": \"2026-11-07T20:12:51.566Z\",\n      \"exitCode\": 0,\n      \"signal\": null,\n      \"log\": \"C:\\\\Users\\\\spike\\\\Documents\\\\ASA-CAD-Maintenance-Captures\\\\legacy-cleanup-202-20261107\\\\audit-async\\\\candidate-focused-final\\\\typecheck.log\",\n      \"sha256\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"\n    },\n    {\n      \"name\": \"architecture\",\n      \"startedAt\": \"2026-11-07T20:12:51.566Z\",\n      \"finishedAt\": \"2026-11-07T20:12:51.616Z\",\n      \"exitCode\": 0,\n      \"signal\": null,\n      \"log\": \"C:\\\\Users\\\\spike\\\\Documents\\\\ASA-CAD-Maintenance-Captures\\\\legacy-cleanup-202-20261107\\\\audit-async\\\\candidate-focused-final\\\\architecture.log\",\n      \"sha256\": \"77a8ccc362d64541cb46e02095857de826e152544ab6f9f4c7ab3614446825d4\"\n    },\n    {\n      \"name\": \"budgets\",\n      \"startedAt\": \"2026-11-07T20:12:51.617Z\",\n      \"finishedAt\": \"2026-11-07T20:12:51.696Z\",\n      \"exitCode\": 0,\n      \"signal\": null,\n      \"log\": \"C:\\\\Users\\\\spike\\\\Documents\\\\ASA-CAD-Maintenance-Captures\\\\legacy-cleanup-202-20261107\\\\audit-async\\\\candidate-focused-final\\\\budgets.log\",\n      \"sha256\": \"2fedc96ec186971a70450fae122ae279ca8952ce1d9bdcca5b40188571107402\"\n    }\n  ]\n}\n",
+      "segment": {
+        "index": 0,
+        "count": 1,
+        "offset": 0,
+        "byteLength": 2819,
+        "sha256": "a54ff6968aa822cc178074d3f9b600108609720b5ce25e0334ee95839e572cf6"
+      }
+    },
+    {
+      "sourceId": "maintenance/audit-async/candidate-focused-final/runtime.log",
+      "originalPath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-async\\candidate-focused-final\\runtime.log",
+      "physicalByteLength": 399,
+      "sha256": "546cea17f4c62cd68df3049bdcebae776eecbd16f3e07a91b77ccd9c3ebcd52c",
+      "encoding": "utf8",
+      "payload": "\nASA-CAD M1 protected Part through CadApplication + OpenCascade\n  ✓ 60x40x10 + centered Ø12 through cut + R1 fillet (V=22856.151)\n  ✓ driving width 60 -> 80 rebuilds cut + stable-reference fillet (V=30851.858)\n  ✓ serialized ASA CadDocument reopens and recomputes identical B-Rep result\n  ✓ M1 protected Part runtime vertical slice PASS\n\nActual OpenCascade async ownership: 10 PASS, 0 FAIL\n",
+      "segment": {
+        "index": 0,
+        "count": 1,
+        "offset": 0,
+        "byteLength": 399,
+        "sha256": "546cea17f4c62cd68df3049bdcebae776eecbd16f3e07a91b77ccd9c3ebcd52c"
+      }
+    },
+    {
+      "sourceId": "maintenance/audit-async/candidate-focused-final/source-manifest.json",
+      "originalPath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-async\\candidate-focused-final\\source-manifest.json",
+      "physicalByteLength": 3048,
+      "sha256": "f5d897a263a6aa7481a29682eb4fa85c83e7958acb5bf9923d734f86a96a9d2b",
+      "encoding": "utf8",
+      "payload": "[\n  {\n    \"path\": \"src/application/CadApplicationImpl.ts\",\n    \"bytes\": 12652,\n    \"canonicalBytes\": 12274,\n    \"sha256\": \"6f487d3f0f36b182ad0f32333d57283d47b25b788e571f2004b215d2dd9d1254\",\n    \"canonicalSha256\": \"3c840b408f3b34d5fe31e5819139f8bf1f93235f9b0fec2f5722807e10416ba2\"\n  },\n  {\n    \"path\": \"src/application/CadCommandOutcome.ts\",\n    \"bytes\": 2017,\n    \"canonicalBytes\": 1967,\n    \"sha256\": \"d22f630ead28da6a809e58ee1c0cf98af86e50f4e22979c170e56b51f616722c\",\n    \"canonicalSha256\": \"3dbbd9ac25e783bee904dc40fba3583369d72195d10d19b32b6f16a791b50584\"\n  },\n  {\n    \"path\": \"src/browser/BrowserPartRuntimeAdapter.ts\",\n    \"bytes\": 6790,\n    \"canonicalBytes\": 6629,\n    \"sha256\": \"07e07e8409c4514597198c04096308a58dd36aaa79af353879d5eaaf020ea3f9\",\n    \"canonicalSha256\": \"2f6f0f10bdc8caf1280f74fea39f93c4c90ffda06a5150798fe7ff1c74444d38\"\n  },\n  {\n    \"path\": \"src/contracts/runtime.ts\",\n    \"bytes\": 1724,\n    \"canonicalBytes\": 1669,\n    \"sha256\": \"a9c003103bd6b667d58e6c8094416c0b8b3efb01fad7511c9e918db938ccb0b5\",\n    \"canonicalSha256\": \"2dacee757a4b834c35b9ed01c76452636384abc9009839934f98a64258255ebc\"\n  },\n  {\n    \"path\": \"src/runtime/SolvedSketchPartRuntimeAdapter.ts\",\n    \"bytes\": 5122,\n    \"canonicalBytes\": 4989,\n    \"sha256\": \"d171830d7f66bb95f9d5cac4b2fba32cf5064612725fbaf7df30a5ecc5b41a94\",\n    \"canonicalSha256\": \"93bfbb240ec5dc348837e2a34efd3f8f7c624d11b429e2c1afe09d6ffd825007\"\n  },\n  {\n    \"path\": \"tests/m1/application-async.ts\",\n    \"bytes\": 11980,\n    \"canonicalBytes\": 11739,\n    \"sha256\": \"3564dd89606fcd691ba131d0f9d1c8338d9f71502cf8ba58a48bf2a04498c6d3\",\n    \"canonicalSha256\": \"2da35f99fa383877c7cb6505c69f3d1c52db81eff92740cbd5c6ec5da0e6f68b\"\n  },\n  {\n    \"path\": \"tests/m1/application.ts\",\n    \"bytes\": 5956,\n    \"canonicalBytes\": 5791,\n    \"sha256\": \"0959a9814b20c2beab49b38756917e3ea73cac3fce0a205708809553e3cf314e\",\n    \"canonicalSha256\": \"fb43cc14f812e15cabad193fcb01948868f7974c8479a545ac58ab91b9ef2ca3\"\n  },\n  {\n    \"path\": \"tests/m1/protected-part-runtime.ts\",\n    \"bytes\": 7815,\n    \"canonicalBytes\": 7636,\n    \"sha256\": \"124041b58826f5f43031d3fac0f824402bb667422d848360532db4adb7af8fdb\",\n    \"canonicalSha256\": \"6c54c812b5fddb9aaa53c03414b39e78f9e108c31ce3443ada03b95ad7108d93\"\n  },\n  {\n    \"path\": \"tests/m1/runtime-async.ts\",\n    \"bytes\": 11312,\n    \"canonicalBytes\": 11091,\n    \"sha256\": \"e559e6e210dc354a5579fd71912302010ba80609e1e9e49cd509345bd795ef8f\",\n    \"canonicalSha256\": \"cd7c1dc1a9e72c5c1f656e85c6c8d66fbc0ce50fd8d391d8b7a18132bb388f5a\"\n  },\n  {\n    \"path\": \"tests/m1b/client-runtime-async.ts\",\n    \"bytes\": 12069,\n    \"canonicalBytes\": 11821,\n    \"sha256\": \"55a705fedae7b05a994585d464822046b5f65f0d411aa35589ccb8d045714d02\",\n    \"canonicalSha256\": \"1511952494109f18c9e3e6bbde9122cde51ac55ff5fa0b42b4c530a7936b3292\"\n  },\n  {\n    \"path\": \"tests/m1b/client-runtime.ts\",\n    \"bytes\": 2950,\n    \"canonicalBytes\": 2865,\n    \"sha256\": \"a3b0652c1bb6eccaaa4c55208dadbe7bf91562d3e9bd89b7118a4e82874a881d\",\n    \"canonicalSha256\": \"aabfcd1e4b3ac60d8c01fc2bdbdececd4cb73a675339cf8310a8db7156850017\"\n  }\n]\n",
+      "segment": {
+        "index": 0,
+        "count": 1,
+        "offset": 0,
+        "byteLength": 3048,
+        "sha256": "f5d897a263a6aa7481a29682eb4fa85c83e7958acb5bf9923d734f86a96a9d2b"
+      }
+    },
+    {
+      "sourceId": "maintenance/audit-async/candidate-focused-final/typecheck.log",
+      "originalPath": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-async\\candidate-focused-final\\typecheck.log",
+      "physicalByteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "encoding": "utf8",
+      "payload": "",
+      "segment": {
+        "index": 0,
+        "count": 1,
+        "offset": 0,
+        "byteLength": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ]
+}

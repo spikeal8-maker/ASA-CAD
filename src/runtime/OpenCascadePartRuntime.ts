@@ -3,13 +3,11 @@ import type {
   CadFeature,
   CadPartDocument,
   CadSketch,
-  CadStableReference,
 } from '../contracts/document';
 import type { CadFeatureId, CadSketchId } from '../contracts/ids';
 import { buildSketchProfile, CadSketchProfileError, type CadSketchProfile } from '../application/SketchProfile';
-import type { CadPlaneName } from '../contracts/commands';
-import { originPlaneFrame, sketchPlaneFrame, type CadSketchPlaneFrame } from '../contracts/sketchWorkplane';
 import { profilePrism } from './OpenCascadeProfileSolid';
+import { resolveFilletReferenceEdge, resolveSketchReferenceFrame } from './OpenCascadeReferenceResolver';
 import type {
   CadReferenceCaptureRequest,
   CadRuntimeAdapter,
@@ -19,13 +17,8 @@ import type {
 } from '../contracts/runtime';
 import {
   captureEdge,
-  captureFace,
   captureFaceAtPoint,
   captureVertex,
-  resolveEdge,
-  resolveFace,
-  type EdgeSig,
-  type FaceSig,
 } from '../../vendor/toubkal/src/services/StableRef';
 
 interface RuntimeBounds {
@@ -187,7 +180,7 @@ export class OpenCascadePartRuntime implements CadRuntimeAdapter {
 
   private evaluateExtrude(part: CadPartDocument, feature: CadFeature): any {
     const sketch = this.requireSketch(part, String(feature.parameters.sketchId) as CadSketchId);
-    const frame = this.resolveSketchPlane(part, sketch);
+    const frame = resolveSketchReferenceFrame(this.oc, part, sketch, this.featureShapes);
     const profile = this.sketchProfile(sketch);
     const distance = finiteNumber(feature.parameters.distance, `${feature.name}.distance`);
     if (distance <= 0) throw new Error(`${feature.name}: distance must be positive`);
@@ -199,7 +192,7 @@ export class OpenCascadePartRuntime implements CadRuntimeAdapter {
 
   private evaluateCutExtrude(part: CadPartDocument, feature: CadFeature, target: any): any {
     const sketch = this.requireSketch(part, String(feature.parameters.sketchId) as CadSketchId);
-    const frame = this.resolveSketchPlane(part, sketch);
+    const frame = resolveSketchReferenceFrame(this.oc, part, sketch, this.featureShapes);
     const profile = this.sketchProfile(sketch);
     let tool: any;
     if (feature.parameters.end === 'through-all') {
@@ -232,13 +225,7 @@ export class OpenCascadePartRuntime implements CadRuntimeAdapter {
     for (const referenceId of feature.inputReferences) {
       const reference = part.stableReferences.find((item) => item.id === referenceId);
       if (!reference) throw new Error(`${feature.name}: missing stable reference ${referenceId}`);
-      const edgeSignature = this.edgeSignature(reference);
-      const resolved = resolveEdge(this.oc, target, edgeSignature);
-      if (resolved.rejected) {
-        throw new Error(`${feature.name}: stable edge reference unresolved (${resolved.reason ?? 'ambiguous'})`);
-      }
-      const edge = this.nthEdge(target, resolved.index);
-      if (!edge) throw new Error(`${feature.name}: resolved edge ${resolved.index} is unavailable`);
+      const edge = resolveFilletReferenceEdge(this.oc, target, reference, feature.name, this.featureShapes);
       operation.Add_2(radius, edge);
       edge.delete?.();
     }
@@ -246,30 +233,6 @@ export class OpenCascadePartRuntime implements CadRuntimeAdapter {
     operation.Build(new this.oc.Message_ProgressRange_1());
     if (!operation.IsDone()) throw new Error(`${feature.name}: OpenCascade fillet failed`);
     return operation.Shape();
-  }
-
-  private resolveSketchPlane(part: CadPartDocument, sketch: CadSketch): CadSketchPlaneFrame {
-    if (sketch.support === 'XY' || sketch.support === 'XZ' || sketch.support === 'YZ') {
-      return originPlaneFrame(sketch.support as CadPlaneName);
-    }
-
-    const reference = part.stableReferences.find((item) => item.id === sketch.support);
-    if (!reference) throw new Error(`${sketch.name}: support reference ${sketch.support} is missing`);
-    const ownerId = reference.ownerFeatureId;
-    if (!ownerId) throw new Error(`${sketch.name}: support reference has no source feature`);
-    const ownerShape = this.featureShapes.get(ownerId);
-    if (!ownerShape) throw new Error(`${sketch.name}: source feature ${ownerId} is not built yet`);
-
-    const faceSignature = this.faceSignature(reference);
-    const resolved = resolveFace(this.oc, ownerShape, faceSignature);
-    if (resolved.rejected) {
-      throw new Error(`${sketch.name}: support face unresolved (${resolved.reason ?? 'ambiguous'})`);
-    }
-    const live = captureFace(this.oc, ownerShape, resolved.index);
-    if (!live || live.kind !== 'face' || !live.axis) throw new Error(`${sketch.name}: support face is not measurable`);
-    if (live.surf !== 'plane') throw new Error(`${sketch.name}: only planar support is allowed`);
-    // Same frame rule as the origin planes; the face axis is the outward normal.
-    return sketchPlaneFrame(live.axis, live.centroid);
   }
 
   /** Profile from solved Sketch geometry (SolvedSketchPartRuntimeAdapter runs the solver first). */
@@ -331,36 +294,6 @@ export class OpenCascadePartRuntime implements CadRuntimeAdapter {
       }
     }
     return bestIndex;
-  }
-
-  private nthEdge(shape: any, index: number): any | null {
-    const explorer = new this.oc.TopExp_Explorer_2(
-      shape,
-      this.oc.TopAbs_ShapeEnum.TopAbs_EDGE,
-      this.oc.TopAbs_ShapeEnum.TopAbs_SHAPE,
-    );
-    let current = 0;
-    while (explorer.More()) {
-      if (current === index) {
-        const edge = this.oc.TopoDS.Edge_1(explorer.Current());
-        explorer.delete?.();
-        return edge;
-      }
-      current++;
-      explorer.Next();
-    }
-    explorer.delete?.();
-    return null;
-  }
-
-  private edgeSignature(reference: CadStableReference): EdgeSig {
-    if (reference.locator.kind !== 'edge') throw new Error(`Reference ${reference.id} is not an edge`);
-    return reference.locator as unknown as EdgeSig;
-  }
-
-  private faceSignature(reference: CadStableReference): FaceSig {
-    if (reference.locator.kind !== 'face') throw new Error(`Reference ${reference.id} is not a face`);
-    return reference.locator as unknown as FaceSig;
   }
 
   private requireSketch(part: CadPartDocument, id: CadSketchId): CadSketch {

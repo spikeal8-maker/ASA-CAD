@@ -109,9 +109,9 @@ const layer = source('src/web/viewport/SketchCoincidentInteractionLayer.tsx');
 assert.match(handler, /addLinePairConstraint/); assert.match(owner, /sameUnorderedEntityPair/); assert.doesNotMatch(owner, /PlaneGCS|OpenCascade|vendor\//);
 assert.match(controller, /setActiveCommand\('constraint\.equal'\)/); assert.match(controller, /id: 'constraint\.equal'/);
 assert.match(layer, /tool="constraint\.equal"/); assert.match(layer, /pointSegmentDistance/); assert.doesNotMatch(layer, /CadApplication|app\.execute|OpenCascade/);
-const appSource = source('src/web/App.tsx'), shell = source('src/web/CadShellCommandGroups.tsx'), mobile = source('src/web/MobileToolsPanel.tsx');
+const appSource = source('src/web/App.tsx'), toolsets = source('src/web/kompas/kompasToolsets.ts'), mobile = source('src/web/MobileToolsPanel.tsx');
 assert.match(appSource, /equalConstraint: workspace\.beginEqualConstraint/); assert.match(appSource, /equalCommit={workspace\.applyEqualConstraint}/);
-assert.match(shell, /constraint\.equal/); assert.match(mobile, /constraint\.equal/);
+assert.match(toolsets, /I\([^)]*,'constraint\.equal'\)/); assert.match(mobile, /constraint\.equal/);
 const registry = JSON.parse(source('spec/ui/command-registry.v1.json')); const product = registry.commands.find((item: { id: string }) => item.id === 'constraint.equal');
 assert.equal(product?.milestone, 'M3'); assert.equal(product?.status, 'implemented'); assert.equal(product?.backendCommand, 'constraint.equal');
 

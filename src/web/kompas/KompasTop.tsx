@@ -9,6 +9,7 @@ import { KompasTooltip } from './KompasTooltip';
 import { kompasMenus, KOMPAS_PART_MENU, KOMPAS_SKETCH_MENU } from './kompasMenus';
 import type { KompasViewName } from './kompasMenuTypes';
 import type { KompasToolsetId } from './kompasToolsets';
+import { useKompasDesktop } from './useKompasDesktop';
 import { KOMPAS_STATUS_TEXT, kompasShell, useKompasShell, type KompasCommandResolver, type KompasCommandStatus } from './kompasShellStore';
 
 const VIEW_ACTIONS: Partial<Record<KompasViewName, string>> = {
@@ -27,19 +28,18 @@ function lookup(getAction: (id: string) => CadUiAction, id: string | null): CadU
  */
 export function KompasTop(props: CadShellTopProps) {
   const { getAction } = props;
-  const [toolset, setToolset] = React.useState<KompasToolsetId>('solid');
-  const previous = React.useRef<KompasToolsetId>('solid');
   const shell = useKompasShell();
+  const desktop = useKompasDesktop();
   const sketchMode = shell.sketchMode;
-
-  React.useEffect(() => { kompasShell.set({ toolset }); }, [toolset]);
-
-  React.useLayoutEffect(() => {
-    setToolset((current) => {
-      if (sketchMode) { if (current !== 'sketch') previous.current = current; return 'sketch'; }
-      return current === 'sketch' ? previous.current : current;
-    });
-  }, [sketchMode]);
+  const toolset = shell.toolset;
+  // Browsing a ribbon is presentation only. Follow actual sketch entry/exit,
+  // without turning Create Sketch's plane-selection workspace into an open sketch.
+  React.useEffect(() => {
+    if (sketchMode) kompasShell.set({ toolset: 'sketch' });
+    else if (props.activeWorkspace !== 'sketch') {
+      kompasShell.set({ toolset: props.activeWorkspace === 'surfaces' ? 'surfaces' : 'solid' });
+    }
+  }, [sketchMode, props.activeWorkspace]);
 
   const resolver = React.useMemo<KompasCommandResolver>(() => ({
     status(id) {
@@ -56,10 +56,17 @@ export function KompasTop(props: CadShellTopProps) {
       const action = lookup(getAction, target);
       if (!action) { kompasShell.toast(`«${label}»: ${KOMPAS_STATUS_TEXT.none}`); return; }
       if (!action.enabled) { kompasShell.toast(`«${label}»: ${action.disabledReason ?? KOMPAS_STATUS_TEXT[resolver.status(target)]}`); return; }
+      const repeatedCommand = desktop && target === kompasShell.get().activeCommand;
       void action.execute();
+      if (repeatedCommand) kompasShell.requestPanel('params');
     },
-  }), [getAction, sketchMode]);
+  }), [getAction, sketchMode, desktop]);
   kompasShell.setResolver(resolver);
+
+  const setToolset = React.useCallback((next: KompasToolsetId) => {
+    kompasShell.set({ toolset: next });
+    if (!sketchMode && next !== 'sketch') props.setActiveWorkspace(next);
+  }, [sketchMode, props.setActiveWorkspace]);
 
   const canUndo = lookup(getAction, 'system.undo')?.enabled ?? false;
   const canRedo = lookup(getAction, 'system.redo')?.enabled ?? false;

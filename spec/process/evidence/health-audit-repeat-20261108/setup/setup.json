@@ -1,0 +1,77 @@
+{
+  "repo": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Repeat-20261108",
+  "head": "7bf71e2ee8ece045fb69620c657570ce7be9294f",
+  "tree": "899f3a888a0c14173b6117cf8ea52ab4d6f4b40c",
+  "branch": "maintenance/full-health-audit-repeat-20261108",
+  "node": "v22.23.3",
+  "nodePath": "C:\\Users\\spike\\AppData\\Local\\Programs\\nodejs\\node-v22.23.3-win-x64\\node.exe",
+  "npm": "10.9.9",
+  "clean": true,
+  "physicalOwnNodeModules": true,
+  "packageHashes": [
+    {
+      "file": "package.json",
+      "sha256": "e04ab220bd0dcd9a5708e63b9c62a31518de8c1d46819618c18d8bb592c4dd65"
+    },
+    {
+      "file": "vendor/toubkal/package.json",
+      "sha256": "21314b93082e7e6c0948b3f70dd9a048b1ce5dbcf4ed6a6a730a48f856efe132"
+    },
+    {
+      "file": "vendor/toubkal/package-lock.json",
+      "sha256": "f103b7b5e9a91ba50580fa91dfdd734aa989f0368e1584d51f30870b3eccfe79"
+    }
+  ],
+  "hiddenLockSha256": "6cd93b898bc22aca72b454d03a022822f95fdedcc8d27f02b511ba67f566ea7a",
+  "checks": [
+    {
+      "name": "clean-install",
+      "command": [
+        "C:\\Users\\spike\\AppData\\Local\\Programs\\nodejs\\node-v22.23.3-win-x64\\node.exe",
+        "C:\\Users\\spike\\AppData\\Local\\Programs\\nodejs\\node-v22.23.3-win-x64\\node_modules\\npm\\bin\\npm-cli.js",
+        "--prefix",
+        "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Repeat-20261108\\vendor\\toubkal",
+        "ci",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "elapsedMs": 17830,
+      "stdoutSha256": "192c5d2bfd3d5f187c4116bdb61d2d498078f75651c66acc0f83798dd02efb95",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "dependency-tree",
+      "command": [
+        "C:\\Users\\spike\\AppData\\Local\\Programs\\nodejs\\node-v22.23.3-win-x64\\node.exe",
+        "C:\\Users\\spike\\AppData\\Local\\Programs\\nodejs\\node-v22.23.3-win-x64\\node_modules\\npm\\bin\\npm-cli.js",
+        "--prefix",
+        "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Repeat-20261108\\vendor\\toubkal",
+        "ls",
+        "--all",
+        "--json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "elapsedMs": 504,
+      "stdoutSha256": "34817d919092268bbf57ae4812fa6111e54f78db9557801aecac3f58ba5383ec",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "asa-types",
+      "command": [
+        "C:\\Users\\spike\\AppData\\Local\\Programs\\nodejs\\node-v22.23.3-win-x64\\node.exe",
+        "C:\\Users\\spike\\AppData\\Local\\Programs\\nodejs\\node-v22.23.3-win-x64\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "typecheck:asa"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "elapsedMs": 6822,
+      "stdoutSha256": "54db64d65c6a4f4f878ae42463a5e94173111fe174a1a25d9e5c56aae0aa36c8",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "pass": true
+}

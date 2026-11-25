@@ -1,0 +1,352 @@
+{
+  "schemaVersion": 1,
+  "kind": "full-repository-health-audit-repeat-evidence-index",
+  "auditDate": "2026-11-08",
+  "audited": {
+    "head": "7bf71e2ee8ece045fb69620c657570ce7be9294f",
+    "tree": "899f3a888a0c14173b6117cf8ea52ab4d6f4b40c",
+    "main": "1f8d2627da7ddfa63b31876d46347d0b8080c154",
+    "branch": "integration/ui-core-unification",
+    "sourceFingerprint": "498dbd75ca26f8468080dca2188e93ed4156b40f6d3fe9475a90c70ec115dd0f"
+  },
+  "controllerDecision": {
+    "outcome": "YELLOW_ACCEPTED",
+    "acceptedBy": "ChatGPT technical controller /root under OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008",
+    "acceptanceScope": "TECHNICAL_INTEGRATION_ONLY",
+    "effectiveAfter": [
+      "Exact audit PR CI SUCCESS",
+      "Independent canonical report/state/footprint review APPROVE",
+      "Merge into integration/ui-core-unification"
+    ],
+    "ownerProductAcceptance": "PENDING",
+    "nextCheckpoint": "U2",
+    "rawAcceptanceFlagsUnmodified": true
+  },
+  "historical": {
+    "auditPr": 217,
+    "auditedSha": "128480e1a150253359ce44158d5588f6b08f27b8",
+    "mergeSha": "20603c34f277dc9f0cf2696f5bd3971dd7645678",
+    "reportUrl": "https://github.com/spikeal8-maker/ASA-CAD/blob/20603c34f277dc9f0cf2696f5bd3971dd7645678/docs/FULL_REPOSITORY_HEALTH_AUDIT.md",
+    "measurementManifest": "../health-audit-20261107/measurement/manifest.json",
+    "measurementManifestSha256": "d6346a4afe203568d0238455a425cbe042fc43351a1d07a632114812bfdbc426",
+    "repairManifest": "../health-audit-20261107/repairs/manifest.json",
+    "repairManifestSha256": "c245f4e3684239d02fbbe2bc4bc6c976f0a61766ce29e0e036dfc0dae5998fd1",
+    "historicalArchivesUnmodified": true
+  },
+  "closedDebts": [
+    {
+      "id": "HA-20261107-WEB-TYPES",
+      "pr": 218,
+      "merge": "6efe79c27c497aabd4ec31c8c61c63586fc26011",
+      "prJobs": 9,
+      "postMergeJobs": 8,
+      "freshProof": "checks/full-web-types.json"
+    },
+    {
+      "id": "HA-20261107-VENDOR-LIFETIME",
+      "pr": 219,
+      "merge": "8684b56aff2a24d46458741249d27dd08f59b292",
+      "prJobs": 5,
+      "postMergeJobs": 6,
+      "freshProof": "checks/native-lifetime.json"
+    },
+    {
+      "id": "HA-20261107-DEPENDENCIES",
+      "pr": 220,
+      "merge": "7bf71e2ee8ece045fb69620c657570ce7be9294f",
+      "prJobs": 9,
+      "postMergeJobs": 8,
+      "freshProof": "checks/dependency-audit-input.json"
+    }
+  ],
+  "productCi": {
+    "pr": 220,
+    "head": "dda21b6d57c3907d88fb374032f8ea108de9c453",
+    "base": "8684b56aff2a24d46458741249d27dd08f59b292",
+    "synthetic": "fcdc2189209c2a577fd0a625c066382c4385b2d8",
+    "merge": "7bf71e2ee8ece045fb69620c657570ce7be9294f",
+    "tree": "899f3a888a0c14173b6117cf8ea52ab4d6f4b40c",
+    "prReceipt": "ci/dependencies-220-ci.json",
+    "postMergeReceipt": "ci/dependencies-220-postmerge-7bf71e2.json",
+    "applicablePrJobs": 9,
+    "postMergeJobs": 8,
+    "allSuccess": true,
+    "actualCheckoutVerified": true
+  },
+  "measurement": {
+    "run": "run.json",
+    "runSha256": "f5fcce90b848a9c8f19e6d5b76f6bcc5b34c48e5df7bbc56631d3fd3981eb22b",
+    "manifest": "measurement/manifest.json",
+    "manifestSha256": "f7edbe5b7d8418a4d5c3572e1f3a8c7f5612ae0d3848639b7458f2802b27cd22",
+    "archiveFiles": 11,
+    "originals": 73,
+    "originalBytes": 3425509,
+    "phases": 10,
+    "cases": 16,
+    "samples": 106,
+    "warmups": 20,
+    "failed": 0,
+    "unattempted": 0
+  },
+  "openDebts": [
+    {
+      "id": "NODE_TOOLCHAIN_EOL_AND_SECURITY_PATCH_GAP",
+      "status": "OPEN",
+      "classification": "YELLOW",
+      "owner": "ChatGPT technical controller /root",
+      "gate": "BEFORE_U2_TECHNICAL_ACCEPTANCE_OR_NEXT_MILESTONE_BOUNDARY_IF_EARLIER_AND_PRE_BETA",
+      "exposureGrowthAllowed": false,
+      "asaSpecificExploitReachability": "NOT_ESTABLISHED",
+      "ciDockerBuildNode": "20.19.0",
+      "d2Node": "22.23.3",
+      "officialSecurityRelease": "22.23.4",
+      "scheduleUrl": "https://raw.githubusercontent.com/nodejs/Release/main/schedule.json",
+      "securityReleaseUrl": "https://nodejs.org/en/blog/release/v22.23.4",
+      "newD2RuntimeInstallationRequiresSeparateAuthorization": true
+    }
+  ],
+  "largeArtifactReview": {
+    "thresholdBytes": 524288,
+    "hardBytes": 2097152,
+    "files": [
+      {
+        "path": "measurement/performance-report.json",
+        "bytes": 1509336,
+        "sha256": "a8dc8b321472056f89995213817da8aebab3b9059839cedab32ea66a50708b9f"
+      },
+      {
+        "path": "ci/dependencies-220-ci.json",
+        "bytes": 721022,
+        "sha256": "a4ce78d7658431a179a9193bfdabdab37812b92113a0805860738227e111c7cd"
+      },
+      {
+        "path": "artifacts/dependencies-220-visual.zip",
+        "bytes": 1673158,
+        "sha256": "53ddda4785d0e764843347d5d1987691e0bee7ccda90a83a06d66748f446943b"
+      }
+    ],
+    "reason": "Immutable raw performance/CI receipts and actual visual artifact; no generated product bundles, caches or node_modules. Full independent final footprint review is required."
+  },
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 129,
+      "sha256": "390ce6f7efa56d82b76e9711757271b5d708409bb2248e7c9d51c517f9b5493d"
+    },
+    {
+      "path": "analysis/comparison.json",
+      "bytes": 132182,
+      "sha256": "66dbe76b28617b7a636038b62e304f3bc1701a8c338befb00d50af04d182358d"
+    },
+    {
+      "path": "analysis/numeric-summary.json",
+      "bytes": 87366,
+      "sha256": "3dbcbd91c6e1223ee29279c95b76b4f13162bc15a5076bc66cd1ef679b34b903"
+    },
+    {
+      "path": "artifacts/dependencies-220-lint.zip",
+      "bytes": 133733,
+      "sha256": "ef7721d237858c60250f8a98aeab9fa33864a12f06d0952ad23f56ae8f00873c"
+    },
+    {
+      "path": "artifacts/dependencies-220-visual.zip",
+      "bytes": 1673158,
+      "sha256": "53ddda4785d0e764843347d5d1987691e0bee7ccda90a83a06d66748f446943b"
+    },
+    {
+      "path": "artifacts/root-verification.json",
+      "bytes": 5709,
+      "sha256": "6c7aad7d614b26550dc12ad94a1a202a828daefd75ea2733175304c11e05ad65"
+    },
+    {
+      "path": "checks/dependency-audit-input.json",
+      "bytes": 365,
+      "sha256": "c4c3d7cdf6fcde51c4f017fe23e5ddff6a54e3e25f16eb1a18df587463bd5bc2"
+    },
+    {
+      "path": "checks/dependency-report.json",
+      "bytes": 56169,
+      "sha256": "a08374754477d609c49db4edbd914a898475198f2ac68bf13638d8a02fcdda80"
+    },
+    {
+      "path": "checks/full-web-types.json",
+      "bytes": 1069,
+      "sha256": "d7704e521535f34b742cd3b8bfbc21614feef43849087efbe31e880967d76778"
+    },
+    {
+      "path": "checks/native-lifetime.json",
+      "bytes": 7517,
+      "sha256": "d8eacae82ebf2680afcbc86d6b3bade4216b630bd483b1d96e4e6cd843773db9"
+    },
+    {
+      "path": "checks/source-after.json",
+      "bytes": 76938,
+      "sha256": "59afff476e72a9bcfd66bab8b6565b4ece8e66d8d82f809d2c8980633482092b"
+    },
+    {
+      "path": "checks/source-before.json",
+      "bytes": 76938,
+      "sha256": "59afff476e72a9bcfd66bab8b6565b4ece8e66d8d82f809d2c8980633482092b"
+    },
+    {
+      "path": "ci/artifact-archive.json",
+      "bytes": 707,
+      "sha256": "0267d402c2032cb390e05de781b38be4ee24f9dd1049105143bb1b75fcebf956"
+    },
+    {
+      "path": "ci/ci-first-shell-failure.json",
+      "bytes": 33428,
+      "sha256": "779fefbdc9d1e69527854be0e7b0a4aac5d9ca9662145380066160170b60519a"
+    },
+    {
+      "path": "ci/dependencies-220-ci.json",
+      "bytes": 721022,
+      "sha256": "a4ce78d7658431a179a9193bfdabdab37812b92113a0805860738227e111c7cd"
+    },
+    {
+      "path": "ci/dependencies-220-postmerge-7bf71e2.json",
+      "bytes": 520900,
+      "sha256": "a243f42fe75412cd0ea01736bfa2e5f2130567e6f00bac19057e007bdca2f5a6"
+    },
+    {
+      "path": "ci/final-source-validation.json",
+      "bytes": 9347,
+      "sha256": "bca90b22af92b579df7d08e84a92e1eb003280ac3e04bc4361e6365d9fe733a4"
+    },
+    {
+      "path": "ci/lint-guard-validation.json",
+      "bytes": 10108,
+      "sha256": "8eff8132883f6a027bdea3bba9166c7d339359af3df5552aa7248fc4999730a9"
+    },
+    {
+      "path": "ci/publication-status-fix.json",
+      "bytes": 3401,
+      "sha256": "654ab6054dac7db5c18c74895c4dc098924b1b9162c6206b542edcceb88bccd6"
+    },
+    {
+      "path": "commands/01-historical-archive-verify.json",
+      "bytes": 2009,
+      "sha256": "d6dba31a31fcfb4665fffece1b2d97045ef8e06c0a17e13d63b0714e9c5510bb"
+    },
+    {
+      "path": "commands/02-full-web-types.json",
+      "bytes": 2306,
+      "sha256": "4bc6c058903c757e05bdce12ad801cab4900ef80b86b2aadabba14624035abd1"
+    },
+    {
+      "path": "commands/03-standard-performance.json",
+      "bytes": 4832,
+      "sha256": "302f2ed3052a4d65bfa428dd9305f1bc4ca96d47445648ee824661ff3f62dfff"
+    },
+    {
+      "path": "commands/04-m1-runtime-lifetime.json",
+      "bytes": 8097,
+      "sha256": "57a9573b3cedf37bc72f726d522ee40a9fbbaf23cbf2cb98adc2c93c50b64b8d"
+    },
+    {
+      "path": "commands/05-npm-audit-capture.json",
+      "bytes": 2813,
+      "sha256": "bcc3129af9bb5c08e2d6e6730ae4fd47e6d21b031475a0928e23b623b6b5ebd9"
+    },
+    {
+      "path": "commands/06-dependency-classifier.json",
+      "bytes": 3547,
+      "sha256": "67281c2951a641a34a73a2a10447a9a6ebbc3fc247162002b581d005e1deec78"
+    },
+    {
+      "path": "commands/07-archive-pack.json",
+      "bytes": 3355,
+      "sha256": "7cfb856609349696a90082d6518caea8c5a6be939ad8f608fb782a2013134b5a"
+    },
+    {
+      "path": "commands/08-archive-verify.json",
+      "bytes": 2012,
+      "sha256": "d465b2d3c8bde0cfb3acfe4bbfca7f29191b85ee43b24d581481e9fe7e890308"
+    },
+    {
+      "path": "commands/09-archive-roundtrip.json",
+      "bytes": 2759,
+      "sha256": "1b369798151f216b3794c3894d6ef5c9e53ee3b0f377e6e9d0facd0e752c5b26"
+    },
+    {
+      "path": "independent-reviews.json",
+      "bytes": 2701,
+      "sha256": "b28889540dc90d77cde63d3075fb50032e75f26cdb73ddba662e36e972b12561"
+    },
+    {
+      "path": "measurement/dependency-audit-input.json",
+      "bytes": 365,
+      "sha256": "c4c3d7cdf6fcde51c4f017fe23e5ddff6a54e3e25f16eb1a18df587463bd5bc2"
+    },
+    {
+      "path": "measurement/dependency-report.json",
+      "bytes": 56169,
+      "sha256": "a08374754477d609c49db4edbd914a898475198f2ac68bf13638d8a02fcdda80"
+    },
+    {
+      "path": "measurement/harness/dependency-classifier.mjs",
+      "bytes": 13411,
+      "sha256": "9b8f10b02a82d90086f6ee2378d2b57b714d09631e6c6bd6bb58e0068c8806fe"
+    },
+    {
+      "path": "measurement/harness/evidence-archiver.mjs",
+      "bytes": 23481,
+      "sha256": "cece38c0d93c54852f4c0aaa32c1a6004dbcca308117c54dcce8c84d5289dbdc"
+    },
+    {
+      "path": "measurement/harness/performance-common.mjs",
+      "bytes": 6463,
+      "sha256": "8870a27525937d03fd4f1bad79ca7869d2b4ad27985988e9b6e40e5bf0c49ba9"
+    },
+    {
+      "path": "measurement/harness/performance-fixtures.mjs",
+      "bytes": 7191,
+      "sha256": "3d16d60df721021fe803493ad2f4e3da4eb007286fd0a0374698a60a9eb83967"
+    },
+    {
+      "path": "measurement/harness/performance-runner.mjs",
+      "bytes": 10383,
+      "sha256": "53224b6ec0fcfb835650890fdea12e2a5216182c4288047ea5a7960e025e2add"
+    },
+    {
+      "path": "measurement/harness/performance-worker.mjs",
+      "bytes": 17277,
+      "sha256": "44bf82d8151885ee3d8fcb700562837e0a1075327a2fc6a888c1cdb39ac08254"
+    },
+    {
+      "path": "measurement/manifest.json",
+      "bytes": 34410,
+      "sha256": "f7edbe5b7d8418a4d5c3572e1f3a8c7f5612ae0d3848639b7458f2802b27cd22"
+    },
+    {
+      "path": "measurement/performance-report.json",
+      "bytes": 1509336,
+      "sha256": "a8dc8b321472056f89995213817da8aebab3b9059839cedab32ea66a50708b9f"
+    },
+    {
+      "path": "measurement/raw-receipts.json",
+      "bytes": 413241,
+      "sha256": "b3e1d0c7f5e8c5440513fe2b0f54d55c1e3bd3b70ba98d70bf5fd34b0f232c12"
+    },
+    {
+      "path": "run.json",
+      "bytes": 50385,
+      "sha256": "f5fcce90b848a9c8f19e6d5b76f6bcc5b34c48e5df7bbc56631d3fd3981eb22b"
+    },
+    {
+      "path": "setup/npm-audit-scope.json",
+      "bytes": 291,
+      "sha256": "1ee6366fc91116ec41d8f4b8f404ed3900ed55e1634760cf16f9b887431985fe"
+    },
+    {
+      "path": "setup/raw-streams.json",
+      "bytes": 100942,
+      "sha256": "eab76ff9915c362eab46ff78088a1b0762a4e1d2b442054b82acefbf4bdfdd5a"
+    },
+    {
+      "path": "setup/setup.json",
+      "bytes": 2992,
+      "sha256": "d0b0c063172e07552d848c757ece998ba444a156fa65323cc3f810d4a8cf5426"
+    }
+  ]
+}

@@ -83,10 +83,6 @@ html[data-ui-scale="150"] {
 html {
   font-size: var(--ui-root-font);
 }
-
-.workspace-tabs button { font-size: var(--ui-workspace-font); }
-.ribbon-command { min-width: var(--ui-ribbon-command-min); font-size: var(--ui-command-font); }
-.ribbon-command-icon { font-size: var(--ui-ribbon-icon); }
 .tree-row { height: var(--ui-tree-row); }
 .tree-label { font-size: var(--ui-tree-font); }
 .tree-search input,
@@ -95,10 +91,6 @@ html {
 .parameter-section p,
 .property-row,
 .numeric-field { font-size: var(--ui-panel-font); }
-.status-bar { font-size: var(--ui-status-font); }
-.global-actions button { width: var(--ui-global-action); height: var(--ui-global-action); }
-.brand-mark { width: var(--ui-brand-mark); height: var(--ui-brand-mark); }
-.viewport-quick-access button { width: var(--ui-quick-action); }
 .panel-title-row { min-height: var(--ui-panel-title); }
 
 /*
@@ -202,8 +194,6 @@ html {
   }
 }
 
-/* Replace the temporary hard-coded "UI 100%" status from the M2 shell. */
-.status-right > span:nth-last-child(2) { display: none; }
 .ui-scale-status {
   position: fixed;
   z-index: 12;

@@ -1,0 +1,15 @@
+{
+  "capturedAt": "2026-11-08T00:04:55.688Z",
+  "artifacts": [
+    {
+      "file": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\dependency-root-integration-8684b56-20261107\\asa-cad-dependencies-220-lint.zip",
+      "bytes": 133733,
+      "sha256": "ef7721d237858c60250f8a98aeab9fa33864a12f06d0952ad23f56ae8f00873c"
+    },
+    {
+      "file": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\dependency-root-integration-8684b56-20261107\\asa-cad-dependencies-220-visual.zip",
+      "bytes": 1673158,
+      "sha256": "53ddda4785d0e764843347d5d1987691e0bee7ccda90a83a06d66748f446943b"
+    }
+  ]
+}

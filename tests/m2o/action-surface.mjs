@@ -3,9 +3,13 @@ import { readFileSync } from 'node:fs';
 
 const app = readFileSync('src/web/App.tsx', 'utf8');
 const shellTop = readFileSync('src/web/CadShellTop.tsx', 'utf8');
-const fileMenu = readFileSync('src/web/CadFileMenu.tsx', 'utf8');
+const kTop = readFileSync('src/web/kompas/KompasTop.tsx', 'utf8');
+const kMenu = readFileSync('src/web/kompas/kompasMenus.ts', 'utf8');
+const kSearch = readFileSync('src/web/kompas/KompasMenuBar.tsx', 'utf8');
+const kRibbon = readFileSync('src/web/kompas/KompasRibbon.tsx', 'utf8');
+const kToolsets = readFileSync('src/web/kompas/kompasToolsets.ts', 'utf8');
+const kMobileNav = readFileSync('src/web/kompas/KompasMobileNavigation.tsx', 'utf8');
 const replacementGuard = readFileSync('src/web/useDocumentReplacementGuard.tsx', 'utf8');
-const commandGroups = readFileSync('src/web/CadShellCommandGroups.tsx', 'utf8');
 const shellBottom = readFileSync('src/web/CadShellBottom.tsx', 'utf8');
 const mobileTools = readFileSync('src/web/MobileToolsPanel.tsx', 'utf8');
 const workspace = readFileSync('src/web/usePartSketchWorkspace.ts', 'utf8');
@@ -20,19 +24,19 @@ const appActionCatalog = readFileSync('src/web/usePartCadUiActionCatalog.ts', 'u
 
 assert.match(app, /usePartCadUiActionCatalog/, 'App must delegate shared CadUiAction catalog wiring');
 assert.match(appActionCatalog, /useM2CadUiActions/, 'focused action-catalog owner must build the shared M2 CadUiAction catalog');
-assert.match(shellTop, /CadUiActionSearchResults/, 'command search must render CadUiAction results in shell presentation');
-assert.match(shellTop, /CadUiGlobalActionButton/, 'global toolbar must render CadUiAction buttons in shell presentation');
-assert.match(shellTop, /<CadFileMenu getAction=\{props\.getAction\}/, 'File menu must consume the shared action catalog');
-for (const id of ['system.new', 'system.open', 'system.save']) assert.ok(fileMenu.includes(`'${id}'`), `File menu must expose ${id}`);
+assert.match(shellTop, /<KompasTop/, 'product wrapper must mount the canonical KOMPAS owner');
+assert.match(kTop, /lookup\(getAction, target\)/, 'KOMPAS commands must resolve the shared CadUiAction catalog');
+assert.match(kTop, /void action\.execute\(\)/, 'KOMPAS commands must call product typed actions');
+assert.match(kTop, /kompasShell\.setResolver\(resolver\)/, 'menu and ribbon must share one product resolver');
+assert.match(kSearch, /KompasCommandSearch/, 'canonical shell must expose a command search');
+for (const id of ['system.new','system.open','system.save','system.undo','system.redo']) {
+  assert.ok(kMenu.includes(`id:'${id}'`), 'KOMPAS menu must bind shared '+id);
+}
 assert.match(replacementGuard, /options\.dirty/, 'document replacement guard must own dirty gating');
-assert.match(replacementGuard, /await options\.save\(\)/, 'save-and-continue must reuse the existing save path');
+assert.match(replacementGuard, /await options\.save\(\)/, 'save-and-continue must reuse existing save path');
 assert.doesNotMatch(replacementGuard, /window\.(confirm|alert)/, 'replacement guard must not use browser confirm/alert');
-assert.match(shellTop, /props\.getAction\('system\.open'\)/, 'Open must consume the shared action catalog');
-assert.match(shellTop, /props\.getAction\('system\.save'\)/, 'Save must consume the shared action catalog');
-assert.match(shellTop, /props\.getAction\('system\.undo'\)/, 'Undo must consume the shared action catalog');
-assert.match(shellTop, /props\.getAction\('system\.redo'\)/, 'Redo must consume the shared action catalog');
-assert.match(shellTop, /<CadShellCommandGroups/, 'top shell must delegate ribbon composition to the focused command-group owner');
-assert.match(shellTop, /getAction=\{props\.getAction\}/, 'top shell must pass the shared action catalog into command groups');
+assert.match(kRibbon, /kompasShell\.run\(command\.id, command\.label\)/,
+  'canonical ribbon must dispatch through shared typed resolver');
 assert.doesNotMatch(app, /searchableCommands/, 'legacy registry-only command search must not return');
 assert.doesNotMatch(shellTop, /title="Открыть" onClick=\{openLocal\}/, 'global Open must not bypass CadUiAction');
 assert.doesNotMatch(shellTop, /title="Сохранить \(Ctrl\+S\)" onClick=\{saveLocal\}/, 'global Save must not bypass CadUiAction');
@@ -48,23 +52,21 @@ assert.match(app, /case 'view\.zoomIn':/, 'camera-only zoom remains an interacti
 assert.match(app, /case 'view\.panLeft':/, 'camera-only pan remains an interaction action');
 
 for (const ribbonActionId of [
-  'sketch.rectangle', 'sketch.circle',
-  'constraint.horizontal', 'constraint.vertical', 'constraint.fixed', 'constraint.coincident', 'constraint.parallel', 'constraint.perpendicular',
-  'dimension.linear', 'dimension.horizontal', 'dimension.vertical', 'dimension.diameter', 'dimension.radius', 'dimension.angular',
-  'sketch.finish', 'part.sketch.create', 'part.extrude', 'part.cutExtrude', 'part.fillet', 'system.rebuild',
+  'sketch.rectangle','sketch.circle','constraint.horizontal','constraint.vertical','constraint.fixed',
+  'constraint.coincident','constraint.parallel','constraint.perpendicular','dimension.linear',
+  'dimension.horizontal','dimension.vertical','dimension.diameter','dimension.radius',
+  'dimension.angular','part.extrude','part.cutExtrude','part.fillet','system.rebuild',
 ]) {
-  assert.ok(commandGroups.includes(`action={props.getAction('${ribbonActionId}')}`), `${ribbonActionId} ribbon button must consume CadUiAction`);
+  assert.ok(kToolsets.includes(`'${ribbonActionId}'`),
+    `${ribbonActionId}: KOMPAS ribbon must resolve the canonical command ID`);
 }
-assert.doesNotMatch(commandGroups, /function CommandButton\(/, 'legacy ribbon CommandButton must not return');
-assert.doesNotMatch(commandGroups, /<CommandButton\b/, 'legacy direct ribbon command surface must not return');
-assert.match(commandGroups, /<ViewCommandGroups viewName=\{props\.viewName\} getAction=\{props\.getAction\}/, 'view ribbon must receive the shared action catalog');
-assert.match(commandGroups, /action=\{props\.getAction\(view\.id\)\}/, 'standard view buttons must consume CadUiAction');
-assert.doesNotMatch(commandGroups, /requestView: \(value: string\) => void/, 'view ribbon must not own direct requestView handlers');
-
+assert.match(kMenu, /part\.sketch\.create/, 'create-sketch must be reachable through KOMPAS menu');
 assert.match(app, /<MobileToolsPanel/, 'phone Tools sheet must be a real presentation surface');
 assert.match(app, /getAction=\{uiAction\}/, 'phone Tools sheet must receive the same shared action catalog');
-assert.match(shellBottom, /props\.activePanel === 'tools'/, 'mobile bottom bar must expose the Tools panel state');
-assert.match(shellBottom, />⌘<span>Инструменты<\/span><\/button>/, 'mobile bottom bar must expose Tools instead of desktop delegation');
+assert.match(shellBottom, /<KompasMobileNavigation/, 'compact shell must use canonical KOMPAS navigation');
+assert.match(kMobileNav, /props\.activePanel === id/, 'mobile navigation must read shared active panel');
+assert.match(kMobileNav, /props\.setActivePanel\(/, 'mobile navigation must update the shared panel');
+assert.match(kMobileNav, /label: 'Инструменты'/, 'mobile tools must remain discoverable');
 assert.match(mobileTools, /import type \{ CadUiAction \}/, 'mobile Tools presentation must consume typed CadUiAction');
 assert.match(mobileTools, /props\.getAction\(tool\.id\)/, 'mobile Tool buttons must resolve shared action objects');
 for (const id of ['horizontal', 'vertical', 'fixed', 'coincident', 'parallel', 'perpendicular']) assert.match(mobileTools, new RegExp(`id: 'constraint\\.${id}'`), `mobile Sketch tools must expose ${id} through CadUiAction`);

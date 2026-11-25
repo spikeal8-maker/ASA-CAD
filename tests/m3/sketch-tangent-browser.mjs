@@ -69,7 +69,7 @@ async function chooseLineCircle(page, lineId, circleId, touch) {
 async function desktopTangent() {
   const { page, errors } = await newDesktopPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createXYSketch(page);
     const lineId = await createLine(page, false), circleId = await createCircle(page, false);
     assert.equal(await tangentGeometry(page, lineId, circleId), false, 'Line/Circle must start non-tangent');
@@ -112,12 +112,12 @@ async function desktopTangent() {
 async function touchTangent() {
   const { context, page, errors } = await newTouchPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createMobileXYSketch(page);
     const lineId = await createLine(page, true), circleId = await createCircle(page, true);
     await activateMobileTool(page, 'constraint.tangent', 'Tangent');
-    await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
-    assert.equal(await page.locator('.management-panel').isVisible(), false, 'Tools panel still covers Sketch');
+    await page.locator('.k-content.k-collapsed, .k-content[data-panel-tab="params"]').waitFor();
+    assert.equal(await page.locator('.k-management-panel').isVisible(), false, 'Tools panel still covers Sketch');
     await chooseLineCircle(page, lineId, circleId, true);
     const saved = await saveLocalDocument(page);
     assert.ok(saved.constraints.some((item) => item.type === 'tangent'), 'touch Tangent not persisted');

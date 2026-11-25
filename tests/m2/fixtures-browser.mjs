@@ -4,6 +4,14 @@ import { chromium } from '../../vendor/toubkal/node_modules/playwright-core/inde
 const baseUrl = (process.env.ASA_CAD_FIXTURE_BASE_URL ?? 'http://127.0.0.1:8090').replace(/\/$/, '');
 const browser = await chromium.launch({ headless: true });
 
+function isPlaneGcsWasm(name) {
+  return /planegcs/i.test(name);
+}
+
+function nonPlaneGcsWasm(names) {
+  return names.filter((name) => !isPlaneGcsWasm(name));
+}
+
 function near(actual, expected, tolerance = 0.25, label = 'value') {
   assert.ok(Number.isFinite(actual), `${label} is not finite: ${actual}`);
   assert.ok(Math.abs(actual - expected) <= tolerance, `${label}: expected ${expected}, got ${actual}`);
@@ -77,7 +85,7 @@ try {
     await fx.page.getByText('Fixture empty готов', { exact: true }).waitFor();
     // C1: the empty Part keeps its spatial scene (origin planes only) and never builds B-Rep.
     await fx.page.locator('[data-testid="cad-viewport"][data-scene-revision="reference"][data-runtime-revision=""][data-bounds=""] canvas').waitFor();
-    assert.equal(fx.wasmRequests.length, 0, 'empty fixture loaded OpenCascade WASM');
+    assert.equal(fx.wasmRequests.length, 0, 'empty fixture loaded unexpected WASM');
     console.log('  ✓ /dev/part/empty — clean shell, no WASM');
     await fx.finish();
   }
@@ -97,8 +105,9 @@ try {
     await fx.page.locator('[data-dimension-id]',{hasText:/Высота: 40 мм/}).waitFor();
     // A Sketch without a solid keeps the origin scene; no B-Rep is built before Extrude.
     await fx.page.locator('[data-testid="cad-viewport"][data-scene-revision="reference"][data-runtime-revision=""][data-bounds=""] canvas').waitFor();
-    assert.equal(fx.wasmRequests.length, 0, 'sketch fixture loaded OpenCascade WASM');
-    console.log('  ✓ /dev/part/sketch — 60×40 driving sketch, no WASM');
+    assert.ok(fx.wasmRequests.some(isPlaneGcsWasm), 'sketch fixture did not load PlaneGCS WASM');
+    assert.equal(nonPlaneGcsWasm(fx.wasmRequests).length, 0, 'sketch fixture loaded OpenCascade WASM');
+    console.log('  ✓ /dev/part/sketch — 60×40 driving sketch, PlaneGCS only, no B-Rep');
     await fx.finish();
   }
 
@@ -114,7 +123,7 @@ try {
     await fx.page.getByText('Элемент выдавливания 1', { exact: true }).waitFor();
     await fx.page.getByText('Тело 1', { exact: true }).waitFor();
     await assertBounds(fx.page, [-30, -20, 0, 30, 20, 10]);
-    assert.ok(fx.wasmRequests.length >= 1, 'extrude fixture did not load OpenCascade WASM');
+    assert.ok(nonPlaneGcsWasm(fx.wasmRequests).length >= 1, 'extrude fixture did not load OpenCascade WASM');
     console.log('  ✓ /dev/part/extrude — real 60×40×10 OCC B-Rep');
     await fx.finish();
   }
@@ -133,7 +142,7 @@ try {
     await fx.page.getByText('Скругление 1', { exact: true }).waitFor();
     await fx.page.locator('[data-dimension-id]',{hasText:/Диаметр: 12 мм/}).waitFor();
     await assertBounds(fx.page, [-30, -20, 0, 30, 20, 10]);
-    assert.ok(fx.wasmRequests.length >= 1, 'reference fixture did not load OpenCascade WASM');
+    assert.ok(nonPlaneGcsWasm(fx.wasmRequests).length >= 1, 'reference fixture did not load OpenCascade WASM');
     console.log('  ✓ /dev/part/reference — cut + fillet rebuilt from 2 real StableRefs');
     await fx.finish();
   }
@@ -157,7 +166,7 @@ try {
     const viewport = fx.page.locator('[data-testid="cad-viewport"]');
     assert.equal(await viewport.getAttribute('data-runtime-revision'), '', 'invalid fixture rendered stale B-Rep');
     assert.equal(await viewport.getAttribute('data-bounds'), '', 'invalid fixture kept stale B-Rep bounds');
-    assert.ok(fx.wasmRequests.length >= 1, 'rebuild-error fixture never exercised OpenCascade');
+    assert.ok(nonPlaneGcsWasm(fx.wasmRequests).length >= 1, 'rebuild-error fixture never exercised OpenCascade');
     console.log('  ✓ /dev/part/rebuild-error — real recompute failure surfaced, work area kept, no stale B-Rep');
     await fx.finish();
   }

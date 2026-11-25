@@ -5,6 +5,7 @@ import {
   createCadUiActions,
   indexCadUiActions,
   isCadUiActionVisible,
+  executeCadUiAction,
   type CadUiCommandDefinition,
 } from '../../src/web/CadUiAction';
 
@@ -22,30 +23,30 @@ assert.equal(implemented.status, 'implemented');
 assert.equal(planned.status, 'planned');
 assert.equal(deferred.status, 'deferred');
 
-assert.equal(isCadUiActionVisible(implemented, false), true, 'implemented command must remain visible in production');
-assert.equal(isCadUiActionVisible(planned, false), false, 'planned command must be hidden in production');
-assert.equal(isCadUiActionVisible(deferred, false), false, 'deferred command must be hidden in production');
+assert.equal(isCadUiActionVisible(implemented, false), true, 'optional action filter retains implemented commands');
+assert.equal(isCadUiActionVisible(planned, false), false, 'optional action filter omits planned commands');
+assert.equal(isCadUiActionVisible(deferred, false), false, 'optional action filter omits deferred commands');
 assert.equal(isCadUiActionVisible(planned, true), true, 'planned command may be visible in explicit dev reference mode');
 assert.equal(isCadUiActionVisible(deferred, true), true, 'deferred command may be visible in explicit dev reference mode');
 assert.equal(planned.enabled, false, 'planned command must remain disabled in dev reference mode');
 assert.equal(deferred.enabled, false, 'deferred command must remain disabled in dev reference mode');
 
 const app = readFileSync('src/web/App.tsx', 'utf8');
-const controls = readFileSync('src/web/CadUiActionControls.tsx', 'utf8');
+const mobile = readFileSync('src/web/MobileToolsPanel.tsx', 'utf8');
 const shellTop = readFileSync('src/web/CadShellTop.tsx', 'utf8');
-const referenceGroups = readFileSync('src/web/CadShellReferenceGroups.tsx', 'utf8');
+const kTop = readFileSync('src/web/kompas/KompasTop.tsx', 'utf8');
+const ribbon = readFileSync('src/web/kompas/KompasRibbon.tsx', 'utf8');
 assert.match(app, /showRoadmapCommands=\{devFixture !== null\}/);
 assert.doesNotMatch(app, /location\.hostname|hostname\.includes|localhost/);
-assert.match(controls, /if \(!isCadUiActionVisible\(action, props\.showRoadmapCommands\)\) return null/);
-assert.match(controls, /actions\.filter\(\(action\) => isCadUiActionVisible\(action, props\.showRoadmapCommands\)\)/);
-assert.match(shellTop, /showRoadmapCommands=\{props\.showRoadmapCommands\}/);
-assert.match(referenceGroups, /showRoadmapCommands=\{props\.showRoadmapCommands\}/);
+assert.match(mobile, /disabled=\{!action\.enabled\}/, 'mobile Tools cannot execute an unavailable action');
+assert.match(mobile, /action=\{props\.getAction\(tool\.id\)\}/, 'mobile Tools use the shared action objects');
+assert.match(shellTop, /<KompasTop/, 'every UI surface uses the canonical KOMPAS shell');
+assert.match(kTop, /lookup\(getAction, target\)/, 'new KOMPAS commands read the shared action catalog');
+assert.match(kTop, /if \(!action\.enabled\)/, 'disabled/planned actions must never execute');
+assert.match(ribbon, /data-st=\{status\}/, 'KOMPAS ribbon labels the actual implementation status');
+assert.match(ribbon, /kompasShell\.run\(command\.id, command\.label\)/, 'visible KOMPAS reference commands go through the guarded resolver');
+assert.doesNotMatch(ribbon, /isCadUiActionVisible/, 'KOMPAS reference ribbon retains status-marked roadmap commands');
+assert.equal(await executeCadUiAction(planned), false, 'planned executor must never run');
+assert.equal(await executeCadUiAction(deferred), false, 'deferred executor must never run');
 
-const commandIds = new Set(definitions.map((command) => command.id));
-const tupleIds = [...referenceGroups.matchAll(/\['([^']+)',\s*'[^']+'\]/g)].map((match) => match[1]);
-const singletonIds = [...referenceGroups.matchAll(/id="([^"]+)"/g)].map((match) => match[1]);
-const referencedIds = [...new Set([...tupleIds, ...singletonIds])];
-const unknownIds = referencedIds.filter((id) => !commandIds.has(id)).sort();
-assert.deepEqual(unknownIds, [], `CadShellReferenceGroups contains unknown command IDs: ${unknownIds.join(', ')}`);
-
-console.log(`KOMPAS shell command visibility PASS (production hides planned/deferred; dev reference shows disabled; ${referencedIds.length} reference IDs known)`);
+console.log('KOMPAS visibility PASS (status-marked reference ribbon; shared mobile actions; unavailable actions never execute)');

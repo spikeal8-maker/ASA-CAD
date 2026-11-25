@@ -1,9 +1,11 @@
 import React from 'react';
 import type { ParameterPanelProps } from '../ParameterPanel';
 import { KIcon } from './KompasIcon';
-import { kompasShell } from './kompasShellStore';
-
-const NOT_YET = (what: string) => () => kompasShell.toast(`${what} в ASA-CAD пока нет`);
+import { KompasParameterFrame as Frame, KompasParameterHead as PanelHead, parameterNotYet as NOT_YET } from './KompasParameterFrame';
+import { KompasLineParameters } from './KompasLineParameters';
+import { KompasArcParameters } from './KompasArcParameters';
+import { KompasCircleParameters } from './KompasCircleParameters';
+import { NumberField, SketchToolPanel } from './KompasSketchToolPanel';
 
 /** Parameters panel of the KOMPAS shell for the running product command (KOMPAS markup of #170). */
 export function KompasParameters(props: { panel: ParameterPanelProps | null; legacy: React.ReactNode }) {
@@ -19,14 +21,13 @@ export function KompasParameters(props: { panel: ParameterPanelProps | null; leg
   switch (p.activeCommand) {
     case 'part.extrude': return <ExtrudePanel p={p} />;
     case 'part.sketch.create': return <PlaceSketchPanel p={p} />;
+    case 'sketch.line': return <KompasLineParameters input={p.lineInput} onCancel={p.onCancel} />;
+    case 'sketch.arc': return <KompasArcParameters input={p.arcInput} onCancel={p.onCancel} />;
     case 'sketch.rectangle': return (
       <SketchToolPanel p={p} title="Прямоугольник" icon="rectangle" onCommit={p.onCreateRectangle} hint="Ширина"
         rows={[['Ширина', p.rectangleWidth, p.setRectangleWidth], ['Высота', p.rectangleHeight, p.setRectangleHeight]]} />
     );
-    case 'sketch.circle': return (
-      <SketchToolPanel p={p} title="Окружность" icon="circle" onCommit={p.onCreateCircle} hint="Диаметр"
-        rows={[['Диаметр', p.circleDiameter, p.setCircleDiameter]]} />
-    );
+    case 'sketch.circle': return <KompasCircleParameters input={p.circleInput} onCancel={p.onCancel} />;
     default: return (
       <div className="k-params-panel">
         <PanelHead />
@@ -34,78 +35,6 @@ export function KompasParameters(props: { panel: ParameterPanelProps | null; leg
       </div>
     );
   }
-}
-
-function PanelHead() {
-  return (
-    <div className="k-panel-head">
-      <span>Параметры</span>
-      <button type="button" aria-label="Настройки панели" onClick={NOT_YET('Настроек панели')}><KIcon name="gear" size={14} /></button>
-    </div>
-  );
-}
-
-function Frame(props: React.PropsWithChildren<{
-  title: string; icon: string; tabs?: readonly string[]; data?: Record<string, string>;
-  canCommit: boolean; commitLabel?: string; onCommit(): void; onCancel(): void; message: string; error?: boolean;
-}>) {
-  return (
-    <div className="k-params-panel k-pp" data-command-title={props.title} {...props.data}>
-      <PanelHead />
-      <div className="k-pp-cmd">
-        <strong>{props.title}</strong>
-        <button type="button" aria-label="Справка" onClick={NOT_YET('Справки')}><KIcon name="helpq" size={16} /></button>
-        <button type="button" aria-label="Показать дерево" onClick={() => kompasShell.requestPanel('tree')}><KIcon name="tree" size={16} /></button>
-      </div>
-      <div className="k-pp-tabs">
-        <button type="button" className="k-tab" aria-selected="true" title={props.title}><KIcon name={props.icon} size={17} /></button>
-        {(props.tabs ?? []).map((icon) => (
-          <button key={icon} type="button" className="k-tab" aria-selected="false" title="Вкладка не заполнена" onClick={NOT_YET('Этой вкладки')}><KIcon name={icon} size={17} /></button>
-        ))}
-        <span className="k-spacer" />
-        <button type="button" className="k-pp-ok" data-param-commit="" disabled={!props.canCommit} data-tip={`${props.commitLabel ?? 'Создать объект'} (Enter)`} aria-label={props.commitLabel ?? 'Создать объект'} onClick={props.onCommit}><KIcon name="check" size={20} /></button>
-        <button type="button" className="k-pp-cancel" data-param-cancel="" data-tip="Прервать команду (Esc)" aria-label="Прервать команду" onClick={props.onCancel}><KIcon name="cross" size={18} /></button>
-      </div>
-      <div className="k-pp-body">{props.children}</div>
-      <div className="k-pp-msg" role={props.error ? 'alert' : 'status'}>
-        <KIcon name="bubble" size={16} /><span>{props.message}</span>
-        <button type="button" aria-label="Скрыть сообщение" onClick={NOT_YET('Скрытия сообщения')}><KIcon name="cross" size={11} /></button>
-      </div>
-    </div>
-  );
-}
-
-/** Numeric KOMPAS field: comma or dot, Enter creates the object, invalid values stay visible. */
-function NumberField(props: { label: string; value: number; onChange(value: number): void; onEnter(): void; disabled?: boolean; unit?: string }) {
-  const [text, setText] = React.useState(String(props.value));
-  const parsed = Number(text.trim().replace(',', '.'));
-  const valid = text.trim() !== '' && Number.isFinite(parsed) && parsed > 0;
-  React.useEffect(() => {
-    if (!Number.isNaN(props.value) && Number(text.trim().replace(',', '.')) !== props.value) setText(String(props.value));
-  }, [props.value]);
-  return (
-    <input
-      className={`k-pp-field${valid ? '' : ' k-invalid'}`}
-      type="text"
-      inputMode="decimal"
-      autoComplete="off"
-      value={text}
-      disabled={props.disabled}
-      aria-label={`${props.label}, ${props.unit ?? 'мм'}`}
-      aria-invalid={!valid}
-      onFocus={(event) => event.currentTarget.select()}
-      onChange={(event) => {
-        setText(event.target.value);
-        /* Invalid values reach the product too: its validation owns the message and ✓. */
-        const raw = event.target.value.trim();
-        props.onChange(raw === '' ? Number.NaN : Number(raw.replace(',', '.')));
-      }}
-      onKeyDown={(event) => {
-        if (event.key === 'Enter') { event.preventDefault(); event.stopPropagation(); if (valid) props.onEnter(); }
-        else if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); event.currentTarget.blur(); }
-      }}
-    />
-  );
 }
 
 function Toggle(props: { on: boolean; label: string; onClick(): void }) {
@@ -217,24 +146,6 @@ function PlaceSketchPanel({ p }: { p: ParameterPanelProps }) {
           </div><span />
         </div>
       )}
-    </Frame>
-  );
-}
-
-function SketchToolPanel(props: {
-  p: ParameterPanelProps; title: string; icon: string; onCommit(): void; hint: string;
-  rows: ReadonlyArray<readonly [string, number, (value: number) => void]>;
-}) {
-  return (
-    <Frame title={props.title} icon={props.icon} canCommit onCommit={props.onCommit} onCancel={props.p.onCancel}
-      message={`Задайте размеры и нажмите Enter или «Создать объект», либо укажите точки в окне`}>
-      {props.rows.map(([label, value, set]) => (
-        <div key={label} className="k-pp-row k-hl" data-param-row={label}>
-          <label className="k-pp-label">{label}</label>
-          <NumberField label={label} value={value} onChange={set} onEnter={props.onCommit} /><span />
-        </div>
-      ))}
-      <p className="k-sk-hint">Значения вводятся в панели: «{props.hint}» — главный размер, Tab — следующее поле, Enter — создать объект.</p>
     </Frame>
   );
 }

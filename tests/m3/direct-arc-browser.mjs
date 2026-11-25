@@ -45,14 +45,14 @@ async function deterministicArcFixture() {
 async function desktopDirectArc() {
   const { page, errors } = await newDesktopPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createXYSketch(page);
     await assertNoWasm(page, 'empty Sketch');
 
     const arcButton = page.locator('[data-command-id="sketch.arc"]').first();
     assert.equal(await arcButton.isEnabled(), true, 'Arc action must be enabled in active Sketch');
     await arcButton.click();
-    await page.locator('.content-area.panel-closed, .k-content[data-panel-tab="params"]').waitFor();
+    await page.locator('.k-content[data-panel-tab="params"]').waitFor();
 
     const { layer, box } = await interactionBox(page, 'arc', 'Arc');
     assert.equal(await layer.getAttribute('data-arc-phase'), 'awaiting-center');
@@ -84,6 +84,8 @@ async function desktopDirectArc() {
 
     await page.mouse.click(end.x, end.y);
     await page.getByText(/Дуга создана: R12(?:\.0)? мм/).waitFor();
+    await page.locator('[data-testid="cad-sketch-interaction"][data-tool="arc"][data-arc-phase="awaiting-center"]').waitFor();
+    await page.keyboard.press('Escape');
     await page.locator('[data-testid="cad-sketch-interaction"]').waitFor({ state: 'detached' });
     const solvedArc = await waitSolvedArc(page);
     assert.match(await solvedArc.getAttribute('d'), /A\s+[^ ]+\s+[^ ]+\s+0\s+0\s+0\s+/, 'direct Arc must render with SVG sweep-flag=0');
@@ -115,7 +117,7 @@ async function desktopDirectArc() {
 async function touchDirectArc() {
   const { context, page, errors } = await newTouchPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createMobileXYSketch(page);
     await activateMobileTool(page, 'sketch.arc', 'Arc');
 

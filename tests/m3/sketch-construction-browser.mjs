@@ -17,7 +17,10 @@ async function createLine(page, touch) {
   await waitSolvedOverlay(page, 1, 'Construction source Line');
   const visual = page.locator('[data-testid="cad-sketch-overlay"] line[data-sketch-entity-id]').first();
   const id = await visual.getAttribute('data-sketch-entity-id');
-  assert.ok(id); return id;
+  assert.ok(id);
+  await page.keyboard.press('Escape');
+  await page.locator('[data-testid="cad-sketch-interaction"]').waitFor({ state: 'detached' });
+  return id;
 }
 
 async function selectLine(page, id, touch) {
@@ -37,7 +40,7 @@ async function assertConstruction(page, id, expected) {
 async function desktopConstruction() {
   const { page, errors } = await newDesktopPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createXYSketch(page);
     const id = await createLine(page, false);
     await selectLine(page, id, false);
@@ -66,7 +69,7 @@ async function desktopConstruction() {
 async function touchConstruction() {
   const { context, page, errors } = await newTouchPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createMobileXYSketch(page);
     const id = await createLine(page, true);
     await selectLine(page, id, true);

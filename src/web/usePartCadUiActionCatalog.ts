@@ -1,4 +1,3 @@
-import { cutAvailability, featureProfileSketch } from './PartFeatureAvailability';
 import type { CadUiActionExecutor } from './CadUiAction';
 import { useM2CadUiActions } from './useM2CadUiActions';
 import type { usePartSketchWorkspace } from './usePartSketchWorkspace';
@@ -16,7 +15,7 @@ export interface PartCadUiActionCatalogOptions {
   canRedo: boolean;
   newDocument: CadUiActionExecutor;
   open: CadUiActionExecutor;
-  save: CadUiActionExecutor;
+  save: () => void | Promise<boolean | void>;
   undo: CadUiActionExecutor;
   redo: CadUiActionExecutor;
   rebuild: CadUiActionExecutor;
@@ -39,7 +38,7 @@ export function usePartCadUiActionCatalog(options: PartCadUiActionCatalogOptions
     requestView,
   } = options;
   return useM2CadUiActions({
-    newDocument, open, save, undo, redo, rebuild,
+    newDocument, open, save: ignoreResult(save), undo, redo, rebuild,
     createSketch: workspace.beginCreateSketch,
     line: workspace.beginLine,
     rectangle: workspace.beginRectangle,
@@ -103,7 +102,7 @@ export function usePartCadUiActionCatalog(options: PartCadUiActionCatalogOptions
     canExtrude: workspace.extrude.canStart,
     extrudeDisabledReason: workspace.extrude.disabledReason,
     canCutExtrude: workspace.canCut,
-    cutExtrudeDisabledReason: cutAvailability(workspace.part, featureProfileSketch(workspace.part, workspace.sketch)).reason,
+    cutExtrudeDisabledReason: workspace.cutDisabledReason,
     canFillet: workspace.canFillet,
   });
 }

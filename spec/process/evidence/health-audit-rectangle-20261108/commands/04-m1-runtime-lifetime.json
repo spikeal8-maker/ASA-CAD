@@ -1,0 +1,65 @@
+{
+  "name": "m1-runtime-lifetime",
+  "startedAt": "2026-11-08T09:18:07.597Z",
+  "command": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node.exe",
+  "argv": [
+    "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64\\node_modules\\npm\\bin\\npm-cli.js",
+    "run",
+    "test:m1:runtime"
+  ],
+  "cwd": "C:\\Users\\spike\\Documents\\ASA-CAD-Full-Health-Audit-Rectangle-20261108",
+  "executableSha256": "dccc52de28d8df2ee22d2062424f8c563070d95d8ad70c54c4bf01d590dec14f",
+  "environmentOverrides": {
+    "NO_COLOR": "1",
+    "TSX_DISABLE_CACHE": "1",
+    "npm_config_update_notifier": "false",
+    "ASA_STABLEREF_LIFETIME_REPORT": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\checks\\native-lifetime.json",
+    "npm_config_cache": "C:\\Users\\spike\\Documents\\ASA-CAD-Maintenance-Captures\\legacy-cleanup-202-20261107\\audit-probes\\health-audit-rectangle-20261108\\npm-cache"
+  },
+  "nodeExecutableDirectoryPrependedToPath": "C:\\Users\\spike\\IZO-ASA-Docker\\toolchains\\node-v22.23.4-win-x64",
+  "pid": 37520,
+  "exitCode": 0,
+  "signal": null,
+  "elapsedMs": 8330.751300000004,
+  "timeoutMs": 240000,
+  "timedOut": false,
+  "outputLimit": false,
+  "interrupted": false,
+  "spawnError": null,
+  "closed": true,
+  "cleanup": [],
+  "stdout": {
+    "bytes": 5373,
+    "sha256": "8fcac009ace1aacae814427f357976ee430fd1fcd54a4337aa32959c68ef5f02",
+    "encoding": "utf8",
+    "data": "\n> asa-cad@0.0.0 test:m1:runtime\n> node vendor/toubkal/node_modules/tsx/dist/cli.mjs tests/m1/protected-part-runtime.ts\n\n\nASA-CAD M1 protected Part through CadApplication + OpenCascade\n  ✓ 60x40x10 + centered Ø12 through cut + R1 fillet (V=22856.151)\n  ✓ driving width 60 -> 80 rebuilds cut + stable-reference fillet (V=30851.858)\n  ✓ serialized ASA CadDocument reopens and recomputes identical B-Rep result\n  ✓ M1 protected Part runtime vertical slice PASS\n\nActual OpenCascade async ownership: 10 PASS, 0 FAIL\n  PASS first edge agrees with the independent OCC oracle\n  PASS nonfirst selected edge identity and save/open\n  PASS public driving-width edit retains the selected edge\n  PASS edge-count change, valid reorder, suppress and restore\n  PASS edge source owner active and restore\n  PASS edge source owner legacy-absent and restore\n  PASS edge source owner unknown and restore\n  PASS edge source owner deleted and restore\n  PASS edge source owner suppressed and restore\n  PASS face source owner missing fails explicitly\n  PASS face source owner unknown fails explicitly\n  PASS disappearing face beyond tolerance fails explicitly\n  PASS ambiguous support fails explicitly\n  PASS same oriented face survives a small depth edit and reopen\n  PASS large depth edit never rebinds top support to the bottom\n  PASS unavailable source suppressed fails and restores\n  PASS unavailable source after-dependent fails and restores\n  Actual OCC retrieval: {\"currentCount\":24,\"currentAlive\":0,\"keyAlive\":0,\"mapAlive\":false,\"edgeAlive\":true}\n  PASS ASA edge retrieval deletes owned handles and returns a caller-owned edge\nStable topology ownership: 18 PASS, 0 FAIL\n  PASS capture face releases raw keys and typed face {\"created\":{\"TopTools_IndexedMapOfShape_1\":1,\"TopExp_Explorer_2\":1,\"Current\":6,\"FindKey\":1,\"cast.Face_1\":1,\"GProp_GProps_1\":1,\"CentreOfMass\":1,\"Surface_2\":1,\"GeomAdaptor_Surface_2\":1,\"Plane\":1,\"Axis\":1,\"Direction\":1},\"live\":{},\"totalCreated\":17,\"totalLive\":0}\n  PASS capture edge releases raw keys and typed edge {\"created\":{\"TopTools_IndexedMapOfShape_1\":1,\"TopExp_Explorer_2\":1,\"Current\":24,\"FindKey\":1,\"cast.Edge_1\":1,\"GProp_GProps_1\":1,\"CentreOfMass\":1,\"BRepAdaptor_Curve_2\":1,\"Line\":1,\"Direction\":1},\"live\":{},\"totalCreated\":33,\"totalLive\":0}\n  PASS capture vertex releases raw keys and typed vertex {\"created\":{\"TopTools_IndexedMapOfShape_1\":1,\"TopExp_Explorer_2\":1,\"Current\":48,\"FindKey\":1,\"cast.Vertex_1\":1,\"Pnt\":1},\"live\":{},\"totalCreated\":53,\"totalLive\":0}\n  PASS resolve face preserves index and releases all candidates {\"created\":{\"TopTools_IndexedMapOfShape_1\":1,\"TopExp_Explorer_2\":1,\"Current\":6,\"FindKey\":6,\"cast.Face_1\":6,\"GProp_GProps_1\":6,\"CentreOfMass\":6,\"Surface_2\":6,\"GeomAdaptor_Surface_2\":6,\"Plane\":6,\"Axis\":6,\"Direction\":6},\"live\":{},\"totalCreated\":62,\"totalLive\":0}\n  PASS resolve edge preserves index and releases all candidates {\"created\":{\"TopTools_IndexedMapOfShape_1\":1,\"TopExp_Explorer_2\":1,\"Current\":24,\"FindKey\":12,\"cast.Edge_1\":12,\"GProp_GProps_1\":12,\"CentreOfMass\":12,\"BRepAdaptor_Curve_2\":12,\"Line\":12,\"Direction\":12},\"live\":{},\"totalCreated\":110,\"totalLive\":0}\n  PASS resolve vertex releases cloud and candidate handles {\"created\":{\"TopTools_IndexedMapOfShape_1\":2,\"TopExp_Explorer_2\":2,\"Current\":96,\"FindKey\":16,\"cast.Vertex_1\":16,\"Pnt\":16},\"live\":{},\"totalCreated\":148,\"totalLive\":0}\n  PASS nearest face releases probe vertex, faces and progress {\"created\":{\"TopTools_IndexedMapOfShape_1\":2,\"TopExp_Explorer_2\":2,\"Current\":12,\"gp_Pnt_3\":1,\"BRepBuilderAPI_MakeVertex\":1,\"Vertex\":1,\"FindKey\":7,\"cast.Face_1\":7,\"BRepExtrema_DistShapeShape_1\":6,\"Message_ProgressRange_1\":6,\"GProp_GProps_1\":1,\"CentreOfMass\":1,\"Surface_2\":1,\"GeomAdaptor_Surface_2\":1,\"Plane\":1,\"Axis\":1,\"Direction\":1},\"live\":{},\"totalCreated\":52,\"totalLive\":0}\n  PASS out-of-range capture releases map and explorer {\"created\":{\"TopTools_IndexedMapOfShape_1\":2,\"TopExp_Explorer_2\":2,\"Current\":30},\"live\":{},\"totalCreated\":34,\"totalLive\":0}\n  PASS map Add exception releases Current, explorer and map {\"created\":{\"TopTools_IndexedMapOfShape_1\":1,\"TopExp_Explorer_2\":1,\"Current\":1},\"live\":{},\"totalCreated\":3,\"totalLive\":0}\n  PASS cast exception releases FindKey and map {\"created\":{\"TopTools_IndexedMapOfShape_1\":1,\"TopExp_Explorer_2\":1,\"Current\":24,\"FindKey\":1},\"live\":{},\"totalCreated\":27,\"totalLive\":0}\n  PASS face signature exception releases all temporaries {\"created\":{\"TopTools_IndexedMapOfShape_1\":1,\"TopExp_Explorer_2\":1,\"Current\":6,\"FindKey\":1,\"cast.Face_1\":1,\"GProp_GProps_1\":1},\"live\":{},\"totalCreated\":11,\"totalLive\":0}\n  PASS unscoreable edge candidates still release all temporaries {\"created\":{\"TopTools_IndexedMapOfShape_1\":1,\"TopExp_Explorer_2\":1,\"Current\":24,\"FindKey\":12,\"cast.Edge_1\":12,\"GProp_GProps_1\":12},\"live\":{},\"totalCreated\":62,\"totalLive\":0}\n  PASS vertex cloud exception releases raw key, vertex and map {\"created\":{\"TopTools_IndexedMapOfShape_1\":1,\"TopExp_Explorer_2\":1,\"Current\":48,\"FindKey\":1,\"cast.Vertex_1\":1},\"live\":{},\"totalCreated\":52,\"totalLive\":0}\n  PASS unmeasurable nearest faces release probe and per-face handles {\"created\":{\"TopTools_IndexedMapOfShape_1\":1,\"TopExp_Explorer_2\":1,\"Current\":6,\"gp_Pnt_3\":1,\"BRepBuilderAPI_MakeVertex\":1,\"Vertex\":1,\"FindKey\":6,\"cast.Face_1\":6,\"BRepExtrema_DistShapeShape_1\":6,\"Message_ProgressRange_1\":6},\"live\":{},\"totalCreated\":35,\"totalLive\":0}\nStableRef lifetime: 14 PASS, 0 FAIL\n"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "encoding": "utf8",
+    "data": ""
+  },
+  "status": "PASS",
+  "validation": {
+    "report": {
+      "path": "checks/native-lifetime.json",
+      "bytes": 7517,
+      "sha256": "d8eacae82ebf2680afcbc86d6b3bade4216b630bd483b1d96e4e6cd843773db9"
+    },
+    "passed": 14,
+    "failed": 0,
+    "observedCreated": 699,
+    "observedLiveBeforeCleanup": 0,
+    "scope": "StableRef owned wrapper lifetimes; not a whole-vendor native-heap measurement"
+  },
+  "outputs": [
+    {
+      "status": "PRESENT",
+      "path": "checks/native-lifetime.json",
+      "bytes": 7517,
+      "sha256": "d8eacae82ebf2680afcbc86d6b3bade4216b630bd483b1d96e4e6cd843773db9"
+    }
+  ],
+  "sourceAndToolsUnchanged": true
+}

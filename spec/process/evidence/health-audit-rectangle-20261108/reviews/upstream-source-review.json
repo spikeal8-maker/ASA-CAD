@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "kind": "CONTROLLER_UPSTREAM_SOURCE_REVIEW",
+  "observedAt": "2026-11-08T09:19:13.370Z",
+  "reviewer": "ChatGPT technical controller /root",
+  "auditedSourceSha": "b8f700bb6e455582db18df8d0ba43a2bfbdcc68b",
+  "sources": [
+    {
+      "url": "https://nodejs.org/en/blog/vulnerability/november-2026-security-releases?trk=public_post_comment-text",
+      "canonicalUrl": "https://nodejs.org/en/blog/vulnerability/november-2026-security-releases",
+      "retrieval": "Official page successfully opened via the indexed query URL; canonical URL returned an access error in the same web tool.",
+      "lastUpdated": "2026-11-03",
+      "facts": {
+        "plannedReleaseDate": "2026-11-11",
+        "releaseTiming": "On that date or shortly afterward",
+        "releaseLines": [
+          "26.x",
+          "24.x",
+          "22.x"
+        ],
+        "highestSeverityFor22": "HIGH",
+        "specificCvesNamed": false,
+        "targetPatchVersionNamed": false
+      },
+      "webReference": "turn45view0"
+    },
+    {
+      "url": "https://nodejs.org/en/download/archive/v22",
+      "retrieval": "Official archive opened successfully",
+      "facts": {
+        "topListedVersion": "22.23.4",
+        "listedNpm": "10.9.9"
+      },
+      "webReference": "turn44view1"
+    },
+    {
+      "url": "https://nodejs.org/en/blog/release/v22.23.4",
+      "retrieval": "Official release page opened successfully",
+      "facts": {
+        "releaseDate": "2026-10-21",
+        "version": "22.23.4",
+        "securityRelease": true
+      },
+      "webReference": "turn43view0"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nodejs/Release/main/schedule.json",
+      "retrieval": "Official release schedule opened successfully",
+      "facts": {
+        "node20End": "2026-04-30",
+        "node22Maintenance": "2025-10-21",
+        "node22End": "2027-04-30"
+      },
+      "webReference": "turn43view1"
+    }
+  ],
+  "finding": {
+    "id": "NODE_SECURITY_RELEASE_20261111_PENDING",
+    "disposition": "OPEN_PENDING_UPSTREAM_RELEASE",
+    "owner": "ChatGPT technical controller /root",
+    "separateFromClosedDebt": "NODE_TOOLCHAIN_EOL_AND_SECURITY_PATCH_GAP",
+    "oldDebtReopened": false,
+    "asaSpecificExploitReachability": "NOT_ESTABLISHED",
+    "currentSelectedRuntime": "22.23.4",
+    "futurePatchInstalled": false,
+    "npmAuditDoesNotCoverNodeRuntime": true,
+    "proposedAuditClassification": "YELLOW_ACCEPTED_SUBJECT_TO_COMPLETE_AUDIT_REVIEW",
+    "gate": "Re-evaluate the announced upstream release and ASA reachability when a supported fix is published; perform a separately reviewed applicable toolchain repair before U2 technical acceptance or the next milestone boundary, whichever comes first, and before beta. If no fix is available at that gate, retain the gate and require an explicit evidence-based disposition; no silent PASS.",
+    "noGrowth": "Do not expand Node exposure while this follow-up is open.",
+    "newD2RuntimeInstallAuthorization": "Not inferred for an unreleased version; handle concretely when available."
+  },
+  "limitations": [
+    "This is a structured paraphrase of official sources and observed metadata, not a lossless archive of the webpages.",
+    "The announcement does not disclose an ASA-specific exploit or a target patch version.",
+    "No future automation or installation was created by this review.",
+    "Frozen benchmark/npm/classifier receipts remain unchanged."
+  ]
+}

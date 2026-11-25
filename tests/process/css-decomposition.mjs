@@ -5,7 +5,6 @@ const index = fs.readFileSync('src/web/index.tsx', 'utf8');
 const orderedImports = [
   "./styles/base.css",
   "./styles/top-shell.css",
-  "./styles/ribbon.css",
   "./styles/management.css",
   "./styles/work-area.css",
   "./styles/dialogs.css",
@@ -26,11 +25,14 @@ for (const stylesheet of orderedImports) {
 }
 
 assert.equal(fs.existsSync('src/web/styles.css'), false, 'monolithic src/web/styles.css must not return');
+for (const name of ['ribbon.css', 'u1a-top-shell.css', 'u1a-desktop.css']) {
+  assert.equal(fs.existsSync(`src/web/styles/${name}`), false, `retired stylesheet ${name} must not return`);
+  assert.equal(index.includes(`./styles/${name}`), false, `index.tsx must not import retired ${name}`);
+}
 
 const domainFiles = [
   'base.css',
   'top-shell.css',
-  'ribbon.css',
   'management.css',
   'work-area.css',
   'dialogs.css',
@@ -54,6 +56,8 @@ assert.match(shellResponsive, /@media \(min-width: 2560px\)/, 'shell responsive 
 assert.match(shellResponsive, /@media \(prefers-reduced-motion: reduce\)/, 'shell responsive owner must retain reduced-motion policy');
 
 const responsive = fs.readFileSync('src/web/responsive.css', 'utf8');
-assert.match(responsive, /Portrait tablets/, 'accepted responsive override file must remain after base shell responsive CSS');
+assert.match(responsive,
+  /@media \(min-width: 600px\) and \(max-width: 899px\) and \(orientation: portrait\) \{\s*\.tree-root \{[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);/,
+  'accepted responsive overrides must retain shared portrait-tablet tree sizing');
 
 console.log('M3M-005 CSS decomposition PASS (ordered domain owners + responsive layering + <=10 KB domains)');
