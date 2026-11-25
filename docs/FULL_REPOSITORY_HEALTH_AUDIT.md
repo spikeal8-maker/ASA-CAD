@@ -2,11 +2,11 @@
 
 ## Решение и точная база
 
-**YELLOW предложен; техническая приёмка PENDING exact-head CI, независимого review и merge audit PR.** Контролёр принимает scoped YELLOW при этих условиях по `OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008`. До подтверждённого merge machine pointer остаётся `FULL_REPOSITORY_HEALTH_AUDIT`, `productCodeStartAllowed=false`, NEXT=U2. Measurement PASS не заменяет техническую или owner visual acceptance.
+**YELLOW_ACCEPTED — audit #236 принят техническим контролёром /root** по `OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008`. Verified merge: `4729222d055b70a43ef0a2a3eaa59c6a83365999`; exact candidate `daa1333caa486383c600f1b40968e97163005d50`. 4/4 применимых PR checks PASS; independent-agent read-only APPROVE. CI synthetic tree совпадает с candidate; связь записана в #236. После merge baseline, M2 shell и integration guard PASS. Machine pointer возвращён в U2 в следующем docs/tasks checkpoint. Owner visual acceptance остаётся PENDING.
 
-Измерен чистый integration **`a08b17c99bf8b3343008810ab5f9f398bd7a139d`** (#234). Actual main — **`9ea217f253b3348d34638841936fa79b75f95fa2`** (#235). Этот maintenance PR меняет документы/state и публичные агрегаты; его будущий HEAD не называется измеренным продуктом.
+Измерен чистый integration **`a08b17c99bf8b3343008810ab5f9f398bd7a139d`** (#234). Actual main — **`9ea217f253b3348d34638841936fa79b75f95fa2`** (#235). Audit PR изменил документы/state и публичные агрегаты; audit/docs HEAD не называется измеренным продуктом.
 
-После #225 приняты #226 Arc, #231 Circle, #228 launcher, #234 top bar — **4 permanent slices**. #230 Node pin — operational maintenance. Прежнее 2/3 устарело; cadence/integration/release triggers закрывает текущий аудит. **Счёт станет 0 только после технической приёмки и merge.**
+После #225 приняты #226 Arc, #231 Circle, #228 launcher, #234 top bar — **4 permanent slices**. #230 Node pin — operational maintenance. Прежнее 2/3 устарело; cadence/integration/release triggers закрывает текущий аудит. **После приёмки и merge #236 счёт сброшен до 0.**
 
 [Предыдущий #225 immutable](https://github.com/spikeal8-maker/ASA-CAD/blob/ae3f713f81d405733b887deaad0050f28f33af0b/docs/FULL_REPOSITORY_HEALTH_AUDIT.md): accepted `ae3f713`, audited `b8f700b`. Исторические measurement/pending literals и #217/#221 не изменены; previous snapshot сохранён.
 
@@ -36,7 +36,7 @@ Raw `acceptedBaseline:false` сохранён. Измерительная сре
 
 С audited b8f700b неизменны application/contracts/runtime, vendor source/package/lock. Каталог проектов использует существующие host envelopes, revision/idempotency, legacy recovery и migrations; чтение не переписывает данные. Один CadApplication/document/runtime/history сохраняет identity между представлениями. Schema v3 неизменна; повреждённый envelope не подменяется raw mirror при save. В рассмотренных новых owners не найден raw OCC/vendor store/второй persistent solver/history. Three.js остаётся renderer.
 
-Независимый read-only review исходной продуктовой базы выполнен до авторства maintenance patch. Сам patch требует отдельного независимого review. Новых подтверждённых P0/P1 core/compatibility blockers в проверенном объёме не обнаружено.
+Независимый read-only review исходной продуктовой базы выполнен до авторства maintenance patch. Независимое review опубликованного patch выполнено /root/fusion_reference: APPROVE exact candidate; запись в #236. Новых подтверждённых P0/P1 core/compatibility blockers в проверенном объёме не обнаружено.
 
 **FUSION_OWNER_PRESSURE_20261125 — scoped YELLOW:** 41 source owner ≥85% target, 20 выше target, hard/frozen violations 0. Owner — технический контролёр текущего Fusion slice. Gate: **focused review/extraction до новой ответственности в затронутом перегруженном owner; frozen owners не растут; применимый долг устранить до следующей milestone boundary**. Лимиты не повышаются. Особого внимания требуют CadViewport, LiveSketchStage, MarkingMenu, sketchCommands и LiveLineInput.
 
@@ -48,4 +48,4 @@ STATUS сокращён ниже target. Единственный exact duplicat
 
 Оригиналы **84 artifacts / 3 408 301 bytes** сохранены privately. Их lossless archive SHA256/length указаны в summary; проверено побайтное равенство каждому оригиналу. Raw first failure, subsequent success и measurement fields неизменны. Публичный summary не позволяет воспроизвести измерения без privately retained evidence и не выдаётся за полный raw-log или environment archive.
 
-После exact-head CI, независимого review и merge контролёр фиксирует фактический merge SHA в #184, переводит checkpoint в U2 в следующем implementation PR и применяет обусловленный сброс cadence. До этого feature-start закрыт. Исходники продукта, runtime, schema и зависимости не меняются; main/deployment/final parity сохраняют отдельные owner gates.
+Фактический merge SHA записан в #184. Следующий запрошенный владельцем docs/tasks checkpoint синхронизирует U2 и cadence0; дальнейшая выдача зависит от live READY-контракта. Исходники продукта, runtime, schema и зависимости не меняются; main/deployment/final parity сохраняют отдельные owner gates.

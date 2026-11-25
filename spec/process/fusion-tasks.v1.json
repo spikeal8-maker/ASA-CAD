@@ -1,0 +1,1638 @@
+{
+  "schema_version": 1,
+  "initiative": "FUS-001",
+  "master_issue": 237,
+  "repository": "spikeal8-maker/ASA-CAD",
+  "scope_authority": "docs/FUSION_BROWSER_SPEC.md",
+  "workflow": "docs/FUSION_AGENT_WORKFLOW.md",
+  "execution_pointer": "spec/process/active-work.v1.json",
+  "execution_state_authority": "GitHub task Issue; READY requires a controller dispatch contract with an exact live base. This registry defines work and dependencies, not live execution status.",
+  "prepared_on": "2026-11-25",
+  "baseline_sha": "a08b17c99bf8b3343008810ab5f9f398bd7a139d",
+  "scope": {
+    "first_target": "Завершённые сценарии Sketch, navigation, selection и parametric Part через Fusion shell",
+    "full_inventory": "R02 должен связать все видимые действия и варианты с отдельными сценариями; текущий список — предварительная очередь, не полный каталог Autodesk Fusion.",
+    "not_claimed": "100% Autodesk Fusion, все браузеры или все возможные входные данные",
+    "reference_status": "R01 закрепляет проверяемую версию/настройки на основе доступного evidence; исторические native captures не объявляются новым эталоном автоматически.",
+    "history": "Undo/Redo в текущей сессии обязательно; перенос undo-истории через Save/Open не подразумевается существующим контрактом.",
+    "first_release_required_task_ids": [
+      "R01",
+      "R02",
+      "P03",
+      "A08",
+      "B05",
+      "M04",
+      "SEL02",
+      "SEL03",
+      "S05",
+      "S06",
+      "C05",
+      "E03",
+      "F03"
+    ],
+    "first_release_requirement": "F04 нельзя закрыть только по Protected Part: обязательны navigation/menu/selection/поддержанная плоская грань и все указанные IDs. Первый профиль не тождественен всей очереди X и не всему Autodesk Fusion."
+  },
+  "tasks": [
+    {
+      "id": "G00",
+      "order": 1,
+      "phase": "Подготовка",
+      "title": "Принять уже подготовленный аудит",
+      "kind": "GATE",
+      "depends_on": [],
+      "planned_slice_id": "AUDIT-FUSION-BASE",
+      "acceptance": "Публичный audit PR, CI точного HEAD, независимое read-only review, подтверждённый merge и запись фактического merge SHA. Публикация владельцем разрешена 2026-11-25.",
+      "observed_basis": "Аудит подготовлен",
+      "responsible_role": "Контролёр",
+      "category": "Процедура",
+      "issue": 238,
+      "needs_decomposition": false,
+      "needs_detailed_contract": false
+    },
+    {
+      "id": "R01",
+      "order": 2,
+      "phase": "Подготовка",
+      "title": "Закрепить эталон Fusion и целевой выпуск",
+      "kind": "TASK",
+      "depends_on": [],
+      "planned_slice_id": "REFERENCE-PLANNING",
+      "acceptance": "Записаны версия/язык Fusion, настройки навигации, целевые браузеры и обязательные состояния. Есть ссылочный набор; нет выдуманных отличий.",
+      "observed_basis": "Предложение",
+      "responsible_role": "Контролёр + владелец",
+      "category": "Эталон",
+      "issue": 239,
+      "needs_decomposition": false,
+      "needs_detailed_contract": false
+    },
+    {
+      "id": "R02",
+      "order": 3,
+      "phase": "Подготовка",
+      "title": "Сопоставить все видимые действия с ядром",
+      "kind": "TASK",
+      "depends_on": [
+        "R01"
+      ],
+      "planned_slice_id": "REFERENCE-PLANNING",
+      "acceptance": "Каждое действие и каждый способ запуска связаны с command ID, реализацией и отдельным статусом браузерной приёмки; пропусков в утверждённом inventory нет.",
+      "observed_basis": "Реестр есть",
+      "responsible_role": "Qwen + reviewer",
+      "category": "Инвентаризация",
+      "issue": 240,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "T01",
+      "order": 4,
+      "phase": "Подготовка",
+      "title": "Расширить существующий Fusion browser harness",
+      "kind": "TASK",
+      "depends_on": [
+        "G00",
+        "R01"
+      ],
+      "planned_slice_id": "U2-FUSION-CIRCLE-NUMERIC",
+      "acceptance": "Подтверждён локальный reference/action mapping для Circle. Через лаунчер создан чистый Fusion Part и XY Sketch; есть semantic waits, read-only snapshot и evidence. Полный R02 не блокирует узкий пилот.",
+      "observed_basis": "Частичная база",
+      "responsible_role": "Qwen",
+      "category": "Инфраструктура",
+      "issue": 241,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "P01",
+      "order": 5,
+      "phase": "Пилот U2",
+      "title": "Зафиксировать тест окружности с выбранным центром",
+      "kind": "TASK",
+      "depends_on": [
+        "T01"
+      ],
+      "planned_slice_id": "U2-FUSION-CIRCLE-NUMERIC",
+      "acceptance": "Задан центр вне начала координат и диаметр 12 мм. Тест отличает legacy origin fallback от текущего draft. Проверены ожидаемая ошибка до исправления и независимый oracle.",
+      "observed_basis": "Дефект подключения найден",
+      "responsible_role": "Контролёр / test author",
+      "category": "Регрессия",
+      "issue": 242,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "P02",
+      "order": 6,
+      "phase": "Пилот U2",
+      "title": "Подключить панель окружности к общему draft",
+      "kind": "TASK",
+      "depends_on": [
+        "P01"
+      ],
+      "planned_slice_id": "U2-FUSION-CIRCLE-NUMERIC",
+      "acceptance": "После выбора центра числовой диаметр меняет тот же preview. Подтверждение создаёт одну окружность в выбранном центре; cancel ничего не добавляет.",
+      "observed_basis": "Ремонт UI",
+      "responsible_role": "Qwen",
+      "category": "Реализация",
+      "issue": 243,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "P03",
+      "order": 7,
+      "phase": "Пилот U2",
+      "title": "Принять окружность как законченный сценарий",
+      "kind": "TASK",
+      "depends_on": [
+        "P02"
+      ],
+      "planned_slice_id": "U2-FUSION-CIRCLE-NUMERIC",
+      "acceptance": "Pointer/numeric, повтор, invalid input, Undo/Redo и Save/Open проверены. ДО/ПОСЛЕ, review и CI относятся к одному HEAD. Пилот не объявлен всей U2.",
+      "observed_basis": "Новая приёмка",
+      "responsible_role": "Reviewer + контролёр",
+      "category": "Приёмка",
+      "issue": 244,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "A01",
+      "order": 8,
+      "phase": "Навигация A",
+      "title": "Закрепить договорённости камеры и проекции",
+      "kind": "TASK",
+      "depends_on": [
+        "R02",
+        "P03"
+      ],
+      "planned_slice_id": "U2-FUSION-ORIGIN-NAV",
+      "acceptance": "Описаны единственная камера, origin/u/v/normal, screen-to-plane, plane-to-screen, готовность и обработка вырожденного вида. Архитектор выбрал один способ отображения.",
+      "observed_basis": "Новый контракт",
+      "responsible_role": "Архитектор",
+      "category": "Архитектура",
+      "issue": 245,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "A02",
+      "order": 9,
+      "phase": "Навигация A",
+      "title": "Выделить обязанности перегруженных UI owners",
+      "kind": "TASK",
+      "depends_on": [
+        "A01"
+      ],
+      "planned_slice_id": "U2-FUSION-ORIGIN-NAV",
+      "acceptance": "Нужные обязанности вынесены без изменения поведения. Frozen файлы не выросли; budgets не повышены; существующие тесты проходят.",
+      "observed_basis": "Требуется extraction",
+      "responsible_role": "Qwen + архитектор",
+      "category": "Рефакторинг",
+      "issue": 246,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "A03",
+      "order": 10,
+      "phase": "Навигация A",
+      "title": "Передавать фактическое состояние камеры",
+      "kind": "TASK",
+      "depends_on": [
+        "A02"
+      ],
+      "planned_slice_id": "U2-FUSION-ORIGIN-NAV",
+      "acceptance": "Матрицы и viewport получены от действующего driver. Resize и смена вида обновляют snapshot; второй renderer/history отсутствует.",
+      "observed_basis": "Доработка",
+      "responsible_role": "Qwen",
+      "category": "Реализация",
+      "issue": 247,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "A04",
+      "order": 11,
+      "phase": "Навигация A",
+      "title": "Проверить координаты XY/XZ/YZ",
+      "kind": "TASK",
+      "depends_on": [
+        "A01",
+        "A03"
+      ],
+      "planned_slice_id": "U2-FUSION-ORIGIN-NAV",
+      "acceptance": "Точки (0,0), (20,10), (-15,25) проходят plane→screen→plane в заданном tolerance. Оси и нормали совпадают с общим контрактом плоскости.",
+      "observed_basis": "Новая математика",
+      "responsible_role": "Qwen + geometry reviewer",
+      "category": "Математика",
+      "issue": 248,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "A05",
+      "order": 12,
+      "phase": "Навигация A",
+      "title": "Связать отображение эскиза с камерой",
+      "kind": "TASK",
+      "depends_on": [
+        "A03",
+        "A04"
+      ],
+      "planned_slice_id": "U2-FUSION-ORIGIN-NAV",
+      "acceptance": "Grid, geometry и preview лежат на одной рабочей плоскости. Геометрия тела остаётся в мировых координатах. Двойное преобразование отсутствует.",
+      "observed_basis": "Новая связь",
+      "responsible_role": "Qwen",
+      "category": "Реализация",
+      "issue": 249,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "A06",
+      "order": 13,
+      "phase": "Навигация A",
+      "title": "Подключить общий обратный расчёт указателя",
+      "kind": "TASK",
+      "depends_on": [
+        "A04",
+        "A05"
+      ],
+      "planned_slice_id": "U2-FUSION-ORIGIN-NAV",
+      "acceptance": "После наклона и масштабирования click, selection и drag дают ожидаемые координаты и IDs. При неопределимой проекции ввод отклонён без мутации.",
+      "observed_basis": "Новая связь",
+      "responsible_role": "Qwen + reviewer",
+      "category": "Реализация",
+      "issue": 250,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "A06A",
+      "order": 14,
+      "phase": "Навигация A",
+      "title": "Согласовать экранные поля в ортографическом виде",
+      "kind": "TASK",
+      "depends_on": [
+        "A06"
+      ],
+      "planned_slice_id": "U2-FUSION-ORIGIN-NAV",
+      "acceptance": "Length/angle и другие активные numeric anchors остаются читаемы и кликабельны после наклона. Привязки используют экранный масштаб. Нет второго numeric draft.",
+      "observed_basis": "Необходимая часть первого bridge",
+      "responsible_role": "Qwen + reviewer",
+      "category": "Надёжность",
+      "issue": 251,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "A06B",
+      "order": 15,
+      "phase": "Навигация A",
+      "title": "Закрыть безопасный ввод первого camera bridge",
+      "kind": "TASK",
+      "depends_on": [
+        "A06A"
+      ],
+      "planned_slice_id": "U2-FUSION-ORIGIN-NAV",
+      "acceptance": "Ортографический edge-on, pointercancel, blur и release вне canvas не дают ложного commit или stuck drag. Навигация сохраняет draft; Look At восстанавливает определимый ввод.",
+      "observed_basis": "Необходимая часть первого bridge",
+      "responsible_role": "Qwen + reviewer",
+      "category": "Надёжность",
+      "issue": 252,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "A07",
+      "order": 16,
+      "phase": "Навигация A",
+      "title": "Включить виды куба, Fit и Look At",
+      "kind": "TASK",
+      "depends_on": [
+        "A05",
+        "A06B"
+      ],
+      "planned_slice_id": "U2-FUSION-ORIGIN-NAV",
+      "acceptance": "Для XY/XZ/YZ куб управляет камерой. Look At возвращает нормаль активной плоскости. Draft, документ и Undo сохраняются; неподдержанный режим явно отключён.",
+      "observed_basis": "Повторное использование",
+      "responsible_role": "Qwen",
+      "category": "Реализация",
+      "issue": 253,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "A08",
+      "order": 17,
+      "phase": "Навигация A",
+      "title": "Принять ортографический маршрут Sketch",
+      "kind": "TASK",
+      "depends_on": [
+        "A07"
+      ],
+      "planned_slice_id": "U2-FUSION-ORIGIN-NAV",
+      "acceptance": "Создать геометрию → повернуть → выбрать → продолжить ввод → Look At → Finish → существующее Extrude → Save/Open. KOMPAS protected flow не ухудшен.",
+      "observed_basis": "Новая приёмка",
+      "responsible_role": "Reviewer + контролёр",
+      "category": "Приёмка",
+      "issue": 254,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "B01",
+      "order": 18,
+      "phase": "Навигация B",
+      "title": "Добавить перспективную проекцию эскиза",
+      "kind": "TASK",
+      "depends_on": [
+        "A08"
+      ],
+      "planned_slice_id": "U2-FUSION-PERSPECTIVE",
+      "acceptance": "Проекция и обратный расчёт используют фактическую матрицу камеры; масштабы зависят от глубины правильно. Geometry остаётся двумерной в опоре.",
+      "observed_basis": "Новая возможность",
+      "responsible_role": "Qwen + архитектор",
+      "category": "Реализация",
+      "issue": 255,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "B02",
+      "order": 19,
+      "phase": "Навигация B",
+      "title": "Расширить guards для перспективы и lifecycle",
+      "kind": "TASK",
+      "depends_on": [
+        "B01"
+      ],
+      "planned_slice_id": "U2-FUSION-PERSPECTIVE",
+      "acceptance": "Дополнить уже принятые orthographic guards: перспектива, near-plane и точки за камерой не создают NaN/огромных координат. Finish/re-enter не оставляет stale handlers.",
+      "observed_basis": "Новый guard",
+      "responsible_role": "Qwen + reviewer",
+      "category": "Надёжность",
+      "issue": 256,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "B03",
+      "order": 20,
+      "phase": "Навигация B",
+      "title": "Расширить экранные поля и snap для перспективы",
+      "kind": "TASK",
+      "depends_on": [
+        "B01",
+        "B02"
+      ],
+      "planned_slice_id": "U2-FUSION-PERSPECTIVE",
+      "acceptance": "Расширить уже работающие orthographic anchors: числовые поля остаются доступны при перспективе и различной глубине. Snap использует локальный экранный масштаб; непроецируемая точка не заменяется (0,0).",
+      "observed_basis": "Ремонт presentation",
+      "responsible_role": "Qwen",
+      "category": "Реализация",
+      "issue": 257,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "B04",
+      "order": 21,
+      "phase": "Навигация B",
+      "title": "Согласовать мышь, wheel и потерю capture",
+      "kind": "TASK",
+      "depends_on": [
+        "B03"
+      ],
+      "planned_slice_id": "U2-FUSION-PERSPECTIVE",
+      "acceptance": "Проверить единый input contract в перспективе: MMB pan, Shift+MMB orbit, wheel, потеря capture и активный tool. Базовые orthographic guards уже обязательны в A06B.",
+      "observed_basis": "Доработка",
+      "responsible_role": "Qwen",
+      "category": "Ввод",
+      "issue": 258,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "B05",
+      "order": 22,
+      "phase": "Навигация B",
+      "title": "Принять проекции, Home и camera menu",
+      "kind": "TASK",
+      "depends_on": [
+        "B04"
+      ],
+      "planned_slice_id": "U2-FUSION-PERSPECTIVE",
+      "acceptance": "Режимы камеры синхронны в кубе и панели. Home отличается от Look At. Каждая включённая настройка проверена; сохранены обычный flow и preview доказательства.",
+      "observed_basis": "Новая приёмка",
+      "responsible_role": "Reviewer + контролёр",
+      "category": "Приёмка",
+      "issue": 259,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "M01",
+      "order": 23,
+      "phase": "Меню и выбор",
+      "title": "Разделить ПКМ куба и рабочей области",
+      "kind": "TASK",
+      "depends_on": [
+        "A08"
+      ],
+      "planned_slice_id": "U2-FUSION-CONTEXT",
+      "acceptance": "ПКМ куба открывает только cube menu; ПКМ canvas — контекстное меню. Меню не создаёт точки и корректно помещается у всех краёв окна.",
+      "observed_basis": "Частично есть",
+      "responsible_role": "Qwen",
+      "category": "Ремонт",
+      "issue": 260,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "M02",
+      "order": 24,
+      "phase": "Меню и выбор",
+      "title": "Согласовать OK, Cancel, Repeat и Escape",
+      "kind": "TASK",
+      "depends_on": [
+        "M01"
+      ],
+      "planned_slice_id": "U2-FUSION-CONTEXT",
+      "acceptance": "Действия зависят от active command. Один event даёт один commit. Esc закрывает верхний UI-слой согласно контракту и возвращает focus.",
+      "observed_basis": "Частично есть",
+      "responsible_role": "Qwen",
+      "category": "Ремонт",
+      "issue": 261,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "M03",
+      "order": 25,
+      "phase": "Меню и выбор",
+      "title": "Связать меню, ленту, поиск и shortcut",
+      "kind": "TASK",
+      "depends_on": [
+        "M02"
+      ],
+      "planned_slice_id": "U2-FUSION-CONTEXT",
+      "acceptance": "Одна операция из всех объявленных точек входа вызывает тот же typed action; доступность и причина отказа совпадают.",
+      "observed_basis": "Есть action layer",
+      "responsible_role": "Qwen",
+      "category": "Ремонт",
+      "issue": 262,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "M04",
+      "order": 26,
+      "phase": "Меню и выбор",
+      "title": "Реализовать и проверить жесты marking menu",
+      "kind": "BLOCK",
+      "depends_on": [
+        "M03",
+        "B05"
+      ],
+      "planned_slice_id": "U2-FUSION-CONTEXT",
+      "acceptance": "До READY разделить на один жест/состояние. Для принятого набора работают удержание ПКМ, выбор сектора и отмена; обычное ПКМ не теряется.",
+      "observed_basis": "Частично / уточнить",
+      "responsible_role": "Архитектор → Qwen",
+      "category": "Расширение",
+      "issue": 263,
+      "needs_decomposition": true,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "SEL01",
+      "order": 27,
+      "phase": "Меню и выбор",
+      "title": "Проверить Click, Ctrl и Shift selection",
+      "kind": "TASK",
+      "depends_on": [
+        "A08"
+      ],
+      "planned_slice_id": "U2-FUSION-SELECTION",
+      "acceptance": "Одиночный выбор, Ctrl toggle и Shift add-only дают точные множества IDs. Canvas, дерево и панель согласованы. Навигация не меняет selection.",
+      "observed_basis": "Нужна проверка",
+      "responsible_role": "Qwen",
+      "category": "Ремонт",
+      "issue": 264,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "SEL02",
+      "order": 28,
+      "phase": "Меню и выбор",
+      "title": "Реализовать согласованную рамку выбора",
+      "kind": "TASK",
+      "depends_on": [
+        "SEL01"
+      ],
+      "planned_slice_id": "U2-FUSION-SELECTION",
+      "acceptance": "Слева направо — только полностью внутри; справа налево — также пересечённые. Проверены внутри/снаружи/пересечение и объявленные фильтры.",
+      "observed_basis": "Уточнить по inventory",
+      "responsible_role": "Qwen",
+      "category": "Расширение",
+      "issue": 265,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "SEL03",
+      "order": 29,
+      "phase": "Меню и выбор",
+      "title": "Закрыть keyboard/focus и browser conflicts",
+      "kind": "TASK",
+      "depends_on": [
+        "M02",
+        "SEL01"
+      ],
+      "planned_slice_id": "U2-FUSION-SELECTION",
+      "acceptance": "L/R/C/E не запускаются в текстовом/числовом поле и при composition. Ctrl+S сохраняет проект в согласованном контексте. Esc/Tab не срабатывают дважды.",
+      "observed_basis": "Нужна проверка",
+      "responsible_role": "Qwen",
+      "category": "Надёжность",
+      "issue": 266,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "S01",
+      "order": 30,
+      "phase": "Завершение U2",
+      "title": "Подключить числовой ввод Arc",
+      "kind": "TASK",
+      "depends_on": [
+        "P03",
+        "A08"
+      ],
+      "planned_slice_id": "U2-FUSION-ARC",
+      "acceptance": "Панель и указатель меняют одну дугу. Отдельно проверены радиус, CW/CCW, переход через 0°, большая дуга, cancel и повтор.",
+      "observed_basis": "Ремонт UI",
+      "responsible_role": "Qwen",
+      "category": "Реализация",
+      "issue": 267,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "S02",
+      "order": 31,
+      "phase": "Завершение U2",
+      "title": "Доказать Rectangle numeric и pointer",
+      "kind": "TASK",
+      "depends_on": [
+        "A08"
+      ],
+      "planned_slice_id": "U2-FUSION-RECTANGLE",
+      "acceptance": "Прямоугольник 60×40 создан двумя способами; после смены вида размеры верны. Undo удаляет всю операцию; cancel не оставляет части контура.",
+      "observed_basis": "Ядро есть",
+      "responsible_role": "Qwen",
+      "category": "Приёмка",
+      "issue": 268,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "S03",
+      "order": 32,
+      "phase": "Завершение U2",
+      "title": "Доказать Line и числовые locks",
+      "kind": "TASK",
+      "depends_on": [
+        "A08"
+      ],
+      "planned_slice_id": "U2-FUSION-LINE",
+      "acceptance": "Цепочка, длина/угол, Tab/Enter/Esc и повтор проверены. Существующая ожидающая visual verdict область не перерисовывается без её gate.",
+      "observed_basis": "Ядро есть",
+      "responsible_role": "Qwen + reviewer",
+      "category": "Приёмка",
+      "issue": 269,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "S04",
+      "order": 33,
+      "phase": "Завершение U2",
+      "title": "Проверить Sketch Palette и visibility",
+      "kind": "TASK",
+      "depends_on": [
+        "A08"
+      ],
+      "planned_slice_id": "U2-FUSION-PALETTE",
+      "acceptance": "Grid, points, profiles, dimensions, constraints и construction меняют только объявленный вид. Look At и активная опора согласованы; неподдержанное не выдано за готовое.",
+      "observed_basis": "Частично есть",
+      "responsible_role": "Qwen",
+      "category": "Ремонт",
+      "issue": 270,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "S05",
+      "order": 34,
+      "phase": "Завершение U2",
+      "title": "Разрешать плоскость выбранной грани",
+      "kind": "BLOCK",
+      "depends_on": [
+        "A08"
+      ],
+      "planned_slice_id": "U2-FUSION-FACE-FRAME",
+      "acceptance": "До READY определить resolver StableRef→frame и его ownership. На поддержанной плоской грани камера/picking корректны; сломанная ссылка даёт явную ошибку.",
+      "observed_basis": "Новая связь",
+      "responsible_role": "Архитектор → Qwen",
+      "category": "Архитектура",
+      "issue": 271,
+      "needs_decomposition": true,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "S06",
+      "order": 35,
+      "phase": "Завершение U2",
+      "title": "Принять U2 по каноническим условиям",
+      "kind": "GATE",
+      "depends_on": [
+        "S01",
+        "S02",
+        "S03",
+        "S04"
+      ],
+      "planned_slice_id": "U2-ACCEPTANCE-GATE",
+      "acceptance": "Четыре инструмента, Undo/Redo, Save/Open и shared document доказаны. Применимый full audit принят; технический и owner visual статусы разделены.",
+      "observed_basis": "Milestone gate",
+      "responsible_role": "Контролёр",
+      "category": "Приёмка",
+      "issue": 272,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "C01",
+      "order": 36,
+      "phase": "U3",
+      "title": "Линейные размеры и изменение 60→80",
+      "kind": "TASK",
+      "depends_on": [
+        "S06"
+      ],
+      "planned_slice_id": "U3-FUSION-C01",
+      "acceptance": "Горизонтальный/вертикальный/линейный размер управляет тем же sketch; constraint intent и IDs сохранены после открытия.",
+      "observed_basis": "Ядро есть",
+      "responsible_role": "Qwen",
+      "category": "Приёмка",
+      "issue": 273,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "C02",
+      "order": 37,
+      "phase": "U3",
+      "title": "Радиус, диаметр и угловой размер",
+      "kind": "BLOCK",
+      "depends_on": [
+        "C01"
+      ],
+      "planned_slice_id": "U3-FUSION-C02",
+      "acceptance": "Разделить на размерные семейства. Label, единицы, solved geometry и persisted intent совпадают; zero/invalid/conflict обрабатываются по контракту.",
+      "observed_basis": "Ядро в основном есть",
+      "responsible_role": "Контролёр → Qwen",
+      "category": "Приёмка",
+      "issue": 274,
+      "needs_decomposition": true,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "C03",
+      "order": 38,
+      "phase": "U3",
+      "title": "Ограничения по одному семейству",
+      "kind": "BLOCK",
+      "depends_on": [
+        "S06"
+      ],
+      "planned_slice_id": "U3-FUSION-C03",
+      "acceptance": "Отдельные карточки: H/V/Fixed; Coincident; PointOnCurve; Parallel/Perpendicular/Equal; Tangent/Concentric; Symmetry. Для каждой solver, cancel, wrong selection и Undo.",
+      "observed_basis": "Ядро в основном есть",
+      "responsible_role": "Контролёр → Qwen",
+      "category": "Приёмка",
+      "issue": 275,
+      "needs_decomposition": true,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "C04",
+      "order": 39,
+      "phase": "U3",
+      "title": "Диагностика несовместимых ограничений",
+      "kind": "TASK",
+      "depends_on": [
+        "C02",
+        "C03"
+      ],
+      "planned_slice_id": "U3-FUSION-C04",
+      "acceptance": "Конфликт показан понятно, последняя валидная geometry не теряется; obsolete solve result не применяется к другому документу.",
+      "observed_basis": "Нужна проверка",
+      "responsible_role": "Qwen + reviewer",
+      "category": "Надёжность",
+      "issue": 276,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "C05",
+      "order": 40,
+      "phase": "U3",
+      "title": "Принять U3 и применимый audit",
+      "kind": "GATE",
+      "depends_on": [
+        "C04"
+      ],
+      "planned_slice_id": "U3-ACCEPTANCE-GATE",
+      "acceptance": "Все объявленные размеры/ограничения доказаны обычным UI и Save/Open. Незавершённые действия перечислены, gates закрыты.",
+      "observed_basis": "Milestone gate",
+      "responsible_role": "Контролёр",
+      "category": "Приёмка",
+      "issue": 277,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "E01",
+      "order": 41,
+      "phase": "U4",
+      "title": "Проверить профиль до построения тела",
+      "kind": "TASK",
+      "depends_on": [
+        "C05"
+      ],
+      "planned_slice_id": "U4-FUSION-EXTRUDE",
+      "acceptance": "Замкнутый контур, отверстие, construction, разрыв и самопересечение различаются. Заливка соответствует реальному profile analyzer.",
+      "observed_basis": "Ядро есть",
+      "responsible_role": "Qwen + geometry reviewer",
+      "category": "Приёмка",
+      "issue": 278,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "E02",
+      "order": 42,
+      "phase": "U4",
+      "title": "Доказать поддержанные режимы Extrude",
+      "kind": "TASK",
+      "depends_on": [
+        "E01"
+      ],
+      "planned_slice_id": "U4-FUSION-EXTRUDE",
+      "acceptance": "60×40×10 даёт bbox 60×40×10 и объём 24000 мм³. Circle даёт цилиндр. Направление, reverse и symmetric имеют согласованную длину; preview cancel не оставляет body.",
+      "observed_basis": "Ядро есть с ограничениями",
+      "responsible_role": "Qwen + reviewer",
+      "category": "Приёмка",
+      "issue": 279,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "E03",
+      "order": 43,
+      "phase": "U4",
+      "title": "Принять U4 по настоящему B-Rep",
+      "kind": "GATE",
+      "depends_on": [
+        "E02"
+      ],
+      "planned_slice_id": "U4-ACCEPTANCE-GATE",
+      "acceptance": "Solved Sketch → validated profile → OCC B-Rep → render доказано. Никакая mesh-имитация не считается операцией CAD. Применимые gates/audit закрыты.",
+      "observed_basis": "Milestone gate",
+      "responsible_role": "Контролёр",
+      "category": "Приёмка",
+      "issue": 280,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "F01",
+      "order": 44,
+      "phase": "U5",
+      "title": "Доказать Cut и Fillet через Fusion UI",
+      "kind": "BLOCK",
+      "depends_on": [
+        "E03"
+      ],
+      "planned_slice_id": "U5-FUSION-PROTECTED",
+      "acceptance": "Отдельные карточки Cut и Fillet. Ø12 through cut сохраняет правильное тело; Fillet R1 использует выбранное ребро. Ошибка не привязывает другое ребро.",
+      "observed_basis": "Ядро есть с ограничениями",
+      "responsible_role": "Контролёр → Qwen",
+      "category": "Приёмка",
+      "issue": 281,
+      "needs_decomposition": true,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "F02",
+      "order": 45,
+      "phase": "U5",
+      "title": "Проверить перестроение и StableRef",
+      "kind": "TASK",
+      "depends_on": [
+        "F01"
+      ],
+      "planned_slice_id": "U5-FUSION-PROTECTED",
+      "acceptance": "После 60→80 отверстие и скругление связаны с правильными опорами. Отсутствующая/неоднозначная ссылка не заменяется другой молча.",
+      "observed_basis": "Ядро есть",
+      "responsible_role": "Qwen + geometry reviewer",
+      "category": "Регрессия",
+      "issue": 282,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "F03",
+      "order": 46,
+      "phase": "U5",
+      "title": "Пройти Protected Part и повторное открытие",
+      "kind": "TASK",
+      "depends_on": [
+        "F02"
+      ],
+      "planned_slice_id": "U5-FUSION-PROTECTED",
+      "acceptance": "60×40 → Extrude10 → Ø12 cut → FilletR1 → width80 → save/open → Ø14. Проверены документ, геометрия и повторное редактирование.",
+      "observed_basis": "Есть общий protected test",
+      "responsible_role": "Qwen + reviewer",
+      "category": "Приёмка",
+      "issue": 283,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "F04",
+      "order": 47,
+      "phase": "U5",
+      "title": "Закрыть выпуск и показать сборку владельцу",
+      "kind": "GATE",
+      "depends_on": [
+        "F03",
+        "B05",
+        "M04",
+        "SEL02",
+        "SEL03",
+        "S05"
+      ],
+      "planned_slice_id": "U5-RELEASE-GATE",
+      "acceptance": "Все обязательные задачи первого профиля, включая camera/menu/selection/face support, приняты; audit/CI/review на точном SHA. Отдельная visual/release acceptance и проверенный preview. X-блоки не приписываются этому выпуску.",
+      "observed_basis": "Release gate",
+      "responsible_role": "Контролёр + владелец",
+      "category": "Выпуск",
+      "issue": 284,
+      "needs_decomposition": false,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "X01",
+      "order": 48,
+      "phase": "Расширение",
+      "title": "Trim по явным классам пересечений",
+      "kind": "BLOCK",
+      "depends_on": [
+        "F04"
+      ],
+      "planned_slice_id": "EXTENSION-X01",
+      "acceptance": "Начать с Line–Line, затем отдельные Line–Circle/Arc. Удалён нужный сегмент, constraint refs обработаны, ошибки не мутируют документ.",
+      "observed_basis": "Новая команда",
+      "responsible_role": "Архитектор → Qwen",
+      "category": "Новая геометрия",
+      "issue": 285,
+      "needs_decomposition": true,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "X02",
+      "order": 49,
+      "phase": "Расширение",
+      "title": "Extend и Split по отдельным сценариям",
+      "kind": "BLOCK",
+      "depends_on": [
+        "F04"
+      ],
+      "planned_slice_id": "EXTENSION-X02",
+      "acceptance": "Разделить Extend и Split. Выбран правильный конец/сегмент; неоднозначная граница требует выбора; history/persistence согласованы.",
+      "observed_basis": "Новые команды",
+      "responsible_role": "Архитектор → Qwen",
+      "category": "Новая геометрия",
+      "issue": 286,
+      "needs_decomposition": true,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "X03",
+      "order": 50,
+      "phase": "Расширение",
+      "title": "Offset замкнутых и открытых контуров",
+      "kind": "BLOCK",
+      "depends_on": [
+        "F04"
+      ],
+      "planned_slice_id": "EXTENSION-X03",
+      "acceptance": "Отдельно linear/arc, сторона, расстояние, self-intersection и ассоциативность. Один простой контур не означает весь Offset готов.",
+      "observed_basis": "Новая команда",
+      "responsible_role": "Архитектор → Qwen",
+      "category": "Новая геометрия",
+      "issue": 287,
+      "needs_decomposition": true,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "X04",
+      "order": 51,
+      "phase": "Расширение",
+      "title": "Mirror и Sketch patterns",
+      "kind": "BLOCK",
+      "depends_on": [
+        "F04"
+      ],
+      "planned_slice_id": "EXTENSION-X04",
+      "acceptance": "Отдельно Mirror, rectangular/circular pattern. Координаты, оси и новые IDs верны; перенос/ассоциативность constraints определены до кода.",
+      "observed_basis": "Новые команды",
+      "responsible_role": "Архитектор → Qwen",
+      "category": "Новая геометрия",
+      "issue": 288,
+      "needs_decomposition": true,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "X05",
+      "order": 52,
+      "phase": "Расширение",
+      "title": "Sketch Fillet и Chamfer",
+      "kind": "BLOCK",
+      "depends_on": [
+        "F04"
+      ],
+      "planned_slice_id": "EXTENSION-X05",
+      "acceptance": "Отдельно касательная дуга и фаска между выбранными entities. Невозможный размер отклонён; downstream references сохраняются или явно диагностируются.",
+      "observed_basis": "Новые команды",
+      "responsible_role": "Архитектор → Qwen",
+      "category": "Новая геометрия",
+      "issue": 289,
+      "needs_decomposition": true,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "X06",
+      "order": 53,
+      "phase": "Расширение",
+      "title": "Дополнительные примитивы и варианты",
+      "kind": "BLOCK",
+      "depends_on": [
+        "F04"
+      ],
+      "planned_slice_id": "EXTENSION-X06",
+      "acceptance": "По отдельной карточке на Polygon, Ellipse, Point, Spline и каждый обещанный способ Rectangle/Circle/Arc. Статусы по вариантам, не одной общей кнопке.",
+      "observed_basis": "Планируется",
+      "responsible_role": "Архитектор → Qwen",
+      "category": "Новая геометрия",
+      "issue": 290,
+      "needs_decomposition": true,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "X07",
+      "order": 54,
+      "phase": "Расширение",
+      "title": "Project и ассоциативность",
+      "kind": "BLOCK",
+      "depends_on": [
+        "S05",
+        "F04"
+      ],
+      "planned_slice_id": "EXTENSION-X07",
+      "acceptance": "Проекция выбраного ребра/геометрии на активную опору; ссылка переживает допустимое изменение источника. Разрыв ссылки видим пользователю.",
+      "observed_basis": "Новая команда",
+      "responsible_role": "Архитектор → Qwen",
+      "category": "Топология",
+      "issue": 291,
+      "needs_decomposition": true,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "X08",
+      "order": 55,
+      "phase": "Расширение",
+      "title": "Повторные Extrude и несколько тел",
+      "kind": "BLOCK",
+      "depends_on": [
+        "F04"
+      ],
+      "planned_slice_id": "EXTENSION-X08",
+      "acceptance": "Разделить NewBody/Join/Cut/Intersect и выбор target body, profile subsets, редактирование feature. Один первый Extrude не закрывает эти возможности.",
+      "observed_basis": "Расширение ядра",
+      "responsible_role": "Архитектор → Qwen",
+      "category": "Топология",
+      "issue": 292,
+      "needs_decomposition": true,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "X09",
+      "order": 56,
+      "phase": "Расширение",
+      "title": "Revolve, Sweep и Loft",
+      "kind": "BLOCK",
+      "depends_on": [
+        "F04"
+      ],
+      "planned_slice_id": "EXTENSION-X09",
+      "acceptance": "Отдельные спецификации входов, B-Rep oracle, preview, cancel, parameters и reference propagation для каждой операции.",
+      "observed_basis": "Новые операции",
+      "responsible_role": "Архитектор → Qwen",
+      "category": "Новая геометрия",
+      "issue": 293,
+      "needs_decomposition": true,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "X10",
+      "order": 57,
+      "phase": "Расширение",
+      "title": "Полнота рабочих меню и внешнего вида",
+      "kind": "BLOCK",
+      "depends_on": [
+        "R02",
+        "F04"
+      ],
+      "planned_slice_id": "EXTENSION-X10",
+      "acceptance": "Каждое видимое действие из inventory имеет закрытый сценарий или остаётся явно незавершённым. Camera effects, pivot, навигационные режимы и touch детализируются отдельно.",
+      "observed_basis": "Нужен полный inventory",
+      "responsible_role": "Контролёр → Qwen",
+      "category": "Полнота",
+      "issue": 294,
+      "needs_decomposition": true,
+      "needs_detailed_contract": true
+    },
+    {
+      "id": "X11",
+      "order": 58,
+      "phase": "Расширение",
+      "title": "Другие среды Fusion и ASA Lab",
+      "kind": "BLOCK",
+      "depends_on": [
+        "R02",
+        "F04"
+      ],
+      "planned_slice_id": "EXTENSION-X11",
+      "acceptance": "Отдельно определить последующие профили: assemblies, drawings, surfaces, mesh, manufacturing, simulation, cloud/course integration. Их нельзя приписать готовности Sketch/Solid.",
+      "observed_basis": "Следующий объём",
+      "responsible_role": "Владелец + архитектор",
+      "category": "Объём",
+      "issue": 295,
+      "needs_decomposition": true,
+      "needs_detailed_contract": true
+    }
+  ],
+  "acceptance_cases": [
+    {
+      "id": "Q01",
+      "scenario": "Окружность",
+      "actions": "Выбрать центр вне origin, ввести диаметр 12, подтвердить",
+      "geometry": "Один Circle; радиус 6 мм и исходный центр с согласованным tolerance",
+      "history": "Cancel не создаёт entity; Undo/Redo возвращает тот же intent",
+      "persistence": "Save/Open сохраняет центр, радиус и ID",
+      "visual": "Центр, ghost и numeric panel согласованы",
+      "task_ids": [
+        "P01",
+        "P02",
+        "P03"
+      ]
+    },
+    {
+      "id": "Q02",
+      "scenario": "Камера в Sketch",
+      "actions": "Повернуть вид, pan/zoom, затем Look At",
+      "geometry": "Geometry в исходной рабочей плоскости; camera pose меняется",
+      "history": "Document revision/Undo не меняются от навигации",
+      "persistence": "Контракт сохранения camera preferences задан отдельно",
+      "visual": "ViewCube и scene синхронны; ориентация плоскости читаема",
+      "task_ids": [
+        "A01",
+        "A08",
+        "B05"
+      ]
+    },
+    {
+      "id": "Q03",
+      "scenario": "Picking после поворота",
+      "actions": "Выбрать и переместить entity в наклонном виде",
+      "geometry": "World/plane coordinate совпадает с ожидаемым указателем; выбран правильный ID",
+      "history": "Одна согласованная edit-операция; не случайный sketch click",
+      "persistence": "После сохранения остаётся именно новая геометрия",
+      "visual": "Подсветка и числовые anchors совпадают с объектом",
+      "task_ids": [
+        "A04",
+        "A06"
+      ]
+    },
+    {
+      "id": "Q04",
+      "scenario": "Плохой ракурс",
+      "actions": "Повернуть рабочую плоскость ребром; вернуть Look At",
+      "geometry": "Неопределимый inverse не создаёт NaN или огромных координат",
+      "history": "Никакого ложного commit; draft сохраняется",
+      "persistence": "Документ остаётся валидным",
+      "visual": "Понятна временная невозможность прямого ввода",
+      "task_ids": [
+        "A06B",
+        "B02"
+      ]
+    },
+    {
+      "id": "Q05",
+      "scenario": "Меню ПКМ",
+      "actions": "Открыть cube/canvas menu у четырёх краёв окна",
+      "geometry": "Контекст и текущий selection правильные",
+      "history": "Один dispatch; Esc закрывает соответствующий слой",
+      "persistence": "Меню само не меняет документ",
+      "visual": "Нет обрезанных пунктов и наложения двух меню",
+      "task_ids": [
+        "M01",
+        "M02"
+      ]
+    },
+    {
+      "id": "Q06",
+      "scenario": "Выбор",
+      "actions": "Click/Ctrl/Shift; рамка в обоих направлениях",
+      "geometry": "Точное множество IDs по условиям внутри/пересечён/снаружи",
+      "history": "Selection не добавляет CAD undo frame",
+      "persistence": "Сохранение selection проверять только если оно обещано",
+      "visual": "Canvas/tree/panel согласованы",
+      "task_ids": [
+        "SEL01",
+        "SEL02"
+      ]
+    },
+    {
+      "id": "Q07",
+      "scenario": "Базовые инструменты",
+      "actions": "Line, Rectangle60×40, Circle, Arc: pointer и numeric",
+      "geometry": "Проверены координаты, размеры и типы объектов, а не только DOM count",
+      "history": "Repeat/cancel/invalid/Undo/Redo по контракту каждого инструмента",
+      "persistence": "Документ и IDs сохраняются, после Open можно продолжить",
+      "visual": "Preview отличается от committed geometry и соответствует ему",
+      "task_ids": [
+        "S01",
+        "S02",
+        "S03"
+      ]
+    },
+    {
+      "id": "Q08",
+      "scenario": "Постоянный размер",
+      "actions": "Изменить ширину 60→80; изменить Ø12→Ø14",
+      "geometry": "Solved geometry удовлетворяет размеру с заданным tolerance",
+      "history": "Undo возвращает прежний размер и решение",
+      "persistence": "Постоянные размеры переживают Save/Open",
+      "visual": "Label/единицы/geometry согласованы",
+      "task_ids": [
+        "C01",
+        "C02"
+      ]
+    },
+    {
+      "id": "Q09",
+      "scenario": "Конфликт solver",
+      "actions": "Ввести несовместимое ограничение или размер",
+      "geometry": "Последний валидный документ сохранён; конфликт не замаскирован",
+      "history": "Неуспешный commit не добавляет неполный объект",
+      "persistence": "Открывается валидная последняя сохранённая модель",
+      "visual": "Понятная ошибка и состояние решения",
+      "task_ids": [
+        "C03",
+        "C04"
+      ]
+    },
+    {
+      "id": "Q10",
+      "scenario": "Профиль",
+      "actions": "Замкнуть/разомкнуть контур; добавить отверстие и construction",
+      "geometry": "Правильные границы области; construction не образует ложное тело",
+      "history": "Cancel и failure не меняют существующие features",
+      "persistence": "Profile intent восстанавливается при recompute после Open",
+      "visual": "Заливка совпадает с реальной пригодной областью",
+      "task_ids": [
+        "E01"
+      ]
+    },
+    {
+      "id": "Q11",
+      "scenario": "Extrude",
+      "actions": "Rectangle60×40 → distance10 → OK",
+      "geometry": "До других операций bbox60×40×10 и объём24000 мм³",
+      "history": "Preview cancel не оставляет тело; Undo/Redo согласованы",
+      "persistence": "Открытое тело имеет те же параметры/опору",
+      "visual": "Preview соответствует финальному телу",
+      "task_ids": [
+        "E02"
+      ]
+    },
+    {
+      "id": "Q12",
+      "scenario": "Through cut",
+      "actions": "Блок60×40×10 → отверстие Ø12 через толщину10",
+      "geometry": "До Fillet объём 24000−360π мм³; тело и направление правильные",
+      "history": "Ошибочный/отменённый cut не портит исходное тело",
+      "persistence": "Опора и параметры сохраняются",
+      "visual": "Видно действительное сквозное отверстие",
+      "task_ids": [
+        "F01"
+      ]
+    },
+    {
+      "id": "Q13",
+      "scenario": "Protected Part",
+      "actions": "60×40→Extrude10→Ø12cut→R1→width80→Save/Open→Ø14",
+      "geometry": "Скругление и отверстие остаются связаны с правильными опорами",
+      "history": "Каждый принятый edit отменяется/возвращается по контракту",
+      "persistence": "Повторное редактирование после Open успешно; history между сессиями не предполагается",
+      "visual": "Дерево, параметры и viewport соответствуют одной детали",
+      "task_ids": [
+        "F02",
+        "F03"
+      ]
+    },
+    {
+      "id": "Q14",
+      "scenario": "Общий документ",
+      "actions": "Сохранить в Fusion, открыть в KOMPAS, затем обратно",
+      "geometry": "Один document ID, геометрия и параметры без скрытой конвертации",
+      "history": "Одна история в текущем приложении; межсессионный контракт отдельный",
+      "persistence": "Оболочка не создаёт параллельную копию проекта",
+      "visual": "Разные оболочки показывают один результат",
+      "task_ids": [
+        "F03"
+      ]
+    },
+    {
+      "id": "Q15",
+      "scenario": "Браузер и focus",
+      "actions": "Resize, выбранные DPR, blur, pointercancel, numeric/text focus",
+      "geometry": "Координаты не смешивают CSS pixels и canvas pixels",
+      "history": "Нет stuck drag, двойного commit и случайной горячей клавиши",
+      "persistence": "Закрытие/отказ сохранения не выдаётся за успешное сохранение",
+      "visual": "Меню и inputs доступны при утверждённых размерах окна",
+      "task_ids": [
+        "A06A",
+        "A06B",
+        "SEL03",
+        "B04"
+      ]
+    },
+    {
+      "id": "Q16",
+      "scenario": "Визуальная приёмка",
+      "actions": "Одинаковые сцена, viewport, тема, DPI, состояние",
+      "geometry": "Screenshot не заменяет независимый geometry oracle",
+      "history": "Визуальная настройка не меняет CAD intent",
+      "persistence": "Сохраняются правила темы/вида, которые объявлены",
+      "visual": "Сравнить с Autodesk reference и отдельно с baseline ASA; эталон не обновлять автоматически",
+      "task_ids": [
+        "R01",
+        "F04"
+      ]
+    }
+  ],
+  "planned_slices": [
+    {
+      "id": "AUDIT-FUSION-BASE",
+      "task_ids": [
+        "G00"
+      ],
+      "boundary_status": "PROPOSED"
+    },
+    {
+      "id": "REFERENCE-PLANNING",
+      "task_ids": [
+        "R01",
+        "R02"
+      ],
+      "boundary_status": "PROPOSED"
+    },
+    {
+      "id": "U2-FUSION-CIRCLE-NUMERIC",
+      "task_ids": [
+        "T01",
+        "P01",
+        "P02",
+        "P03"
+      ],
+      "boundary_status": "PROPOSED"
+    },
+    {
+      "id": "U2-FUSION-ORIGIN-NAV",
+      "task_ids": [
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A06",
+        "A06A",
+        "A06B",
+        "A07",
+        "A08"
+      ],
+      "boundary_status": "PROPOSED"
+    },
+    {
+      "id": "U2-FUSION-PERSPECTIVE",
+      "task_ids": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05"
+      ],
+      "boundary_status": "PROPOSED"
+    },
+    {
+      "id": "U2-FUSION-CONTEXT",
+      "task_ids": [
+        "M01",
+        "M02",
+        "M03",
+        "M04"
+      ],
+      "boundary_status": "DETAIL_BEFORE_READY"
+    },
+    {
+      "id": "U2-FUSION-SELECTION",
+      "task_ids": [
+        "SEL01",
+        "SEL02",
+        "SEL03"
+      ],
+      "boundary_status": "PROPOSED"
+    },
+    {
+      "id": "U2-FUSION-ARC",
+      "task_ids": [
+        "S01"
+      ],
+      "boundary_status": "PROPOSED"
+    },
+    {
+      "id": "U2-FUSION-RECTANGLE",
+      "task_ids": [
+        "S02"
+      ],
+      "boundary_status": "PROPOSED"
+    },
+    {
+      "id": "U2-FUSION-LINE",
+      "task_ids": [
+        "S03"
+      ],
+      "boundary_status": "PROPOSED"
+    },
+    {
+      "id": "U2-FUSION-PALETTE",
+      "task_ids": [
+        "S04"
+      ],
+      "boundary_status": "PROPOSED"
+    },
+    {
+      "id": "U2-FUSION-FACE-FRAME",
+      "task_ids": [
+        "S05"
+      ],
+      "boundary_status": "DETAIL_BEFORE_READY"
+    },
+    {
+      "id": "U2-ACCEPTANCE-GATE",
+      "task_ids": [
+        "S06"
+      ],
+      "boundary_status": "PROPOSED"
+    },
+    {
+      "id": "U3-FUSION-C01",
+      "task_ids": [
+        "C01"
+      ],
+      "boundary_status": "PROPOSED"
+    },
+    {
+      "id": "U3-FUSION-C02",
+      "task_ids": [
+        "C02"
+      ],
+      "boundary_status": "DETAIL_BEFORE_READY"
+    },
+    {
+      "id": "U3-FUSION-C03",
+      "task_ids": [
+        "C03"
+      ],
+      "boundary_status": "DETAIL_BEFORE_READY"
+    },
+    {
+      "id": "U3-FUSION-C04",
+      "task_ids": [
+        "C04"
+      ],
+      "boundary_status": "PROPOSED"
+    },
+    {
+      "id": "U3-ACCEPTANCE-GATE",
+      "task_ids": [
+        "C05"
+      ],
+      "boundary_status": "PROPOSED"
+    },
+    {
+      "id": "U4-FUSION-EXTRUDE",
+      "task_ids": [
+        "E01",
+        "E02"
+      ],
+      "boundary_status": "PROPOSED"
+    },
+    {
+      "id": "U4-ACCEPTANCE-GATE",
+      "task_ids": [
+        "E03"
+      ],
+      "boundary_status": "PROPOSED"
+    },
+    {
+      "id": "U5-FUSION-PROTECTED",
+      "task_ids": [
+        "F01",
+        "F02",
+        "F03"
+      ],
+      "boundary_status": "DETAIL_BEFORE_READY"
+    },
+    {
+      "id": "U5-RELEASE-GATE",
+      "task_ids": [
+        "F04"
+      ],
+      "boundary_status": "PROPOSED"
+    },
+    {
+      "id": "EXTENSION-X01",
+      "task_ids": [
+        "X01"
+      ],
+      "boundary_status": "DETAIL_BEFORE_READY"
+    },
+    {
+      "id": "EXTENSION-X02",
+      "task_ids": [
+        "X02"
+      ],
+      "boundary_status": "DETAIL_BEFORE_READY"
+    },
+    {
+      "id": "EXTENSION-X03",
+      "task_ids": [
+        "X03"
+      ],
+      "boundary_status": "DETAIL_BEFORE_READY"
+    },
+    {
+      "id": "EXTENSION-X04",
+      "task_ids": [
+        "X04"
+      ],
+      "boundary_status": "DETAIL_BEFORE_READY"
+    },
+    {
+      "id": "EXTENSION-X05",
+      "task_ids": [
+        "X05"
+      ],
+      "boundary_status": "DETAIL_BEFORE_READY"
+    },
+    {
+      "id": "EXTENSION-X06",
+      "task_ids": [
+        "X06"
+      ],
+      "boundary_status": "DETAIL_BEFORE_READY"
+    },
+    {
+      "id": "EXTENSION-X07",
+      "task_ids": [
+        "X07"
+      ],
+      "boundary_status": "DETAIL_BEFORE_READY"
+    },
+    {
+      "id": "EXTENSION-X08",
+      "task_ids": [
+        "X08"
+      ],
+      "boundary_status": "DETAIL_BEFORE_READY"
+    },
+    {
+      "id": "EXTENSION-X09",
+      "task_ids": [
+        "X09"
+      ],
+      "boundary_status": "DETAIL_BEFORE_READY"
+    },
+    {
+      "id": "EXTENSION-X10",
+      "task_ids": [
+        "X10"
+      ],
+      "boundary_status": "DETAIL_BEFORE_READY"
+    },
+    {
+      "id": "EXTENSION-X11",
+      "task_ids": [
+        "X11"
+      ],
+      "boundary_status": "DETAIL_BEFORE_READY"
+    }
+  ],
+  "initial_product_slice_order": [
+    "U2-FUSION-CIRCLE-NUMERIC",
+    "U2-FUSION-ORIGIN-NAV",
+    "U2-FUSION-PERSPECTIVE",
+    "REQUIRED_AUDIT_AFTER_THREE_ACCEPTED_SLICES",
+    "U2-FUSION-CONTEXT",
+    "U2-FUSION-SELECTION"
+  ],
+  "sources": [
+    {
+      "id": "ASA1",
+      "title": "ASA CAD command registry",
+      "url": "https://github.com/spikeal8-maker/ASA-CAD/blob/a08b17c99bf8b3343008810ab5f9f398bd7a139d/spec/ui/command-registry.v1.json"
+    },
+    {
+      "id": "ASA2",
+      "title": "ASA CAD quality gates",
+      "url": "https://github.com/spikeal8-maker/ASA-CAD/blob/a08b17c99bf8b3343008810ab5f9f398bd7a139d/docs/DEVELOPMENT_QUALITY_GATES.md"
+    },
+    {
+      "id": "ASA3",
+      "title": "ASA CAD U2–U5 contract",
+      "url": "https://github.com/spikeal8-maker/ASA-CAD/blob/a08b17c99bf8b3343008810ab5f9f398bd7a139d/docs/UI_CORE_UNIFICATION_SPEC.md"
+    },
+    {
+      "id": "AD1",
+      "title": "Autodesk ViewCube",
+      "url": "https://help.autodesk.com/cloudhelp/ENU/Fusion-GetStarted/files/GS-VIEWCUBE.htm"
+    },
+    {
+      "id": "AD2",
+      "title": "Autodesk navigation bar",
+      "url": "https://help.autodesk.com/cloudhelp/ENU/Fusion-GetStarted/files/GS-NAVIGATION-BAR.htm"
+    },
+    {
+      "id": "AD3",
+      "title": "Autodesk Sketch Palette",
+      "url": "https://help.autodesk.com/cloudhelp/ENU/Fusion-Sketch/files/GUID-4183A4B7-E002-4396-AD5A-7FF3C8B2F33A.htm"
+    },
+    {
+      "id": "AD4",
+      "title": "Autodesk marking menu",
+      "url": "https://help.autodesk.com/cloudhelp/ENU/Fusion-GetStarted/files/GUID-6514ABC1-CB75-4F0B-AB0E-316FAD36BA93.htm"
+    },
+    {
+      "id": "AD5",
+      "title": "Autodesk selection",
+      "url": "https://help.autodesk.com/cloudhelp/ENU/Fusion-Model/files/SLD-SELECTION.htm"
+    },
+    {
+      "id": "AD6",
+      "title": "Autodesk Extrude",
+      "url": "https://help.autodesk.com/cloudhelp/ENU/Fusion-Model/files/SLD-EXTRUDE-SOLID.htm"
+    },
+    {
+      "id": "PW1",
+      "title": "Playwright best practices",
+      "url": "https://playwright.dev/docs/best-practices"
+    },
+    {
+      "id": "PW2",
+      "title": "Playwright visual comparisons",
+      "url": "https://playwright.dev/docs/test-snapshots"
+    },
+    {
+      "id": "ASA4",
+      "title": "Historical native Fusion reference with declared limitations",
+      "url": "https://github.com/spikeal8-maker/ASA-CAD/blob/325771d312d757dc98a6e95cb37f07b4eda28bf6/prototypes/fusion/evidence/fusion-sketch-004/README.md"
+    }
+  ]
+}

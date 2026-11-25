@@ -17,6 +17,8 @@ Before changing code:
 4. identify the narrowest owner, command ID/registry entry and focused regression for the requested change;
 5. check that owner's target/frozen budget in `spec/process/repository-health.v1.json`.
 
+Fusion tasks: start from #237 and `spec/process/fusion-tasks.v1.json`; follow `docs/FUSION_AGENT_WORKFLOW.md` and the assigned Issue contract. `docs/FUSION_BROWSER_SPEC.md` defines scenario acceptance. Issue status is live; a registry entry never grants READY.
+
 Read `SYSTEM_SPEC.md` only when product/document behavior may change. Read `ARCHITECTURE.md` when dependency, runtime, persistence or ownership boundaries may change. Never preload the documentation tree.
 
 ## Tiny UI/change route

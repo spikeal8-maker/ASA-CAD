@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "initiative": "UI-CORE-UNIFICATION-001",
   "issue": 184,
-  "currentCheckpoint": "FULL_REPOSITORY_HEALTH_AUDIT",
+  "currentCheckpoint": "U2",
   "baseBranch": "integration/ui-core-unification",
   "baseHeadPolicy": "RESOLVE_LIVE_AND_GUARD",
   "uiReference": {
@@ -11,7 +11,7 @@
     "sha": "88c535c652dac8b04f0d68fa144cf8486afdc926",
     "frozen": true
   },
-  "productCodeStartAllowed": false,
+  "productCodeStartAllowed": true,
   "blocker": null,
   "canonicalDocuments": [
     "docs/DEVELOPMENT_QUALITY_GATES.md",
@@ -19,10 +19,10 @@
     "docs/STATUS.md"
   ],
   "scope": [
-    "Complete the overdue Full Repository Health Audit after accepted permanent slices #226, #231, #228 and #234; #230 is operational maintenance and does not count.",
-    "Publish unchanged measurements of a08b17c99bf8b3343008810ab5f9f398bd7a139d, reconcile cadence/release pointers and obtain exact-head CI plus independent review before technical integration merge.",
-    "Preserve one CadApplication/CadDocument/history/solver and all existing user projects; no product/runtime/schema/dependency changes in this audit.",
-    "After audit technical acceptance, resume the owner-requested Fusion Sketch/navigation work through narrowly owned existing typed commands; owner visual acceptance and broader U3-U5 remain separately gated."
+    "Continue U2 through the owner-requested Fusion browser specification and numbered task queue #237; issue dispatch contracts select one narrow task.",
+    "Complete Circle shared numeric draft first, then camera/plane/picking before ViewCube and context-menu expansion; preserve existing U2-U5 prerequisites.",
+    "Use one CadApplication/CadDocument/history/solver and real OpenCascade B-Rep; protect user projects and cross-shell persistence.",
+    "Count actual accepted permanent slices since audit #236; before every triggered audit or milestone boundary resolve the live execution gate."
   ],
   "outOfScope": [
     "U3-U5 expansion before their canonical prerequisite checkpoints and required audits",
@@ -30,9 +30,9 @@
     "Integration-to-main or D2 deployment without required release/preflight gates; unrelated production deployment and final visual parity without owner decision",
     "Global/default D2 Node changes or an unapproved installation of a future Node release"
   ],
-  "nextCheckpoint": "U2",
+  "nextCheckpoint": "U3",
   "developmentAuthorization": "OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008",
-  "checkpointTechnicalStatus": "PENDING_EXACT_HEAD_CI_INDEPENDENT_REVIEW_AND_MERGE",
+  "checkpointTechnicalStatus": "IN_PROGRESS",
   "ownerProductAcceptance": "PENDING",
   "u1MergedIntoIntegration": {
     "pr": 195,
@@ -43,12 +43,10 @@
     "mergeSha": "e37650f08d9e2fa6cf13ceb6a09ecd8e8a568c15"
   },
   "fullRepositoryHealthAudit": {
-    "outcome": "YELLOW_PENDING_ACCEPTANCE",
-    "proposedOutcome": "YELLOW_ACCEPTED",
+    "outcome": "YELLOW_ACCEPTED",
     "auditBaseSha": "ae3f713f81d405733b887deaad0050f28f33af0b",
     "auditedSha": "a08b17c99bf8b3343008810ab5f9f398bd7a139d",
     "report": "docs/FULL_REPOSITORY_HEALTH_AUDIT.md",
-    "proposedAcceptedBy": "ChatGPT technical controller /root under OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008",
     "acceptanceScope": "TECHNICAL_INTEGRATION_ONLY",
     "acceptanceCondition": "EXACT_HEAD_CI_INDEPENDENT_REVIEW_AND_MERGE_OF_THIS_AUDIT_PR",
     "evidenceManifest": "spec/process/evidence/health-audit-fusion-20261125/summary.json",
@@ -57,8 +55,12 @@
     ],
     "debtOwner": "Current Fusion slice technical controller /root",
     "debtGate": "EXTRACT_BEFORE_NEW_RESPONSIBILITY_ON_PRESSURED_OWNER; NO_FROZEN_GROWTH; BEFORE_NEXT_MILESTONE_BOUNDARY",
-    "nextTransition": "After verified audit merge, advance to U2 in the next implementation PR and record the actual merge SHA; never infer acceptance from measurements alone.",
-    "evidencePublication": "PUBLIC_AGGREGATES_ONLY; ORIGINAL_EVIDENCE_RETAINED_PRIVATELY"
+    "nextTransition": "U2 may proceed only through a controller-issued READY contract; technical audit acceptance is not owner visual acceptance.",
+    "evidencePublication": "PUBLIC_AGGREGATES_ONLY; ORIGINAL_EVIDENCE_RETAINED_PRIVATELY",
+    "acceptedBy": "ChatGPT technical controller /root under OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008",
+    "pr": 236,
+    "mergeSha": "4729222d055b70a43ef0a2a3eaa59c6a83365999",
+    "acceptedCandidateSha": "daa1333caa486383c600f1b40968e97163005d50"
   },
   "previousFullRepositoryHealthAudit": {
     "outcome": "YELLOW_ACCEPTED",
@@ -183,8 +185,9 @@
     "acceptedCountBeforeThisAudit": 4,
     "projectedAcceptedCountAfterThisAudit": 0,
     "effectiveAt": "TECHNICAL_ACCEPTANCE_AND_MERGE_OF_THIS_AUDIT_PR",
-    "resolution": "PENDING_EXACT_HEAD_CI_INDEPENDENT_REVIEW_AND_MERGE",
-    "u2TechnicalAcceptance": "IN_PROGRESS"
+    "resolution": "ACCEPTED_IN_PR236",
+    "u2TechnicalAcceptance": "IN_PROGRESS",
+    "mergeSha": "4729222d055b70a43ef0a2a3eaa59c6a83365999"
   },
   "launcherWork": {
     "id": "THREE-MODE-LAUNCHER-001",
@@ -218,8 +221,7 @@
       }
     }
   },
-  "auditRepairAllowed": true,
-  "auditRepairScope": "CONFIRMED_P0_RED_DEFECTS_AND_ESSENTIAL_REGRESSION_FIXES_ONLY",
+  "auditRepairAllowed": false,
   "historicalFullAuditTriggers": [
     {
       "sourceSha": "b8f700bb6e455582db18df8d0ba43a2bfbdcc68b",
@@ -244,22 +246,28 @@
     }
   ],
   "acceptedSliceCadence": {
-    "sinceAcceptedAuditPr": 225,
-    "acceptedPermanentSlices": [
-      226,
-      231,
-      228,
-      234
-    ],
-    "currentCount": 4,
-    "auditRequired": true,
-    "countAfterAuditAcceptance": 0,
-    "resetCondition": "EXACT_HEAD_CI_INDEPENDENT_REVIEW_AND_MERGE_OF_THIS_AUDIT_PR"
+    "sinceAcceptedAuditPr": 236,
+    "auditMergeSha": "4729222d055b70a43ef0a2a3eaa59c6a83365999",
+    "acceptedPermanentSlices": [],
+    "currentCount": 0,
+    "auditRequired": false,
+    "countingPolicy": "COUNT_ACCEPTED_PERMANENT_SLICES_NOT_TASKS_COMMITS_OR_PLANNING"
   },
   "observedRepositoryState": {
-    "integrationHead": "a08b17c99bf8b3343008810ab5f9f398bd7a139d",
+    "integrationHead": "4729222d055b70a43ef0a2a3eaa59c6a83365999",
     "mainHead": "9ea217f253b3348d34638841936fa79b75f95fa2",
     "verifiedOn": "2026-11-25",
     "headPolicy": "RESOLVE_LIVE_AND_GUARD_BEFORE_MERGE"
+  },
+  "fusionWork": {
+    "id": "FUS-001",
+    "masterIssue": 237,
+    "taskRegistry": "spec/process/fusion-tasks.v1.json",
+    "specification": "docs/FUSION_BROWSER_SPEC.md",
+    "agentWorkflow": "docs/FUSION_AGENT_WORKFLOW.md",
+    "executionStateAuthority": "LIVE_TASK_ISSUE_AND_CONTROLLER_DISPATCH_CONTRACT",
+    "initialReferenceIssue": 239,
+    "workPolicy": "ONE_ASSIGNED_READY_TASK; BLOCKS_REQUIRE_DECOMPOSITION; SHARED_VERTICAL_SLICE_ACCEPTANCE",
+    "ownerVisualParity": "PENDING"
   }
 }
