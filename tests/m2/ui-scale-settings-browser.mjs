@@ -11,7 +11,7 @@ assert.match(shellSource, /onClick=\{\(\) => \{ props\.onClose\(\); openUiScale\
 import { chromium } from '../../vendor/toubkal/node_modules/playwright-core/index.mjs';
 import { openUiScaleSettings } from './shell-selectors.mjs';
 
-const url = process.env.ASA_CAD_SHELL_URL ?? 'http://127.0.0.1:8090/';
+const url = new URL('cad/', process.env.ASA_CAD_SHELL_URL ?? 'http://127.0.0.1:8090/').href;
 const browser = await chromium.launch({ headless: true });
 
 async function desktopSettingsFlow() {

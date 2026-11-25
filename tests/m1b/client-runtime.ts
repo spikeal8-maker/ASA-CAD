@@ -75,7 +75,7 @@ assert.equal(unsupportedLoader.getState().status, 'unsupported');
 
 assert.equal(cadEditorPath('p 1'), '/cad/projects/p%201');
 assert.equal(cadViewerPath('v/2'), '/cad/view/v%2F2');
-assert.deepEqual(parseCadClientRoute('/'), { kind: 'standalone' });
+assert.deepEqual(parseCadClientRoute('/'), { kind: 'launcher' });
 assert.deepEqual(parseCadClientRoute('/cad/'), { kind: 'standalone' });
 assert.deepEqual(parseCadClientRoute('/cad/projects/p%201'), { kind: 'editor', projectId: 'p 1' });
 assert.deepEqual(parseCadClientRoute('/cad/view/v%2F2'), { kind: 'viewer', versionId: 'v/2' });

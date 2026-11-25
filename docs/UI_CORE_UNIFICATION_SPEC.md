@@ -12,7 +12,7 @@ ASA-CAD должен перестать существовать как два �
 - продуктовый ASA-CAD с настоящими document/application/solver/OpenCascade/persistence слоями.
 
 Цель:
-**один UI + один document model + одна application history + один solver path + один exact-geometry path**.
+**один активный UI + один document model + одна application history + один solver path + один exact-geometry path**.
 
 ## 2. Frozen UI reference
 
@@ -211,7 +211,7 @@ U1 acceptance:
 - PR #194: CLOSED / superseded by #195. PR #170 остаётся immutable UI/UX reference.
 - Большой scope требует постфактум независимой оценки, учитываемой в обязательном Full Repository Health Audit. Автоматическая визуальная съёмка не является owner acceptance. Отличия Sketch-in-Viewport и отсутствующие команды остаются отдельными задачами.
 
-**U2 IN_PROGRESS после технически принятого Full Repository Health Audit #225** (merge `ae3f713f81d405733b887deaad0050f28f33af0b`, audited b8f700b). #226 Arc numeric и #230 Node 22.23.5 security pin приняты; [canonical audit](FULL_REPOSITORY_HEALTH_AUDIT.md) принят YELLOW_ACCEPTED с независимым review и exact PR/post CI. Текущий независимый срез U2-CIRCLE-NUMERIC-20261125 связывает левую Parameters с одним Circle draft и существующим sketch.circle: диаметр задаётся до или после центра (в #170 «объект поедет за курсором»), X/Y Enter сначала выбирает центр, затем точку; Enter/✓ без центра идёт по прежнему controller-пути parametric fallback — окружность в [0,0] + управляющий dimension.diameter (сам tool коммитит только sketch.circle и не содержит dimension.diameter). Invalid X/Y/диаметр блокируют numeric Enter/✓; новый pointer заменяет X/Y, диаметр сохраняется; диаметр — transient input и фиксация, не persistent constraint. Ghost — окружность + линия центр→указатель, как в #170. Commit остаётся одной командой/history frame и возвращает инструмент к новому центру. Это не persistent constraints, новый solver или полная parity. Осознанное отклонение от #170: поле «Диаметр» (product model `sketch.circle`/`entity.data.diameter`, protected Part flow: «Диаметр» 12 + notice «Окружность Ø12 мм создана»), тогда как в прототипе — «Радиус». Numeric Line/Arc/общие Frame/CSS сохраняются; owner visual verdict Numeric области PENDING, Circle требует собственных ordinary/UndoRedo/SaveOpen/IDs и matched before/after gates. Cadence после #225: #226 Arc = 1/3, #230 — operational maintenance, текущий срез = 2/3; третий permanent slice или milestone boundary требует Full Repository Health Audit. [Исторический #221](https://github.com/spikeal8-maker/ASA-CAD/blob/96083954f0180720e7a51616bc6039bde75fa683/docs/FULL_REPOSITORY_HEALTH_AUDIT.md), #217 и raw measurements неизменны. NODE_SECURITY_RELEASE_20261111_PENDING закрыт #230 (operational pins; portable D2 install остаётся отдельно авторизуемой). Main/production/final parity отдельно; scoped lifetime proof не доказывает bounded native heap.
+**U2 IN_PROGRESS после технически принятого Full Repository Health Audit #225** (merge `ae3f713f81d405733b887deaad0050f28f33af0b`, audited b8f700b, YELLOW_ACCEPTED с review и exact CI). #226 Arc numeric и #230 Node 22.23.5 pin приняты. U2-CIRCLE-NUMERIC-20261125 слит (#231, `6d11158`): X/Y + Диаметр одним Circle draft, commit = одна `sketch.circle`, fallback [0,0]+`dimension.diameter` (только контроллер, tool её не содержит), Диаметр — transient input, не persistent constraint; детали — PR/#184. Cadence после #225: #226 Arc = 1/3, #230 — operational maintenance, Circle = 2/3; третий permanent slice или milestone boundary требует Full Repository Health Audit. [Исторический #221](https://github.com/spikeal8-maker/ASA-CAD/blob/96083954f0180720e7a51616bc6039bde75fa683/docs/FULL_REPOSITORY_HEALTH_AUDIT.md), #217 и raw measurements неизменны. NODE_SECURITY_RELEASE_20261111_PENDING закрыт #230 (operational pins; portable D2 install отдельно). Main/production/final parity отдельно; owner visual verdict Numeric PENDING.
 
 ## 8. Cadence gate
 
@@ -321,3 +321,15 @@ STOP только затронутого направления, если:
 `ONE_SOLVER_PATH = YES`
 `ONE_EXACT_GEOMETRY_PATH = YES`
 `SECOND_CAD_ENGINE = FORBIDDEN`
+
+## THREE-MODE-LAUNCHER-001: согласованное расширение входа
+
+Задание владельца 08.11.2026: главный экран `/`, общий CadDocument в `/cad/kompas/:id` и `/cad/fusion/:id`; прежние standalone/server/fixture routes сохранены. Viewer без установленного API явно недоступен. `editorModes` владеет маршрутами, `LauncherApp` — identity по projectId; mode не пересоздаёт host/application/history. `useCadApplicationSession` владеет общим runtime. Viewport меняет только presentation adapters.
+
+Fusion UI выборочно перенесён с #207 `8721ee1`, без prototype entry/engine. Absolute/interior angles задают координаты, не постоянный driving angle; Line/связи/length имеют отдельные Undo frames. Native parity не принята.
+
+Локальный каталог использует existing canonical host envelopes, UUID slots и прежний legacy key; чтение не мигрирует bytes. Оболочка недоступна до успешного открытия документа. Уход защищён dirty dialog и beforeunload. Компас/Fusion меняют только представление.
+
+ASA Lab внешний handoff с главной удалён: «3D-конструктор» (Vassalite) — owner-принятая заглушка без исходников; карточка явно недоступна, перехода на asa-lab.ru и подмены редактора нет. Передача token/документа, автоматическая конверсия, Direct-create URL и внешний returnTo в Lab отсутствуют.
+
+D2 installation и отдельный release PR требуют exact CI, независимого review, реальных сценариев всех режимов, полного browser export сохранённых CAD/recovery данных, сохранения старых assets и rollback. Без этих gates 8099 не переключается.

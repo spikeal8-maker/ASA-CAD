@@ -22,7 +22,7 @@ async function shellCase(testCase) {
     deviceScaleFactor: testCase.dpr,
   });
   const page = await context.newPage();
-  const response = await page.goto(`${baseUrl}/?uiScale=100`, { waitUntil: 'networkidle', timeout: 30_000 });
+  const response = await page.goto(`${baseUrl}/cad/?uiScale=100`, { waitUntil: 'networkidle', timeout: 30_000 });
   assert.ok(response?.ok(), `zoom ${testCase.zoom}% navigation failed`);
   await page.locator('.k-main-menu-bar, .brand-button').first().waitFor();
   const metrics = await page.evaluate(() => {

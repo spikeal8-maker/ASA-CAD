@@ -10,7 +10,11 @@
 
 ## Текущий срез и продуктовый proof
 
-**U2-CIRCLE-NUMERIC-20261125:** левая Parameters связывает X/Y и временный Диаметр с одним Circle draft. Диаметр задаётся до или после центра («объект поедет за курсором»); Enter в X/Y сначала выбирает центр, затем точку; Enter/✓ без центра — прежний controller parametric fallback: окружность в [0,0] + управляющий dimension.diameter (tool коммитит только sketch.circle). Ghost — окружность + линия центр→указатель, как в #170; фиксация диаметра — transient input, не persistent constraint. Invalid X/Y/диаметр блокируют numeric Enter/✓; pointer заменяет X/Y, диаметр сохраняется. Commit — одна команда/history frame, затем новый центр. Осознанное отклонение от #170: поле «Диаметр» (product model `sketch.circle.diameter`, protected Part flow), в прототипе — «Радиус». Exact CI, ordinary proof и matched before/after — в PR/#184; technical merge не равен visual approval.
+**THREE-MODE-LAUNCHER-001 — IN_PROGRESS**, по отдельному заданию владельца 08.11.2026. Главная `/`, локальные проекты `/cad/{kompas|fusion}/{id}`, общий App/document/history, внешняя сессия ASA Lab `three-d`. Selective reuse UI #207; его неподтверждённые angle-driving/atomic-line/native-parity возможности не заявлены. Исходный integration `6a2159f25efd5203f83a385461c4aaae92f2fabd`, installed D2 8099 `c1959b1e84a7c38288022622a9585a38c07d3f7e`. Установка только после реального browser backup, проверки прежних проектов и rollback. Draft/CI не означают готовность; release в main требует отдельного полного dependency/security audit.
+
+Третий редактор проверен через штатную сессию: новый проект `three-d`, параллелепипед 40×20×12, autosave, список → reopen → F5. Launcher-to-Lab переход и CAD-сценарии в этой сборке ещё требуют browser proof. Локальная сборка, typecheck, storage/route и M1B/M2O checks пройдены; independent review нашёл startup/keyboard/history риски, исправления должны пройти повторную проверку.
+
+**U2-CIRCLE-NUMERIC-20261125** (#231 merged, `6d11158`): X/Y + Диаметр одним Circle draft, диаметр до/после центра, fallback [0,0]+`dimension.diameter` (только контроллер), commit = одна `sketch.circle`; exact CI 9/9, review APPROVE. Детали — PR/#184.
 
 **U2-ARC-NUMERIC-20261108:** левая Parameters связывает X/Y и временный радиус с одним Arc draft. Радиус доступен между центром и началом; Enter в нём не выбирает точку, Enter в X/Y продвигает построение. Readonly sweep, CW/CCW, большие дуги и wrap используют одну canonical pair для ghost и прежней команды sketch.arc. UI отвергает abs(sweep)<0.001 rad и ограничивает накопление ±(2π−0.01); core/сохранённые дуги неизменны. Commit — одна команда/history frame, затем новый центр; persistent constraints не добавлены. Exact CI, ordinary proof и matched before/after — в PR/#184; technical merge не равен visual approval.
 
@@ -20,7 +24,7 @@ Rectangle #224: обычный Part → XY → Sketch → 60×40 → Undo/Redo �
 
 ## Канон и границы
 
-- одна продуктовая оболочка src/web/kompas; typed actions → CadApplication/CadDocument → ASA adapters → PlaneGCS/OpenCascade B-Rep; Three.js — отображение.
+- Компас: каноническая оболочка src/web/kompas; Fusion: выборочно адаптированная src/web/fusion. В активном редакторе один владелец состояния; typed actions → CadApplication/CadDocument → ASA adapters → PlaneGCS/OpenCascade B-Rep; Three.js — отображение.
 - Six document kinds: Part, Assembly, Drawing, Fragment, Specification, Text: готовность различается.
 - Main `1f8d2627da7ddfa63b31876d46347d0b8080c154`; main/production отдельно.
 - Frozen #170: ui-reference-20261004, `88c535c652dac8b04f0d68fa144cf8486afdc926`.
@@ -35,4 +39,4 @@ WEB-TYPES, VENDOR-LIFETIME, DEPENDENCIES закрыты #218–#220. NODE_TOOLCH
 
 Frozen ceilings не растут; App/editing ratchets снижены до actual bytes. LICENSE/THIRD_PARTY_NOTICE — pre-beta. DETECT_ONLY / ADMIN_BRANCH_PROTECTION_NOT_ENFORCED — KNOWN_RISK.
 
-OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008: Draft PR → exact CI/ordinary proof/independent review → technical integration merge. Main, production и final visual parity — решение владельца. Пользовательские документы и порты 8094/8098/8099 сохранены.
+OWNER_APPROVED_CONTINUOUS_ROADMAP_20261008: Draft PR → exact CI/ordinary proof/independent review → technical integration merge. THREE-MODE-LAUNCHER-001 разрешает отдельный проверенный release в main и D2 8099 после обязательных gates; final visual parity остаётся решением владельца. Пользовательские документы и порты 8094/8098/8099 сохранены.

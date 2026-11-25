@@ -97,7 +97,7 @@ const manifest = { schemaVersion: 1, mode, status: 'RUNNING',
   setup: 'New Part -> Create Sketch -> XY -> Apply -> Circle; no fixture or hidden mutation',
   expected: { center, radius, pointerStates: [right, up], diameter: radius * 2, toleranceMm },
   states: ['awaiting-point-pointer', 'diameter-locked-preview'], images: [],
-  baselinePolicy: 'Equivalent pointer geometry when numeric fields are absent; absence is recorded.',
+  baselinePolicy: 'Baseline already ships the numeric Circle input (Circle slice merged into the base); pointer-geometry and diameter-lock parity is verified between the two builds.',
   automatedParityClaim: 'NONE', visualAcceptance: 'OWNER_REQUIRED', browserClosed: false };
 let browser;
 try {
@@ -144,26 +144,21 @@ try {
       assert.equal(await page.locator('[data-testid="part-model-stage"]').getAttribute('data-sketch-support'), 'XY');
       const { box } = await interactionBox(page, 'circle');
       await point(page, box, center, 'click');
-      const phase = source.side === 'after' ? 'awaiting-point' : 'radius';
-      await page.locator(interaction + '[data-circle-phase="' + phase + '"]').waitFor();
+      await page.locator(interaction + '[data-circle-phase="awaiting-point"]').waitFor();
       await point(page, box, right, 'move');
       await page.locator('[data-testid="sketch-circle-ghost"]').waitFor({ state: 'attached' });
       const numeric = await page.locator(panel).count() === 1;
-      if (source.side === 'after') assert.equal(numeric, true, 'Candidate numeric panel missing');
-      const first = await capture(page, source, 'awaiting-point-pointer', right, phase);
-      if (numeric) assert.equal(first.observed.diameterLocked, false, 'Pointer preview must not be locked');
+      assert.equal(numeric, true, source.side + ' numeric Circle panel missing');
+      const first = await capture(page, source, 'awaiting-point-pointer', right, 'awaiting-point');
+      assert.equal(first.observed.diameterLocked, false, 'Pointer preview must not be locked');
       manifest.images.push(first);
-      if (numeric) {
-        await page.keyboard.type(String(radius * 2));
-        await page.locator(panel + '[data-diameter-locked="true"]').waitFor();
-      }
+      await page.keyboard.type(String(radius * 2));
+      await page.locator(panel + '[data-diameter-locked="true"]').waitFor();
       await point(page, box, up, 'move');
-      const second = await capture(page, source, 'diameter-locked-preview', up, phase);
-      if (numeric) {
-        assert.equal(second.observed.fields.diameter, String(radius * 2));
-        assert.equal(second.observed.diameterLocked, true);
-        near(second.observed.geometry.radius, radius, 1e-8, 'locked diameter preview');
-      }
+      const second = await capture(page, source, 'diameter-locked-preview', up, 'awaiting-point');
+      assert.equal(second.observed.fields.diameter, String(radius * 2));
+      assert.equal(second.observed.diameterLocked, true);
+      near(second.observed.geometry.radius, radius, 1e-8, 'locked diameter preview');
       manifest.images.push(second);
       assert.deepEqual(errors, []);
     } finally { await context.close(); }
@@ -173,11 +168,11 @@ try {
     const after = manifest.images.find((x) => x.side === 'after' && x.name === name);
     assert.deepEqual(before.viewport, after.viewport); assert.deepEqual(before.camera, after.camera);
     assert.deepEqual(before.bounds, after.bounds);
-    assert.notEqual(before.observed.diameterLocked, true, 'Baseline preview has no numeric lock');
     const locked = name === 'diameter-locked-preview';
+    assert.equal(before.observed.diameterLocked, locked, 'Baseline lock matches the captured state');
     assert.equal(after.observed.diameterLocked, locked, 'Candidate lock matches the captured state');
     compareGeometry(before.observed.geometry, after.observed.geometry, toleranceMm);
-    return { name, sameViewportCameraBounds: true, afterDiameterLocked: locked, geometryWithinToleranceMm: toleranceMm };
+    return { name, sameViewportCameraBounds: true, bothDiameterLocked: locked, geometryWithinToleranceMm: toleranceMm };
   });
   manifest.status = 'PASS';
 } catch (error) {

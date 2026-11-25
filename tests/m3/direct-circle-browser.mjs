@@ -45,7 +45,7 @@ async function deterministicCircleFixture() {
 async function desktopDirectCircle() {
   const { page, errors } = await newDesktopPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createXYSketch(page);
     await assertNoWasm(page, 'empty Sketch');
 
@@ -102,7 +102,7 @@ async function desktopDirectCircle() {
 async function touchDirectCircle() {
   const { context, page, errors } = await newTouchPage(browser);
   try {
-    await page.goto(shellUrl, { waitUntil: 'networkidle' });
+    await page.goto(new URL('cad/', shellUrl).href, { waitUntil: 'networkidle' });
     await createMobileXYSketch(page);
     await activateMobileTool(page, 'sketch.circle', 'Circle');
     await page.locator('.k-content.k-collapsed, .k-content[data-panel-tab="params"]').waitFor();

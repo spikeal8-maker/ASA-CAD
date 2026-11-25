@@ -115,19 +115,19 @@ jobs:
             grep -qi '^Cross-Origin-Embedder-Policy: require-corp' <<<"$headers"
           done
 
-      - name: Real Chromium lazy ASA shell boot at standalone root
+      - name: Real Chromium root launcher and lazy standalone shell
         env:
           ASA_CAD_URL: http://127.0.0.1:8088/
         run: node tests/m0d/browser-smoke.mjs
 
-      - name: Real Chromium lazy ASA shell boot at /cad project route
+      - name: Real Chromium unavailable server project and standalone shell
         env:
           ASA_CAD_URL: http://127.0.0.1:8088/cad/projects/m0d-protected
         run: node tests/m0d/browser-smoke.mjs
 
       - name: Protected Part workflow in released Docker /cad route
         env:
-          ASA_CAD_SHELL_URL: http://127.0.0.1:8088/cad/projects/m0d-protected
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8088/cad/
         run: node tests/m2/part-browser.mjs
 
       - name: Show container logs on failure

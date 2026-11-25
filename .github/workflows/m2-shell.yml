@@ -20,6 +20,7 @@ on:
       - tests/m2/**
       - tests/m2o/**
       - tests/m3/**
+      - tests/launcher/**
       - package.json
       - tsconfig*.json
       - vendor/toubkal/package.json
@@ -43,6 +44,7 @@ on:
       - tests/m2/**
       - tests/m2o/**
       - tests/m3/**
+      - tests/launcher/**
       - package.json
       - tsconfig*.json
       - vendor/toubkal/package.json
@@ -123,6 +125,9 @@ jobs:
 
       - name: Verify deterministic fixture routes
         run: vendor/toubkal/node_modules/.bin/tsx tests/m2/dev-routes.ts
+
+      - name: Verify launcher projects, persistence and canonical routes
+        run: npm run test:launcher
 
       - name: Build ASA-owned shell
         run: npm run build:asa

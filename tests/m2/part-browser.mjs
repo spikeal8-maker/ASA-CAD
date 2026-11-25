@@ -3,7 +3,9 @@ import { chromium } from '../../vendor/toubkal/node_modules/playwright-core/inde
 import { COMMIT, DIRTY, FIELD, PANEL, PANEL_TITLE, PARAMS_READY, QUICK, RIBBON, openParams } from './shell-selectors.mjs';
 import * as THREE from '../../vendor/toubkal/node_modules/three/build/three.module.js';
 
-const url = process.env.ASA_CAD_SHELL_URL ?? 'http://127.0.0.1:8090/';
+const entryUrl = new URL(process.env.ASA_CAD_SHELL_URL ?? 'http://127.0.0.1:8090/');
+if (entryUrl.pathname === '/') entryUrl.pathname = '/cad/';
+const url = entryUrl.href;
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
 const pageErrors = [];

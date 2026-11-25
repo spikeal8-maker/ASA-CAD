@@ -16,6 +16,7 @@ on:
       - tests/m1b/recovery-indexeddb-browser.mjs
       - build/**
       - tests/m2/**
+      - tests/launcher/**
       - spec/ui/command-registry.v1.json
       - spec/ui/viewport-matrix.v1.json
       - package.json
@@ -34,6 +35,7 @@ on:
       - tests/m1b/recovery-indexeddb-browser.mjs
       - build/**
       - tests/m2/**
+      - tests/launcher/**
       - spec/ui/command-registry.v1.json
       - spec/ui/viewport-matrix.v1.json
       - package.json
@@ -81,6 +83,20 @@ jobs:
           done
           cat /tmp/asa-m2-http.log
           exit 1
+
+      - name: Exercise three-mode launcher, project persistence and guarded navigation
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
+        run: node tests/launcher/launcher-browser.mjs
+
+      - name: Upload launcher browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: asa-cad-launcher-browser
+          path: artifacts/launcher-browser/
+          if-no-files-found: warn
+          retention-days: 30
 
       - name: Exercise desktop and phone ASA shell
         env:

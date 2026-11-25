@@ -6,7 +6,7 @@ import type { CadRenderModel, CadViewportPick } from '../contracts/render';
 import { CadViewport, type CadViewportViewCommand } from './CadViewport';
 import { PartStageStatus } from './PartStageStatus';
 import { ViewportTriad } from './ViewportTriad';
-import { SketchEditingStage, type SketchEditingStageProps } from './SketchEditingStage';
+import { SketchEditingStage, type SketchEditingStageProps } from './SketchStage';
 
 export interface PartModelStageProps extends Omit<SketchEditingStageProps, 'activeSketch'> {
   activeSketch: Readonly<CadSketch> | null;

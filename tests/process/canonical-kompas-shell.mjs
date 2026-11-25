@@ -32,5 +32,17 @@ assert.match(desktop, /props\.setActiveWorkspace/, 'KOMPAS toolset changes must 
 const main = readFileSync('src/web/kompas/KompasMain.tsx', 'utf8');
 assert.match(main, /k-mobile-tools-panel/, 'compact layout must retain shared mobile typed-action tools');
 const status = readFileSync('docs/STATUS.md', 'utf8');
-assert.match(status, /одна продуктовая оболочка/, 'status must state the canonical UI contract');
-console.log('ASA-CAD canonical #170 shell static guard PASS (desktop/tablet/phone, one action/document model)');
+assert.match(status, /один владелец состояния/, 'status must preserve one application/document owner across presentations');
+for (const [path, component] of [
+  ['src/web/CadShellTop.tsx', 'FusionTop'],
+  ['src/web/CadShellMain.tsx', 'FusionMain'],
+  ['src/web/CadShellBottom.tsx', 'FusionBottom'],
+]) {
+  const source = readFileSync(path, 'utf8');
+  assert.match(source, new RegExp('\\b' + component + '\\b'), 'Fusion must use the same typed shell boundary');
+  assert.match(source, /useEditorMode/, 'Presentation choice must use explicit editor mode');
+}
+const session = readFileSync('src/web/useCadApplicationSession.ts', 'utf8');
+assert.equal((session.match(/new CadApplicationImpl\(/g) ?? []).length, 1);
+assert.match(session, /app\.dispose\(\)/, 'The shared application must release its runtime on exit');
+console.log('ASA-CAD canonical #170 + Fusion presentation guard PASS (one action/document/history owner)');
