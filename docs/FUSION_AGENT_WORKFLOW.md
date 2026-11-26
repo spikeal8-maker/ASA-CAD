@@ -4,6 +4,8 @@
 
 OpenCode: начать с `@asa-cad-task-runner`; reference/inventory проверять через `@asa-cad-evidence-and-bindings`, браузер — `@asa-cad-browser-acceptance`. Исходники: `.opencode/skills`; загрузка по необходимости. Windows wrappers: `scripts/windows`, установленная копия в `%LOCALAPPDATA%\ASA-CAD\tools`. Навык не выдаёт READY; рабочий контракт находится в Issue.
 
+Цикл D2: `scripts/opencode/README.md`.
+
 ## 1. Где брать задание
 
 1. `spec/process/active-work.v1.json` и свежий GitHub определяют текущий checkpoint, базовую ветку и разрешение на продуктовую работу.
