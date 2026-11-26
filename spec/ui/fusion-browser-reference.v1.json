@@ -6,27 +6,22 @@
   "issue": 239,
   "planned_slice_id": "REFERENCE-PLANNING",
   "preparedOn": "2026-11-26",
-  "baseBranch": "integration/ui-core-unification",
-  "baseSha": "21f3e11dab3fe0c6a50dce3407991568ac38adde",
   "classification": {
     "observedFact": "Значение зафиксировано в существующем evidence (snapshot, hash, дата) и воспроизводится из источника.",
-    "chosenRequirement": "Выбранное целевое требование R01; не все такие значения наблюдались в captures.",
-    "note": "Наблюдаемые факты отделены от выбранных целевых требований. Неизвестные язык/тема/настройки отмечены UNKNOWN (uiLocale, uiTheme, navigationSettings) со ссылкой на ответственную задачу; отсутствующие снимки — NOT_CAPTURED с соответствующей следующей задачей. Исторические сравнения — ограниченный источник и сами по себе не доказывают полное визуальное соответствие."
+    "chosenRequirement": "Выбранное целевое требование R01 (условия пилота и т.п.); не является наблюдением Autodesk.",
+    "note": "Наблюдаемые факты отделены от выбранных целевых требований. Типы evidence разделены (evidenceTypes): нативные наблюдения Fusion, исторические проверки ASA-CAD и выбранные требования не смешиваются. Активная SketchTab/перечень контролов — только структурная метаданные и НЕ доказывают активный инструмент или открытое numeric field. Историческая проверка driving-размера 40 мм в ASA и рецепт Circle НЕ являются capture числового ввода Autodesk. Неизвестные язык/тема/настройки — UNKNOWN; отсутствующие снимки — NOT_CAPTURED с точной следующей задачей."
   },
-
   "referenceApplication": {
     "name": "Autodesk Fusion",
     "environment": "Design workspace (FusionSolidEnvironment)",
     "classification": "observedFact"
   },
-
   "referenceVersion": {
     "applicationVersion": "2706.1.17",
     "status": "FIXED_IN_EXISTING_MATERIALS",
     "classification": "observedFact",
     "note": "Версия 2706.1.17 зафиксирована в существующих native/Sketch snapshots (см. referenceSources). Не называть её «последней» или «текущей установленной» без свежей проверки. Исторические сравнения содержат известные различия и сами по себе не доказывают полное визуальное соответствие."
   },
-
   "referenceSources": [
     {
       "id": "native-reference-v5",
@@ -35,10 +30,13 @@
       "captureSource": "native-api-plus-observed-screens",
       "applicationVersion": "2706.1.17",
       "capturedUTC": "2026-11-04T23:21:11.800744+00:00",
-      "sha256": "651c01dc6fa0594aead189407c3fe29fb87b75aafefea3ad176b61a6c1617c40",
       "scope": "видимый Design workspace; активен SolidTab; не все Fusion workspaces",
       "role": "зафиксированная структура: вкладки (SolidTab/SurfaceTab/Mesh/SheetMetal/Plastic/Utilities/Automation), панели и команды",
-      "classification": "observedFact"
+      "classification": "observedFact",
+      "upstreamSourceSha256": "651c01dc6fa0594aead189407c3fe29fb87b75aafefea3ad176b61a6c1617c40",
+      "hashObject": "исходный capture/source Autodesk (не локальный repository JSON по path)",
+      "sourceField": "privateSourceSha256",
+      "hashNote": "Значение описывает upstream source/capture (поле privateSourceSha256 в исходном материале), а НЕ хеш repository-файла по path. Хеш repository JSON сознательно не утверждается (требует отдельного вычисления + immutable source ref). Частные исходные материалы не публикуются — только хеш-ссылка."
     },
     {
       "id": "sketch-native-reference-v1",
@@ -47,12 +45,15 @@
       "captureSource": "Autodesk Fusion API (read-only)",
       "applicationVersion": "2706.1.17",
       "capturedUTC": "2026-11-04T23:21:11.800744+00:00",
-      "sha256": "651c01dc6fa0594aead189407c3fe29fb87b75aafefea3ad176b61a6c1617c40",
-      "fileName": "fusion-ui-latest.json",
       "scope": "SketchTab захвачен, пока активен SolidTab; флаги visibility/active/enabled описывают состояние захвата, а не активный Sketch",
       "role": "зафиксированная структура Sketch: 9 панелей (SketchCreatePanel…StopSketchPanel) и контролы",
       "limitation": "visualReference.status = missing; не подтверждён активный снимок SketchTab",
-      "classification": "observedFact"
+      "classification": "observedFact",
+      "upstreamSourceSha256": "651c01dc6fa0594aead189407c3fe29fb87b75aafefea3ad176b61a6c1617c40",
+      "hashObject": "исходный capture/source Autodesk (не локальный repository JSON по path)",
+      "sourceField": "source.sha256",
+      "upstreamFileName": "fusion-ui-latest.json",
+      "hashNote": "Значение описывает upstream source/capture (поле source.sha256 в исходном материале), а НЕ хеш repository-файла по path. Хеш repository JSON сознательно не утверждается (требует отдельного вычисления + immutable source ref). Частные исходные материалы не публикуются — только хеш-ссылка. Оба native/Sketch snapshots ссылаются на один upstream файл fusion-ui-latest.json (совпадающий хеш)."
     },
     {
       "id": "sketch-active-ui-20261106",
@@ -61,13 +62,16 @@
       "captureSource": "Autodesk Fusion API (read-only)",
       "applicationVersion": "2706.1.17",
       "capturedUTC": "2026-11-06T00:43:13.217889+00:00",
-      "sha256": "6296518a467ed73ce8b91281bf8727db1788cb8eb6999fbfb70bab245eeb4c1c",
       "activeWorkspaceId": "FusionSolidEnvironment",
       "activeToolbarTabId": "SketchTab",
       "errors": [],
       "scope": "активный SketchTab, 9 панелей",
       "role": "состояние активного Sketch UI",
-      "classification": "observedFact"
+      "classification": "observedFact",
+      "upstreamSourceSha256": "6296518a467ed73ce8b91281bf8727db1788cb8eb6999fbfb70bab245eeb4c1c",
+      "hashObject": "исходный capture/source Autodesk (не локальный repository JSON по path)",
+      "sourceField": "sourceSha256",
+      "hashNote": "Значение описывает upstream source/capture (поле sourceSha256 в исходном материале), а НЕ хеш repository-файла по path. Хеш repository JSON сознательно не утверждается (требует отдельного вычисления + immutable source ref). Частные исходные материалы не публикуются — только хеш-ссылка."
     },
     {
       "id": "historical-comparison-fusion-sketch-004",
@@ -105,7 +109,6 @@
       "classification": "chosenRequirement"
     }
   ],
-
   "targetBrowserMatrix": {
     "classification": "chosenRequirement",
     "profile": "Chromium-based — выбранный целевой браузерный профиль",
@@ -113,22 +116,23 @@
     "userVerification": "Google Chrome на Windows",
     "inputDevice": "мышь с тремя кнопками",
     "browserVersionPolicy": "фактическая версия браузера/Chromium записывается при каждом реальном run; не фиксировать ненаблюдаемую версию",
-    "notVerifiedExcluded": ["Firefox", "Safari", "touch"],
+    "notVerifiedExcluded": [
+      "Firefox",
+      "Safari",
+      "touch"
+    ],
     "note": "Это выбранный целевой профиль; Firefox/Safari/touch не отмечаются как проверенные."
   },
-
   "targetNavigationPreset": {
     "classification": "chosenRequirement",
     "preset": "Fusion",
     "note": "Целевой navigation preset: Fusion. Отделить выбранные требования от наблюдавшихся captures; неизвестные настройки — UNKNOWN со ссылкой на ответственную задачу (R02)."
   },
-
   "units": {
     "classification": "chosenRequirement",
     "modelUnit": "mm",
     "source": "целевой профиль (единицы мм); согласуется со сценариями Q01–Q13 (например, 60×40, Ø12, 24000 мм³); label/единицы/geometry согласованы (Q08)"
   },
-
   "uiLocale": {
     "value": "UNKNOWN",
     "classification": "observedFact",
@@ -136,7 +140,6 @@
     "nextTask": "R02 (полный инвентарь/уточнение источников) или отдельная задача фиксации локали по решению владельца",
     "note": "Не выдумывать локаль; фиксировать после свежего capture/решения владельца."
   },
-
   "uiTheme": {
     "value": "UNKNOWN",
     "classification": "observedFact",
@@ -144,7 +147,6 @@
     "nextTask": "R02 (уточнение источников) или отдельная задача фиксации темы по решению владельца",
     "note": "Не выдумывать тему; фиксировать после свежего capture/решения владельца."
   },
-
   "navigationSettings": {
     "value": "UNKNOWN",
     "classification": "observedFact",
@@ -152,7 +154,6 @@
     "nextTask": "R02 (уточнение источников) / A01 (закрепить договорённости камеры и проекции)",
     "note": "Целевой preset = Fusion (выбранное требование); остальные настройки навигации — UNKNOWN до явного capture/контракта."
   },
-
   "viewports": [
     {
       "width": 1920,
@@ -174,107 +175,225 @@
       "classification": "chosenRequirement"
     }
   ],
-
   "deviceScaleFactor": {
     "value": 1,
     "classification": "chosenRequirement",
     "note": "DPR 1 для всех размеров проверки."
   },
-
   "uiScale": {
     "value": "100%",
     "classification": "chosenRequirement",
     "note": "UI scale 100% для всех размеров проверки."
   },
-
   "mandatoryStates": [
     {
       "id": "empty-part",
       "state": "Пустое Part (базовое состояние до ввода)",
-      "relatedScenarios": ["Q16"],
-      "taskIds": ["R01", "F04"],
+      "relatedScenarios": [
+        "Q16"
+      ],
+      "taskIds": [
+        "R01",
+        "F04"
+      ],
       "referenceStatus": "NOT_CAPTURED",
       "note": "Чистый снимок пустого Part не зафиксирован; зафиксирована только структура Design workspace. Не выдумывать изображение.",
-      "nextTask": "F04 (выпуск) / отдельная задача захвата"
+      "nextTask": "F04 (выпуск) / отдельная задача захвата",
+      "evidenceType": "notCaptured"
     },
     {
       "id": "sketch-tool-active",
       "state": "Sketch: активный инструмент (Line/Rectangle/Circle/Arc)",
-      "relatedScenarios": ["Q01", "Q07"],
-      "taskIds": ["P01", "P02", "P03", "S01", "S02", "S03"],
+      "relatedScenarios": [
+        "Q01",
+        "Q07"
+      ],
+      "taskIds": [
+        "P01",
+        "P02",
+        "P03",
+        "S01",
+        "S02",
+        "S03"
+      ],
       "referenceStatus": "OBSERVED_METADATA",
-      "note": "Структура панелей/контролов зафиксирована (sketch-active-ui-20261106.json); визуальный активный снимок ограничен.",
-      "nextTask": "T01 (расширить harness) / P03"
+      "note": "Структура панелей/контролов зафиксирована (sketch-active-ui-20261106.json) — это nativeStructuralMetadata; НЕ доказывает активный инструмент или открытое numeric field. Активный визуальный снимок NOT_CAPTURED.",
+      "nextTask": "T01 (расширить harness) / P03",
+      "evidenceType": "nativeStructuralMetadata"
     },
     {
       "id": "numeric-input",
       "state": "Числовой ввод (диаметр/размер/параметр)",
-      "relatedScenarios": ["Q01", "Q07", "Q08"],
-      "taskIds": ["P01", "P02", "C01", "C02"],
-      "referenceStatus": "OBSERVED_PARTIAL",
-      "note": "Историческое сравнение: driving-размер 40 мм создан через UI; точные условия числового ввода зафиксированы в пилоте окружности (см. circlePilot).",
-      "nextTask": "P02 (подключить панель окружности) / C01"
+      "relatedScenarios": [
+        "Q01",
+        "Q07",
+        "Q08",
+        "Q15"
+      ],
+      "taskIds": [
+        "P01",
+        "P02",
+        "C01",
+        "C02"
+      ],
+      "referenceStatus": "NOT_CAPTURED",
+      "note": "Нативного Autodesk capture числового ввода НЕТ. Историческая проверка driving-размера 40 мм в ASA и рецепт Circle (Q01) — historicalAsaCheck, НЕ capture Autodesk. Полезная структурная метаданные (панель/numeric field) сохранена отдельно в nativeStructuralMetadata; состояние native numeric-input зафиксировано как NOT_CAPTURED.",
+      "nextTask": "P02 (подключить панель окружности) / C01",
+      "evidenceType": "notCaptured"
     },
     {
       "id": "error-state",
       "state": "Ошибка (невалидный ввод/конфликт/неопределимый inverse)",
-      "relatedScenarios": ["Q04", "Q09"],
-      "taskIds": ["A06B", "B02", "C03", "C04"],
+      "relatedScenarios": [
+        "Q04",
+        "Q09"
+      ],
+      "taskIds": [
+        "A06B",
+        "B02",
+        "C03",
+        "C04"
+      ],
       "referenceStatus": "NOT_CAPTURED",
       "note": "Отдельный снимок состояния ошибки не зафиксирован; поведение описано контрактами A06B/B02/C04.",
-      "nextTask": "A06B (безопасный ввод) / C04 (диагностика конфликтов)"
+      "nextTask": "A06B (безопасный ввод) / C04 (диагностика конфликтов)",
+      "evidenceType": "notCaptured"
     },
     {
       "id": "selection",
       "state": "Selection (Click/Ctrl/Shift, рамка)",
-      "relatedScenarios": ["Q06", "Q15"],
-      "taskIds": ["SEL01", "SEL02", "SEL03"],
+      "relatedScenarios": [
+        "Q06",
+        "Q15"
+      ],
+      "taskIds": [
+        "SEL01",
+        "SEL02",
+        "SEL03"
+      ],
       "referenceStatus": "OBSERVED_METADATA",
       "note": "SelectPanel и команды выбора зафиксированы (native-reference.v5.json); визуальные состояния выделения NOT_CAPTURED.",
-      "nextTask": "SEL01 (проверить Click/Ctrl/Shift) / SEL02 (рамка выбора)"
+      "nextTask": "SEL01 (проверить Click/Ctrl/Shift) / SEL02 (рамка выбора)",
+      "evidenceType": "nativeStructuralMetadata"
     },
     {
       "id": "viewcube-context",
       "state": "ViewCube / правая кнопка мыши (контекстное меню)",
-      "relatedScenarios": ["Q02", "Q05"],
-      "taskIds": ["A01", "A08", "B05", "M01", "M02"],
+      "relatedScenarios": [
+        "Q02",
+        "Q05"
+      ],
+      "taskIds": [
+        "A01",
+        "A08",
+        "B05",
+        "M01",
+        "M02"
+      ],
       "referenceStatus": "OBSERVED_OFFICIAL_HELP",
       "note": "ViewCube/Navigation описаны в официальной помощи Autodesk; активный снимок куба/контекстного меню NOT_CAPTURED.",
-      "nextTask": "M01 (разделить ПКМ куба и рабочей области) / A07 (виды куба)"
+      "nextTask": "M01 (разделить ПКМ куба и рабочей области) / A07 (виды куба)",
+      "evidenceType": "officialHelp"
     },
     {
       "id": "finish-3d",
       "state": "Finish / 3D (завершение эскиза, переход к телу)",
-      "relatedScenarios": ["Q11", "Q13", "Q14"],
-      "taskIds": ["A08", "E02", "F01", "F02", "F03"],
+      "relatedScenarios": [
+        "Q11"
+      ],
+      "taskIds": [
+        "A08",
+        "E02",
+        "F01",
+        "F02",
+        "F03"
+      ],
       "referenceStatus": "OBSERVED_METADATA",
-      "note": "Команда Extrude зафиксирована (SolidCreatePanel); визуальный Finish/3D NOT_CAPTURED.",
-      "nextTask": "A08 (принять ортографический маршрут Sketch) / E02 (режимы Extrude)"
+      "note": "Команда Extrude зафиксирована (SolidCreatePanel) — nativeStructuralMetadata; визуальный Finish/3D NOT_CAPTURED.",
+      "nextTask": "A08 (принять ортографический маршрут Sketch) / E02 (режимы Extrude)",
+      "evidenceType": "nativeStructuralMetadata"
     },
     {
       "id": "save-open",
       "state": "Save / Open (сохранение и повторное открытие)",
-      "relatedScenarios": ["Q13", "Q14"],
-      "taskIds": ["F03"],
+      "relatedScenarios": [
+        "Q13",
+        "Q14"
+      ],
+      "taskIds": [
+        "F03"
+      ],
       "referenceStatus": "NOT_CAPTURED",
       "note": "Снимки Save/Open не зафиксированы; поведение описано контрактами F03/Q14.",
-      "nextTask": "F03 (Protected Part и повторное открытие)"
+      "nextTask": "F03 (Protected Part и повторное открытие)",
+      "evidenceType": "notCaptured"
+    },
+    {
+      "id": "tilted-select-move",
+      "state": "Выбор/перемещение entity после наклона вида (tilted select/move)",
+      "relatedScenarios": [
+        "Q03"
+      ],
+      "taskIds": [
+        "A04",
+        "A06"
+      ],
+      "referenceStatus": "NOT_CAPTURED",
+      "evidenceType": "notCaptured",
+      "note": "Нативного capture выбора/перемещения entity после наклона вида нет; ожидаемые ID/plane coordinates и один edit описаны контрактами A04/A06. Не выдумывать наблюдение.",
+      "nextTask": "A04 (выбор после наклона) / A06 (перемещение, один edit)"
+    },
+    {
+      "id": "profile-fill",
+      "state": "Замкнутый/открытый профиль, отверстие, construction, самопересечение (profile fill)",
+      "relatedScenarios": [
+        "Q10"
+      ],
+      "taskIds": [
+        "E01"
+      ],
+      "referenceStatus": "NOT_CAPTURED",
+      "evidenceType": "notCaptured",
+      "note": "Нативного capture заливки профиля нет; соответствие fill profile и поведение failure описаны контрактом E01.",
+      "nextTask": "E01 (контур/заливка профиля)"
+    },
+    {
+      "id": "through-hole-body",
+      "state": "Тело со сквозным Ø12 до Fillet (60×40×10, volume 24000−360π мм³)",
+      "relatedScenarios": [
+        "Q12"
+      ],
+      "taskIds": [
+        "F01"
+      ],
+      "referenceStatus": "NOT_CAPTURED",
+      "evidenceType": "notCaptured",
+      "note": "Нативного capture состояния тела со сквозным Ø12 до Fillet нет; объём/направление/отмена описаны контрактом F01.",
+      "nextTask": "F01 (Ø12 through-hole до Fillet)"
     }
   ],
-
   "circlePilot": {
-    "taskIds": ["P01", "P02", "P03"],
+    "taskIds": [
+      "P01",
+      "P02",
+      "P03"
+    ],
     "scenario": "Q01",
     "conditions": {
-      "center": "выбранный центр вне начала координат (origin)",
+      "plane": "XY",
+      "center": {
+        "xMm": 20,
+        "yMm": 10,
+        "offOrigin": true,
+        "note": "выбранный контрольный центр вне origin"
+      },
       "diameter": "12 мм (радиус 6 мм)",
-      "display": "центр, ghost и numeric panel согласованы; preview отличается от committed geometry"
+      "display": "центр, ghost и numeric panel описывают один draft; preview отличается от committed geometry"
     },
     "classification": "chosenRequirement",
     "ownerVisualAcceptance": "PENDING",
-    "note": "Зафиксированы условия проверки выбранного центра, диаметра и отображения. Визуальная приёмка владельцем остаётся PENDING."
+    "note": "Выбранный воспроизводимый target (плоскость XY, центр (20, 10) мм вне origin, Ø12 мм / R6 мм); НЕ наблюдение Autodesk. Визуальная приёмка владельцем остаётся PENDING."
   },
-
   "knownReferenceGaps": [
     {
       "id": "GAP-001",
@@ -325,10 +444,121 @@
       "linkedTask": "R02 (уточнение источников) / отдельная задача по решению владельца"
     }
   ],
-
   "ownerVisualAcceptance": {
     "status": "PENDING",
     "classification": "observedFact",
     "note": "Визуальная приёмка владельцем остаётся PENDING. Техническая приёмка и owner visual verdict учитываются отдельно. Reference manifest задаёт проверяемые условия и не утверждает готовность UI."
-  }
+  },
+  "contractVersion": 2,
+  "revisionNote": "Контракт v2 (REQUEST_CHANGES): добавлена трассировка 16/16 (Q03/Q10/Q12); разделено происхождение hashes (upstream source vs repository JSON) и типы evidence (нативные наблюдения Fusion / исторические проверки ASA / выбранные требования); закреплены условия пилота Q01 (XY, центр (20,10) мм, Ø12 мм) как выбранное требование. ownerVisualAcceptance=PENDING.",
+  "canonicalBaseBranch": "integration/ui-core-unification",
+  "canonicalBaseSha": "21f3e11dab3fe0c6a50dce3407991568ac38adde",
+  "correctionBranch": "task/fus-r02-action-inventory",
+  "correctionBaseSha": "e58f2b8be60ebbc9d08c1975ffa3b433be81ef2a",
+  "evidenceTypes": {
+    "nativeFusionObservation": "Наблюдение из нативного Autodesk Fusion capture (API/snapshot): структура, метаданные, состояния. Воспроизводится из зафиксированного источника.",
+    "nativeStructuralMetadata": "Нативная структурная метаданные (вкладки/панели/контролы) — НЕ доказывает активный инструмент, открытое numeric field или поведение.",
+    "officialHelp": "Официальная помощь Autodesk — поведенческий/структурный эталон, а не capture.",
+    "historicalAsaCheck": "Исторические браузерные проверки ASA-CAD — НЕ являются capture Autodesk и не заменяют нативное наблюдение.",
+    "chosenRequirement": "Выбранный воспроизводимый целевой target (условия пилота); не наблюдение Autodesk.",
+    "notCaptured": "Снимка/наблюдения нет — явно фиксируется со следующей задачей."
+  },
+  "scenarioTracing": [
+    {
+      "q": "Q01",
+      "state": "circlePilot + sketch-tool-active + numeric-input",
+      "evidence": "chosenRequirement (пilot) + nativeStructuralMetadata; native numeric NOT_CAPTURED",
+      "nextTask": "P01/P02/P03"
+    },
+    {
+      "q": "Q02",
+      "state": "viewcube-context",
+      "evidence": "officialHelp (ViewCube/Navigation)",
+      "nextTask": "A01/A08/B05"
+    },
+    {
+      "q": "Q03",
+      "state": "tilted-select-move",
+      "evidence": "notCaptured",
+      "nextTask": "A04/A06"
+    },
+    {
+      "q": "Q04",
+      "state": "error-state",
+      "evidence": "notCaptured",
+      "nextTask": "A06B/B02"
+    },
+    {
+      "q": "Q05",
+      "state": "viewcube-context",
+      "evidence": "officialHelp (ПКМ/marking menu)",
+      "nextTask": "M01/M02"
+    },
+    {
+      "q": "Q06",
+      "state": "selection",
+      "evidence": "nativeStructuralMetadata (SelectPanel)",
+      "nextTask": "SEL01/SEL02"
+    },
+    {
+      "q": "Q07",
+      "state": "sketch-tool-active",
+      "evidence": "nativeStructuralMetadata",
+      "nextTask": "S01/S02/S03"
+    },
+    {
+      "q": "Q08",
+      "state": "numeric-input",
+      "evidence": "notCaptured (native); historicalAsaCheck 40мм ≠ native",
+      "nextTask": "C01/C02"
+    },
+    {
+      "q": "Q09",
+      "state": "error-state",
+      "evidence": "notCaptured",
+      "nextTask": "C03/C04"
+    },
+    {
+      "q": "Q10",
+      "state": "profile-fill",
+      "evidence": "notCaptured",
+      "nextTask": "E01"
+    },
+    {
+      "q": "Q11",
+      "state": "finish-3d",
+      "evidence": "nativeStructuralMetadata (Extrude)",
+      "nextTask": "E02"
+    },
+    {
+      "q": "Q12",
+      "state": "through-hole-body",
+      "evidence": "notCaptured",
+      "nextTask": "F01"
+    },
+    {
+      "q": "Q13",
+      "state": "save-open",
+      "evidence": "notCaptured",
+      "nextTask": "F02/F03"
+    },
+    {
+      "q": "Q14",
+      "state": "save-open",
+      "evidence": "notCaptured",
+      "nextTask": "F03"
+    },
+    {
+      "q": "Q15",
+      "state": "selection + numeric-input",
+      "evidence": "nativeStructuralMetadata; focus/composition notCaptured",
+      "nextTask": "A06A/A06B/SEL03/B04"
+    },
+    {
+      "q": "Q16",
+      "state": "empty-part",
+      "evidence": "notCaptured (baseline)",
+      "nextTask": "R01/F04"
+    }
+  ]
 }
