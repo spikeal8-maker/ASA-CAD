@@ -1,0 +1,318 @@
+{
+  "schemaVersion": 1,
+  "id": "fusion-browser-reference.v1",
+  "title": "FUS/R01 — эталон Fusion и условия браузерной проверки",
+  "task": "R01",
+  "issue": 239,
+  "planned_slice_id": "REFERENCE-PLANNING",
+  "preparedOn": "2026-11-26",
+  "baseBranch": "integration/ui-core-unification",
+  "baseSha": "21f3e11dab3fe0c6a50dce3407991568ac38adde",
+  "classification": {
+    "observedFact": "Значение зафиксировано в существующем evidence (snapshot, hash, дата) и воспроизводится из источника.",
+    "chosenRequirement": "Выбранное целевое требование R01; не все такие значения наблюдались в captures.",
+    "note": "Наблюдаемые факты отделены от выбранных целевых требований. Неизвестные свойства отмечены UNKNOWN со ссылкой на ответственную задачу; отсутствующие снимки — NOT_CAPTURED с соответствующей следующей задачей. Исторические сравнения — ограниченный источник и сами по себе не доказывают полное визуальное соответствие."
+  },
+
+  "referenceApplication": {
+    "name": "Autodesk Fusion",
+    "environment": "Design workspace (FusionSolidEnvironment)",
+    "classification": "observedFact"
+  },
+
+  "referenceVersion": {
+    "applicationVersion": "2706.1.17",
+    "status": "FIXED_IN_EXISTING_MATERIALS",
+    "classification": "observedFact",
+    "note": "Версия 2706.1.17 зафиксирована в существующих native/Sketch snapshots (см. referenceSources). Не называть её «последней» или «текущей установленной» без свежей проверки. Исторические сравнения содержат известные различия и сами по себе не доказывают полное визуальное соответствие."
+  },
+
+  "referenceSources": [
+    {
+      "id": "native-reference-v5",
+      "type": "native-snapshot",
+      "path": "src/web/fusion/native-reference.v5.json",
+      "captureSource": "native-api-plus-observed-screens",
+      "applicationVersion": "2706.1.17",
+      "capturedUTC": "2026-11-04T23:21:11.800744+00:00",
+      "sha256": "651c01dc6fa0594aead189407c3fe29fb87b75aafefea3ad176b61a6c1617c40",
+      "scope": "видимый Design workspace; активен SolidTab; не все Fusion workspaces",
+      "role": "зафиксированная структура: вкладки (SolidTab/SurfaceTab/Mesh/SheetMetal/Plastic/Utilities/Automation), панели и команды",
+      "classification": "observedFact"
+    },
+    {
+      "id": "sketch-native-reference-v1",
+      "type": "native-snapshot",
+      "path": "src/web/fusion/sketch-native-reference.v1.json",
+      "captureSource": "Autodesk Fusion API (read-only)",
+      "applicationVersion": "2706.1.17",
+      "capturedUTC": "2026-11-04T23:21:11.800744+00:00",
+      "sha256": "651c01dc6fa0594aead189407c3fe29fb87b75aafefea3ad176b61a6c1617c40",
+      "fileName": "fusion-ui-latest.json",
+      "scope": "SketchTab захвачен, пока активен SolidTab; флаги visibility/active/enabled описывают состояние захвата, а не активный Sketch",
+      "role": "зафиксированная структура Sketch: 9 панелей (SketchCreatePanel…StopSketchPanel) и контролы",
+      "limitation": "visualReference.status = missing; не подтверждён активный снимок SketchTab",
+      "classification": "observedFact"
+    },
+    {
+      "id": "sketch-active-ui-20261106",
+      "type": "native-snapshot",
+      "path": "src/web/fusion/sketch-active-ui-20261106.json",
+      "captureSource": "Autodesk Fusion API (read-only)",
+      "applicationVersion": "2706.1.17",
+      "capturedUTC": "2026-11-06T00:43:13.217889+00:00",
+      "sha256": "6296518a467ed73ce8b91281bf8727db1788cb8eb6999fbfb70bab245eeb4c1c",
+      "activeWorkspaceId": "FusionSolidEnvironment",
+      "activeToolbarTabId": "SketchTab",
+      "errors": [],
+      "scope": "активный SketchTab, 9 панелей",
+      "role": "состояние активного Sketch UI",
+      "classification": "observedFact"
+    },
+    {
+      "id": "historical-comparison-fusion-sketch-004",
+      "type": "historical-comparison",
+      "url": "https://github.com/spikeal8-maker/ASA-CAD/blob/325771d312d757dc98a6e95cb37f07b4eda28bf6/prototypes/fusion/evidence/fusion-sketch-004/README.md",
+      "applicationVersion": "2706.1.17",
+      "asaSourceSha": "b9bab762929677eb6ff4fbf3a4f1b2c933a72085",
+      "role": "историческое сравнение native-vs-ASA; прямо описывает различия geometry/tree",
+      "limitation": "нативное окно Fusion имело фактическую минимальную ширину 1393 px и уменьшено до 1366 px в сравнительной иллюстрации; ограниченный источник; не доказывает пиксельную parity",
+      "notA": "не является новым эталоном и не доказывает полное визуальное соответствие",
+      "classification": "observedFact"
+    },
+    {
+      "id": "autodesk-official-help",
+      "type": "official-help",
+      "role": "поведенческий/структурный эталон: ViewCube, Navigation, Sketch Palette, Marking menu, Selection, Extrude",
+      "urls": [
+        "https://help.autodesk.com/cloudhelp/ENU/Fusion-GetStarted/files/GS-VIEWCUBE.htm",
+        "https://help.autodesk.com/cloudhelp/ENU/Fusion-GetStarted/files/GS-NAVIGATION-BAR.htm",
+        "https://help.autodesk.com/cloudhelp/ENU/Fusion-Sketch/files/GUID-4183A4B7-E002-4396-AD5A-7FF3C8B2F33A.htm",
+        "https://help.autodesk.com/cloudhelp/ENU/Fusion-GetStarted/files/GUID-6514ABC1-CB75-4F0B-AB0E-316FAD36BA93.htm",
+        "https://help.autodesk.com/cloudhelp/ENU/Fusion-Model/files/SLD-SELECTION.htm",
+        "https://help.autodesk.com/cloudhelp/ENU/Fusion-Model/files/SLD-EXTRUDE-SOLID.htm"
+      ],
+      "classification": "observedFact"
+    },
+    {
+      "id": "playwright-method",
+      "type": "method",
+      "role": "метод браузерной автоматизации и визуального сравнения",
+      "urls": [
+        "https://playwright.dev/docs/best-practices",
+        "https://playwright.dev/docs/test-snapshots"
+      ],
+      "classification": "chosenRequirement"
+    }
+  ],
+
+  "targetBrowserMatrix": {
+    "classification": "chosenRequirement",
+    "profile": "Chromium-based — выбранный целевой браузерный профиль",
+    "primaryCi": "Chromium в существующем CI (браузерный harness)",
+    "userVerification": "Google Chrome на Windows",
+    "inputDevice": "мышь с тремя кнопками",
+    "browserVersionPolicy": "фактическая версия браузера/Chromium записывается при каждом реальном run; не фиксировать ненаблюдаемую версию",
+    "notVerifiedExcluded": ["Firefox", "Safari", "touch"],
+    "note": "Это выбранный целевой профиль; Firefox/Safari/touch не отмечаются как проверенные."
+  },
+
+  "targetNavigationPreset": {
+    "classification": "chosenRequirement",
+    "preset": "Fusion",
+    "note": "Целевой navigation preset: Fusion. Отделить выбранные требования от наблюдавшихся captures; неизвестные настройки — UNKNOWN со ссылкой на ответственную задачу (R02)."
+  },
+
+  "units": {
+    "classification": "chosenRequirement",
+    "modelUnit": "mm",
+    "source": "целевой профиль (единицы мм); согласуется со сценариями Q01–Q13 (например, 60×40, Ø12, 24000 мм³); label/единицы/geometry согласованы (Q08)"
+  },
+
+  "uiLocale": {
+    "value": "UNKNOWN",
+    "classification": "observedFact",
+    "reason": "Язык/локаль интерфейса Fusion не зафиксирована в существующем evidence; историческое сравнение упоминает «русский перевод» как не прошедший полную визуальную приёмку, но явная локаль не задана.",
+    "nextTask": "R02 (полный инвентарь/уточнение источников) или отдельная задача фиксации локали по решению владельца",
+    "note": "Не выдумывать локаль; фиксировать после свежего capture/решения владельца."
+  },
+
+  "viewports": [
+    {
+      "width": 1920,
+      "height": 1080,
+      "deviceScaleFactor": 1,
+      "browserZoom": "100%",
+      "uiScale": "100%",
+      "role": "основной размер проверки ASA",
+      "classification": "chosenRequirement"
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "deviceScaleFactor": 1,
+      "browserZoom": "100%",
+      "uiScale": "100%",
+      "role": "вторичный размер проверки ASA",
+      "caveat": "В историческом native capture окно имело фактическую минимальную ширину 1393 px и было уменьшено до 1366 px в иллюстрации; это не подтверждённый совпадающий native размер для pixel parity.",
+      "classification": "chosenRequirement"
+    }
+  ],
+
+  "deviceScaleFactor": {
+    "value": 1,
+    "classification": "chosenRequirement",
+    "note": "DPR 1 для всех размеров проверки."
+  },
+
+  "uiScale": {
+    "value": "100%",
+    "classification": "chosenRequirement",
+    "note": "UI scale 100% для всех размеров проверки."
+  },
+
+  "mandatoryStates": [
+    {
+      "id": "empty-part",
+      "state": "Пустое Part (базовое состояние до ввода)",
+      "relatedScenarios": ["Q16"],
+      "taskIds": ["R01", "F04"],
+      "referenceStatus": "NOT_CAPTURED",
+      "note": "Чистый снимок пустого Part не зафиксирован; зафиксирована только структура Design workspace. Не выдумывать изображение.",
+      "nextTask": "F04 (выпуск) / отдельная задача захвата"
+    },
+    {
+      "id": "sketch-tool-active",
+      "state": "Sketch: активный инструмент (Line/Rectangle/Circle/Arc)",
+      "relatedScenarios": ["Q01", "Q07"],
+      "taskIds": ["P01", "P02", "P03", "S01", "S02", "S03"],
+      "referenceStatus": "OBSERVED_METADATA",
+      "note": "Структура панелей/контролов зафиксирована (sketch-active-ui-20261106.json); визуальный активный снимок ограничен.",
+      "nextTask": "T01 (расширить harness) / P03"
+    },
+    {
+      "id": "numeric-input",
+      "state": "Числовой ввод (диаметр/размер/параметр)",
+      "relatedScenarios": ["Q01", "Q07", "Q08"],
+      "taskIds": ["P01", "P02", "C01", "C02"],
+      "referenceStatus": "OBSERVED_PARTIAL",
+      "note": "Историческое сравнение: driving-размер 40 мм создан через UI; точные условия числового ввода зафиксированы в пилоте окружности (см. circlePilot).",
+      "nextTask": "P02 (подключить панель окружности) / C01"
+    },
+    {
+      "id": "error-state",
+      "state": "Ошибка (невалидный ввод/конфликт/неопределимый inverse)",
+      "relatedScenarios": ["Q04", "Q09"],
+      "taskIds": ["A06B", "B02", "C03", "C04"],
+      "referenceStatus": "NOT_CAPTURED",
+      "note": "Отдельный снимок состояния ошибки не зафиксирован; поведение описано контрактами A06B/B02/C04.",
+      "nextTask": "A06B (безопасный ввод) / C04 (диагностика конфликтов)"
+    },
+    {
+      "id": "selection",
+      "state": "Selection (Click/Ctrl/Shift, рамка)",
+      "relatedScenarios": ["Q06", "Q15"],
+      "taskIds": ["SEL01", "SEL02", "SEL03"],
+      "referenceStatus": "OBSERVED_METADATA",
+      "note": "SelectPanel и команды выбора зафиксированы (native-reference.v5.json); визуальные состояния выделения NOT_CAPTURED.",
+      "nextTask": "SEL01 (проверить Click/Ctrl/Shift) / SEL02 (рамка выбора)"
+    },
+    {
+      "id": "viewcube-context",
+      "state": "ViewCube / правая кнопка мыши (контекстное меню)",
+      "relatedScenarios": ["Q02", "Q05"],
+      "taskIds": ["A01", "A08", "B05", "M01", "M02"],
+      "referenceStatus": "OBSERVED_OFFICIAL_HELP",
+      "note": "ViewCube/Navigation описаны в официальной помощи Autodesk; активный снимок куба/контекстного меню NOT_CAPTURED.",
+      "nextTask": "M01 (разделить ПКМ куба и рабочей области) / A07 (виды куба)"
+    },
+    {
+      "id": "finish-3d",
+      "state": "Finish / 3D (завершение эскиза, переход к телу)",
+      "relatedScenarios": ["Q11", "Q13", "Q14"],
+      "taskIds": ["A08", "E02", "F01", "F02", "F03"],
+      "referenceStatus": "OBSERVED_METADATA",
+      "note": "Команда Extrude зафиксирована (SolidCreatePanel); визуальный Finish/3D NOT_CAPTURED.",
+      "nextTask": "A08 (принять ортографический маршрут Sketch) / E02 (режимы Extrude)"
+    },
+    {
+      "id": "save-open",
+      "state": "Save / Open (сохранение и повторное открытие)",
+      "relatedScenarios": ["Q13", "Q14"],
+      "taskIds": ["F03"],
+      "referenceStatus": "NOT_CAPTURED",
+      "note": "Снимки Save/Open не зафиксированы; поведение описано контрактами F03/Q14.",
+      "nextTask": "F03 (Protected Part и повторное открытие)"
+    }
+  ],
+
+  "circlePilot": {
+    "taskIds": ["P01", "P02", "P03"],
+    "scenario": "Q01",
+    "conditions": {
+      "center": "выбранный центр вне начала координат (origin)",
+      "diameter": "12 мм (радиус 6 мм)",
+      "display": "центр, ghost и numeric panel согласованы; preview отличается от committed geometry"
+    },
+    "classification": "chosenRequirement",
+    "ownerVisualAcceptance": "PENDING",
+    "note": "Зафиксированы условия проверки выбранного центра, диаметра и отображения. Визуальная приёмка владельцем остаётся PENDING."
+  },
+
+  "knownReferenceGaps": [
+    {
+      "id": "GAP-001",
+      "description": "Нативное окно Fusion имело фактическую минимальную ширину 1393 px и было уменьшено до 1366 px в сравнительной иллюстрации; 1366×768 не является подтверждённым совпадающим native размером для pixel parity.",
+      "type": "viewport-size-mismatch",
+      "linkedTask": "F04 (выпуск) / отдельная задача захвата совпадающих размеров"
+    },
+    {
+      "id": "GAP-002",
+      "description": "Геометрия тестового отрезка и содержимое дерева различаются между native Fusion и ASA-CAD (историческое сравнение).",
+      "type": "geometry-tree-difference",
+      "linkedTask": "R02 (сопоставить все видимые действия с ядром)"
+    },
+    {
+      "id": "GAP-003",
+      "description": "Дерево ASA-CAD не повторяет полностью иерархию Document Settings / Named Views / Origin / Sketches и состояния строк оригинала.",
+      "type": "tree-hierarchy",
+      "linkedTask": "R02 (инвентаризация)"
+    },
+    {
+      "id": "GAP-004",
+      "description": "Проекции геометрии, 3D Sketch, орбитальное вращение в Sketch и часть операций Modify не реализованы либо недоступны.",
+      "type": "unsupported-operations",
+      "linkedTask": "A01–A08 / B01–B05 (навигация) / X01–X11 (расширения)"
+    },
+    {
+      "id": "GAP-005",
+      "description": "Кнопки неподдержанных native-команд остаются отключёнными; наличие иконки/меню само по себе не означает выполнение команды.",
+      "type": "disabled-commands",
+      "linkedTask": "R02 (статус по каждой команде)"
+    },
+    {
+      "id": "GAP-006",
+      "description": "SVG-иконки, русский перевод, контекстные меню, точность прокрутки и размеры всех блоков не прошли полную покомпонентную визуальную приёмку.",
+      "type": "visual-acceptance",
+      "linkedTask": "F04 (выпуск) / отдельная визуальная задача"
+    },
+    {
+      "id": "GAP-007",
+      "description": "Для sketches на гранях не получено независимого браузерного подтверждения точного поведения камеры и всех StableRef-сценариев.",
+      "type": "face-sketch-camera",
+      "linkedTask": "S05 (разрешать плоскость выбранной грани)"
+    },
+    {
+      "id": "GAP-008",
+      "description": "Язык/локаль интерфейса не зафиксирована в evidence (uiLocale = UNKNOWN).",
+      "type": "ui-locale",
+      "linkedTask": "R02 (уточнение источников) / отдельная задача по решению владельца"
+    }
+  ],
+
+  "ownerVisualAcceptance": {
+    "status": "PENDING",
+    "classification": "observedFact",
+    "note": "Визуальная приёмка владельцем остаётся PENDING. Техническая приёмка и owner visual verdict учитываются отдельно. Reference manifest задаёт проверяемые условия и не утверждает готовность UI."
+  }
+}
