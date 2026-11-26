@@ -138,7 +138,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "скрытый (isVisible=false) в capture"
             },
             {
@@ -428,7 +428,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет команды слота (slot)"
             },
             {
@@ -444,7 +444,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет команды слота (slot)"
             },
             {
@@ -460,7 +460,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет команды слота (slot)"
             },
             {
@@ -476,7 +476,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет команды слота (slot)"
             },
             {
@@ -492,7 +492,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет команды слота (slot)"
             },
             {
@@ -563,7 +563,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет эквивалента (conic curve)"
             },
             {
@@ -597,7 +597,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: текст эскиза вне первого профиля"
             },
             {
@@ -613,7 +613,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "isVisible=false; mesh-секция вне первого профиля"
             },
             {
@@ -646,7 +646,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет sketch-pattern (part.pattern.* — это Solid)"
             },
             {
@@ -662,7 +662,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет sketch-pattern (part.pattern.* — это Solid)"
             },
             {
@@ -694,7 +694,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет эквивалента"
             },
             {
@@ -710,7 +710,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет эквивалента"
             },
             {
@@ -758,7 +758,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет эквивалента"
             },
             {
@@ -774,7 +774,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет эквивалента"
             },
             {
@@ -890,7 +890,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет эквивалента (blend curve)"
             },
             {
@@ -1004,7 +1004,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет точного эквивалента (общий change parameter)"
             }
           ]
@@ -1042,7 +1042,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет auto-constrain"
             },
             {
@@ -1058,7 +1058,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет auto-constrain"
             },
             {
@@ -1069,21 +1069,18 @@
                 "panel",
                 "promoted"
               ],
-              "asaCommandId": [
-                "constraint.horizontal",
-                "constraint.vertical"
-              ],
+              "asaCommandId": "constraint.horizontal",
               "asaRelatedCommandIds": [
                 "constraint.vertical"
               ],
-              "implementationStatus": "implemented|implemented",
+              "implementationStatus": "implemented",
               "inFirstProfile": true,
               "browserAcceptance": "not_tested",
               "scenarios": [
                 "Q09"
               ],
               "nextTask": "C01",
-              "note": "ASA: два отдельных ID (horizontal и vertical), оба implemented"
+              "note": "ASA: два отдельных ID (horizontal и vertical), оба implemented; ASA также: constraint.vertical (статус implemented)"
             },
             {
               "fusionCommandId": "ConstraintCoincident",
@@ -1213,7 +1210,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет exact ID (близко constraint.pointOnCurve)"
             },
             {
@@ -1249,7 +1246,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет exact ID"
             },
             {
@@ -1285,7 +1282,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет exact ID (curvature)"
             },
             {
@@ -1301,7 +1298,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет exact ID (polygon constraint)"
             }
           ]
@@ -1329,7 +1326,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "Configure вне первого профиля (isEnabled=false)"
             },
             {
@@ -1346,7 +1343,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "Configure вне первого профиля (isEnabled=false)"
             },
             {
@@ -1363,7 +1360,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "Configure вне первого профиля (isEnabled=false)"
             }
           ]
@@ -1392,7 +1389,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "диагностика; ASA planned (M4)"
             },
             {
@@ -1409,7 +1406,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет эквивалента"
             },
             {
@@ -1425,7 +1422,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: assembly.interference (planned) — сборка"
             },
             {
@@ -1441,7 +1438,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет эквивалента"
             },
             {
@@ -1457,7 +1454,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет эквивалента (analysis)"
             },
             {
@@ -1473,7 +1470,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет эквивалента (analysis)"
             },
             {
@@ -1489,7 +1486,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет эквивалента (analysis)"
             },
             {
@@ -1505,7 +1502,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет эквивалента (analysis)"
             },
             {
@@ -1521,7 +1518,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет эквивалента (analysis)"
             },
             {
@@ -1537,7 +1534,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет эквивалента (analysis)"
             },
             {
@@ -1553,7 +1550,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет эквивалента; isVisible=false"
             },
             {
@@ -1569,7 +1566,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет эквивалента (analysis)"
             },
             {
@@ -1585,7 +1582,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет эквивалента (analysis)"
             },
             {
@@ -1601,7 +1598,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет эквивалента; isVisible=false"
             },
             {
@@ -1617,7 +1614,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет эквивалента; isVisible=false"
             },
             {
@@ -1633,7 +1630,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет эквивалента; isVisible=false"
             },
             {
@@ -1649,7 +1646,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет эквивалента; isVisible=false"
             },
             {
@@ -1665,7 +1662,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет эквивалента; isVisible=false"
             },
             {
@@ -1681,7 +1678,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет эквивалента (display)"
             },
             {
@@ -1697,7 +1694,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет эквивалента (display/mesh)"
             },
             {
@@ -1713,7 +1710,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет эквивалента; isVisible=false"
             },
             {
@@ -1730,7 +1727,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет эквивалента; isVisible=false"
             },
             {
@@ -1746,7 +1743,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет эквивалента; isVisible=false"
             },
             {
@@ -1763,7 +1760,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет эквивалента; isVisible=false"
             },
             {
@@ -1779,7 +1776,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASA: нет эквивалента (sustainability)"
             }
           ]
@@ -1806,7 +1803,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "Insert: decal вне первого профиля"
             },
             {
@@ -1823,7 +1820,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "Insert: canvas вне первого профиля"
             },
             {
@@ -1839,7 +1836,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "Insert: T-spline; isVisible=false"
             },
             {
@@ -1855,7 +1852,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "Insert: импорт SVG вне первого профиля"
             },
             {
@@ -1871,7 +1868,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "Insert: импорт DXF вне первого профиля"
             },
             {
@@ -1888,7 +1885,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "Insert: mesh вне первого профиля (X01-X11)"
             },
             {
@@ -1904,7 +1901,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "Insert: component; isVisible=false"
             },
             {
@@ -1920,7 +1917,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "Insert: fastener вне первого профиля"
             },
             {
@@ -1936,7 +1933,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "Insert: duplicate joints вне первого профиля"
             },
             {
@@ -1953,7 +1950,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "Insert: derive вне первого профиля"
             },
             {
@@ -1969,7 +1966,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "Insert: supplier ecosystem вне первого профиля"
             },
             {
@@ -1985,7 +1982,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "Insert: supplier ecosystem вне первого профиля"
             },
             {
@@ -2001,7 +1998,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "Insert: supplier ecosystem вне первого профиля"
             }
           ]
@@ -2027,7 +2024,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ASSEMBLE: сборка вне первого профиля (Part)"
             }
           ]
@@ -2206,7 +2203,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ISA: component drag; isVisible=false; сборка"
             },
             {
@@ -2276,7 +2273,7 @@
               "inFirstProfile": false,
               "browserAcceptance": "not_tested",
               "scenarios": [],
-              "nextTask": null,
+              "nextTask": "X01-X11",
               "note": "ISA: component priority; isVisible=false; сборка"
             },
             {
@@ -2393,8 +2390,8 @@
         "fusionCommandId": "ViewCube",
         "fusionName": "ViewCube (ориентации)",
         "source": "official-help (GS-VIEWCUBE)",
-        "asaCommandId": [
-          "view.fit",
+        "asaCommandId": "view.fit",
+        "asaRelatedCommandIds": [
           "view.front",
           "view.back",
           "view.top",
@@ -2403,7 +2400,6 @@
           "view.right",
           "view.iso"
         ],
-        "asaRelatedCommandIds": [],
         "implementationStatus": "implemented",
         "inFirstProfile": true,
         "scenarios": [
@@ -2411,7 +2407,7 @@
         ],
         "nextTask": "A01/A08/B05",
         "browserAcceptance": "not_tested",
-        "note": "ориентации куба -> view.* (все implemented)"
+        "note": "ориентации куба -> view.* (все implemented); ASA также: view.front, view.back, view.top, view.bottom, view.left, view.right, view.iso (статус implemented)"
       },
       {
         "fusionCommandId": "Navigation",
