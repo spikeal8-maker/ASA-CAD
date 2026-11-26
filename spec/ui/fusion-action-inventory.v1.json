@@ -1,0 +1,2486 @@
+{
+  "schemaVersion": 1,
+  "id": "fusion-action-inventory.v1",
+  "title": "FUS/R02 — inventory видимых действий первого профиля",
+  "task": "R02",
+  "issue": 240,
+  "planned_slice_id": "REFERENCE-PLANNING",
+  "preparedOn": "2026-11-26",
+  "baseBranch": "task/fus-r01-reference-profile",
+  "baseSha": "a3866569000c25783ae66e57f6ea9ba07a342559",
+  "referenceManifest": "spec/ui/fusion-browser-reference.v1.json",
+  "classification": {
+    "observedFact": "Видимое действие/команда зафиксирована в существующем snapshot (id, name, isVisible, isPromoted) и воспроизводится из источника.",
+    "chosenRequirement": "Выбранное целевое требование (mapping на ASA command ID, связка со сценарием/задачей); не все такие связки наблюдались в captures.",
+    "note": "Наблюдаемые факты (видимость, promoted, name) отделены от выбранных требований (mapping/acceptance). asaCommandId берётся только из command-registry.v1.json; отсутствующий ID — null + implementationStatus not_implemented + следующая задача. browserAcceptance=PASS допускается только со ссылкой на существующий evidence/задачу; иначе not_tested / pending:<task>."
+  },
+  "scope": {
+    "inScope": [
+      "все видимые команды SketchTab (9 панелей) из sketch-active-ui-20261106.json (activeToolbarTabId=SketchTab, appVersion 2706.1.17)",
+      "первый профиль SolidTab: вход в эскиз (SketchCreate), Extrude, выбор (SelectPanel), navigation entry points (ViewCube/Navigation по official help)",
+      "способы запуска, наблюдаемые в источниках: panel, promoted (marking menu / shortcut не наблюдаются в зафиксированных snapshots — см. gaps)"
+    ],
+    "outOfProfile": [
+      "вкладки SurfaceTab / ParaMeshOuterTab (Mesh) / SheetMetalTab / PlasticTab / ToolsTab (Utilities) / AutomationTab — ссылка X01-X11",
+      "команды вне первого профиля (Configure, analysis/Inspect, импорт/supplier, сборка, slot/advanced-geometry) — помечены inFirstProfile=false"
+    ],
+    "note": "Инвентарь НЕ является полным каталогом Autodesk Fusion."
+  },
+  "statusVocabulary": {
+    "implementationStatus": [
+      "planned",
+      "implemented",
+      "experimental",
+      "deferred",
+      "not_implemented"
+    ],
+    "browserAcceptance": [
+      "PASS:<evidence>",
+      "pending:<task>",
+      "not_tested"
+    ]
+  },
+  "asaCommandSource": {
+    "path": "spec/ui/command-registry.v1.json",
+    "note": "единственный источник ASA command ID; layout/инвентарь обязан ссылаться на эти ID"
+  },
+  "sources": [
+    {
+      "id": "sketch-active-ui-20261106",
+      "type": "native-snapshot",
+      "path": "src/web/fusion/sketch-active-ui-20261106.json",
+      "applicationVersion": "2706.1.17",
+      "capturedUTC": "2026-11-06T00:43:13.217889+00:00",
+      "sha256": "6296518a467ed73ce8b91281bf8727db1788cb8eb6999fbfb70bab245eeb4c1c",
+      "activeToolbarTabId": "SketchTab",
+      "role": "активный SketchTab, 9 панелей; источник видимых действий",
+      "classification": "observedFact"
+    },
+    {
+      "id": "fusion-browser-reference",
+      "type": "reference-manifest",
+      "path": "spec/ui/fusion-browser-reference.v1.json",
+      "role": "R01 эталон: источники, условия, обязательные состояния, Q01-Q16",
+      "classification": "chosenRequirement"
+    },
+    {
+      "id": "autodesk-official-help",
+      "type": "official-help",
+      "role": "ViewCube / Navigation / Selection / Extrude (поведенческий эталон)",
+      "classification": "observedFact"
+    }
+  ],
+  "inventory": {
+    "sketchTab": {
+      "tabId": "SketchTab",
+      "appVersion": "2706.1.17",
+      "capturedUTC": "2026-11-06T00:43:13.217889+00:00",
+      "panels": [
+        {
+          "panelId": "SketchCreatePanel",
+          "panelName": "CREATE",
+          "promotedControlIds": [
+            "DrawPolyline",
+            "ShapeRectangleTwoPoint",
+            "CircleCenterRadius",
+            "DrawSpline",
+            "MirrorSketchCommand",
+            "SketchDimension"
+          ],
+          "actions": [
+            {
+              "fusionCommandId": "DrawPolyline",
+              "fusionName": "Line",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": "sketch.line",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "S01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "SketchMidpointLine",
+              "fusionName": "Midpoint Line",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": "sketch.line",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "S01",
+              "note": "ASA: один sketch.line; midpoint-вариант не подтверждён отдельно"
+            },
+            {
+              "fusionCommandId": "SketchConstrainer",
+              "fusionName": null,
+              "visible": false,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "скрытый (isVisible=false) в capture"
+            },
+            {
+              "fusionCommandId": "ShapeRectangleTwoPoint",
+              "fusionName": "2-Point Rectangle",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": "sketch.rectangle",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07",
+                "Q11"
+              ],
+              "nextTask": "S01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "ShapeRectangleThreePoint",
+              "fusionName": "3-Point Rectangle",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": "sketch.rectangle",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "S01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "ShapeRectangleCenter",
+              "fusionName": "Center Rectangle",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": "sketch.rectangle",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "S01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "CircleCenterRadius",
+              "fusionName": "Center Diameter Circle",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": "sketch.circle",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "pending:P01-P03",
+              "scenarios": [
+                "Q01",
+                "Q07"
+              ],
+              "nextTask": "P01/P02/P03",
+              "note": "пилот окружности (R01 circlePilot); owner visual PENDING"
+            },
+            {
+              "fusionCommandId": "CircleTwoPoint",
+              "fusionName": "2-Point Circle",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": "sketch.circle",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "P01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "CircleThreePoint",
+              "fusionName": "3-Point Circle",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": "sketch.circle",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "P01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "CircleTanTanRadius",
+              "fusionName": "2-Tangent Circle",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": "sketch.circle",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "P01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "CircleThreeTangent",
+              "fusionName": "3-Tangent Circle",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": "sketch.circle",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "P01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "ArcThreePoint",
+              "fusionName": "3-Point Arc",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": "sketch.arc",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "S03",
+              "note": null
+            },
+            {
+              "fusionCommandId": "ArcCenterTwoPoint",
+              "fusionName": "Center Point Arc",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": "sketch.arc",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "S03",
+              "note": null
+            },
+            {
+              "fusionCommandId": "ArcTangent",
+              "fusionName": "Tangent Arc",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": "sketch.arc",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "S03",
+              "note": null
+            },
+            {
+              "fusionCommandId": "ShapePolygonCircumscribed",
+              "fusionName": "Circumscribed Polygon",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": "sketch.polygon",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "P01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "ShapePolygonInscribed",
+              "fusionName": "Inscribed Polygon",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": "sketch.polygon",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "P01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "ShapePolygonEdge",
+              "fusionName": "Edge Polygon",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": "sketch.polygon",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "P01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "CircleElipse",
+              "fusionName": "Ellipse",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": "sketch.ellipse",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "P01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "ShapeSlotCenterToCenter",
+              "fusionName": "Center to Center Slot",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет команды слота (slot)"
+            },
+            {
+              "fusionCommandId": "ShapeSlotOverall",
+              "fusionName": "Overall Slot",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет команды слота (slot)"
+            },
+            {
+              "fusionCommandId": "ShapeSlotCenterPoint",
+              "fusionName": "Center Point Slot",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет команды слота (slot)"
+            },
+            {
+              "fusionCommandId": "ShapeArcSlotThreePoint",
+              "fusionName": "Three Point Arc Slot",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет команды слота (slot)"
+            },
+            {
+              "fusionCommandId": "ShapeArcSlotCenterTwoPoint",
+              "fusionName": "Center Point Arc Slot",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет команды слота (slot)"
+            },
+            {
+              "fusionCommandId": "DrawSpline",
+              "fusionName": "Fit Point Spline",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": "sketch.spline",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "P01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "DrawCVMSpline3D",
+              "fusionName": "Control Point Spline",
+              "visible": false,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": "sketch.spline",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "P01",
+              "note": "isVisible=false в capture"
+            },
+            {
+              "fusionCommandId": "DrawCVMSpline5D",
+              "fusionName": "Control Point Spline",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": "sketch.spline",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "P01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "ConicCurveCmd",
+              "fusionName": "Conic Curve",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет эквивалента (conic curve)"
+            },
+            {
+              "fusionCommandId": "DrawPoint",
+              "fusionName": "Point",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": "sketch.point",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "P01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "MTextCmd",
+              "fusionName": "Text",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: текст эскиза вне первого профиля"
+            },
+            {
+              "fusionCommandId": "FitCurvesToSectionCommand",
+              "fusionName": "Fit Curves to Mesh Section",
+              "visible": false,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "isVisible=false; mesh-секция вне первого профиля"
+            },
+            {
+              "fusionCommandId": "MirrorSketchCommand",
+              "fusionName": "Mirror",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": "sketch.mirror",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "P01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "CircularSketchPatternCommand",
+              "fusionName": "Circular Pattern",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет sketch-pattern (part.pattern.* — это Solid)"
+            },
+            {
+              "fusionCommandId": "RectangularSketchPatternCommand",
+              "fusionName": "Rectangular Pattern",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет sketch-pattern (part.pattern.* — это Solid)"
+            },
+            {
+              "fusionCommandId": "ProjectNewCmd",
+              "fusionName": "Project",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": "sketch.project",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "P01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "IntersectCmd",
+              "fusionName": "Intersect",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет эквивалента"
+            },
+            {
+              "fusionCommandId": "SpunProfileCmd",
+              "fusionName": "Spun Profile",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет эквивалента"
+            },
+            {
+              "fusionCommandId": "Include3DGeometry",
+              "fusionName": "Include 3D Geometry",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": "sketch.project",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "P01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "ProjectToSurface",
+              "fusionName": "Project To Surface",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": "sketch.project",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "P01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "IntersectionCurve",
+              "fusionName": "Intersection Curve",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет эквивалента"
+            },
+            {
+              "fusionCommandId": "SketchIsoparametricCurve",
+              "fusionName": "Isoparametric Curve",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет эквивалента"
+            },
+            {
+              "fusionCommandId": "SketchDimension",
+              "fusionName": "Sketch Dimension",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": "dimension.linear",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q08",
+                "Q09"
+              ],
+              "nextTask": "C01/C02",
+              "note": "ASA: dimension.linear/horizontal/vertical/angular/radius/diameter; radius/diameter — отдельные ID"
+            }
+          ]
+        },
+        {
+          "panelId": "SketchModifyPanel",
+          "panelName": "MODIFY",
+          "promotedControlIds": [
+            "FilletSketchCmd",
+            "TrimSketchCmd",
+            "Offset",
+            "BlendG1CurveSketchCmd"
+          ],
+          "actions": [
+            {
+              "fusionCommandId": "FilletSketchCmd",
+              "fusionName": "Fillet",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": "sketch.fillet",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q09"
+              ],
+              "nextTask": "P01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "ChamferSketchEqualDistance",
+              "fusionName": "Equal Distance Chamfer",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": "sketch.chamfer",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "P01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "ChamferSketchDistanceAngle",
+              "fusionName": "Distance and Angle Chamfer",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": "sketch.chamfer",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "P01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "ChamferSketchDistanceDistance",
+              "fusionName": "Two Distance Chamfer",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": "sketch.chamfer",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "P01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "BlendG1CurveSketchCmd",
+              "fusionName": "Blend Curve",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет эквивалента (blend curve)"
+            },
+            {
+              "fusionCommandId": "Offset",
+              "fusionName": "Offset",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": "sketch.offset",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "P01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "TrimSketchCmd",
+              "fusionName": "Trim",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": "sketch.trim",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "P01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "ExtendSketchCmd",
+              "fusionName": "Extend",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": "sketch.extend",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "P01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "BreakSketchCmd",
+              "fusionName": "Break",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": "sketch.split",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "P01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "SketchScaleCmd",
+              "fusionName": "Sketch Scale",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": "sketch.scale",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "P01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "FusionMoveCommand",
+              "fusionName": "Move/Copy",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": "sketch.move",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "P01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "ChangeParameterCommand",
+              "fusionName": "Change Parameters",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет точного эквивалента (общий change parameter)"
+            }
+          ]
+        },
+        {
+          "panelId": "SketchConstraintsPanel",
+          "panelName": "CONSTRAINTS",
+          "promotedControlIds": [
+            "SketchAutoConstraintAndDimCmd",
+            "ConstraintHorizontalVertical",
+            "ConstraintCoincident",
+            "ConstraintTangent",
+            "ConstraintEqual",
+            "ConstraintParallel",
+            "ConstraintPerpendicular",
+            "ConstraintFix",
+            "ConstraintMidPoint",
+            "ConstraintConcentric",
+            "ConstraintCollinear",
+            "ConstraintSymmetry",
+            "ConstraintSmooth"
+          ],
+          "actions": [
+            {
+              "fusionCommandId": "SketchAutoConstraintAndDimCmd",
+              "fusionName": "AutoConstrain",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет auto-constrain"
+            },
+            {
+              "fusionCommandId": "SketchAutoConstraintAndDimFromDatumCmd",
+              "fusionName": "AutoConstrain from datum",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет auto-constrain"
+            },
+            {
+              "fusionCommandId": "ConstraintHorizontalVertical",
+              "fusionName": "Horizontal/Vertical",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": [
+                "constraint.horizontal",
+                "constraint.vertical"
+              ],
+              "asaRelatedCommandIds": [
+                "constraint.vertical"
+              ],
+              "implementationStatus": "implemented|implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q09"
+              ],
+              "nextTask": "C01",
+              "note": "ASA: два отдельных ID (horizontal и vertical), оба implemented"
+            },
+            {
+              "fusionCommandId": "ConstraintCoincident",
+              "fusionName": "Coincident",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": "constraint.coincident",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q09"
+              ],
+              "nextTask": "C01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "ConstraintTangent",
+              "fusionName": "Tangent",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": "constraint.tangent",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q09"
+              ],
+              "nextTask": "C01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "ConstraintEqual",
+              "fusionName": "Equal",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": "constraint.equal",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q09"
+              ],
+              "nextTask": "C01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "ConstraintParallel",
+              "fusionName": "Parallel",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": "constraint.parallel",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q09"
+              ],
+              "nextTask": "C01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "ConstraintPerpendicular",
+              "fusionName": "Perpendicular",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": "constraint.perpendicular",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q09"
+              ],
+              "nextTask": "C01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "ConstraintFix",
+              "fusionName": "Fix/UnFix",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": "constraint.fixed",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q09"
+              ],
+              "nextTask": "C01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "ConstraintMidPoint",
+              "fusionName": "MidPoint",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет exact ID (близко constraint.pointOnCurve)"
+            },
+            {
+              "fusionCommandId": "ConstraintConcentric",
+              "fusionName": "Concentric",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": "constraint.concentric",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q09"
+              ],
+              "nextTask": "C01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "ConstraintCollinear",
+              "fusionName": "Collinear",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет exact ID"
+            },
+            {
+              "fusionCommandId": "ConstraintSymmetry",
+              "fusionName": "Symmetry",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": "constraint.symmetric",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q09"
+              ],
+              "nextTask": "C01",
+              "note": null
+            },
+            {
+              "fusionCommandId": "ConstraintSmooth",
+              "fusionName": "Curvature",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет exact ID (curvature)"
+            },
+            {
+              "fusionCommandId": "SketchPolygonConstraintCmd",
+              "fusionName": "Polygon",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет exact ID (polygon constraint)"
+            }
+          ]
+        },
+        {
+          "panelId": "ConfigurePanel",
+          "panelName": "Configure",
+          "promotedControlIds": [
+            "FusionStartDesignConfigModeCmd",
+            "FusionShowDesignConfigPanelCmd",
+            "FusionConfigurationRulesCmd"
+          ],
+          "actions": [
+            {
+              "fusionCommandId": "FusionStartDesignConfigModeCmd",
+              "fusionName": "Configure",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "Configure вне первого профиля (isEnabled=false)"
+            },
+            {
+              "fusionCommandId": "FusionShowDesignConfigPanelCmd",
+              "fusionName": "Display Configuration Table",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "Configure вне первого профиля (isEnabled=false)"
+            },
+            {
+              "fusionCommandId": "FusionConfigurationRulesCmd",
+              "fusionName": "Create Configuration Rules",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "Configure вне первого профиля (isEnabled=false)"
+            }
+          ]
+        },
+        {
+          "panelId": "InspectPanel",
+          "panelName": "Inspect",
+          "promotedControlIds": [
+            "ShowChangeAwarenessToolbarCmd",
+            "MeasureCommand",
+            "FusionHalfSectionViewCommand",
+            "SimilarPartsCommand"
+          ],
+          "actions": [
+            {
+              "fusionCommandId": "MeasureCommand",
+              "fusionName": "Measure",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": "part.measureDistanceAngle",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "planned",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "диагностика; ASA planned (M4)"
+            },
+            {
+              "fusionCommandId": "FusionHalfSectionViewCommand",
+              "fusionName": "Section Analysis",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет эквивалента"
+            },
+            {
+              "fusionCommandId": "InterferenceCheckCommand",
+              "fusionName": "Interference",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: assembly.interference (planned) — сборка"
+            },
+            {
+              "fusionCommandId": "FusionCenterOfMassCommand",
+              "fusionName": "Center of Mass",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет эквивалента"
+            },
+            {
+              "fusionCommandId": "FusionCurvatureCombAnalysisCommand",
+              "fusionName": "Curvature Comb Analysis",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет эквивалента (analysis)"
+            },
+            {
+              "fusionCommandId": "FusionCurvatureMapAnalysisCommand",
+              "fusionName": "Curvature Map Analysis",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет эквивалента (analysis)"
+            },
+            {
+              "fusionCommandId": "FusionDraftAnalysisCommand",
+              "fusionName": "Draft Analysis",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет эквивалента (analysis)"
+            },
+            {
+              "fusionCommandId": "FusionEnvironmentMapAnalysisCommand",
+              "fusionName": "Environment Map Analysis",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет эквивалента (analysis)"
+            },
+            {
+              "fusionCommandId": "FusionIsoCurveAnalysisCommand",
+              "fusionName": "Isocurve Analysis",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет эквивалента (analysis)"
+            },
+            {
+              "fusionCommandId": "FusionZebraAnalysisCommand",
+              "fusionName": "Zebra Analysis",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет эквивалента (analysis)"
+            },
+            {
+              "fusionCommandId": "FusionSurfaceValidateCommand",
+              "fusionName": "Validate",
+              "visible": false,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет эквивалента; isVisible=false"
+            },
+            {
+              "fusionCommandId": "FusionAccessibilityAnalysisCommand",
+              "fusionName": "Accessibility Analysis",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет эквивалента (analysis)"
+            },
+            {
+              "fusionCommandId": "FusionMinimumRadiusAnalysisCommand",
+              "fusionName": "Minimum Radius Analysis",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет эквивалента (analysis)"
+            },
+            {
+              "fusionCommandId": "FusionComponentConnectionAnalysisCommand",
+              "fusionName": "Component Connection Analysis",
+              "visible": false,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет эквивалента; isVisible=false"
+            },
+            {
+              "fusionCommandId": "FusionFastenerStackAnalysisCommand",
+              "fusionName": "Fastener Stack Analysis",
+              "visible": false,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет эквивалента; isVisible=false"
+            },
+            {
+              "fusionCommandId": "GraphViewCmd",
+              "fusionName": "Navigator",
+              "visible": false,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет эквивалента; isVisible=false"
+            },
+            {
+              "fusionCommandId": "FusionDOFAnalysisCommand",
+              "fusionName": "DOF Analysis",
+              "visible": false,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет эквивалента; isVisible=false"
+            },
+            {
+              "fusionCommandId": "FusionEditComponentConnectionAnalysisCommand",
+              "fusionName": "Edit Component Connection Analysis",
+              "visible": false,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет эквивалента; isVisible=false"
+            },
+            {
+              "fusionCommandId": "FusionViewColorCyclingToggleCmd",
+              "fusionName": "Display Component Colors",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет эквивалента (display)"
+            },
+            {
+              "fusionCommandId": "FacegroupsToggleCmd",
+              "fusionName": "Display Mesh Face Groups",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет эквивалента (display/mesh)"
+            },
+            {
+              "fusionCommandId": "FusionAssemblyStatisticsCommand",
+              "fusionName": "Assembly Statistics",
+              "visible": false,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет эквивалента; isVisible=false"
+            },
+            {
+              "fusionCommandId": "SimilarPartsCommand",
+              "fusionName": "Find Similar Components",
+              "visible": false,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет эквивалента; isVisible=false"
+            },
+            {
+              "fusionCommandId": "ShowHistoryToolbarCmd",
+              "fusionName": "History",
+              "visible": false,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет эквивалента; isVisible=false"
+            },
+            {
+              "fusionCommandId": "ShowChangeAwarenessToolbarCmd",
+              "fusionName": "Change Summary",
+              "visible": false,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет эквивалента; isVisible=false"
+            },
+            {
+              "fusionCommandId": "GravityClimate_ManufacturingSustainabilityInsights_MainDialog",
+              "fusionName": "Sustainability Insights",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASA: нет эквивалента (sustainability)"
+            }
+          ]
+        },
+        {
+          "panelId": "InsertPanel",
+          "panelName": "Insert",
+          "promotedControlIds": [
+            "PullDeriveCommand",
+            "FusionAddCanvasCommand",
+            "ParaMeshInsertAlignCommand"
+          ],
+          "actions": [
+            {
+              "fusionCommandId": "FusionAddEditDecalCommand",
+              "fusionName": "Decal",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "Insert: decal вне первого профиля"
+            },
+            {
+              "fusionCommandId": "FusionAddCanvasCommand",
+              "fusionName": "Canvas",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "Insert: canvas вне первого профиля"
+            },
+            {
+              "fusionCommandId": "TSplineImportCommand",
+              "fusionName": "Insert T-Spline",
+              "visible": false,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "Insert: T-spline; isVisible=false"
+            },
+            {
+              "fusionCommandId": "SketchImportSVG",
+              "fusionName": "Insert SVG",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "Insert: импорт SVG вне первого профиля"
+            },
+            {
+              "fusionCommandId": "ImportDxfFileCommand",
+              "fusionName": "Insert DXF",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "Insert: импорт DXF вне первого профиля"
+            },
+            {
+              "fusionCommandId": "ParaMeshInsertAlignCommand",
+              "fusionName": "Insert Mesh",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "Insert: mesh вне первого профиля (X01-X11)"
+            },
+            {
+              "fusionCommandId": "FusionImportCommandFromToolbar",
+              "fusionName": "Insert Component",
+              "visible": false,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "Insert: component; isVisible=false"
+            },
+            {
+              "fusionCommandId": "FusionFastenersCommand",
+              "fusionName": "Insert Fastener",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "Insert: fastener вне первого профиля"
+            },
+            {
+              "fusionCommandId": "FusionDuplicateWithJointsCommand",
+              "fusionName": "Duplicate With Joints",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "Insert: duplicate joints вне первого профиля"
+            },
+            {
+              "fusionCommandId": "PullDeriveCommand",
+              "fusionName": "Insert Derive",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "Insert: derive вне первого профиля"
+            },
+            {
+              "fusionCommandId": "InsertMcMasterCarrComponentCommand",
+              "fusionName": "Insert McMaster-Carr Component",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "Insert: supplier ecosystem вне первого профиля"
+            },
+            {
+              "fusionCommandId": "cadenasparts4cad",
+              "fusionName": "Insert a manufacturer part",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "Insert: supplier ecosystem вне первого профиля"
+            },
+            {
+              "fusionCommandId": "traceparts_insert",
+              "fusionName": "Insert TraceParts Supplier Components",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "Insert: supplier ecosystem вне первого профиля"
+            }
+          ]
+        },
+        {
+          "panelId": "PartAssemblePanel",
+          "panelName": "ASSEMBLE",
+          "promotedControlIds": [
+            "NewAssemblyFromPartCommand"
+          ],
+          "actions": [
+            {
+              "fusionCommandId": "NewAssemblyFromPartCommand",
+              "fusionName": "Add To Assembly",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ASSEMBLE: сборка вне первого профиля (Part)"
+            }
+          ]
+        },
+        {
+          "panelId": "SelectPanel",
+          "panelName": "Select",
+          "promotedControlIds": [
+            "SelectCommand"
+          ],
+          "actions": [
+            {
+              "fusionCommandId": "SelectCommand",
+              "fusionName": "Select",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q06",
+                "Q15"
+              ],
+              "nextTask": "SEL01",
+              "note": "ASA: в registry нет команды select — selection покрывается SEL01-SEL03"
+            },
+            {
+              "fusionCommandId": "selectWindow",
+              "fusionName": "Window Selection",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q06"
+              ],
+              "nextTask": "SEL02",
+              "note": "ASA: нет exact ID (window selection)"
+            },
+            {
+              "fusionCommandId": "selectFreeForm",
+              "fusionName": "Freeform Selection",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q06"
+              ],
+              "nextTask": "SEL02",
+              "note": "ASA: нет exact ID (freeform)"
+            },
+            {
+              "fusionCommandId": "selectPaint",
+              "fusionName": "Paint Selection",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q06"
+              ],
+              "nextTask": "SEL02",
+              "note": "ASA: нет exact ID (paint)"
+            },
+            {
+              "fusionCommandId": "SelectByNameCommand",
+              "fusionName": "Select By Name",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "SEL01",
+              "note": "ASA: нет exact ID"
+            },
+            {
+              "fusionCommandId": "SelectByBoundaryCommand",
+              "fusionName": "Select By Boundary",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "SEL01",
+              "note": "ASA: нет exact ID"
+            },
+            {
+              "fusionCommandId": "FusionSelectBodiesBySizeCommand",
+              "fusionName": "Select By Size",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "SEL01",
+              "note": "ASA: нет exact ID"
+            },
+            {
+              "fusionCommandId": "SelectByInvertCommand",
+              "fusionName": "Invert Selection",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "SEL01",
+              "note": "ASA: нет exact ID"
+            },
+            {
+              "fusionCommandId": "FusionSelectSeedAndBoundaryFacesCommand",
+              "fusionName": "Seed And Boundary",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "SEL01",
+              "note": "ASA: нет exact ID"
+            },
+            {
+              "fusionCommandId": "FusionDragCompControlsCmd",
+              "fusionName": "Component Drag",
+              "visible": false,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ISA: component drag; isVisible=false; сборка"
+            },
+            {
+              "fusionCommandId": "SelectBodyPriorityCommand",
+              "fusionName": "Select Body Priority",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q06"
+              ],
+              "nextTask": "SEL03",
+              "note": "ASA: нет exact ID"
+            },
+            {
+              "fusionCommandId": "SelectFacePriorityCommand",
+              "fusionName": "Select Face Priority",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q06"
+              ],
+              "nextTask": "SEL03",
+              "note": "ASA: нет exact ID"
+            },
+            {
+              "fusionCommandId": "SelectEdgePriorityCommand",
+              "fusionName": "Select Edge Priority",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q06"
+              ],
+              "nextTask": "SEL03",
+              "note": "ASA: нет exact ID"
+            },
+            {
+              "fusionCommandId": "SelectComponentPriorityCommand",
+              "fusionName": "Select Component Priority",
+              "visible": false,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": null,
+              "note": "ISA: component priority; isVisible=false; сборка"
+            },
+            {
+              "fusionCommandId": "SelectionFilterCommand",
+              "fusionName": "Selection Filters",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "SEL01",
+              "note": "ASA: нет exact ID"
+            }
+          ]
+        },
+        {
+          "panelId": "StopSketchPanel",
+          "panelName": "Finish Sketch",
+          "promotedControlIds": [
+            "SketchStop"
+          ],
+          "actions": [
+            {
+              "fusionCommandId": "SketchStop",
+              "fusionName": "Finish Sketch",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": "sketch.finish",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q11"
+              ],
+              "nextTask": "E01/E02",
+              "note": "Finish Sketch; E01 (контур) / E02 (extrude)"
+            },
+            {
+              "fusionCommandId": "SketchAutoConstrainAndFinish",
+              "fusionName": "Finish with AutoConstrain",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": "sketch.finish",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q11"
+              ],
+              "nextTask": "E01",
+              "note": "ASA: finish implemented; auto-constrain часть вне ASA"
+            }
+          ]
+        }
+      ]
+    },
+    "solidTabFirstProfile": [
+      {
+        "fusionCommandId": "SketchCreate",
+        "fusionName": "Create Sketch",
+        "sourcePanel": "SolidCreatePanel",
+        "asaCommandId": "part.sketch.create",
+        "implementationStatus": "implemented",
+        "inFirstProfile": true,
+        "scenarios": [
+          "Q07"
+        ],
+        "nextTask": "S01",
+        "browserAcceptance": "not_tested",
+        "note": "вход в эскиз; ASA part.sketch.create"
+      },
+      {
+        "fusionCommandId": "Extrude",
+        "fusionName": "Extrude",
+        "sourcePanel": "SolidCreatePanel",
+        "asaCommandId": "part.extrude",
+        "implementationStatus": "implemented",
+        "inFirstProfile": true,
+        "scenarios": [
+          "Q11"
+        ],
+        "nextTask": "E02",
+        "browserAcceptance": "not_tested",
+        "note": "ASA part.extrude; Q11 Rectangle60×40 -> Extrude10"
+      },
+      {
+        "fusionCommandId": "SelectPanel",
+        "fusionName": "Select (SelectCommand/window/freeform/paint)",
+        "sourcePanel": "SelectPanel",
+        "asaCommandId": null,
+        "implementationStatus": "not_implemented",
+        "inFirstProfile": true,
+        "scenarios": [
+          "Q06",
+          "Q15"
+        ],
+        "nextTask": "SEL01/SEL02/SEL03",
+        "browserAcceptance": "not_tested",
+        "note": "детали по командам — в панели Select (SketchTab)"
+      },
+      {
+        "fusionCommandId": "ViewCube",
+        "fusionName": "ViewCube (ориентации)",
+        "source": "official-help (GS-VIEWCUBE)",
+        "asaCommandId": [
+          "view.fit",
+          "view.front",
+          "view.back",
+          "view.top",
+          "view.bottom",
+          "view.left",
+          "view.right",
+          "view.iso"
+        ],
+        "asaRelatedCommandIds": [],
+        "implementationStatus": "implemented",
+        "inFirstProfile": true,
+        "scenarios": [
+          "Q02"
+        ],
+        "nextTask": "A01/A08/B05",
+        "browserAcceptance": "not_tested",
+        "note": "ориентации куба -> view.* (все implemented)"
+      },
+      {
+        "fusionCommandId": "Navigation",
+        "fusionName": "Navigation (orbit/pan/zoom)",
+        "source": "official-help (GS-NAVIGATION-BAR)",
+        "asaCommandId": null,
+        "implementationStatus": "not_implemented",
+        "inFirstProfile": true,
+        "scenarios": [
+          "Q02"
+        ],
+        "nextTask": "A01/A08/B05",
+        "browserAcceptance": "not_tested",
+        "note": "камера/навигация — поведение, в registry нет дискретной команды"
+      }
+    ]
+  },
+  "outOfProfileTabs": [
+    {
+      "tabId": "SurfaceTab",
+      "tabName": "SURFACE",
+      "link": "X01-X11"
+    },
+    {
+      "tabId": "ParaMeshOuterTab",
+      "tabName": "Mesh",
+      "link": "X01-X11"
+    },
+    {
+      "tabId": "SheetMetalTab",
+      "tabName": "SHEET METAL",
+      "link": "X01-X11"
+    },
+    {
+      "tabId": "PlasticTab",
+      "tabName": "PLASTIC",
+      "link": "X01-X11"
+    },
+    {
+      "tabId": "ToolsTab",
+      "tabName": "UTILITIES",
+      "link": "X01-X11"
+    },
+    {
+      "tabId": "AutomationTab",
+      "tabName": "AUTOMATION",
+      "link": "X01-X11"
+    }
+  ],
+  "unknowns": [
+    {
+      "id": "UNKNOWN-001",
+      "description": "marking menu / ПКМ и keyboard shortcuts не наблюдаются в зафиксированных snapshots (только panel/promoted); поведение описано official help и контрактами M01/M02.",
+      "nextTask": "M01/M02 / SEL01-SEL03"
+    },
+    {
+      "id": "UNKNOWN-002",
+      "description": "asaCommandId отсутствует для selection (SelectCommand и т.д.) — в registry нет команды select; покрывается SEL01-SEL03.",
+      "nextTask": "SEL01/SEL02/SEL03"
+    },
+    {
+      "id": "UNKNOWN-003",
+      "description": "для ряда видимых команд нет эквивалента в ASA (slot, conic, blend, auto-constrain, analysis, supplier) — null + not_implemented + следующая задача.",
+      "nextTask": "P01-X11 (по соответствующей группе)"
+    }
+  ],
+  "ownerVisualAcceptance": {
+    "status": "PENDING",
+    "classification": "observedFact",
+    "note": "Визуальная приёмка владельцем остаётся PENDING. Inventory задаёт состояние знаний (mapping видимых действий с ядром), не готовность UI."
+  }
+}
