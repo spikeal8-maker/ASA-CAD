@@ -11,13 +11,14 @@ Use `spec/process/fusion-tasks.v1.json` for task meaning and dependencies, not e
 ## Classify every fact
 
 - Separate native Fusion observation, native structural metadata, official help, historical ASA checks and chosen requirements.
+- Validate each field against its own schema/contract. Another field's vocabulary is not a global enum; report a violation only with an applicable rule.
 - An active SketchTab and command definitions do not prove an active tool, open numeric field, gesture, geometry or screenshot.
 - Historical ASA browser input is not Autodesk capture. A selected Circle recipe is `chosenRequirement`, never `historicalAsaCheck`.
-- Record UNKNOWN for unresolved settings/facts and NOT_CAPTURED for missing required captures; preserve a concrete next task.
+- Use the field's declared UNKNOWN/NOT_CAPTURED forms for missing facts/captures; otherwise report uncertainty in prose. Preserve a concrete next task.
 - Keep field values, explanatory notes and the report consistent. A correct top-level disclaimer does not repair a contradictory row.
 - Cite source path/URL, exact ref/SHA, relevant field or symbol and the limited claim it supports.
 - Do not claim a screenshot was inspected unless it was actually viewed. Official help describes behavior; it is not a local capture.
-- Keep native observations, current ASA behavior and historical gaps tied to their own versions; do not silently promote historical status to current fact.
+- Keep native observations, current ASA behavior and historical gaps tied to their own versions.
 
 ## Identify the hashed object
 
@@ -43,14 +44,14 @@ Use `spec/process/fusion-tasks.v1.json` for task meaning and dependencies, not e
 3. For Sketch, inspect `src/web/fusion/sketchCommands.ts` (`sketchNativeActions`, `fromNative`, `itemAction`, `contextualDimension`) and `SketchRibbon.tsx`.
 4. For Solid, inspect relevant `src/web/fusion/liveActions.ts` / `LiveTop.tsx` fragments. For camera rows, inspect the specific ViewCube/SketchPlaneCube/navigation handler.
 5. Store actual invoked IDs separately from `asaRelatedCommandIds`; a family-level `sketch.circle` does not establish CircleThreePoint or tangent-circle support.
-6. For contextual dispatch, enumerate actual alternatives and selection conditions. For a direct handler, record its symbol/ref; no single command ID may exist.
-7. Use null + not_implemented when absence is established; use UNKNOWN with reason/next task when unresolved. Null on a documented handler/container is not automatically missing behavior.
+6. For contextual dispatch, enumerate actual alternatives and conditions. For a direct handler, record its symbol/ref. Null can be valid for a documented handler/container.
+7. A complete applicable binding/dispatch chain proving no connection requires null + not_implemented, not UNKNOWN. If source is incomplete, report the claim as unverified in prose and identify the missing link; do not invent an implementationStatus value.
 8. Audit every asserted implemented row, not only previously reported examples. Keep implementation status and browser acceptance independent.
 
 Treat dropdowns, separators, headings and composite ViewCube/Navigation groups as containers/behaviors, not invented native CAD commands.
 Preserve links to child actions. Count visible actions separately from containers and hidden reference elements; explain count changes.
 For each claimed launch route and mode, record its own binding/evidence. A ribbon PASS does not prove shortcut, marking menu or another variant.
-Use the manifest's documented status vocabulary; add explicit UNKNOWN there if the contract permits it, rather than using undeclared values.
+Change a field's status vocabulary only when its contract explicitly authorizes that change.
 Static code can establish a binding, not browser PASS, geometry correctness or visual parity.
 
 ## Review output
