@@ -421,9 +421,9 @@
     },
     {
       "id": "GAP-004b",
-      "description": "Составляющая исторического GAP-004 (сравнение fusion-sketch-004): 3D Sketch не реализован; в нативном Sketch-реестре зафиксированы команды 3D-кривых (IntersectionCurve, ConicCurveCmd и др.), в registry задачи на 3D Sketch нет.",
+      "description": "Составляющая исторического GAP-004 (сравнение fusion-sketch-004): 3D Sketch не реализован; в нативном Sketch-реестре зафиксирована команда 3D-кривой IntersectionCurve (tooltip: 'Creates a 3D sketch curve from intersecting geometry'), в registry задачи на 3D Sketch нет. Отдельная реализация 3D Sketch НЕ назначена: ссылки ниже не расширяют implementation scope R02/X10 и не объявляют их готовыми.",
       "type": "unsupported-operations",
-      "linkedTask": "не покрыто существующими task ID — отдельная задача по решению владельца/архитектора"
+      "linkedTask": "R02 (инвентаризация непокрытого действия) / X10 (последующая проверка полноты/декомпозиция)"
     },
     {
       "id": "GAP-004c",
@@ -468,7 +468,7 @@
     "note": "Визуальная приёмка владельцем остаётся PENDING. Техническая приёмка и owner visual verdict учитываются отдельно. Reference manifest задаёт проверяемые условия и не утверждает готовность UI."
   },
   "contractVersion": 3,
-  "revisionNote": "Контракт v3 (READY, два корректирующих исправления): (1) numeric-input.note — историческая проверка 40 мм в ASA = historicalAsaCheck; рецепт Circle Q01 (XY, центр (20,10) мм, Ø12/R6) = chosenRequirement (circlePilot); native numeric-input = NOT_CAPTURED; структурный перечень контролов (CommandControl/SeparatorControl/DropDownControl) не доказывает открытое numeric field. (2) Составной GAP-004 разделён на узкие entries GAP-004a–d с конкретными task ID (X07; 3D Sketch — отдельная задача по решению владельца/архитектора; A07/B04; X01–X05). Трассировка 16/16, три upstream hash/provenance, UNKNOWN/NOT_CAPTURED, версия 2706.1.17, browser/viewports/DPR, circlePilot и ownerVisualAcceptance=PENDING сохранены.",
+  "revisionNote": "Контракт v3 (READY, два корректирующих исправления + review-коррекция 2026-11-27): (1) numeric-input.note — историческая проверка 40 мм в ASA = historicalAsaCheck; рецепт Circle Q01 (XY, центр (20,10) мм, Ø12/R6) = chosenRequirement (circlePilot); native numeric-input = NOT_CAPTURED; структурный перечень контролов (CommandControl/SeparatorControl/DropDownControl) не доказывает открытое numeric field. (2) Составной GAP-004 разделён на узкие entries GAP-004a–d с конкретными task ID (GAP-004a → X07; GAP-004b (3D Sketch) → R02 (инвентаризация непокрытого действия) / X10 (последующая проверка полноты/декомпозиция), отдельная реализация 3D Sketch НЕ назначена и implementation scope R02/X10 не расширяется, зафиксирована только команда IntersectionCurve (ConicCurveCmd убрана: явного 3D-описания в tooltip нет); GAP-004c → A07/B04; GAP-004d → X01–X05). Трассировка 16/16, три upstream hash/provenance, UNKNOWN/NOT_CAPTURED, версия 2706.1.17, browser/viewports/DPR, circlePilot и ownerVisualAcceptance=PENDING сохранены.",
   "canonicalBaseBranch": "integration/ui-core-unification",
   "canonicalBaseSha": "21f3e11dab3fe0c6a50dce3407991568ac38adde",
   "correctionBranch": "task/fus-r02-action-inventory",
