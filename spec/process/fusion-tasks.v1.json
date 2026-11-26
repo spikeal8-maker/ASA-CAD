@@ -7,6 +7,18 @@
   "workflow": "docs/FUSION_AGENT_WORKFLOW.md",
   "execution_pointer": "spec/process/active-work.v1.json",
   "execution_state_authority": "GitHub task Issue; READY requires a controller dispatch contract with an exact live base. This registry defines work and dependencies, not live execution status.",
+  "referenceManifest": {
+    "path": "spec/ui/fusion-browser-reference.v1.json",
+    "task": "R01",
+    "issue": 239,
+    "purpose": "FUS/R01 эталон Fusion и условия браузерной проверки: зафиксированная версия 2706.1.17, источники, целевой браузерный профиль, navigation preset, единицы, размеры/DPR/UI scale, обязательные состояния (Q01–Q16), известные пробелы. Не является продуктовым кодом; задает проверяемые условия, не утверждает готовность UI."
+  },
+  "inventoryManifest": {
+    "path": "spec/ui/fusion-action-inventory.v1.json",
+    "task": "R02",
+    "issue": 240,
+    "purpose": "FUS/R02 утверждённый inventory видимых действий первого профиля: все видимые команды SketchTab (9 панелей) + первый профиль SolidTab (Sketch/Extrude/Select/Navigation). Каждое действие связано с fusion command ID, ASA command ID (только из command-registry.v1.json; отсутствующий — null + not_implemented + следующая задача), реализацией, сценарием Q01–Q16, следующей задачей и отдельным статусом браузерной приёмки (PASS только со ссылкой на evidence). Не является полным каталогом Autodesk Fusion; не утверждает готовность UI."
+  },
   "prepared_on": "2026-11-25",
   "baseline_sha": "a08b17c99bf8b3343008810ab5f9f398bd7a139d",
   "scope": {
