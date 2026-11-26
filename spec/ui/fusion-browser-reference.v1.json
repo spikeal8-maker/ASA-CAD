@@ -237,7 +237,7 @@
         "C02"
       ],
       "referenceStatus": "NOT_CAPTURED",
-      "note": "Нативного Autodesk capture числового ввода НЕТ. Историческая проверка driving-размера 40 мм в ASA и рецепт Circle (Q01) — historicalAsaCheck, НЕ capture Autodesk. Полезная структурная метаданные (панель/numeric field) сохранена отдельно в nativeStructuralMetadata; состояние native numeric-input зафиксировано как NOT_CAPTURED.",
+      "note": "Нативного Autodesk capture числового ввода НЕТ — состояние native numeric-input зафиксировано как NOT_CAPTURED. Историческая проверка driving-размера 40 мм в ASA — historicalAsaCheck, не capture Autodesk. Рецепт Circle Q01 (плоскость XY, центр (20, 10) мм вне origin, Ø12 мм / R6 мм) — chosenRequirement (см. circlePilot), не наблюдение Autodesk. Структурный перечень панелей/контролов и активная вкладка (nativeStructuralMetadata; в зафиксированных snapshots — только CommandControl/SeparatorControl/DropDownControl) не доказывают открытое numeric field.",
       "nextTask": "P02 (подключить панель окружности) / C01",
       "evidenceType": "notCaptured"
     },
@@ -414,10 +414,28 @@
       "linkedTask": "R02 (инвентаризация)"
     },
     {
-      "id": "GAP-004",
-      "description": "Проекции геометрии, 3D Sketch, орбитальное вращение в Sketch и часть операций Modify не реализованы либо недоступны.",
+      "id": "GAP-004a",
+      "description": "Составляющая исторического GAP-004 (сравнение fusion-sketch-004): проекции геометрии — проекция выбранного ребра/геометрии на активную опору (нативный Project) не реализована либо недоступна.",
       "type": "unsupported-operations",
-      "linkedTask": "A01–A08 / B01–B05 (навигация) / X01–X11 (расширения)"
+      "linkedTask": "X07 (Project и ассоциативность: проекция геометрии на активную опору)"
+    },
+    {
+      "id": "GAP-004b",
+      "description": "Составляющая исторического GAP-004 (сравнение fusion-sketch-004): 3D Sketch не реализован; в нативном Sketch-реестре зафиксированы команды 3D-кривых (IntersectionCurve, ConicCurveCmd и др.), в registry задачи на 3D Sketch нет.",
+      "type": "unsupported-operations",
+      "linkedTask": "не покрыто существующими task ID — отдельная задача по решению владельца/архитектора"
+    },
+    {
+      "id": "GAP-004c",
+      "description": "Составляющая исторического GAP-004 (сравнение fusion-sketch-004): орбитальное вращение в Sketch — управление видами через ViewCube (Fit/Look At) и Shift+MMB orbit в перспективе не реализованы либо недоступны.",
+      "type": "unsupported-operations",
+      "linkedTask": "A07 (виды куба, Fit, Look At) / B04 (мышь/wheel в перспективе, Shift+MMB orbit)"
+    },
+    {
+      "id": "GAP-004d",
+      "description": "Составляющая исторического GAP-004 (сравнение fusion-sketch-004): часть операций Modify — Trim, Extend/Split, Offset, Mirror/patterns, Sketch Fillet/Chamfer — не реализована либо недоступна.",
+      "type": "unsupported-operations",
+      "linkedTask": "X01 (Trim) / X02 (Extend/Split) / X03 (Offset) / X04 (Mirror/patterns) / X05 (Fillet/Chamfer)"
     },
     {
       "id": "GAP-005",
@@ -449,8 +467,8 @@
     "classification": "observedFact",
     "note": "Визуальная приёмка владельцем остаётся PENDING. Техническая приёмка и owner visual verdict учитываются отдельно. Reference manifest задаёт проверяемые условия и не утверждает готовность UI."
   },
-  "contractVersion": 2,
-  "revisionNote": "Контракт v2 (REQUEST_CHANGES): добавлена трассировка 16/16 (Q03/Q10/Q12); разделено происхождение hashes (upstream source vs repository JSON) и типы evidence (нативные наблюдения Fusion / исторические проверки ASA / выбранные требования); закреплены условия пилота Q01 (XY, центр (20,10) мм, Ø12 мм) как выбранное требование. ownerVisualAcceptance=PENDING.",
+  "contractVersion": 3,
+  "revisionNote": "Контракт v3 (READY, два корректирующих исправления): (1) numeric-input.note — историческая проверка 40 мм в ASA = historicalAsaCheck; рецепт Circle Q01 (XY, центр (20,10) мм, Ø12/R6) = chosenRequirement (circlePilot); native numeric-input = NOT_CAPTURED; структурный перечень контролов (CommandControl/SeparatorControl/DropDownControl) не доказывает открытое numeric field. (2) Составной GAP-004 разделён на узкие entries GAP-004a–d с конкретными task ID (X07; 3D Sketch — отдельная задача по решению владельца/архитектора; A07/B04; X01–X05). Трассировка 16/16, три upstream hash/provenance, UNKNOWN/NOT_CAPTURED, версия 2706.1.17, browser/viewports/DPR, circlePilot и ownerVisualAcceptance=PENDING сохранены.",
   "canonicalBaseBranch": "integration/ui-core-unification",
   "canonicalBaseSha": "21f3e11dab3fe0c6a50dce3407991568ac38adde",
   "correctionBranch": "task/fus-r02-action-inventory",
