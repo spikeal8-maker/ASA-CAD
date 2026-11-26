@@ -63,5 +63,6 @@ Use the workflow's eight numbered report points:
 
 Publish only the authorized task result; verify remote candidate SHA and your worktree when publication is required.
 Set REVIEW, never self-assign `work_verified`, ACCEPTED or merge. Never direct/force-push integration/main or rewrite history against the contract.
+After changing status, re-read the live Issue title and parse `asa-fusion-task` metadata. Verify matching status, executor/session and full candidate SHA; a title-only change is incomplete. Preserve all unrelated contract fields.
 Keep the handoff to issue/version, base/candidate/tree, allowed paths, checks/evidence, blockers and one next step; exclude secrets and private raw logs.
 A task, a commit and an accepted permanent slice are different units; follow live audit cadence without increasing or resetting it yourself.

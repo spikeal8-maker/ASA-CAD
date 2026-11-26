@@ -41,6 +41,7 @@ After the final change, refresh affected checks/evidence for the final SHA. Pres
 
 Commit and publish only the authorized working branch by the contract's ordinary Git process. Verify the remote candidate SHA and exact changed-file scope.
 Publish the workflow's eight-point Issue report with actual commands/exits, evidence, remaining gaps and controller acceptance PENDING; synchronize REVIEW title/metadata.
+After each status change, fetch the live Issue again and parse its `asa-fusion-task` metadata: verify title/status, executor/session and full candidate SHA agree. A changed title alone is not publication; preserve unrelated contract fields.
 Do not set work_verified, ACCEPTED, create new READY assignments, merge your own work or direct/force-push integration/main.
 Return task/issue, full base and candidate, branch/commit/Issue URLs, actual executor/session, tree state, checks, evidence and blockers; keep the conversational handoff concise.
 An independent review correction may resume this same child only under the controller's explicit current contract clause, with the reviewed candidate and findings supplied.
