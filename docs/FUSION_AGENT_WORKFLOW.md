@@ -2,6 +2,8 @@
 
 Протокол для Qwen 27B и контролёра: одна задача, проверяемый результат в общем CAD-ядре.
 
+OpenCode: начать с `@asa-cad-task-runner`; reference/inventory проверять через `@asa-cad-evidence-and-bindings`, браузер — `@asa-cad-browser-acceptance`. Исходники: `.opencode/skills`; загрузка по необходимости. Windows wrappers: `scripts/windows`, установленная копия в `%LOCALAPPDATA%\ASA-CAD\tools`. Навык не выдаёт READY; рабочий контракт находится в Issue.
+
 ## 1. Где брать задание
 
 1. `spec/process/active-work.v1.json` и свежий GitHub определяют текущий checkpoint, базовую ветку и разрешение на продуктовую работу.
@@ -65,7 +67,8 @@ Owner pressure, extraction и frozen limits — по AGENTS, `repository-health.
 
 Скопировать после назначения контролёром одной READY-карточки:
 
-> Выполни только READY-карточку, назначенную тебе контролёром в GitHub ASA-CAD. Сверь её Issue с spec/process/fusion-tasks.v1.json и актуальным spec/process/active-work.v1.json. Прочитай AGENTS, canonicalDocuments и read_first карточки. Проверь полный base SHA, scope, owners и зависимости. Если единственное действующее назначение или разрешение на этот вид работы не подтверждается, верни BLOCKED с конкретной причиной. Подтверди IN_PROGRESS и реализуй один ожидаемый результат. Используй существующие команды и общее состояние. Проверь positive, cancel и error, затем применимые geometry, Undo/Redo, Save/Open и обычный browser flow. Не ослабляй assertions и не объявляй NOT_RUN успешным. Передай REVIEW с отчётом по восьми пунктам ниже. ACCEPTED, merge и следующую выдачу определяет контролёр по evidence и gates.
+> Загрузи `@asa-cad-task-runner` и выполни только назначенную тебе READY-карточку ASA-CAD. Проверь действующий контракт, полные SHA, разрешённые файлы и зависимости. Один результат через существующее ядро; проверки и evidence — по карточке. Передай REVIEW с отчётом по восьми пунктам. `work_verified`, ACCEPTED, merge и следующую выдачу определяет контролёр. При отсутствии подтверждённого назначения верни BLOCKED с причиной.
+
 
 ## 7. Отчёт в Issue карточки
 
