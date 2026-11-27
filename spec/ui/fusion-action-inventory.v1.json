@@ -3841,20 +3841,20 @@
   "counts": {
     "basis": "v3: строгое разделение command / container / separator / hidden; каждый счёт — по конкретным source ID",
     "sketchTab": {
-      "visibleCommandActions": 98,
+      "visibleCommandActions": 110,
       "hiddenCommandActions": 17,
-      "commandActionsTotal": 115,
+      "commandActionsTotal": 127,
       "visibleContainers": 10,
       "separators": 18,
       "sourceBreakdown": {
         "sketch-active-ui-20261106.json (active snapshot)": "86 command controls (71 visible + 15 hidden), 10 DropDownControl (visible), 16 SeparatorControl; dropdowns не раскрыты в capture (children отсутствуют)",
-        "sketch-native-reference.v1.json (historic API inventory)": "41 child-команда dropdowns (27 visible + 2 hidden: DrawCVMSpline3D, SelectComponentPriorityCommand), 2 SeparatorControl"
+        "sketch-native-reference.v1.json (historic API inventory)": "41 child-команда dropdowns (39 visible + 2 hidden: DrawCVMSpline3D, SelectComponentPriorityCommand), 2 SeparatorControl"
       }
     },
     "solidTabFirstProfile": {
       "entries": 6,
       "note": "SketchCreate, Extrude, SelectPanel, ViewCube (3D), ViewCube (sketch plane), Navigation"
     },
-    "explanationOf132": "132 — исходный пересчёт v1 (127 строк sketchTab + 5 строк solidFirstProfile, без разделения container/separator/hidden). v3: 127 команд + 6 solid + 10 контейнеров = 143 строки; дельта = +1 (ViewCube разделён на 3D и sketch) + 10 (контейнеры DropDown). Строки не удалялись: все 115 command controls (86 active + 41 historic) и 10 контейнеров сохранены."
+    "explanationOf132": "132 — исходный пересчёт v1 (127 строк sketchTab + 5 строк solidFirstProfile, без разделения container/separator/hidden). v3: 127 команд + 6 solid + 10 контейнеров = 143 строки; дельта = +1 (ViewCube разделён на 3D и sketch) + 10 (контейнеры DropDown). Строки не удалялись: все 127 command controls (86 active + 41 historic) и 10 контейнеров сохранены."
   }
 }
