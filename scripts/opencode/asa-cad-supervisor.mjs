@@ -109,16 +109,67 @@ function save(file, value) {
   fs.renameSync(temp, file);
 }
 
+function diagnosticJson(file) {
+  try {
+    const value = JSON.parse(fs.readFileSync(file, 'utf8'));
+    return value && typeof value === 'object' && !Array.isArray(value) ?
+      { status: 'VALID', value } : { status: 'INVALID', value: {} };
+  } catch (error) {
+    return { status: error.code === 'ENOENT' ? 'MISSING' :
+      error instanceof SyntaxError ? 'INVALID' : 'UNREADABLE', value: {} };
+  }
+}
+
+function diagnosticTime(value, now) {
+  const time = typeof value === 'string' ? Date.parse(value) : NaN;
+  return { at: Number.isFinite(time) ? new Date(time).toISOString() : null,
+    ageMs: Number.isFinite(time) && time <= now ? now - time : null };
+}
+
+// Observations only: neither a missing PID nor an old timestamp authorizes reclaim.
+export function inspectLock(directory, now = Date.now()) {
+  const lock = path.join(directory, 'supervisor.lock');
+  let lockType;
+  try { lockType = fs.lstatSync(lock).isDirectory() ? 'DIRECTORY' : 'OTHER'; }
+  catch (error) { lockType = error.code === 'ENOENT' ? 'MISSING' : 'UNREADABLE'; }
+  const source = diagnosticJson(path.join(lock, 'owner.json'));
+  const pid = Number.isInteger(source.value.pid) && source.value.pid > 0 &&
+    source.value.pid <= 0x7fffffff ? source.value.pid : null;
+  const ownerTime = diagnosticTime(source.value.at, now);
+  let liveness = 'UNKNOWN', probeError = null;
+  if (pid !== null) {
+    try { process.kill(pid, 0); liveness = 'EXISTS'; }
+    catch (error) {
+      if (error.code === 'ESRCH') liveness = 'NOT_FOUND';
+      else probeError = error.code === 'EPERM' ? 'EPERM' : 'UNKNOWN';
+    }
+  }
+  const state = diagnosticJson(path.join(directory, 'state.json'));
+  const stateTime = diagnosticTime(state.value.checkedAt, now);
+  const staleAfterMs = 10 * 60 * 1000;
+  return { status: lockType === 'MISSING' ? 'UNLOCKED' : lockType === 'UNREADABLE' ? 'ERROR' : 'LOCKED',
+    lock, lockType, observedAt: new Date(now).toISOString(),
+    owner: { status: source.status === 'VALID' && (pid === null || ownerTime.ageMs === null) ? 'INVALID' : source.status,
+      pid, at: ownerTime.at, ageMs: ownerTime.ageMs, liveness, probeError },
+    checkpoint: { status: state.status === 'VALID' && stateTime.ageMs === null ? 'INVALID' : state.status,
+      checkedAt: stateTime.at, ageMs: stateTime.ageMs, staleAfterMs,
+      stale: stateTime.ageMs === null ? null : stateTime.ageMs >= staleAfterMs,
+      head: typeof state.value.head === 'string' && /^[a-f0-9]{40}$/.test(state.value.head) ? state.value.head : null,
+      phase: typeof state.value.phase === 'string' && /^[A-Z_]{1,80}$/.test(state.value.phase) ? state.value.phase : null } };
+}
+
 export function withLock(directory, operation) {
   const lock = path.join(directory, 'supervisor.lock');
   fs.mkdirSync(directory, { recursive: true });
   try { fs.mkdirSync(lock); } catch (error) {
     if (error.code !== 'EEXIST') throw error;
-    // A stale lock is reported, never removed over a possibly active writer.
-    return { status: 'LOCKED', lock };
+    // Preserve LOCKED even if the owner releases it during this observation.
+    return { ...inspectLock(directory), status: 'LOCKED' };
   }
-  fs.writeFileSync(path.join(lock, 'owner.json'), JSON.stringify({ pid: process.pid, at: new Date().toISOString() }));
-  try { return operation(); } finally { fs.rmSync(lock, { recursive: true }); }
+  try {
+    fs.writeFileSync(path.join(lock, 'owner.json'), JSON.stringify({ pid: process.pid, at: new Date().toISOString() }));
+    return operation();
+  } finally { fs.rmSync(lock, { recursive: true }); }
 }
 
 function command(executable, args, cwd, raw = false) {
@@ -216,6 +267,7 @@ function bootstrap(config, directory) {
 
 export function run(configPath, mode = 'tick') {
   const directory = path.dirname(path.resolve(configPath));
+  if (mode === 'diagnose') return inspectLock(directory);
   return withLock(directory, () => {
     const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
     const statePath = path.join(directory, 'state.json');
@@ -325,9 +377,12 @@ export function run(configPath, mode = 'tick') {
 
 if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
   const [mode = 'tick', configPath] = process.argv.slice(2);
-  if (!configPath) throw new Error('Usage: asa-cad-supervisor.mjs start|tick|pause campaign.json');
+  if (!configPath) throw new Error('Usage: asa-cad-supervisor.mjs start|tick|pause|diagnose campaign.json');
   const result = run(configPath, mode);
   console.log(JSON.stringify({ phase: result.phase ?? result.status, task: result.task,
-    coordinatorSessionId: result.coordinatorSessionId, head: result.head, error: result.error }));
-  if (result.phase === 'ERROR' || result.phase === 'BLOCKED_GUARD') process.exitCode = 1;
+    coordinatorSessionId: result.coordinatorSessionId, head: result.head, error: result.error,
+    ...(result.lock ? { lock: result.lock, lockType: result.lockType, observedAt: result.observedAt,
+      owner: result.owner, checkpoint: result.checkpoint } : {}) }));
+  if (result.status === 'LOCKED') process.exitCode = 2;
+  else if ((result.phase ?? result.status) === 'ERROR' || result.phase === 'BLOCKED_GUARD') process.exitCode = 1;
 }

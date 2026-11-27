@@ -45,6 +45,47 @@ if ($LASTEXITCODE -ne 0) { throw 'Supervisor pause failed' }
 
 Pause запрещает новые prompts, не отменяет уже выполняемый child. `manualStop`, pending permissions и lock не снимать автоматически.
 
+## Блокировка и свежесть наблюдения
+
+`LOCKED` завершает CLI с **exit 2**: этот tick не выполнил проверку и не обновил `state.json`. Ошибка/guard сохраняют exit 1. Возраст lock сам по себе не разрешает его снять. `owner.liveness=EXISTS` означает только существование PID (возможен reuse), `NOT_FOUND` — результат ESRCH в момент проверки, `UNKNOWN` — отсутствие достоверного ответа, включая EPERM/невалидный PID. Валидность owner metadata сообщается отдельно.
+
+Для диагностики использовать `diagnose`, а не `tick`. Он не захватывает lock, не читает campaign, не вызывает Git/OpenCode и ничего не пишет; отсутствующий каталог тоже не создаётся. Exit 0 / `UNLOCKED` сообщает только отсутствие lock, а не здоровье разработки. `checkpoint.stale` становится true после 10 минут без обновления; неизвестное/будущее время даёт null. Ни один из этих признаков не возобновляет модель и не удаляет lock.
+
+Проверка контролёра в PowerShell после переменных из предыдущего раздела:
+
+```powershell
+$asaDiagnosticText = & $asaNode $asaSupervisor diagnose $asaCampaign
+$asaDiagnosticExit = $LASTEXITCODE
+$asaDiagnostic = $asaDiagnosticText | ConvertFrom-Json
+$asaTaskInfo = Get-ScheduledTaskInfo -TaskName 'ASA-CAD-OpenCode-Supervisor'
+$asaConfig = Get-Content $asaCampaign -Raw | ConvertFrom-Json
+$asaLiveHead = & git -C $asaConfig.repositoryPath rev-parse HEAD
+if ($LASTEXITCODE -ne 0) { throw 'Cannot verify current checkout' }
+$asaRemoteHead = & git -C $asaConfig.repositoryPath ls-remote origin ('refs/heads/' + $asaConfig.task.workBranch)
+if ($LASTEXITCODE -ne 0 -or -not $asaRemoteHead) { throw 'Cannot verify assigned remote branch' }
+[pscustomobject]@{
+    DiagnosticExit = $asaDiagnosticExit
+    LastRunUtc = $asaTaskInfo.LastRunTime.ToUniversalTime().ToString('o')
+    LastTaskResult = $asaTaskInfo.LastTaskResult
+    StateCheckedAt = $asaDiagnostic.checkpoint.checkedAt
+    StateAgeMs = $asaDiagnostic.checkpoint.ageMs
+    StateStale = $asaDiagnostic.checkpoint.stale
+    StateHead = $asaDiagnostic.checkpoint.head
+    LiveLocalHead = $asaLiveHead
+    LiveRemoteHead = ($asaRemoteHead -split '\s+')[0]
+    Owner = $asaDiagnostic.owner
+}
+```
+
+Сопоставить `StateCheckedAt` с `LastRunUtc`, статусом выполняющейся Task и текущими local/remote HEAD. Повторные запуски при старом checkedAt означают, что checkpoint не подтверждает текущий candidate; прежний `RUNNING`/review не переносится на новый SHA. После полного завершения tick проверяется свежий checkedAt. Windows `LastTaskResult=0` отдельно не доказывает прогресс; stdout Task может не сохраняться, поэтому `diagnose` остаётся доступен без запуска работы.
+
+Безопасное ручное восстановление выполняет контролёр:
+
+1. Временно отключить только `ASA-CAD-OpenCode-Supervisor`, исключить параллельные ручные ticks и дождаться завершения либо доказанного отсутствия процесса supervisor. Отключение Task само по себе не завершает уже запущенный процесс; controller lease также не останавливает Task.
+2. Повторить diagnose и сверить реестр процессов ОС: записанный owner PID действительно отсутствует, активных `asa-cad-supervisor.mjs` нет. При EXISTS/UNKNOWN, повреждённом owner или неизвестном PID — **не снимать lock**; передать диагностику контролёру. Большой возраст не заменяет эту проверку.
+3. Пока все запускающие стороны остановлены, убедиться, что owner.json не изменился после проверки, и **переименовать именно этот orphan-каталог в архив**, сохранив owner.json. Не удалять другие locks, state, campaign или native sessions. Автоматического reclaim нет: PID может быть переиспользован, а наблюдение устареть.
+4. Согласовать live candidate, контракт и последний доверенный checkpoint. Только затем вернуть Task и разрешённый tick: после снятия lock он способен продолжить модель. Проверить новый checkedAt, head и итоговый статус; не выдавать возврат Task за новую приёмку продукта.
+
 ## Часовой внешний контролёр
 
 Проверить `state.json`, `review-packet.json`, `handoff.json`: dispatch/version/base/candidate, clean/scope, разные child IDs и review provenance. `AUTHOR_CLAIM_NOT_VERIFIED_TEST_RECEIPT` — отчёт автора. До `work_verified` проверить содержание и обязательные tests exact candidate; до ACCEPTED — CI/review/verified merge. REVIEW запускает проверку.

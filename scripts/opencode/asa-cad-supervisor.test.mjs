@@ -2,10 +2,11 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { test } from 'node:test';
 import { chooseAction, readTaskMetadata, extractHandoff, withLock, snapshot, taskGuard,
-  coordinatorMatches, independentReviewVerified, collection } from './asa-cad-supervisor.mjs';
+  coordinatorMatches, independentReviewVerified, collection, inspectLock } from './asa-cad-supervisor.mjs';
 
 const ready = { enabled:true, manualStop:false, active:false, pending:false, guard:true,
   issueStatus:'IN_PROGRESS', handoff:null, taskId:'R01', issue:239, candidate:'b'.repeat(40),
@@ -184,9 +185,116 @@ test('an overlapping tick cannot run or remove the existing lock', () => {
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'asa-supervisor-'));
   try {
     withLock(dir,()=>{
-      assert.equal(withLock(dir,()=>assert.fail('overlap')).status,'LOCKED');
+      const blocked=withLock(dir,()=>assert.fail('overlap'));
+      assert.equal(blocked.status,'LOCKED');
+      assert.equal(blocked.owner.pid,process.pid);
+      assert.equal(blocked.owner.liveness,'EXISTS');
+      assert.equal(blocked.owner.status,'VALID');
       assert.ok(fs.existsSync(path.join(dir,'supervisor.lock')));
     });
     assert.ok(!fs.existsSync(path.join(dir,'supervisor.lock')));
   } finally { fs.rmSync(dir,{recursive:true,force:true}); }
+});
+
+function lockFixture(t, owner={pid:process.pid,at:new Date().toISOString()}) {
+  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'asa-lock-diagnostics-'));
+  t.after(()=>fs.rmSync(dir,{recursive:true,force:true}));
+  const lock=path.join(dir,'supervisor.lock'), state=path.join(dir,'state.json');
+  fs.mkdirSync(lock);
+  if (owner !== null) fs.writeFileSync(path.join(lock,'owner.json'),typeof owner==='string' ? owner : JSON.stringify(owner));
+  fs.writeFileSync(state,JSON.stringify({checkedAt:new Date(Date.now()-900000).toISOString(),
+    phase:'RUNNING',head:'a'.repeat(40),privateField:'must-not-be-printed'}));
+  const bytes=()=>[state,path.join(lock,'owner.json')].map(file=>fs.existsSync(file) ? fs.readFileSync(file,'utf8') : null);
+  const cli=mode=>spawnSync(process.execPath,[fileURLToPath(new URL('./asa-cad-supervisor.mjs',import.meta.url)),
+    mode,path.join(dir,'campaign.json')],{encoding:'utf8',timeout:10000});
+  return {dir,lock,state,bytes,cli};
+}
+
+test('a blocked CLI tick exits 2 with bounded diagnostics, without overwriting the checkpoint', t => {
+  const f=lockFixture(t), before=f.bytes(), child=f.cli('tick');
+  assert.equal(child.status,2,child.stderr);
+  const report=JSON.parse(child.stdout);
+  assert.equal(report.phase,'LOCKED'); assert.equal(report.owner.liveness,'EXISTS');
+  assert.equal(report.owner.pid,process.pid); assert.equal(report.checkpoint.stale,true);
+  assert.equal(report.checkpoint.head,'a'.repeat(40));
+  assert.ok(report.checkpoint.ageMs>=900000);
+  assert.ok(!child.stdout.includes('must-not-be-printed'));
+  assert.deepEqual(f.bytes(),before); assert.ok(fs.existsSync(f.lock));
+});
+
+test('dead and uninspectable PIDs remain locked; only ESRCH establishes NOT_FOUND', t => {
+  const f=lockFixture(t), before=f.bytes();
+  for (const [code,liveness] of [['ESRCH','NOT_FOUND'],['EPERM','UNKNOWN'],['EINVAL','UNKNOWN']]) {
+    const probe=t.mock.method(process,'kill',(pid,signal)=>{
+      assert.equal(pid,process.pid); assert.equal(signal,0);
+      throw Object.assign(new Error('private error text'),{code});
+    });
+    try {
+      const report=withLock(f.dir,()=>assert.fail('must not reclaim'));
+      assert.equal(report.status,'LOCKED'); assert.equal(report.owner.liveness,liveness);
+      assert.equal(probe.mock.callCount(),1);
+      assert.deepEqual(f.bytes(),before); assert.ok(fs.existsSync(f.lock));
+      assert.ok(!JSON.stringify(report).includes('private error text'));
+    } finally { probe.mock.restore(); }
+  }
+});
+
+test('missing, malformed and invalid owner records never authorize work or probe an unsafe PID', t => {
+  t.mock.method(process,'kill',()=>assert.fail('invalid PID must not be probed'));
+  for (const owner of [null,'','{broken','[]','null',{},
+    {pid:0},{pid:-1},{pid:1.5},{pid:'123'},{pid:2147483648}]) {
+    const f=lockFixture(t,owner), before=f.bytes();
+    const report=withLock(f.dir,()=>assert.fail('unknown owner must stay locked'));
+    assert.equal(report.status,'LOCKED'); assert.equal(report.owner.liveness,'UNKNOWN');
+    assert.equal(report.owner.pid,null); assert.notEqual(report.owner.status,'VALID');
+    assert.deepEqual(f.bytes(),before); assert.ok(fs.existsSync(f.lock));
+  }
+});
+
+test('freshness uses the checkpoint timestamp and reports unknown for invalid or future time', t => {
+  const f=lockFixture(t), now=Date.parse('2026-11-27T16:40:00.000Z');
+  for (const [offset,stale] of [[599999,false],[600000,true],[600001,true]]) {
+    fs.writeFileSync(f.state,JSON.stringify({checkedAt:new Date(now-offset).toISOString(),phase:'RUNNING'}));
+    const report=inspectLock(f.dir,now);
+    assert.equal(report.checkpoint.ageMs,offset); assert.equal(report.checkpoint.stale,stale);
+  }
+  for (const at of ['invalid',new Date(now+1).toISOString()]) {
+    fs.writeFileSync(f.state,JSON.stringify({checkedAt:at}));
+    fs.writeFileSync(path.join(f.lock,'owner.json'),JSON.stringify({pid:process.pid,at}));
+    const report=inspectLock(f.dir,now);
+    assert.equal(report.checkpoint.stale,null); assert.equal(report.checkpoint.status,'INVALID');
+    assert.equal(report.owner.ageMs,null); assert.equal(report.owner.status,'INVALID');
+  }
+  fs.writeFileSync(f.state,'{broken'); assert.equal(inspectLock(f.dir,now).checkpoint.status,'INVALID');
+  fs.unlinkSync(f.state); assert.equal(inspectLock(f.dir,now).checkpoint.status,'MISSING');
+});
+
+test('diagnose cannot start work, write state or even create an absent directory', t => {
+  const f=lockFixture(t), before=f.bytes();
+  assert.equal(f.cli('diagnose').status,2); assert.deepEqual(f.bytes(),before);
+  fs.rmSync(f.lock,{recursive:true});
+  const config=path.join(f.dir,'campaign.json'), configBytes=JSON.stringify({enabled:true,cliPath:'must-not-run'});
+  fs.writeFileSync(config,configBytes);
+  const child=f.cli('diagnose');
+  assert.equal(child.status,0,child.stderr); assert.equal(JSON.parse(child.stdout).phase,'UNLOCKED');
+  assert.equal(fs.readFileSync(config,'utf8'),configBytes); assert.equal(f.bytes()[0],before[0]);
+  assert.deepEqual(fs.readdirSync(f.dir).sort(),['campaign.json','state.json']);
+  fs.rmSync(f.dir,{recursive:true});
+  const absent=f.cli('diagnose');
+  assert.equal(absent.status,0,absent.stderr); assert.equal(JSON.parse(absent.stdout).checkpoint.status,'MISSING');
+  assert.ok(!fs.existsSync(f.dir));
+});
+
+test('a disappearing or non-directory lock still blocks the attempted tick', t => {
+  const f=lockFixture(t), before=f.bytes(), stat=fs.lstatSync;
+  const probe=t.mock.method(fs,'lstatSync',(file,...args)=>{
+    if (file===f.lock) throw Object.assign(new Error('gone during inspection'),{code:'ENOENT'});
+    return stat(file,...args);
+  });
+  const raced=withLock(f.dir,()=>assert.fail('must not retry acquisition'));
+  assert.equal(raced.status,'LOCKED'); assert.equal(raced.lockType,'MISSING');
+  assert.deepEqual(f.bytes(),before); probe.mock.restore();
+  fs.rmSync(f.lock,{recursive:true}); fs.writeFileSync(f.lock,'preserve invalid lock');
+  assert.equal(withLock(f.dir,()=>assert.fail('invalid lock')).lockType,'OTHER');
+  assert.equal(fs.readFileSync(f.lock,'utf8'),'preserve invalid lock');
 });
