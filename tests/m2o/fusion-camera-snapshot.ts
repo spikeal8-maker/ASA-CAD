@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import {captureSnapshot,cameraCaptureEqual,isCameraSnapshot} from '../../src/web/fusion/LiveCameraSnapshot';
+import {captureSnapshot,cameraCaptureEqual,isCameraSnapshot,projectionRectConsistent} from '../../src/web/fusion/LiveCameraSnapshot';
 import type {SnapshotCamera,SnapshotElement} from '../../src/web/fusion/LiveCameraSnapshot';
 import {navigation} from '../../src/web/fusion/navigation';
 import type {NavigationDriver,Pose} from '../../src/web/fusion/navigation';
 
-const ORTHO=[0.5,0,0,0,0,0.5,0,0,0,0,-2,0,0,0,-1,1];
+const ORTHO=[0.5,0,0,0,0,0.8,0,0,0,0,-2,0,0,0,-1,1];
 const WORLD=[1,0,0,0,0,1,0,0,0,0,1,0,5,7,9,1];
 const VIEW=[1,0,0,0,0,1,0,0,0,0,1,0,-5,-7,-9,1];
 
@@ -45,8 +45,16 @@ assert.ok(yCap,'Y90 rotation must be ready, det +1, never singular');
 assert.deepEqual(yCap!.viewMatrix,[0,0,1,0,0,1,0,0,-1,0,0,0,0,0,0,1]);
 assert.deepEqual(yCap!.inverseViewMatrix,Y90);
 
+// 1c. Gate: actual projection P[5]/P[0] must match the current CSS rect aspect (1e-7), otherwise unavailable.
+assert.ok(projectionRectConsistent(ORTHO,{width:320,height:200}),'consistent aspect is ready');
+assert.ok(!projectionRectConsistent(ORTHO,{width:320,height:201}),'aspect off by 1px is not ready');
+assert.ok(!projectionRectConsistent([0.5,0,0,0,0,0.5,0,0,0,0,-2,0,0,0,-1,1],{width:320,height:200}),'stale matrix/new rect is not ready');
+assert.ok(!projectionRectConsistent(ORTHO,{width:0,height:200}),'zero rect is not ready');
+assert.ok(!projectionRectConsistent(ORTHO,null),'missing rect is not ready');
+assert.equal(captureSnapshot(camera([0.5,0,0,0,0,0.5,0,0,0,0,-2,0,0,0,-1,1]),el,1),null,'mismatched projection/rect capture is unavailable, not old ready');
+
 // 2. Old capture stays immutable after changing the source camera/element.
-const mCam=camera(),mEl=mutableElement({left:1,top:2,width:100,height:50});
+const mCam=camera(),mEl=mutableElement({left:1,top:2,width:160,height:100});
 const c1=captureSnapshot(mCam,mEl,1.5);
 assert.ok(c1);
 mCam.matrixWorld.elements[12]=999;
@@ -54,7 +62,7 @@ mCam.projectionMatrix.elements[0]=9;
 mEl.getBoundingClientRect().width=250;
 assert.deepEqual(c1.viewMatrix,VIEW);
 assert.deepEqual(c1.projectionMatrix,ORTHO);
-assert.deepEqual(c1.rect,{left:1,top:2,width:100,height:50});
+assert.deepEqual(c1.rect,{left:1,top:2,width:160,height:100});
 assert.equal(c1.devicePixelRatio,1.5);
 
 // 3. actualProjection is the actual camera flag; mixed/absent flags are unavailable.
@@ -84,7 +92,7 @@ const other=captureSnapshot(camera(ORTHO,[1,0,0,0,0,1,0,0,0,0,1,0,5,7,9,2],false
 assert.ok(other&&again&&!cameraCaptureEqual(other,again));
 
 // 6. navigation: single published snapshot, monotonic revision, no-op, detach, stale release, reattach.
-const navCam=camera(),navEl=mutableElement({left:1,top:2,width:120,height:80});
+const navCam=camera(),navEl=mutableElement({left:1,top:2,width:160,height:100});
 const pose:Pose={position:[1,2,3],target:[4,5,6],up:[0,0,1]};
 const makeDriver=():NavigationDriver=>({read:()=>pose,orient(){},pose(){},orbit(){},roll(){},zoom(){},projection(){},mode(){},fit(){},readCamera:()=>captureSnapshot(navCam,navEl,2)});
 const driverA=makeDriver(),driverB=makeDriver();
@@ -98,7 +106,9 @@ navigation.changedCamera();
 assert.equal(ticks,0,'no-op capture publishes nothing');
 assert.equal(navigation.cameraSnapshot()!.revision,s1!.revision,'no-op does not bump revision');
 navEl.getBoundingClientRect().width=320;
+navEl.getBoundingClientRect().height=200;
 navCam.projectionMatrix.elements[0]=0.25;
+navCam.projectionMatrix.elements[5]=0.4;
 navigation.changedCamera();
 const s2=navigation.cameraSnapshot()!;
 assert.equal(ticks,1,'resize publishes once');

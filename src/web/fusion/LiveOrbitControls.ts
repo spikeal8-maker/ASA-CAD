@@ -15,7 +15,7 @@ export class OrbitControls extends BaseOrbitControls {
  private resizeObserver:ResizeObserver|null=null;
  private resizeFrame=0;
  private scheduleCameraRefresh=()=>{if(this.ended||this.resizeFrame)return;this.resizeFrame=requestAnimationFrame(this.refreshCameraFrame);};
- private refreshCameraFrame=()=>{this.resizeFrame=0;if(this.ended)return;navigation.changedCamera();this.syncCameraDebug();};
+ private refreshCameraFrame=()=>{this.resizeFrame=0;if(this.ended)return;this.writeCameraDebug();navigation.changedCamera();this.syncCameraDebug();};
  private lastDebugRevision=-1;
   private syncCameraDebug(){const host=this.domElement;if(!host)return;const s=navigation.cameraSnapshot();
    if(s){if(s.revision!==this.lastDebugRevision){host.dataset.cameraSnapshot=JSON.stringify(s);this.lastDebugRevision=s.revision;}}
@@ -58,13 +58,11 @@ export class OrbitControls extends BaseOrbitControls {
   const q=this as unknown as {_quat?:Quaternion;_quatInverse?:Quaternion};
   if(q._quat&&q._quatInverse){q._quat.setFromUnitVectors(this.object.up.clone().normalize(),new Vector3(0,1,0));q._quatInverse.copy(q._quat).invert();}
   const result=super.update(deltaTime);
-  if(this.object instanceof FusionProjectionCamera){
-   this.object.syncDistance(this.object.position.distanceTo(this.target));
-   if(this.domElement){this.domElement.dataset.projection=this.object.projectionMode;this.domElement.dataset.cameraZoom=String(this.object.zoom);this.domElement.dataset.projectionMatrix=this.object.projectionMatrix.elements.join(',');}
-  }
+  if(this.object instanceof FusionProjectionCamera){this.object.syncDistance(this.object.position.distanceTo(this.target));}
   // Final projection update done (syncDistance applied): publish the actual camera snapshot here,
   // not from the 'change' event, which fires inside super.update before syncDistance.
-  if(!this.ended){navigation.changedCamera();this.syncCameraDebug();}
+  // One sync final publish: writeCameraDebug -> changedCamera -> syncCameraDebug (after final syncDistance).
+  if(!this.ended){this.writeCameraDebug();navigation.changedCamera();this.syncCameraDebug();}
   return result;
  }
  private readPose():Pose{return {...(this.object instanceof FusionProjectionCamera?this.object.captureScale():{}),position:this.object.position.toArray() as [number,number,number],target:this.target.toArray() as [number,number,number],up:this.object.up.toArray() as [number,number,number]};}

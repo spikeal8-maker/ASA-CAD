@@ -57,7 +57,7 @@ function invert4(m:ReadonlyArray<number>):number[]{
  (a11*b07-a10*b09-a12*b06)*inv,(a00*b09-a01*b07+a02*b06)*inv,(a31*b01-a30*b03-a32*b00)*inv,(a20*b03-a21*b01+a22*b00)*inv,
 ].map(norm);
 }
-// Capture the actual camera after matrixWorld update. Invalid input is unavailable, never a fallback.
+// Capture the actual camera. Invalid = unavailable, never a fallback.
 export function captureSnapshot(camera:SnapshotCamera|null,element:SnapshotElement|null,devicePixelRatio:number):CameraCapture|null{
  if(!camera||!element)return null;
  if(camera.isOrthographicCamera===camera.isPerspectiveCamera)return null;
@@ -73,7 +73,8 @@ export function captureSnapshot(camera:SnapshotCamera|null,element:SnapshotEleme
  if(!finite16(viewMatrix)||!finite16(inverseViewMatrix)||!finite16(inverseProjectionMatrix))return null;
  const rect=element.getBoundingClientRect();
  if(!rect||!Number.isFinite(rect.left)||!Number.isFinite(rect.top)||!Number.isFinite(rect.width)||!Number.isFinite(rect.height)||rect.width<=0||rect.height<=0)return null;
- return{
+ if(!projectionRectConsistent(projection,rect))return null;
+return{
  actualProjection:kind,
  viewMatrix,
  inverseViewMatrix,
@@ -82,6 +83,12 @@ export function captureSnapshot(camera:SnapshotCamera|null,element:SnapshotEleme
  rect:{left:rect.left,top:rect.top,width:rect.width,height:rect.height},
  devicePixelRatio,
 };
+}
+// Stale matrix + new rect = unavailable, never old ready.
+export function projectionRectConsistent(p:readonly number[],rect:CameraRect|null,tolerance=1e-7):boolean{
+ if(!rect||!(rect.width>0)||!(rect.height>0))return false;
+ const b=Math.abs(p[5]/p[0]);
+ return Number.isFinite(b)&&Math.abs(b-rect.width/rect.height)<=tolerance;
 }
 const same=(a:readonly number[],b:readonly number[]):boolean=>a.length===b.length&&a.every((v,i)=>v===b[i]);
 export function cameraCaptureEqual(a:CameraCapture,b:CameraCapture):boolean{
