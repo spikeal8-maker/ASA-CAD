@@ -1,0 +1,3873 @@
+{
+  "schemaVersion": 1,
+  "id": "fusion-action-inventory.v1",
+  "title": "FUS/R02 — inventory видимых действий первого профиля",
+  "task": "R02",
+  "issue": 240,
+  "planned_slice_id": "REFERENCE-PLANNING",
+  "preparedOn": "2026-11-26",
+  "baseBranch": "task/fus-r01-reference-profile",
+  "baseSha": "a3866569000c25783ae66e57f6ea9ba07a342559",
+  "referenceManifest": "spec/ui/fusion-browser-reference.v1.json",
+  "classification": {
+    "observedFact": "Видимое действие/команда зафиксирована в существующем snapshot (id, name, isVisible, isPromoted) и воспроизводится из источника.",
+    "chosenRequirement": "Выбранное целевое требование (mapping на ASA command ID, связка со сценарием/задачей); не все такие связки наблюдались в captures.",
+    "note": "Наблюдаемые факты (видимость, promoted, name) отделены от выбранных требований (mapping/acceptance). asaCommandId берётся только из command-registry.v1.json; отсутствующий ID — null + implementationStatus not_implemented + следующая задача. browserAcceptance=PASS допускается только со ссылкой на существующий evidence/задачу; иначе not_tested / pending:<task>. Для фактического подключения зафиксирован вид (bindingKind) и source ref (sha/path/symbol): implementationStatus=implemented подтверждён только кодом, это не browser PASS. Для planned записей asaCommandId=null, planned ID — в asaRelatedCommandIds. Универсальное правило null=>not_implemented НЕ применяется к явно обозначенным contextual/direct-handler/aggregate записям (bindingKind + полный список реально выбираемых IDs).",
+    "bindingKinds": {
+      "direct_command": "конкретный вариант dispatchится на один существующий ASA command ID (sketchNativeActions -> itemAction -> run)",
+      "contextual_dispatch": "один вход выбирает первый enabled из набора ASA command ID (contextualDimension)",
+      "direct_handler": "UI вызывает продуктовый handler напрямую (NavigationDriver/requestSketchView), а не CadUiAction по ID",
+      "container": "DropDown/группа — не самостоятельная CAD-команда; children имеют собственные строки и статусы",
+      "unbound": "вариант в UI присутствует, но ASA-подключения нет (itemAction -> null / нет маппинга)",
+      "UNKNOWN": "данных недостаточно/противоречивы; обязательны причина и следующая задача"
+    }
+  },
+  "scope": {
+    "inScope": [
+      "все видимые команды SketchTab (9 панелей) из sketch-active-ui-20261106.json (activeToolbarTabId=SketchTab, appVersion 2706.1.17)",
+      "первый профиль SolidTab: вход в эскиз (SketchCreate), Extrude, выбор (SelectPanel), navigation entry points (ViewCube/Navigation по official help)",
+      "способы запуска, наблюдаемые в источниках: panel, promoted (marking menu / shortcut не наблюдаются в зафиксированных snapshots — см. gaps)"
+    ],
+    "outOfProfile": [
+      "вкладки SurfaceTab / ParaMeshOuterTab (Mesh) / SheetMetalTab / PlasticTab / ToolsTab (Utilities) / AutomationTab — ссылка X01-X11",
+      "команды вне первого профиля (Configure, analysis/Inspect, импорт/supplier, сборка, slot/advanced-geometry) — помечены inFirstProfile=false"
+    ],
+    "note": "Инвентарь НЕ является полным каталогом Autodesk Fusion. Числа считаются отдельно: команды / контейнеры (DropDown) / separator (layout) / hidden; hidden не входит в счётчик видимых действий. См. counts."
+  },
+  "statusVocabulary": {
+    "implementationStatus": [
+      "planned",
+      "implemented",
+      "experimental",
+      "deferred",
+      "not_implemented",
+      "UNKNOWN"
+    ],
+    "browserAcceptance": [
+      "PASS:<evidence>",
+      "pending:<task>",
+      "not_tested"
+    ],
+    "bindingKind": [
+      "direct_command",
+      "contextual_dispatch",
+      "direct_handler",
+      "container",
+      "unbound",
+      "UNKNOWN"
+    ]
+  },
+  "asaCommandSource": {
+    "path": "spec/ui/command-registry.v1.json",
+    "note": "единственный источник ASA command ID; layout/инвентарь обязан ссылаться на эти ID"
+  },
+  "sources": [
+    {
+      "id": "sketch-active-ui-20261106",
+      "type": "native-snapshot",
+      "path": "src/web/fusion/sketch-active-ui-20261106.json",
+      "applicationVersion": "2706.1.17",
+      "capturedUTC": "2026-11-06T00:43:13.217889+00:00",
+      "sha256": "6296518a467ed73ce8b91281bf8727db1788cb8eb6999fbfb70bab245eeb4c1c",
+      "activeToolbarTabId": "SketchTab",
+      "role": "активный SketchTab, 9 панелей; источник видимых действий",
+      "classification": "observedFact"
+    },
+    {
+      "id": "fusion-browser-reference",
+      "type": "reference-manifest",
+      "path": "spec/ui/fusion-browser-reference.v1.json",
+      "role": "R01 эталон: источники, условия, обязательные состояния, Q01-Q16",
+      "classification": "chosenRequirement"
+    },
+    {
+      "id": "autodesk-official-help",
+      "type": "official-help",
+      "role": "ViewCube / Navigation / Selection / Extrude (поведенческий эталон)",
+      "classification": "observedFact"
+    },
+    {
+      "id": "sketch-native-reference-v1",
+      "type": "native-snapshot",
+      "path": "src/web/fusion/sketch-native-reference.v1.json",
+      "role": "historic API inventory (155 controls: 127 command + 10 DropDown + 18 separator); те же 127 command controls, что и в active snapshot (86 top-level + 41 dropdown children); независимый cross-check структуры, не дополнительный источник команд",
+      "classification": "observedFact"
+    }
+  ],
+  "inventory": {
+    "sketchTab": {
+      "tabId": "SketchTab",
+      "appVersion": "2706.1.17",
+      "capturedUTC": "2026-11-06T00:43:13.217889+00:00",
+      "panels": [
+        {
+          "panelId": "SketchCreatePanel",
+          "panelName": "CREATE",
+          "promotedControlIds": [
+            "DrawPolyline",
+            "ShapeRectangleTwoPoint",
+            "CircleCenterRadius",
+            "DrawSpline",
+            "MirrorSketchCommand",
+            "SketchDimension"
+          ],
+          "actions": [
+            {
+              "fusionCommandId": "DrawPolyline",
+              "fusionName": "Line",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": "sketch.line",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "S03",
+              "note": "direct dispatch: sketchNativeActions[\"DrawPolyline\"]=\"sketch.line\"; запуск itemAction->run (SketchRibbon.invoke); shortcut L; S03 — Line и числовые locks",
+              "bindingKind": "direct_command",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "DrawPolyline -> 'sketch.line'"
+              }
+            },
+            {
+              "fusionCommandId": "SketchMidpointLine",
+              "fusionName": "Midpoint Line",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.line"
+              ],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "S03",
+              "note": "нет маппинга в sketchNativeActions; itemAction -> null; SketchRibbon не запускает; обычная Line (DrawPolyline) не доказывает midpoint-вариант",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "SketchConstrainer",
+              "fusionName": null,
+              "visible": false,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "C03",
+              "note": "скрытый (isVisible=false в active snapshot); auto-constraints — нет ASA-эквивалента в registry; не в sketchNativeActions",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "ShapeRectangleTwoPoint",
+              "fusionName": "2-Point Rectangle",
+              "visible": true,
+              "launch": [
+                "dropdown",
+                "promoted"
+              ],
+              "asaCommandId": "sketch.rectangle",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07",
+                "Q11"
+              ],
+              "nextTask": "S02",
+              "note": "direct dispatch; shortcut R; S02 — Rectangle numeric и pointer; способ запуска: dropdown-меню RectangleDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "direct_command",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "ShapeRectangleTwoPoint -> 'sketch.rectangle'"
+              }
+            },
+            {
+              "fusionCommandId": "ShapeRectangleThreePoint",
+              "fusionName": "3-Point Rectangle",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.rectangle"
+              ],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "X06",
+              "note": "нет маппинга (sketchNativeActions); TwoPoint-режим не доказывает 3-point-вариант; X06 — отдельные способы Rectangle; способ запуска: dropdown-меню RectangleDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "ShapeRectangleCenter",
+              "fusionName": "Center Rectangle",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.rectangle"
+              ],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "X06",
+              "note": "нет маппинга (sketchNativeActions); TwoPoint-режим не доказывает center-вариант; X06 — отдельные способы Rectangle; способ запуска: dropdown-меню RectangleDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "CircleCenterRadius",
+              "fusionName": "Center Diameter Circle",
+              "visible": true,
+              "launch": [
+                "dropdown",
+                "promoted"
+              ],
+              "asaCommandId": "sketch.circle",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "pending:P01-P03",
+              "scenarios": [
+                "Q01",
+                "Q07"
+              ],
+              "nextTask": "P01",
+              "note": "direct dispatch; shortcut C; пилот окружности (R01 circlePilot); owner visual PENDING; способ запуска: dropdown-меню CircleDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "direct_command",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "CircleCenterRadius -> 'sketch.circle'"
+              }
+            },
+            {
+              "fusionCommandId": "CircleTwoPoint",
+              "fusionName": "2-Point Circle",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.circle"
+              ],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "X06",
+              "note": "нет маппинга (sketchNativeActions); CenterRadius не доказывает 2-point-вариант; X06 — отдельные способы Circle; способ запуска: dropdown-меню CircleDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "CircleThreePoint",
+              "fusionName": "3-Point Circle",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.circle"
+              ],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "X06",
+              "note": "Контрольный контрпример v3: registry ID sketch.circle и общий handler НЕ доказывают вариант — маппинга в sketchNativeActions нет; X06 — отдельные способы Circle; способ запуска: dropdown-меню CircleDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "CircleTanTanRadius",
+              "fusionName": "2-Tangent Circle",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.circle"
+              ],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "X06",
+              "note": "нет маппинга (sketchNativeActions); X06 — отдельные способы Circle; способ запуска: dropdown-меню CircleDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "CircleThreeTangent",
+              "fusionName": "3-Tangent Circle",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.circle"
+              ],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "X06",
+              "note": "нет маппинга (sketchNativeActions); X06 — отдельные способы Circle; способ запуска: dropdown-меню CircleDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "ArcThreePoint",
+              "fusionName": "3-Point Arc",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.arc"
+              ],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "X06",
+              "note": "нет маппинга (sketchNativeActions); CenterTwoPoint не доказывает 3-point-вариант; X06 — отдельные способы Arc; способ запуска: dropdown-меню ArcDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "ArcCenterTwoPoint",
+              "fusionName": "Center Point Arc",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": "sketch.arc",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "S01",
+              "note": "direct dispatch; S01 — числовой ввод Arc; способ запуска: dropdown-меню ArcDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "direct_command",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "ArcCenterTwoPoint -> 'sketch.arc'"
+              }
+            },
+            {
+              "fusionCommandId": "ArcTangent",
+              "fusionName": "Tangent Arc",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.arc"
+              ],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "X06",
+              "note": "нет маппинга (sketchNativeActions); X06 — отдельные способы Arc; способ запуска: dropdown-меню ArcDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "ShapePolygonCircumscribed",
+              "fusionName": "Circumscribed Polygon",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.polygon"
+              ],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "X06",
+              "note": "sketch.polygon — planned; X06 включает Polygon (отдельная карточка); способ запуска: dropdown-меню PolygonDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "sketch.polygon — planned (command-registry.v1.json); UI-подключения нет"
+              }
+            },
+            {
+              "fusionCommandId": "ShapePolygonInscribed",
+              "fusionName": "Inscribed Polygon",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.polygon"
+              ],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "X06",
+              "note": "sketch.polygon — planned; X06 включает Polygon (отдельная карточка); способ запуска: dropdown-меню PolygonDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "sketch.polygon — planned (command-registry.v1.json); UI-подключения нет"
+              }
+            },
+            {
+              "fusionCommandId": "ShapePolygonEdge",
+              "fusionName": "Edge Polygon",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.polygon"
+              ],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "X06",
+              "note": "sketch.polygon — planned; X06 включает Polygon (отдельная карточка); способ запуска: dropdown-меню PolygonDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "sketch.polygon — planned (command-registry.v1.json); UI-подключения нет"
+              }
+            },
+            {
+              "fusionCommandId": "CircleElipse",
+              "fusionName": "Ellipse",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.ellipse"
+              ],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "X06",
+              "note": "sketch.ellipse — planned; X06 включает Ellipse (отдельная карточка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "sketch.ellipse — planned (command-registry.v1.json); UI-подключения нет"
+              }
+            },
+            {
+              "fusionCommandId": "ShapeSlotCenterToCenter",
+              "fusionName": "Center to Center Slot",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X06",
+              "note": "slot — нет ASA-эквивалента в registry; X06 — дополнительные примитивы; способ запуска: dropdown-меню SlotDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "ShapeSlotOverall",
+              "fusionName": "Overall Slot",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X06",
+              "note": "slot — нет ASA-эквивалента в registry; X06 — дополнительные примитивы; способ запуска: dropdown-меню SlotDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "ShapeSlotCenterPoint",
+              "fusionName": "Center Point Slot",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X06",
+              "note": "slot — нет ASA-эквивалента в registry; X06 — дополнительные примитивы; способ запуска: dropdown-меню SlotDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "ShapeArcSlotThreePoint",
+              "fusionName": "Three Point Arc Slot",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X06",
+              "note": "slot — нет ASA-эквивалента в registry; X06 — дополнительные примитивы; способ запуска: dropdown-меню SlotDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "ShapeArcSlotCenterTwoPoint",
+              "fusionName": "Center Point Arc Slot",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X06",
+              "note": "slot — нет ASA-эквивалента в registry; X06 — дополнительные примитивы; способ запуска: dropdown-меню SlotDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "DrawSpline",
+              "fusionName": "Fit Point Spline",
+              "visible": true,
+              "launch": [
+                "dropdown",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.spline"
+              ],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "X06",
+              "note": "sketch.spline — planned; X06 включает Spline (отдельная карточка); способ запуска: dropdown-меню SplineDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "sketch.spline — planned (command-registry.v1.json); UI-подключения нет"
+              }
+            },
+            {
+              "fusionCommandId": "DrawCVMSpline3D",
+              "fusionName": "Control Point Spline",
+              "visible": false,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.spline"
+              ],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "X06",
+              "note": "скрытый (isVisible=false и в active snapshot, и в historic reference); sketch.spline — planned; X06 включает Spline; способ запуска: dropdown-меню SplineDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "sketch.spline — planned (command-registry.v1.json); UI-подключения нет"
+              }
+            },
+            {
+              "fusionCommandId": "DrawCVMSpline5D",
+              "fusionName": "Control Point Spline",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.spline"
+              ],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "X06",
+              "note": "sketch.spline — planned; X06 включает Spline; способ запуска: dropdown-меню SplineDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "sketch.spline — planned (command-registry.v1.json); UI-подключения нет"
+              }
+            },
+            {
+              "fusionCommandId": "ConicCurveCmd",
+              "fusionName": "Conic Curve",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X06",
+              "note": "conic — нет ASA-эквивалента в registry; X06 — дополнительные примитивы",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "DrawPoint",
+              "fusionName": "Point",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.point"
+              ],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q07"
+              ],
+              "nextTask": "X06",
+              "note": "sketch.point — planned; X06 включает Point (отдельная карточка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "sketch.point — planned (command-registry.v1.json); UI-подключения нет"
+              }
+            },
+            {
+              "fusionCommandId": "MTextCmd",
+              "fusionName": "Text",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X06",
+              "note": "текст эскиза — нет ASA-эквивалента в registry; X06 — дополнительные примитивы",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "FitCurvesToSectionCommand",
+              "fusionName": "Fit Curves to Mesh Section",
+              "visible": false,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X06",
+              "note": "скрытый (isVisible=false в active snapshot); нет ASA-эквивалента; X06 — дополнительные примитивы",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "MirrorSketchCommand",
+              "fusionName": "Mirror",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.mirror"
+              ],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X04",
+              "note": "sketch.mirror — planned; X04 — Mirror и Sketch patterns",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "sketch.mirror — planned (command-registry.v1.json); UI-подключения нет"
+              }
+            },
+            {
+              "fusionCommandId": "CircularSketchPatternCommand",
+              "fusionName": "Circular Pattern",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X04",
+              "note": "sketch pattern — нет ID в registry (part.pattern.circular — solid feature); X04 — Mirror и Sketch patterns",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "RectangularSketchPatternCommand",
+              "fusionName": "Rectangular Pattern",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X04",
+              "note": "sketch pattern — нет ID в registry (part.pattern.grid — solid feature); X04 — Mirror и Sketch patterns",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "ProjectNewCmd",
+              "fusionName": "Project",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.project"
+              ],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X07",
+              "note": "sketch.project — planned; X07 — Project и ассоциативность; способ запуска: dropdown-меню ProjectIncludeDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "sketch.project — planned (command-registry.v1.json); UI-подключения нет"
+              }
+            },
+            {
+              "fusionCommandId": "IntersectCmd",
+              "fusionName": "Intersect",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X07",
+              "note": "пересечение кривых — нет ASA-эквивалента; X07 — Project и ассоциативность; способ запуска: dropdown-меню ProjectIncludeDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "SpunProfileCmd",
+              "fusionName": "Spun Profile",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X07",
+              "note": "силуэт вращения — нет ASA-эквивалента; X07 — Project и ассоциативность (ближайший блок); способ запуска: dropdown-меню ProjectIncludeDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "Include3DGeometry",
+              "fusionName": "Include 3D Geometry",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.project"
+              ],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X07",
+              "note": "sketch.project — planned; X07 — Project и ассоциативность; способ запуска: dropdown-меню ProjectIncludeDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "sketch.project — planned (command-registry.v1.json); UI-подключения нет"
+              }
+            },
+            {
+              "fusionCommandId": "ProjectToSurface",
+              "fusionName": "Project To Surface",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.project"
+              ],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X07",
+              "note": "sketch.project — planned; X07 — Project и ассоциативность; способ запуска: dropdown-меню ProjectIncludeDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "sketch.project — planned (command-registry.v1.json); UI-подключения нет"
+              }
+            },
+            {
+              "fusionCommandId": "IntersectionCurve",
+              "fusionName": "Intersection Curve",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X07",
+              "note": "кривая пересечения — нет ASA-эквивалента; X07 — Project и ассоциативность; способ запуска: dropdown-меню ProjectIncludeDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "SketchIsoparametricCurve",
+              "fusionName": "Isoparametric Curve",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X07",
+              "note": "изопараметрическая кривая — нет ASA-эквивалента; X07 — Project и ассоциативность; способ запуска: dropdown-меню ProjectIncludeDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "SketchDimension",
+              "fusionName": "Sketch Dimension",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "dimension.diameter",
+                "dimension.radius",
+                "dimension.linear",
+                "dimension.horizontal",
+                "dimension.vertical",
+                "dimension.angular"
+              ],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q08",
+                "Q09"
+              ],
+              "nextTask": "C01/C02",
+              "note": "contextual dispatch: один контекстный выбор из 6 dimension.*; dimension.linear НЕ описывает весь contextualDimension; children — 6 dimension-действий",
+              "bindingKind": "contextual_dispatch",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "itemAction/fromNative (L47-61)",
+                "note": "contextualDimension (L43-46): первый enabled из dimension.diameter/radius/linear/horizontal/vertical/angular; itemAction L48; children L57; shortcut D"
+              }
+            }
+          ],
+          "containers": [
+            {
+              "fusionCommandId": "RectangleDropDown",
+              "containerType": "DropDownControl",
+              "visible": true,
+              "childCommandIds": [
+                "ShapeRectangleTwoPoint",
+                "ShapeRectangleThreePoint",
+                "ShapeRectangleCenter"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.rectangle"
+              ],
+              "bindingKind": "container",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/SketchRibbon.tsx",
+                "symbol": "invoke: itemAction -> run (L54)",
+                "note": "DropDownControl рендерится как меню (SketchRibbon.tsx L102-106: data-native-dropdown); children — отдельные действия со своим статусом; native command ID у контейнера нет (DropDownControl без commandDefinition)"
+              },
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "S02/X06",
+              "note": "контейнер (DropDownControl) — не самостоятельная CAD-команда; native command ID не выдуман (в snapshot commandDefinition=null); связь с дочерними действиями сохранена; статусы детей — в их строках"
+            },
+            {
+              "fusionCommandId": "CircleDropDown",
+              "containerType": "DropDownControl",
+              "visible": true,
+              "childCommandIds": [
+                "CircleCenterRadius",
+                "CircleTwoPoint",
+                "CircleThreePoint",
+                "CircleTanTanRadius",
+                "CircleThreeTangent"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.circle"
+              ],
+              "bindingKind": "container",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/SketchRibbon.tsx",
+                "symbol": "invoke: itemAction -> run (L54)",
+                "note": "DropDownControl рендерится как меню (SketchRibbon.tsx L102-106: data-native-dropdown); children — отдельные действия со своим статусом; native command ID у контейнера нет (DropDownControl без commandDefinition)"
+              },
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "P01/X06",
+              "note": "контейнер (DropDownControl) — не самостоятельная CAD-команда; native command ID не выдуман (в snapshot commandDefinition=null); связь с дочерними действиями сохранена; статусы детей — в их строках"
+            },
+            {
+              "fusionCommandId": "ArcDropDown",
+              "containerType": "DropDownControl",
+              "visible": true,
+              "childCommandIds": [
+                "ArcThreePoint",
+                "ArcCenterTwoPoint",
+                "ArcTangent"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.arc"
+              ],
+              "bindingKind": "container",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/SketchRibbon.tsx",
+                "symbol": "invoke: itemAction -> run (L54)",
+                "note": "DropDownControl рендерится как меню (SketchRibbon.tsx L102-106: data-native-dropdown); children — отдельные действия со своим статусом; native command ID у контейнера нет (DropDownControl без commandDefinition)"
+              },
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "S01/X06",
+              "note": "контейнер (DropDownControl) — не самостоятельная CAD-команда; native command ID не выдуман (в snapshot commandDefinition=null); связь с дочерними действиями сохранена; статусы детей — в их строках"
+            },
+            {
+              "fusionCommandId": "PolygonDropDown",
+              "containerType": "DropDownControl",
+              "visible": true,
+              "childCommandIds": [
+                "ShapePolygonCircumscribed",
+                "ShapePolygonInscribed",
+                "ShapePolygonEdge"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.polygon"
+              ],
+              "bindingKind": "container",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/SketchRibbon.tsx",
+                "symbol": "invoke: itemAction -> run (L54)",
+                "note": "DropDownControl рендерится как меню (SketchRibbon.tsx L102-106: data-native-dropdown); children — отдельные действия со своим статусом; native command ID у контейнера нет (DropDownControl без commandDefinition)"
+              },
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X06",
+              "note": "контейнер (DropDownControl) — не самостоятельная CAD-команда; native command ID не выдуман (в snapshot commandDefinition=null); связь с дочерними действиями сохранена; статусы детей — в их строках"
+            },
+            {
+              "fusionCommandId": "SlotDropDown",
+              "containerType": "DropDownControl",
+              "visible": true,
+              "childCommandIds": [
+                "ShapeSlotCenterToCenter",
+                "ShapeSlotOverall",
+                "ShapeSlotCenterPoint",
+                "ShapeArcSlotThreePoint",
+                "ShapeArcSlotCenterTwoPoint"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "bindingKind": "container",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/SketchRibbon.tsx",
+                "symbol": "invoke: itemAction -> run (L54)",
+                "note": "DropDownControl рендерится как меню (SketchRibbon.tsx L102-106: data-native-dropdown); children — отдельные действия со своим статусом; native command ID у контейнера нет (DropDownControl без commandDefinition)"
+              },
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X06",
+              "note": "контейнер (DropDownControl) — не самостоятельная CAD-команда; native command ID не выдуман (в snapshot commandDefinition=null); связь с дочерними действиями сохранена; статусы детей — в их строках"
+            },
+            {
+              "fusionCommandId": "SplineDropDown",
+              "containerType": "DropDownControl",
+              "visible": true,
+              "childCommandIds": [
+                "DrawSpline",
+                "DrawCVMSpline3D",
+                "DrawCVMSpline5D"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.spline"
+              ],
+              "bindingKind": "container",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/SketchRibbon.tsx",
+                "symbol": "invoke: itemAction -> run (L54)",
+                "note": "DropDownControl рендерится как меню (SketchRibbon.tsx L102-106: data-native-dropdown); children — отдельные действия со своим статусом; native command ID у контейнера нет (DropDownControl без commandDefinition)"
+              },
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X06",
+              "note": "контейнер (DropDownControl) — не самостоятельная CAD-команда; native command ID не выдуман (в snapshot commandDefinition=null); связь с дочерними действиями сохранена; статусы детей — в их строках"
+            },
+            {
+              "fusionCommandId": "ProjectIncludeDropDown",
+              "containerType": "DropDownControl",
+              "visible": true,
+              "childCommandIds": [
+                "ProjectNewCmd",
+                "IntersectCmd",
+                "SpunProfileCmd",
+                "Include3DGeometry",
+                "ProjectToSurface",
+                "IntersectionCurve",
+                "SketchIsoparametricCurve"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.project"
+              ],
+              "bindingKind": "container",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/SketchRibbon.tsx",
+                "symbol": "invoke: itemAction -> run (L54)",
+                "note": "DropDownControl рендерится как меню (SketchRibbon.tsx L102-106: data-native-dropdown); children — отдельные действия со своим статусом; native command ID у контейнера нет (DropDownControl без commandDefinition)"
+              },
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X07",
+              "note": "контейнер (DropDownControl) — не самостоятельная CAD-команда; native command ID не выдуман (в snapshot commandDefinition=null); связь с дочерними действиями сохранена; статусы детей — в их строках"
+            }
+          ]
+        },
+        {
+          "panelId": "SketchModifyPanel",
+          "panelName": "MODIFY",
+          "promotedControlIds": [
+            "FilletSketchCmd",
+            "TrimSketchCmd",
+            "Offset",
+            "BlendG1CurveSketchCmd"
+          ],
+          "actions": [
+            {
+              "fusionCommandId": "FilletSketchCmd",
+              "fusionName": "Fillet",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.fillet"
+              ],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q09"
+              ],
+              "nextTask": "X05",
+              "note": "sketch.fillet — planned; X05 — Sketch Fillet и Chamfer",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "sketch.fillet — planned (command-registry.v1.json); UI-подключения нет"
+              }
+            },
+            {
+              "fusionCommandId": "ChamferSketchEqualDistance",
+              "fusionName": "Equal Distance Chamfer",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.chamfer"
+              ],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X05",
+              "note": "sketch.chamfer — planned; X05 — Sketch Fillet и Chamfer; способ запуска: dropdown-меню SketchChamferDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "sketch.chamfer — planned (command-registry.v1.json); UI-подключения нет"
+              }
+            },
+            {
+              "fusionCommandId": "ChamferSketchDistanceAngle",
+              "fusionName": "Distance and Angle Chamfer",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.chamfer"
+              ],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X05",
+              "note": "sketch.chamfer — planned; X05 — Sketch Fillet и Chamfer; способ запуска: dropdown-меню SketchChamferDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "sketch.chamfer — planned (command-registry.v1.json); UI-подключения нет"
+              }
+            },
+            {
+              "fusionCommandId": "ChamferSketchDistanceDistance",
+              "fusionName": "Two Distance Chamfer",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.chamfer"
+              ],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X05",
+              "note": "sketch.chamfer — planned; X05 — Sketch Fillet и Chamfer; способ запуска: dropdown-меню SketchChamferDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "sketch.chamfer — planned (command-registry.v1.json); UI-подключения нет"
+              }
+            },
+            {
+              "fusionCommandId": "BlendG1CurveSketchCmd",
+              "fusionName": "Blend Curve",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X05",
+              "note": "blend — нет ASA-эквивалента; ближайший блок X05 (редактирование кривых эскиза)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "Offset",
+              "fusionName": "Offset",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.offset"
+              ],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X03",
+              "note": "sketch.offset — planned; X03 — Offset замкнутых и открытых контуров",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "sketch.offset — planned (command-registry.v1.json); UI-подключения нет"
+              }
+            },
+            {
+              "fusionCommandId": "TrimSketchCmd",
+              "fusionName": "Trim",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.trim"
+              ],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X01",
+              "note": "sketch.trim — planned; X01 — Trim по явным классам пересечений",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "sketch.trim — planned (command-registry.v1.json); UI-подключения нет"
+              }
+            },
+            {
+              "fusionCommandId": "ExtendSketchCmd",
+              "fusionName": "Extend",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.extend"
+              ],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X02",
+              "note": "sketch.extend — planned; X02 — Extend и Split",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "sketch.extend — planned (command-registry.v1.json); UI-подключения нет"
+              }
+            },
+            {
+              "fusionCommandId": "BreakSketchCmd",
+              "fusionName": "Break",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.split"
+              ],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X02",
+              "note": "sketch.split — planned; X02 — Extend и Split",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "sketch.split — planned (command-registry.v1.json); UI-подключения нет"
+              }
+            },
+            {
+              "fusionCommandId": "SketchScaleCmd",
+              "fusionName": "Sketch Scale",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.scale"
+              ],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X04",
+              "note": "sketch.scale — planned; X04 — ближайший блок (трансформации эскиза)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "sketch.scale — planned (command-registry.v1.json); UI-подключения нет"
+              }
+            },
+            {
+              "fusionCommandId": "FusionMoveCommand",
+              "fusionName": "Move/Copy",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.move"
+              ],
+              "implementationStatus": "planned",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X04",
+              "note": "sketch.move — planned; X04 — ближайший блок (трансформации эскиза)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "sketch.move — planned (command-registry.v1.json); UI-подключения нет"
+              }
+            },
+            {
+              "fusionCommandId": "ChangeParameterCommand",
+              "fusionName": "Change Parameters",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X10",
+              "note": "изменение параметров — нет ASA-эквивалента; X10 — полнота рабочих меню (нужна отдельная карточка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            }
+          ],
+          "containers": [
+            {
+              "fusionCommandId": "SketchChamferDropDown",
+              "containerType": "DropDownControl",
+              "visible": true,
+              "childCommandIds": [
+                "ChamferSketchEqualDistance",
+                "ChamferSketchDistanceAngle",
+                "ChamferSketchDistanceDistance"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.chamfer"
+              ],
+              "bindingKind": "container",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/SketchRibbon.tsx",
+                "symbol": "invoke: itemAction -> run (L54)",
+                "note": "DropDownControl рендерится как меню (SketchRibbon.tsx L102-106: data-native-dropdown); children — отдельные действия со своим статусом; native command ID у контейнера нет (DropDownControl без commandDefinition)"
+              },
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X05",
+              "note": "контейнер (DropDownControl) — не самостоятельная CAD-команда; native command ID не выдуман (в snapshot commandDefinition=null); связь с дочерними действиями сохранена; статусы детей — в их строках"
+            }
+          ]
+        },
+        {
+          "panelId": "SketchConstraintsPanel",
+          "panelName": "CONSTRAINTS",
+          "promotedControlIds": [
+            "SketchAutoConstraintAndDimCmd",
+            "ConstraintHorizontalVertical",
+            "ConstraintCoincident",
+            "ConstraintTangent",
+            "ConstraintEqual",
+            "ConstraintParallel",
+            "ConstraintPerpendicular",
+            "ConstraintFix",
+            "ConstraintMidPoint",
+            "ConstraintConcentric",
+            "ConstraintCollinear",
+            "ConstraintSymmetry",
+            "ConstraintSmooth"
+          ],
+          "actions": [
+            {
+              "fusionCommandId": "SketchAutoConstraintAndDimCmd",
+              "fusionName": "AutoConstrain",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "dimension.auto"
+              ],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "C01/C02",
+              "note": "dimension.auto — planned (registry); auto-constrain не реализован; C01/C02 — размеры U3 (constraint-часть — C03)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "SketchAutoConstraintAndDimFromDatumCmd",
+              "fusionName": "AutoConstrain from datum",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "dimension.auto"
+              ],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "C01/C02",
+              "note": "dimension.auto — planned (registry); auto-constrain не реализован; C01/C02 — размеры U3 (constraint-часть — C03)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "ConstraintHorizontalVertical",
+              "fusionName": "Horizontal/Vertical",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "constraint.horizontal",
+                "constraint.vertical"
+              ],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q09"
+              ],
+              "nextTask": "C03",
+              "note": "контейнер: родитель — не CAD-команда (itemAction -> null); children constraint.horizontal + constraint.vertical (оба implemented); constraint.horizontal НЕ описывает всю группу H/V",
+              "bindingKind": "container",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "itemAction/fromNative (L47-61)",
+                "note": "itemAction: родитель -> null (L49); children constraint.horizontal + constraint.vertical (L58, authored actions)"
+              }
+            },
+            {
+              "fusionCommandId": "ConstraintCoincident",
+              "fusionName": "Coincident",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": "constraint.coincident",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q09"
+              ],
+              "nextTask": "C03",
+              "note": "direct dispatch; C03 — ограничения по одному семейству",
+              "bindingKind": "direct_command",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "ConstraintCoincident -> constraint.coincident (direct dispatch через itemAction)"
+              }
+            },
+            {
+              "fusionCommandId": "ConstraintTangent",
+              "fusionName": "Tangent",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": "constraint.tangent",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q09"
+              ],
+              "nextTask": "C03",
+              "note": "direct dispatch; C03 — ограничения по одному семейству",
+              "bindingKind": "direct_command",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "ConstraintTangent -> constraint.tangent (direct dispatch через itemAction)"
+              }
+            },
+            {
+              "fusionCommandId": "ConstraintEqual",
+              "fusionName": "Equal",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": "constraint.equal",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q09"
+              ],
+              "nextTask": "C03",
+              "note": "direct dispatch; C03 — ограничения по одному семейству",
+              "bindingKind": "direct_command",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "ConstraintEqual -> constraint.equal (direct dispatch через itemAction)"
+              }
+            },
+            {
+              "fusionCommandId": "ConstraintParallel",
+              "fusionName": "Parallel",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": "constraint.parallel",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q09"
+              ],
+              "nextTask": "C03",
+              "note": "direct dispatch; C03 — ограничения по одному семейству",
+              "bindingKind": "direct_command",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "ConstraintParallel -> constraint.parallel (direct dispatch через itemAction)"
+              }
+            },
+            {
+              "fusionCommandId": "ConstraintPerpendicular",
+              "fusionName": "Perpendicular",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": "constraint.perpendicular",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q09"
+              ],
+              "nextTask": "C03",
+              "note": "direct dispatch; C03 — ограничения по одному семейству",
+              "bindingKind": "direct_command",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "ConstraintPerpendicular -> constraint.perpendicular (direct dispatch через itemAction)"
+              }
+            },
+            {
+              "fusionCommandId": "ConstraintFix",
+              "fusionName": "Fix/UnFix",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": "constraint.fixed",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q09"
+              ],
+              "nextTask": "C03",
+              "note": "direct dispatch; C03 — ограничения по одному семейству",
+              "bindingKind": "direct_command",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "ConstraintFix -> constraint.fixed (direct dispatch через itemAction)"
+              }
+            },
+            {
+              "fusionCommandId": "ConstraintMidPoint",
+              "fusionName": "MidPoint",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "C03",
+              "note": "нет ASA-эквивалента (constraint.pointOnCurve — другой смысл); C03 — ограничения по одному семейству",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "ConstraintConcentric",
+              "fusionName": "Concentric",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": "constraint.concentric",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q09"
+              ],
+              "nextTask": "C03",
+              "note": "direct dispatch; C03 — ограничения по одному семейству",
+              "bindingKind": "direct_command",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "ConstraintConcentric -> constraint.concentric (direct dispatch через itemAction)"
+              }
+            },
+            {
+              "fusionCommandId": "ConstraintCollinear",
+              "fusionName": "Collinear",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "C03",
+              "note": "нет ASA-эквивалента в registry; C03 — ограничения по одному семейству",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "ConstraintSymmetry",
+              "fusionName": "Symmetry",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": "constraint.symmetric",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q09"
+              ],
+              "nextTask": "C03",
+              "note": "direct dispatch; C03 — ограничения по одному семейству",
+              "bindingKind": "direct_command",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "ConstraintSymmetry -> constraint.symmetric (direct dispatch через itemAction)"
+              }
+            },
+            {
+              "fusionCommandId": "ConstraintSmooth",
+              "fusionName": "Curvature",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "C03",
+              "note": "нет ASA-эквивалента в registry; C03 — ограничения по одному семейству",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "SketchPolygonConstraintCmd",
+              "fusionName": "Polygon",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "C03",
+              "note": "полигон-констрейнт — нет ASA-эквивалента; C03 — ограничения по одному семейству",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            }
+          ],
+          "containers": []
+        },
+        {
+          "panelId": "ConfigurePanel",
+          "panelName": "Configure",
+          "promotedControlIds": [
+            "FusionStartDesignConfigModeCmd",
+            "FusionShowDesignConfigPanelCmd",
+            "FusionConfigurationRulesCmd"
+          ],
+          "actions": [
+            {
+              "fusionCommandId": "FusionStartDesignConfigModeCmd",
+              "fusionName": "Configure",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "FusionShowDesignConfigPanelCmd",
+              "fusionName": "Display Configuration Table",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "FusionConfigurationRulesCmd",
+              "fusionName": "Create Configuration Rules",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            }
+          ],
+          "containers": []
+        },
+        {
+          "panelId": "InspectPanel",
+          "panelName": "Inspect",
+          "promotedControlIds": [
+            "ShowChangeAwarenessToolbarCmd",
+            "MeasureCommand",
+            "FusionHalfSectionViewCommand",
+            "SimilarPartsCommand"
+          ],
+          "actions": [
+            {
+              "fusionCommandId": "MeasureCommand",
+              "fusionName": "Measure",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "part.measureDistanceAngle"
+              ],
+              "implementationStatus": "planned",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "part.measureDistanceAngle — planned (registry); X11 — другие среды Fusion (анализ/диагностика)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "part.measureDistanceAngle — planned (command-registry.v1.json); UI-подключения нет"
+              }
+            },
+            {
+              "fusionCommandId": "FusionHalfSectionViewCommand",
+              "fusionName": "Section Analysis",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "InterferenceCheckCommand",
+              "fusionName": "Interference",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "FusionCenterOfMassCommand",
+              "fusionName": "Center of Mass",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "FusionCurvatureCombAnalysisCommand",
+              "fusionName": "Curvature Comb Analysis",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "FusionCurvatureMapAnalysisCommand",
+              "fusionName": "Curvature Map Analysis",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "FusionDraftAnalysisCommand",
+              "fusionName": "Draft Analysis",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "FusionEnvironmentMapAnalysisCommand",
+              "fusionName": "Environment Map Analysis",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "FusionIsoCurveAnalysisCommand",
+              "fusionName": "Isocurve Analysis",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "FusionZebraAnalysisCommand",
+              "fusionName": "Zebra Analysis",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "FusionSurfaceValidateCommand",
+              "fusionName": "Validate",
+              "visible": false,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "FusionAccessibilityAnalysisCommand",
+              "fusionName": "Accessibility Analysis",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "FusionMinimumRadiusAnalysisCommand",
+              "fusionName": "Minimum Radius Analysis",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "FusionComponentConnectionAnalysisCommand",
+              "fusionName": "Component Connection Analysis",
+              "visible": false,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "FusionFastenerStackAnalysisCommand",
+              "fusionName": "Fastener Stack Analysis",
+              "visible": false,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "GraphViewCmd",
+              "fusionName": "Navigator",
+              "visible": false,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "FusionDOFAnalysisCommand",
+              "fusionName": "DOF Analysis",
+              "visible": false,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "FusionEditComponentConnectionAnalysisCommand",
+              "fusionName": "Edit Component Connection Analysis",
+              "visible": false,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "FusionViewColorCyclingToggleCmd",
+              "fusionName": "Display Component Colors",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "FacegroupsToggleCmd",
+              "fusionName": "Display Mesh Face Groups",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "FusionAssemblyStatisticsCommand",
+              "fusionName": "Assembly Statistics",
+              "visible": false,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "SimilarPartsCommand",
+              "fusionName": "Find Similar Components",
+              "visible": false,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "ShowHistoryToolbarCmd",
+              "fusionName": "History",
+              "visible": false,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "ShowChangeAwarenessToolbarCmd",
+              "fusionName": "Change Summary",
+              "visible": false,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "GravityClimate_ManufacturingSustainabilityInsights_MainDialog",
+              "fusionName": "Sustainability Insights",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            }
+          ],
+          "containers": []
+        },
+        {
+          "panelId": "InsertPanel",
+          "panelName": "Insert",
+          "promotedControlIds": [
+            "PullDeriveCommand",
+            "FusionAddCanvasCommand",
+            "ParaMeshInsertAlignCommand"
+          ],
+          "actions": [
+            {
+              "fusionCommandId": "FusionAddEditDecalCommand",
+              "fusionName": "Decal",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "FusionAddCanvasCommand",
+              "fusionName": "Canvas",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "TSplineImportCommand",
+              "fusionName": "Insert T-Spline",
+              "visible": false,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "SketchImportSVG",
+              "fusionName": "Insert SVG",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "ImportDxfFileCommand",
+              "fusionName": "Insert DXF",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "ParaMeshInsertAlignCommand",
+              "fusionName": "Insert Mesh",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "FusionImportCommandFromToolbar",
+              "fusionName": "Insert Component",
+              "visible": false,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "FusionFastenersCommand",
+              "fusionName": "Insert Fastener",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "FusionDuplicateWithJointsCommand",
+              "fusionName": "Duplicate With Joints",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "PullDeriveCommand",
+              "fusionName": "Insert Derive",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "InsertMcMasterCarrComponentCommand",
+              "fusionName": "Insert McMaster-Carr Component",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "cadenasparts4cad",
+              "fusionName": "Insert a manufacturer part",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "traceparts_insert",
+              "fusionName": "Insert TraceParts Supplier Components",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            }
+          ],
+          "containers": []
+        },
+        {
+          "panelId": "PartAssemblePanel",
+          "panelName": "ASSEMBLE",
+          "promotedControlIds": [
+            "NewAssemblyFromPartCommand"
+          ],
+          "actions": [
+            {
+              "fusionCommandId": "NewAssemblyFromPartCommand",
+              "fusionName": "Add To Assembly",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            }
+          ],
+          "containers": []
+        },
+        {
+          "panelId": "SelectPanel",
+          "panelName": "Select",
+          "promotedControlIds": [
+            "SelectCommand"
+          ],
+          "actions": [
+            {
+              "fusionCommandId": "SelectCommand",
+              "fusionName": "Select",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q06",
+                "Q15"
+              ],
+              "nextTask": "SEL01",
+              "note": "selection — нет ASA-ID в registry; базовый selection есть в продукте, конкретный toolbar-вариант Fusion не подключён; следующая задача — SEL-блок (SEL01 — Click/Ctrl/Shift)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "selection-варианты: нет selection-ID в command-registry.v1.json; базовый selection существует в продукте, toolbar-варианты Fusion не подключены (itemAction -> null для не-ASA items)"
+              }
+            },
+            {
+              "fusionCommandId": "selectWindow",
+              "fusionName": "Window Selection",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q06"
+              ],
+              "nextTask": "SEL02",
+              "note": "selection — нет ASA-ID в registry; базовый selection есть в продукте, конкретный toolbar-вариант Fusion не подключён; следующая задача — SEL-блок (SEL02 — рамка выбора)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "selection-варианты: нет selection-ID в command-registry.v1.json; базовый selection существует в продукте, toolbar-варианты Fusion не подключены (itemAction -> null для не-ASA items)"
+              }
+            },
+            {
+              "fusionCommandId": "selectFreeForm",
+              "fusionName": "Freeform Selection",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q06"
+              ],
+              "nextTask": "SEL02",
+              "note": "selection — нет ASA-ID в registry; базовый selection есть в продукте, конкретный toolbar-вариант Fusion не подключён; следующая задача — SEL-блок (SEL02 — согласованная рамка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "selection-варианты: нет selection-ID в command-registry.v1.json; базовый selection существует в продукте, toolbar-варианты Fusion не подключены (itemAction -> null для не-ASA items)"
+              }
+            },
+            {
+              "fusionCommandId": "selectPaint",
+              "fusionName": "Paint Selection",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q06"
+              ],
+              "nextTask": "SEL02",
+              "note": "selection — нет ASA-ID в registry; базовый selection есть в продукте, конкретный toolbar-вариант Fusion не подключён; следующая задача — SEL-блок (SEL02 — согласованная рамка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "selection-варианты: нет selection-ID в command-registry.v1.json; базовый selection существует в продукте, toolbar-варианты Fusion не подключены (itemAction -> null для не-ASA items)"
+              }
+            },
+            {
+              "fusionCommandId": "SelectByNameCommand",
+              "fusionName": "Select By Name",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "SEL01",
+              "note": "selection — нет ASA-ID в registry; базовый selection есть в продукте, конкретный toolbar-вариант Fusion не подключён; следующая задача — SEL-блок (SEL01 — базовый click-selection); способ запуска: dropdown-меню SelectionToolsDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "selection-варианты: нет selection-ID в command-registry.v1.json; базовый selection существует в продукте, toolbar-варианты Fusion не подключены (itemAction -> null для не-ASA items)"
+              }
+            },
+            {
+              "fusionCommandId": "SelectByBoundaryCommand",
+              "fusionName": "Select By Boundary",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "SEL01",
+              "note": "selection — нет ASA-ID в registry; базовый selection есть в продукте, конкретный toolbar-вариант Fusion не подключён; следующая задача — SEL-блок (SEL01 — базовый click-selection); способ запуска: dropdown-меню SelectionToolsDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "selection-варианты: нет selection-ID в command-registry.v1.json; базовый selection существует в продукте, toolbar-варианты Fusion не подключены (itemAction -> null для не-ASA items)"
+              }
+            },
+            {
+              "fusionCommandId": "FusionSelectBodiesBySizeCommand",
+              "fusionName": "Select By Size",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "SEL01",
+              "note": "selection — нет ASA-ID в registry; базовый selection есть в продукте, конкретный toolbar-вариант Fusion не подключён; следующая задача — SEL-блок (SEL01 — базовый click-selection); способ запуска: dropdown-меню SelectionToolsDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "selection-варианты: нет selection-ID в command-registry.v1.json; базовый selection существует в продукте, toolbar-варианты Fusion не подключены (itemAction -> null для не-ASA items)"
+              }
+            },
+            {
+              "fusionCommandId": "SelectByInvertCommand",
+              "fusionName": "Invert Selection",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "SEL01",
+              "note": "selection — нет ASA-ID в registry; базовый selection есть в продукте, конкретный toolbar-вариант Fusion не подключён; следующая задача — SEL-блок (SEL01 — базовый click-selection); способ запуска: dropdown-меню SelectionToolsDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "selection-варианты: нет selection-ID в command-registry.v1.json; базовый selection существует в продукте, toolbar-варианты Fusion не подключены (itemAction -> null для не-ASA items)"
+              }
+            },
+            {
+              "fusionCommandId": "FusionSelectSeedAndBoundaryFacesCommand",
+              "fusionName": "Seed And Boundary",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "SEL01",
+              "note": "selection — нет ASA-ID в registry; базовый selection есть в продукте, конкретный toolbar-вариант Fusion не подключён; следующая задача — SEL-блок (SEL01 — базовый click-selection); способ запуска: dropdown-меню SelectionToolsDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "selection-варианты: нет selection-ID в command-registry.v1.json; базовый selection существует в продукте, toolbar-варианты Fusion не подключены (itemAction -> null для не-ASA items)"
+              }
+            },
+            {
+              "fusionCommandId": "FusionDragCompControlsCmd",
+              "fusionName": "Component Drag",
+              "visible": false,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "SelectBodyPriorityCommand",
+              "fusionName": "Select Body Priority",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q06"
+              ],
+              "nextTask": "SEL03",
+              "note": "selection — нет ASA-ID в registry; базовый selection есть в продукте, конкретный toolbar-вариант Fusion не подключён; следующая задача — SEL-блок (SEL03 — keyboard/focus и конфликты); способ запуска: dropdown-меню SelectionPriorityCommandsDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "selection-варианты: нет selection-ID в command-registry.v1.json; базовый selection существует в продукте, toolbar-варианты Fusion не подключены (itemAction -> null для не-ASA items)"
+              }
+            },
+            {
+              "fusionCommandId": "SelectFacePriorityCommand",
+              "fusionName": "Select Face Priority",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q06"
+              ],
+              "nextTask": "SEL03",
+              "note": "selection — нет ASA-ID в registry; базовый selection есть в продукте, конкретный toolbar-вариант Fusion не подключён; следующая задача — SEL-блок (SEL03 — keyboard/focus и конфликты); способ запуска: dropdown-меню SelectionPriorityCommandsDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "selection-варианты: нет selection-ID в command-registry.v1.json; базовый selection существует в продукте, toolbar-варианты Fusion не подключены (itemAction -> null для не-ASA items)"
+              }
+            },
+            {
+              "fusionCommandId": "SelectEdgePriorityCommand",
+              "fusionName": "Select Edge Priority",
+              "visible": true,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q06"
+              ],
+              "nextTask": "SEL03",
+              "note": "selection — нет ASA-ID в registry; базовый selection есть в продукте, конкретный toolbar-вариант Fusion не подключён; следующая задача — SEL-блок (SEL03 — keyboard/focus и конфликты); способ запуска: dropdown-меню SelectionPriorityCommandsDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "selection-варианты: нет selection-ID в command-registry.v1.json; базовый selection существует в продукте, toolbar-варианты Fusion не подключены (itemAction -> null для не-ASA items)"
+              }
+            },
+            {
+              "fusionCommandId": "SelectComponentPriorityCommand",
+              "fusionName": "Select Component Priority",
+              "visible": false,
+              "launch": [
+                "dropdown"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": false,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "X11",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка); способ запуска: dropdown-меню SelectionPriorityCommandsDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            },
+            {
+              "fusionCommandId": "SelectionFilterCommand",
+              "fusionName": "Selection Filters",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "SEL01",
+              "note": "selection — нет ASA-ID в registry; базовый selection есть в продукте, конкретный toolbar-вариант Fusion не подключён; следующая задача — SEL-блок (SEL01 — базовый click-selection)",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "selection-варианты: нет selection-ID в command-registry.v1.json; базовый selection существует в продукте, toolbar-варианты Fusion не подключены (itemAction -> null для не-ASA items)"
+              }
+            }
+          ],
+          "containers": [
+            {
+              "fusionCommandId": "SelectionToolsDropDown",
+              "containerType": "DropDownControl",
+              "visible": true,
+              "childCommandIds": [
+                "SelectByNameCommand",
+                "SelectByBoundaryCommand",
+                "FusionSelectBodiesBySizeCommand",
+                "SelectByInvertCommand",
+                "FusionSelectSeedAndBoundaryFacesCommand"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "bindingKind": "container",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/SketchRibbon.tsx",
+                "symbol": "invoke: itemAction -> run (L54)",
+                "note": "DropDownControl рендерится как меню (SketchRibbon.tsx L102-106: data-native-dropdown); children — отдельные действия со своим статусом; native command ID у контейнера нет (DropDownControl без commandDefinition)"
+              },
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "SEL01",
+              "note": "контейнер (DropDownControl) — не самостоятельная CAD-команда; native command ID не выдуман (в snapshot commandDefinition=null); связь с дочерними действиями сохранена; статусы детей — в их строках"
+            },
+            {
+              "fusionCommandId": "SelectionPriorityCommandsDropDown",
+              "containerType": "DropDownControl",
+              "visible": true,
+              "childCommandIds": [
+                "SelectBodyPriorityCommand",
+                "SelectFacePriorityCommand",
+                "SelectEdgePriorityCommand",
+                "SelectComponentPriorityCommand"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [],
+              "bindingKind": "container",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/SketchRibbon.tsx",
+                "symbol": "invoke: itemAction -> run (L54)",
+                "note": "DropDownControl рендерится как меню (SketchRibbon.tsx L102-106: data-native-dropdown); children — отдельные действия со своим статусом; native command ID у контейнера нет (DropDownControl без commandDefinition)"
+              },
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [],
+              "nextTask": "SEL03/X11",
+              "note": "контейнер (DropDownControl) — не самостоятельная CAD-команда; native command ID не выдуман (в snapshot commandDefinition=null); связь с дочерними действиями сохранена; статусы детей — в их строках"
+            }
+          ]
+        },
+        {
+          "panelId": "StopSketchPanel",
+          "panelName": "Finish Sketch",
+          "promotedControlIds": [
+            "SketchStop"
+          ],
+          "actions": [
+            {
+              "fusionCommandId": "SketchStop",
+              "fusionName": "Finish Sketch",
+              "visible": true,
+              "launch": [
+                "panel",
+                "promoted"
+              ],
+              "asaCommandId": "sketch.finish",
+              "asaRelatedCommandIds": [],
+              "implementationStatus": "implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q11"
+              ],
+              "nextTask": "E01/E02",
+              "note": "direct dispatch: SketchStop -> sketch.finish; E01 (контур) / E02 (extrude)",
+              "bindingKind": "direct_command",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "SketchStop -> sketch.finish (direct dispatch через itemAction)"
+              }
+            },
+            {
+              "fusionCommandId": "SketchAutoConstrainAndFinish",
+              "fusionName": "Finish with AutoConstrain",
+              "visible": true,
+              "launch": [
+                "panel"
+              ],
+              "asaCommandId": null,
+              "asaRelatedCommandIds": [
+                "sketch.finish"
+              ],
+              "implementationStatus": "not_implemented",
+              "inFirstProfile": true,
+              "browserAcceptance": "not_tested",
+              "scenarios": [
+                "Q11"
+              ],
+              "nextTask": "E01",
+              "note": "нет маппинга (sketchNativeActions); SketchRibbon не запускает; Finish (sketch.finish) НЕ доказывает AutoConstrain; auto-constrain — вне ASA",
+              "bindingKind": "unbound",
+              "bindingEvidence": {
+                "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+                "path": "src/web/fusion/sketchCommands.ts",
+                "symbol": "sketchNativeActions",
+                "note": "отсутствие маппинга: ID нет в sketchNativeActions; itemAction -> null (sketchCommands.ts L47-50); SketchRibbon.invoke не запускает (disabled, L54/L69)"
+              }
+            }
+          ],
+          "containers": []
+        }
+      ]
+    },
+    "solidTabFirstProfile": [
+      {
+        "fusionCommandId": "SketchCreate",
+        "fusionName": "Create Sketch",
+        "sourcePanel": "SolidCreatePanel",
+        "asaCommandId": "part.sketch.create",
+        "implementationStatus": "implemented",
+        "inFirstProfile": true,
+        "scenarios": [
+          "Q07"
+        ],
+        "nextTask": "P01",
+        "browserAcceptance": "not_tested",
+        "note": "direct dispatch через liveActions.nativeMap; вход в эскиз; следующий потребитель — пилот окружности P01",
+        "bindingKind": "direct_command",
+        "bindingEvidence": {
+          "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+          "path": "src/web/fusion/liveActions.ts",
+          "symbol": "nativeMap/forNative (L7-14)",
+          "note": "nativeMap: SketchCreate -> part.sketch.create; forNative -> action(part.sketch.create)"
+        }
+      },
+      {
+        "fusionCommandId": "Extrude",
+        "fusionName": "Extrude",
+        "sourcePanel": "SolidCreatePanel",
+        "asaCommandId": "part.extrude",
+        "implementationStatus": "implemented",
+        "inFirstProfile": true,
+        "scenarios": [
+          "Q11"
+        ],
+        "nextTask": "E02",
+        "browserAcceptance": "not_tested",
+        "note": "direct dispatch; fallback part.cutExtrude (implemented) при disabled; Q11 Rectangle60x40 -> Extrude10",
+        "asaRelatedCommandIds": [
+          "part.cutExtrude"
+        ],
+        "bindingKind": "direct_command",
+        "bindingEvidence": {
+          "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+          "path": "src/web/fusion/liveActions.ts",
+          "symbol": "nativeMap/forNative (L7-14)",
+          "note": "nativeMap: Extrude -> part.extrude; forNative: fallback part.cutExtrude если disabled (L14)"
+        }
+      },
+      {
+        "fusionCommandId": "SelectPanel",
+        "fusionName": "Select (SelectCommand/window/freeform/paint)",
+        "sourcePanel": "SelectPanel",
+        "asaCommandId": null,
+        "implementationStatus": "not_implemented",
+        "inFirstProfile": true,
+        "scenarios": [
+          "Q06",
+          "Q15"
+        ],
+        "nextTask": "SEL01/SEL02/SEL03",
+        "browserAcceptance": "not_tested",
+        "note": "первый профиль SolidTab: selection-варианты не подключены; базовый selection существует в продукте, toolbar-варианты Fusion — нет; SEL01/SEL02/SEL03",
+        "bindingKind": "unbound",
+        "bindingEvidence": {
+          "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+          "path": "src/web/fusion/sketchCommands.ts",
+          "symbol": "sketchNativeActions",
+          "note": "нет selection-ID в registry; панель выбора — детали в SketchTab/SelectPanel"
+        }
+      },
+      {
+        "fusionCommandId": "ViewCube",
+        "fusionName": "ViewCube (3D, ориентации)",
+        "source": "official-help (GS-VIEWCUBE)",
+        "asaCommandId": null,
+        "asaRelatedCommandIds": [
+          "view.fit",
+          "view.front",
+          "view.back",
+          "view.top",
+          "view.bottom",
+          "view.left",
+          "view.right",
+          "view.iso",
+          "view.projection"
+        ],
+        "implementationStatus": "implemented",
+        "inFirstProfile": true,
+        "scenarios": [
+          "Q02"
+        ],
+        "nextTask": "A01/A08/B05",
+        "browserAcceptance": "not_tested",
+        "note": "direct handlers на NavigationDriver (не dispatch view.*): грани=orientCube (view.front/.../view.iso эквиваленты), home=view.fit-эквивалент, меню=projection (view.projection); view.fit НЕ выдаётся за весь ViewCube; A01/A08/B05 — камера/проекции/меню",
+        "bindingKind": "direct_handler",
+        "bindingEvidence": {
+          "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+          "path": "src/web/fusion/ViewCube.tsx",
+          "symbol": "navigation.orientCube/home/roll (L38-56)",
+          "note": "грани -> navigation.orientCube; home -> navigation.home; roll -> navigation.roll; меню: ViewCubeMenu (projection/saveHome/setCurrentAs); driver: NavigationDriver (navigation.ts), attach — LiveOrbitControls.ts:32"
+        }
+      },
+      {
+        "fusionCommandId": "ViewCube (sketch plane)",
+        "fusionName": "ViewCube плоскости эскиза (SketchPlaneCube)",
+        "source": "product UI: src/web/fusion/LiveMain.tsx L111 (sketchMode ? SketchPlaneCube : ViewCube)",
+        "asaCommandId": null,
+        "asaRelatedCommandIds": [
+          "view.fit"
+        ],
+        "bindingKind": "direct_handler",
+        "bindingEvidence": {
+          "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+          "path": "src/web/fusion/SketchPlaneCube.tsx",
+          "symbol": "requestSketchView('fit') (L49); orbit/roll disabled",
+          "note": "SketchPlaneCube: home -> requestSketchView(\"fit\") (sketchView.ts L94-99); orbit/roll кнопки disabled (L50-51) — проекция эскиза планарная; не 3D-куб"
+        },
+        "implementationStatus": "implemented",
+        "inFirstProfile": true,
+        "scenarios": [
+          "Q02"
+        ],
+        "nextTask": "A08",
+        "browserAcceptance": "not_tested",
+        "note": "куб плоскости эскиза: home -> requestSketchView(\"fit\") (sketchView.ts); orbit/roll — disabled (проекция эскиза планарная); не 3D-ViewCube; A08 — ортографический маршрут Sketch"
+      },
+      {
+        "fusionCommandId": "Navigation",
+        "fusionName": "Navigation (orbit/pan/zoom)",
+        "source": "official-help (GS-NAVIGATION-BAR)",
+        "asaCommandId": null,
+        "implementationStatus": "UNKNOWN",
+        "inFirstProfile": true,
+        "scenarios": [
+          "Q02"
+        ],
+        "nextTask": "A01/A08/B05",
+        "browserAcceptance": "not_tested",
+        "note": "UNKNOWN (данные недостаточны): поведение orbit/pan/zoom/home реализовано кодом (NavigationDriver), НО точный набор контролов Fusion Navigation bar известен только из official help (GS-NAVIGATION-BAR) без native capture; соответствие конкретных Fusion-контролов продуктовым handlerам не установлено — следующая задача A01/A08/B05",
+        "asaRelatedCommandIds": [
+          "view.fit",
+          "view.front",
+          "view.back",
+          "view.top",
+          "view.bottom",
+          "view.left",
+          "view.right",
+          "view.iso",
+          "view.projection"
+        ],
+        "bindingKind": "direct_handler",
+        "bindingEvidence": {
+          "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
+          "path": "src/web/fusion/LiveOrbitControls.ts",
+          "symbol": "navigation.attach (L32)",
+          "note": "продуктовая навигация реализована: NavigationDriver (orbit/pan/zoom/home/pose/projection) — LiveOrbitControls.ts:32 navigation.attach; home — LiveTop.tsx useCadGoHome"
+        }
+      }
+    ]
+  },
+  "outOfProfileTabs": [
+    {
+      "tabId": "SurfaceTab",
+      "tabName": "SURFACE",
+      "link": "X01-X11"
+    },
+    {
+      "tabId": "ParaMeshOuterTab",
+      "tabName": "Mesh",
+      "link": "X01-X11"
+    },
+    {
+      "tabId": "SheetMetalTab",
+      "tabName": "SHEET METAL",
+      "link": "X01-X11"
+    },
+    {
+      "tabId": "PlasticTab",
+      "tabName": "PLASTIC",
+      "link": "X01-X11"
+    },
+    {
+      "tabId": "ToolsTab",
+      "tabName": "UTILITIES",
+      "link": "X01-X11"
+    },
+    {
+      "tabId": "AutomationTab",
+      "tabName": "AUTOMATION",
+      "link": "X01-X11"
+    }
+  ],
+  "unknowns": [
+    {
+      "id": "UNKNOWN-001",
+      "description": "marking menu / ПКМ и keyboard shortcuts не наблюдаются в зафиксированных snapshots (только panel/promoted); поведение описано official help и контрактами M01/M02.",
+      "nextTask": "M01/M02 / SEL01-SEL03"
+    },
+    {
+      "id": "UNKNOWN-002",
+      "description": "asaCommandId отсутствует для selection (SelectCommand и т.д.) — в registry нет команды select; покрывается SEL01-SEL03.",
+      "nextTask": "SEL01/SEL02/SEL03"
+    },
+    {
+      "id": "UNKNOWN-003",
+      "description": "для ряда видимых команд нет эквивалента в ASA (slot, conic, blend, auto-constrain, analysis, supplier) — null + not_implemented + следующая задача.",
+      "nextTask": "X06 / X04 / X07 / X05 / C01-C03 / X11 — конкретный ID в строке каждой команды (обзор X01-X11 допустим как группа)"
+    }
+  ],
+  "ownerVisualAcceptance": {
+    "status": "PENDING",
+    "classification": "observedFact",
+    "note": "Визуальная приёмка владельцем остаётся PENDING. Inventory задаёт состояние знаний (mapping видимых действий с ядром), не готовность UI."
+  },
+  "revised": {
+    "date": "2026-11-27",
+    "contractVersion": 4,
+    "baseSha": "063241b61f1405dcf3524742ad25778d524df758",
+    "note": "корректирующая ревизия R02 по контракту v4: устранены ложные атрибуции происхождения команд (86 из одного источника + 41 из другого) и число 115 из v3 — active snapshot и historic reference содержат одинаковые 127 command controls (86 top-level + 41 dropdown children; 110 visible + 17 hidden; 10 DropDown; 18 separator), dropdowns раскрыты в обоих capture; зафиксирован выбор active-видимости и 2 расхождения с historic (FusionImportCommandFromToolbar: active=false/historic=true; SketchStop: active=true/historic=false); завершена адресная сверка 127 actions + 10 containers и 28 implemented-строк с фактическим source; browser/geometry proof — N/A (reference/docs scope)",
+    "previousRevision": {
+      "contractVersion": 3,
+      "baseSha": "93c781c52b5985d681f3a1177256d15b217c1616",
+      "note": "фактические binding-виды, 8 вариантов -> null/not_implemented/X06, семантика nextTask, контейнеры отдельно, UNKNOWN в словаре"
+    }
+  },
+  "counts": {
+    "basis": "v3: строгое разделение command / container / separator / hidden; каждый счёт — по конкретным source ID",
+    "sketchTab": {
+      "visibleCommandActions": 110,
+      "hiddenCommandActions": 17,
+      "commandActionsTotal": 127,
+      "visibleContainers": 10,
+      "separators": 18,
+      "sourceBreakdown": {
+        "sketch-active-ui-20261106.json (active snapshot)": "127 command controls: 86 top-level (71 visible + 15 hidden) + 41 dropdown children (39 visible + 2 hidden: DrawCVMSpline3D, SelectComponentPriorityCommand); итого 110 visible + 17 hidden; 10 DropDownControl (visible); 18 SeparatorControl (16 top-level + 2 child); promotedControls — дубликат controls[], не считается",
+        "sketch-native-reference.v1.json (historic API inventory)": "те же 127 command controls (86 top-level + 41 dropdown children; 110 visible + 17 hidden); 10 DropDownControl (visible); 18 SeparatorControl (16 top-level + 2 child); независимый cross-check структуры, не дополнительный источник команд"
+      },
+      "visibility": {
+        "basis": "поле visible в inventory = isVisible из active snapshot (sketch-active-ui-20261106.json)",
+        "differsInHistoric": [
+          "FusionImportCommandFromToolbar (InsertPanel): active=false, historic=true",
+          "SketchStop (StopSketchPanel): active=true, historic=false"
+        ],
+        "note": "наличие children в JSON не доказывает визуально открытое меню; source capture отделён от фактической работы UI"
+      }
+    },
+    "solidTabFirstProfile": {
+      "entries": 6,
+      "note": "SketchCreate, Extrude, SelectPanel, ViewCube (3D), ViewCube (sketch plane), Navigation"
+    },
+    "explanationOf132": "132 — исходный пересчёт v1 (127 строк sketchTab + 5 строк solidFirstProfile, без разделения container/separator/hidden). v3/v4: 127 команд + 6 solid + 10 контейнеров = 143 строки; дельта = +1 (ViewCube разделён на 3D и sketch) + 10 (контейнеры DropDown). Строки не удалялись: все 127 command controls (86 top-level + 41 dropdown children; active snapshot и historic reference содержат одинаковые 127) и 10 контейнеров сохранены."
+  }
+}

@@ -7,6 +7,18 @@
   "workflow": "docs/FUSION_AGENT_WORKFLOW.md",
   "execution_pointer": "spec/process/active-work.v1.json",
   "execution_state_authority": "GitHub task Issue; READY requires a controller dispatch contract with an exact live base. This registry defines work and dependencies, not live execution status.",
+  "referenceManifest": {
+    "path": "spec/ui/fusion-browser-reference.v1.json",
+    "task": "R01",
+    "issue": 239,
+    "purpose": "FUS/R01 эталон Fusion и условия браузерной проверки: зафиксированная версия 2706.1.17, источники, целевой браузерный профиль, navigation preset, единицы, размеры/DPR/UI scale, обязательные состояния (Q01–Q16), известные пробелы. Не является продуктовым кодом; задает проверяемые условия, не утверждает готовность UI."
+  },
+  "inventoryManifest": {
+    "path": "spec/ui/fusion-action-inventory.v1.json",
+    "task": "R02",
+    "issue": 240,
+    "purpose": "FUS/R02 утверждённый inventory видимых действий первого профиля (ревизия v4, 2026-11-27, base 063241b61f1405dcf3524742ad25778d524df758): все команды SketchTab (9 панелей: 127 command controls = 86 top-level + 41 dropdown children; 110 visible + 17 hidden; active snapshot и historic reference содержат одинаковые 127; 10 DropDown-контейнеров отдельно; 18 separator — layout) + первый профиль SolidTab (Sketch/Extrude/Select/ViewCube 3D+sketch/Navigation). Каждое действие связано с fusion command ID, фактическим видом подключения (bindingKind: direct_command / contextual_dispatch / direct_handler / container / unbound / UNKNOWN) с source ref (sha/path/symbol), ASA command ID (только из command-registry.v1.json; отсутствующий/планируемый — null + asaRelatedCommandIds + следующая задача), реализацией конкретного варианта (implemented подтверждён только кодом, это не browser PASS), сценарием Q01–Q16, следующей задачей (S01=Arc numeric, S02=Rectangle proof, S03=Line/locks, X06=дополнительные способы и примитивы) и отдельным статусом браузерной приёмки (PASS только со ссылкой на evidence; ownerVisualAcceptance=PENDING). Словарь статусов включает UNKNOWN (причина + следующая задача). Не является полным каталогом Autodesk Fusion; не утверждает готовность UI."
+  },
   "prepared_on": "2026-11-25",
   "baseline_sha": "a08b17c99bf8b3343008810ab5f9f398bd7a139d",
   "scope": {
