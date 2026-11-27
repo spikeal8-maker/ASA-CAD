@@ -254,9 +254,9 @@
     "countingPolicy": "COUNT_ACCEPTED_PERMANENT_SLICES_NOT_TASKS_COMMITS_OR_PLANNING"
   },
   "observedRepositoryState": {
-    "integrationHead": "4729222d055b70a43ef0a2a3eaa59c6a83365999",
+    "integrationHead": "dc8c344b8f958a7a505399bce15ee79670a67135",
     "mainHead": "9ea217f253b3348d34638841936fa79b75f95fa2",
-    "verifiedOn": "2026-11-25",
+    "verifiedOn": "2026-11-27",
     "headPolicy": "RESOLVE_LIVE_AND_GUARD_BEFORE_MERGE"
   },
   "fusionWork": {
@@ -268,6 +268,21 @@
     "executionStateAuthority": "LIVE_TASK_ISSUE_AND_CONTROLLER_DISPATCH_CONTRACT",
     "initialReferenceIssue": 239,
     "workPolicy": "ONE_ASSIGNED_READY_TASK; BLOCKS_REQUIRE_DECOMPOSITION; SHARED_VERTICAL_SLICE_ACCEPTANCE",
-    "ownerVisualParity": "PENDING"
+    "ownerVisualParity": "PENDING",
+    "circlePilot": {
+      "sliceId": "U2-FUSION-CIRCLE-NUMERIC",
+      "issues": [
+        241,
+        242,
+        243,
+        244
+      ],
+      "productCandidateSha": "772eed0f573f444fc3095dc931523281044d9bd3",
+      "browserProof": "PASS_P01_T01_P03_AND_KOMPAS_CIRCLE_NUMERIC",
+      "sliceAcceptance": "PENDING_EXACT_HEAD_CI_INDEPENDENT_REVIEW_AND_MERGE",
+      "evidenceIssue": 244,
+      "ownerVisualAcceptance": "PENDING",
+      "cadencePolicy": "COUNT_ONCE_AFTER_VERIFIED_TECHNICAL_MERGE; RECORD_MERGE_SHA_IN_184_AND_NEXT_ACTIVE_PR"
+    }
   }
 }

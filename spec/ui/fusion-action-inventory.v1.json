@@ -281,13 +281,13 @@
               "asaRelatedCommandIds": [],
               "implementationStatus": "implemented",
               "inFirstProfile": true,
-              "browserAcceptance": "pending:P01-P03",
+              "browserAcceptance": "PASS:https://github.com/spikeal8-maker/ASA-CAD/issues/244",
               "scenarios": [
                 "Q01",
                 "Q07"
               ],
-              "nextTask": "P01",
-              "note": "direct dispatch; shortcut C; пилот окружности (R01 circlePilot); owner visual PENDING; способ запуска: dropdown-меню CircleDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "nextTask": "A01",
+              "note": "direct dispatch; shortcut C; пилот окружности (R01 circlePilot); owner visual PENDING; способ запуска: dropdown-меню CircleDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню); P01/P03 narrow Circle pilot: selected-center numeric preview/commit, comma/first-key, pointer/repeat, invalid/cancel/Esc, one-step Undo/Redo and Save/Open PASS on product 772eed0f573f444fc3095dc931523281044d9bd3. Evidence: tests/m3/fusion-circle-browser.mjs, tests/m3/fusion-circle-acceptance-browser.mjs and CI artifact asa-cad-fusion-circle. This does not accept every launch path, all Q07 tools or native visual parity; owner visual PENDING.",
               "bindingKind": "direct_command",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
