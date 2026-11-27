@@ -22,7 +22,7 @@ Arc #226, Circle #231 и Rectangle #224 технически доказаны о
 
 ## Канон и ограничения
 
-KOMPAS `src/web/kompas`, Fusion `src/web/fusion`; один CadApplication/CadDocument/history/persistence. Typed actions → ASA adapters → PlaneGCS/OpenCascade B-Rep; Three.js — отображение. U1 принят #195/#196; legacy cleanup #208; frozen reference #170: `ui-reference-20261004`.
+KOMPAS `src/web/kompas`, Fusion `src/web/fusion`; один CadApplication/CadDocument/history/persistence. Typed actions → ASA adapters → PlaneGCS/OpenCascade B-Rep; Three.js — отображение. U1A/U1B/U1C приняты #195/#196; legacy cleanup #208; frozen reference #170: `ui-reference-20261004`.
 
 **FUSION_OWNER_PRESSURE_20261125:** owner /root; 41 source owner ≥85% target, 20 выше target по аудиту. До новой ответственности — focused extraction/review; frozen owners не растут, бюджеты не повышаются. Применимый долг закрыть до следующей milestone boundary. Каждый permanent slice проходит quality gate; после трёх accepted slices и на обязательных границах — Full Audit.
 
