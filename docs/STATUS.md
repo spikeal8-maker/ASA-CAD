@@ -6,13 +6,13 @@
 
 **U2 IN_PROGRESS.** Full Repository Health Audit #236 принят как **YELLOW_ACCEPTED**, merge `4729222d055b70a43ef0a2a3eaa59c6a83365999`; применимые CI, independent review и post-merge gates PASS. Результаты измерений и ограничения сравнения: [отчёт аудита](FULL_REPOSITORY_HEALTH_AUDIT.md).
 
-Canonical `integration/ui-core-unification`: **`dc8c344b8f958a7a505399bce15ee79670a67135`**, reference R01/R02 приняты в #301. Cadence после #236: **0/3** до фактической приёмки нового permanent slice. Reference, helpers, число задач и commits cadence не увеличивают.
+Canonical `integration/ui-core-unification`: **`2fedba7b41e31c7dcf5808649e78a7e74026b52f`**. R01/R02 приняты в #301; Circle T01/P01/P02/P03 — в #303. Cadence после #236: **1/3**. Считать только фактически принятые permanent slices, не helpers/commits.
 
-Текущий срез — **U2-FUSION-CIRCLE-NUMERIC**: T01 #241 → P01 #242 → P02 #243 → P03 #244, один общий PR. На candidate **`772eed0f573f444fc3095dc931523281044d9bd3`** Fusion Circle подключён к общему `circleInput`: обычный P01 подтвердил выбранный центр (20,10), Ø12, preview R6 и отсутствие лишнего driving dimension; T01 smoke 3/3 PASS. Исходный RED сохранён в P01.
+**Circle #303 ACCEPTED:** выбранный центр (20,10), Ø12, preview R6, без лишнего driving dimension; numeric/comma/first-key, pointer/repeat, invalid, cancel/Esc, Undo/Redo и Save/Open PASS. Exact PR CI9/9, post-merge6/6; Docker8090 опубликован. Owner visual acceptance — **PENDING**.
 
-**P03 browser proof 5/5 PASS:** numeric/comma/first-key, pointer/repeat, invalid, cancel/Esc, Undo/Redo и Save/Open; существующий KOMPAS Circle numeric regression PASS. Финальные CI, независимая приёмка всего среза, merge и публикация preview — **PENDING**; новый срез пока не ACCEPTED. Owner visual acceptance — **PENDING** отдельно. Это узкий пилот окружности, не завершение Sketch или U2.
+**Текущий repair #304 — Fusion «Показать всё».** Реальный browser RED: после wheel zoom ортографический масштаб не сбрасывается и тело обрезано. Общий typed view.fit получает сброс через существующую camera.fitScale; frozen CadViewport уменьшается. Приёмка требует exact CI, независимого review, обычного 3D/browser proof и verified merge; только затем cadence1→2. A01/A02 work_verified, A03 WIP сохранён на отдельной ветке; вращение внутри Sketch ещё не реализовано и этим repair не принимается.
 
-Очередь: [#237](https://github.com/spikeal8-maker/ASA-CAD/issues/237), [ТЗ](FUSION_BROWSER_SPEC.md), [протокол](FUSION_AGENT_WORKFLOW.md), [реестр](../spec/process/fusion-tasks.v1.json). После Circle — камера/точный ввод, затем ViewCube/меню по зависимостям. Исполнение только по актуальному контракту контролёра, без отдельного merge каждого helper.
+Очередь: [#237](https://github.com/spikeal8-maker/ASA-CAD/issues/237), [ТЗ](FUSION_BROWSER_SPEC.md), [протокол](FUSION_AGENT_WORKFLOW.md), [реестр](../spec/process/fusion-tasks.v1.json). Камера/проекция/ввод и ViewCube — по актуальным READY-контрактам. Полный Sketch/U2 и visual parity не приняты.
 
 ## Выпущено
 
