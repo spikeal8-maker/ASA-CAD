@@ -75,7 +75,7 @@ export function independentReviewVerified(handoff, parent, children, dispatchAt,
   return [...reviewerMessages].reverse().some(item => {
     const text = messageText(item);
     return item.time?.created >= reviewer.time.created && typeof text === 'string' &&
-      text.match(/^\s*VERDICT:\s*(?:\*\*)?(APPROVE|REQUEST_CHANGES|BLOCKED)(?:\*\*)?\s*(?:\r?\n|$)/)?.[1] === handoff.reviewVerdict &&
+      text.match(/^\s*(?:#{1,6}[ \t]+)?VERDICT:[ \t]*(?:\*\*)?(APPROVE|REQUEST_CHANGES|BLOCKED)(?:\*\*)?[ \t]*(?:\r?\n|$)/)?.[1] === handoff.reviewVerdict &&
       text.includes(handoff.baseSha) && text.includes(handoff.candidate);
   });
 }
