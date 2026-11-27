@@ -341,7 +341,7 @@
                 "Q07"
               ],
               "nextTask": "X06",
-              "note": "КОНТРОЛЬНЫЙ КООТРПРИМЕР v3: registry ID sketch.circle и общий handler НЕ доказывают вариант — маппинга в sketchNativeActions нет; X06 — отдельные способы Circle; способ запуска: dropdown-меню CircleDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
+              "note": "Контрольный контрпример v3: registry ID sketch.circle и общий handler НЕ доказывают вариант — маппинга в sketchNativeActions нет; X06 — отдельные способы Circle; способ запуска: dropdown-меню CircleDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
