@@ -32,9 +32,9 @@ return viewport().evaluate(host => {
 });
 }
 async function fit() {
-const before = await camera();
 await page.getByRole('button', { name: 'Показать всё', exact: true }).click();
-await page.waitForFunction(n => Number(document.querySelector('[data-testid="cad-viewport"]')?.dataset.viewChangeCount) > n, before.changes);
+await page.waitForFunction(() => document.querySelector('[data-testid="cad-viewport"]')?.dataset.viewName === 'fit');
+await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
 return camera();
 }
 async function step(name, run) {
