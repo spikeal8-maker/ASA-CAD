@@ -2,6 +2,7 @@ import React,{useRef,useState} from 'react';
 import type {ParameterPanelProps} from '../ParameterPanel';
 import {action,run} from './liveActions';
 import {LiveIcon} from './LiveIcon';
+import {useFusionCirclePresentation} from './FusionCircleParameters';
 type Props={panel:ParameterPanelProps;fallback:React.ReactNode;embedded?:boolean;dimensionEditUnit?:string};
 const names:Record<string,string>={'part.sketch.create':'Создать эскиз','sketch.line':'Отрезок','sketch.arc':'Дуга','sketch.rectangle':'Прямоугольник','sketch.circle':'Окружность','part.extrude':'Выдавливание','part.cutExtrude':'Выдавливание — вырез','part.fillet':'Скругление','dimension.edit':'Изменить размер'};
 function Field({name,children}:{name:string;children:React.ReactNode}){return <label className="live-param-row"><span>{name}</span><div>{children}</div></label>;}
@@ -20,6 +21,7 @@ export function LiveParameters({panel:p,fallback,embedded=false,dimensionEditUni
  const [collapsed,setCollapsed]=useState(false),[position,setPosition]=useState<{x:number;y:number}|null>(null),[busy,setBusy]=useState(false);
  const box=useRef<HTMLElement>(null),drag=useRef<{dx:number;dy:number}|null>(null);
  const id=p.activeCommand||'',x=p.extrude;
+ const circle=useFusionCirclePresentation(p.circleInput,p.onCancel,box);
  let content:React.ReactNode=null,submit:(()=>void|Promise<void>)|null=null,valid=true;
  if(id==='part.sketch.create'){
   content=<><Field name="Плоскость">{p.requiresFaceSelection?<span>{p.selectedPick?.kind==='face'?'Грань выбрана':'Выберите грань на модели'}</span>:<select aria-label="Плоскость эскиза" value={p.sketchPlane} onChange={e=>p.setSketchPlane(e.target.value as 'XY'|'XZ'|'YZ')}>{['XY','XZ','YZ'].map(v=><option key={v}>{v}</option>)}</select>}</Field><p className="live-param-note">Опору также можно выбрать в рабочей области или дереве.</p></>;
@@ -35,7 +37,7 @@ export function LiveParameters({panel:p,fallback,embedded=false,dimensionEditUni
   content=<><Numeric name="Ширина" value={p.rectangleWidth} onChange={p.setRectangleWidth}/><Numeric name="Высота" value={p.rectangleHeight} onChange={p.setRectangleHeight}/><p className="live-param-note">Задайте размеры или укажите две точки на плоскости эскиза.</p></>;
   submit=p.onCreateRectangle;valid=Number.isFinite(p.rectangleWidth)&&p.rectangleWidth>0&&Number.isFinite(p.rectangleHeight)&&p.rectangleHeight>0;
  }else if(id==='sketch.circle'){
-  content=<><Numeric name="Диаметр" value={p.circleDiameter} onChange={p.setCircleDiameter}/><p className="live-param-note">Центр и радиус также задаются мышью на эскизе.</p></>;submit=p.onCreateCircle;valid=Number.isFinite(p.circleDiameter)&&p.circleDiameter>0;
+  ({content,submit,valid}=circle);p={...p,onCancel:circle.cancel};
  }else if(id==='part.extrude'||id==='part.cutExtrude'){
   const cut=id==='part.cutExtrude';content=<><Field name="Профиль"><span className="live-selected-value">{x.profileName||'Не выбран'}</span></Field><Field name="Начало"><span>Плоскость профиля</span></Field>
    {!cut&&<><Field name="Направление"><select aria-label="Направление" value={x.symmetric?'symmetric':x.reverse?'reverse':'forward'} onChange={e=>{const v=e.target.value;if(v==='symmetric')x.setSymmetric(true);else{x.setSymmetric(false);if((v==='reverse')!==x.reverse)x.toggleReverse();}}}><option value="forward">В одну сторону</option><option value="reverse">В обратную сторону</option><option value="symmetric">Симметрично</option></select></Field><Numeric name="Расстояние" value={x.distance} onChange={x.setDistance}/></>}
