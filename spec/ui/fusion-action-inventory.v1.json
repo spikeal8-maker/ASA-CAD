@@ -90,7 +90,7 @@
       "id": "sketch-native-reference-v1",
       "type": "native-snapshot",
       "path": "src/web/fusion/sketch-native-reference.v1.json",
-      "role": "historic API inventory: children dropdown-контейнеров (155 controls); источник 41 child-команды",
+      "role": "historic API inventory (155 controls: 127 command + 10 DropDown + 18 separator); те же 127 command controls, что и в active snapshot (86 top-level + 41 dropdown children); независимый cross-check структуры, не дополнительный источник команд",
       "classification": "observedFact"
     }
   ],
@@ -206,7 +206,7 @@
                 "Q11"
               ],
               "nextTask": "S02",
-              "note": "direct dispatch; shortcut R; S02 — Rectangle numeric и pointer; способ запуска: dropdown-меню RectangleDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "direct dispatch; shortcut R; S02 — Rectangle numeric и pointer; способ запуска: dropdown-меню RectangleDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "direct_command",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -233,7 +233,7 @@
                 "Q07"
               ],
               "nextTask": "X06",
-              "note": "нет маппинга (sketchNativeActions); TwoPoint-режим не доказывает 3-point-вариант; X06 — отдельные способы Rectangle; способ запуска: dropdown-меню RectangleDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "нет маппинга (sketchNativeActions); TwoPoint-режим не доказывает 3-point-вариант; X06 — отдельные способы Rectangle; способ запуска: dropdown-меню RectangleDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -260,7 +260,7 @@
                 "Q07"
               ],
               "nextTask": "X06",
-              "note": "нет маппинга (sketchNativeActions); TwoPoint-режим не доказывает center-вариант; X06 — отдельные способы Rectangle; способ запуска: dropdown-меню RectangleDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "нет маппинга (sketchNativeActions); TwoPoint-режим не доказывает center-вариант; X06 — отдельные способы Rectangle; способ запуска: dropdown-меню RectangleDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -287,7 +287,7 @@
                 "Q07"
               ],
               "nextTask": "P01",
-              "note": "direct dispatch; shortcut C; пилот окружности (R01 circlePilot); owner visual PENDING; способ запуска: dropdown-меню CircleDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "direct dispatch; shortcut C; пилот окружности (R01 circlePilot); owner visual PENDING; способ запуска: dropdown-меню CircleDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "direct_command",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -314,7 +314,7 @@
                 "Q07"
               ],
               "nextTask": "X06",
-              "note": "нет маппинга (sketchNativeActions); CenterRadius не доказывает 2-point-вариант; X06 — отдельные способы Circle; способ запуска: dropdown-меню CircleDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "нет маппинга (sketchNativeActions); CenterRadius не доказывает 2-point-вариант; X06 — отдельные способы Circle; способ запуска: dropdown-меню CircleDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -341,7 +341,7 @@
                 "Q07"
               ],
               "nextTask": "X06",
-              "note": "КОНТРОЛЬНЫЙ КООТРПРИМЕР v3: registry ID sketch.circle и общий handler НЕ доказывают вариант — маппинга в sketchNativeActions нет; X06 — отдельные способы Circle; способ запуска: dropdown-меню CircleDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "КОНТРОЛЬНЫЙ КООТРПРИМЕР v3: registry ID sketch.circle и общий handler НЕ доказывают вариант — маппинга в sketchNativeActions нет; X06 — отдельные способы Circle; способ запуска: dropdown-меню CircleDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -368,7 +368,7 @@
                 "Q07"
               ],
               "nextTask": "X06",
-              "note": "нет маппинга (sketchNativeActions); X06 — отдельные способы Circle; способ запуска: dropdown-меню CircleDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "нет маппинга (sketchNativeActions); X06 — отдельные способы Circle; способ запуска: dropdown-меню CircleDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -395,7 +395,7 @@
                 "Q07"
               ],
               "nextTask": "X06",
-              "note": "нет маппинга (sketchNativeActions); X06 — отдельные способы Circle; способ запуска: dropdown-меню CircleDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "нет маппинга (sketchNativeActions); X06 — отдельные способы Circle; способ запуска: dropdown-меню CircleDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -422,7 +422,7 @@
                 "Q07"
               ],
               "nextTask": "X06",
-              "note": "нет маппинга (sketchNativeActions); CenterTwoPoint не доказывает 3-point-вариант; X06 — отдельные способы Arc; способ запуска: dropdown-меню ArcDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "нет маппинга (sketchNativeActions); CenterTwoPoint не доказывает 3-point-вариант; X06 — отдельные способы Arc; способ запуска: dropdown-меню ArcDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -447,7 +447,7 @@
                 "Q07"
               ],
               "nextTask": "S01",
-              "note": "direct dispatch; S01 — числовой ввод Arc; способ запуска: dropdown-меню ArcDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "direct dispatch; S01 — числовой ввод Arc; способ запуска: dropdown-меню ArcDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "direct_command",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -474,7 +474,7 @@
                 "Q07"
               ],
               "nextTask": "X06",
-              "note": "нет маппинга (sketchNativeActions); X06 — отдельные способы Arc; способ запуска: dropdown-меню ArcDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "нет маппинга (sketchNativeActions); X06 — отдельные способы Arc; способ запуска: dropdown-меню ArcDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -501,7 +501,7 @@
                 "Q07"
               ],
               "nextTask": "X06",
-              "note": "sketch.polygon — planned; X06 включает Polygon (отдельная карточка); способ запуска: dropdown-меню PolygonDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "sketch.polygon — planned; X06 включает Polygon (отдельная карточка); способ запуска: dropdown-меню PolygonDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -528,7 +528,7 @@
                 "Q07"
               ],
               "nextTask": "X06",
-              "note": "sketch.polygon — planned; X06 включает Polygon (отдельная карточка); способ запуска: dropdown-меню PolygonDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "sketch.polygon — planned; X06 включает Polygon (отдельная карточка); способ запуска: dropdown-меню PolygonDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -555,7 +555,7 @@
                 "Q07"
               ],
               "nextTask": "X06",
-              "note": "sketch.polygon — planned; X06 включает Polygon (отдельная карточка); способ запуска: dropdown-меню PolygonDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "sketch.polygon — planned; X06 включает Polygon (отдельная карточка); способ запуска: dropdown-меню PolygonDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -605,7 +605,7 @@
               "browserAcceptance": "not_tested",
               "scenarios": [],
               "nextTask": "X06",
-              "note": "slot — нет ASA-эквивалента в registry; X06 — дополнительные примитивы; способ запуска: dropdown-меню SlotDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "slot — нет ASA-эквивалента в registry; X06 — дополнительные примитивы; способ запуска: dropdown-меню SlotDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -628,7 +628,7 @@
               "browserAcceptance": "not_tested",
               "scenarios": [],
               "nextTask": "X06",
-              "note": "slot — нет ASA-эквивалента в registry; X06 — дополнительные примитивы; способ запуска: dropdown-меню SlotDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "slot — нет ASA-эквивалента в registry; X06 — дополнительные примитивы; способ запуска: dropdown-меню SlotDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -651,7 +651,7 @@
               "browserAcceptance": "not_tested",
               "scenarios": [],
               "nextTask": "X06",
-              "note": "slot — нет ASA-эквивалента в registry; X06 — дополнительные примитивы; способ запуска: dropdown-меню SlotDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "slot — нет ASA-эквивалента в registry; X06 — дополнительные примитивы; способ запуска: dropdown-меню SlotDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -674,7 +674,7 @@
               "browserAcceptance": "not_tested",
               "scenarios": [],
               "nextTask": "X06",
-              "note": "slot — нет ASA-эквивалента в registry; X06 — дополнительные примитивы; способ запуска: dropdown-меню SlotDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "slot — нет ASA-эквивалента в registry; X06 — дополнительные примитивы; способ запуска: dropdown-меню SlotDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -697,7 +697,7 @@
               "browserAcceptance": "not_tested",
               "scenarios": [],
               "nextTask": "X06",
-              "note": "slot — нет ASA-эквивалента в registry; X06 — дополнительные примитивы; способ запуска: dropdown-меню SlotDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "slot — нет ASA-эквивалента в registry; X06 — дополнительные примитивы; способ запуска: dropdown-меню SlotDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -725,7 +725,7 @@
                 "Q07"
               ],
               "nextTask": "X06",
-              "note": "sketch.spline — planned; X06 включает Spline (отдельная карточка); способ запуска: dropdown-меню SplineDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "sketch.spline — planned; X06 включает Spline (отдельная карточка); способ запуска: dropdown-меню SplineDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -752,7 +752,7 @@
                 "Q07"
               ],
               "nextTask": "X06",
-              "note": "скрытый (isVisible=false в historic reference); sketch.spline — planned; X06 включает Spline; способ запуска: dropdown-меню SplineDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "скрытый (isVisible=false и в active snapshot, и в historic reference); sketch.spline — planned; X06 включает Spline; способ запуска: dropdown-меню SplineDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -779,7 +779,7 @@
                 "Q07"
               ],
               "nextTask": "X06",
-              "note": "sketch.spline — planned; X06 включает Spline; способ запуска: dropdown-меню SplineDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "sketch.spline — planned; X06 включает Spline; способ запуска: dropdown-меню SplineDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -972,7 +972,7 @@
               "browserAcceptance": "not_tested",
               "scenarios": [],
               "nextTask": "X07",
-              "note": "sketch.project — planned; X07 — Project и ассоциативность; способ запуска: dropdown-меню ProjectIncludeDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "sketch.project — planned; X07 — Project и ассоциативность; способ запуска: dropdown-меню ProjectIncludeDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -995,7 +995,7 @@
               "browserAcceptance": "not_tested",
               "scenarios": [],
               "nextTask": "X07",
-              "note": "пересечение кривых — нет ASA-эквивалента; X07 — Project и ассоциативность; способ запуска: dropdown-меню ProjectIncludeDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "пересечение кривых — нет ASA-эквивалента; X07 — Project и ассоциативность; способ запуска: dropdown-меню ProjectIncludeDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -1018,7 +1018,7 @@
               "browserAcceptance": "not_tested",
               "scenarios": [],
               "nextTask": "X07",
-              "note": "силуэт вращения — нет ASA-эквивалента; X07 — Project и ассоциативность (ближайший блок); способ запуска: dropdown-меню ProjectIncludeDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "силуэт вращения — нет ASA-эквивалента; X07 — Project и ассоциативность (ближайший блок); способ запуска: dropdown-меню ProjectIncludeDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -1043,7 +1043,7 @@
               "browserAcceptance": "not_tested",
               "scenarios": [],
               "nextTask": "X07",
-              "note": "sketch.project — planned; X07 — Project и ассоциативность; способ запуска: dropdown-меню ProjectIncludeDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "sketch.project — planned; X07 — Project и ассоциативность; способ запуска: dropdown-меню ProjectIncludeDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -1068,7 +1068,7 @@
               "browserAcceptance": "not_tested",
               "scenarios": [],
               "nextTask": "X07",
-              "note": "sketch.project — planned; X07 — Project и ассоциативность; способ запуска: dropdown-меню ProjectIncludeDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "sketch.project — planned; X07 — Project и ассоциативность; способ запуска: dropdown-меню ProjectIncludeDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -1091,7 +1091,7 @@
               "browserAcceptance": "not_tested",
               "scenarios": [],
               "nextTask": "X07",
-              "note": "кривая пересечения — нет ASA-эквивалента; X07 — Project и ассоциативность; способ запуска: dropdown-меню ProjectIncludeDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "кривая пересечения — нет ASA-эквивалента; X07 — Project и ассоциативность; способ запуска: dropdown-меню ProjectIncludeDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -1114,7 +1114,7 @@
               "browserAcceptance": "not_tested",
               "scenarios": [],
               "nextTask": "X07",
-              "note": "изопараметрическая кривая — нет ASA-эквивалента; X07 — Project и ассоциативность; способ запуска: dropdown-меню ProjectIncludeDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "изопараметрическая кривая — нет ASA-эквивалента; X07 — Project и ассоциативность; способ запуска: dropdown-меню ProjectIncludeDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -1410,7 +1410,7 @@
               "browserAcceptance": "not_tested",
               "scenarios": [],
               "nextTask": "X05",
-              "note": "sketch.chamfer — planned; X05 — Sketch Fillet и Chamfer; способ запуска: dropdown-меню SketchChamferDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "sketch.chamfer — planned; X05 — Sketch Fillet и Chamfer; способ запуска: dropdown-меню SketchChamferDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -1435,7 +1435,7 @@
               "browserAcceptance": "not_tested",
               "scenarios": [],
               "nextTask": "X05",
-              "note": "sketch.chamfer — planned; X05 — Sketch Fillet и Chamfer; способ запуска: dropdown-меню SketchChamferDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "sketch.chamfer — planned; X05 — Sketch Fillet и Chamfer; способ запуска: dropdown-меню SketchChamferDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -1460,7 +1460,7 @@
               "browserAcceptance": "not_tested",
               "scenarios": [],
               "nextTask": "X05",
-              "note": "sketch.chamfer — planned; X05 — Sketch Fillet и Chamfer; способ запуска: dropdown-меню SketchChamferDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "sketch.chamfer — planned; X05 — Sketch Fillet и Chamfer; способ запуска: dropdown-меню SketchChamferDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -3253,7 +3253,7 @@
               "browserAcceptance": "not_tested",
               "scenarios": [],
               "nextTask": "SEL01",
-              "note": "selection — нет ASA-ID в registry; базовый selection есть в продукте, конкретный toolbar-вариант Fusion не подключён; следующая задача — SEL-блок (SEL01 — базовый click-selection); способ запуска: dropdown-меню SelectionToolsDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "selection — нет ASA-ID в registry; базовый selection есть в продукте, конкретный toolbar-вариант Fusion не подключён; следующая задача — SEL-блок (SEL01 — базовый click-selection); способ запуска: dropdown-меню SelectionToolsDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -3276,7 +3276,7 @@
               "browserAcceptance": "not_tested",
               "scenarios": [],
               "nextTask": "SEL01",
-              "note": "selection — нет ASA-ID в registry; базовый selection есть в продукте, конкретный toolbar-вариант Fusion не подключён; следующая задача — SEL-блок (SEL01 — базовый click-selection); способ запуска: dropdown-меню SelectionToolsDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "selection — нет ASA-ID в registry; базовый selection есть в продукте, конкретный toolbar-вариант Fusion не подключён; следующая задача — SEL-блок (SEL01 — базовый click-selection); способ запуска: dropdown-меню SelectionToolsDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -3299,7 +3299,7 @@
               "browserAcceptance": "not_tested",
               "scenarios": [],
               "nextTask": "SEL01",
-              "note": "selection — нет ASA-ID в registry; базовый selection есть в продукте, конкретный toolbar-вариант Fusion не подключён; следующая задача — SEL-блок (SEL01 — базовый click-selection); способ запуска: dropdown-меню SelectionToolsDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "selection — нет ASA-ID в registry; базовый selection есть в продукте, конкретный toolbar-вариант Fusion не подключён; следующая задача — SEL-блок (SEL01 — базовый click-selection); способ запуска: dropdown-меню SelectionToolsDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -3322,7 +3322,7 @@
               "browserAcceptance": "not_tested",
               "scenarios": [],
               "nextTask": "SEL01",
-              "note": "selection — нет ASA-ID в registry; базовый selection есть в продукте, конкретный toolbar-вариант Fusion не подключён; следующая задача — SEL-блок (SEL01 — базовый click-selection); способ запуска: dropdown-меню SelectionToolsDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "selection — нет ASA-ID в registry; базовый selection есть в продукте, конкретный toolbar-вариант Fusion не подключён; следующая задача — SEL-блок (SEL01 — базовый click-selection); способ запуска: dropdown-меню SelectionToolsDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -3345,7 +3345,7 @@
               "browserAcceptance": "not_tested",
               "scenarios": [],
               "nextTask": "SEL01",
-              "note": "selection — нет ASA-ID в registry; базовый selection есть в продукте, конкретный toolbar-вариант Fusion не подключён; следующая задача — SEL-блок (SEL01 — базовый click-selection); способ запуска: dropdown-меню SelectionToolsDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "selection — нет ASA-ID в registry; базовый selection есть в продукте, конкретный toolbar-вариант Fusion не подключён; следующая задача — SEL-блок (SEL01 — базовый click-selection); способ запуска: dropdown-меню SelectionToolsDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -3393,7 +3393,7 @@
                 "Q06"
               ],
               "nextTask": "SEL03",
-              "note": "selection — нет ASA-ID в registry; базовый selection есть в продукте, конкретный toolbar-вариант Fusion не подключён; следующая задача — SEL-блок (SEL03 — keyboard/focus и конфликты); способ запуска: dropdown-меню SelectionPriorityCommandsDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "selection — нет ASA-ID в registry; базовый selection есть в продукте, конкретный toolbar-вариант Fusion не подключён; следующая задача — SEL-блок (SEL03 — keyboard/focus и конфликты); способ запуска: dropdown-меню SelectionPriorityCommandsDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -3418,7 +3418,7 @@
                 "Q06"
               ],
               "nextTask": "SEL03",
-              "note": "selection — нет ASA-ID в registry; базовый selection есть в продукте, конкретный toolbar-вариант Fusion не подключён; следующая задача — SEL-блок (SEL03 — keyboard/focus и конфликты); способ запуска: dropdown-меню SelectionPriorityCommandsDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "selection — нет ASA-ID в registry; базовый selection есть в продукте, конкретный toolbar-вариант Fusion не подключён; следующая задача — SEL-блок (SEL03 — keyboard/focus и конфликты); способ запуска: dropdown-меню SelectionPriorityCommandsDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -3443,7 +3443,7 @@
                 "Q06"
               ],
               "nextTask": "SEL03",
-              "note": "selection — нет ASA-ID в registry; базовый selection есть в продукте, конкретный toolbar-вариант Fusion не подключён; следующая задача — SEL-блок (SEL03 — keyboard/focus и конфликты); способ запуска: dropdown-меню SelectionPriorityCommandsDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "selection — нет ASA-ID в registry; базовый selection есть в продукте, конкретный toolbar-вариант Fusion не подключён; следующая задача — SEL-блок (SEL03 — keyboard/focus и конфликты); способ запуска: dropdown-меню SelectionPriorityCommandsDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -3466,7 +3466,7 @@
               "browserAcceptance": "not_tested",
               "scenarios": [],
               "nextTask": "X11",
-              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка); способ запуска: dropdown-меню SelectionPriorityCommandsDropDown (historic API inventory — active snapshot не раскрывает dropdown)",
+              "note": "нет ASA-эквивалента в registry; X11 — другие среды Fusion (конфигурации/анализ/вставка/сборка); способ запуска: dropdown-меню SelectionPriorityCommandsDropDown (children присутствуют и в active snapshot, и в historic reference; наличие в JSON не доказывает визуально открытое меню)",
               "bindingKind": "unbound",
               "bindingEvidence": {
                 "sha": "93c781c52b5985d681f3a1177256d15b217c1616",
@@ -3834,9 +3834,14 @@
   },
   "revised": {
     "date": "2026-11-27",
-    "contractVersion": 3,
-    "baseSha": "93c781c52b5985d681f3a1177256d15b217c1616",
-    "note": "корректирующая ревизия R02 по контракту v3: фактические binding-виды (direct_command/contextual_dispatch/direct_handler/container/unbound/UNKNOWN), 8 вариантов -> null/not_implemented/X06, семантика nextTask (S01=Arc numeric, S02=Rectangle proof, S03=Line/locks, X06=дополнительные способы), контейнеры отдельно, UNKNOWN в словаре; browser/geometry proof — N/A (reference/docs scope)"
+    "contractVersion": 4,
+    "baseSha": "063241b61f1405dcf3524742ad25778d524df758",
+    "note": "корректирующая ревизия R02 по контракту v4: устранены ложные атрибуции происхождения команд (86 из одного источника + 41 из другого) и число 115 из v3 — active snapshot и historic reference содержат одинаковые 127 command controls (86 top-level + 41 dropdown children; 110 visible + 17 hidden; 10 DropDown; 18 separator), dropdowns раскрыты в обоих capture; зафиксирован выбор active-видимости и 2 расхождения с historic (FusionImportCommandFromToolbar: active=false/historic=true; SketchStop: active=true/historic=false); завершена адресная сверка 127 actions + 10 containers и 28 implemented-строк с фактическим source; browser/geometry proof — N/A (reference/docs scope)",
+    "previousRevision": {
+      "contractVersion": 3,
+      "baseSha": "93c781c52b5985d681f3a1177256d15b217c1616",
+      "note": "фактические binding-виды, 8 вариантов -> null/not_implemented/X06, семантика nextTask, контейнеры отдельно, UNKNOWN в словаре"
+    }
   },
   "counts": {
     "basis": "v3: строгое разделение command / container / separator / hidden; каждый счёт — по конкретным source ID",
@@ -3847,14 +3852,22 @@
       "visibleContainers": 10,
       "separators": 18,
       "sourceBreakdown": {
-        "sketch-active-ui-20261106.json (active snapshot)": "86 command controls (71 visible + 15 hidden), 10 DropDownControl (visible), 16 SeparatorControl; dropdowns не раскрыты в capture (children отсутствуют)",
-        "sketch-native-reference.v1.json (historic API inventory)": "41 child-команда dropdowns (39 visible + 2 hidden: DrawCVMSpline3D, SelectComponentPriorityCommand), 2 SeparatorControl"
+        "sketch-active-ui-20261106.json (active snapshot)": "127 command controls: 86 top-level (71 visible + 15 hidden) + 41 dropdown children (39 visible + 2 hidden: DrawCVMSpline3D, SelectComponentPriorityCommand); итого 110 visible + 17 hidden; 10 DropDownControl (visible); 18 SeparatorControl (16 top-level + 2 child); promotedControls — дубликат controls[], не считается",
+        "sketch-native-reference.v1.json (historic API inventory)": "те же 127 command controls (86 top-level + 41 dropdown children; 110 visible + 17 hidden); 10 DropDownControl (visible); 18 SeparatorControl (16 top-level + 2 child); независимый cross-check структуры, не дополнительный источник команд"
+      },
+      "visibility": {
+        "basis": "поле visible в inventory = isVisible из active snapshot (sketch-active-ui-20261106.json)",
+        "differsInHistoric": [
+          "FusionImportCommandFromToolbar (InsertPanel): active=false, historic=true",
+          "SketchStop (StopSketchPanel): active=true, historic=false"
+        ],
+        "note": "наличие children в JSON не доказывает визуально открытое меню; source capture отделён от фактической работы UI"
       }
     },
     "solidTabFirstProfile": {
       "entries": 6,
       "note": "SketchCreate, Extrude, SelectPanel, ViewCube (3D), ViewCube (sketch plane), Navigation"
     },
-    "explanationOf132": "132 — исходный пересчёт v1 (127 строк sketchTab + 5 строк solidFirstProfile, без разделения container/separator/hidden). v3: 127 команд + 6 solid + 10 контейнеров = 143 строки; дельта = +1 (ViewCube разделён на 3D и sketch) + 10 (контейнеры DropDown). Строки не удалялись: все 127 command controls (86 active + 41 historic) и 10 контейнеров сохранены."
+    "explanationOf132": "132 — исходный пересчёт v1 (127 строк sketchTab + 5 строк solidFirstProfile, без разделения container/separator/hidden). v3/v4: 127 команд + 6 solid + 10 контейнеров = 143 строки; дельта = +1 (ViewCube разделён на 3D и sketch) + 10 (контейнеры DropDown). Строки не удалялись: все 127 command controls (86 top-level + 41 dropdown children; active snapshot и historic reference содержат одинаковые 127) и 10 контейнеров сохранены."
   }
 }
