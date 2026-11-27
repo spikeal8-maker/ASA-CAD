@@ -62,7 +62,7 @@ export class OrbitControls extends BaseOrbitControls {
   // Final projection update done (syncDistance applied): publish the actual camera snapshot here,
   // not from the 'change' event, which fires inside super.update before syncDistance.
   // One sync final publish: writeCameraDebug -> changedCamera -> syncCameraDebug (after final syncDistance).
-  if(!this.ended){this.writeCameraDebug();navigation.changedCamera();this.syncCameraDebug();}
+  if(this.ended===false){this.writeCameraDebug();navigation.changedCamera();this.syncCameraDebug();}
   return result;
  }
  private readPose():Pose{return {...(this.object instanceof FusionProjectionCamera?this.object.captureScale():{}),position:this.object.position.toArray() as [number,number,number],target:this.target.toArray() as [number,number,number],up:this.object.up.toArray() as [number,number,number]};}
