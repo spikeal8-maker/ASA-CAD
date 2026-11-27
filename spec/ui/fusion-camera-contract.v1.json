@@ -27,7 +27,8 @@
 "route":"A",
 "mode":"orthographic-first",
 "perspective":"B01; до A08 perspective input не требуется",
-"authority":"одна фактическая камера viewport; ViewCube pose не источник матриц"
+"authority":"одна фактическая камера viewport; ViewCube pose не источник матриц",
+"affine":"P0=project(origin), Pu=project(origin+u), Pv=project(origin+v); CSS=P0+x*(Pu-P0)+y*(Pv-P0); все три проекции из одного camera snapshot/revision; вырожденный basis — ввод недоступен"
 },
 "planeFrame":{
 "basis":"src/contracts/sketchWorkplane.ts",
