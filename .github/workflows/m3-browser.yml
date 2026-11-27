@@ -219,6 +219,21 @@ jobs:
           ASA_FUSION_CIRCLE_ACCEPTANCE_DIR: ${{ runner.temp }}/fusion-circle-acceptance
         run: node tests/m3/fusion-circle-acceptance-browser.mjs
 
+      - name: Exercise Fusion Solid wheel Fit, history and Save/Continue
+        env:
+          ASA_CAD_SHELL_URL: http://127.0.0.1:8090/
+          ASA_FUSION_SOLID_FIT_DIR: ${{ runner.temp }}/fusion-solid-fit
+        run: node tests/m3/fusion-solid-fit-browser.mjs
+
+      - name: Upload Fusion Solid Fit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: asa-cad-fusion-solid-fit
+          path: ${{ runner.temp }}/fusion-solid-fit
+          if-no-files-found: warn
+          retention-days: 30
+
       - name: Upload Fusion Circle evidence
         if: always()
         uses: actions/upload-artifact@v4

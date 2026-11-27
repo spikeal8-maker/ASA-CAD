@@ -5,7 +5,7 @@ import type { CadBodyId } from '../contracts/ids';
 import { VIEWPORT_VISUAL_TOKENS } from './viewportTokens';
 import { partReferenceScene } from './viewport/PartReferenceGeometry';
 import { createViewportMeshLayer } from './viewport/ViewportMeshLayer';
-import { loadViewportPresentation } from './ViewportPresentation';
+import { applyViewportCameraPose, loadViewportPresentation } from './ViewportPresentation';
 import { useEditorMode } from './EditorMode';
 import {
   resolveViewportPickCandidates,
@@ -284,11 +284,7 @@ export function CadViewport({
         writeCameraState();
 
         const finishViewMutation = (view: CadViewportViewName, pose: ViewportCameraPose) => {
-          camera.position.set(...pose.position);
-          controls.target.set(...pose.target);
-          camera.up.set(...pose.up);
-          camera.lookAt(controls.target);
-          controls.update();
+          applyViewportCameraPose(camera, controls, view, pose);
           const currentHost = hostRef.current;
           if (currentHost) currentHost.dataset.viewName = view;
           writeCameraState();
