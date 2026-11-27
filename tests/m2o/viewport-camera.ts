@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import './fusion-camera-snapshot';
 import {
   ViewportCameraController,
   fitDistance,
