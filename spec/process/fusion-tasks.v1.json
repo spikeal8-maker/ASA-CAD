@@ -19,6 +19,12 @@
     "issue": 240,
     "purpose": "FUS/R02 утверждённый inventory видимых действий первого профиля (ревизия v4, 2026-11-27, base 063241b61f1405dcf3524742ad25778d524df758): все команды SketchTab (9 панелей: 127 command controls = 86 top-level + 41 dropdown children; 110 visible + 17 hidden; active snapshot и historic reference содержат одинаковые 127; 10 DropDown-контейнеров отдельно; 18 separator — layout) + первый профиль SolidTab (Sketch/Extrude/Select/ViewCube 3D+sketch/Navigation). Каждое действие связано с fusion command ID, фактическим видом подключения (bindingKind: direct_command / contextual_dispatch / direct_handler / container / unbound / UNKNOWN) с source ref (sha/path/symbol), ASA command ID (только из command-registry.v1.json; отсутствующий/планируемый — null + asaRelatedCommandIds + следующая задача), реализацией конкретного варианта (implemented подтверждён только кодом, это не browser PASS), сценарием Q01–Q16, следующей задачей (S01=Arc numeric, S02=Rectangle proof, S03=Line/locks, X06=дополнительные способы и примитивы) и отдельным статусом браузерной приёмки (PASS только со ссылкой на evidence; ownerVisualAcceptance=PENDING). Словарь статусов включает UNKNOWN (причина + следующая задача). Не является полным каталогом Autodesk Fusion; не утверждает готовность UI."
   },
+  "cameraManifest": {
+    "path": "spec/ui/fusion-camera-contract.v1.json",
+    "task": "A01",
+    "issue": 245,
+    "purpose": "FUS/A01 выбранный контролёром контракт камеры/проекции (маршрут A, orthographic-first, base 2fedba7b41e31c7dcf5808649e78a7e74026b52f): одна фактическая камера viewport как camera authority, planeFrame origin/u/v/normal, forward plane→screen и inverse screen→plane от одного snapshot/revision, readiness, degenerate view, tolerances 1e-8/1e-6mm/0.5csspx, NOT_TESTED verification targets и gaps A02–B01. Reference-only: подготовка следующего исправления, не заявляет реализацию."
+  },
   "prepared_on": "2026-11-25",
   "baseline_sha": "a08b17c99bf8b3343008810ab5f9f398bd7a139d",
   "scope": {

@@ -1,0 +1,65 @@
+{
+"schemaVersion":1,
+"taskId":"A01",
+"plannedSliceId":"U2-FUSION-ORIGIN-NAV",
+"scope":"Контракт камеры/проекции, выбранный контролёром (маршрут A, orthographic-first). Reference-only: подготовка следующего исправления камеры; не объявляет реализацию; будущие проверки NOT_TESTED.",
+"baseSha":"2fedba7b41e31c7dcf5808649e78a7e74026b52f",
+"sources":[
+{"path":"src/contracts/sketchWorkplane.ts","symbol":"sketchPlaneFrame;originPlaneFrame;planeFramePoint","sourceSha":"2fedba7b41e31c7dcf5808649e78a7e74026b52f"},
+{"path":"src/web/viewport/SketchWorkplaneProjection.ts","symbol":"resolveSketchWorkplaneProjection;sketchPointToModelPoint","sourceSha":"2fedba7b41e31c7dcf5808649e78a7e74026b52f"},
+{"path":"src/web/fusion/ProjectionCamera.ts","symbol":"FusionProjectionCamera;setProjection;updateProjectionMatrix","sourceSha":"2fedba7b41e31c7dcf5808649e78a7e74026b52f"},
+{"path":"src/web/fusion/LiveOrbitControls.ts","symbol":"OrbitControls;readPose;navigation.attach","sourceSha":"2fedba7b41e31c7dcf5808649e78a7e74026b52f"},
+{"path":"src/web/fusion/navigation.ts","symbol":"Pose;NavSnapshot;NavigationDriver;publish","sourceSha":"2fedba7b41e31c7dcf5808649e78a7e74026b52f"},
+{"path":"src/web/fusion/LiveSketchStage.tsx","symbol":"SketchEditingStage","sourceSha":"2fedba7b41e31c7dcf5808649e78a7e74026b52f"},
+{"path":"src/web/viewport/SketchViewportGeometry.ts","symbol":"screenPointToSketchPoint;sketchDisplayFrame","sourceSha":"2fedba7b41e31c7dcf5808649e78a7e74026b52f"},
+{"path":"src/web/CadViewport.tsx","symbol":"scene/camera/renderer owner","sourceSha":"2fedba7b41e31c7dcf5808649e78a7e74026b52f"}
+],
+"observed":{
+"planeFrame":"world=origin+u*x+v*y; normal=u×v; XY=X/Y/+Z, XZ=X/Z/-Y, YZ=Y/Z/+X; mm",
+"projection":"FusionProjectionCamera владеет perspective/orthographic матрицами; origin planes разрешены; stable-reference support пока modelContextReady:false",
+"navigation":"readPose/navigation.attach даёт position/target/up, zoom/viewHeight/actualProjection; ready=!!driver; согласованных viewport/view/inverse matrices/revision нет",
+"sketchStage":"LiveSketchStage isolated-2d с собственными viewport.center/span (18205 bytes, выше target); связь с 3D-камерой не реализована",
+"sketchMapper":"плоский SVG mapper с letterboxing; не inverse camera projection",
+"viewport":"CadViewport - существующий scene/camera/renderer owner, frozen 27370 bytes"
+},
+"target":"Маршрут A: существующие SVG-слои эскиза получают преобразование от единственной фактической камеры viewport. После подключения моста собственные center/span перестают быть camera authority. KOMPAS mapper и общий CAD/document/history сохраняются; новый renderer и второе состояние документа не вводятся.",
+"projectionDecision":{
+"route":"A",
+"mode":"orthographic-first",
+"perspective":"B01; до A08 perspective input не требуется",
+"authority":"одна фактическая камера viewport; ViewCube pose не источник матриц"
+},
+"planeFrame":{
+"basis":"src/contracts/sketchWorkplane.ts",
+"formula":"world=origin+u*x+v*y; normal=u×v",
+"planes":{"XY":["X","Y","+Z"],"XZ":["X","Z","-Y"],"YZ":["Y","Z","+X"]},
+"units":"mm"
+},
+"cameraSnapshot":{
+"source":"NavigationDriver/фактическая камера; не реконструировать из ViewCube pose; не сохранять в CadDocument",
+"fields":["монотонная revision","actualProjection","view matrix","projection matrix","inverse matrices","CSS viewport rect","DPR отдельно","camera attachment/readiness"],
+"rule":"resize и смена вида повышают revision; одна revision для render и input"
+},
+"planeToScreen":"plane→world→view→clip→CSS client pixels; invalid/clipped - явный invalid result, не подмена (0,0)",
+"screenToPlane":"client→NDC→world ray→plane intersection→dot с u/v; при отказе явная ошибка, не подстановка origin",
+"readiness":{
+"checks":["resolved plane","live camera","viewport rect ≠ 0","finite/invertible matrices","supported projection"],
+"rule":"каждый check раздельно; любой отказ блокирует ввод без мутации"
+},
+"degenerateView":{
+"cases":["отсутствующая камера","неразрешённая опора","нулевой viewport","invalid matrix","parallel ray","intersection вне camera range"],
+"behavior":"явный отказ; нет document/history mutation; draft сохраняется; Look At может вернуть определимый вид"
+},
+"tolerances":{
+"note":"выбранные требования контролёра, не измеренные факты",
+"normalizedParallelThreshold":1e-8,
+"roundTripMm":1e-6,
+"forwardScreenCssPx":0.5
+},
+"verificationTargets":{
+"status":"NOT_TESTED",
+"cases":["XY/XZ/YZ","точки (0,0),(20,10),(-15,25)","resize/DPR","tilt/zoom/edge-on","одна revision для render/input"]
+},
+"gapsAndNextTasks":["A02 extraction","A03 snapshot","A04 round-trip","A05 presentation","A06 input","A06A numeric anchors","A06B cancellation/edge-on","A07 cube/Look At","A08 acceptance","B01 perspective"],
+"ownerVisualAcceptance":"PENDING"
+}
