@@ -2,6 +2,7 @@ import {OrbitControls as BaseOrbitControls} from 'three/examples/jsm/controls/Or
 import {MOUSE,Vector3,Quaternion,type Camera} from 'three';
 import {navigation,type NavMode,type Projection,type Pose,type Vec3} from './navigation';
 import {FusionProjectionCamera} from './ProjectionCamera';
+import {captureSnapshot} from './LiveCameraSnapshot';
 import {fitDistance} from '../viewport/ViewportCameraController';
 import type {CadRenderBounds} from '../../contracts/render';
 
@@ -11,7 +12,12 @@ export class OrbitControls extends BaseOrbitControls {
  private ended=false;
  private requested:Projection='perspective';
  private currentMode:NavMode='select';
- private announce=()=>{this.applyProjection();this.writeCameraDebug();navigation.changed();};
+ private resizeObserver:ResizeObserver|null=null;
+ private resizeFrame=0;
+ private scheduleCameraRefresh=()=>{if(this.ended||this.resizeFrame)return;this.resizeFrame=requestAnimationFrame(this.refreshCameraFrame);};
+ private refreshCameraFrame=()=>{this.resizeFrame=0;if(this.ended)return;navigation.changedCamera();this.syncCameraDebug();};
+ private syncCameraDebug(){const host=this.domElement;if(!host)return;const s=navigation.cameraSnapshot();if(s)host.dataset.cameraSnapshot=JSON.stringify(s);else delete host.dataset.cameraSnapshot;}
+ private announce=()=>{this.applyProjection();this.writeCameraDebug();navigation.changed();this.syncCameraDebug();};
  private writeCameraDebug(){
   if(this.object instanceof FusionProjectionCamera&&this.domElement){
    this.domElement.dataset.projection=this.object.projectionMode;
@@ -24,12 +30,19 @@ export class OrbitControls extends BaseOrbitControls {
   super(camera,element);
   this.addEventListener('change',this.announce);
   element.addEventListener('click',this.preventNavigationClick,true);
+  // Piggyback on the existing host/canvas resize: one coalesced capture after the applied aspect/projection, no OrbitControls.change.
+  if(this.domElement){
+   this.resizeObserver=new ResizeObserver(this.scheduleCameraRefresh);
+   this.resizeObserver.observe(this.domElement);
+   window.addEventListener('resize',this.scheduleCameraRefresh,{passive:true});
+   window.addEventListener('scroll',this.scheduleCameraRefresh,{passive:true,capture:true});
+  }
   // CadViewport assigns its baseline profile immediately after construction.
   queueMicrotask(()=>{
    if(this.ended)return;
    this.mouseButtons.RIGHT=null as unknown as MOUSE;
    this.mouseButtons.MIDDLE=MOUSE.PAN;
-   this.release=navigation.attach({read:()=>this.readPose(),orient:(v,u)=>this.orient(v,u),pose:p=>this.applyPose(p),fit:(v,u,b)=>this.fit(v,u,b),
+   this.release=navigation.attach({read:()=>this.readPose(),readCamera:()=>captureSnapshot(this.object as Camera,this.domElement,window.devicePixelRatio),orient:(v,u)=>this.orient(v,u),pose:p=>this.applyPose(p),fit:(v,u,b)=>this.fit(v,u,b),
     orbit:(x,y)=>this.orbitCube(x,y),roll:a=>this.rollCube(a),zoom:f=>this.zoomCamera(f),
     projection:p=>{this.requested=p;this.applyProjection();this.update();this.dispatchEvent({type:'change'});},mode:m=>this.setMode(m)});
    this.dispatchEvent({type:'change'});
@@ -94,5 +107,16 @@ export class OrbitControls extends BaseOrbitControls {
   this.update();this.dispatchEvent({type:'change'});
  }
  private setMode(mode:NavMode){this.currentMode=mode;this.mouseButtons.LEFT=(mode==='pan'?MOUSE.PAN:mode==='orbit'?MOUSE.ROTATE:mode==='zoom'?MOUSE.DOLLY:null) as unknown as MOUSE;}
- override dispose(){this.ended=true;this.release?.();this.removeEventListener('change',this.announce);this.domElement?.removeEventListener('click',this.preventNavigationClick,true);super.dispose();}
+ override dispose(){
+  this.ended=true;
+  if(this.resizeFrame){cancelAnimationFrame(this.resizeFrame);this.resizeFrame=0;}
+  this.resizeObserver?.disconnect();this.resizeObserver=null;
+  window.removeEventListener('resize',this.scheduleCameraRefresh);
+  window.removeEventListener('scroll',this.scheduleCameraRefresh,true);
+  this.release?.();
+  this.removeEventListener('change',this.announce);
+  if(this.domElement)delete this.domElement.dataset.cameraSnapshot;
+  this.domElement?.removeEventListener('click',this.preventNavigationClick,true);
+  super.dispose();
+ }
 }

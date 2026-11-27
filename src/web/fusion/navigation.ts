@@ -1,5 +1,6 @@
 import type {CadRenderBounds} from '../../contracts/render';
 import {DEFAULT_FRAME,toWorld,frameFromView,add,scale,type CubeFrame,type Vec3} from './CubeFrame';
+import {cameraCaptureEqual,type CameraCapture,type CameraSnapshot} from './LiveCameraSnapshot';
 export type {Vec3} from './CubeFrame';
 export type Projection='perspective'|'orthographic'|'mixed';
 export type NavMode='select'|'pan'|'orbit'|'zoom';
@@ -9,6 +10,7 @@ export interface NavigationDriver {
  read():Pose;orient(direction:Vec3,up?:Vec3):void;pose(pose:Pose):void;orbit(dx:number,dy:number):void;
  roll(angle:number):void;zoom(factor:number):void;projection(mode:Projection):void;mode(mode:NavMode):void;
  fit(direction:Vec3,up:Vec3,bounds:CadRenderBounds|null):void;
+ readCamera?():CameraCapture|null;
 }
 let driver:NavigationDriver|null=null;
 let savedHome:{pose:Pose;projection:Projection}|null=null;
@@ -16,7 +18,18 @@ let bounds:CadRenderBounds|null=null;
 let firstScene=true;
 let snapshot:NavSnapshot={position:[1,-1,1],target:[0,0,0],up:[0,0,1],ready:false,projection:'orthographic',mode:'select',frame:DEFAULT_FRAME,homeMode:'fit'};
 const listeners=new Set<()=>void>();
-function publish(){snapshot={...snapshot,...driver?.read(),ready:!!driver};listeners.forEach(fn=>fn());}
+let cameraSeq=0;
+let cameraCurrent:CameraSnapshot|null=null;
+const cameraListeners=new Set<()=>void>();
+function publishCamera(){
+ const next=driver?.readCamera?driver.readCamera():null;
+ const changed=next===null?cameraCurrent!==null:cameraCurrent===null||!cameraCaptureEqual(next,cameraCurrent);
+ if(!changed)return;
+ cameraSeq+=1;
+ cameraCurrent=next?{...next,revision:cameraSeq}:null;
+ cameraListeners.forEach(fn=>fn());
+}
+function publish(){snapshot={...snapshot,...driver?.read(),ready:!!driver};publishCamera();listeners.forEach(fn=>fn());}
 function orientCube(v:Vec3){
  const up:Vec3=Math.abs(v[2])===1&&v[0]===0&&v[1]===0?[0,v[2]>0?1:-1,0]:[0,0,1];
  driver?.orient(toWorld(v,snapshot.frame),toWorld(up,snapshot.frame));publish();
@@ -24,6 +37,9 @@ function orientCube(v:Vec3){
 export const navigation={
  subscribe(fn:()=>void){listeners.add(fn);return ()=>{listeners.delete(fn);};},
  snapshot:()=>snapshot,
+ cameraSnapshot:()=>cameraCurrent,
+ subscribeCamera(fn:()=>void){cameraListeners.add(fn);return ()=>{cameraListeners.delete(fn);};},
+ changedCamera:()=>{publishCamera();},
  attach(next:NavigationDriver){const previous=snapshot;driver=next;next.projection(previous.projection);next.mode(previous.mode);if(firstScene){firstScene=false;orientCube([1,-1,1]);}else{next.orient(add(previous.position,scale(previous.target,-1)),previous.up);}publish();return ()=>{if(driver===next){driver=null;publish();}};},
  changed:publish,
  setBounds(value:CadRenderBounds|null){bounds=value;},
