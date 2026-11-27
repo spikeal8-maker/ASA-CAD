@@ -77,6 +77,20 @@ export function screenPointToSketchPoint(
   return [normalizeSignedZero(svgX), normalizeSignedZero(-svgY)];
 }
 
+/** Forward inverse of screenPointToSketchPoint: local Sketch point -> CSS client point. */
+export function sketchPointToClient(
+  frame: SketchDisplayFrame,
+  rect: SketchScreenRect,
+  point: CadPoint2,
+): { x: number; y: number } | null {
+  if (!(rect.width > 0) || !(rect.height > 0)) return null;
+  const scale = Math.min(rect.width / frame.width, rect.height / frame.height);
+  if (!(scale > 0) || !Number.isFinite(scale)) return null;
+  const offsetX = rect.left + (rect.width - frame.width * scale) / 2;
+  const offsetY = rect.top + (rect.height - frame.height * scale) / 2;
+  return { x: offsetX + point[0] * scale, y: offsetY - point[1] * scale };
+}
+
 export function panSketchViewport(
   state: SketchViewportState,
   rect: SketchScreenRect,

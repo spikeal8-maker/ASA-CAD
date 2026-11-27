@@ -1,36 +1,32 @@
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import type { CadPoint2 } from '../../contracts/document';
-import type { SketchEditingStageProps } from '../SketchEditingStage';
 import { CadViewport } from '../CadViewport';
 import { SketchDirectToolLayers } from '../SketchDirectToolLayers';
 import { SketchSolveStatus } from '../SketchSolveStatus';
 import { useActiveSketchSolveOverlay } from '../useActiveSketchSolveOverlay';
 import { useSketchEntityDrag } from '../useSketchEntityDrag';
 import { SketchSelectionLayer } from '../viewport/SketchSelectionLayer';
-import { SketchViewportFrameProvider } from '../viewport/SketchViewportFrameContext';
 import { resolveSketchWorkplaneProjection } from '../viewport/SketchWorkplaneProjection';
-import { publishSketchView, registerSketchCompute, useSketchView } from './sketchView';
+import { registerSketchCompute, useSketchView } from './sketchView';
 import { resolveSketchSnap, sketchDisplayOverlay, sketchPointMarks, sketchProfilePath } from './sketchPresentation';
 import type { SketchSnap } from './sketchPresentation';
 import { useLiveSketchNavigation } from './useLiveSketchNavigation';
-import { SketchGridLayers, SketchAnnotationLayers } from './SketchDisplayLayers';
+import {
+  SketchCameraPresentationProvider, SketchGridLayers, SketchAnnotationLayers,
+  cameraPresentationData, useLiveLineContextReset, useSketchCameraStage, useSketchViewPublish,
+  type FusionSketchStageProps,
+} from './SketchDisplayLayers';
 import { LiveLineInput, handleLiveLineKey, resolveLiveLinePointer } from './LiveLineInput';
 import { liveLineInteraction, registerLiveLineSolver } from './LiveLineInteraction';
 import type { LiveLineSnap } from './LiveLineInteraction';
 
-export type { SketchEditingStageProps };
 /** Fusion stage; editing, drag preview, solving and entities keep their shared owners. */
-export function SketchEditingStage(props: SketchEditingStageProps) {
+export function SketchEditingStage(props: FusionSketchStageProps) {
   const view = useSketchView();
   const lineInteraction = useSyncExternalStore(liveLineInteraction.subscribe, liveLineInteraction.getSnapshot);
   const [lineSettled, setLineSettled] = useState<{ sketchId: string; revision: number } | null>(null);
   const [snap, setSnap] = useState<SketchSnap | LiveLineSnap | null>(null);
   const selectionEnabled = props.activeCommand === null && !view.panMode;
-  useEffect(() => {
-    setSnap(null);
-    const line = liveLineInteraction.getSnapshot();
-    liveLineInteraction.setPointerContext({ point: line.to ?? [0, 0], snap: null });
-  }, [props.activeCommand, props.activeSketch.id, view.settings.snap, view.settings.construction]);
   const solve = useActiveSketchSolveOverlay({
     document: props.document, sketch: props.activeSketch, active: true, revisionToken: props.revisionToken,
   });
@@ -92,6 +88,10 @@ export function SketchEditingStage(props: SketchEditingStageProps) {
     startPan, movePan, endPan, resetLostCapture, panByArrow } = useLiveSketchNavigation({
     sketchId: props.activeSketch.id, displayedEntities, panMode: view.panMode, onSnapReset: resetSnap,
   });
+  const camera = useSketchCameraStage({ support: props.activeSketch.support, renderModel: props.renderModel ?? null, stageRef, frame, setViewport });
+  useLiveLineContextReset({ activeCommand: props.activeCommand, sketchId: props.activeSketch.id, snapEnabled: view.settings.snap,
+    constructionVisible: view.settings.construction, reset: resetSnap });
+
   const projection = resolveSketchWorkplaneProjection(props.activeSketch.support);
   const unitPerPixel = viewport.span / Math.max(1, Math.min(stageSize.width, stageSize.height));
   const points = useMemo(() => sketchPointMarks(displayedEntities), [displayedEntities]);
@@ -104,17 +104,8 @@ export function SketchEditingStage(props: SketchEditingStageProps) {
     return registerSketchCompute(solve.restorePersistedPreview);
   }, [entities.length, props.activeCommand, drag.draggingEntityId, solve.restorePersistedPreview]);
 
-  useEffect(() => {
-    const support = String(props.activeSketch.support);
-    const supportLabel = ['XY', 'XZ', 'YZ'].includes(support) ? support : 'Плоскость грани';
-    publishSketchView({
-      id: props.activeSketch.id, name: props.activeSketch.name, support,
-      supportLabel, planeLabel: supportLabel,
-      projection: projection?.kind ?? 'stable-reference', modelContextReady: projection?.modelContextReady ?? false,
-      entityCount: entities.length, dimensionCount: dimensions.length, constraintCount: constraints.length,
-    }, viewport, solve.snapshot);
-  }, [props.activeSketch.id, props.activeSketch.name, props.activeSketch.support,
-    entities.length, dimensions.length, constraints.length, viewport, projection?.kind, projection?.modelContextReady, solve.snapshot]);
+  useSketchViewPublish({ sketch: props.activeSketch, projection, entityCount: entities.length,
+    dimensionCount: dimensions.length, constraintCount: constraints.length, viewport, snapshot: solve.snapshot });
 
   const snapPoint = (point: CadPoint2): CadPoint2 => {
     const state = current.current;
@@ -133,11 +124,13 @@ export function SketchEditingStage(props: SketchEditingStageProps) {
     setSnap(context.snap);
     return context.point;
   };
-  return <SketchViewportFrameProvider frame={frame}>
+  return <SketchCameraPresentationProvider value={camera.presentation} frame={frame}>
     <div ref={stageRef} className="part-model-stage live-sketch-field" data-testid="part-model-stage"
       tabIndex={0} aria-label="Рабочая плоскость эскиза"
       data-sketch-context="isolated-2d" data-sketch-support={props.activeSketch.support}
       data-sketch-projection={projection?.kind ?? ''} data-model-context-ready={projection?.modelContextReady ? 'true' : 'false'}
+      data-camera={cameraPresentationData(camera.presentation)}
+      data-model-empty={camera.renderModel === null ? 'true' : 'false'}
       data-sketch-view-span={viewport.span} data-sketch-view-center={viewport.center.join(',')}
       data-sketch-grid-step={step} data-sketch-construction-visible={view.settings.construction ? 'true' : 'false'}
       data-selected-sketch-entity-id={props.selectedSketchEntityId ?? ''} data-dragging-sketch-entity-id={drag.draggingEntityId ?? ''}
@@ -171,7 +164,7 @@ export function SketchEditingStage(props: SketchEditingStageProps) {
       }}>
       <SketchGridLayers frame={frame} step={step} unitPerPixel={unitPerPixel}
         grid={view.settings.grid} profiles={view.settings.profiles} profile={profile} />
-      <CadViewport model={null} sketchOverlay={displayOverlay} />
+      <CadViewport model={camera.renderModel} sketchOverlay={displayOverlay} referencePlanes={props.document.origin.planes} />
       <SketchSelectionLayer model={displayOverlay} enabled={selectionEnabled}
         selectedEntityId={props.selectedSketchEntityId} draggingEntityId={drag.draggingEntityId}
         onEntitySelect={props.onSketchEntitySelect} onEntityDragStart={drag.start} onEntityDragMove={drag.move}
@@ -195,5 +188,5 @@ export function SketchEditingStage(props: SketchEditingStageProps) {
         <SketchSolveStatus snapshot={solve.snapshot} />
       </div>
     </div>
-  </SketchViewportFrameProvider>;
+  </SketchCameraPresentationProvider>;
 }

@@ -3,6 +3,7 @@ import type { CadPoint2, CadSketchEntity } from '../../contracts/document';
 import type { CadSketchEntityId } from '../../contracts/ids';
 import { sketchArcGeometry } from './SketchArcGeometry';
 import type { SketchOverlayModel } from './SketchOverlayModel';
+import { useSketchCameraPresentationValue } from '../fusion/useSketchCameraPresentation';
 import { useSketchViewportFrame } from './SketchViewportFrameContext';
 import { screenPointToSketchPoint } from './SketchViewportGeometry';
 import './sketch-selection.css';
@@ -22,12 +23,19 @@ export interface SketchSelectionLayerProps {
 /** Stable-ID Sketch selection/drag hit targets; visible solver geometry stays read-only. */
 export function SketchSelectionLayer(props: SketchSelectionLayerProps) {
   const frame = useSketchViewportFrame();
+  // A05 gate: on a camera-presented stage, legacy pointer mapping is blocked as
+  // soon as the frame and the actual camera stop provably coinciding. Drafts and
+  // cancel stay available; KOMPAS/legacy stages are unaffected.
+  const presentation = useSketchCameraPresentationValue();
+  const camera = presentation.mode === 'camera' && presentation.ready ? presentation : null;
+  const gated = presentation.mode === 'camera' && (presentation.ready ? !presentation.aligned : true);
   const dragPointerRef = useRef<number | null>(null);
   /** Entity the pointer went down on: a release that finishes a drawing tool must not select. */
   const pressedRef = useRef<CadSketchEntityId | null>(null);
   if (!props.model) return null;
 
   const pointFromEvent = (event: React.PointerEvent<SVGElement>): CadPoint2 | null => {
+    if (gated) return null;
     const svg = event.currentTarget.ownerSVGElement;
     if (!svg) return null;
     const rect = svg.getBoundingClientRect();
@@ -89,10 +97,13 @@ export function SketchSelectionLayer(props: SketchSelectionLayerProps) {
       data-selection-enabled={props.enabled ? 'true' : 'false'}
       data-selected-sketch-entity-id={props.selectedEntityId ?? ''}
       data-dragging-sketch-entity-id={props.draggingEntityId ?? ''}
-      viewBox={frame.viewBox}
-      preserveAspectRatio="xMidYMid meet"
+      data-presentation-gated={gated ? 'true' : 'false'}
+      data-view-box={frame.viewBox}
+      viewBox={camera ? `0 0 ${camera.width} ${camera.height}` : frame.viewBox}
+      preserveAspectRatio={camera ? 'none' : 'xMidYMid meet'}
       aria-hidden="true"
     >
+      <g transform={camera?.matrix}>
       {props.model.entities.map((entity) => (
         <React.Fragment key={entity.id}>
           {props.selectedEntityId === entity.id && renderGeometry(
@@ -109,7 +120,7 @@ export function SketchSelectionLayer(props: SketchSelectionLayerProps) {
               onPointerMove: pointerMove,
               onPointerUp: (event) => {
                 if (finishDrag(event)) return;
-                if (!props.enabled) return;
+                if (!props.enabled || gated) return;
                 if (event.button !== 0 && event.pointerType !== 'touch') return;
                 if (pressedRef.current !== entity.id) return;
                 pressedRef.current = null;
@@ -121,6 +132,7 @@ export function SketchSelectionLayer(props: SketchSelectionLayerProps) {
           )}
         </React.Fragment>
       ))}
+      </g>
     </svg>
   );
 }

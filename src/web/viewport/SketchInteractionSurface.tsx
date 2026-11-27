@@ -9,6 +9,7 @@ import {
   type SketchScreenRect,
   type SketchViewportState,
 } from './SketchViewportGeometry';
+import { useSketchCameraPresentationValue } from '../fusion/useSketchCameraPresentation';
 
 export interface SketchInteractionSurfaceProps {
   frame: SketchDisplayFrame;
@@ -54,6 +55,12 @@ export function SketchInteractionSurface(props: SketchInteractionSurfaceProps) {
     previousMidpoint: null,
     previousDistance: null,
   });
+  // A05 gate: on a camera-presented stage, coordinate commits are blocked as soon
+  // as the legacy frame and the actual camera stop provably coinciding. The draft
+  // stays and cancel remains available; KOMPAS/legacy stages are unaffected.
+  const presentation = useSketchCameraPresentationValue();
+  const camera = presentation.mode === 'camera' && presentation.ready ? presentation : null;
+  const gated = presentation.mode === 'camera' && (presentation.ready ? !presentation.aligned : true);
 
   if (!props.active) return null;
 
@@ -63,7 +70,7 @@ export function SketchInteractionSurface(props: SketchInteractionSurfaceProps) {
   };
 
   const pointFromClient = (node: SVGSVGElement, clientX: number, clientY: number): CadPoint2 | null => (
-    screenPointToSketchPoint(props.frame, screenRect(node), clientX, clientY)
+    gated ? null : screenPointToSketchPoint(props.frame, screenRect(node), clientX, clientY)
   );
 
   const applyTouchNavigation = (node: SVGSVGElement) => {
@@ -182,9 +189,10 @@ export function SketchInteractionSurface(props: SketchInteractionSurfaceProps) {
       className="cad-sketch-interaction"
       data-testid="cad-sketch-interaction"
       data-tool={props.tool}
+      data-presentation-gated={gated ? 'true' : 'false'}
       {...props.dataAttributes}
-      viewBox={props.frame.viewBox}
-      preserveAspectRatio="xMidYMid meet"
+      viewBox={camera ? `0 0 ${camera.width} ${camera.height}` : props.frame.viewBox}
+      preserveAspectRatio={camera ? 'none' : 'xMidYMid meet'}
       role="application"
       aria-label={props.ariaLabel}
       tabIndex={0}
@@ -194,7 +202,9 @@ export function SketchInteractionSurface(props: SketchInteractionSurfaceProps) {
       onPointerCancel={handlePointerCancel}
       onWheel={handleWheel}
     >
+      <g transform={camera?.matrix}>
       {props.children}
+      </g>
     </svg>
   );
 }

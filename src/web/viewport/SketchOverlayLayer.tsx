@@ -1,5 +1,6 @@
 import type { CadSketchEntity } from '../../contracts/document';
 import type { SketchOverlayModel } from './SketchOverlayModel';
+import { useSketchCameraPresentationValue } from '../fusion/useSketchCameraPresentation';
 import { useSketchViewportFrame } from './SketchViewportFrameContext';
 import { sketchArcGeometry } from './SketchArcGeometry';
 
@@ -16,6 +17,10 @@ export interface SketchOverlayLayerProps {
  */
 export function SketchOverlayLayer({ model }: SketchOverlayLayerProps) {
   const frame = useSketchViewportFrame();
+  // A05: when the stage provides a ready actual-camera mapping, the shared affine
+  // transform replaces the legacy frame; KOMPAS and legacy stages keep the frame.
+  const presentation = useSketchCameraPresentationValue();
+  const camera = presentation.mode === 'camera' && presentation.ready ? presentation : null;
   if (!model) return null;
 
   return (
@@ -28,12 +33,15 @@ export function SketchOverlayLayer({ model }: SketchOverlayLayerProps) {
       data-constraint-state={model.constraintState}
       data-degrees-of-freedom={model.degreesOfFreedom ?? ''}
       data-entity-count={model.entities.length}
+      data-camera-ready={camera ? 'true' : 'false'}
       data-view-box={frame.viewBox}
-      viewBox={frame.viewBox}
-      preserveAspectRatio="xMidYMid meet"
+      viewBox={camera ? `0 0 ${camera.width} ${camera.height}` : frame.viewBox}
+      preserveAspectRatio={camera ? 'none' : 'xMidYMid meet'}
       aria-hidden="true"
     >
-      {model.entities.map((entity) => renderEntity(entity))}
+      <g transform={camera?.matrix}>
+        {model.entities.map((entity) => renderEntity(entity))}
+      </g>
     </svg>
   );
 }
