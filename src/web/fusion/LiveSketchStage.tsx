@@ -8,20 +8,11 @@ import { useActiveSketchSolveOverlay } from '../useActiveSketchSolveOverlay';
 import { useSketchEntityDrag } from '../useSketchEntityDrag';
 import { SketchSelectionLayer } from '../viewport/SketchSelectionLayer';
 import { SketchViewportFrameProvider } from '../viewport/SketchViewportFrameContext';
-import {
-  panSketchViewport, resetSketchViewportState, screenPointToSketchPoint,
-  zoomSketchViewport,
-} from '../viewport/SketchViewportGeometry';
 import { resolveSketchWorkplaneProjection } from '../viewport/SketchWorkplaneProjection';
-import {
-  publishSketchView, registerSketchCompute, registerSketchNavigation, useSketchView,
-} from './sketchView';
-import type { SketchViewCommand } from './sketchView';
-import {
-  fitSketchViewport, resolveSketchSnap, sketchDisplayOverlay, sketchFrameForScreen,
-  sketchGridStep, sketchPointMarks, sketchProfilePath,
-} from './sketchPresentation';
+import { publishSketchView, registerSketchCompute, useSketchView } from './sketchView';
+import { resolveSketchSnap, sketchDisplayOverlay, sketchPointMarks, sketchProfilePath } from './sketchPresentation';
 import type { SketchSnap } from './sketchPresentation';
+import { useLiveSketchNavigation } from './useLiveSketchNavigation';
 import { SketchGridLayers, SketchAnnotationLayers } from './SketchDisplayLayers';
 import { LiveLineInput, handleLiveLineKey, resolveLiveLinePointer } from './LiveLineInput';
 import { liveLineInteraction, registerLiveLineSolver } from './LiveLineInteraction';
@@ -33,14 +24,8 @@ export function SketchEditingStage(props: SketchEditingStageProps) {
   const view = useSketchView();
   const lineInteraction = useSyncExternalStore(liveLineInteraction.subscribe, liveLineInteraction.getSnapshot);
   const [lineSettled, setLineSettled] = useState<{ sketchId: string; revision: number } | null>(null);
-  const stageRef = useRef<HTMLDivElement>(null);
-  const [viewport, setViewport] = useState(resetSketchViewportState);
-  const [stageSize, setStageSize] = useState({ width: 700, height: 700 });
   const [snap, setSnap] = useState<SketchSnap | LiveLineSnap | null>(null);
-  const [panning, setPanning] = useState(false);
-  const pan = useRef<{ id: number; x: number; y: number } | null>(null);
   const selectionEnabled = props.activeCommand === null && !view.panMode;
-  useEffect(() => { setViewport(resetSketchViewportState()); setSnap(null); }, [props.activeSketch.id]);
   useEffect(() => {
     setSnap(null);
     const line = liveLineInteraction.getSnapshot();
@@ -102,47 +87,17 @@ export function SketchEditingStage(props: SketchEditingStageProps) {
     [overlay, view.settings.construction]);
   const displayedEntities = displayOverlay?.entities ?? entities;
   const displayedIds = useMemo(() => new Set(displayedEntities.map(entity => entity.id)), [displayedEntities]);
-  const frame = sketchFrameForScreen(viewport, stageSize);
+  const resetSnap = useCallback(() => setSnap(null), []);
+  const { stageRef, viewport, setViewport, stageSize, panning, pan, frame, step, current,
+    startPan, movePan, endPan, resetLostCapture, panByArrow } = useLiveSketchNavigation({
+    sketchId: props.activeSketch.id, displayedEntities, panMode: view.panMode, onSnapReset: resetSnap,
+  });
   const projection = resolveSketchWorkplaneProjection(props.activeSketch.support);
-  const step = sketchGridStep(viewport.span, Math.min(stageSize.width, stageSize.height));
   const unitPerPixel = viewport.span / Math.max(1, Math.min(stageSize.width, stageSize.height));
   const points = useMemo(() => sketchPointMarks(displayedEntities), [displayedEntities]);
   const profile = useMemo(() => sketchProfilePath(props.activeSketch, entities), [props.activeSketch, entities]);
   const dimensions = props.document.dimensions.filter(dimension => props.activeSketch.dimensionIds.includes(dimension.id));
   const constraints = props.document.constraints.filter(constraint => props.activeSketch.constraintIds.includes(constraint.id));
-  const current = useRef({ viewport, entities: displayedEntities, frame, snapEnabled: view.settings.snap, step });
-  current.current = { viewport, entities: displayedEntities, frame, snapEnabled: view.settings.snap, step };
-
-  useLayoutEffect(() => {
-    const stage = stageRef.current;
-    if (!stage) return;
-    const measure = () => {
-      const { width, height } = stage.getBoundingClientRect();
-      if (!(width > 0 && height > 0)) return;
-      setStageSize(previous => previous.width === width && previous.height === height ? previous : { width, height });
-    };
-    measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(stage);
-    const wheel = (event: WheelEvent) => {
-      event.preventDefault(); event.stopPropagation();
-      const state = current.current;
-      const rect = stage.getBoundingClientRect();
-      const anchor = screenPointToSketchPoint(state.frame, rect, event.clientX, event.clientY) ?? state.viewport.center;
-      const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? rect.height : 1);
-      setViewport(previous => zoomSketchViewport(previous, Math.exp(Math.max(-600, Math.min(600, delta)) * 0.0015), anchor));
-      setSnap(null);
-    };
-    stage.addEventListener('wheel', wheel, { capture: true, passive: false });
-    return () => { observer.disconnect(); stage.removeEventListener('wheel', wheel, true); };
-  }, []);
-
-  useEffect(() => registerSketchNavigation((command: SketchViewCommand) => {
-    setSnap(null);
-    if (command === 'fit' || command === 'look-at') setViewport(fitSketchViewport(current.current.entities));
-    else if (command === 'reset') setViewport(resetSketchViewportState());
-    else setViewport(previous => zoomSketchViewport(previous, command === 'zoom-in' ? 0.8 : 1.25, previous.center));
-  }), []);
 
   useEffect(() => {
     if (!entities.length || props.activeCommand || drag.draggingEntityId) return;
@@ -178,28 +133,6 @@ export function SketchEditingStage(props: SketchEditingStageProps) {
     setSnap(context.snap);
     return context.point;
   };
-  const startPan = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (event.target instanceof Element && event.target.closest('input,textarea,select,button,label,[contenteditable="true"]')) return;
-    if (event.button !== 1 && !(view.panMode && event.button === 0 && event.pointerType !== 'touch')) return;
-    event.preventDefault(); event.stopPropagation();
-    pan.current = { id: event.pointerId, x: event.clientX, y: event.clientY };
-    event.currentTarget.setPointerCapture(event.pointerId); setPanning(true); setSnap(null);
-  };
-  const movePan = (event: React.PointerEvent<HTMLDivElement>) => {
-    const pending = pan.current;
-    if (!pending || pending.id !== event.pointerId) return;
-    event.preventDefault(); event.stopPropagation();
-    const dx = event.clientX - pending.x, dy = event.clientY - pending.y;
-    pending.x = event.clientX; pending.y = event.clientY;
-    const rect = event.currentTarget.getBoundingClientRect();
-    setViewport(previous => panSketchViewport(previous, rect, dx, dy));
-  };
-  const endPan = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (pan.current?.id !== event.pointerId) return;
-    event.preventDefault(); event.stopPropagation(); pan.current = null; setPanning(false);
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
-  };
-
   return <SketchViewportFrameProvider frame={frame}>
     <div ref={stageRef} className="part-model-stage live-sketch-field" data-testid="part-model-stage"
       tabIndex={0} aria-label="Рабочая плоскость эскиза"
@@ -223,7 +156,7 @@ export function SketchEditingStage(props: SketchEditingStageProps) {
         if (event.target instanceof SVGElement) event.currentTarget.focus({ preventScroll: true });
       }}
       onPointerMoveCapture={movePan} onPointerUpCapture={endPan} onPointerCancelCapture={endPan}
-      onLostPointerCapture={() => { pan.current = null; setPanning(false); }}
+      onLostPointerCapture={resetLostCapture}
       onAuxClick={event => { if (event.button === 1) { event.preventDefault(); event.stopPropagation(); } }}
       onPointerLeave={() => { if (!pan.current) setSnap(null); }}
       onDoubleClickCapture={event => {
@@ -234,12 +167,7 @@ export function SketchEditingStage(props: SketchEditingStageProps) {
       }}
       onKeyDownCapture={event => {
         if (props.activeCommand === 'sketch.line' && handleLiveLineKey(event)) return;
-        if (!(event.target instanceof Element) || event.target.closest('input,textarea,select,button,[contenteditable="true"]')) return;
-        const direction = { ArrowLeft: [40, 0], ArrowRight: [-40, 0], ArrowUp: [0, 40], ArrowDown: [0, -40] }[event.key];
-        if (!direction || event.altKey || event.ctrlKey || event.metaKey) return;
-        event.preventDefault(); event.stopPropagation();
-        const rect = event.currentTarget.getBoundingClientRect();
-        setViewport(previous => panSketchViewport(previous, rect, direction[0], direction[1]));
+        panByArrow(event);
       }}>
       <SketchGridLayers frame={frame} step={step} unitPerPixel={unitPerPixel}
         grid={view.settings.grid} profiles={view.settings.profiles} profile={profile} />
