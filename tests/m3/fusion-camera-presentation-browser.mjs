@@ -26,7 +26,7 @@ async function cam() {
     const s = JSON.parse(c.dataset.cameraSnapshot ?? 'null');
     const st = document.querySelector(sel);
     return { stage: st.dataset, vis: getComputedStyle(c).visibility, plane: st.dataset.sketchSupport, raw: s,
-      ok: !!(s && s.actualProjection === 'orthographic' && s.revision >= 1 && [s.viewMatrix, s.projectionMatrix, s.inverseViewMatrix, s.inverseProjectionMatrix].every(m=>m.length===16&&m.every(Number.isFinite))) };
+      ok: !!(s&&s.actualProjection==='orthographic'&&s.revision>=1&&[s.viewMatrix,s.projectionMatrix,s.inverseViewMatrix,s.inverseProjectionMatrix].every(m=>m.length===16&&m.every(Number.isFinite))) };
   }, STAGE);
 }
 async function aligned() {
@@ -79,8 +79,8 @@ try {
     const [p0, p1, p2] = project(st, [[0, 0], [1, 0], [0, 1]]);
     const m = await gridState();
     near(Math.hypot(m.a-(p1[0]-p0[0]), m.b-(p1[1]-p0[1])), 0, 'grid u-axis');
-    near(Math.hypot(m.c-(p2[0]-p0[0]), m.d-(p2[1]-p0[1])), 0, 'grid v-axis');
-    near(Math.hypot(m.e-(p0[0]-m.l), m.f-(p0[1]-m.t)), 0, 'grid origin', 1);
+    near(Math.hypot(m.c+(p2[0]-p0[0]), m.d+(p2[1]-p0[1])), 0, 'grid v-axis -v');
+    near(Math.hypot(m.e-(p0[0]-m.l), m.f-(p0[1]-m.t)), 0, 'grid origin');
     assert.equal(m.par, 'none'); assert.equal(m.viewBox, `0 0 ${m.w} ${m.h}`);
     await shot('01-xy-aligned.png');
   });

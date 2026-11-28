@@ -88,7 +88,7 @@ export function sketchPointToClient(
   if (!(scale > 0) || !Number.isFinite(scale)) return null;
   const offsetX = rect.left + (rect.width - frame.width * scale) / 2;
   const offsetY = rect.top + (rect.height - frame.height * scale) / 2;
-  return { x: offsetX + point[0] * scale, y: offsetY - point[1] * scale };
+  return { x: offsetX + (point[0] - frame.minX) * scale, y: offsetY + (-point[1] - frame.minY) * scale };
 }
 
 export function panSketchViewport(
