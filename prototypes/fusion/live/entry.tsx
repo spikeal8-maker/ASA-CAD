@@ -1,0 +1,15 @@
+import React from 'react';
+import {createRoot} from 'react-dom/client';
+import {App} from '../../../src/web/App';
+import {UiScaleSettings} from '../../../src/web/UiScaleSettings';
+import {installUiScaleController} from '../../../src/web/UiScale';
+import '../../../src/web/styles/base.css';
+import '../../../src/web/styles/management.css';
+import '../../../src/web/styles/work-area.css';
+import '../../../src/web/styles/dialogs.css';
+import '../../../src/web/runtime.css';
+import './live.css';
+window.__ASA_CAD_UI_SCALE__=installUiScaleController();
+const root=document.getElementById('root');
+if(!root)throw Error('Отсутствует корневой элемент ASA CAD');
+createRoot(root).render(<UiScaleSettings><App /></UiScaleSettings>);

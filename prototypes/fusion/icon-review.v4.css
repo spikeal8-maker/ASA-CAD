@@ -1,0 +1,16 @@
+
+.fusion-audit-open{overflow:hidden!important}
+.fusion-audit{position:fixed;z-index:110;inset:0;background:#f3f5f7;overflow:auto;color:#4e5860;font-family:"Segoe UI",Arial,sans-serif}
+.fusion-audit-head{height:102px;display:flex;justify-content:space-between;align-items:center;background:#fff;position:sticky;z-index:2;top:0;border-bottom:1px solid #d7e0e6;padding:18px 35px}
+.fusion-audit h1{font-size:22px;line-height:1.25;font-weight:600;margin:0}
+.fusion-audit-head p{font-size:13px;margin:7px 0 0;color:#7a8792}
+.fusion-audit-close{font-size:13px;border-radius:3px;border:1px solid #aebdc8;background:#f8fbfc;padding:9px 15px;color:#435b6a;cursor:pointer}
+.fusion-audit-close:hover{background:#e4f1f8}
+.fusion-audit-grid{padding:24px 35px 30px;display:grid;gap:13px;grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}
+.fusion-audit-item{position:relative;background:white;border:1px solid #d7dfe4;border-radius:4px;height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;box-shadow:0 2px 4px #1d3a450a}
+.fusion-audit-index{position:absolute;top:9px;left:10px;color:#a8b4bb;font-size:11px}
+.fusion-audit-icon{height:63px;width:63px;display:grid;place-items:center}.fusion-audit-icon svg{filter:drop-shadow(0 1px .8px #586e7a29)}
+.fusion-audit-label{text-align:center;max-width:98%;font-size:12px;line-height:1.2;font-weight:550;min-height:29px;display:grid;place-items:center;padding:0 8px}
+.fusion-audit-state{font-size:9px;letter-spacing:.4px;color:#9b7a34;background:#fff6e5;border-radius:2px;padding:3px 6px}
+.fusion-audit footer{color:#8d99a3;padding:0 35px 30px;font-size:12px}
+@media(max-width:900px){.fusion-audit-grid{padding:12px;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}.fusion-audit-head{padding:12px 15px;height:auto}.fusion-audit h1{font-size:18px}}

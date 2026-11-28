@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "scope": "Ordinary UI protected Part, no injected document or kernel calls",
+  "kernelConnected": true,
+  "visualParityAccepted": false,
+  "base": "60x40x10 mm",
+  "cutDiameter": 12,
+  "filletRadius": 1,
+  "widthEdited": 80,
+  "reopenedDiameterEdited": 14,
+  "features": [
+    "extrude",
+    "cut-extrude",
+    "fillet"
+  ],
+  "stableReferences": 2,
+  "serializableIntent": true,
+  "oneRenderer": true,
+  "pageErrors": [],
+  "failedRequests": []
+}

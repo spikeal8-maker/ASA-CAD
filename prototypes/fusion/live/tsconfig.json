@@ -1,0 +1,24 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowJs": true,
+    "checkJs": false,
+    "baseUrl": "../../..",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "paths": {
+      "react": ["vendor/toubkal/node_modules/@types/react"],
+      "react/*": ["vendor/toubkal/node_modules/@types/react/*"],
+      "react-dom": ["vendor/toubkal/node_modules/@types/react-dom"],
+      "react-dom/*": ["vendor/toubkal/node_modules/@types/react-dom/*"],
+      "three": ["vendor/toubkal/node_modules/@types/three"],
+      "three/*": ["vendor/toubkal/node_modules/@types/three/*"],
+      "*": ["vendor/toubkal/node_modules/*"]
+    }
+  },
+  "include": ["./*.ts", "./*.tsx", "../../../src/types/*.d.ts"],
+  "exclude": []
+}

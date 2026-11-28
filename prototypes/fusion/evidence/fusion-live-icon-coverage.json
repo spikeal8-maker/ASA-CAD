@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "scope": "Native Design 2706.1.17, visible promoted ribbon only",
+  "status": "REFERENCE_ARTWORK_PRESENT_NOT_PIXEL_APPROVED",
+  "nativeCommands": 180,
+  "ribbonPlacements": 142,
+  "promotedUnique": 74,
+  "previousMissingOnPromoted": 17,
+  "remainingPlaceholderOnPromoted": 0,
+  "allCommandStatusCounts": {
+    "reference-review-pending": 17,
+    "redrawn-unaccepted": 34,
+    "missing-reference": 84,
+    "family-approximation": 28,
+    "independent-redraw-awaiting-review": 17
+  },
+  "realCADParity": false,
+  "ownerVisualAcceptance": false
+}

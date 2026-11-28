@@ -1,0 +1,73 @@
+{
+  "status": "PASS",
+  "scope": "Real product App under isolated Fusion shell",
+  "productionSourceModified": false,
+  "steps": [
+    {
+      "name": "boot",
+      "canvas": 1,
+      "lazyWasm": true
+    },
+    {
+      "name": "rectangle",
+      "sketches": "1",
+      "features": "0",
+      "runtime": "idle",
+      "recompute": "dirty",
+      "entities": 4
+    },
+    {
+      "name": "extrude",
+      "sketches": "1",
+      "features": "1",
+      "runtime": "ready",
+      "recompute": "clean",
+      "bounds": [
+        -30,
+        -20,
+        0,
+        30,
+        20,
+        10
+      ],
+      "extent": [
+        60,
+        40,
+        10
+      ],
+      "wasmLoaded": 2
+    },
+    {
+      "name": "undo-redo",
+      "sketches": "1",
+      "features": "1",
+      "runtime": "ready",
+      "recompute": "clean"
+    },
+    {
+      "name": "navigation",
+      "viewCubeFace": true,
+      "roll": true,
+      "orthographic": true,
+      "rmbMenu": true,
+      "pan": true
+    },
+    {
+      "name": "save-open",
+      "sketches": "1",
+      "features": "1",
+      "runtime": "ready",
+      "recompute": "clean",
+      "bounds": [
+        -30,
+        -20,
+        0,
+        30,
+        20,
+        10
+      ]
+    }
+  ],
+  "pageErrors": [],
+  "failedRequests": []
+}

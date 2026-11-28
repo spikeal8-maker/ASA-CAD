@@ -1,0 +1,55 @@
+{
+  "status": "PASS",
+  "scope": "Actual rendered tool ribbon at 2048x1137 and 1366x768",
+  "tabs": [
+    {
+      "tab": "SolidTab",
+      "buttons": 24,
+      "missing": 0,
+      "authored": 0
+    },
+    {
+      "tab": "SurfaceTab",
+      "buttons": 21,
+      "missing": 0,
+      "authored": 0
+    },
+    {
+      "tab": "ParaMeshOuterTab",
+      "buttons": 26,
+      "missing": 0,
+      "authored": 4
+    },
+    {
+      "tab": "SheetMetalTab",
+      "buttons": 20,
+      "missing": 0,
+      "authored": 1
+    },
+    {
+      "tab": "PlasticTab",
+      "buttons": 33,
+      "missing": 0,
+      "authored": 3
+    },
+    {
+      "tab": "ToolsTab",
+      "buttons": 15,
+      "missing": 0,
+      "authored": 8
+    },
+    {
+      "tab": "AutomationTab",
+      "buttons": 3,
+      "missing": 0,
+      "authored": 1
+    }
+  ],
+  "placements": 142,
+  "missingPlaceholders": 0,
+  "nativeHoleDisabledUntilCompatibleBodyExists": true,
+  "rootOverflow": false,
+  "labelsNotClipped": true,
+  "pageErrors": [],
+  "pixelParityAccepted": false
+}

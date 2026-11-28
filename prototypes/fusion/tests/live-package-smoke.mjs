@@ -1,0 +1,35 @@
+import assert from 'node:assert/strict';
+import {readFileSync,statSync,readdirSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {resolve,join} from 'node:path';
+import {execFileSync} from 'node:child_process';
+const folder=process.argv[2];
+assert.ok(folder,'Usage: node live-package-smoke.mjs <package-directory>');
+const base=resolve(folder);
+const manifest=JSON.parse(readFileSync(join(base,'delivery-manifest.json'),'utf8'));
+const root=resolve(import.meta.dirname,'../../..');
+const sha=execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim();
+assert.equal(manifest.version,7);
+assert.equal(manifest.sourceHead,sha,'Package must be built from the exact checked-out commit');
+assert.equal(manifest.localOnly,true);
+assert.equal(manifest.fullFusionParity,false,'Do not claim unsupported native parity');
+const win=readFileSync(join(base,'Start.cmd'),'utf8');
+const unix=readFileSync(join(base,'start.sh'),'utf8');
+assert.ok(win.includes('--port 8098 --open'),'Windows launcher must use dedicated v7 origin');
+assert.ok(unix.includes('--port 8098 --open'),'Unix launcher must use dedicated v7 origin');
+const serve=readFileSync(join(base,'serve.cjs'),'utf8');
+assert.ok(serve.includes("version:7,localOnly:true"));
+assert.ok(serve.includes("server.listen(port,'127.0.0.1'"),'Package server must bind loopback only');
+assert.ok(!win.includes('npm install')&&!unix.includes('npm install'),'Launch must not download dependencies');
+const fileSet=new Set(manifest.files.map(e=>e.path));
+assert.equal(fileSet.size,manifest.files.length,'Duplicate file paths in the hash manifest');
+assert.ok(fileSet.has('app/index.html'),'Compiled app missing');
+assert.ok([...fileSet].some(x=>x.endsWith('.wasm')),'WASM runtime absent');
+assert.ok([...fileSet].some(x=>x.startsWith('licenses/')),'Licenses missing');
+for(const item of manifest.files){
+ const path=join(base,item.path),data=readFileSync(path);
+ assert.equal(data.length,item.bytes,'Byte count changed: '+item.path);
+ assert.equal(createHash('sha256').update(data).digest('hex'),item.sha256,'Checksum changed: '+item.path);
+}
+const report={status:'PASS',version:7,sha,verifiedFiles:manifest.files.length,launchPort:8098,wasmBundled:true,licensesBundled:true,networkInstallRequired:false};
+console.log(JSON.stringify(report,null,2));

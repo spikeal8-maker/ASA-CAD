@@ -1,0 +1,71 @@
+import assert from 'node:assert/strict';
+import {createRequire} from 'node:module';
+import {dirname,resolve} from 'node:path';
+import {fileURLToPath,pathToFileURL} from 'node:url';
+import {writeFile} from 'node:fs/promises';
+const require=createRequire(import.meta.url),puppeteer=require(process.env.ASA_CAD_PUPPETEER_MODULE||'puppeteer');
+const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
+const browser=await puppeteer.launch({headless:true,executablePath:process.env.ASA_CAD_BROWSER_EXECUTABLE||puppeteer.executablePath(),args:['--disable-extensions']});
+const errors=[],requests=[];const evidence={scope:'Observed native empty-document Construction Geometry',kernelConnected:false,pixelParityAccepted:false};
+try{
+ const page=await browser.newPage();page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(/^https?:/.test(r.url()))requests.push(r.url());});
+ await page.setViewport({width:1600,height:900,deviceScaleFactor:1});
+ await page.goto(pathToFileURL(resolve(root,'fusion-v5.html')).href,{waitUntil:'load'});
+ const rows=await page.evaluate(()=>asaNativeConstruction.rows.map(([id,type,method,fields])=>({id,type,method,picks:fields.filter(f=>f.kind==='pick').map(f=>f.name)})));
+ assert.equal(rows.length,19);const tested=[];
+ for(const row of rows){
+   await page.evaluate(id=>asaNativeUI.run(id),row.id);
+   assert.equal(await page.$eval('#nativeParams',el=>el.dataset.nativeCommand),row.id);
+   assert.equal(await page.$eval('#nativeParams .native-param-header>span',el=>el.textContent),'ВСПОМОГАТЕЛЬНАЯ ГЕОМЕТРИЯ');
+   assert.equal(await page.$eval('[data-native-option="geometryType"].active',el=>el.dataset.optionValue),row.type);
+   assert.equal(await page.$eval('[data-native-field="method"]>span',el=>el.textContent),row.method);
+   const picks=await page.$$eval('.native-field:has(.native-pick)>label',els=>els.map(el=>el.textContent));
+   assert.deepEqual(picks,row.picks,row.id+' selection fields differ from observed schema');
+   assert.equal(await page.$eval('.native-ok',el=>el.disabled),true);
+   await page.click('[data-native-field="method"]');
+   const expected=rows.filter(r=>r.type===row.type).map(r=>r.method);
+   assert.deepEqual(await page.$$eval('.native-field-menu [role="option"]',els=>els.map(el=>el.textContent.trim())),expected);
+   await page.keyboard.press('Escape');
+   assert.equal(await page.$eval('#nativeParams',el=>el.hidden),true,'Native Escape cancels construction command even with dropdown open');
+   tested.push(row.id);
+ }
+ await page.evaluate(()=>asaNativeUI.run('ConstructionPlaneOffsetFromPlaneCommand'));
+ await page.click('[data-native-option="geometryType"][data-option-value="Ось"]');
+ assert.equal(await page.$eval('#nativeParams',el=>el.dataset.nativeCommand),'ConstructionAxisThroughCylinderCommand');
+ await page.click('[data-native-field="method"]');await page.click('[data-choice="3"]');
+ assert.equal(await page.$eval('#nativeParams',el=>el.dataset.nativeCommand),'ConstructionAxisThroughTwoPointsCommand');
+ assert.deepEqual(await page.$$eval('.native-field:has(.native-pick)>label',els=>els.map(el=>el.textContent)),['Точка 1','Точка 2']);
+ await page.click('[data-native-option="geometryType"][data-option-value="Точка"]');
+ assert.equal(await page.$eval('#nativeParams',el=>el.dataset.nativeCommand),'ConstructionPointFromPointCommand');
+ await page.click('[data-native-field="method"]');await page.click('[data-choice="5"]');
+ assert.equal(await page.$eval('#nativeParams',el=>el.dataset.nativeCommand),'ConstructionPointAlongPathCommand');
+ assert.equal(await page.$eval('[data-native-check="chain"]',el=>el.checked),true);
+ await page.click('[data-native-check="chain"]');assert.equal(await page.$eval('[data-native-check="chain"]',el=>el.checked),false);
+ await page.click('[data-native-collapse]');assert.equal(await page.$eval('.native-param-content',el=>el.hidden),true);
+ await page.click('[data-native-collapse]');assert.equal(await page.$eval('[data-native-check="chain"]',el=>el.checked),false);
+ const initial=await page.$eval('#nativeParams',el=>el.getBoundingClientRect().toJSON());
+ const header=await page.$('.native-param-header>span'),head=await header.boundingBox();
+ await page.mouse.move(head.x+20,head.y+10);await page.mouse.down();await page.mouse.move(head.x-250,head.y+150,{steps:8});await page.mouse.up();
+ const moved=await page.$eval('#nativeParams',el=>el.getBoundingClientRect().toJSON());assert.ok(moved.x<initial.x-200);
+ const handle=await page.$('.native-resize'),hb=await handle.boundingBox();
+ await page.mouse.move(hb.x+4,hb.y+4);await page.mouse.down();await page.mouse.move(hb.x+140,hb.y+4,{steps:8});await page.mouse.up();
+ const resized=await page.$eval('#nativeParams',el=>el.getBoundingClientRect().toJSON());assert.ok(resized.width>moved.width+100);
+ await page.screenshot({path:resolve(root,'evidence/fusion-v5-construction-floating.png')});
+ await page.click('[data-native-cancel]');assert.equal(await page.$eval('#nativeParams',el=>el.hidden),true);
+ await page.evaluate(()=>asaNativeUI.run('ConstructionPlaneFromThreePointsCommand'));
+ await page.click('[data-native-field="method"]');
+ await page.screenshot({path:resolve(root,'evidence/fusion-v5-construction-methods.png')});
+ await page.keyboard.press('Escape');
+ await page.evaluate(()=>asaNativeUI.run('CoordinateSystemCommand'));
+ assert.deepEqual(await page.$$eval('.native-field>label',els=>els.map(el=>el.textContent)),['Привязка']);
+ await page.keyboard.press('Escape');
+ for(const width of [1366,1024,768]){
+   await page.setViewport({width,height:768,deviceScaleFactor:1});await page.evaluate(()=>asaNativeUI.run('ConstructionPlanePerpendicularToPlaneCommand'));
+   const r=await page.$eval('#nativeParams',el=>el.getBoundingClientRect().toJSON());assert.ok(r.x>=0&&r.right<=width+1&&r.bottom<=768);
+   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true);
+   await page.keyboard.press('Escape');
+ }
+ assert.deepEqual(errors,[]);assert.deepEqual(requests,[]);
+ Object.assign(evidence,{status:'PASS',constructionMethods:tested.length,ucs:true,methodCounts:{planes:8,axes:5,points:6},nativeEscape:'cancels-command-from-dropdown',typeAndMethodTransitions:true,checkboxRetainedOnCollapse:true,drag:true,resize:true,responsiveWidths:[1600,1366,1024,768],pageErrors:errors,externalRequests:requests});
+ await writeFile(resolve(root,'evidence/fusion-v5-construction-checks.json'),JSON.stringify(evidence,null,2)+'\n');console.log(JSON.stringify(evidence,null,2));
+}catch(error){console.error(error.stack);process.exitCode=1;}finally{await browser.close();}
