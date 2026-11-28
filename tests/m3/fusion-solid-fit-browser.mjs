@@ -58,7 +58,7 @@ let doc;
 await step('Ordinary Circle and Extrude', async item => {
   await activateFusionCircle(page);
   const point = await page.locator('[data-testid="cad-sketch-interaction"][data-tool="circle"]').evaluate(svg => {
-    const ctm = svg.getScreenCTM(); if (!ctm) throw new Error('Missing Sketch CTM');
+    const ctm = svg.ownerDocument.querySelector('[data-sketch-layer="grid"] > g')?.getScreenCTM(); if (!ctm) throw new Error('Missing Sketch CTM');
     const p = new DOMPoint(20, -10).matrixTransform(ctm), hit = document.elementFromPoint(p.x, p.y);
     if (!hit || (hit !== svg && !svg.contains(hit))) throw new Error('Circle center is covered');
     return [p.x, p.y];
@@ -124,4 +124,4 @@ try { await browser?.close(); } catch (e) { failure ??= e; r.status = 'FAIL'; r.
 await writeFile(path.join(out, 'report.json'), JSON.stringify(r, null, 2) + '\n');
 }
 if (failure) throw failure;
-console.log('Fusion Solid Fit PASS: ordinary model, zoom/Fit, history, persistence');
+console.log('Fusion Solid Fit PASS');

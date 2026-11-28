@@ -102,7 +102,10 @@ export function gateAll(
   const editingMutations = ['commitRectangle', 'commitCircle', 'commitLinePreview', 'commitRectanglePreview',
     'commitCirclePreview', 'commitArcPreview', 'handleSketchLinePoint', 'handleSketchRectanglePoint',
     'handleSketchCirclePoint', 'handleSketchArcPoint'];
-  const constraintMutations = ['applyHorizontalConstraint', 'applyVerticalConstraint', 'applyFixedConstraint'];
+  const constraintMutations = ['applyHorizontalConstraint', 'applyVerticalConstraint', 'applyFixedConstraint',
+    'applyCoincidentConstraint', 'applyParallelConstraint', 'applyPerpendicularConstraint',
+    'applyTangentConstraint', 'applyConcentricConstraint', 'applyEqualConstraint',
+    'applySymmetryConstraint', 'applyPointOnCurveConstraint'];
   const dimensionCreation = creation.dimensionCreation as { commit: (...args: unknown[]) => unknown };
   const out: Record<string, unknown> = {
     ...gateKeys(gate, editing, editingMutations),
