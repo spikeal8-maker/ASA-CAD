@@ -6,7 +6,7 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { test } from 'node:test';
 import { chooseAction, readTaskMetadata, extractHandoff, withLock, snapshot, taskGuard,
-  coordinatorMatches, independentReviewVerified, collection, inspectLock } from './asa-cad-supervisor.mjs';
+  coordinatorMatches, independentReviewVerified, collection, inspectLock, observeIdleSessions } from './asa-cad-supervisor.mjs';
 
 const ready = { enabled:true, manualStop:false, active:false, pending:false, guard:true,
   issueStatus:'IN_PROGRESS', handoff:null, taskId:'R01', issue:239, candidate:'b'.repeat(40),
@@ -98,6 +98,73 @@ test('API recovery checks coordinator identity, agent and Windows location; coll
   assert.deepEqual(collection({data:{data:[{id:'child'}],cursor:{}}}),[{id:'child'}]);
   assert.deepEqual(collection({data:[]}),[]);
   assert.throws(()=>collection({error:'permission endpoint unavailable'}),/cannot be assumed empty/);
+});
+
+function idleServerFixture({ jobs, permission = [], candidate = 'c'.repeat(40) } = {}) {
+  const parent = { id:'parent' }, children = [
+    { id:'worker', parentID:'parent', agent:'asa-cad-worker', outcome:'succeeded', time:{created:110} },
+    { id:'reviewer', parentID:'parent', agent:'asa-cad-reviewer', outcome:'succeeded', time:{created:120} },
+  ];
+  const server = { kind:'shell', id:'static-server', sessionID:'worker', status:'running',
+    title:'node a05-static-18190.cjs', time:{started:130} };
+  const handoffMessage = { id:'latest-handoff', time:{created:200}, content:[
+    { type:'text', text:'ASA_HANDOFF ' + JSON.stringify(currentHandoff) },
+  ] };
+  const responses = new Map([
+    ['/api/experimental/job?sessionID=parent&descendants=true&status=running', jobs ?? [server]],
+    ['/api/session/parent/message?order=desc&limit=30&type=assistant', [handoffMessage]],
+    ['/api/session/reviewer/message?order=desc&limit=10&type=assistant', [{time:{created:150},
+      text:`VERDICT: APPROVE\n${ready.baseSha} ${ready.candidate}`}]],
+  ]);
+  for (const session of [parent,...children]) {
+    for (const endpoint of ['permission','form','inbox']) responses.set(`/api/session/${session.id}/${endpoint}`, []);
+  }
+  responses.set('/api/session/worker/permission', permission);
+  const calls = [];
+  const observe = () => observeIdleSessions({parent,children,dispatch:ready,head:candidate,clean:true}, route => {
+    calls.push(route);
+    assert.ok(responses.has(route), `Unexpected API route ${route}`);
+    return {data:responses.get(route)};
+  });
+  return {observe,calls,responses};
+}
+
+test('idle native worker with a static server refreshes handoff without calling it model progress', () => {
+  const fixture = idleServerFixture(), observed = fixture.observe();
+  assert.deepEqual(observed.runningJobs,['static-server']);
+  assert.equal(observed.handoff.messageId,'latest-handoff');
+  assert.equal(observed.handoff.candidate,ready.candidate);
+  assert.equal(observed.reviewVerified,false); // Current checkout has moved; old APPROVE is not reused.
+  assert.ok(fixture.calls.includes('/api/session/parent/message?order=desc&limit=30&type=assistant'));
+  assert.ok(!fixture.calls.includes('/api/session/reviewer/message?order=desc&limit=10&type=assistant'));
+  assert.equal(chooseAction({...ready,...observed,candidate:'c'.repeat(40)}),'WAIT_BACKGROUND_JOB');
+  assert.equal(chooseAction({...ready,...observed,candidate:'c'.repeat(40),active:true}),'RUNNING');
+});
+
+test('permissions and controller/manual guards take precedence over background jobs', () => {
+  const observed = idleServerFixture({permission:[{id:'pending-permission'}]}).observe();
+  assert.equal(observed.pending,true);
+  assert.equal(chooseAction({...ready,...observed}),'WAIT_PERMISSION_OR_INBOX');
+  assert.equal(chooseAction({...ready,...observed,manualStop:true}),'PAUSED');
+  assert.equal(chooseAction({...ready,...observed,guard:false}),'BLOCKED_GUARD');
+  assert.equal(chooseAction({...ready,...observed,pending:false,issueStatus:'BLOCKED'}),'WAIT_CONTROLLER');
+});
+
+test('a current independently verified handoff is observed even while a support server remains', () => {
+  const fixture = idleServerFixture({candidate:ready.candidate}), observed = fixture.observe();
+  assert.equal(observed.reviewVerified,true);
+  assert.equal(chooseAction({...ready,...observed}),'WAIT_CONTROLLER');
+  assert.ok(fixture.calls.includes('/api/session/reviewer/message?order=desc&limit=10&type=assistant'));
+});
+
+test('completed jobs clear the observation and unknown job collections never permit resume', () => {
+  const fixture = idleServerFixture(), state = fixture.observe();
+  fixture.responses.set('/api/experimental/job?sessionID=parent&descendants=true&status=running', []);
+  Object.assign(state,fixture.observe());
+  assert.deepEqual(state.runningJobs,[]);
+  assert.equal(chooseAction({...ready,...state,candidate:'c'.repeat(40)}),'RESUME');
+  fixture.responses.set('/api/experimental/job?sessionID=parent&descendants=true&status=running', {error:'unavailable'});
+  assert.throws(fixture.observe,/cannot be assumed empty/);
 });
 
 function gitFixture(t) {

@@ -8,7 +8,7 @@ import { pathToFileURL } from 'node:url';
 // the assigned contract. It never edits product files, approves a task or merges.
 export function chooseAction({ enabled, manualStop, active, pending, guard, issueStatus,
   handoff, candidate, taskId, issue, dispatchKey, contractVersion, baseSha, dispatchAt,
-  reviewVerified = false, attempts, idleMs, idleDelayMs }) {
+  reviewVerified = false, runningJobs = [], attempts, idleMs, idleDelayMs }) {
   if (!enabled || manualStop) return 'PAUSED';
   if (!guard) return 'BLOCKED_GUARD';
   if (pending) return 'WAIT_PERMISSION_OR_INBOX';
@@ -20,6 +20,9 @@ export function chooseAction({ enabled, manualStop, active, pending, guard, issu
   if (current && handoff.candidate === candidate && ['APPROVE', 'REQUEST_CHANGES'].includes(handoff.reviewVerdict)) {
     return reviewVerified ? 'WAIT_CONTROLLER' : 'WAIT_CONTROLLER_REVIEW_PROVENANCE';
   }
+  // A shell job can be a long-lived static server, not a running model turn.
+  // Unknown jobs still prevent automatic resume; only their status is distinct.
+  if (runningJobs.length) return 'WAIT_BACKGROUND_JOB';
   if (idleMs < idleDelayMs) return 'IDLE_GRACE';
   if (attempts >= 2) return 'WAIT_CONTROLLER_NO_PROGRESS';
   return 'RESUME';
@@ -194,6 +197,25 @@ export function collection(result) {
   throw new Error('Unexpected API collection response; pending work cannot be assumed empty');
 }
 
+export function observeIdleSessions({ parent, children, dispatch, head, clean }, get) {
+  const jobs = collection(get(`/api/experimental/job?sessionID=${parent.id}&descendants=true&status=running`));
+  let pending = false;
+  for (const session of [parent, ...children]) {
+    for (const endpoint of ['permission', 'form', 'inbox']) {
+      if (collection(get(`/api/session/${session.id}/${endpoint}`)).length) pending = true;
+    }
+  }
+  const messages = collection(get(`/api/session/${parent.id}/message?order=desc&limit=30&type=assistant`)).reverse();
+  const handoff = extractHandoff(messages, dispatch);
+  let reviewVerified = false;
+  if (handoff?.reviewerSessionId && clean && handoff.candidate === head &&
+      children.some(x => x.id === handoff.reviewerSessionId && x.agent === 'asa-cad-reviewer')) {
+    const replies = collection(get(`/api/session/${handoff.reviewerSessionId}/message?order=desc&limit=10&type=assistant`)).reverse();
+    reviewVerified = independentReviewVerified(handoff, parent, children, dispatch.dispatchAt, replies);
+  }
+  return { runningJobs: jobs.map(x => x.id), pending, handoff, reviewVerified };
+}
+
 export function snapshot(config, directory, dispatchAt) {
   const gitRaw = (...args) => command('git', ['-C', config.repositoryPath, ...args], config.repositoryPath, true);
   const git = (...args) => gitRaw(...args).trim();
@@ -310,7 +332,8 @@ export function run(configPath, mode = 'tick') {
       if (snap.fingerprint !== state.fingerprint) {
         state.attempts = 0; state.fingerprint = snap.fingerprint; state.progressAt = Date.now();
       }
-      state.head = snap.head;
+      Object.assign(state, { head: snap.head, canonical, remoteHead, initial, metadata });
+      if (snap.status || state.handoff?.candidate !== snap.head) state.reviewVerified = false;
       const active = api(config, 'get', '/api/session/active').data ?? {};
       state.activeSessions = Object.keys(active);
       if (state.activeSessions.length) return record('RUNNING');
@@ -332,26 +355,13 @@ export function run(configPath, mode = 'tick') {
         .filter(x => x.parentID === parent.id && (x.time?.created ?? 0) >= state.dispatchAt);
       state.children = children.map(x => ({ id: x.id, parentID: x.parentID, agent: x.agent, outcome: x.outcome }));
       if ([parent, ...children].some(x => x.outcome === 'interrupted')) return record('PAUSED', { manualStop: true });
-      const jobs = collection(api(config, 'get', `/api/experimental/job?sessionID=${parent.id}&descendants=true&status=running`));
-      if (jobs.length) return record('RUNNING', { runningJobs: jobs.map(x => x.id) });
-      let pending = false;
-      for (const session of [parent, ...children]) {
-        for (const endpoint of ['permission', 'form', 'inbox']) {
-          if (collection(api(config, 'get', `/api/session/${session.id}/${endpoint}`)).length) pending = true;
-        }
-      }
-      const messages = collection(api(config, 'get', `/api/session/${parent.id}/message?order=desc&limit=30&type=assistant`)).reverse();
-      const handoff = extractHandoff(messages, dispatch);
-      let reviewVerified = false;
-      if (handoff?.reviewerSessionId && !snap.status && handoff.candidate === snap.head &&
-          children.some(x => x.id === handoff.reviewerSessionId && x.agent === 'asa-cad-reviewer')) {
-        const replies = collection(api(config, 'get', `/api/session/${handoff.reviewerSessionId}/message?order=desc&limit=10&type=assistant`)).reverse();
-        reviewVerified = independentReviewVerified(handoff, parent, children, state.dispatchAt, replies);
-      }
+      const { runningJobs, pending, handoff, reviewVerified } = observeIdleSessions({ parent, children,
+        dispatch, head: snap.head, clean: !snap.status }, route => api(config, 'get', route));
+      state.runningJobs = runningJobs;
       save(path.join(directory, 'handoff.json'), { ...handoff, dispatchKey, current: Boolean(handoff), reviewVerified,
         observedHead: snap.head, observedClean: !snap.status });
       const action = chooseAction({ enabled: true, manualStop: false, active: false, pending, guard,
-        ...dispatch, issueStatus: metadata.status, handoff, candidate: snap.head, reviewVerified, attempts: state.attempts,
+        ...dispatch, issueStatus: metadata.status, handoff, candidate: snap.head, reviewVerified, runningJobs, attempts: state.attempts,
         idleMs: mode === 'start' ? Infinity : Date.now() - Math.max(state.lastPromptAt ?? state.createdAt ?? 0, parent.time?.updated ?? 0),
         idleDelayMs: config.idleDelayMs ?? 90000 });
       if (action !== 'RESUME') return record(action, { handoff, reviewVerified });
