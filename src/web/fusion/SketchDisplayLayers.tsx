@@ -24,6 +24,21 @@ function useCameraPresentation() {
   return presentation.mode === 'camera' && presentation.ready ? presentation : null;
 }
 
+/** A05: local-space bounding box of the visible client rectangle (bounded grid count). */
+function visibleLocalBounds(camera: { a: number; b: number; c: number; d: number; e: number; f: number; width: number; height: number }) {
+  const det = camera.a * camera.d - camera.b * camera.c;
+  if (!(Math.abs(det) > 1e-12)) return null;
+  const A = camera.d / det, B = -camera.b / det, C = -camera.c / det, D = camera.a / det;
+  const E = (camera.c * camera.f - camera.e * camera.d) / det, F = (camera.b * camera.e - camera.a * camera.f) / det;
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (const [x, y] of [[0, 0], [camera.width, 0], [0, camera.height], [camera.width, camera.height]]) {
+    const lx = A * x + B * y + E, ly = C * x + D * y + F;
+    if (lx < minX) minX = lx; if (lx > maxX) maxX = lx;
+    if (ly < minY) minY = ly; if (ly > maxY) maxY = ly;
+  }
+  return { minX, maxX, minY, maxY };
+}
+
 const layerStyle: React.CSSProperties = {
   position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none',
 };
@@ -49,9 +64,11 @@ interface GridProps {
 }
 /** Grid and profile decoration share the active stage's exact display frame. */
 export function SketchGridLayers({ frame, step, unitPerPixel, grid, profiles, profile }: GridProps) {
-  const gridXs = sketchGridTicks(frame.minX, frame.maxX, step);
-  const gridYs = sketchGridTicks(frame.minY, frame.maxY, step);
   const camera = useCameraPresentation();
+  // Camera mode: grid extent is the visible plane bounds; legacy keeps the frame.
+  const bounds = camera ? visibleLocalBounds(camera) ?? frame : frame;
+  const gridXs = sketchGridTicks(bounds.minX, bounds.maxX, step);
+  const gridYs = sketchGridTicks(bounds.minY, bounds.maxY, step);
   const svgBasis = {
     viewBox: camera ? `0 0 ${camera.width} ${camera.height}` : frame.viewBox,
     preserveAspectRatio: (camera ? 'none' : 'xMidYMid meet') as 'none' | 'xMidYMid meet',
@@ -62,15 +79,15 @@ export function SketchGridLayers({ frame, step, unitPerPixel, grid, profiles, pr
         <g transform={camera?.matrix}>
         <g className="live-sketch-grid-lines" strokeWidth="1">
           {gridXs.map(({ value: x, major }) => <line key={`x${x}`} data-grid-axis="x" data-grid-kind={major ? 'major' : 'minor'}
-            x1={x} y1={frame.minY} x2={x} y2={frame.maxY} vectorEffect="non-scaling-stroke" />)}
+            x1={x} y1={bounds.minY} x2={x} y2={bounds.maxY} vectorEffect="non-scaling-stroke" />)}
           {gridYs.map(({ value: y, major }) => <line key={`y${y}`} data-grid-axis="y" data-grid-kind={major ? 'major' : 'minor'}
-            x1={frame.minX} y1={y} x2={frame.maxX} y2={y} vectorEffect="non-scaling-stroke" />)}
+            x1={bounds.minX} y1={y} x2={bounds.maxX} y2={y} vectorEffect="non-scaling-stroke" />)}
         </g>
         <circle data-sketch-origin-ring="true" data-outer-radius-px="12" cx={0} cy={0} r={10.5 * unitPerPixel}
           fill="none" stroke="#8f9188" strokeOpacity=".55" strokeWidth="3" vectorEffect="non-scaling-stroke" />
-        <line data-sketch-axis="x" x1={frame.minX} y1={0} x2={frame.maxX} y2={0}
+        <line data-sketch-axis="x" x1={bounds.minX} y1={0} x2={bounds.maxX} y2={0}
           stroke="#ff6b6b" strokeWidth="1" vectorEffect="non-scaling-stroke" />
-        <line data-sketch-axis="y" x1={0} y1={frame.minY} x2={0} y2={frame.maxY}
+        <line data-sketch-axis="y" x1={0} y1={bounds.minY} x2={0} y2={bounds.maxY}
           stroke="#38d744" strokeWidth="1" vectorEffect="non-scaling-stroke" />
         <g className="live-sketch-grid-labels" fontSize={16 * unitPerPixel} strokeWidth={3 * unitPerPixel}>
           {gridXs.filter(tick => tick.major && tick.value < 0).map(({ value }) =>
@@ -123,7 +140,7 @@ export function SketchAnnotationLayers({ frame, unitPerPixel, view, points, dime
       {view.settings.dimensions && <svg data-sketch-layer="dimensions" {...svgBasis} style={{ ...layerStyle, zIndex: 5 }}>
         <g transform={camera?.matrix}>
         <SketchDimensionAnnotations dimensions={dimensions} entities={entities} displayedIds={displayedIds}
-          unitPerPixel={unitPerPixel} editable={selectionEnabled && view.dimensionEditReady} onEdit={editSketchDimension} />
+          unitPerPixel={unitPerPixel} editable={selectionEnabled && view.dimensionEditReady && (camera === null || camera.aligned)} onEdit={editSketchDimension} />
         </g>
       </svg>}
       {view.settings.constraints && <svg data-sketch-layer="constraints" {...svgBasis} style={{ ...layerStyle, zIndex: 5 }} aria-hidden="true">

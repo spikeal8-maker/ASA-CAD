@@ -1,5 +1,5 @@
 import {
-  createContext, useContext, useEffect, useLayoutEffect, useMemo, useState, useSyncExternalStore,
+  createContext, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore,
 } from 'react';
 import type { RefObject } from 'react';
 import type { CadSketchSupport } from '../../contracts/document';
@@ -13,7 +13,7 @@ import { navigation } from './navigation';
 export type SketchCameraPresentation =
   | { mode: 'legacy' }
   | { mode: 'camera'; ready: false; reason: SketchCameraMappingReason; aligned: false }
-  | { mode: 'camera'; ready: true; revision: number; matrix: string; width: number; height: number; aligned: boolean };
+  | { mode: 'camera'; ready: true; revision: number; matrix: string; a: number; b: number; c: number; d: number; e: number; f: number; width: number; height: number; aligned: boolean };
 
 export interface SketchCameraPresentationOptions {
   support: CadSketchSupport;
@@ -35,7 +35,7 @@ function normalBasisScale(ready: SketchCameraMappingReady): number | null {
 
 // Legacy frame-to-client must provably coincide with the actual camera.
 function alignedWithFrame(ready: SketchCameraMappingReady, frame: SketchDisplayFrame, rect: SketchScreenRect): boolean {
-  const probes: Array<[number, number]> = [[0, 0], [1, 0], [0, 1]];
+  const probes: Array<[number, number]> = [[0, 0], [1, 0], [0, 1], [frame.minX, frame.minY], [frame.maxX, frame.maxY]];
   for (const [px, py] of probes) {
     const camera = ready.planeToClient(px, py);
     const legacy = sketchPointToClient(frame, rect, [px, py]);
@@ -77,26 +77,27 @@ export function useSketchCameraPresentation(options: SketchCameraPresentationOpt
     };
   }, [stageRef]);
 
-  // One normal-view initialization per actual attach or plane change; never per revision.
-  const [initialized, setInitialized] = useState(false);
-  const [adopted, setAdopted] = useState(false);
-  useEffect(() => { setInitialized(false); setAdopted(false); }, [snapshot === null, workplane]);
+  // One normal-view init per attach/plane change, never per revision: a ref set before
+  // the action survives the synchronous store re-render (a pending setState would not).
+  const oriented = useRef(false);
+  const adopted = useRef(false);
+  const stage = stageRef.current;
+  useEffect(() => { oriented.current = false; adopted.current = false; }, [stage, snapshot === null, workplane]);
   useEffect(() => {
-    if (workplane.kind !== 'origin-plane' || snapshot === null || initialized) return;
+    if (workplane.kind !== 'origin-plane' || snapshot === null || oriented.current) return;
+    oriented.current = true;
     navigation.orient(workplane.normal);
-    setInitialized(true);
-  }, [workplane, snapshot, initialized]);
-
+  }, [workplane, snapshot]);
   // Safe initial aligned input only: adopt the actual framing into the 2D state once.
   useEffect(() => {
-    if (adopted || !ready || !rect) return;
+    if (adopted.current || !ready || !rect) return;
     const scale = normalBasisScale(ready);
     if (scale === null) return;
     const span = Math.min(rect.width, rect.height) / scale;
     if (!(span >= 2) || !(span <= 100_000)) return;
+    adopted.current = true;
     applyInitialFrame(span);
-    setAdopted(true);
-  }, [adopted, ready, rect, applyInitialFrame]);
+  }, [ready, rect, applyInitialFrame]);
 
   const aligned = useMemo(
     () => (ready && rect ? alignedWithFrame(ready, frame, rect) : false),
@@ -113,7 +114,7 @@ export function useSketchCameraPresentation(options: SketchCameraPresentationOpt
     const e = origin.x - rect.left, f = origin.y - rect.top;
     return {
       mode: 'camera', ready: true, revision: ready.revision,
-      matrix: `matrix(${a} ${b} ${c} ${d} ${e} ${f})`,
+      matrix: `matrix(${a} ${b} ${c} ${d} ${e} ${f})`, a, b, c, d, e, f,
       width: rect.width, height: rect.height, aligned,
     };
   }, [workplane.kind, ready, rect, mapping, aligned]);

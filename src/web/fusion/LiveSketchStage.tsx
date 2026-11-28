@@ -89,6 +89,9 @@ export function SketchEditingStage(props: FusionSketchStageProps) {
     sketchId: props.activeSketch.id, displayedEntities, panMode: view.panMode, onSnapReset: resetSnap,
   });
   const camera = useSketchCameraStage({ support: props.activeSketch.support, renderModel: props.renderModel ?? null, stageRef, frame, setViewport });
+  // A05 gate: keyboard/coordinate commits only while the real camera is aligned.
+  const pres = camera.presentation;
+  const gateOpen = pres.mode === 'legacy' || (pres.mode === 'camera' && pres.ready ? pres.aligned : false);
   useLiveLineContextReset({ activeCommand: props.activeCommand, sketchId: props.activeSketch.id, snapEnabled: view.settings.snap,
     constructionVisible: view.settings.construction, reset: resetSnap });
 
@@ -159,6 +162,7 @@ export function SketchEditingStage(props: FusionSketchStageProps) {
         liveLineInteraction.finishChain();
       }}
       onKeyDownCapture={event => {
+        if (!gateOpen) return;
         if (props.activeCommand === 'sketch.line' && handleLiveLineKey(event)) return;
         panByArrow(event);
       }}>
