@@ -12,7 +12,8 @@ import {usePartFeatureController} from './usePartFeatureController';
 import {partDocument} from './PartSketchWorkspaceModel';
 import type {CadWorkspacePanel, Workspace} from './PartSketchWorkspaceTypes';
 import {usePartWorkspaceNavigation} from './usePartWorkspaceNavigation';
-export type { CadWorkspacePanel,PartSketchSelectionMode } from './PartSketchWorkspaceTypes';
+import {useEditorMode} from './EditorMode';
+import {cancelCmd,dispatchCmd,gateAll,sketchGate} from './SketchWorkspaceMutationBindings';
 export interface PartSketchWorkspaceOptions {
   app: CadApplication; document: Readonly<CadDocument>; renderModelAvailable: boolean;
   setPanel(panel: CadWorkspacePanel): void; setNotice(message: string): void;
@@ -65,33 +66,23 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     activateSketch,clearActiveSketch,clearTransientSelection: selection.clearTransientSelection,
     clearDimensionEdit: dimensions.clearDimensionEdit,
   });
-  function cancelCommand() {
-    if (creation.dimensionCreation.mode) {
-      creation.dimensionCreation.cancel();
-      return;
-    }
-    editing.resetActiveTool(activeCommand);
-    if (activeCommand === 'part.extrude') features.extrude.reset();
-    const stayInSketch=activeCommand === 'constraint.coincident' || /^(sketch|constraint)\./.test(activeCommand ?? '');
-    setActiveCommand(null);
-    dimensions.clearDimensionEdit();
-    setPanel('tree');
-    selection.clearTransientSelection();
-    setActiveWorkspace(document.kind === 'part' ? (stayInSketch ? 'sketch' : 'solid') : document.kind);
-    setNotice('Команда отменена');
+  // A05 v2 gate: KOMPAS passes through; Fusion fails closed without live camera registration at call time.
+  const gate=sketchGate({fusionActive:useEditorMode()==='fusion',documentId:document.documentId,sketchId:activeSketchId,reject:setNotice});
+  function cancelCommand(){
+    cancelCmd({activeCommand,dimensionCreationMode:creation.dimensionCreation.mode,
+      cancelDimensionCreation:creation.dimensionCreation.cancel,resetActiveTool:editing.resetActiveTool,
+      resetExtrude:features.extrude.reset,clearDimensionEdit:dimensions.clearDimensionEdit,
+      clearTransientSelection:selection.clearTransientSelection,setActiveCommand,setPanel,setActiveWorkspace,
+      notice:setNotice,documentKind:document.kind});
   }
-  async function commitActiveCommand() {
-    if (activeCommand === 'sketch.line') return editing.commitLinePreview();
-    if (activeCommand === 'sketch.arc') return editing.commitArcPreview();
-    if (activeCommand === 'part.sketch.create') return features.commitCreateSketch();
-    if (activeCommand === 'sketch.rectangle') return editing.hasRectangleDraft ? editing.commitRectanglePreview() : editing.commitRectangle();
-    if (activeCommand === 'sketch.circle') return editing.hasCircleDraft ? editing.commitCirclePreview() : editing.commitCircle();
-    if (activeCommand === 'part.extrude') return features.extrude.commit();
-    if (activeCommand === 'part.cutExtrude') return features.commitCut();
-    if (activeCommand === 'part.fillet') return features.commitFillet();
-    if (creation.dimensionCreation.mode) return creation.dimensionCreation.commit();
-    if (activeCommand === 'dimension.edit') return dimensions.commitDimensionEdit();
-  }
+  const commitActiveCommand=()=>dispatchCmd(gate,{activeCommand,commitLinePreview:editing.commitLinePreview,
+    commitArcPreview:editing.commitArcPreview,commitCreateSketch:features.commitCreateSketch,
+    commitRectanglePreview:editing.commitRectanglePreview,commitRectangle:editing.commitRectangle,
+    commitCirclePreview:editing.commitCirclePreview,commitCircle:editing.commitCircle,
+    hasRectangleDraft:editing.hasRectangleDraft,hasCircleDraft:editing.hasCircleDraft,
+    commitExtrude:features.extrude.commit,commitCut:features.commitCut,commitFillet:features.commitFillet,
+    dimensionCreationMode:creation.dimensionCreation.mode,commitDimensionCreation:creation.dimensionCreation.commit,
+    commitDimensionEdit:dimensions.commitDimensionEdit});
   return {
     ...editing,...features,
     activeWorkspace,setActiveWorkspace,activeCommand,activeSketchId,
@@ -112,6 +103,7 @@ export function usePartSketchWorkspace(options: PartSketchWorkspaceOptions) {
     toggleSelectedConstruction: entityMutations.toggleSelectedConstruction,
     translateSketchEntity: entityMutations.translateSketchEntity,
     beginDimensionEdit: dimensions.beginDimensionEdit,commitDimensionEdit: dimensions.commitDimensionEdit,
+    ...gateAll(gate,editing,constraints,entityMutations,dimensions,creation),
     cancelCommand,commitActiveCommand,
   };
 }

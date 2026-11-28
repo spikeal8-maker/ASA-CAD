@@ -4,9 +4,9 @@ import {
 import type { RefObject } from 'react';
 import type { CadSketchSupport } from '../../contracts/document';
 import type { SketchDisplayFrame, SketchScreenRect } from '../viewport/SketchViewportGeometry';
-import { sketchPointToClient } from '../viewport/SketchViewportGeometry';
 import { resolveSketchWorkplaneProjection } from '../viewport/SketchWorkplaneProjection';
-import { createSketchCameraMapping, type SketchCameraMappingReason, type SketchCameraMappingReady } from './SketchCameraMapping';
+import { createSketchCameraMapping, type SketchCameraMappingReason } from './SketchCameraMapping';
+import { alignedWithFrame, normalBasisScale } from './SketchCameraAlignment';
 import { navigation } from './navigation';
 
 /** A05: actual driver camera (A03) -> one affine mapping (A04) per snapshot/revision. */
@@ -20,29 +20,6 @@ export interface SketchCameraPresentationOptions {
   stageRef: RefObject<HTMLDivElement | null>;
   frame: SketchDisplayFrame;
   applyInitialFrame(span: number): void;
-}
-
-// Normal view only: u along screen +x, v along screen -y, axis-parallel.
-function normalBasisScale(ready: SketchCameraMappingReady): number | null {
-  const { origin, u, v } = ready.basis;
-  const ux = u.x - origin.x, uy = u.y - origin.y, vx = v.x - origin.x, vy = v.y - origin.y;
-  const lu = Math.hypot(ux, uy), lv = Math.hypot(vx, vy);
-  if (!(lu > 0) || !(lv > 0) || Math.abs(lu - lv) > 0.02 * lu) return null;
-  if (!(ux > 0) || Math.abs(uy) > 0.02 * lu) return null;
-  if (!(vy < 0) || Math.abs(vx) > 0.02 * lv) return null;
-  return lu;
-}
-
-// Legacy frame-to-client must provably coincide with the actual camera.
-function alignedWithFrame(ready: SketchCameraMappingReady, frame: SketchDisplayFrame, rect: SketchScreenRect): boolean {
-  const probes: Array<[number, number]> = [[0, 0], [1, 0], [0, 1], [frame.minX, frame.minY], [frame.maxX, frame.maxY]];
-  for (const [px, py] of probes) {
-    const camera = ready.planeToClient(px, py);
-    const legacy = sketchPointToClient(frame, rect, [px, py]);
-    if (!camera.ok || !legacy) return false;
-    if (Math.hypot(camera.x - legacy.x, camera.y - legacy.y) > 0.5) return false;
-  }
-  return true;
 }
 
 export function useSketchCameraPresentation(options: SketchCameraPresentationOptions): SketchCameraPresentation {

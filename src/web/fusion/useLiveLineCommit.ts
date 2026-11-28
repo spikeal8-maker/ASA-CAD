@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import type { CadCommand, CadCommandId } from '../../contracts/commands';
 import type { CadPoint2, CadSketchLineEntity } from '../../contracts/document';
 import type { CadSketchEntityId } from '../../contracts/ids';
+import { isSketchMutationReady } from '../SketchMutationReadiness';
 import { createLiveLineSnapshot, resolveLiveLineCommit, type LiveLineCommit } from './LiveLineInteraction';
 import type { LiveLineCommitOwner, LiveLineFlight } from './LiveLineToolTypes';
 import {
@@ -18,6 +19,12 @@ export function useLiveLineCommit(owner: LiveLineCommitOwner) {
     const currentOptions = optionsRef.current;
     const { app, sketchId } = currentOptions;
     if (!currentOptions.active || !current.active || !sketchId || !current.from || flight.current || !finitePoint(requested)) return false;
+    // A05 v2 preflight: an unready/unaligned camera rejects before flight state
+    // and the first app.execute; the draft and history stay untouched.
+    if (!isSketchMutationReady(currentOptions.app.getDocument().documentId, sketchId)) {
+      currentOptions.setNotice('Камера не готова: ввод координат заблокирован');
+      return false;
+    }
     const prepared = withGeometry(current, requested);
     const validationError = numericError(prepared);
     if (validationError || !prepared.to || !finitePoint(prepared.to) || !Number.isFinite(prepared.length)

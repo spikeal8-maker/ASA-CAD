@@ -88,7 +88,8 @@ export function SketchEditingStage(props: FusionSketchStageProps) {
     startPan, movePan, endPan, resetLostCapture, panByArrow } = useLiveSketchNavigation({
     sketchId: props.activeSketch.id, displayedEntities, panMode: view.panMode, onSnapReset: resetSnap,
   });
-  const camera = useSketchCameraStage({ support: props.activeSketch.support, renderModel: props.renderModel ?? null, stageRef, frame, setViewport });
+  const camera = useSketchCameraStage({ support: props.activeSketch.support, renderModel: props.renderModel ?? null, stageRef, frame, setViewport,
+    documentId: props.document.documentId, sketchId: props.activeSketch.id });
   // A05 gate: keyboard/coordinate commits only while the real camera is aligned.
   const pres = camera.presentation;
   const gateOpen = pres.mode === 'legacy' || (pres.mode === 'camera' && pres.ready ? pres.aligned : false);
